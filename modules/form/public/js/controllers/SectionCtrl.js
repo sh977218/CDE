@@ -133,27 +133,4 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.stageElt();
     };
 
-    $scope.canBeDisplayedAsMatrix = function(section) {
-        var result = true;
-        var answerHash;
-        section.formElements.forEach(function(formElem) {
-            if (formElem.elementType !== 'question') {
-                return result = false;
-            } else {
-                if (formElem.question.datatype !== "Value List") {
-                    return result = false;
-                }
-                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
-                    return result = false;
-                if (!answerHash) {
-                    answerHash = angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}));
-                }
-                if (answerHash !== angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}))) {
-                    return result = false;
-                }
-            }
-        });
-        return result;
-    };
-
 }]);

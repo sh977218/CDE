@@ -92,19 +92,7 @@ var deJsonSchema = {
     , forkOf: String
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
-    , referenceDocuments: [
-        {
-            docType: String,
-            document: String,
-            referenceDocumentId: String,
-            text: String,
-            uri: String,
-            providerOrg: String,
-            title: String,
-            languageCode: String,
-            _id: false
-        }
-    ]
+    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 
 var pinSchema = new mongoose.Schema({

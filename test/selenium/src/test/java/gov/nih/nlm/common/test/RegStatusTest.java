@@ -1,5 +1,6 @@
-package gov.nih.nlm.cde.common.test;
+package gov.nih.nlm.common.test;
 
+import gov.nih.nlm.common.test.CommonTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -53,6 +54,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
+        setLowStatusesVisible();
         waitForESUpdate();
         goToEltByName(eltName, "Recorded");
         textPresent("Recorded");

@@ -1,8 +1,6 @@
 package gov.nih.nlm.system;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
@@ -10,12 +8,15 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
-import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -113,6 +114,7 @@ public class NlmCdeBaseTest {
                     null, ex);
         }
 
+        System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts()
                 .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
@@ -414,7 +416,7 @@ public class NlmCdeBaseTest {
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
-        textPresent("Browse by organization");
+        textPresent("Browse by classification");
         textPresent("Cancer Therapy Evaluation Program");
     }
 
@@ -659,4 +661,19 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void reorderIconTest(String tabName) {
+        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
+        String postfix = "']";
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
+
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-1" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-1" + postfix)).size(), 1);
+
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-2" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-2" + postfix)).size(), 1);
+    }
 }

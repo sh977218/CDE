@@ -22,7 +22,6 @@ var questionSchema =  {
 };
 
 var sectionSchema = {    
-    displayAsMatrix: {type: Boolean, default: false}
 };
 
 var formElementTreeRoot = {
@@ -80,7 +79,8 @@ exports.formSchema = new Schema({
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ] 
-    , isCopyrighted: {type: Boolean, default: false}
+    , isCopyrighted: {type: Boolean}
+    , noRenderAllowed: {type: Boolean}
     , copyright: {
         authority: String
         , text: String
@@ -99,6 +99,12 @@ exports.formSchema = new Schema({
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]
+    , displayProfiles: [{
+        name: String
+        , sectionsAsMatrix: {type: Boolean}
+        , displayValues: {type: Boolean}
+        , context: {contextName: String}
+    }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
 

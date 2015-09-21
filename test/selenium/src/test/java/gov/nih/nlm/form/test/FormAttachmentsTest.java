@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.common.test.BaseAttachmentTest;
+import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

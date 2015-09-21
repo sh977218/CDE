@@ -28,6 +28,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }               
             , elasticCreateIndex: {
@@ -41,6 +42,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticRiverUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }
             , elasticCreateRiver: {
@@ -54,6 +56,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticFormUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }               
             , elasticCreateFormIndex: {
@@ -67,6 +70,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticFormRiverUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }
             , elasticCreateFormRiver: {
@@ -80,6 +84,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticStoredQueryUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }
             , elasticCreateStoredQueryIndex: {
@@ -93,6 +98,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticStoredQueryRiverUri
                     , method: 'DELETE'
+                    , ignoreErrors: true
                 }
             }
             , elasticCreateStoredQueryRiver: {

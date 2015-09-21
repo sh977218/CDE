@@ -557,6 +557,10 @@ button#selectDefault {
     width: 55px;
 }
 
+.gridListView .numQuestions {
+    width: 25px;
+}
+
 .gridListView .administrativeStatus {
     width: 55px;
 }
@@ -725,6 +729,10 @@ button#selectDefault {
     float: left;
 }
 
-#questionSearchArea{
+#questionSearchArea {
     padding: 20px;
+}
+
+.red {
+    color: red;
 }
