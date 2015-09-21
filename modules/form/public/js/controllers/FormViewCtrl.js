@@ -16,6 +16,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
+        cdeList: {heading: "CDE List"},
         naming: {heading: "Naming"},
         classification: {heading: "Classification"},
         concepts: {heading: "Concepts"},
