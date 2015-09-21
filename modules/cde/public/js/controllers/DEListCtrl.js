@@ -17,6 +17,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , revert: true
             , tolerance: "pointer"
             , placeholder: "ui-sortable-placeholder"
             , start: function (event, ui) {
@@ -25,7 +26,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             }
             , beforeStart: function (event, ui) {
                 var foundItem = ui.item.find('.panel-collapse.collapse.in')
-                foundItem.css('display', 'none').css('height', '0').css('color','red');
+                foundItem.css('display', 'none').css('height', '0').css('color', 'red');
             }
             , stop: function (event, ui) {
                 $('.dragQuestions').css('border', '');

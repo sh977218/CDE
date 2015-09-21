@@ -70,7 +70,7 @@
     </div>
     <div class="panel-body">
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions"
-             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
+             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}" >
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'"
                      ng-include="'/form/public/html/formViewQuestion.html'"
