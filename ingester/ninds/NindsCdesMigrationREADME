@@ -6,7 +6,7 @@ $loadday = "2015-09-16"
 
 2. git checkout origin-peter/CDE-636-load-ninds-forms
 
-3. mongo restore mingrationCde into migration database
+3. mongo restore migrationCde into migration database
 mongorestore  --host=qvlbmongodb02 -d migration -c dataelements dataelements.bson -u siteRootAdmin -p $db_password -authenticationDatabase admin
 
 3. export NODE_ENV=qa-live
@@ -14,7 +14,7 @@ mongorestore  --host=qvlbmongodb02 -d migration -c dataelements dataelements.bso
 4. run updateCde.js as
 node ingester/updateCdes.js
 
-5 varify the report:
+5 verify the report:
 report:
 9888 elements changed
 1241 elements Created
@@ -27,7 +27,7 @@ db.dataelements.count({
 	archived : null,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
-		$lt : new ISODate("2015-09-18")
+		$lt : new ISODate("2015-09-20")
 	}
 });
 
@@ -38,7 +38,7 @@ db.dataelements.update({
 	archived : null,
 	"registrationState.registrationStatus" : "Qualified",
 	imported : {
-		$lt : new ISODate("2015-09-18")
+		$lt : new ISODate("2015-09-20")
 	}
 }, {
 	$set : {
@@ -58,4 +58,4 @@ db.dataelements.update(
 {multi: true}
 )
 
-resule: WriteResult({ "nMatched" : 11215, "nUpserted" : 0, "nModified" : 9722 })
+result: WriteResult({ "nMatched" : 11215, "nUpserted" : 0, "nModified" : 9722 })
