@@ -76,7 +76,7 @@
             <div tab heading="{{tabs['mlt'].heading}}" select="$broadcast('loadMlt')">
                 <div ng-include="'/cde/public/html/deMlt.html'"></div>
             </div>
-            <div tab heading="{{tabs['history'].heading}}">
+            <div tab heading="{{tabs['history'].heading}}" select="$broadcast('loadPriorCdes')">
                 <div ng-include="'/cde/public/html/cdeHistory.html'"></div>
             </div>
             <div ng-show="!elt.forkOf" tab heading="{{tabs['forks'].heading}}">

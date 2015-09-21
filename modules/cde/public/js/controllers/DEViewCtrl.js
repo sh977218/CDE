@@ -1,7 +1,7 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
-        'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
-        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes,
+        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
+        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
                  isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard)
 {
 
@@ -54,13 +54,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     });
 
-    $scope.loadPriorCdes = function() {
-        if ($scope.elt.history && $scope.elt.history.length > 0) {
-            PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {
-                $scope.priorCdes = dataElements;
-            });
-        }
-    };
 
     $scope.reload = function(route) {
         var service = DataElement;
@@ -77,7 +70,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.canLinkPvFunc();
             $scope.loadBoards();
             $scope.getPVTypeaheadCodeSystemNameList();
-            $scope.loadPriorCdes();
             if ($scope.elt.forkOf) {
                 $http.get('/forkroot/' + $scope.elt.tinyId).then(function(result) {
                     $scope.rootFork = result.data;
@@ -126,7 +118,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.save = function() {
         $scope.elt.$save({}, function (elt) {
             $scope.elt = elt;
-            $scope.loadPriorCdes();
+            $scope.$broadcast("elementReloaded");
+            $scope.addAlert("success", "Saved.");
         }, function() {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });

@@ -2,6 +2,7 @@
     <div accordion-group is-open="">
         <div accordion-heading>
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
+            <span ng-if="question.question.isScore" class="text-info"><u>Score:</u> </span>
             <span ng-bind-html="question.label | placeholdEmpty"
                   id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
             <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
@@ -37,8 +38,8 @@
                     <span ng-if="isScore(question)">
                         <dt tabindex="0">Score:</dt>
                         <dd tabindex="0" id="dd_question_score_{{$index}}">
-                            <input type="checkbox" ng-model="question.question.isScore" ng-disabled="!canCurate"
-                                   ng-click="stageElt()"/></dd>
+                            <span ng-bind="question.question.scoreFormula"></span>
+                        </dd>
                     </span>
                     <dt tabindex="0">Cardinality:</dt>
                     <dd id="dd_q_card_{{$index}}">

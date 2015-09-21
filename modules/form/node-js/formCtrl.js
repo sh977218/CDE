@@ -45,6 +45,7 @@ exports.formById = function (req, res) {
                     var currVersion = currCde.version;
                     if (version !== currVersion) {
                         cde.outdated = true;
+                        form.outdated = true;
                     }
                     cde.derivationRules = currCde.derivationRules;
                 } else {

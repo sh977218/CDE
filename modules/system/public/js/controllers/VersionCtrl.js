@@ -1,6 +1,6 @@
-angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$location', 'userResource',
-    function($scope, $modal, $location, userResource) {
-
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$location',
+    function($scope, $modal, $location)
+{
     $scope.stageElt = function(elt) {
         elt.unsaved = true;
     };
@@ -10,27 +10,27 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$
           templateUrl: '/system/public/html/saveModal.html',
           controller: 'SaveModalCtrl',
           resolve: {
-              elt: function() {
-                  return elt;
-              }
-              , user: function() {
-                  return userResource.user;
-              }
-              , redirectBaseLink: function() {
-                  return redirectBaseLink;
-              }
+              elt: function() {return $scope.elt;}
           }
         });
         modalInstance.result.then(function (newelt) {
-            $location.url(redirectBaseLink + newelt.tinyId);
-            $scope.elt = newelt;
-            $scope.reload();
-            if ($scope.elt.history && $scope.elt.history.length>0) $scope.loadPriorCdes();
-            $scope.addAlert("success", "Saved.");
+            $scope.save();
         }, function(reason) {
         });
     };
-
 }
+]);
 
+angular.module('systemModule').controller('SaveModalCtrl', ['$scope', '$modalInstance', 'elt',
+    function($scope, $modalInstance, elt)
+    {
+        $scope.elt = elt;
+        $scope.ok = function() {
+            $modalInstance.close();
+        };
+
+        $scope.cancelSave = function() {
+            $modalInstance.dismiss('cancel');
+        };
+    }
 ]);

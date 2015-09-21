@@ -15,7 +15,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
         }
     };
 
-    $scope.cdeLoadedPromise.then(function() {updateRules();});
+    $scope.cdeLoadedPromise.then(updateRules);
 
     var findDerivationOutputs = function() {
         if (!$scope.elt.derivationOutputs) {
@@ -36,9 +36,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
         updateRules();
     });
 
-    $scope.$on('loadDerivationRules', function() {
-        findDerivationOutputs();
-    });
+    $scope.$on('loadDerivationRules', findDerivationOutputs);
 
     $scope.openDerivationRule = function () {
         var modalInstance = $modal.open({
