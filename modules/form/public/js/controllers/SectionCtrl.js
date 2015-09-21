@@ -133,4 +133,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.stageElt();
     };
 
+    $scope.isScore = function(formElt) {
+        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
+    };
+
+
 }]);

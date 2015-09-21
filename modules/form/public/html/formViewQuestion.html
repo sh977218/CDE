@@ -4,7 +4,9 @@
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-bind-html="question.label | placeholdEmpty"
                   id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
-            <span ng-if="question.question.cde.outdated"> (Outdated)</span>
+            <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
+            <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+
             <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(parent, $index)"
                title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
         </div>
@@ -30,6 +32,12 @@
                         <dd tabindex="0" id="dd_question_other_{{$index}}">
                             <input type="checkbox" id="input_otherPleaseSpecify"
                                    ng-model="question.question.otherPleaseSpecify.value" ng-disabled="!canCurate"
+                                   ng-click="stageElt()"/></dd>
+                    </span>
+                    <span ng-if="isScore(question)">
+                        <dt tabindex="0">Score:</dt>
+                        <dd tabindex="0" id="dd_question_score_{{$index}}">
+                            <input type="checkbox" ng-model="question.question.isScore" ng-disabled="!canCurate"
                                    ng-click="stageElt()"/></dd>
                     </span>
                     <dt tabindex="0">Cardinality:</dt>
@@ -66,7 +74,7 @@
                     <dd tabindex="0" ng-show="question.question.datatype === 'Value List'"
                         id="dd_question_multi_{{$index}}">
                         <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate"
-                               ng-click="stageElt()"></input>
+                               ng-click="stageElt()"/>
                     </dd>
                     <dt tabindex="0">Units of Measures:</dt>
                     <dd tabindex="0" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">

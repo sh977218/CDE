@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
         }
     };
 
-    $scope.$on('dataElementReloaded', function() {
+    $scope.$on('elementReloaded', function() {
         updateRules();
     });
 

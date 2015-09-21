@@ -54,6 +54,8 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
+            areDerivationRulesSatisfied();
+
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -62,7 +64,6 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.reload();
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
@@ -225,6 +226,32 @@ angular.module('formModule').controller('FormViewCtrl',
         return [];
     };
 
+    $scope.missingCdes = [];
+    var areDerivationRulesSatisfied = function() {
+        var allScores = [];
+        var allCdes = {};
+        var doFormElement = function(formElt) {
+            if (formElt.elementType === 'question') {
+                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                if (formElt.question.isScore) {
+                    allScores.push(formElt);
+                }
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        $scope.elt.formElements.forEach(doFormElement);
+        allScores.forEach(function(questWithScore) {
+            questWithScore.question.cde.derivationRules.forEach(function(derRule) {
+                derRule.inputs.forEach(function(input) {
+                    if (!allCdes[input]) {
+                        $scope.missingCdes.push(input);
+                        questWithScore.incompleteRule = true;
+                    }
+                });
+            });
+        });
+    };
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
@@ -251,5 +278,7 @@ angular.module('formModule').controller('FormViewCtrl',
         }, function () {
         });
     };
+
+    $scope.reload();
 
 }]);

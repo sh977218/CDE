@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.common.test.IdentifiersTest;
+import gov.nih.nlm.common.test.IdentifiersTest;
 import org.testng.annotations.Test;
 
 public class FormIdentifierTest extends IdentifiersTest {

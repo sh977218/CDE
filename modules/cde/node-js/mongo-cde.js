@@ -456,7 +456,7 @@ exports.fileUsed = function (id, cb) {
 };
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
-    DataElement.find({archived: null}, "tinyId version").where("tinyId").in(allCdes).exec(cb);
+    DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
 };
 
 exports.derivationOutputs = function(inputTinyId, cb) {

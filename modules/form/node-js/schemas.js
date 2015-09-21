@@ -15,6 +15,7 @@ var questionSchema =  {
     , required: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
     , multiselect: Boolean
+    , isScore: Boolean
     , otherPleaseSpecify: {
         value: {type: Boolean, default: false}
     }

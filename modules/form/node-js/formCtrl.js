@@ -35,15 +35,24 @@ exports.formById = function (req, res) {
             var currCdeMap = {};
             for (var i = 0; i < currCdes.length; i++) {
                 var currCde = currCdes[i];
-                currCdeMap[currCde['tinyId']] = currCde['version'];
+                currCdeMap[currCde['tinyId']] = currCde.toObject();
             }
             for (var tinyId in allCdes) {
-                var cde = allCdes[tinyId];
-                var version = cde['version'];
-                var currVersion = currCdeMap[tinyId];
-                if (version !== currVersion)
-                    cde['outdated'] = true;
+                if (currCde) {
+                    var cde = allCdes[tinyId];
+                    var version = cde.version;
+                    var currCde = currCdeMap[tinyId];
+                    var currVersion = currCde.version;
+                    if (version !== currVersion) {
+                        cde.outdated = true;
+                    }
+                    cde.derivationRules = currCde.derivationRules;
+                } else {
+                    // @TODO can replace with cde.missing (or something like that)
+                    cde.outdated = true;
+                }
             }
+
             if (cb) cb();
         });
     };
