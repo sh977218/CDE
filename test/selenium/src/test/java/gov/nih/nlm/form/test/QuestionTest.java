@@ -50,7 +50,7 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
 
-//    @Test
+    //    @Test
     public void questions() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1524, 1150);
@@ -163,7 +163,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
         stopAddingQuestions();
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
-//        startAddingQuestions();
+        // startAddingQuestions();
         saveForm();
 
         findElement(By.linkText("Form Description")).click();
