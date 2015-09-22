@@ -6,29 +6,26 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             $scope.search("cde");
         });
 
-        var oldMouseStart = $.ui.sortable.prototype._mouseStart;
-        $.ui.sortable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
-            this._trigger("beforeStart", event, this._uiHash());
-            oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
-        };
-
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
-            , tolerance: "pointer"
             , placeholder: "ui-sortable-placeholder"
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height(ui.item.height());
             }
-            , beforeStart: function (event, ui) {
-                var foundItem = ui.item.find('.panel-collapse.collapse.in')
-                foundItem.css('display', 'none').css('height', '0').css('color','red');
-            }
             , stop: function (event, ui) {
                 $('.dragQuestions').css('border', '');
+            }
+            , helper: function(){
+                return $('<div id="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
+                    .css('border', '1px solid black')
+                    .css('padding', '0px')
+                    .css('width', '50px')
+                    .css('height', '20px')
+                    .css('background', 'grey');
             }
         };
 

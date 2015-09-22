@@ -25,7 +25,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        , tolerance: "pointer"
+        //, tolerance: "pointer"
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
@@ -43,7 +43,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        , tolerance: "pointer"
+        //, tolerance: "pointer"
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
