@@ -23,7 +23,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
                     .css('border', '1px solid black')
                     .css('padding', '0px')
-                    .css('width', '50px')
+                    .css('width', '100px')
                     .css('height', '20px')
                     .css('background', 'grey');
             }
