@@ -41,9 +41,6 @@ var getFormQuestions = function(form){
 
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
-        //var allTinyId = [];
-        //var allCdes = {};
-        //exports.findAllCdesInForm(form, allCdes, allTinyId);
         var cdes = getFormQuestions(form).map(function(c){
             return c.cde;
         });
@@ -51,18 +48,6 @@ exports.formById = function (req, res) {
             return q.cde.tinyId;
         });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
-            //var currCdeMap = {};
-            //for (var i = 0; i < currCdes.length; i++) {
-            //    var currCde = currCdes[i];
-            //    currCdeMap[currCde['tinyId']] = currCde['version'];
-            //}
-            //for (var tinyId in allCdes) {
-            //    var cde = allCdes[tinyId];
-            //    var version = cde['version'];
-            //    var currVersion = currCdeMap[tinyId];
-            //    if (version !== currVersion)
-            //        cde['outdated'] = true;
-            //}
             cdes.forEach(function(formCde){
                 currCdes.forEach(function(systemCde){
                     if (formCde.tinyId === systemCde.tinyId) {
