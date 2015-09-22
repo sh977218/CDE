@@ -26,7 +26,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
         , revert: true
-        , placeholder: "ui-sortable-placeholder"
+        , placeholder: "questionPlaceholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
             ui.placeholder.height("20px");
@@ -43,12 +43,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                 ui.item.sortable.cancel();
         }
         , helper: function () {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
-                .css('border', '1px solid black')
-                .css('padding', '0px')
-                .css('width', '100px')
-                .css('height', '20px')
-                .css('background', 'grey');
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Section</div>')
         }
     };
 
@@ -56,7 +51,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
         , revert: true
-        , placeholder: "ui-sortable-placeholder"
+        , placeholder: "questionPlaceholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
             ui.placeholder.height("20px");
@@ -65,12 +60,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             $('.dragQuestions').css('border', '');
         }
         , helper: function () {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
-                .css('border', '1px solid black')
-                .css('padding', '0px')
-                .css('width', '100px')
-                .css('height', '20px')
-                .css('background', 'grey');
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Question</div>')
         }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;

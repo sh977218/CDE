@@ -11,7 +11,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , helper: "clone"
             , appendTo: "body"
             , revert: true
-            , placeholder: "ui-sortable-placeholder"
+            , placeholder: "questionPlaceholder"
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height("20px");
@@ -20,12 +20,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 $('.dragQuestions').css('border', '');
             }
             , helper: function () {
-                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
-                    .css('border', '1px solid black')
-                    .css('padding', '0px')
-                    .css('width', '100px')
-                    .css('height', '20px')
-                    .css('background', 'grey');
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Question</div>')
             }
         };
 

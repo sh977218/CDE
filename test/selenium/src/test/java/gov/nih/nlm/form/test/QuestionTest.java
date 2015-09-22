@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -65,10 +66,13 @@ public class QuestionTest extends BaseFormTest {
         scrollTo(targetElt.getLocation().getY());
 
         Actions action = new Actions(driver);
-        action.clickAndHold(findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i"))).moveToElement(findElement(By.id("section_drop_area_" + sectionNumTo))).release(findElement(By.id("section_drop_area_" + sectionNumTo))).build().perform();
-//        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+    /*    action.clickAndHold(findElement(By.xpath("/*//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i")))
+                .moveToElement(findElement(By.id("section_drop_area_" + sectionNumTo)))
+                .release(findElement(By.xpath("/*//*[@id='section_drop_area_" + sectionNumTo + "']//div[@class='ui-sortable-placeholder']"))).build().perform();
+//  */
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         System.out.println("aaa:" + findElement(By.id("section_drop_area_" + sectionNumTo)).getText());
-        Assert.assertTrue(findElement(By.id("section_drop_area_" + sectionNumTo)).getText().contains(sourceStr));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("section_drop_area_" + sectionNumTo), sourceStr));
     }
 
     @Test
