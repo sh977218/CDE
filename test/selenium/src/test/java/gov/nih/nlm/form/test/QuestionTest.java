@@ -64,7 +64,9 @@ public class QuestionTest extends BaseFormTest {
 
         scrollTo(targetElt.getLocation().getY());
 
-        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        Actions action = new Actions(driver);
+        action.clickAndHold(findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i"))).moveToElement(findElement(By.id("section_drop_area_" + sectionNumTo))).release(findElement(By.id("section_drop_area_" + sectionNumTo))).build().perform();
+//        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         System.out.println("aaa:" + findElement(By.id("section_drop_area_" + sectionNumTo)).getText());
         Assert.assertTrue(findElement(By.id("section_drop_area_" + sectionNumTo)).getText().contains(sourceStr));
     }

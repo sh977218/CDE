@@ -15,9 +15,9 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         textPresent("The CRS-R consists of twenty-three items comprising six hierarchically-arranged subscales addressing auditory, visual, motor, oromotor/verbal, communication and arousal functions. The lowest item on each subscale represents reflexive activity while the highest items represent cognitively-mediated behaviors.");
         findElement(By.linkText("Form Description")).click();
         textPresent("Show Question Search Area");
-        sectionTest.addSection("Any Section Name", "0 or more");
-        sectionTest.addSection("Another Any Section Name", "1 or more");
-        startAddingQuestions();
+        sectionTest.addSection("First Section Name", "0 or more");
+        sectionTest.addSection("Second Section Name", "1 or more");
+        //startAddingQuestions();
         //questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
         questionTest.addSectionToSection(2, 1);
         saveForm();
