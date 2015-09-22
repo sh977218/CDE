@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 
 public class FormDragQuestionDropTest extends BaseFormTest {
     QuestionTest questionTest = new QuestionTest();
+    CreateEditSectionTest sectionTest = new CreateEditSectionTest();
 
     @Test
     public void dragQuestiondropTest() {
@@ -14,8 +15,12 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         textPresent("The CRS-R consists of twenty-three items comprising six hierarchically-arranged subscales addressing auditory, visual, motor, oromotor/verbal, communication and arousal functions. The lowest item on each subscale represents reflexive activity while the highest items represent cognitively-mediated behaviors.");
         findElement(By.linkText("Form Description")).click();
         textPresent("Show Question Search Area");
-        new CreateEditSectionTest().addSection("Any Section Name", "0 or more");
+        sectionTest.addSection("Any Section Name", "0 or more");
+        sectionTest.addSection("Another Any Section Name", "1 or more");
         startAddingQuestions();
-        questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
+        //questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
+        questionTest.addSectionToSection(2, 1);
+        saveForm();
+
     }
 }

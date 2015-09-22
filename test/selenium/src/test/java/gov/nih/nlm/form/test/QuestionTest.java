@@ -50,6 +50,25 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
 
+    public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
+        WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i"));
+        String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4")).getText();
+
+        WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumTo));
+
+        Assert.assertTrue(sourceElt.isDisplayed());
+
+        String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumTo + "\").position().top;\n" +
+                "$(window).scrollTop(y);";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+
+        scrollTo(targetElt.getLocation().getY());
+
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        System.out.println("aaa:" + findElement(By.id("section_drop_area_" + sectionNumTo)).getText());
+        Assert.assertTrue(findElement(By.id("section_drop_area_" + sectionNumTo)).getText().contains(sourceStr));
+    }
+
     @Test
     public void questions() {
         mustBeLoggedInAs(ctepCurator_username, password);
