@@ -25,12 +25,11 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        , tolerance: "pointer"
         , revert: true
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
-            ui.placeholder.height(ui.item.height());
+            ui.placeholder.height("20px");
         }
         , stop: function (event, ui) {
             $('.dragQuestions').css('border', '');
@@ -43,6 +42,14 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
                 ui.item.sortable.cancel();
         }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
+                .css('border', '1px solid black')
+                .css('padding', '0px')
+                .css('width', '50px')
+                .css('height', '20px')
+                .css('background', 'grey');
+        }
     };
 
     $scope.sortableOptions = {
@@ -52,10 +59,18 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
-            ui.placeholder.height(ui.item.height());
+            ui.placeholder.height("20px");
         }
         , stop: function (event, ui) {
             $('.dragQuestions').css('border', '');
+        }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
+                .css('border', '1px solid black')
+                .css('padding', '0px')
+                .css('width', '50px')
+                .css('height', '20px')
+                .css('background', 'grey');
         }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;

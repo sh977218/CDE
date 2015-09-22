@@ -5,7 +5,11 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         userResource.getPromise().then(function () {
             $scope.search("cde");
         });
-
+        var oldMouseStart = $.ui.sortable.prototype._mouseStart;
+        $.ui.sortable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
+            this._trigger("beforeStart", event, this._uiHash());
+            oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
+        };
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
@@ -15,13 +19,13 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , placeholder: "ui-sortable-placeholder"
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
-                ui.placeholder.height(ui.item.height());
+                ui.placeholder.height("20px");
             }
             , stop: function (event, ui) {
                 $('.dragQuestions').css('border', '');
             }
-            , helper: function(){
-                return $('<div id="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
+            , helper: function () {
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop me</div>')
                     .css('border', '1px solid black')
                     .css('padding', '0px')
                     .css('width', '50px')
