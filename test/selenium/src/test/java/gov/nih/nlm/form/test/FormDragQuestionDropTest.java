@@ -17,10 +17,10 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         textPresent("Show Question Search Area");
         sectionTest.addSection("First Section Name", "0 or more");
         sectionTest.addSection("Second Section Name", "1 or more");
-        //startAddingQuestions();
-        //questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
+        sectionTest.addSection("Third Section Name", "1 or more");
+        startAddingQuestions();
+        questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
         questionTest.addSectionToSection(2, 1);
-        saveForm();
-
+        questionTest.addQuestionToRootSection("Smoking History Ind", 2);
     }
 }

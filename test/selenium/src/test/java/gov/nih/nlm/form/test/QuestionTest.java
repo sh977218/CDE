@@ -66,13 +66,30 @@ public class QuestionTest extends BaseFormTest {
         scrollTo(targetElt.getLocation().getY());
 
         Actions action = new Actions(driver);
-    /*    action.clickAndHold(findElement(By.xpath("/*//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i")))
-                .moveToElement(findElement(By.id("section_drop_area_" + sectionNumTo)))
-                .release(findElement(By.xpath("/*//*[@id='section_drop_area_" + sectionNumTo + "']//div[@class='ui-sortable-placeholder']"))).build().perform();
-//  */
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-        System.out.println("aaa:" + findElement(By.id("section_drop_area_" + sectionNumTo)).getText());
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("section_drop_area_" + sectionNumTo), sourceStr));
+    }
+
+    public void addQuestionToRootSection(String cdeName, int sectionNumber) {
+        findElement(By.name("q")).clear();
+        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
+        findElement(By.id("search.submit")).click();
+        textPresent("1 results");
+        textPresent(cdeName, By.id("acc_link_0"));
+
+        WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div/h4/strong/i"));
+        Assert.assertTrue(sourceElt.isDisplayed());
+
+        String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +
+                "$(window).scrollTop(y);";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+
+        scrollTo(targetElt.getLocation().getY());
+
+        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+
+        textNotPresent(cdeName, By.id("sectionsDiv"));
     }
 
     @Test
