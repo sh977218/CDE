@@ -5,11 +5,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         userResource.getPromise().then(function () {
             $scope.search("cde");
         });
-        var oldMouseStart = $.ui.sortable.prototype._mouseStart;
-        $.ui.sortable.prototype._mouseStart = function (event, overrideHandle, noActivation) {
-            this._trigger("beforeStart", event, this._uiHash());
-            oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
-        };
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
