@@ -55,6 +55,10 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
+            $scope.formCdes = getFormQuestions($scope.elt).map(function(q){
+                return q.cde;
+            });
+            console.log($scope.formCdes);
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -252,5 +256,20 @@ angular.module('formModule').controller('FormViewCtrl',
         }, function () {
         });
     };
+
+    //TODO: share with backend
+    var getFormQuestions = function(form){
+        var questions = [];
+        var getQuestions = function(fe){
+            var qs = [];
+            fe.formElements.forEach(function(e){
+                if (e.elementType === 'question') qs.push(e.question);
+                else qs = qs.concat(getQuestions(e));
+            });
+            return qs;
+        };
+        return getQuestions(form);
+    };
+
 
 }]);

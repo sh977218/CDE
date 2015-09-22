@@ -14,36 +14,64 @@ exports.save = function (req, res) {
     adminSvc.save(req, res, mongo_data_form);
 };
 
-exports.findAllCdesInForm = function (node, map, array) {
-    if (node.formElements) {
-        for (var i = 0; i < node.formElements.length; i++) {
-            if (node.formElements[i].elementType === "question") {
-                map[node.formElements[i].question.cde.tinyId] = node.formElements[i].question.cde;
-                array.push(node.formElements[i].question.cde.tinyId);
-            }
-            exports.findAllCdesInForm(node.formElements[i], map, array);
-        }
-    }
+//exports.findAllCdesInForm = function (node, map, array) {
+//    if (node.formElements) {
+//        for (var i = 0; i < node.formElements.length; i++) {
+//            if (node.formElements[i].elementType === "question") {
+//                map[node.formElements[i].question.cde.tinyId] = node.formElements[i].question.cde;
+//                array.push(node.formElements[i].question.cde.tinyId);
+//            }
+//            exports.findAllCdesInForm(node.formElements[i], map, array);
+//        }
+//    }
+//};
+
+var getFormQuestions = function(form){
+    var questions = [];
+    var getQuestions = function(fe){
+        var qs = [];
+        fe.formElements.forEach(function(e){
+            if (e.elementType === 'question') qs.push(e.question);
+            else qs = qs.concat(getQuestions(e));
+        });
+        return qs;
+    };
+    return getQuestions(form);
 };
 
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
-        var allTinyId = [];
-        var allCdes = {};
-        exports.findAllCdesInForm(form, allCdes, allTinyId);
-        mongo_data_cde.findCurrCdesInFormElement(allTinyId, function (error, currCdes) {
-            var currCdeMap = {};
-            for (var i = 0; i < currCdes.length; i++) {
-                var currCde = currCdes[i];
-                currCdeMap[currCde['tinyId']] = currCde['version'];
-            }
-            for (var tinyId in allCdes) {
-                var cde = allCdes[tinyId];
-                var version = cde['version'];
-                var currVersion = currCdeMap[tinyId];
-                if (version !== currVersion)
-                    cde['outdated'] = true;
-            }
+        //var allTinyId = [];
+        //var allCdes = {};
+        //exports.findAllCdesInForm(form, allCdes, allTinyId);
+        var cdes = getFormQuestions(form).map(function(c){
+            return c.cde;
+        });
+        var ids = getFormQuestions(form).map(function(q){
+            return q.cde.tinyId;
+        });
+        mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
+            //var currCdeMap = {};
+            //for (var i = 0; i < currCdes.length; i++) {
+            //    var currCde = currCdes[i];
+            //    currCdeMap[currCde['tinyId']] = currCde['version'];
+            //}
+            //for (var tinyId in allCdes) {
+            //    var cde = allCdes[tinyId];
+            //    var version = cde['version'];
+            //    var currVersion = currCdeMap[tinyId];
+            //    if (version !== currVersion)
+            //        cde['outdated'] = true;
+            //}
+            cdes.forEach(function(formCde){
+                currCdes.forEach(function(systemCde){
+                    if (formCde.tinyId === systemCde.tinyId) {
+                        if (formCde.version !== systemCde.version) {
+                            formCde.outdated = true;
+                        }
+                    }
+                });
+            });
             if (cb) cb();
         });
     };
