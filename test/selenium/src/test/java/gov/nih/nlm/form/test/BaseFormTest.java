@@ -8,7 +8,7 @@ import org.testng.Assert;
 public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void startAddingQuestions() {
-        scrollToTop();
+//        scrollToTop();
         try {
             textPresent("Show Question Search", By.id("startAddingQuestions"));
             findElement(By.id("startAddingQuestions")).click();

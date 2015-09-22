@@ -11,6 +11,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , revert: true
             , placeholder: "ui-sortable-placeholder"
             , start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');

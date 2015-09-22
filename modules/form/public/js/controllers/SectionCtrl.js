@@ -25,7 +25,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        //, tolerance: "pointer"
+        , tolerance: "pointer"
+        , revert: true
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
@@ -35,15 +36,19 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             $('.dragQuestions').css('border', '');
         }
         , receive: function (e, ui) {
-            if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
-            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
+            if (!ui.item.sortable.moved) {
+                ui.item.sortable.cancel();
+                return;
+            }
+            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
+                ui.item.sortable.cancel();
         }
     };
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
-        //, tolerance: "pointer"
+        , revert: true
         , placeholder: "ui-sortable-placeholder"
         , start: function (event, ui) {
             $('.dragQuestions').css('border', '2px dashed grey');
@@ -93,7 +98,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             }
             $scope.stageElt();
         }
-        , update: function(e, ui) {$scope.stageElt();}
+        , update: function (e, ui) {
+            $scope.stageElt();
+        }
     };
 
     $scope.openNameSelect = function (question) {

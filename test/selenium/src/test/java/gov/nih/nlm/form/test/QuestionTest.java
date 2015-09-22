@@ -1,12 +1,12 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
@@ -50,11 +50,8 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
     }
 
-//    @Test
+    @Test
     public void questions() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1524, 1150);
-
         mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Questions Form Test";
@@ -67,19 +64,18 @@ public class QuestionTest extends BaseFormTest {
 
         new CreateEditSectionTest().addSection("Patient Information", null);
 
-        startAddingQuestions();
+        textPresent("To add questions, search for and drag them here");
+        findElement(By.id("startAddingQuestions")).click();
 
         // Check status facet.
-        findElement(By.id("resetSearch")).click();
-        Assert.assertTrue(textPresent("Qualified (94"));
-        findElement(By.id("li-blank-caBIG")).click();
-        Assert.assertTrue(textPresent("Qualified (1"));
-        findElement(By.id("resetSearch")).click();
+        textPresent("Browse by classification");
+        findElement(By.id("browseOrg-caBIG")).click();
+        Assert.assertTrue(textPresent("Qualified (189)"));
 
         // check pagination
         Assert.assertEquals(12, driver.findElements(By.xpath("//ul[@items-per-page='20']/li")).size());
-        findElement(By.id("classifications-text-AECC")).click();
-        hangon(1);
+        findElement(By.id("li-blank-AIM")).click();
+        hangon(2);
         Assert.assertEquals(driver.findElements(By.xpath("//ul[@items-per-page='20']/li")).size(), 3);
 
         addQuestionToSection("Person Birth Date", 0);
@@ -106,7 +102,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
         findElement(By.xpath(cardXPath + "//i")).click();
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
-        findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
+        findElement(By.xpath(cardXPath + "//button[@id='confirmCard']")).click();
 
         String uomXPath = "//dd[@id='dd_q_uoms_0']";
         Assert.assertEquals("N/A", findElement(By.xpath(uomXPath + "/div")).getText());
@@ -163,7 +159,7 @@ public class QuestionTest extends BaseFormTest {
         Assert.assertFalse(findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).isSelected());
         stopAddingQuestions();
         findElement(By.xpath("//div[@id='section_drop_area_1']//dd[@id='dd_question_multi_0']//input")).click();
-//        startAddingQuestions();
+        // startAddingQuestions();
         saveForm();
 
         findElement(By.linkText("Form Description")).click();
@@ -192,8 +188,6 @@ public class QuestionTest extends BaseFormTest {
         saveForm();
         findElement(By.linkText("Form Description")).click();
         Assert.assertEquals(0, driver.findElements(By.xpath("//div[@id='section_drop_area_0']//div[starts-with(@id, 'question_')]")).size());
-
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 
 }
