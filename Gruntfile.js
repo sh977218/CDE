@@ -81,34 +81,34 @@ module.exports = function(grunt) {
                     , json: elastic.createFormRiverJson
                 }
             }
-            , elasticDeleteBoardIndex: {
-                options: {
-                    uri: config.elasticBoardIndexUri
-                    , method: 'DELETE'
-                    , ignoreErrors: true
-                }
-            }
-            , elasticCreateBoardIndex: {
-                options: {
-                    uri: config.elasticBoardIndexUri
-                    , method: 'POST'
-                    , json: elastic.createBoardIndexJson
-                }
-            }
-            , elasticDeleteBoardRiver: {
-                options: {
-                    uri: config.elasticBoardRiverUri
-                    , method: 'DELETE'
-                    , ignoreErrors: true
-                }
-            }
-            , elasticCreateBoardRiver: {
-                options: {
-                    uri: config.elasticBoardRiverUri + "/_meta"
-                    , method: 'POST'
-                    , json: elastic.createBoardRiverJson
-                }
-            }
+            //, elasticDeleteBoardIndex: {
+            //    options: {
+            //        uri: config.elasticBoardIndexUri
+            //        , method: 'DELETE'
+            //        , ignoreErrors: true
+            //    }
+            //}
+            //, elasticCreateBoardIndex: {
+            //    options: {
+            //        uri: config.elasticBoardIndexUri
+            //        , method: 'POST'
+            //        , json: elastic.createBoardIndexJson
+            //    }
+            //}
+            //, elasticDeleteBoardRiver: {
+            //    options: {
+            //        uri: config.elasticBoardRiverUri
+            //        , method: 'DELETE'
+            //        , ignoreErrors: true
+            //    }
+            //}
+            //, elasticCreateBoardRiver: {
+            //    options: {
+            //        uri: config.elasticBoardRiverUri + "/_meta"
+            //        , method: 'POST'
+            //        , json: elastic.createBoardRiverJson
+            //    }
+            //}
             , elasticDeleteStoredQueryIndex: {
                 options: {
                     uri: config.elasticStoredQueryUri
