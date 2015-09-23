@@ -18,9 +18,7 @@ exports.save = function (req, res) {
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);
-        var ids = cdes.map(function(cde){
-            return cde.tinyId;
-        });
+        var ids = cdes.map(cde => cde.tinyId);
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
             cdes.forEach(function(formCde){
                 currCdes.forEach(function(systemCde){
