@@ -133,7 +133,7 @@ var processFile = function () {
                     var question =
                     {
                         "elementType": "question",
-                        "label": cde.questionText,
+                        "label": cde.questionText.trim(),
                         "formElements": [],
                         "question": {
                             cde: {
@@ -167,6 +167,8 @@ var processFile = function () {
                             question.question.cde.version = data.version;
                             question.question.cde.permissibleValues = data.valueDomain.permissibleValues;
                             question.question.datatype = data.valueDomain.datatype;
+                            if (question.label.length === 0)
+                                question.label = data.naming[0].designation;
                             questions.push(question);
                         }
                         cdeCallback();
