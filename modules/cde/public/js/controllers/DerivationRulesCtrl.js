@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal', 'QuickBoard', 'CdeList', '$http',
-    function($scope, $modal, quickboard, CdeList, $http)
+    function($scope, $modal, quickBoard, CdeList, $http)
 {
 
     var updateRules = function() {
@@ -34,21 +34,25 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
 
     $scope.$on('elementReloaded', function() {
         updateRules();
+        if ($scope.tabs.derivationRules.active) {
+            findDerivationOutputs();
+        }
     });
 
     $scope.$on('loadDerivationRules', findDerivationOutputs);
 
-    $scope.openDerivationRule = function () {
+    $scope.openNewScore = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'newDerivationRuleModalContent.html',
-            controller: 'NewDerivationRulesModalCtrl',
+            templateUrl: 'newScoreModalContent.html',
+            controller: 'NewScoreModalCtrl',
             resolve: {
+                elt: function() {return $scope.elt;}
             }
         });
 
         modalInstance.result.then(function (newDerivationRule) {
             if (!$scope.elt.derivationRules) $scope.elt.derivationRules = [];
-            quickboard.elts.forEach(function(qbElt) {
+            quickBoard.elts.forEach(function(qbElt) {
                 newDerivationRule.inputs.push(qbElt.tinyId);
             });
             $scope.elt.derivationRules.push(newDerivationRule);
@@ -62,12 +66,23 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
         $scope.stageElt($scope.elt);
     };
 
+    $scope.canAddScore = function() {
+        if ($scope.elt.derivationRules) {
+            return $scope.elt.derivationRules.filter(function(derRule) {return derRule.ruleType === 'score'}).length < 1;
+        } else {
+            return true;
+        }
+    };
+
 }
 ]);
 
-angular.module('systemModule').controller('NewDerivationRulesModalCtrl', ['$scope', '$modalInstance',
-    function($scope, $modalInstance)
+angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$modalInstance', 'QuickBoard', 'elt',
+    function($scope, $modalInstance, quickBoard, elt)
 {
+
+    $scope.modalQuickBoard = quickBoard;
+
     $scope.newDerivationRule = {
         ruleType: "score",
         formula: "sumAll",
@@ -81,4 +96,19 @@ angular.module('systemModule').controller('NewDerivationRulesModalCtrl', ['$scop
     $scope.cancelCreate = function() {
         $modalInstance.dismiss("Cancel");
     };
+
+    $scope.someCdesInvalid = function() {
+        $scope.invalidCdeMessage = undefined;
+        if (quickBoard.elts.length === 0) {
+            $scope.invalidCdeMessage = "There are no CDEs in your Quick Board. Add some before you can create a rule.";
+            return true;
+        }
+        quickBoard.elts.forEach(function(qbElt) {
+            if (qbElt.tinyId === elt.tinyId) {
+                $scope.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board."
+            }
+        });
+        if ($scope.invalidCdeMessage) return;
+    };
+
 }]);

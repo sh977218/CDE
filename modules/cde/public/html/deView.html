@@ -70,7 +70,8 @@
             <div tab heading="{{tabs['attachments'].heading}}">
                 <div ng-include="'/system/public/html/attachments.html'"></div>
             </div>
-            <div tab heading="{{tabs['derivationRules'].heading}}" select="$broadcast('loadDerivationRules')">
+            <div tab heading="{{tabs['derivationRules'].heading}}" select="$broadcast('loadDerivationRules')"
+                 active="tabs['derivationRules'].active">
                 <div ng-include="'/cde/public/html/derivationRules.html'"></div>
             </div>
             <div tab heading="{{tabs['mlt'].heading}}" select="$broadcast('loadMlt')">

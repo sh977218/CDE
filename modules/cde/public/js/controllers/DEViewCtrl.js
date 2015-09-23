@@ -35,7 +35,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         discussions: {heading: "Discussions"},
         boards: {heading: "Boards"},
         attachments: {heading: "Attachments"},
-        derivationRules: {heading: "Derivation Rules"},
+        derivationRules: {heading: "Score / Derivations"},
         mlt: {heading: "More Like This"},
         history: {heading: "History"},
         forks: {heading: "Forks"}
