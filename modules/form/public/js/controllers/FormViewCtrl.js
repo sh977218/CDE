@@ -16,7 +16,6 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
-        cdeList: {heading: "CDE List"},
         naming: {heading: "Naming"},
         displayProfiles: {heading: "Display Profiles"},
         classification: {heading: "Classification"},
@@ -56,12 +55,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.formCdes = exports.getFormQuestions($scope.elt).map(function(q){
-                return q.cde;
-            });
-            console.log($scope.formCdes);
             areDerivationRulesSatisfied();
-
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
