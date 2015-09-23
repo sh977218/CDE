@@ -112,7 +112,7 @@ angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$moda
             if (qbElt.valueDomain.datatype === "Number") return;
             if (qbElt.valueDomain.datatype === "Value List") {
                 qbElt.valueDomain.permissibleValues.forEach(function(pv) {
-                    if (isNan(pv.permissibleValue)) {
+                    if (isNaN(pv.permissibleValue)) {
                         $scope.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
                             " contains a Permissible Value that is not a number. It may not be added to a score.";
                     }

@@ -40,6 +40,10 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope'
         $scope.reload();
     };
 
+    $scope.pageChange = function() {
+        $scope.reload();
+    };
+
     $scope.selectElement = function(e) {
         $scope._selectElement(e);
         $scope.reload();
