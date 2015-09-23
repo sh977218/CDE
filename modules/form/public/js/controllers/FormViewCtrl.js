@@ -1,6 +1,6 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource)
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', 'CdeList',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource, CdeList)
 {
 
     $scope.module = "form";
@@ -56,8 +56,11 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
-            console.log($scope.formCdeIds);
+            var formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
+            CdeList.byTinyIdList(formCdeIds, function(cdes){
+                $scope.cdes = cdes;
+            });
+            console.log(formCdeIds);
             areDerivationRulesSatisfied();
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
