@@ -56,10 +56,8 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.formCdes = exports.getFormQuestions($scope.elt).map(function(q){
-                return q.cde;
-            });
-            console.log($scope.formCdes);
+            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
+            console.log($scope.formCdeIds);
             areDerivationRulesSatisfied();
 
         }, function() {
