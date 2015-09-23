@@ -59,7 +59,6 @@ angular.module('formModule').controller('FormViewCtrl',
             }
             isAllowedModel.setDisplayStatusWarning($scope);
             formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
-            console.log(formCdeIds);
             areDerivationRulesSatisfied();
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
@@ -70,7 +69,6 @@ angular.module('formModule').controller('FormViewCtrl',
     };
 
     $scope.getFormCdes = function(){
-        console.log("sel");
         CdeList.byTinyIdList(formCdeIds, function(cdes){
             $scope.cdes = cdes;
         });
