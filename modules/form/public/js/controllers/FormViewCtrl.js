@@ -49,6 +49,8 @@ angular.module('formModule').controller('FormViewCtrl',
     if (route._id) query = {formId: route._id, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
+    var formCdeIds;
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
@@ -56,10 +58,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            var formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
-            CdeList.byTinyIdList(formCdeIds, function(cdes){
-                $scope.cdes = cdes;
-            });
+            formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
             console.log(formCdeIds);
             areDerivationRulesSatisfied();
         }, function() {
@@ -70,6 +69,12 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
+    $scope.getFormCdes = function(){
+        console.log("sel");
+        CdeList.byTinyIdList(formCdeIds, function(cdes){
+            $scope.cdes = cdes;
+        });
+    };
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;

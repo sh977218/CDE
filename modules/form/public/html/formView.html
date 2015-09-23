@@ -50,7 +50,7 @@
         <div tab heading="{{tabs['description'].heading}}">
             <div ng-include="'/form/public/html/formDescription.html'"></div>
         </div>
-        <div tab heading="{{tabs['cdeList'].heading}}">
+        <div tab heading="{{tabs['cdeList'].heading}}" select="getFormCdes()">
             <div ng-include="'/form/public/html/cdeList.html'"></div>
         </div>
         <div tab heading="{{tabs['naming'].heading}}">
