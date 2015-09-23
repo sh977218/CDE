@@ -29,7 +29,6 @@ exports.formById = function (req, res) {
                             formCde.outdated = true;
                         }
                         formCde.derivationRules = systemCde.derivationRules;
-                        //formCde.naming = systemCde.naming;
                     }
                 });
             });

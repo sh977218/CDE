@@ -108,6 +108,20 @@ angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$moda
                 $scope.invalidCdeMessage = "You are trying to add a CDE to itself. Please edit your Quick Board."
             }
         });
+        quickBoard.elts.forEach(function(qbElt) {
+            if (qbElt.valueDomain.datatype === "Number") return;
+            if (qbElt.valueDomain.datatype === "Value List") {
+                qbElt.valueDomain.permissibleValues.forEach(function(pv) {
+                    if (isNan(pv.permissibleValue)) {
+                        $scope.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
+                            " contains a Permissible Value that is not a number. It may not be added to a score.";
+                    }
+                });
+            } else {
+                $scope.invalidCdeMessage = "CDE " + qbElt.naming[0].designation +
+                    " has a datatype other than 'Number' and may not be added to a score";
+            }
+        });
         if ($scope.invalidCdeMessage) return;
     };
 

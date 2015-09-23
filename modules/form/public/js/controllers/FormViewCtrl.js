@@ -59,7 +59,6 @@ angular.module('formModule').controller('FormViewCtrl',
             $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
             console.log($scope.formCdeIds);
             areDerivationRulesSatisfied();
-
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
