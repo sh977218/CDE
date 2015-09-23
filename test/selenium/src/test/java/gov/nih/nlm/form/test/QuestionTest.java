@@ -10,6 +10,8 @@ import org.testng.Assert;
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
+        findElement(By.name("q")).clear();
+        hangon(1);
         findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
@@ -33,18 +35,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionToSectionSafe(String cdeName) {
-        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
-        findElement(By.id("search.submit")).click();
-        textPresent("1 results");
-        textPresent(cdeName, By.id("accordionList"));
-
-        WebElement sourceElt = findElement(By.xpath("//div[@id='accordionList']//i[contains(@class, 'question-move-handle')]"));
-        WebElement targetElt = findElement(By.xpath("//*[text()=\"Patient Gender Category\"]"));
-
-        Assert.assertTrue(sourceElt.isDisplayed());
-        Assert.assertTrue(targetElt.isDisplayed());
-
-        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+        addQuestionToSection(cdeName, 0);
     }
 
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
@@ -68,6 +59,7 @@ public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToRootSection(String cdeName, int sectionNumber) {
         findElement(By.name("q")).clear();
+        hangon(1);
         findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
