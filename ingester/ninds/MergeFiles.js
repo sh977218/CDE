@@ -28,14 +28,7 @@ async.eachSeries(tasks, function (file, fileCallback) {
                 var forms = JSON.parse(data);
                 for (var i = 0; i < forms.length; i++) {
                     var form = forms[i];
-                    for (var j = 0; j < excluString.length; j++) {
-                        var k = form.subDomainName.indexOf(excluString[j]);
-                        if (k != -1) {
-                            form.subDomainName = form.subDomainName.substr(0, k);
-                        }
-                    }
-                    if (form.domainName !== 'NIH Resources' && form.subDomainName !== 'NIH Resources'
-                        && form.domainName != 'Overview of Working Group Recommendations' && form.subDomainName != 'Summary Documents')
+                    if (form.cdes.length > 0)
                         allForms.push(form);
                 }
                 fileCallback();
