@@ -68,12 +68,12 @@ angular.module('formModule')
             if (derRule.ruleType === 'score' && derRule.formula === "sumAll") {
                 derRule.inputs.forEach(function(cdeTinyId) {
                     var q = findQuestionByTinyId(cdeTinyId);
+                    if (isNaN(result)) return;
                     if (q) {
                         var answer = q.question.answer;
-                        if (isNaN(answer)) {
-                            result = "Unable to score"
-                        } else {result = result + answer}
-
+                        if (answer === undefined) return result = "Incomplete answers";
+                        if (isNaN(answer)) return result = "Unable to score"
+                        else result = result + parseFloat(answer);
                     }
                 });
             }

@@ -8,10 +8,15 @@
         </div>
         <div ng-switch-default>
             <div ng-switch="question.question.datatype" class="col-md-9">
-                <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer">
-                    <option ng-repeat="answer in question.question.answers">{{answer.valueMeaningName}}</option>
-                    <option ng-if="question.question.otherPleaseSpecify.value" value="otherPleaseSpecify">Other</option>
+                <!--<select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer">-->
+                    <!--<option ng-repeat="answer in question.question.answers" value="{{answer.permissibleValue}}">{{answer.valueMeaningName}}</option>-->
+                    <!--<option ng-if="question.question.otherPleaseSpecify.value" value="otherPleaseSpecify">Other</option>-->
+                <!--</select>-->
+
+                <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer" ng-options="pv.permissibleValue as pv.valueMeaningName for pv in question.question.answers">
+                    <option></option>
                 </select>
+
                 <input ng-if="question.question.answer === 'otherPleaseSpecify'" type="text" class="form-control" required
                        placeholder="Please Specify" ng-model="question.question.otherPleaseSpecify.answer"
                        name="Please Specify"/>

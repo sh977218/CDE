@@ -1,7 +1,7 @@
 <div ng-controller="DerivationRulesCtrl">
     <h4>Derivation Rules</h4>
 
-    <div tabindex="0" ng-if="elt.derivationRules[0] !== null">There are no derivation rules.</div>
+    <div tabindex="0" ng-if="elt.derivationRules < 1">There are no derivation rules.</div>
 
     <div ng-repeat="derRule in elt.derivationRules">
         <div class="row">
@@ -28,8 +28,8 @@
     </div>
 
 
-    <button ng-if="canCurate" class="btn btn-small btn-default" value="add" ng-click="openDerivationRule()"
-            id="addDerivationRule"><i class="fa fa-plus"> </i> Add Derivation Rule
+    <button ng-if="canAddScore()" class="btn btn-small btn-default" value="add" ng-click="openNewScore()"
+            id="addNewScore"><i class="fa fa-plus"> </i> Add Score
     </button>
 
     <div ng-if="elt.derivationOutputs.length > 0">
@@ -52,42 +52,37 @@
     </div>
 </div>
 
-<script type="text/ng-template" id="newDerivationRuleModalContent.html">
-    <div class="modal-header" id="newDerivationRuleModalHeader">
-        <h4 tabindex="0">Add Derivation Rule</h4>
+<script type="text/ng-template" id="newScoreModalContent.html">
+    <div class="modal-header" id="newScoreModalHeader">
+        <h4 tabindex="0">Add Score</h4>
     </div>
     <form name="form" role="form">
-        <div class="modal-body" id="newDerivationRuleModalBody">
-            <div class="form-group">All Data Elements in your quickboard will be added to the derivation rule.</div>
+        <div class="modal-body" id="newScoreModalBody">
+            <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
             <div class="form-group">
                 <label tabindex="0" for="newDerivationRule.name">Name: </label>
                 <input tabindex="0" class="form-control" ng-model="newDerivationRule.name"
-                       id="newDerivationRule.name" Placeholder="Rule Name" required />
+                       id="newDerivationRule.name" Placeholder="Score Name" required />
             </div>
             <div class="form-group">
                 <label tabindex="0" for="newDerivationRule.inputs">Inputs: </label>
-                <span id="newDerivationRule.inputs">All CDEs in your quickboard.</span>
+                <span ng-switch="invalidCdeMessage === undefined" id="newDerivationRule.inputs">
+                    <span ng-switch-when="true">All {{modalQuickBoard.elts.length}} CDEs in your quickboard.</span>
+                    <span ng-switch-default class="error-block">{{invalidCdeMessage}}</span>
+                </span>
             </div>
             <div class="form-group">
                 <label tabindex="0" for="newDerivationRule.ruleType">Rule Type: </label>
-                <select tabindex="0" class="form-control" ng-model="newDerivationRule.ruleType"
-                       id="newDerivationRule.ruleType" required>
-                    <option value="score">Score</option>
-                    <option value="panel">Panel / Measure</option>
-                </select>
+                <span id="newDerivationRule.ruleType">Score</span>
             </div>
             <div class="form-group">
                 <label tabindex="0" for="newDerivationRule.formula">Formula: </label>
-                <select tabindex="0" class="form-control" ng-model="newDerivationRule.formula"
-                        id="newDerivationRule.formula" required>
-                    <option value="sumAll">Sum of all</option>
-                    <option value="">None</option>
-                </select>
+                <span id="newDerivationRule.formula">Sum of All</span>
             </div>
         </div>
         <div class="modal-footer" id="newDerivationModalFooter">
             <button class="btn cancel" ng-click="cancelCreate()" id="cancelCreate" type="button">Cancel</button>
-            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="isClean() || form.$invalid"
+            <button class="btn btn-warning" ng-click="okCreate()" ng-disabled="someCdesInvalid() || isClean() || form.$invalid"
                     id="createDerivationRule" type="submit">Save
             </button>
         </div>
