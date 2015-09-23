@@ -1,6 +1,7 @@
 var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
+    , formShared = require('../shared/formShared')
     ;
 
 exports.findForms = function (req, res) {
@@ -26,26 +27,25 @@ exports.save = function (req, res) {
 //    }
 //};
 
-var getFormQuestions = function(form){
-    var questions = [];
-    var getQuestions = function(fe){
-        var qs = [];
-        fe.formElements.forEach(function(e){
-            if (e.elementType === 'question') qs.push(e.question);
-            else qs = qs.concat(getQuestions(e));
-        });
-        return qs;
-    };
-    return getQuestions(form);
-};
+//var getFormQuestions = function(form){
+//    var getQuestions = function(fe){
+//        var qs = [];
+//        fe.formElements.forEach(function(e){
+//            if (e.elementType === 'question') qs.push(e.question);
+//            else qs = qs.concat(getQuestions(e));
+//        });
+//        return qs;
+//    };
+//    return getQuestions(form);
+//};
 
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
-        var cdes = getFormQuestions(form).map(function(c){
+        var cdes = formShared.getFormQuestions(form).map(function(c){
             return c.cde;
         });
-        var ids = getFormQuestions(form).map(function(q){
-            return q.cde.tinyId;
+        var ids = cdes.map(function(cde){
+            return cde.tinyId;
         });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
             cdes.forEach(function(formCde){
@@ -54,6 +54,7 @@ exports.formById = function (req, res) {
                         if (formCde.version !== systemCde.version) {
                             formCde.outdated = true;
                         }
+                        //formCde.naming = systemCde.naming;
                     }
                 });
             });
