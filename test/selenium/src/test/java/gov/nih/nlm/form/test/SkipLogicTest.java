@@ -5,37 +5,38 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.Test;
 
 public class SkipLogicTest extends BaseFormTest {
-    
+
     QuestionTest questionTest = new QuestionTest();
-    
-    //@Test
+
+    @Test
     public void singlePermissibleValue() {
-        mustBeLoggedInAs(ctepCurator_username, password);    
-        
+        mustBeLoggedInAs(ctepCurator_username, password);
+
         Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1524, 1150);        
+        resizeWindow(1524, 1150);
         mustBeLoggedInAs(ctepCurator_username, password);
         String formName = "Cancer Screening Test";
         String formDef = "General Cancer Screening Test!";
         String formV = "0.1";
-        createForm(formName, formDef, formV, "CTEP");        
-        findElement(By.linkText("Form Description")).click();        
+        createForm(formName, formDef, formV, "CTEP");
+        findElement(By.linkText("Form Description")).click();
         new CreateEditSectionTest().addSection("Patient Demographics", null);
         new CreateEditSectionTest().addSection("Female Patient Screening", null);
-        startAddingQuestions();          
+        startAddingQuestions();
 
         // Add 2nd Section
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         questionTest.addQuestionToSectionSafe("Person Birth Date");
-        questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);             
+        questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
         WebElement sourceElt = findElement(By.cssSelector("#section_view_1 .section-move-handle"));
         WebElement targetElt = findElement(By.id("section_drop_area_0"));
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         saveForm();
         scrollToTop();
-        findElement(By.linkText("Form Description")).click();        
+        findElement(By.linkText("Form Description")).click();
         findElement(By.cssSelector(".section_view .section_view .skipLogicCondition")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
         saveForm();
 
@@ -43,9 +44,9 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Female Patient Screening");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
         textPresent("Female Patient Screening");
-                
-        switchTabAndClose(0);       
-        
+
+        switchTabAndClose(0);
+
         findElement(By.xpath("//span[text()=\"Person Birth Date\" and contains(@id, 'question_accordion')]")).click();
         findElement(By.xpath("//*[@class=\"formQuestion_Person Birth Date\"]//*[contains(@class,'skipLogicCondition ')]")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
         saveForm();
@@ -54,8 +55,8 @@ public class SkipLogicTest extends BaseFormTest {
 
         textNotPresent("Person Birth Date");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
-        textPresent("Person Birth Date");        
+        textPresent("Person Birth Date");
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
-    
+
 }
