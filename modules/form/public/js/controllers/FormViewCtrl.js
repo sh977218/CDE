@@ -257,19 +257,4 @@ angular.module('formModule').controller('FormViewCtrl',
         });
     };
 
-    ////TODO: share with backend
-    //var getFormQuestions = function(form){
-    //    var questions = [];
-    //    var getQuestions = function(fe){
-    //        var qs = [];
-    //        fe.formElements.forEach(function(e){
-    //            if (e.elementType === 'question') qs.push(e.question);
-    //            else qs = qs.concat(getQuestions(e));
-    //        });
-    //        return qs;
-    //    };
-    //    return getQuestions(form);
-    //};
-
-
 }]);

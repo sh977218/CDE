@@ -11,3 +11,7 @@ exports.getFormQuestions = function(form){
     };
     return getQuestions(form);
 };
+
+exports.getFormCdes = function(form){
+    return exports.getFormQuestions(form).map(function(q){return q.cde});
+};

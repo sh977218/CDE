@@ -15,35 +15,9 @@ exports.save = function (req, res) {
     adminSvc.save(req, res, mongo_data_form);
 };
 
-//exports.findAllCdesInForm = function (node, map, array) {
-//    if (node.formElements) {
-//        for (var i = 0; i < node.formElements.length; i++) {
-//            if (node.formElements[i].elementType === "question") {
-//                map[node.formElements[i].question.cde.tinyId] = node.formElements[i].question.cde;
-//                array.push(node.formElements[i].question.cde.tinyId);
-//            }
-//            exports.findAllCdesInForm(node.formElements[i], map, array);
-//        }
-//    }
-//};
-
-//var getFormQuestions = function(form){
-//    var getQuestions = function(fe){
-//        var qs = [];
-//        fe.formElements.forEach(function(e){
-//            if (e.elementType === 'question') qs.push(e.question);
-//            else qs = qs.concat(getQuestions(e));
-//        });
-//        return qs;
-//    };
-//    return getQuestions(form);
-//};
-
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
-        var cdes = formShared.getFormQuestions(form).map(function(c){
-            return c.cde;
-        });
+        var cdes = formShared.getFormCdes(form);
         var ids = cdes.map(function(cde){
             return cde.tinyId;
         });
