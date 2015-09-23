@@ -150,7 +150,7 @@ exports.cdesByTinyIdList = function (idList, callback) {
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
     exports.cdesByTinyIdList(idList, function (err, cdes) {
         var reorderedCdes = idList.map(function (id) {
-            for (var i=0; i < cdes.length; i++) {
+            for (var i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
             }
         });
@@ -441,7 +441,11 @@ exports.byOtherId = function (source, id, cb) {
 };
 
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {source: source, id: id, version: version}).exec(function (err, cdes) {
+    DataElement.find({"archived": null}).elemMatch("ids", {
+        source: source,
+        id: id,
+        version: version
+    }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
@@ -452,7 +456,10 @@ exports.fileUsed = function (id, cb) {
 };
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
-    DataElement.find({archived: null}, "tinyId version naming").where("tinyId").in(allCdes).exec(function (err, cdes) {
-        cb(err, cdes);
-    });
+    DataElement.find({archived: null}, "tinyId version naming derivationRules").where("tinyId").in(allCdes).exec(cb);
 };
+
+exports.derivationOutputs = function(inputTinyId, cb) {
+    DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
+};
+

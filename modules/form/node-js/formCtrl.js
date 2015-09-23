@@ -28,6 +28,7 @@ exports.formById = function (req, res) {
                         if (formCde.version !== systemCde.version) {
                             formCde.outdated = true;
                         }
+                        formCde.derivationRules = systemCde.derivationRules;
                         //formCde.naming = systemCde.naming;
                     }
                 });

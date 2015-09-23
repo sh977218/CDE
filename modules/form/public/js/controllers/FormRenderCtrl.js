@@ -46,6 +46,41 @@ angular.module('formModule')
         return formElt.cardinality === '*' || formElt.cardinality === '+';
     };
 
+    var findQuestionByTinyId = function(tinyId) {
+        var result;
+        var doFormElement = function(formElt) {
+            if (formElt.elementType === 'question') {
+                if (formElt.question.cde.tinyId === tinyId) {
+                    result =   formElt;
+                }
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        $scope.elt.formElements.forEach(doFormElement);
+        return result;
+    };
+
+    $scope.score = function(question) {
+        if (!question.question.isScore) return;
+        var result = 0;
+        question.question.cde.derivationRules.forEach(function(derRule) {
+            if (derRule.ruleType === 'score' && derRule.formula === "sumAll") {
+                derRule.inputs.forEach(function(cdeTinyId) {
+                    var q = findQuestionByTinyId(cdeTinyId);
+                    if (q) {
+                        var answer = q.question.answer;
+                        if (isNaN(answer)) {
+                            result = "Unable to score"
+                        } else {result = result + answer}
+
+                    }
+                });
+            }
+        });
+        return result;
+    };
+
     $scope.isIe = function() {
         var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
         return browsers['ie'].test($window.navigator.userAgent);

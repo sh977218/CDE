@@ -45,8 +45,9 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.resultPerPage = 10;
 
-    if (route._id) var query = {formId: route._id, type: '_id'};
-    if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
+    var query;
+    if (route._id) query = {formId: route._id, type: '_id'};
+    if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -59,6 +60,8 @@ angular.module('formModule').controller('FormViewCtrl',
                 return q.cde;
             });
             console.log($scope.formCdes);
+            areDerivationRulesSatisfied();
+
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -67,7 +70,6 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.reload();
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
@@ -132,7 +134,7 @@ angular.module('formModule').controller('FormViewCtrl',
                             $scope.elt.formElements.forEach(function (e) {
                                 getChildren(e);
                             });
-                            BulkClassification.classifyTinyidList(ids, newClassification, function (res) {
+                            BulkClassification.classifyTinyidList(ids, newClassification, function () {
                                 $scope.addAlert("success", "CDEs classified!");
                             });
                         }
@@ -230,6 +232,37 @@ angular.module('formModule').controller('FormViewCtrl',
         return [];
     };
 
+    $scope.missingCdes = [];
+    var areDerivationRulesSatisfied = function() {
+        $scope.missingCdes = [];
+        var allScores = [];
+        var allCdes = {};
+        var doFormElement = function(formElt) {
+            if (formElt.elementType === 'question') {
+                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                if (formElt.question.isScore) {
+                    allScores.push(formElt);
+                }
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        $scope.elt.formElements.forEach(doFormElement);
+        allScores.forEach(function(questWithScore) {
+            questWithScore.question.cde.derivationRules.forEach(function(derRule) {
+                if (derRule.ruleType === 'score') {
+                    questWithScore.question.isScore = true;
+                    questWithScore.question.scoreFormula = derRule.formula;
+                }
+                derRule.inputs.forEach(function(input) {
+                    if (!allCdes[input]) {
+                        $scope.missingCdes.push(input);
+                        questWithScore.incompleteRule = true;
+                    }
+                });
+            });
+        });
+    };
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
@@ -254,6 +287,19 @@ angular.module('formModule').controller('FormViewCtrl',
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
         }, function () {
+        });
+    };
+
+    $scope.reload();
+
+    $scope.$on('elementReloaded', areDerivationRulesSatisfied);
+
+    $scope.save = function() {
+        $scope.elt.$save({}, function (elt) {
+            $scope.reload();
+            $scope.addAlert("success", "Saved.");
+        }, function() {
+            $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
 

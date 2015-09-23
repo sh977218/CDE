@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location', '$window', function ($scope, $location, $window) {
+angular.module('systemModule').controller('AccordionCtrl',
+    ['$scope', '$location', '$window', function ($scope, $location, $window)
+{
 
     $scope.interruptEvent = function (event) {
         if (event) {
@@ -27,7 +29,6 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
         }
     };
 
-
     $scope.accordionIconAction = function (elt, action, event) {
         $scope.interruptEvent(event);
         switch (action) {
@@ -39,7 +40,6 @@ angular.module('systemModule').controller('AccordionCtrl', ['$scope', '$location
                 break;
         }
     };
-
 }
 ])
 ;
