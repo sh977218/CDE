@@ -2,70 +2,62 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test
     public void reclassify() {
-        String org = "NINDS";
-        mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt(); 
-        createClassificationName(org, new String[]{"Classification Transfer"});
+        String newClassification = "ReclassificationTest";
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        gotoClassifMgt();
+        findElement(By.id("orgToManage")).click();
+        textPresent("org / or Org");
+        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        textPresent("org / or Org", By.id("classMgt"));
+        findElement(By.id("addClassification")).click();
+        textPresent("Add Classification Under");
+        findElement(By.id("addNewCatName")).sendKeys(newClassification);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("addNewCatButton")));
+        findElement(By.id("addNewCatButton")).click();
         closeAlert();
-        createClassificationName(org, new String[]{"Classification Transfer","Child Classification"});
-        closeAlert();
-        scrollToTop();
-        findElement(By.xpath("//li[@id=\"classification-Disease,Duchenne Muscular Dystrophy/Becker Muscular Dystrophy\"]//a[contains(@class, 'classifyAll')]")).click();
-        findElement(By.xpath("//div[@id='addClassificationModalBody']//span[text()='Classification Transfer']")).click();
-        findElement(By.xpath("//div[@id='addClassification-Child Classification']//button")).click();
-        for (Integer i = 0; i < 5; i++) {
-            try {
-                textPresent("Elements classified");
-                closeAlert();
-                i = 5;
-            } catch (TimeoutException e) {
-                // Assumption, mongo is quite slow at classifying all.
-                System.out.println("Did not see text 'Elements Classified'");
-            }
-        }
+
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");
-        textPresent("Child Classification");
-        goToCdeByName("Gastrointestinal therapy feed tube other text");
-        findElement(By.linkText("Classification")).click();
-        textPresent("NINDS");
-        textPresent("Population");
-        textPresent("Adult");
-        textPresent("Child Classification");
-
+        textNotPresent(newClassification);
+        findElement(By.id("addClassification")).click();
+        textPresent("Classify this CDE");
+        findElement(By.id("selectClassificationOrg")).click();
+        textPresent("org / or Org");
+        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        textPresent(newClassification);
+        findElement(By.xpath("//*[@id='addClassification-ReclassificationTest']/button")).click();
+        closeAlert();
+        findElement(By.id("closeModal")).click();
+        textNotPresent("Classify this CDE");
         openClassificationAudit("NINDS > Classification Transfer > Child Classification");
         textPresent("Reclassify NINDS > Classification Transfer > Child Classification");
         textPresent("214 elements");
     }
-    
+
     @Test
     public void checkReclassificationIcon() {
         mustBeLoggedInAs(ninds_username, password);
-        
+
         // Check icons appear on classification management page
         gotoClassifMgt();
         List<WebElement> icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.size() > 1);
-        
+
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
         findElement(By.linkText("Classification")).click();
         icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.isEmpty());
-    }    
+    }
 }

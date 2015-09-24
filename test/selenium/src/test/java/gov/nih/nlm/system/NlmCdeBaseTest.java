@@ -191,6 +191,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         hangon(.5);
         findElement(By.linkText("Classifications")).click();
+        textPresent("Manage Classifications");
     }
 
     protected void mustBeLoggedOut() {
