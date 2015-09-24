@@ -10,9 +10,10 @@ import org.testng.Assert;
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
-        findElement(By.name("q")).clear();
+        findElement(By.id("ftsearch-input")).clear();
+        textPresent("", By.id("ftsearch-input"));
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
         hangon(1);
-        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         textPresent(cdeName, By.id("acc_link_0"));
@@ -22,7 +23,7 @@ public class QuestionTest extends BaseFormTest {
 
         Assert.assertTrue(sourceElt.isDisplayed());
 
-        String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +
+        String jsScroll = "var y = $(\"#section_view_" + sectionNumber + "\").position().top;\n" +
                 "$(window).scrollTop(y);";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
 
@@ -58,9 +59,10 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionToRootSection(String cdeName, int sectionNumber) {
-        findElement(By.name("q")).clear();
+        findElement(By.id("ftsearch-input")).clear();
+        textPresent("", By.id("ftsearch-input"));
+        findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
         hangon(1);
-        findElement(By.name("q")).sendKeys("\"" + cdeName + "\"");
         findElement(By.id("search.submit")).click();
         textPresent("1 results");
         textPresent(cdeName, By.id("acc_link_0"));
