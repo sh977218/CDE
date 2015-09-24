@@ -137,4 +137,34 @@ exports.init = function (app, daoManager) {
         }
     });
 
+    var xmlbuilder=  require('xmlbuilder')
+        , js2xml = require('js2xmlparser');
+    app.get('/export/odm/form/:tinyId', function(req, res){
+        mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
+            var odmJsonForm = {
+                ODM: {
+                    Study: {
+                        //GlobalVariables: {
+                        //    StudyName: "Basic Forms"
+                        //}
+                        /*,*/ MetaDataVersion: {
+                            FormDef: { '@Name': 'Demographics Form' }
+                            , ItemDef: {
+                                '@Datatype': "Text"
+                                , Question: {
+                                    TranslatedText: "What is your age?"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            //odmJsonForm = {a: "b"};
+            var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
+            res.set('Content-Type', 'text/xml');
+            console.log(xmlForm);
+            res.send(xmlForm);
+        });
+    });
+
 };
