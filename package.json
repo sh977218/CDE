@@ -2,7 +2,7 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js"
+    "start": "node --harmony app.js"
   },
   "engines": {
     "node": "0.10.x",

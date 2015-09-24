@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.comments;
 
 
 import gov.nih.nlm.common.test.CommentTest;
