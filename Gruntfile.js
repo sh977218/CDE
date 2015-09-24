@@ -453,23 +453,17 @@ module.exports = function(grunt) {
         grunt.task.run('http:elasticDeleteIndex');
         grunt.task.run('http:elasticCreateIndex');
         grunt.task.run('http:elasticCreateRiver');
-<<<<<<< HEAD
-=======
 
->>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
         grunt.task.run('http:elasticDeleteFormRiver');
         grunt.task.run('http:elasticDeleteFormIndex');
         grunt.task.run('http:elasticCreateFormIndex');
         grunt.task.run('http:elasticCreateFormRiver');
 
-<<<<<<< HEAD
         grunt.task.run('http:elasticDeleteBoardRiver');
         grunt.task.run('http:elasticDeleteBoardIndex');
         grunt.task.run('http:elasticCreateBoardIndex');
         grunt.task.run('http:elasticCreateBoardRiver');
 
-=======
->>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
         grunt.task.run('http:elasticDeleteStoredQueryRiver');
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
@@ -551,10 +545,8 @@ module.exports = function(grunt) {
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
     });
 
-<<<<<<< HEAD
-=======
+
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
->>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
