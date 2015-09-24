@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <h1 class="page-header">
-        <label for="orgToManage">Manage Classifications</label>
+        <label for="orgToManage"id="manageClassificationsLabel">Manage Classifications</label>
     </h1>
 
     <select class="form-control" ng-model="orgToManage" name="orgToManage" id="orgToManage" required
@@ -20,7 +20,7 @@
             <div id="repeatCs" class="container-fluid">
                 <div id="repeatCm" class="container-fluid">
                     <div ng-repeat="elt in classificationToFilter()" class="pull-left boxed-div"
-                         ng-init='pathArray = [elt.name]; myOrg = true;'>
+                         ng-init='pathArray = [elt.name]; myOrg = true;' id="classification-{{pathArray.join()}}-div">
                         <div ng-include="'/system/public/html/classifEltLoop.html'"
                              ng-init="orgName = orgToManage; page = 'management';"></div>
                     </div>

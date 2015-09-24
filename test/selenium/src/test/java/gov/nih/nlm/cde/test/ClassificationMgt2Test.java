@@ -12,7 +12,8 @@ import java.util.List;
 public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test
     public void reclassify() {
-        String newClassification = "ReclassificationTest";
+        String oldClassification = "OldClassification";
+        String newClassification = "NewClassification";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassifMgt();
         findElement(By.id("orgToManage")).click();
@@ -21,27 +22,72 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("org / or Org", By.id("classMgt"));
         findElement(By.id("addClassification")).click();
         textPresent("Add Classification Under");
+        findElement(By.id("addNewCatName")).sendKeys(oldClassification);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("addNewCatButton")));
+        findElement(By.id("addNewCatButton")).click();
+        closeAlert();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("addClassification")));
+        findElement(By.id("addClassification")).click();
+        textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("addNewCatButton")));
         findElement(By.id("addNewCatButton")).click();
         closeAlert();
 
+
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
         textNotPresent(newClassification);
         findElement(By.id("addClassification")).click();
-        textPresent("Classify this CDE");
+        textPresent("by recently added");
         findElement(By.id("selectClassificationOrg")).click();
         textPresent("org / or Org");
-        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        textPresent(oldClassification);
         textPresent(newClassification);
-        findElement(By.xpath("//*[@id='addClassification-ReclassificationTest']/button")).click();
+        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
         closeAlert();
         findElement(By.id("closeModal")).click();
-        textNotPresent("Classify this CDE");
-        openClassificationAudit("NINDS > Classification Transfer > Child Classification");
-        textPresent("Reclassify NINDS > Classification Transfer > Child Classification");
-        textPresent("214 elements");
+        textNotPresent("by recently added");
+
+        goToCdeByName("Gastrointestinal therapy feed tube other text");
+        findElement(By.linkText("Classification")).click();
+        textNotPresent(newClassification);
+        findElement(By.id("addClassification")).click();
+        textPresent("by recently added");
+        findElement(By.id("selectClassificationOrg")).click();
+        textPresent("org / or Org");
+        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        textPresent(oldClassification);
+        textPresent(newClassification);
+        findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
+        hangon(3);
+        findElement(By.id("closeModal")).click();
+        textNotPresent("by recently added");
+
+        gotoClassifMgt();
+        findElement(By.id("orgToManage")).click();
+        textPresent("org / or Org");
+        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        textPresent(oldClassification);
+        textPresent(newClassification);
+        findElement(By.xpath("//*[@id='classification-OldClassification-div']/div/div/span/a[@title='Reclassify']")).click();
+        textPresent("Classify CDEs in Bulk");
+        findElement(By.id("selectClassificationOrg")).click();
+        textPresent("NINDS");
+        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        hangon(3);
+        findElement(By.xpath("//*[@id='addClassification-NewClassification']/button")).click();
+        hangon(3);
+        findElement(By.id("closeModal")).click();
+
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        findElement(By.id("username_link")).click();
+        textPresent("Site Management");
+        findElement(By.linkText("Audit")).click();
+        textPresent("Remote Address");
+        findElement(By.linkText("Classification Audit Log")).click();
+        textPresent("2 elements org / or Org > NewClassification");
     }
 
     @Test
