@@ -35,7 +35,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticUri
                     , method: 'POST'
-                    , json: elastic.createIndexJson             
+                    , json: elastic.createIndexJson
                 }
             } 
             , elasticDeleteRiver: {
