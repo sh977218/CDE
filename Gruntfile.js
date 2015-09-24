@@ -36,7 +36,6 @@ module.exports = function(grunt) {
                     uri: config.elasticUri
                     , method: 'POST'
                     , json: elastic.createIndexJson
-                    , ignoreErrors: true
                 }
             }
             , elasticDeleteRiver: {
@@ -427,22 +426,6 @@ module.exports = function(grunt) {
                 }
             }
         }
-        
-//        , watch: {
-//            files: [
-//                'modules/cde/public/assets/js/**/*.js',
-//                'modules/system/public/js/controllers/**/*.js',
-//                'modules/cde/public/js/**/*.js',
-//                'modules/form/public/js/**/*.js',
-//                'modules/system/public/js/**/*.js',
-//                'modules/cde/shared/**/*.js',
-//                'modules/cde/public/css/**/*.css'
-//            ],
-//            tasks: ['build'],
-//            options: {
-//                spawn: true
-//            }
-//        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -470,16 +453,23 @@ module.exports = function(grunt) {
         grunt.task.run('http:elasticDeleteIndex');
         grunt.task.run('http:elasticCreateIndex');
         grunt.task.run('http:elasticCreateRiver');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
         grunt.task.run('http:elasticDeleteFormRiver');
         grunt.task.run('http:elasticDeleteFormIndex');
         grunt.task.run('http:elasticCreateFormIndex');
         grunt.task.run('http:elasticCreateFormRiver');
 
+<<<<<<< HEAD
         grunt.task.run('http:elasticDeleteBoardRiver');
         grunt.task.run('http:elasticDeleteBoardIndex');
         grunt.task.run('http:elasticCreateBoardIndex');
         grunt.task.run('http:elasticCreateBoardRiver');
 
+=======
+>>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
         grunt.task.run('http:elasticDeleteStoredQueryRiver');
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
@@ -559,9 +549,12 @@ module.exports = function(grunt) {
 
         return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
-        //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
     });
 
+<<<<<<< HEAD
+=======
+    grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
+>>>>>>> 5781354de7ca64457117072f33a178bba6c5a39d
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
@@ -580,6 +573,4 @@ module.exports = function(grunt) {
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
-    // https://www.npmjs.org/package/grunt-bower-install-simple
-    //grunt.registerTask("bower-install", [ "bower-install-simple" ]);
 };
