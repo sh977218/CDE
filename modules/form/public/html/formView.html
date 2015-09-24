@@ -51,7 +51,7 @@
             <div ng-include="'/form/public/html/formDescription.html'"></div>
         </div>
         <div tab heading="{{tabs['cdeList'].heading}}" select="getFormCdes()">
-            <div ng-include="'/form/public/html/cdeList.html'"></div>
+            <div ng-controller="FormCdeCtrl" ng-include="'/form/public/html/cdeList.html'"></div>
         </div>
         <div tab heading="{{tabs['naming'].heading}}">
             <div ng-include="'/system/public/html/naming.html'"></div>
