@@ -398,22 +398,6 @@ module.exports = function(grunt) {
                 }
             }
         }
-        
-//        , watch: {
-//            files: [
-//                'modules/cde/public/assets/js/**/*.js',
-//                'modules/system/public/js/controllers/**/*.js',
-//                'modules/cde/public/js/**/*.js',
-//                'modules/form/public/js/**/*.js',
-//                'modules/system/public/js/**/*.js',
-//                'modules/cde/shared/**/*.js',
-//                'modules/cde/public/css/**/*.css'
-//            ],
-//            tasks: ['build'],
-//            options: {
-//                spawn: true
-//            }
-//        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -526,7 +510,6 @@ module.exports = function(grunt) {
 
         return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
-        //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
     });
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
@@ -548,6 +531,4 @@ module.exports = function(grunt) {
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
-    // https://www.npmjs.org/package/grunt-bower-install-simple
-    //grunt.registerTask("bower-install", [ "bower-install-simple" ]);
 };
