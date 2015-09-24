@@ -32,6 +32,20 @@ exports.createIndexJson = {
                     }
                 }
                 , "tinyId": {"type": "string", "index": "not_analyzed"}
+                , "updated": {"type": "date", "index": "no"}
+                , "updatedBy.username": {"type": "string", "index": "no"}
+                , "changeNote": {"type": "string", "index": "no"}
+                , "attachments.fileid": {"type": "string", "index": "no"}
+                , "attachments.filename": {"type": "string", "index": "no"}
+                , "_id": {"type": "string", "index": "no"}
+                , "comments.text": {"type": "string", "index": "no"}
+                , "comments.user": {"type": "string", "index": "no"}
+                , "history": {"type": "string", "index": "no"}
+                , "imported": {"type": "date", "index": "no"}
+                , "naming.languageCode": {"type": "string", "index": "no"}
+                , "naming.context.contextName": {"type": "string", "index": "no"}
+                , "views": {"type": "integer", "index": "no"}
+                , "version": {"type": "string", "index": "no"}
             }
         }
     }
@@ -66,6 +80,9 @@ var riverFunction =
         }\
     }\
     flattenClassification(ctx.document); \
+    if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValue && ctx.document.valueDomain.permissibleValue.length > 20) {\
+        ctx.document.valueDomain.permissibleValues.length = 20;\
+    }\
     ctx.document.flatClassifications = flatArray; \
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
     ctx.document.steward = ctx.document.stewardOrg.name;\
