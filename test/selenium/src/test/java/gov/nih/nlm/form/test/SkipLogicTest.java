@@ -21,7 +21,6 @@ public class SkipLogicTest extends BaseFormTest {
         sectionTest.addSection("Female Patient Screening", "0 or more");
         startAddingQuestions();
 
-        // Add 2nd Section
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         questionTest.addQuestionToSection("Person Birth Date", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
