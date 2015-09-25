@@ -14,7 +14,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("", By.id("ftsearch-input"));
         findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
         hangon(1);
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("1 results");
         textPresent(cdeName, By.id("acc_link_0"));
 
