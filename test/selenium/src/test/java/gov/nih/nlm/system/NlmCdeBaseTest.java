@@ -311,7 +311,13 @@ public class NlmCdeBaseTest {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
             Integer value = (int) (long) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
-            findElement(by).click();
+            try {
+                findElement(by).click();
+            } catch (WebDriverException e2) {
+                scrollToTop();
+                findElement(by).click();
+            }
+
         }
     }
 
