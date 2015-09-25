@@ -2,7 +2,11 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.cde.test.boards.QuickBoardTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class FormScoreTest extends BaseFormTest {
 
@@ -15,7 +19,7 @@ public class FormScoreTest extends BaseFormTest {
         qbTest.emptyQuickBoard();
         addToQuickBoard("ALS Severity Score (ALSSS) - lower extremity walk score");
         addToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
-        addToQuickBoard("ALS Severity Score (ALSSS) - speech score");
+        addToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
         findElement(By.id("addNewScore")).click();
@@ -33,14 +37,14 @@ public class FormScoreTest extends BaseFormTest {
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
         textPresent("The following CDEs are part of a score but are missing from this form:");
-        textPresent("id: sM8jogVQnQ4");
+        textPresent("id: ZG0-HmymNVZ");
         textPresent("id: 1UKGTUmNnKe");
         textPresent("id: XB9n8SaUX79");
         textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
 
 
-        questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - speech score", 0);
-        textNotPresent("id: sM8jogVQnQ4");
+        questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - upper extremity dress hygiene score", 0);
+        textNotPresent("id: ZG0-HmymNVZ");
         textPresent("id: 1UKGTUmNnKe");
         textPresent("id: XB9n8SaUX79");
         textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
@@ -48,7 +52,7 @@ public class FormScoreTest extends BaseFormTest {
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
 
-        textNotPresent("id: sM8jogVQnQ4");
+        textNotPresent("id: ZG0-HmymNVZ");
         textNotPresent("id: 1UKGTUmNnKe");
         textNotPresent("id: XB9n8SaUX79");
         textNotPresent("Incomplete Rule");
@@ -64,8 +68,13 @@ public class FormScoreTest extends BaseFormTest {
         findElement(By.linkText("General Details")).click();
         textPresent("Score: Incomplete answers");
 
-
-
+        WebElement scoreSection = findElement(By.id("formRenderSection_Score Section"));
+        List<WebElement> selects = scoreSection.findElements(By.tagName("select"));
+        ((Select)selects.get(0)).deselectByValue("2");
+        ((Select)selects.get(1)).deselectByValue("4");
+        ((Select)selects.get(2)).deselectByValue("7");
+        textPresent("Score: 13");
+        
     }
 
 }

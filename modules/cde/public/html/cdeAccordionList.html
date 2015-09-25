@@ -6,7 +6,7 @@
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
                 <a href tabindex="0" class="nonLinkAnchor">
-                    <span role="link" ng-bind-html="cde.primaryNameCopy" id="acc_link_{{$index}}"
+                    <span role="link" ng-bind-html="cde.naming[0].designation" id="acc_link_{{$index}}"
                           class="hand-cursor"></span></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="!openCdeInNewTab" ng-click="view(cde, $event)">
                     <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link"

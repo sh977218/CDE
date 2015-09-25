@@ -73,7 +73,7 @@ angular.module('resourcesCde', ['ngResource'])
         }
     };
 }])
-.factory("QuickBoard", function(CdeList, OrgHelpers, userResource, localStorageService) {
+.factory("QuickBoard", function($http, OrgHelpers, userResource, localStorageService) {
     return {
         restoreFromLocalStorage: function() {
             var res = localStorageService.get("quickBoard");
@@ -91,10 +91,11 @@ angular.module('resourcesCde', ['ngResource'])
         add: function(elt) {
             var qb = this;
             if(this.elts.length < this.max_elts) {
-                CdeList.byTinyIdList([elt.tinyId], function(result) {
-                    if (result && result.length > 0) {
-                        result[0].usedBy = OrgHelpers.getUsedBy(result[0], userResource.user);
-                        qb.elts.push(result[0]);
+                $http.get("/debytinyid/" + elt.tinyId).then(function(result) {
+                    var de = result.data;
+                    if (de) {
+                        de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
+                        qb.elts.push(de);
                         localStorageService.add("quickBoard", qb.elts);
                     }
                 });

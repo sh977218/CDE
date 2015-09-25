@@ -246,6 +246,7 @@ angular.module('formModule').controller('FormViewCtrl',
         allQuestions.forEach(function(quest) {
             if (quest.question.cde.derivationRules)
             quest.question.cde.derivationRules.forEach(function(derRule) {
+                delete quest.incompleteRule;
                 if (derRule.ruleType === 'score') {
                     quest.question.isScore = true;
                     quest.question.scoreFormula = derRule.formula;
