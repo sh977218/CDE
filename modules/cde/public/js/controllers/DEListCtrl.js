@@ -2,15 +2,26 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
     function ($scope, $controller, TourContent, userResource, $timeout) {
         $scope.module = "cde";
 
-        userResource.getPromise().then(function(){
+        userResource.getPromise().then(function () {
             $scope.search("cde");
         });
-
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
             , helper: "clone"
             , appendTo: "body"
+            , revert: true
+            , placeholder: "questionPlaceholder"
+            , start: function (event, ui) {
+                $('.dragQuestions').css('border', '2px dashed grey');
+                ui.placeholder.height("20px");
+            }
+            , stop: function (event, ui) {
+                $('.dragQuestions').css('border', '');
+            }
+            , helper: function () {
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Question</div>')
+            }
         };
 
         TourContent.template = "<div class='popover tour'>" +
