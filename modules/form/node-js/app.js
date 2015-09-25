@@ -143,22 +143,44 @@ exports.init = function (app, daoManager) {
         mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
             var odmJsonForm = {
                 ODM: {
-                    Study: {
-                        //GlobalVariables: {
-                        //    StudyName: "Basic Forms"
-                        //}
-                        /*,*/ MetaDataVersion: {
-                            FormDef: { '@Name': 'Demographics Form' }
-                            , ItemDef: {
-                                '@Datatype': "Text"
-                                , Question: {
-                                    TranslatedText: "What is your age?"
-                                }
+                    '@CreationDateTime': new Date().toISOString()
+                    , '@FileOID': form.tinyId
+                    , '@FileType': 'Snapshot'
+                    , '@xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
+                    , '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+                    , Study: {
+                        '@OID': form.tinyId
+                        , GlobalVariables: {
+                            StudyName: form.naming[0].designation
+                            , StudyDescription: form.naming[0].definition
+                            , ProtocolName: form.naming[0].designation
+                        }
+                        , MetaDataVersion: {
+                            '@Name': form.naming[0].designation
+                            , 'OID': form.tinyId
+                            , FormDef: {
+                                '@Name': form.naming[0].designation
+                                , '@OID': form.tinyId
+                                , '@Repeating': 'No'
                             }
                         }
+                        , ItemDef: []
                     }
                 }
             };
+            form.formElements.forEach(function(s1){
+                s1.formElements.forEach(function(q1){
+                    odmJsonForm.ODM.Study.ItemDef.push({
+                        '@DataType': 'text'
+                            , '@Length': '50'
+                            , '@Name': q1.label
+                            , '@OID': q1.question.cde.tinyId
+                            , Question: {
+                            TranslatedText: q1.label
+                        }
+                    });
+                });
+            });
             //odmJsonForm = {a: "b"};
             var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
             res.set('Content-Type', 'text/xml');
