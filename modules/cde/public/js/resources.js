@@ -83,8 +83,8 @@ angular.module('resourcesCde', ['ngResource'])
         max_elts: 50,
         elts: [],
         numberDisplay: function() {
-            if (this.elts.length === 0) return "empty"
-            if (this.elts.length > this.max_elts - 1) return "full";
+            if (this.elts.length === 0) return " empty "
+            if (this.elts.length > this.max_elts - 1) return " full ";
             return this.elts.length;
         },
         loading: false,

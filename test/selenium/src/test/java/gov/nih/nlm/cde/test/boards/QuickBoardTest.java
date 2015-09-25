@@ -11,6 +11,7 @@ import java.util.List;
 public class QuickBoardTest extends NlmCdeBaseTest {
 
     public void emptyQuickBoard() {
+        if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         findElement(By.partialLinkText("Quick Board (")).click();
         findElement(By.id("qb.empty")).click();
         findElement(By.linkText("Quick Board ( empty )")).click();
