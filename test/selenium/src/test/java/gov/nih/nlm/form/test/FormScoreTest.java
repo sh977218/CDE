@@ -36,6 +36,35 @@ public class FormScoreTest extends BaseFormTest {
         textPresent("id: sM8jogVQnQ4");
         textPresent("id: 1UKGTUmNnKe");
         textPresent("id: XB9n8SaUX79");
+        textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
+
+
+        questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - speech score", 0);
+        textNotPresent("id: sM8jogVQnQ4");
+        textPresent("id: 1UKGTUmNnKe");
+        textPresent("id: XB9n8SaUX79");
+        textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
+
+        questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
+        questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
+
+        textNotPresent("id: sM8jogVQnQ4");
+        textNotPresent("id: 1UKGTUmNnKe");
+        textNotPresent("id: XB9n8SaUX79");
+        textNotPresent("Incomplete Rule");
+
+        textPresent("ALS Severity Score (ALSSS) - swallow score (part of score)");
+        textPresent("ALS Severity Score (ALSSS) - lower extremity walk score (part of score)");
+        textPresent("ALS Severity Score (ALSSS) - speech score (part of score)");
+
+        saveForm();
+
+        goToFormByName("ALS Score");
+
+        findElement(By.linkText("General Details")).click();
+        textPresent("Score: Incomplete answers");
+
+
 
     }
 

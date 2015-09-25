@@ -2,10 +2,11 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
     ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard',
         function ($scope, CdeList, OrgHelpers, userResource, QuickBoard) {
 
-            $scope.cdes = [];
             $scope.quickBoard = QuickBoard;
-            $scope.showSideBySideView = false;
+            $scope.cdes = QuickBoard.elts;
 
+            $scope.openCloseAll($scope.cdes, "quickboard");
+            $scope.showSideBySideView = false;
 
             $scope.removeElt = function (index) {
                 QuickBoard.remove(index);
@@ -21,12 +22,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                     cdes[i].isOpen = $scope.openCloseAllModel[type];
                 }
             };
-
-            QuickBoard.loadElts(function () {
-                // TODO REFAC this. cdeAccordionList expects something called cdes.
-                $scope.cdes = QuickBoard.elts;
-                $scope.openCloseAll($scope.cdes, "quickboard");
-            });
 
             $scope.exportQuickBoard = function () {
                 var result = exports.exportHeader.cdeHeader;

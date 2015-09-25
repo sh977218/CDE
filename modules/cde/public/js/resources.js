@@ -89,10 +89,16 @@ angular.module('resourcesCde', ['ngResource'])
         },
         loading: false,
         add: function(elt) {
+            var qb = this;
             if(this.elts.length < this.max_elts) {
-                this.elts.push(elt);
+                CdeList.byTinyIdList([elt.tinyId], function(result) {
+                    if (result) {
+                        result.usedBy = OrgHelpers.getUsedBy(result, userResource.user);
+                        qb.elts.push(result);
+                        localStorageService.add("quickBoard", qb.elts);
+                    }
+                });
             }
-            localStorageService.add("quickBoard", this.elts);
         },
         remove: function(index) {
             this.elts.splice(index, 1);
@@ -113,31 +119,6 @@ angular.module('resourcesCde', ['ngResource'])
             }
             else {
                 return false;
-            }
-        },
-        loadElts: function(cb) {
-            if (this.elts.length > 0) {
-                var qb = this;
-                qb.loading = true;
-                var tinyIds = this.elts.map(function(elt) {
-                    return elt.tinyId;
-                });
-                CdeList.byTinyIdList(tinyIds, function(result) {
-                    if(result) {
-                        for (var i = 0; i < qb.elts.length; i++) {
-                            result.forEach(function(res) {
-                                if (res.tinyId === qb.elts[i].tinyId) {
-                                     qb.elts[i] = res;
-                                }
-                            })
-                        }
-                        qb.elts.forEach(function (elt) {
-                            elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                        });
-                    }
-                    qb.loading = false;
-                    if (cb) cb();
-                });
             }
         }
     }
