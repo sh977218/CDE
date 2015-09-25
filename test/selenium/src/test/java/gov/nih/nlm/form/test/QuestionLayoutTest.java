@@ -33,8 +33,9 @@ public class QuestionLayoutTest extends BaseFormTest {
         // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
         scrollToTop();
         scrollToTop();
+        scrollToViewById("browseOrg-ACRIN");
         clickElement(By.id("browseOrg-ACRIN"));
-
+        textPresent("3 results for All Terms");
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
 
