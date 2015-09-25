@@ -191,6 +191,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         hangon(.5);
         findElement(By.linkText("Classifications")).click();
+        textPresent("Manage Classifications");
     }
 
     protected void mustBeLoggedOut() {
@@ -310,7 +311,13 @@ public class NlmCdeBaseTest {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
             Integer value = (int) (long) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
-            findElement(by).click();
+            try {
+                findElement(by).click();
+            } catch (WebDriverException e2) {
+                scrollToTop();
+                findElement(by).click();
+            }
+
         }
     }
 

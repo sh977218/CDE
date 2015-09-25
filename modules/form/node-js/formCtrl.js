@@ -41,8 +41,10 @@ exports.formById = function (req, res) {
                 var cde = allCdes[tinyId];
                 var version = cde['version'];
                 var currVersion = currCdeMap[tinyId];
-                if (version !== currVersion)
+                if (version !== currVersion) {
                     cde['outdated'] = true;
+                    form['outdated'] = true;
+                }
             }
             if (cb) cb();
         });
