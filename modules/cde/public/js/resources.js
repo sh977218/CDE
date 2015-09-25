@@ -92,9 +92,9 @@ angular.module('resourcesCde', ['ngResource'])
             var qb = this;
             if(this.elts.length < this.max_elts) {
                 CdeList.byTinyIdList([elt.tinyId], function(result) {
-                    if (result) {
-                        result.usedBy = OrgHelpers.getUsedBy(result, userResource.user);
-                        qb.elts.push(result);
+                    if (result && result.length > 0) {
+                        result[0].usedBy = OrgHelpers.getUsedBy(result[0], userResource.user);
+                        qb.elts.push(result[0]);
                         localStorageService.add("quickBoard", qb.elts);
                     }
                 });

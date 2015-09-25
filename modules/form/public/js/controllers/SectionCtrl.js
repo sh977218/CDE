@@ -25,15 +25,43 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , revert: true
+        , placeholder: "questionPlaceholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
         , receive: function (e, ui) {
-            if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
-            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
+            if (!ui.item.sortable.moved) {
+                ui.item.sortable.cancel();
+                return;
+            }
+            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
+                ui.item.sortable.cancel();
+        }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Section</div>')
         }
     };
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , revert: true
+        , placeholder: "questionPlaceholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Question</div>')
+        }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
@@ -76,7 +104,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             }
             $scope.stageElt();
         }
-        , update: function(e, ui) {$scope.stageElt();}
+        , update: function (e, ui) {
+            $scope.stageElt();
+        }
     };
 
     $scope.openNameSelect = function (question) {

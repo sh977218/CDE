@@ -59,7 +59,8 @@
                         <dt tabindex="0">Delete:</dt>
                         <dd tabindex="0">
                             <div>
-                                <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o" id="removeElt-{{$index}}"></i>
+                                <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
+                                   id="removeElt-{{$index}}"></i>
                             </div>
                         </dd>
                     </span>
@@ -69,7 +70,7 @@
     </div>
     <div class="panel-body">
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions"
-             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
+             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}" >
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'"
                      ng-include="'/form/public/html/formViewQuestion.html'"
@@ -79,7 +80,7 @@
             </div>
         </div>
         <div ng-show="canCurate && section.formElements.length === 0">
-            <i class="fa fa-exclamation-triangle"></i> To add questions, search for and drag them here.
+            <i class='fa fa-exclamation-triangle'></i>To add questions, search for and drag them here.
             <button id="startAddingQuestions_section_{{sectionIndex}}" ng-show="elt.formElements.length > 0"
                     ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-sm">
                 <span ng-hide="addCdeMode"><i
