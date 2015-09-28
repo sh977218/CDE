@@ -9,7 +9,7 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest{
 
     @Test
     public void nbOfPVsInSearch() {
-        openCdeInList("country iso");
+        openCdeInList("country ISO");
         textPresent("(249 total)");
         clickElement(By.id("gridView"));
         textPresent("Nb of PVs");
