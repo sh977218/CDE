@@ -18,7 +18,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
-        wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("cancelCreate"))));
+        wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
         findElement(By.id("cancelCreate")).click();
     }
 
@@ -54,7 +54,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         qbTest.emptyQuickBoard();
         addToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
-        addToQuickBoard("Disability Rating Scale (DRS) - Function level scale ");
+        addToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
         goToCdeByName("DRS Total Score");
         findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();
