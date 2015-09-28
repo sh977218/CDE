@@ -9,7 +9,7 @@ var newBoard = {
     , "pins" : []
 };
 
-var des = db.dataelements.find({}).sort({"tinyId":1});
+var des = db.dataelements.find({}).sort({"tinyId":1}).limit(50);
 
 
 des.forEach(function(de) {
