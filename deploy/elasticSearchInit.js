@@ -80,8 +80,11 @@ var riverFunction =
         }\
     }\
     flattenClassification(ctx.document); \
-    if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValue && ctx.document.valueDomain.permissibleValue.length > 20) {\
-        ctx.document.valueDomain.permissibleValues.length = 20;\
+    if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValues) {\
+        ctx.document.valueDomain.nbOfPVs = ctx.document.valueDomain.permissibleValues.length;\
+        if (ctx.document.valueDomain.permissibleValues.length > 20) {\
+            ctx.document.valueDomain.permissibleValues.length = 20;\
+        }\
     }\
     ctx.document.flatClassifications = flatArray; \
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
