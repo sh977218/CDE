@@ -18,7 +18,7 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest{
         textPresent("Number of Permissible Values (PVs)");
         findElement(By.id("nbOfPVs")).click();
         Assert.assertFalse(findElement(By.id("nbOfPVs")).isSelected());
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
         textNotPresent("249");
     }
