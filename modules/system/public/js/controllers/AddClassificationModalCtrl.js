@@ -100,7 +100,8 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     
     $scope.classificationListContains = function(classificationList, classification) {
         for (var i = 0; i < classificationList.length; i++) {
-            if (classificationList[i].orgName === classification.orgName && classificationList[i].categories.toString() === classification.categories.toString()) {
+            if (classificationList[i].orgName === classification.orgName &&
+                classificationList[i].categories.toString() === classification.categories.toString()) {
                 return true;
             }
         }
