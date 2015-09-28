@@ -190,7 +190,7 @@ var processFile = function () {
 };
 
 // @TODO replace with params.
-var conn = mongoose.createConnection("mongodb://siteRootAdmin:password@localhost:27017/test", {auth: {authdb: "admin"}});
+var conn = mongoose.createConnection(config.mongoUri, {auth: {authdb: "admin"}});
 conn.on('error', function (err) {
     throw err;
 });

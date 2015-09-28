@@ -23,7 +23,6 @@
         "port": 27017
       }
     ],
-    //    "dbname": "migration",
     "dbname": "test",
     "dbUser": "siteRootAdmin",
     "dbPassword": "password",
