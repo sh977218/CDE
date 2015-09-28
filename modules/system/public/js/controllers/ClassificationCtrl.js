@@ -28,18 +28,15 @@ angular.module('systemModule').controller('ClassificationCtrl',
                     return {
                         addClassification: function(newClassification) {
                             CdeClassification.save(newClassification, function(res) {
-                                $scope.addAlert("success", res.msg);                                
+                                $scope.reload($routeParams);
+                                $scope.addAlert("success", res.msg);
                             });                   
                         }
                     };
                 }
             }          
         });
-
-        modalInstance.result.then(function () {
-            $scope.reload($routeParams);
-        });
-    };    
+    };
      
     $scope.removeClassification = function(orgName, elts) {
         CdeClassification.remove({
