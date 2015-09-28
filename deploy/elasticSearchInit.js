@@ -197,7 +197,7 @@ exports.createBoardRiverJson = {
     }
     , "index": {
         "name": config.elastic.boardIndex.name
-        , "type": "form"
+        , "type": "board"
     }
 };
 
