@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', function($scope, $http, $modal, $window, userResource, $route) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route',
+    function($scope, $http, $modal, $window, userResource, $route) {
     
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
@@ -6,12 +7,10 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
         }); 
     };
     
-    $scope.$watch('elt', function() {
-        if ($scope.elt !== undefined ) {
-            if ($scope.elt.forks && $scope.elt.forks.length > 0) {
-                getForks();
-            }
-        }
+    $scope.$on('loadForks', function() {
+        if ($scope.elt.forks && $scope.elt.forks.length > 0) {
+            getForks();
+        } 
     });
     
     $scope.accept = function(id) {
