@@ -189,7 +189,6 @@ var processFile = function () {
     });
 };
 
-// @TODO replace with params.
 var conn = mongoose.createConnection(config.mongoUri, {auth: {authdb: "admin"}});
 conn.on('error', function (err) {
     throw err;
