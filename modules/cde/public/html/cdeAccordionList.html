@@ -2,13 +2,14 @@
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <div accordion-group ng-repeat="cde in cdes track by cde._id" is-open="cde.isOpen">
             <div accordion-heading ng-controller="AccordionCtrl">
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
+                <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
                 <a href tabindex="0" class="nonLinkAnchor">
                     <span role="link" ng-bind-html="cde.primaryNameCopy"
                           id="acc_link_{{$index}}" class="hand-cursor"></span></a>
-                <a href tabindex="0" class="nonLinkAnchor" ng-if="!openCdeInNewTab" ng-click="view(cde, $event)">
+                <a ng-href="/deview?tinyId={{cde.tinyId}}" tabindex="0" class="nonLinkAnchor" ng-if="!openCdeInNewTab"
+                   ng-click="view(cde, $event)">
                     <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link"
                        id="eyeLink_{{$index}}"></i></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="openCdeInNewTab" ng-click="viewNewTab(cde, $event)">
@@ -29,7 +30,7 @@
                     <i class="glyphicon glyphicon-remove hand-cursor" title="remove" id="remove_{{$index}}"
                        role="link"></i></a>
                 <small tabindex="0" class="matched-by" ng-if="cde.highlight.matchedBy">Matched by: <strong>
-                        <span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
+                    <span ng-bind-html="cde.highlight.matchedBy"></span></strong></small>
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -40,7 +41,8 @@
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
-                    <img ng-repeat="attachment in cde.attachments | filter:{isDefault:true}" alt="Image attached to the CDE"
+                    <img ng-repeat="attachment in cde.attachments | filter:{isDefault:true}"
+                         alt="Image attached to the CDE"
                          ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
                 </div>
             </div>
