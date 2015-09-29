@@ -22,6 +22,7 @@ public class FormScoreTest extends BaseFormTest {
         addToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
+        findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();
         textPresent("All 3 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("ALSSS Score");

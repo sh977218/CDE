@@ -8,10 +8,8 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
     };
     
     $scope.$on('loadForks', function() {
-        if (!$scope.forks && $scope.elt.forks && $scope.elt.forks.length > 0) {
+        if (!$scope.forks) {
             getForks();
-        }  else {
-            $scope.forks = [];
         }
     });
     
