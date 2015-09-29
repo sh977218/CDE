@@ -6,15 +6,8 @@ var fs = require('fs'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
     async = require('async')
     , xml2js = require('xml2js')
-    , ninds = require('./ninds')
-    , Readable = require('stream').Readable;
+    , ninds = require('./convertcsv');
 
-
-var nindsInput = process.argv[2];
-if (!nindsInput) {
-    console.log("missing nindsInput arg");
-    process.exit(1);
-}
 
 var nindsOrg = null;
 
@@ -140,9 +133,11 @@ parseCde = function (obj, cb) {
     var inputType = obj["Input Restrictions"];
     var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
-        listDataType.datatype = "Value List";
+        listDataType.datatype = dataType;
+        dataType = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
-        listDataType.datatype = "Value List";
+        listDataType.datatype = dataType;
+        dataType = "Value List";
         listDataType.multi = true;
     }
     vd.datatypeValueList = listDataType;
@@ -190,11 +185,24 @@ parseCde = function (obj, cb) {
 
     var suggestedQuestion = obj["Suggested Question Text"].trim();
     if (suggestedQuestion.length > 0) {
-        properties.push({
-            key: "NINDS Suggested Question"
-            , value: stripBreakline(suggestedQuestion)
-            , valueFormat: "html"
-        });
+        var namesString = suggestedQuestion.split('\n-----\n');
+        var exitingName = {};
+        namesString.forEach(function (n) {
+            var nameString = n.split(':\n');
+            if (!exitingName[nameString[1].trim()]) {
+                var name = {
+                    designation: nameString[1].trim()
+                    , definition: ""
+                    , languageCode: "EN-US"
+                    , context: {
+                        contextName: "Question Text"
+                        , acceptability: "preferred"
+                    }
+                }
+                namings.push(name);
+                exitingName[nameString[1].trim()] = nameString[1].trim();
+            }
+        })
     }
 
     var previousTitle = obj["Previous Title"].trim();

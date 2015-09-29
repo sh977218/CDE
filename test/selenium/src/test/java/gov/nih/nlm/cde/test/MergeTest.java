@@ -89,8 +89,8 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.linkText("Classification")).click();
         Assert.assertTrue(textPresent("caBIG"));
         Assert.assertTrue(textPresent("caLIMS2"));      
-        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));    
-    }    
+        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));
+    }
   
     @Test
     public void mergeMineTheirsEverything() {
