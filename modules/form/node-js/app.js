@@ -156,6 +156,7 @@ exports.init = function (app, daoManager) {
                     , '@FileType': 'Snapshot'
                     , '@xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
                     , '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+                    , '@xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
                     , Study: {
                         '@OID': form.tinyId
                         , GlobalVariables: {
