@@ -46,7 +46,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                 var blob = new Blob([result], {
                     type: "text/csv"
                 });
-                saveAs(blob, 'SearchExport' + '.csv');
+                saveAs(blob, 'ExportAll' + '.csv');
                 $scope.addAlert("success", "Export downloaded.");
                 $scope.feedbackClass = ["fa-download"];
             } else {
