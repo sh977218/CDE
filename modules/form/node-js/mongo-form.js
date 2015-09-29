@@ -57,7 +57,7 @@ exports.update = function (form, user, callback) {
 
 exports.create = function (form, user, callback) {
     var newForm = new Form(form);
-    if (!form.registrationState){
+    if (!form.registrationState) {
         newForm.registrationState = {
             registrationStatus: "Incomplete"
         };

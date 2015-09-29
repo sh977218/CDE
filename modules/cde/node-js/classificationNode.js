@@ -19,7 +19,7 @@ exports.moveClassifications = function(request, cb) {
             return;
         }              
         classificationShared.transferClassifications(source, destination);
-        source.markModified('classification');
+        destination.markModified('classification');
         source.save(cb);
     });
  };
