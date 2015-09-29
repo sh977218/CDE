@@ -46,6 +46,16 @@ angular.module('formModule')
         return formElt.cardinality === '*' || formElt.cardinality === '+';
     };
 
+    $scope.options = [{id: 0, permissibleValue: "otherPleaseSpecify", valueMeaningName: "otherPleaseSpecify"}];
+
+    $scope.getAnswerOptions = function(question) {
+        var result = question.question.answers.slice(0);
+        if (question.question.otherPleaseSpecify.value) {
+             result.push({permissibleValue: "otherPleaseSpecify", valueMeaningName: "otherPleaseSpecify"});
+        }
+        return result;
+    };
+
     var findQuestionByTinyId = function(tinyId) {
         var result;
         var doFormElement = function(formElt) {
