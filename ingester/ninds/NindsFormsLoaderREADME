@@ -1,0 +1,3 @@
+git checkout branch
+cd ingester/ninds/
+mongorestore --hostname=XXXXXX -d nlmcde -c forms dump/test/forms.bson -u $db_user -p $db_password -authenticationDatabase admin
