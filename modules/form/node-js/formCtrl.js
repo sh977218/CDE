@@ -27,6 +27,7 @@ exports.formById = function (req, res) {
                     if (formCde.tinyId === systemCde.tinyId) {
                         if (formCde.version !== systemCde.version) {
                             formCde.outdated = true;
+                            form.outdated = true;
                         }
                         formCde.derivationRules = systemCde.derivationRules;
                     }
