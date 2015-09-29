@@ -141,6 +141,14 @@ exports.init = function (app, daoManager) {
         , js2xml = require('js2xmlparser');
     app.get('/export/odm/form/:tinyId', function(req, res){
         mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
+
+            for (var i = 0; i < form.formElements.length; i++){
+                var sec = form.formElements[i];
+                for (var j = 0; j < sec.formElements.length; j++) {
+                    if (sec.formElements[j].elementType === 'section') return res.status(202).send("Form with nested sections cannot be exported to ODM.");
+                }
+            }
+
             var odmJsonForm = {
                 ODM: {
                     '@CreationDateTime': new Date().toISOString()
