@@ -41,11 +41,18 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             "selectedStatuses": ["Preferred Standard", "Standard", "Qualified", "Recorded", "Candidate", "Incomplete"],
             "visibleStatuses": ["Preferred Standard", "Standard", "Qualified", "Recorded", "Candidate", "Incomplete"]
         };
-        Elastic.generalSearchQuery(allSearchSetting, $scope.module, function (result) {
+        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, function (result) {
             if (result) {
-                console.log('h');
+                var blob = new Blob([result], {
+                    type: "text/csv"
+                });
+                saveAs(blob, 'SearchExport' + '.csv');
+                $scope.addAlert("success", "Export downloaded.");
+                $scope.feedbackClass = ["fa-download"];
+            } else {
+                $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
             }
-        })
+        });
     }
 }])
 ;
