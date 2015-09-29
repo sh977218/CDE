@@ -155,36 +155,51 @@ exports.init = function (app, daoManager) {
                             , StudyDescription: form.naming[0].definition
                             , ProtocolName: form.naming[0].designation
                         }
-                        , MetaDataVersion: {
+                        , MetaDataVersion: [{
                             '@Name': form.naming[0].designation
-                            , 'OID': form.tinyId
+                            , '@OID': form.tinyId
                             , FormDef: {
                                 '@Name': form.naming[0].designation
                                 , '@OID': form.tinyId
                                 , '@Repeating': 'No'
                             }
-                        }
-                        , ItemDef: []
+                        }]
                     }
                 }
             };
             form.formElements.forEach(function(s1){
+                var childrenOids = [];
                 s1.formElements.forEach(function(q1){
-                    odmJsonForm.ODM.Study.ItemDef.push({
-                        '@DataType': 'text'
+                    var oid = q1.question.cde.tinyId + Math.floor(Math.random()*1000);
+                    childrenOids.push(oid);
+                    odmJsonForm.ODM.Study.MetaDataVersion.push({
+                        ItemDef: {
+                            Question: {
+                                TranslatedText: q1.label
+                            }
+                            , '@DataType': 'text'
                             , '@Length': '50'
                             , '@Name': q1.label
-                            , '@OID': q1.question.cde.tinyId
-                            , Question: {
-                            TranslatedText: q1.label
+                            , '@OID': oid
                         }
                     });
                 });
+                odmJsonForm.ODM.Study.MetaDataVersion.push({
+                    ItemGroupDef: {
+                        '@Name': s1.label
+                        , '@OID': Math.floor(Math.random() * 1000)
+                        , ItemRef: childrenOids.map(function (oid, i) {
+                            return {
+                                '@ItemOID': oid
+                                , '@Mandatory': 'Yes'
+                                , '@OrderNumber': i
+                            };
+                        })
+                    }
+                });
             });
-            //odmJsonForm = {a: "b"};
             var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
             res.set('Content-Type', 'text/xml');
-            console.log(xmlForm);
             res.send(xmlForm);
         });
     });
