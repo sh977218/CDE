@@ -9,7 +9,7 @@ angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller'
             if (fe.formElements != undefined) {
                 fe.formElements.forEach(function (e) {
                     if (e.elementType && e.elementType === 'question') n++;
-                    else n = findFormQuestions(e);
+                    else n = n + findFormQuestions(e);
                 })
             }
             return n;
