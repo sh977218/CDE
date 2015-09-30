@@ -140,8 +140,39 @@ exports.init = function (app, daoManager) {
     var xmlbuilder=  require('xmlbuilder')
         , js2xml = require('js2xmlparser');
     app.get('/export/odm/form/:tinyId', function(req, res){
-        mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
+        function cdeToOdmDatatype(cdeType){
+            var cdeOdmMapping = {
+                "Value List": "text",
+                "Character": "text",
+                "Numeric": "float",
+                "Date/Time": "datetime",
+                "Number": "float",
+                "Text": "text",
+                "Date": "date",
+                "Externally Defined": "text",
+                "String\nNumeric": "text",
+                "anyClass": "text",
+                "java.util.Date": "date",
+                "java.lang.String": "text",
+                "java.lang.Long": "float",
+                "java.lang.Integer": "integer",
+                "java.lang.Double": "float",
+                "java.lang.Boolean": "boolean",
+                "java.util.Map": "text",
+                "java.lang.Float": "float",
+                "Time": "time",
+                "xsd:string": "text",
+                "java.lang.Character": "text",
+                "xsd:boolean": "boolean",
+                "java.lang.Short": "integer",
+                "java.sql.Timestamp": "time",
+                "DATE/TIME": "datetime",
+                "java.lang.Byte": "integer"
+            };
+            return cdeOdmMapping[cdeType] || 'text';
+        }
 
+        mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
             for (var i = 0; i < form.formElements.length; i++){
                 var sec = form.formElements[i];
                 for (var j = 0; j < sec.formElements.length; j++) {
@@ -176,27 +207,29 @@ exports.init = function (app, daoManager) {
                     }
                 }
             };
+            var sections = [];
+            var questions = [];
             form.formElements.forEach(function(s1){
                 var childrenOids = [];
                 s1.formElements.forEach(function(q1){
                     var oid = q1.question.cde.tinyId + Math.floor(Math.random()*1000);
                     childrenOids.push(oid);
-                    odmJsonForm.ODM.Study.MetaDataVersion.push({
+                    questions.push({
                         ItemDef: {
                             Question: {
                                 TranslatedText: q1.label
                             }
-                            , '@DataType': 'text'
-                            , '@Length': '50'
+                            , '@DataType': cdeToOdmDatatype(q1.question.datatype)
                             , '@Name': q1.label
                             , '@OID': oid
                         }
                     });
                 });
-                odmJsonForm.ODM.Study.MetaDataVersion.push({
+                sections.push({
                     ItemGroupDef: {
                         '@Name': s1.label
                         , '@OID': Math.floor(Math.random() * 1000)
+                        , '@Repeating': 'No'
                         , ItemRef: childrenOids.map(function (oid, i) {
                             return {
                                 '@ItemOID': oid
@@ -207,6 +240,8 @@ exports.init = function (app, daoManager) {
                     }
                 });
             });
+            sections.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.push(s)});
+            questions.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.push(s)});
             var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
             res.set('Content-Type', 'text/xml');
             res.send(xmlForm);
