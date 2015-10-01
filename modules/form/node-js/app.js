@@ -186,28 +186,38 @@ exports.init = function (app, daoManager) {
 
             var odmJsonForm = {
                 ODM: {
-                    '@CreationDateTime': new Date().toISOString()
-                    , '@FileOID': form.tinyId
-                    , '@FileType': 'Snapshot'
-                    , '@xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
-                    , '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-                    , '@xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+                    '@': {
+                        'CreationDateTime': new Date().toISOString()
+                        , 'FileOID': form.tinyId
+                        , 'FileType': 'Snapshot'
+                        , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
+                        , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+                        , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+                    }
+
                     , Study: {
-                        '@OID': form.tinyId
+                        '@': {OID: form.tinyId}
                         , GlobalVariables: {
                             StudyName: escapeHTML(form.naming[0].designation)
                             , StudyDescription: escapeHTML(form.naming[0].definition)
                             , ProtocolName: escapeHTML(form.naming[0].designation)
                         }
-                        , MetaDataVersion: [{
-                            '@Name': escapeHTML(form.naming[0].designation)
-                            , '@OID': form.tinyId
-                            , FormDef: [{
-                                '@Name': escapeHTML(form.naming[0].designation)
-                                , '@OID': form.tinyId
-                                , '@Repeating': 'No'
-                            }]
-                        }]
+                        , MetaDataVersion: {
+                            '@': {
+                                'Name': escapeHTML(form.naming[0].designation)
+                                , 'OID': form.tinyId
+                            }
+                            , FormDef: {
+                                '@': {
+                                    'Name': escapeHTML(form.naming[0].designation)
+                                    , 'OID': form.tinyId
+                                    , 'Repeating': 'No'
+                                }
+                                , 'ItemGroupRef': []
+                            }
+                            , ItemGroupDef: []
+                            , ItemDef: []
+                        }
                     }
                 }
             };
@@ -220,44 +230,49 @@ exports.init = function (app, daoManager) {
                     var oid = q1.question.cde.tinyId + Math.floor(Math.random()*1000);
                     childrenOids.push(oid);
                     questions.push({
-                        ItemDef: {
+
                             Question: {
                                 TranslatedText: escapeHTML(q1.label)
                             }
-                            , '@DataType': cdeToOdmDatatype(q1.question.datatype)
-                            , '@Name': escapeHTML(q1.label)
-                            , '@OID': oid
-                        }
+                            , '@': {
+                                'DataType': cdeToOdmDatatype(q1.question.datatype)
+                                , 'Name': escapeHTML(q1.label)
+                                , 'OID': oid
+                            }
+
                     });
                 });
                 var oid = Math.floor(Math.random() * 1000);
-                //sectionOids.push(oid);
-                odmJsonForm.ODM.Study.MetaDataVersion[0].FormDef.push({
-                    '@Name': "xxx"
-                    , 'ItemGroupRef': {
-                        '@ItemGroupOID': 'IG.1'
-                        , '@Mandatory': 'Yes'
-                        , '@OrderNumber': 1
-                    }
+                odmJsonForm.ODM.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
+
+                        '@': {
+                            'ItemGroupOID': 'IG.1'
+                            , 'Mandatory': 'Yes'
+                            , 'OrderNumber': 1
+                        }
                 });
                 sections.push({
-                    ItemGroupDef: {
-                        '@Name': s1.label
-                        , '@OID': oid
-                        , '@Repeating': 'No'
+                        '@': {
+                            'Name': s1.label
+                            , 'OID': oid
+                            , 'Repeating': 'No'
+                        }
                         , ItemRef: childrenOids.map(function (oid, i) {
                             return {
-                                '@ItemOID': oid
-                                , '@Mandatory': 'Yes'
-                                , '@OrderNumber': i
+                                '@': {
+                                    'ItemOID': oid
+                                    , 'Mandatory': 'Yes'
+                                    , 'OrderNumber': i
+                                }
                             };
                         })
-                    }
                 });
             });
-            sections.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.push(s)});
-            questions.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.push(s)});
-            var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
+            sections.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.ItemGroupDef.push(s)});
+            questions.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.ItemDef.push(s)});
+            //var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
+            var xmlForm = js2xml("ODM", odmJsonForm);
+            console.log(xmlForm);
             res.set('Content-Type', 'text/xml');
             res.send(xmlForm);
         });
