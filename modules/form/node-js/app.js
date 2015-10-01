@@ -176,8 +176,8 @@ exports.init = function (app, daoManager) {
             return text.replace(/\<.+?\>/gi, "");
         }
 
-        mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
-            for (var i = 0; i < form.formElements.length; i++){
+        mongo_data.eltByTinyId(req.params.tinyId, function (err, form) {
+            for (var i = 0; i < form.formElements.length; i++) {
                 var sec = form.formElements[i];
                 for (var j = 0; j < sec.formElements.length; j++) {
                     if (sec.formElements[j].elementType === 'section') return res.status(202).send("Form with nested sections cannot be exported to ODM.");
@@ -185,84 +185,85 @@ exports.init = function (app, daoManager) {
             }
 
             var odmJsonForm = {
-                    '@': {
-                        'CreationDateTime': new Date().toISOString()
-                        , 'FileOID': form.tinyId
-                        , 'FileType': 'Snapshot'
-                        , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
-                        , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-                        , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+                '@': {
+                    'CreationDateTime': new Date().toISOString()
+                    , 'FileOID': form.tinyId
+                    , 'FileType': 'Snapshot'
+                    , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
+                    , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+                    , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+                }
+                , Study: {
+                    '@': {OID: form.tinyId}
+                    , GlobalVariables: {
+                        StudyName: escapeHTML(form.naming[0].designation)
+                        , StudyDescription: escapeHTML(form.naming[0].definition)
+                        , ProtocolName: escapeHTML(form.naming[0].designation)
                     }
-
-                    , Study: {
-                        '@': {OID: form.tinyId}
-                        , GlobalVariables: {
-                            StudyName: escapeHTML(form.naming[0].designation)
-                            , StudyDescription: escapeHTML(form.naming[0].definition)
-                            , ProtocolName: escapeHTML(form.naming[0].designation)
+                    , MetaDataVersion: {
+                        '@': {
+                            'Name': escapeHTML(form.naming[0].designation)
+                            , 'OID': form.tinyId
                         }
-                        , MetaDataVersion: {
+                        , FormDef: {
                             '@': {
                                 'Name': escapeHTML(form.naming[0].designation)
                                 , 'OID': form.tinyId
+                                , 'Repeating': 'No'
                             }
-                            , FormDef: {
-                                '@': {
-                                    'Name': escapeHTML(form.naming[0].designation)
-                                    , 'OID': form.tinyId
-                                    , 'Repeating': 'No'
-                                }
-                                , 'ItemGroupRef': []
-                            }
-                            , ItemGroupDef: []
-                            , ItemDef: []
+                            , 'ItemGroupRef': []
                         }
+                        , ItemGroupDef: []
+                        , ItemDef: []
                     }
+                }
             };
             var sections = [];
             var questions = [];
-            form.formElements.forEach(function(s1){
+            form.formElements.forEach(function (s1) {
                 var childrenOids = [];
-                s1.formElements.forEach(function(q1){
-                    var oid = q1.question.cde.tinyId + Math.floor(Math.random()*1000);
+                s1.formElements.forEach(function (q1) {
+                    var oid = q1.question.cde.tinyId + Math.floor(Math.random() * 1000);
                     childrenOids.push(oid);
                     questions.push({
-
-                            Question: {
-                                TranslatedText: escapeHTML(q1.label)
+                        Question: {
+                            TranslatedText: {
+                                '@': {
+                                    'xml:lang': 'en'
+                                }
+                                , '#': escapeHTML(q1.label)
                             }
-                            , '@': {
-                                'DataType': cdeToOdmDatatype(q1.question.datatype)
-                                , 'Name': escapeHTML(q1.label)
-                                , 'OID': oid
-                            }
-
+                        }
+                        , '@': {
+                            'DataType': cdeToOdmDatatype(q1.question.datatype)
+                            , 'Name': escapeHTML(q1.label)
+                            , 'OID': oid
+                        }
                     });
                 });
                 var oid = Math.floor(Math.random() * 1000);
                 odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
-
-                        '@': {
-                            'ItemGroupOID': 'IG.1'
-                            , 'Mandatory': 'Yes'
-                            , 'OrderNumber': 1
-                        }
+                    '@': {
+                        'ItemGroupOID': oid
+                        , 'Mandatory': 'Yes'
+                        , 'OrderNumber': 1
+                    }
                 });
                 sections.push({
-                        '@': {
-                            'Name': s1.label
-                            , 'OID': oid
-                            , 'Repeating': 'No'
-                        }
-                        , ItemRef: childrenOids.map(function (oid, i) {
-                            return {
-                                '@': {
-                                    'ItemOID': oid
-                                    , 'Mandatory': 'Yes'
-                                    , 'OrderNumber': i
-                                }
-                            };
-                        })
+                    '@': {
+                        'Name': s1.label
+                        , 'OID': oid
+                        , 'Repeating': 'No'
+                    }
+                    , ItemRef: childrenOids.map(function (oid, i) {
+                        return {
+                            '@': {
+                                'ItemOID': oid
+                                , 'Mandatory': 'Yes'
+                                , 'OrderNumber': i
+                            }
+                        };
+                    })
                 });
             });
             sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
