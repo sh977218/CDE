@@ -233,9 +233,11 @@ exports.init = function (app, daoManager) {
                 var oid = Math.floor(Math.random() * 1000);
                 //sectionOids.push(oid);
                 odmJsonForm.ODM.Study.MetaDataVersion[0].FormDef.push({
-                    '@Name'
-                    'ItemGroupRef': {
-
+                    '@Name': "xxx"
+                    , 'ItemGroupRef': {
+                        '@ItemGroupOID': 'IG.1'
+                        , '@Mandatory': 'Yes'
+                        , '@OrderNumber': 1
                     }
                 });
                 sections.push({
