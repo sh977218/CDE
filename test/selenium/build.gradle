@@ -22,18 +22,18 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
 }
 
-tasks.withType(Test) { 
+tasks.withType(Test) {
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
     systemProperty 'timeout', timeout
     systemProperty 'browser', browser
 }
 
-test {    
+test {
     useTestNG()
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
-    }    
+    }
     maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {

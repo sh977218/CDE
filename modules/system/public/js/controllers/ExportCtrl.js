@@ -1,5 +1,4 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic)
-{
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic) {
 
     $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
@@ -18,7 +17,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                     type: "text/csv"
                 });
                 saveAs(blob, 'SearchExport' + '.csv');
-                $scope.addAlert("success", "Export downloaded.")
+                $scope.addAlert("success", "Export downloaded.");
                 $scope.feedbackClass = ["fa-download"];
             } else {
                 $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");

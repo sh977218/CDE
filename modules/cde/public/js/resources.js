@@ -17,7 +17,16 @@ angular.module('resourcesCde', ['ngResource'])
             });
         }
     }; 
-})    
+})
+.factory('ElasticBoard', function($http) {
+    return {
+        basicSearch: function(query, cb) {
+            $http.post("/boardSearch", query).then(function(response) {
+                cb(response.data);
+            });
+        }
+    };
+})
 .factory('PriorCdes', function($resource) {
     return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
         {'getCdes': {method: 'GET', isArray: true}});
