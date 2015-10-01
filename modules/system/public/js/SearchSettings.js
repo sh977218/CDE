@@ -16,6 +16,7 @@ angular.module('ElasticSearchResource')
                         "name": true,
                         "naming": true,
                         "permissibleValues": true,
+                        "nbOfPVs": true,
                         "uom": false,
                         "stewardOrg": true,
                         "usedBy": true,

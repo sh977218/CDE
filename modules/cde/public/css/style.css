@@ -561,6 +561,10 @@ button#selectDefault {
     width: 25px;
 }
 
+.gridListView .nbOfPVs {
+    width: 25px;
+}
+
 .gridListView .administrativeStatus {
     width: 55px;
 }
