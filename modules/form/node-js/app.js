@@ -185,7 +185,6 @@ exports.init = function (app, daoManager) {
             }
 
             var odmJsonForm = {
-                ODM: {
                     '@': {
                         'CreationDateTime': new Date().toISOString()
                         , 'FileOID': form.tinyId
@@ -219,11 +218,9 @@ exports.init = function (app, daoManager) {
                             , ItemDef: []
                         }
                     }
-                }
             };
             var sections = [];
             var questions = [];
-            //var sectionOids = [];
             form.formElements.forEach(function(s1){
                 var childrenOids = [];
                 s1.formElements.forEach(function(q1){
@@ -243,7 +240,7 @@ exports.init = function (app, daoManager) {
                     });
                 });
                 var oid = Math.floor(Math.random() * 1000);
-                odmJsonForm.ODM.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
+                odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
 
                         '@': {
                             'ItemGroupOID': 'IG.1'
@@ -268,9 +265,8 @@ exports.init = function (app, daoManager) {
                         })
                 });
             });
-            sections.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.ItemGroupDef.push(s)});
-            questions.forEach(function(s){odmJsonForm.ODM.Study.MetaDataVersion.ItemDef.push(s)});
-            //var xmlForm = xmlbuilder.create(odmJsonForm).end({pretty:true});
+            sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
+            questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
             var xmlForm = js2xml("ODM", odmJsonForm);
             console.log(xmlForm);
             res.set('Content-Type', 'text/xml');
