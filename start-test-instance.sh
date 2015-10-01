@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 # Location of node. For dev testing use '.'  for prod testing use 'build'
@@ -36,7 +37,6 @@ else
 fi
 
 
-mongo test test/data/testForms.js -u $db_user -p $db_password -authenticationDatabase admin
 mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticationDatabase admin
 
 mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password -authenticationDatabase admin

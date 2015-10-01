@@ -29,7 +29,7 @@ exports.projectCdeForExport = function (ele) {
             return n;
         })
         , valueDomainType: ele.valueDomain.datatype
-        , permissibleValues: ele.valueDomain.permissibleValues.map(function (pv) {
+        , permissibleValues: ele.valueDomain.permissibleValues.slice(0,50).map(function (pv) {
             return pv.permissibleValue;
         })
         , ids: ele.ids.map(function (id) {
