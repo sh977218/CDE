@@ -172,6 +172,10 @@ exports.init = function (app, daoManager) {
             return cdeOdmMapping[cdeType] || 'text';
         }
 
+        function escapeHTML(text){
+            return text.replace(/\<.+?\>/gi, "");
+        }
+
         mongo_data.eltByTinyId(req.params.tinyId, function(err, form){
             for (var i = 0; i < form.formElements.length; i++){
                 var sec = form.formElements[i];
@@ -191,24 +195,25 @@ exports.init = function (app, daoManager) {
                     , Study: {
                         '@OID': form.tinyId
                         , GlobalVariables: {
-                            StudyName: form.naming[0].designation
-                            , StudyDescription: form.naming[0].definition
-                            , ProtocolName: form.naming[0].designation
+                            StudyName: escapeHTML(form.naming[0].designation)
+                            , StudyDescription: escapeHTML(form.naming[0].definition)
+                            , ProtocolName: escapeHTML(form.naming[0].designation)
                         }
                         , MetaDataVersion: [{
-                            '@Name': form.naming[0].designation
+                            '@Name': escapeHTML(form.naming[0].designation)
                             , '@OID': form.tinyId
-                            , FormDef: {
-                                '@Name': form.naming[0].designation
+                            , FormDef: [{
+                                '@Name': escapeHTML(form.naming[0].designation)
                                 , '@OID': form.tinyId
                                 , '@Repeating': 'No'
-                            }
+                            }]
                         }]
                     }
                 }
             };
             var sections = [];
             var questions = [];
+            //var sectionOids = [];
             form.formElements.forEach(function(s1){
                 var childrenOids = [];
                 s1.formElements.forEach(function(q1){
@@ -217,18 +222,23 @@ exports.init = function (app, daoManager) {
                     questions.push({
                         ItemDef: {
                             Question: {
-                                TranslatedText: q1.label
+                                TranslatedText: escapeHTML(q1.label)
                             }
                             , '@DataType': cdeToOdmDatatype(q1.question.datatype)
-                            , '@Name': q1.label
+                            , '@Name': escapeHTML(q1.label)
                             , '@OID': oid
                         }
                     });
                 });
+                var oid = Math.floor(Math.random() * 1000);
+                //sectionOids.push(oid);
+                odmJsonForm.ODM.Study.MetaDataVersion[0].FormDef.push({
+
+                });
                 sections.push({
                     ItemGroupDef: {
                         '@Name': s1.label
-                        , '@OID': Math.floor(Math.random() * 1000)
+                        , '@OID': oid
                         , '@Repeating': 'No'
                         , ItemRef: childrenOids.map(function (oid, i) {
                             return {
