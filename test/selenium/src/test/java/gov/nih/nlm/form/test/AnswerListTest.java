@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.regstatus.FormRegStatus;
+import gov.nih.nlm.form.test.regstatus.FormRegStatusTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -58,7 +58,7 @@ public class AnswerListTest extends BaseFormTest {
         findElement(By.id("question_accordion_0_0")).click();
         textPresent("FEMALE");
 
-        new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
+        new FormRegStatusTest().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
     }
 
 }

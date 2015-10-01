@@ -22,6 +22,8 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
     public void adminCantEditStandardCde(String cdeName, String regStatus) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
+        findElement(By.id("statusTab")).click();
+        textPresent("Effective Date");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
         findElement(By.id("saveRegStatus")).click();
