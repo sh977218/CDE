@@ -25,7 +25,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("cancelRegStatus")).click();
@@ -50,7 +50,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
@@ -77,7 +77,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
@@ -96,7 +96,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         textPresent("Qualified");
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");

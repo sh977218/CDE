@@ -23,7 +23,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
         findElement(By.id("saveRegStatus")).click();
