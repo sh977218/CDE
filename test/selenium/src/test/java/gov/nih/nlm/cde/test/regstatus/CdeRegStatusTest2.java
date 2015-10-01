@@ -24,7 +24,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         textPresent("More Like This");
         textPresent(viewing);
         findElement(By.id("statusTab")).click();
-        textPresent("Effective Date");
+        textPresent("Unresolved Issue");
         findElement(By.xpath("//i[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();

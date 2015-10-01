@@ -10,10 +10,12 @@ import java.util.List;
 
 public class WorkingGroupTest3 extends BaseClassificationTest {
 
-   @Test
+    @Test
     public void wgRegStatus() {
         mustBeLoggedInAs(wguser_username, password);
         new CdeCreateTest().createBasicCde("WG Test CDE", "Def", "WG-TEST", "WG Classif", "WG Sub Classif");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
         for (WebElement option : options) {
@@ -21,7 +23,7 @@ public class WorkingGroupTest3 extends BaseClassificationTest {
             Assert.assertNotEquals("Recorded", option.getText());
         }
     }
-   
+
     @Test
     public void wgClassificationsInvisible() {
         mustBeLoggedInAs(wguser_username, password);
@@ -31,9 +33,9 @@ public class WorkingGroupTest3 extends BaseClassificationTest {
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName("Specimen Block Received Count");
-        findElement(By.linkText("Classification")).click();  
+        findElement(By.linkText("Classification")).click();
         textNotPresent("WG Sub Classif");
-    }    
-        
-    
+    }
+
+
 }
