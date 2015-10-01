@@ -177,6 +177,30 @@ exports.createFormRiverJson = {
     }
 };
 
+exports.createBoardIndexJson = {
+    "mappings": {
+        "board": {
+
+        }
+    }
+};
+
+exports.createBoardRiverJson = {
+    "type": "mongodb"
+    , "mongodb": {
+        "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
+        , "db": config.database.dbname
+        , "collection": "pinningBoards"
+    }
+    , "index": {
+        "name": config.elastic.boardIndex.name
+        , "type": "board"
+    }
+};
+
 exports.createStoredQueryIndexJson = {
     "mappings": {
         "storedquery": {
