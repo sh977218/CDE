@@ -46,6 +46,8 @@
     "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
     "formRiver": {"name": "formtest"},
+    "boardIndex": {"name": "boardtest"},
+    "boardRiver": {"name": "boardtest"},
     "storedQueryIndex": {"name": "storedquerytest"},
     "storedQueryRiver": {"name": "storedquerytest"},
     "scripts": {

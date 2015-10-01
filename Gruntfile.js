@@ -37,7 +37,7 @@ module.exports = function(grunt) {
                     , method: 'POST'
                     , json: elastic.createIndexJson
                 }
-            } 
+            }
             , elasticDeleteRiver: {
                 options: {
                     uri: config.elasticRiverUri
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createRiverJson                   
+                    , json: elastic.createRiverJson
                 }
             }
             , elasticDeleteFormIndex: {
@@ -58,14 +58,14 @@ module.exports = function(grunt) {
                     , method: 'DELETE'
                     , ignoreErrors: true
                 }
-            }               
+            }
             , elasticCreateFormIndex: {
                 options: {
                     uri: config.elasticFormUri
                     , method: 'POST'
-                    , json: elastic.createFormIndexJson             
+                    , json: elastic.createFormIndexJson
                 }
-            } 
+            }
             , elasticDeleteFormRiver: {
                 options: {
                     uri: config.elasticFormRiverUri
@@ -77,7 +77,35 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticFormRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createFormRiverJson                   
+                    , json: elastic.createFormRiverJson
+                }
+            }
+            , elasticDeleteBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'POST'
+                    , json: elastic.createBoardIndexJson
+                }
+            }
+            , elasticDeleteBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri + "/_meta"
+                    , method: 'POST'
+                    , json: elastic.createBoardRiverJson
                 }
             }
             , elasticDeleteStoredQueryIndex: {
@@ -431,6 +459,11 @@ module.exports = function(grunt) {
         grunt.task.run('http:elasticCreateFormIndex');
         grunt.task.run('http:elasticCreateFormRiver');
 
+        grunt.task.run('http:elasticDeleteBoardRiver');
+        grunt.task.run('http:elasticDeleteBoardIndex');
+        grunt.task.run('http:elasticCreateBoardIndex');
+        grunt.task.run('http:elasticCreateBoardRiver');
+
         grunt.task.run('http:elasticDeleteStoredQueryRiver');
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
@@ -511,6 +544,7 @@ module.exports = function(grunt) {
         return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
     });
+
 
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);

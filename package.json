@@ -44,6 +44,8 @@
     "grunt-bower-install-simple": "1.0.3",
     "grunt-bowercopy": "1.1.0",   
     "config": "*",
+    "cron": "1.0.9",
+    "elasticsearch": "8.1.0",
     "grunt": "*",
     "grunt-git": "*",
     "grunt-http": "*",

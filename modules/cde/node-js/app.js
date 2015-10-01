@@ -30,8 +30,8 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.get('/listboards', function (req, res) {
-        boardsvc.boardList(req, res);
+    app.post('/boardSearch', function (req, res) {
+        boardsvc.boardSearch(req, res);
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
