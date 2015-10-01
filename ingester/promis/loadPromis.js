@@ -1,13 +1,13 @@
 // 3) Loads PROMIS to DB
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
-//var des = db.dataelements.find({"naming.designation":/^In the past 7 days/, "stewardOrg.name": "Assessment Center"});
+//var des = db.dataelements.find({"naming.designation":/^In the past 7 days/, "stewardOrg.name": "PROMIS / Neuro-QOL"});
 //
-//des.forEach(function(de){
+//des.toArray().forEach(function(de){
 //    var newName = de.naming[0].designation.replace("In the past 7 days ", "");
 //    de.naming.push({
 //        designation: newName
-//        , context: "In the past 7 days"
+//        , context: {contextName: "In the past 7 days"}
 //    });
 //    db.dataelements.update({tinyId: de.tinyId}, de);
 //});
