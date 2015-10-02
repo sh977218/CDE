@@ -133,8 +133,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
+        findElement(By.id("statusTab")).click();
         textPresent("Unresolved Issue");
-        findElement(By.id("editStatus")).click();
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
