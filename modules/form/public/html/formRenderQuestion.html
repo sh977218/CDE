@@ -11,8 +11,8 @@
                 <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
                         ng-options="pv.permissibleValue as pv.valueMeaningName for pv in question.question.answers">
                 </select>
-                <input ng-if="question.question.otherPleaseSpecify.value &&
-                question.question.answer === question.question.otherPleaseSpecify.triggeringValue"
+                <input ng-if="question.question.otherPleaseSpecify.value && question.question.answer &&
+                       question.question.answer === question.question.otherPleaseSpecify.triggeringValue"
                        type="text" class="form-control" required
                        placeholder="Please Specify" ng-model="question.question.otherPleaseSpecify.answer"
                        name="Please Specify"/>

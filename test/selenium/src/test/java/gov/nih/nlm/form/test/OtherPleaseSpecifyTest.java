@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class OtherPleaseSpecifyTest extends BaseFormTest {
@@ -27,10 +28,8 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         findElement(By.id("question_accordion_0_0")).click();
         hangon(1);
 
-        // Remove Unknown
-        findElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a")).click();
-
         findElement(By.id("input_otherPleaseSpecify")).click();
+        new Select(findElement(By.id("triggeringValue_0"))).selectByValue("UNKNOWN");
 
         saveForm();
         scrollToTop();
@@ -38,7 +37,9 @@ public class OtherPleaseSpecifyTest extends BaseFormTest {
         findElement(By.linkText("General Details")).click();
         textPresent("Patient Gender Category");
 
-        new Select(findElement(By.cssSelector("select"))).selectByValue("otherPleaseSpecify");
+        Assert.assertTrue(driver.findElements(By.xpath("//input[@placeholder='Please Specify']")).size() == 0);
+
+        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("Unknown");
         findElement(By.xpath("//input[@placeholder='Please Specify']")).sendKeys("Transgender");
 
     }
