@@ -17,6 +17,7 @@ var questionSchema =  {
     , multiselect: Boolean
     , otherPleaseSpecify: {
         value: {type: Boolean, default: false}
+        , triggeringValue: String
     }
     , answers: [sharedSchemas.permissibleValueSchema]
 };

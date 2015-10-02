@@ -74,14 +74,4 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
         return mongoPv;
     };
 
-    $scope.changeOtherPleaseSpecify = function() {
-        var elt = $scope.elt;
-        if (elt.valueDomain.datatypeValueList.otherPleaseSpecify === true) {
-            elt.valueDomain.datatypeValueList.otherPleaseSpecifyText = "Other (Please specify)";
-        } else {
-            delete elt.valueDomain.datatypeValueList.otherPleaseSpecifyText;
-        }
-        $scope.stageElt(elt);
-    };
-
 }]);

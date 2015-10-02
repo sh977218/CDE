@@ -34,7 +34,15 @@
                         <dd tabindex="0" id="dd_question_other_{{$index}}">
                             <input type="checkbox" id="input_otherPleaseSpecify"
                                    ng-model="question.question.otherPleaseSpecify.value" ng-disabled="!canCurate"
-                                   ng-click="stageElt()"/></dd>
+                                   ng-click="stageElt()"/>
+                            <span ng-if="question.question.otherPleaseSpecify.value" >
+                                <label for="triggeringValue_{{$index}}">Select triggering value: </label>
+                                <select class="form-control" id="triggeringValue_{{$index}}"
+                                        ng-model="question.question.otherPleaseSpecify.triggeringValue"
+                                        ng-options="pv.permissibleValue as pv.valueMeaningName for pv in question.question.answers">
+                                </select>
+                            </span>
+                        </dd>
                     </span>
                     <span ng-if="isScore(question)">
                         <dt tabindex="0">Score:</dt>

@@ -51,7 +51,7 @@ angular.module('formModule')
     $scope.getAnswerOptions = function(question) {
         var result = question.question.answers.slice(0);
         if (question.question.otherPleaseSpecify.value) {
-             result.push({permissibleValue: "otherPleaseSpecify", valueMeaningName: "otherPleaseSpecify"});
+             result.push({permissibleValue: "otherPleaseSpecify", valueMeaningName: "Other Please Specify"});
         }
         return result;
     };

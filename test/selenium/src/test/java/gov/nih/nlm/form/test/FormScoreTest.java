@@ -60,7 +60,7 @@ public class FormScoreTest extends BaseFormTest {
 
         textPresent("ALS Severity Score (ALSSS) - swallow score (part of score)");
         textPresent("ALS Severity Score (ALSSS) - lower extremity walk score (part of score)");
-        textPresent("ALS Severity Score (ALSSS) - speech score (part of score)");
+        textPresent("ALS Severity Score (ALSSS) - upper extremity dress hygiene score"");
 
         saveForm();
 
