@@ -5,10 +5,11 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class NbOfPvInSearchTest extends NlmCdeBaseTest{
+public class NbOfPvInSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void nbOfPVsInSearch() {
+        mustBeLoggedOut();
         openCdeInList("country ISO");
         textPresent("(249 total)");
         clickElement(By.id("gridView"));
