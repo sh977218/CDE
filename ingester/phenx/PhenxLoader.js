@@ -22,20 +22,31 @@ async.eachSeries(xpaths, function (xpath, doneAllXpaths) {
         driver.findElements(webdriver.By.xpath(xpath)).then(function (links) {
             var measures = {};
             links.forEach(function (link) {
-                link.findElement(webdriver.By.tagName('a')).then(function (hrefs) {
-                    hrefs[0].getText().then(function (text) {
-                        measures['addText'] = text;
+                link.findElements(webdriver.By.css('a')).then(function (hrefs) {
+                    async.parallel([
+                        function () {
+                            hrefs[0].getText().then(function (text) {
+                                measures['addText'] = text;
+                            });
+                        },
+                        function () {
+                            hrefs[0].getAttribute('href').then(function (text) {
+                                measures['addLink'] = text;
+                            });
+                        },
+                        function () {
+                            hrefs[1].getText().then(function (text) {
+                                measures['text'] = text;
+                            });
+                        },
+                        function () {
+                            hrefs[1].getAttribute('href').then(function (text) {
+                                measures['link'] = text;
+                            });
+                        },
+                    ], function () {
+                        console.log('ha');
                     });
-                    hrefs[0].getAttrib('href').then(function (text) {
-                        measures['addLink'] = text;
-                    });
-                    hrefs[1].getText().then(function (text) {
-                        measures['text'] = text;
-                    });
-                    hrefs[1].getAttrib('href').then(function (text) {
-                        measures['link'] = text;
-                    });
-                    console.log('ha');
                 })
             });
         });
