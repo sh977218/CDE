@@ -5,6 +5,7 @@
             <th ng-if="searchSettings.tableViewFields.cde.name" class="name">Name</th>
             <th ng-if="searchSettings.tableViewFields.cde.naming" class="naming">Other Names</th>
             <th ng-if="searchSettings.tableViewFields.cde.permissibleValues" class="permissibleValues">Permissible Values</th>
+            <th ng-if="searchSettings.tableViewFields.cde.nbOfPVs" class="nbOfPVs">Nb of PVs</th>
             <th ng-if="searchSettings.tableViewFields.cde.uom" class="uom">Unit of Measure</th>
             <th ng-if="searchSettings.tableViewFields.cde.stewardOrg" class="stewardOrg">Steward</th>
             <th ng-if="searchSettings.tableViewFields.cde.usedBy" class="usedBy">Used by Organizations</th>
@@ -40,6 +41,9 @@
                             <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
                         </ul>
                      </span>
+                </td>
+                <td ng-if="searchSettings.tableViewFields.cde.nbOfPVs" class="nbOfPVs">
+                    {{c.valueDomain.nbOfPVs}}
                 </td>
                 <td ng-if="searchSettings.tableViewFields.cde.uom" class="uom">
                     {{c.valueDomain.uom}}
