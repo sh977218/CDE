@@ -23,28 +23,34 @@ async.eachSeries(xpaths, function (xpath, doneAllXpaths) {
             var measures = {};
             links.forEach(function (link) {
                 link.findElements(webdriver.By.css('a')).then(function (hrefs) {
-                    async.parallel([
-                        function () {
+                    async.parallel({
+                        one: function (cb) {
                             hrefs[0].getText().then(function (text) {
                                 measures['addText'] = text;
+                                cb();
                             });
                         },
-                        function () {
+                        two: function (cb) {
                             hrefs[0].getAttribute('href').then(function (text) {
                                 measures['addLink'] = text;
+                                cb();
                             });
                         },
-                        function () {
+                        three: function (cb) {
                             hrefs[1].getText().then(function (text) {
                                 measures['text'] = text;
+                                cb();
                             });
                         },
-                        function () {
+                        four: function (cb) {
                             hrefs[1].getAttribute('href').then(function (text) {
                                 measures['link'] = text;
+                                cb();
                             });
-                        },
-                    ], function () {
+                        }
+                    }, function done(err, results) {
+                        if (err) throw error;
+                        console.log(measures);
                         console.log('ha');
                     });
                 })
