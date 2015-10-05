@@ -46,18 +46,8 @@ angular.module('formModule')
         return formElt.cardinality === '*' || formElt.cardinality === '+';
     };
 
-    $scope.options = [{id: 0, permissibleValue: "otherPleaseSpecify", valueMeaningName: "otherPleaseSpecify"}];
-
-    $scope.getAnswerOptions = function(question) {
-        var result = question.question.answers.slice(0);
-        if (question.question.otherPleaseSpecify.value) {
-             result.push({permissibleValue: "otherPleaseSpecify", valueMeaningName: "Other Please Specify"});
-        }
-        return result;
-    };
-
     var findQuestionByTinyId = function(tinyId) {
-        var result;
+        var result = null;
         var doFormElement = function(formElt) {
             if (formElt.elementType === 'question') {
                 if (formElt.question.cde.tinyId === tinyId) {
@@ -82,7 +72,7 @@ angular.module('formModule')
                     if (q) {
                         var answer = q.question.answer;
                         if (answer === undefined) return result = "Incomplete answers";
-                        if (isNaN(answer)) return result = "Unable to score"
+                        if (isNaN(answer)) return result = "Unable to score";
                         else result = result + parseFloat(answer);
                     }
                 });
@@ -109,13 +99,6 @@ angular.module('formModule')
             delete elt.question.datatype;
             if (elt.question.cde) {
                 delete elt.question.cde.permissibleValues;
-            }
-            if (elt.question.otherPleaseSpecify) {
-                if (!elt.question.otherPleaseSpecify.value) {
-                    delete elt.question.otherPleaseSpecify;
-                } else {
-                    delete elt.question.otherPleaseSpecify.value;
-                }
             }
         }
         if (elt.formElements) {

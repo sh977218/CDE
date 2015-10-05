@@ -11,11 +11,6 @@
                 <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
                         ng-options="pv.permissibleValue as pv.valueMeaningName for pv in question.question.answers">
                 </select>
-                <input ng-if="question.question.otherPleaseSpecify.value && question.question.answer &&
-                       question.question.answer === question.question.otherPleaseSpecify.triggeringValue"
-                       type="text" class="form-control" required
-                       placeholder="Please Specify" ng-model="question.question.otherPleaseSpecify.answer"
-                       name="Please Specify"/>
                 <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required
                        ng-model="question.question.answer"/>
                 <span ng-switch-default class="form-group">
