@@ -12,6 +12,8 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName, from);
         textPresent(from);
+        findElement(By.id("statusTab")).click();
+        textPresent("Effective Date");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);
         findElement(By.id("saveRegStatus")).click();
@@ -22,11 +24,13 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
-        textPresent("Qualified", By.id("dd_status"));
+        textPresent("Qualified", By.id("status"));
     }
 
     public void cantEditStatusIfPendingChanges(String eltName, String user) {
@@ -45,6 +49,8 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
@@ -69,7 +75,9 @@ public abstract class RegStatusTest extends CommonTest {
     public void retire(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
-        textPresent("Qualified");        
+        textPresent("Qualified");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
@@ -87,6 +95,8 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
         textPresent("Qualified");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");

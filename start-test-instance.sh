@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 # Location of node. For dev testing use '.'  for prod testing use 'build'
@@ -36,11 +37,11 @@ else
 fi
 
 
-mongo test test/data/testForms.js -u $db_user -p $db_password -authenticationDatabase admin
 mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticationDatabase admin
 
 mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password -authenticationDatabase admin
 mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u $db_user -p $db_password -authenticationDatabase admin
+mongorestore -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password -authenticationDatabase admin
 mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password -authenticationDatabase admin
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password -authenticationDatabase admin
@@ -63,8 +64,8 @@ done
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome test & 
-    #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests gov.nih.nlm.cde.test.MergeTest* &
+    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome test &
+    #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *Board* &
     export NODE_ENV=test
     node $NODE_LOC/app > test-console.out
 else

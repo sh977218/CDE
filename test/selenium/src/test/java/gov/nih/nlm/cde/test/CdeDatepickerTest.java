@@ -21,6 +21,8 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("results for All Terms | NINDS |");
         findElement(By.id("eyeLink_0")).click();
         textPresent("General Details");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         textPresent("Update Registration Status");
         findElement(By.id("effectiveDateDatepicker")).click();
