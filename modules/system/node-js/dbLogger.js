@@ -112,7 +112,6 @@ exports.storeQuery = function(settings, callback) {
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
-        return;
     } else {
         StoredQueryModel.findOneAndUpdate(
             {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},

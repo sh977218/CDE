@@ -29,4 +29,6 @@ var connectionEstablisher = function (uri, type) {
     var connect = this.connect;
 };
 
+exports.establishedConnections
+
 exports.connectionEstablisher = connectionEstablisher;
