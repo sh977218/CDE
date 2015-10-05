@@ -9,7 +9,6 @@ public class PublicBoardsTest extends BoardTest {
     public void editBoard() {
         mustBeLoggedOut();
         findElement(By.id("boardsLink")).click();
-        gotoPublicBoards();
         findElement(By.name("search")).sendKeys("Depression");
         findElement(By.id("search.submit")).click();
         textPresent("Schizophrenia");

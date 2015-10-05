@@ -220,7 +220,7 @@ angular.module('formModule').controller('FormViewCtrl',
             var question = questions[0];
             var answers = question.question.answers;
             return answers.map(function (a) {
-                return '"' + a.valueMeaningName + '"';
+                return '"' + a.permissibleValue + '"';
             });
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
