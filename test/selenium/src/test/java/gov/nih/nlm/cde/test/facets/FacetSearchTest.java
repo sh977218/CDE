@@ -20,7 +20,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
             }
         }
     }
-    
+
     @Test
     public void stewardFacets() {
         mustBeLoggedOut();
@@ -109,7 +109,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textNotPresent("Person Birth Date");
         textNotPresent("Patient Ethnic Group Category");
     }
-    
+
     @Test
     public void facetPagination() {
         goToCdeSearch();
@@ -121,18 +121,20 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         textPresent(numOfDiseaseElts + " results for");
 
-        int expectedNumberOfPages = (int) Math.ceil((double)numOfDiseaseElts / 20);
-        for (int i = 1; i < expectedNumberOfPages; i ++) {
+        int expectedNumberOfPages = (int) Math.ceil((double) numOfDiseaseElts / 20);
+        for (int i = 1; i < expectedNumberOfPages; i++) {
             findElement(By.linkText("" + i));
         }
         Assert.assertEquals(0, driver.findElements(By.linkText("" + (expectedNumberOfPages + 1))).size());
     }
 
-    
+
     @Test
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
@@ -145,5 +147,5 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Standard")).click();
         textNotPresent("Noncompliant Reason Text");
     }
-    
+
 }
