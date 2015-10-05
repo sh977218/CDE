@@ -38,147 +38,152 @@ var init = function () {
                 var obj = {};
                 obj['href1'] = task;
                 driver.get(task);
-                driver.findElement(webdriver.By.xpath('//*[@id="browse_measure_protocol_list"]/table/tbody/tr/td/div/div/a[2]/@href')).getText().then(function (text) {
-                    var href2 = 'https://www.phenxtoolkit.org/' + text;
-                    obj['href2'] = href2;
-                    driver.get(href2);
-                    async.parallel({
-                        findProtocolReleaseDate: function (callback) {
-                            driver.findElement(webdriver.By.id('element_RELEASE_DATE')).getText().then(function (text) {
-                                obj['Protocol Release Date'] = text;
-                                callback();
-                            });
-                        },
-                        findProtocolNameFromSource: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PROTOCOL_NAME_FROM_SOURCE')).getText().then(function (text) {
-                                obj['Protocol Name From Source'] = text;
-                                callback();
-                            });
-                        },
-                        findDescriptionOfProtocol: function (callback) {
-                            driver.findElement(webdriver.By.id('element_DESCRIPTION')).getText().then(function (text) {
-                                obj['Description of Protocol'] = text;
-                                callback();
-                            });
-                        },
+                driver.findElement(webdriver.By.xpath('//*[@id="browse_measure_protocol_list"]/table/tbody/tr/td/div/div/a[2]')).then(function (link) {
+                    link.getAttribute('href').then(function (text) {
+                        var href2 = 'https://www.phenxtoolkit.org/' + text;
+                        obj['href2'] = href2;
+                        driver.get(href2);
+                        async.parallel({
+                            findProtocolReleaseDate: function (callback) {
+                                driver.findElement(webdriver.By.id('element_RELEASE_DATE')).getText().then(function (text) {
+                                    obj['Protocol Release Date'] = text;
+                                    callback();
+                                });
+                            },
+                            findProtocolNameFromSource: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PROTOCOL_NAME_FROM_SOURCE')).getText().then(function (text) {
+                                    obj['Protocol Name From Source'] = text;
+                                    callback();
+                                });
+                            },
+                            findDescriptionOfProtocol: function (callback) {
+                                driver.findElement(webdriver.By.id('element_DESCRIPTION')).getText().then(function (text) {
+                                    obj['Description of Protocol'] = text;
+                                    callback();
+                                });
+                            },
 
-                        findSpecificInstructions: function (callback) {
-                            driver.findElement(webdriver.By.id('element_SPECIFIC_INSTRUCTIONS')).getText().then(function (text) {
-                                obj['Specific Instructions'] = text;
-                                callback();
-                            });
-                        },
-                        findProtocol: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PROTOCOL_TEXT')).getText().then(function (text) {
-                                obj['Protocol '] = text;
-                                callback();
-                            });
-                        },
-                        findSelectionRationale: function (callback) {
-                            driver.findElement(webdriver.By.id('element_SELECTION_RATIONALE')).getText().then(function (text) {
-                                obj['Selection Rationale'] = text;
-                                callback();
-                            });
-                        },
-                        findLifeStage: function (callback) {
-                            driver.findElement(webdriver.By.id('element_LIFESTAGE')).getText().then(function (text) {
-                                obj['Life Stage'] = text;
-                                callback();
-                            });
-                        },
-                        findLanguage: function (callback) {
-                            driver.findElement(webdriver.By.id('element_LANGUAGE')).getText().then(function (text) {
-                                obj['Language'] = text;
-                                callback();
-                            });
-                        },
-                        findParticipant: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PARTICIPANT')).getText().then(function (text) {
-                                obj['Participant'] = text;
-                                callback();
-                            });
-                        },
-                        findPersonnelAndTrainingRequired: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PERSONNEL_AND_TRAINING_REQD')).getText().then(function (text) {
-                                obj['Personnel and Training Required'] = text;
-                                callback();
-                            });
-                        },
-                        findEquipmentNeeds: function (callback) {
-                            driver.findElement(webdriver.By.id('element_EQUIPMENT_NEEDS')).getText().then(function (text) {
-                                obj['Equipment Needs'] = text;
-                                callback();
-                            });
-                        },
-                        findStandards: function (callback) {
-                            driver.findElement(webdriver.By.id('element_STANDARDS')).getText().then(function (text) {
-                                obj['Standards'] = text;
-                                callback();
-                            });
-                        },
-                        findGeneralReferences: function (callback) {
-                            driver.findElement(webdriver.By.id('element_REFERENCES')).getText().then(function (text) {
-                                obj['General References'] = text;
-                                callback();
-                            });
-                        },
-                        findModeOfAdministration: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PROTOCOL_TYPE')).getText().then(function (text) {
-                                obj['Mode of Administration'] = text;
-                                callback();
-                            });
-                        },
-                        findDerivedVariables: function (callback) {
-                            driver.findElement(webdriver.By.id('element_DERIVED_VARIABLES')).getText().then(function (text) {
-                                obj['Derived Variables'] = text;
-                                callback();
-                            });
-                        },
-                        findRequirements: function (callback) {
-                            driver.findElement(webdriver.By.id('element_REQUIREMENTS')).getText().then(function (text) {
-                                obj['Requirements'] = text;
-                                callback();
-                            });
-                        },
-                        findProcessAndReview: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PROCESS_REVIEW')).then(function (e) {
-                                e.findElement(webdriver.By.css('table')).then(function (table) {
-                                    table.findElement(webdriver.By.css('tr')).then(function (trs) {
+                            findSpecificInstructions: function (callback) {
+                                driver.findElement(webdriver.By.id('element_SPECIFIC_INSTRUCTIONS')).getText().then(function (text) {
+                                    obj['Specific Instructions'] = text;
+                                    callback();
+                                });
+                            },
+                            findProtocol: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PROTOCOL_TEXT')).getText().then(function (text) {
+                                    obj['Protocol '] = text;
+                                    callback();
+                                });
+                            },
+                            findSelectionRationale: function (callback) {
+                                driver.findElement(webdriver.By.id('element_SELECTION_RATIONALE')).getText().then(function (text) {
+                                    obj['Selection Rationale'] = text;
+                                    callback();
+                                });
+                            },
+                            findLifeStage: function (callback) {
+                                driver.findElement(webdriver.By.id('element_LIFESTAGE')).getText().then(function (text) {
+                                    obj['Life Stage'] = text;
+                                    callback();
+                                });
+                            },
+                            findLanguage: function (callback) {
+                                driver.findElement(webdriver.By.id('element_LANGUAGE')).getText().then(function (text) {
+                                    obj['Language'] = text;
+                                    callback();
+                                });
+                            },
+                            findParticipant: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PARTICIPANT')).getText().then(function (text) {
+                                    obj['Participant'] = text;
+                                    callback();
+                                });
+                            },
+                            findPersonnelAndTrainingRequired: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PERSONNEL_AND_TRAINING_REQD')).getText().then(function (text) {
+                                    obj['Personnel and Training Required'] = text;
+                                    callback();
+                                });
+                            },
+                            findEquipmentNeeds: function (callback) {
+                                driver.findElement(webdriver.By.id('element_EQUIPMENT_NEEDS')).getText().then(function (text) {
+                                    obj['Equipment Needs'] = text;
+                                    callback();
+                                });
+                            },
+                            findStandards: function (callback) {
+                                driver.findElement(webdriver.By.id('element_STANDARDS')).getText().then(function (text) {
+                                    obj['Standards'] = text;
+                                    callback();
+                                });
+                            },
+                            findGeneralReferences: function (callback) {
+                                driver.findElement(webdriver.By.id('element_REFERENCES')).getText().then(function (text) {
+                                    obj['General References'] = text;
+                                    callback();
+                                });
+                            },
+                            findModeOfAdministration: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PROTOCOL_TYPE')).getText().then(function (text) {
+                                    obj['Mode of Administration'] = text;
+                                    callback();
+                                });
+                            },
+                            findDerivedVariables: function (callback) {
+                                driver.findElement(webdriver.By.id('element_DERIVED_VARIABLES')).getText().then(function (text) {
+                                    obj['Derived Variables'] = text;
+                                    callback();
+                                });
+                            },
+                            findRequirements: function (callback) {
+                                driver.findElement(webdriver.By.id('element_REQUIREMENTS')).getText().then(function (text) {
+                                    obj['Requirements'] = text;
+                                    callback();
+                                });
+                            },
+                            findProcessAndReview: function (callback) {
+                                driver.findElement(webdriver.By.id('element_PROCESS_REVIEW')).then(function (e) {
+                                    e.findElement(webdriver.By.css('table')).then(function (table) {
+                                        table.findElement(webdriver.By.css('tr')).then(function (trs) {
 
-                                        obj['Process and Review '] = [];
-                                        async.eachSeries(trs, function (tr, doneOneTr) {
-                                            tr.findElement(webdriver.By.css('td')).then(function (tds) {
-
-                                                async.parallel({
-                                                    td1: function (cb) {
-
-                                                    }, td2: function (cb) {
-                                                    
-                                                    }
-                                                }, function (err, results) {
+                                            obj['Process and Review '] = [];
+                                            async.eachSeries(trs, function (tr, doneOneTr) {
+                                                tr.findElement(webdriver.By.css('td')).then(function (tds) {
+                                                    var pr = {};
+                                                    async.parallel({
+                                                        td1: function (cb) {
+                                                            tds[0].getText().then(function (text) {
+                                                                pr['Requirement Category'] = text;
+                                                            })
+                                                        }, td2: function (cb) {
+                                                            tds[1].getText().then(function (text) {
+                                                                pr['Required'] = text;
+                                                            })
+                                                        }
+                                                    }, function (err, results) {
+                                                        obj['Process and Review '].push(pr);
+                                                        doneOneTr();
+                                                    });
                                                 })
-
-                                                doneOneTr();
+                                            }, function doneAllTrs() {
+                                                callback();
                                             })
-                                        }, function doneAllTrs() {
-                                            callback();
+
                                         })
 
                                     })
-
-                                })
-                            });
-                        }
-                    }, function (err, results) {
-                        var measure = new Cache(obj);
-                        measure.save(function (err) {
-                            if (err) throw err;
-                            counter++;
-                            console.log("measure " + counter + " finished.");
-                            doneOneTask();
-                        })
+                                });
+                            }
+                        }, function (err, results) {
+                            var measure = new Cache(obj);
+                            measure.save(function (err) {
+                                if (err) throw err;
+                                counter++;
+                                console.log("measure " + counter + " finished.");
+                                doneOneTask();
+                            })
+                        });
                     });
-
                 });
             }),
                 function doneAllTasks() {
