@@ -4,8 +4,17 @@ var mongoose = require('mongoose')
     , CronJob = require('cron').CronJob
 ;
 
+var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 
+var riverSchema = new mongoose.Schema({
+    from: String,
+    to: String,
+    latestId: ObjectId,
+    skippedId: ObjectId
+});
 
+var connection = connHelper.establihConnection(mongoLogUri);
+var River = connection.model('river', riverSchema);
 
 var cj = new CronJob({
     cronTime: '00 00 4 * * *',
