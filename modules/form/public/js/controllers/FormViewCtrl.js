@@ -289,9 +289,7 @@ angular.module('formModule').controller('FormViewCtrl',
     };
 
     $scope.reload();
-
-    //$scope.$on('elementReloaded', areDerivationRulesSatisfied);
-
+    
     $scope.save = function() {
         $scope.elt.$save({}, function () {
             $scope.reload();
