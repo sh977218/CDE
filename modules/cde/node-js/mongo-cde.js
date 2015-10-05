@@ -21,18 +21,22 @@ var PinningBoard;
 var User;
 var CdeAudit;
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-var connection = null;
 
-var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
-iConnectionEstablisherCde.connect(function (conn) {
+//var connectionEstablisher = connHelper.connectionEstablisher;
+//var connection = null;
+//
+//var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
+//iConnectionEstablisherCde.connect(function (conn) {
+var createModels = function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
-    exports.DataElement = DataElement;
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
     User = conn.model('User', schemas_system.userSchema);
     CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-    connection = conn;
-});
+    exports.DataElement = DataElement;
+};
+
+createModels(connection);
+var connection = connHelper.establihConnection(mongoUri, createModels);
 
 var mongo_data = this;
 
