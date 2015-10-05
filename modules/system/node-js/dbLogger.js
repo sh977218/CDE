@@ -87,6 +87,8 @@ var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
 var StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
 var FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 
+exports.StoredQueryModel = StoredQueryModel;
+
 exports.storeQuery = function(settings, callback) {
     var storedQuery = {
         searchTerm: settings.searchTerm?settings.searchTerm:""
@@ -114,7 +116,6 @@ exports.storeQuery = function(settings, callback) {
             }
         );
     }
-
 };
 
 exports.log = function(message, callback) {    
