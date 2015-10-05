@@ -12,7 +12,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
     public void nlmPromotesToStandard() {
         nlmPromotesToStandard("Axillary Surgery Dissection Date");
     }
-    
+
     @Test
     public void removeStatusStatusFilter() {
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -23,7 +23,9 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("eyeLink_0")).click();
         textPresent("More Like This");
         textPresent(viewing);
-        findElement(By.xpath("//i[@id='editStatus']")).click();
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
+        findElement(By.xpath("//*[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
@@ -37,7 +39,9 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         clickElement(By.id("eyeLink_0"));
         textPresent("More Like This");
         textPresent(viewing);
-        findElement(By.xpath("//i[@id='editStatus']")).click();
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
+        findElement(By.xpath("//*[@id='editStatus']")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
@@ -46,5 +50,5 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         findElement(By.id("browseOrg-PBTC")).click();
         textPresent("4 results for");
     }
-    
+
 }
