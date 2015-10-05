@@ -35,8 +35,8 @@ var createModels = function(conn) {
     exports.DataElement = DataElement;
 };
 
-createModels(connection);
 var connection = connHelper.establihConnection(mongoUri, createModels);
+createModels(connection);
 
 var mongo_data = this;
 

@@ -7,11 +7,6 @@ var mongoose = require('mongoose')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
-var LogModel;
-var LogErrorModel;
-var ClientErrorModel;
-var StoredQueryModel;
-var FeedbackModel;
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -85,16 +80,12 @@ var feedbackIssueSchema = new mongoose.Schema({
     , reportedUrl: String
 });
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-
-var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
-iConnectionEstablisherLog.connect(function(conn) {
-    LogModel = conn.model('DbLogger', logSchema);
-    LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-    ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
-    StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
-    FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
-});
+var conn = connHelper.establihConnection(mongoLogUri);
+var LogModel = conn.model('DbLogger', logSchema);
+var LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
+var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
+var StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
+var FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 
 exports.storeQuery = function(settings, callback) {
     var storedQuery = {
