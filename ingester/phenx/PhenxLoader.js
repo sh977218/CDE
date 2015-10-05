@@ -43,107 +43,130 @@ var init = function () {
                     obj['href2'] = href2;
                     driver.get(href2);
                     async.parallel({
-                        one: function (callback) {
+                        findProtocolReleaseDate: function (callback) {
                             driver.findElement(webdriver.By.id('element_RELEASE_DATE')).getText().then(function (text) {
                                 obj['Protocol Release Date'] = text;
                                 callback();
                             });
                         },
-                        two: function (callback) {
+                        findProtocolNameFromSource: function (callback) {
                             driver.findElement(webdriver.By.id('element_PROTOCOL_NAME_FROM_SOURCE')).getText().then(function (text) {
                                 obj['Protocol Name From Source'] = text;
                                 callback();
                             });
                         },
-                        three: function (callback) {
+                        findDescriptionOfProtocol: function (callback) {
                             driver.findElement(webdriver.By.id('element_DESCRIPTION')).getText().then(function (text) {
                                 obj['Description of Protocol'] = text;
                                 callback();
                             });
                         },
 
-                        four: function (callback) {
+                        findSpecificInstructions: function (callback) {
                             driver.findElement(webdriver.By.id('element_SPECIFIC_INSTRUCTIONS')).getText().then(function (text) {
                                 obj['Specific Instructions'] = text;
                                 callback();
                             });
                         },
-                        five: function (callback) {
+                        findProtocol: function (callback) {
                             driver.findElement(webdriver.By.id('element_PROTOCOL_TEXT')).getText().then(function (text) {
                                 obj['Protocol '] = text;
                                 callback();
                             });
                         },
-                        six: function (callback) {
+                        findSelectionRationale: function (callback) {
                             driver.findElement(webdriver.By.id('element_SELECTION_RATIONALE')).getText().then(function (text) {
                                 obj['Selection Rationale'] = text;
                                 callback();
                             });
                         },
-                        seven: function (callback) {
+                        findLifeStage: function (callback) {
                             driver.findElement(webdriver.By.id('element_LIFESTAGE')).getText().then(function (text) {
                                 obj['Life Stage'] = text;
                                 callback();
                             });
                         },
-                        eight: function (callback) {
+                        findLanguage: function (callback) {
                             driver.findElement(webdriver.By.id('element_LANGUAGE')).getText().then(function (text) {
-                                obj['Language  '] = text;
+                                obj['Language'] = text;
                                 callback();
                             });
                         },
-                        nine: function (callback) {
+                        findParticipant: function (callback) {
                             driver.findElement(webdriver.By.id('element_PARTICIPANT')).getText().then(function (text) {
                                 obj['Participant'] = text;
                                 callback();
                             });
                         },
-                        ten: function (callback) {
+                        findPersonnelAndTrainingRequired: function (callback) {
                             driver.findElement(webdriver.By.id('element_PERSONNEL_AND_TRAINING_REQD')).getText().then(function (text) {
                                 obj['Personnel and Training Required'] = text;
                                 callback();
                             });
                         },
-                        eleven: function (callback) {
+                        findEquipmentNeeds: function (callback) {
                             driver.findElement(webdriver.By.id('element_EQUIPMENT_NEEDS')).getText().then(function (text) {
                                 obj['Equipment Needs'] = text;
                                 callback();
                             });
                         },
-                        twelve: function (callback) {
+                        findStandards: function (callback) {
                             driver.findElement(webdriver.By.id('element_STANDARDS')).getText().then(function (text) {
                                 obj['Standards'] = text;
                                 callback();
                             });
                         },
-                        thirteen: function (callback) {
+                        findGeneralReferences: function (callback) {
                             driver.findElement(webdriver.By.id('element_REFERENCES')).getText().then(function (text) {
                                 obj['General References'] = text;
                                 callback();
                             });
                         },
-                        fourteen: function (callback) {
+                        findModeOfAdministration: function (callback) {
                             driver.findElement(webdriver.By.id('element_PROTOCOL_TYPE')).getText().then(function (text) {
                                 obj['Mode of Administration'] = text;
                                 callback();
                             });
                         },
-                        fifteen: function (callback) {
+                        findDerivedVariables: function (callback) {
                             driver.findElement(webdriver.By.id('element_DERIVED_VARIABLES')).getText().then(function (text) {
                                 obj['Derived Variables'] = text;
                                 callback();
                             });
                         },
-                        sixteen: function (callback) {
+                        findRequirements: function (callback) {
                             driver.findElement(webdriver.By.id('element_REQUIREMENTS')).getText().then(function (text) {
-                                obj['Requirements '] = text;
+                                obj['Requirements'] = text;
                                 callback();
                             });
                         },
-                        seventeen: function (callback) {
-                            driver.findElement(webdriver.By.id('element_PROCESS_REVIEW')).getText().then(function (text) {
-                                obj['Process and Review '] = text;
-                                callback();
+                        findProcessAndReview: function (callback) {
+                            driver.findElement(webdriver.By.id('element_PROCESS_REVIEW')).then(function (e) {
+                                e.findElement(webdriver.By.css('table')).then(function (table) {
+                                    table.findElement(webdriver.By.css('tr')).then(function (trs) {
+
+                                        obj['Process and Review '] = [];
+                                        async.eachSeries(trs, function (tr, doneOneTr) {
+                                            tr.findElement(webdriver.By.css('td')).then(function (tds) {
+
+                                                async.parallel({
+                                                    td1: function (cb) {
+
+                                                    }, td2: function (cb) {
+                                                    
+                                                    }
+                                                }, function (err, results) {
+                                                })
+
+                                                doneOneTr();
+                                            })
+                                        }, function doneAllTrs() {
+                                            callback();
+                                        })
+
+                                    })
+
+                                })
                             });
                         }
                     }, function (err, results) {
