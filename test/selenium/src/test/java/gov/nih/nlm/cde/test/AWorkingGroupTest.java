@@ -50,7 +50,8 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Qualified");
         findElement(By.id("saveRegStatus")).click();
