@@ -192,6 +192,8 @@ exports.init = function (app, daoManager) {
                     , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
                     , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
                     , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+                    , 'Granularity': 'Metadata'
+                    , 'ODMVersion': '1.3'
                 }
                 , Study: {
                     '@': {OID: form.tinyId}
@@ -200,10 +202,20 @@ exports.init = function (app, daoManager) {
                         , StudyDescription: escapeHTML(form.naming[0].definition)
                         , ProtocolName: escapeHTML(form.naming[0].designation)
                     }
+                    , BasicDefinitions: {}
                     , MetaDataVersion: {
                         '@': {
                             'Name': escapeHTML(form.naming[0].designation)
-                            , 'OID': form.tinyId
+                            , 'OID': 'MDV_' + form.tinyId
+                        }
+                        , Protocol: {
+                            StudyEventRef: {
+                                '@': {Mandatory: 'Yes', OrderNumber: '1', StudyEventOID: 'SE_' + form.tinyId}
+                            }
+                        }
+                        , StudyEventDef: {
+                            '@': {Name: 'SE', OID: 'SE_' + form.tinyId, Repeating: 'No', Type: 'Unscheduled'}
+                            , FormRef: {'@': {FormOID: form.tinyId, Mandatory: 'Yes', OrderNumber: '1'}}
                         }
                         , FormDef: {
                             '@': {
@@ -220,10 +232,10 @@ exports.init = function (app, daoManager) {
             };
             var sections = [];
             var questions = [];
-            form.formElements.forEach(function (s1) {
+            form.formElements.forEach(function (s1,si) {
                 var childrenOids = [];
-                s1.formElements.forEach(function (q1) {
-                    var oid = q1.question.cde.tinyId + Math.floor(Math.random() * 1000);
+                s1.formElements.forEach(function (q1, qi) {
+                    var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
                     childrenOids.push(oid);
                     questions.push({
                         Question: {
@@ -254,6 +266,9 @@ exports.init = function (app, daoManager) {
                         'Name': s1.label
                         , 'OID': oid
                         , 'Repeating': 'No'
+                    }
+                    , Description: {
+                        TranslatedText:{'@':{ 'xml:lang':'en'}, '#': s1.label}
                     }
                     , ItemRef: childrenOids.map(function (oid, i) {
                         return {
