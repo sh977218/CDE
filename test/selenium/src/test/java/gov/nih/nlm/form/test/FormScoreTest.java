@@ -71,9 +71,9 @@ public class FormScoreTest extends BaseFormTest {
 
         WebElement scoreSection = findElement(By.id("formRenderSection_Score Section"));
         List<WebElement> selects = scoreSection.findElements(By.tagName("select"));
-        ((Select)selects.get(0)).deselectByValue("2");
-        ((Select)selects.get(1)).deselectByValue("4");
-        ((Select)selects.get(2)).deselectByValue("7");
+        new Select(selects.get(0)).deselectByValue("2");
+        new Select(selects.get(1)).deselectByValue("4");
+        new Select(selects.get(2)).deselectByValue("7");
         textPresent("Score: 13");
         
     }
