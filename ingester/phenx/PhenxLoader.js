@@ -13,8 +13,9 @@ var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
 var cacheSchema = mongoose.Schema({}, {strict: false});
 var Cache = conn.model('cache', cacheSchema);
 var user = {username: "batchloader"};
-var measureCounter = 0;
-var protocolCounter = 0;
+var cdeBrowsers = [];
+var loinc = [];
+
 var allTasks = [];
 var step1 = function () {
     var xpaths = ["//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td[1]/div/div", "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td[2]/div/div"];
@@ -54,6 +55,8 @@ var step1 = function () {
 };
 
 var step2 = function () {
+    var measureCounter = 0;
+    var protocolCounter = 0;
     Cache.find({}, function (err, caches) {
         if (err) throw err;
         var driver = new webdriver.Builder().forBrowser('firefox').build();
@@ -63,15 +66,17 @@ var step2 = function () {
             driver.get(href1);
             driver.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]")).then(function (links) {
                 async.eachSeries(links, function (link, doneOneLink) {
-                    links.getAttribute('href').then(function (text) {
+                    link.getAttribute('href').then(function (text) {
                         href2.push(text);
+                        protocolCounter++;
+                        console.log("finished protocol " + protocolCounter);
                         doneOneLink();
                     })
                 }, function doneAllLinks() {
                     cache.set('href2', href2);
                     cache.save(function () {
-                        counter++;
-                        console.log("saved " + counter);
+                        measureCounter++;
+                        console.log("finished measure " + measureCounter);
                         doneOneCache();
                     });
                 });
@@ -84,14 +89,15 @@ var step2 = function () {
 };
 
 var step3 = function () {
+    var measureCounter = 0;
+    var protocolCounter = 0;
     Cache.find({}, function (err, caches) {
         if (err) throw err;
         var driver = new webdriver.Builder().forBrowser('firefox').build();
         async.eachSeries(caches, function (cache, doneOneCache) {
             var href2 = cache.get('href2');
             var protocols = [];
-            protocolCounter = 0;
-            async.eachSeries(href2, function (href, doneOneHref2) {
+            async.eachSeries(href2, function (href, doneOneProtocol) {
                 driver.get(href);
                 driver.findElement(webdriver.By.id('button_showfull')).click().then(function () {
                     var protocol = {};
@@ -100,21 +106,110 @@ var step3 = function () {
                             label.getAttribute('id').then(function (id) {
                                 label.getText().then(function (key) {
                                     var newId = id.replace('label', 'element');
-                                    driver.findElement(webdriver.By.id(newId)).getText().then(function (text) {
-                                        protocol[key.trim()] = text;
-                                        doneOneLabel();
-                                    })
+                                    if (newId.indexOf('STANDARDS') > -1) {
+                                        var standards = [];
+                                        driver.findElements(webdriver.By.xpath("//*[@id='" + newId + "']//table/tbody/tr[td]")).then(function (trs) {
+                                            var standard = {};
+                                            async.eachSeries(trs, function (tr, doneOneTr) {
+                                                tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                    async.parallel({
+                                                        one: function (cb) {
+                                                            tds[0].getText().then(function (text) {
+                                                                standard['Standard'] = text;
+                                                                cb();
+                                                            })
+                                                        },
+                                                        two: function (cb) {
+                                                            tds[1].getText().then(function (text) {
+                                                                standard['Name'] = text;
+                                                                cb();
+                                                            })
+                                                        },
+                                                        three: function (cb) {
+                                                            tds[2].getText().then(function (text) {
+                                                                standard['ID'] = text;
+                                                                cb();
+                                                            })
+                                                        },
+                                                        four: function (cb) {
+                                                            var source = {};
+                                                            tds[3].getText().then(function (text) {
+                                                                source['text'] = text;
+                                                                tds[3].findElement(webdriver.By.css('a')).then(function (a) {
+                                                                    a.getAttribute('href').then(function (href) {
+                                                                        source['href'] = href;
+                                                                        if (source['text'] === 'CDE Browser') {
+                                                                            cdeBrowsers.push(href);
+                                                                        }
+                                                                        if (source['text'] === 'LOINC') {
+                                                                            loinc.push(href);
+                                                                        }
+                                                                        standard['Source'] = source;
+                                                                        cb();
+                                                                    })
+                                                                })
+                                                            })
+                                                        }
+                                                    }, function doneAllTds() {
+                                                        standards.push(standard);
+                                                        doneOneTr();
+                                                    })
+                                                });
+                                            }, function doneAllTrs() {
+                                                protocol['Standards'] = standards;
+                                                doneOneLabel();
+                                            });
+                                        })
+                                    }
+                                    else if (newId.indexOf('REQUIREMENTS') > -1) {
+                                        var requirements = [];
+                                        driver.findElements(webdriver.By.xpath("//*[@id='" + newId + "']//table/tbody/tr[td]")).then(function (trs) {
+                                            var requirement = {};
+                                            async.eachSeries(trs, function (tr, doneOneTr) {
+                                                tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                    async.parallel({
+                                                            one: function (cb) {
+                                                                tds[0].getText().then(function (text) {
+                                                                    requirement['Requirement Category'] = text;
+                                                                    cb();
+                                                                })
+                                                            },
+                                                            two: function (cb) {
+                                                                tds[1].getText().then(function (text) {
+                                                                    requirement['Required'] = text;
+                                                                    cb();
+                                                                })
+                                                            }
+                                                        }
+                                                        , function doneAllTds() {
+                                                            requirements.push(requirement);
+                                                            doneOneTr();
+                                                        })
+                                                });
+                                            }, function doneAllTrs() {
+                                                protocol['requirements'] = requirements;
+                                                doneOneLabel();
+                                            });
+                                        })
+                                    }
+                                    else {
+                                        driver.findElement(webdriver.By.id(newId)).getText().then(function (text) {
+                                            protocol[key.trim()] = text;
+                                            doneOneLabel();
+                                        })
+                                    }
                                 })
                             });
+
                         }, function donAllLabels() {
                             protocols.push(protocol);
                             protocolCounter++;
                             console.log('finished protocol ' + protocolCounter);
-                            doneOneHref2();
+                            doneOneProtocol();
                         });
                     })
                 });
-            }, function doneAllHref2() {
+            }, function doneAllProtocols() {
                 cache.set('protocols', protocols);
                 cache.save(function () {
                     measureCounter++;
@@ -123,6 +218,12 @@ var step3 = function () {
                 });
             });
         }, function doneAllCaches() {
+            var obj = {};
+            obj['cdeBrowser'] = cdeBrowsers;
+            obj['loinc'] = loinc;
+            obj['log'] = true;
+            var cache = new Cache(obj);
+            cache.save();
             console.log('finished all');
             driver.quit();
         });
@@ -135,7 +236,7 @@ conn.on('error', function (err) {
 conn.once('open', function callback() {
     console.log("connected to " + mongoUrl);
 //    setTimeout(step1(), 3000);
-    setTimeout(step2(), 3000);
-//    setTimeout(step3(), 3000);
+//    setTimeout(step2(), 3000);
+    setTimeout(step3(), 3000);
 });
 
