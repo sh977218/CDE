@@ -3,7 +3,8 @@ angular.module('resourcesCde', ['ngResource'])
     return $resource('/listboards');
 })
 .factory('DataElement', function($resource) {
-    return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+    return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'},
+        save: {method: 'POST', params: {type: null} }});
 })
 .factory('DataElementTinyId', function($resource) {
     return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
@@ -16,7 +17,16 @@ angular.module('resourcesCde', ['ngResource'])
             });
         }
     }; 
-})    
+})
+.factory('ElasticBoard', function($http) {
+    return {
+        basicSearch: function(query, cb) {
+            $http.post("/boardSearch", query).then(function(response) {
+                cb(response.data);
+            });
+        }
+    };
+})
 .factory('PriorCdes', function($resource) {
     return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
         {'getCdes': {method: 'GET', isArray: true}});
@@ -62,10 +72,10 @@ angular.module('resourcesCde', ['ngResource'])
                 $http({
                     method: 'GET',
                     url: url
-                }).success(function(data, status, headers, cfg) {
+                }).success(function(data) {
                     if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', !data);
-                }).error(function(data, status, headers, cfg) {
+                }).error(function() {
                     if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', false);
                 });
@@ -137,4 +147,3 @@ angular.module('resourcesCde', ['ngResource'])
         }
     }
 });
-;    

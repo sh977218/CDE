@@ -32,6 +32,20 @@ exports.createIndexJson = {
                     }
                 }
                 , "tinyId": {"type": "string", "index": "not_analyzed"}
+                , "updated": {"type": "date", "index": "no"}
+                , "updatedBy.username": {"type": "string", "index": "no"}
+                , "changeNote": {"type": "string", "index": "no"}
+                , "attachments.fileid": {"type": "string", "index": "no"}
+                , "attachments.filename": {"type": "string", "index": "no"}
+                , "_id": {"type": "string", "index": "no"}
+                , "comments.text": {"type": "string", "index": "no"}
+                , "comments.user": {"type": "string", "index": "no"}
+                , "history": {"type": "string", "index": "no"}
+                , "imported": {"type": "date", "index": "no"}
+                , "naming.languageCode": {"type": "string", "index": "no"}
+                , "naming.context.contextName": {"type": "string", "index": "no"}
+                , "views": {"type": "integer", "index": "no"}
+                , "version": {"type": "string", "index": "no"}
             }
         }
     }
@@ -66,6 +80,12 @@ var riverFunction =
         }\
     }\
     flattenClassification(ctx.document); \
+    if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValues) {\
+        ctx.document.valueDomain.nbOfPVs = ctx.document.valueDomain.permissibleValues.length;\
+        if (ctx.document.valueDomain.permissibleValues.length > 20) {\
+            ctx.document.valueDomain.permissibleValues.length = 20;\
+        }\
+    }\
     ctx.document.flatClassifications = flatArray; \
     ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
     ctx.document.steward = ctx.document.stewardOrg.name;\
@@ -157,6 +177,30 @@ exports.createFormRiverJson = {
     , "index": {
         "name": config.elastic.formIndex.name
         , "type": "form"
+    }
+};
+
+exports.createBoardIndexJson = {
+    "mappings": {
+        "board": {
+
+        }
+    }
+};
+
+exports.createBoardRiverJson = {
+    "type": "mongodb"
+    , "mongodb": {
+        "servers": config.database.servers
+        , "credentials": [
+            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+        ]
+        , "db": config.database.dbname
+        , "collection": "pinningBoards"
+    }
+    , "index": {
+        "name": config.elastic.boardIndex.name
+        , "type": "board"
     }
 };
 

@@ -25,12 +25,12 @@
         </h1>
 
         <div tabset>
-           <div tab heading="{{tabs['general'].heading}}">
-               <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
-               <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
-           </div>
-           <div tab heading="{{tabs['pvs'].heading}}">
-               <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
+            <div tab heading="{{tabs['general'].heading}}">
+                <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
+                <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
+            </div>
+            <div tab heading="{{tabs['pvs'].heading}}">
+                <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
             </div>
             <div tab heading="{{tabs['naming'].heading}}">
                 <div ng-include="'/system/public/html/naming.html'"></div>
@@ -41,7 +41,7 @@
             <div tab heading="{{tabs['concepts'].heading}}">
                 <div ng-include="'/cde/public/html/concepts.html'"></div>
             </div>
-            <div tab heading="{{tabs['status'].heading}}">
+            <div tab heading="{{tabs['status'].heading}}" id="statusTab">
                 <div ng-include="'/system/public/html/status.html'"></div>
             </div>
             <div tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">

@@ -18,13 +18,13 @@ var parser = new xml2js.Parser();
 var mongoUri = config.mongoUri;
 var mongoMigrationUri = config.mongoMigrationUri;
 
-var conn = mongoose.createConnection(mongoUri);
+var conn = mongoose.createConnection(mongoUri, {auth: {authdb: "admin"}});
 conn.on('error', console.error.bind(console, 'connection error:'));
 conn.once('open', function callback() {
     console.log('mongodb connection open');
 });
 
-var migrationConn = mongoose.createConnection(mongoMigrationUri);
+var migrationConn = mongoose.createConnection(mongoMigrationUri, {auth: {authdb: "admin"}});
 migrationConn.on('error', console.error.bind(console, 'connection error:'));
 migrationConn.once('open', function callback() {
     console.log('mongodb migration connection open');
@@ -137,7 +137,16 @@ var processCde = function (migrationCde, existingCde, orgName) {
             });
         });
     } else if (deepDiff.length > 0) {
-        newDe.naming[0] = migrationCde.naming[0];
+        var exitingName = {};
+        var allNames = newDe.naming.concat(migrationCde.naming);
+        var names = [];
+        allNames.forEach(function (name) {
+            if (!exitingName[name.designation]) {
+                names.push(name);
+                exitingName[name.designation] = name.designation;
+            }
+        })
+        newDe.naming = names;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = importDate;
@@ -164,8 +173,8 @@ var processCde = function (migrationCde, existingCde, orgName) {
                 });
             });
         } catch (e) {
-            console.log(newDe);
-            console.log(existingCde);
+            console.log("newDe:\n" + newDe);
+            console.log("existingCde:\n" + existingCde);
             throw e;
         }
 
@@ -288,7 +297,7 @@ var streamOnClose = function () {
         // give 5 secs for org to save.
         setTimeout(function () {
             process.exit(0);
-        }, 10000);
+        }, 5000);
     }
 };
 

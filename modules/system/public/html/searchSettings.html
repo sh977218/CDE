@@ -60,7 +60,16 @@
                 <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming"> Other Names</label>
                 </div>
                 <div class="checkbox indent">
-                <label><input id="permissibleValues" type="checkbox" ng-model="searchSettings.tableViewFields.cde.permissibleValues"> Permissible Values</label>
+                    <label>
+                        <input id="permissibleValues" type="checkbox"
+                               ng-model="searchSettings.tableViewFields.cde.permissibleValues"> Permissible Values
+                    </label>
+                </div>
+                <div class="checkbox indent">
+                    <label>
+                        <input id="nbOfPVs" type="checkbox" ng-model="searchSettings.tableViewFields.cde.nbOfPVs">
+                        Number of Permissible Values (PVs)
+                    </label>
                 </div>
                 <div class="checkbox indent">
                 <label><input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.cde.uom"> Unit of Measure</label>
