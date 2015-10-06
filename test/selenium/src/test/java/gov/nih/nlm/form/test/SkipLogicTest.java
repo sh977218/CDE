@@ -25,14 +25,16 @@ public class SkipLogicTest extends BaseFormTest {
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         questionTest.addQuestionToSection("Person Birth Date", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
-        findElement(By.xpath("//*[@id='section_view_1']/div[1]/div/div/dl/span[1]/dd/input")).sendKeys("\"Patient Gender Category\" = \"Female Gender\"");
+        findElement(By.xpath("//*[@id='section_view_1']/div[1]/div/div/dl/span[1]/dd/input"))
+                .sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
 
         questionTest.addSectionToSection(1, 0);
         saveForm();
 
         goToFormByName(formName);
         textNotPresent("Female Patient Screening");
-        new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select"))).selectByValue("Female Gender");
+        new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select")))
+                .selectByVisibleText("Female Gender");
         textPresent("Female Patient Screening");
     }
 

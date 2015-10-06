@@ -1,5 +1,5 @@
 
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.valueDomain;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;

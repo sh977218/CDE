@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('CompareCtrl',
-    ['$scope', 'CdeList', 'QuickBoard',
-        function($scope, CdeList, QuickBoard) {
+    ['$scope', 'QuickBoard',
+        function($scope, QuickBoard) {
     $scope.compareView = true;
     $scope.pvLimit = 30;
     

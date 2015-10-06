@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.ClassificationTest;
+import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
