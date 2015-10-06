@@ -56,30 +56,28 @@ var step1 = function () {
 var step2 = function () {
     Cache.find({}, function (err, caches) {
         if (err) throw err;
-        async.eachSeries(caches, function (cache, doneOne) {
+        var driver = new webdriver.Builder().forBrowser('firefox').build();
+        async.eachSeries(caches, function (cache, doneOneCache) {
             var href1 = cache.get('href1');
-            var driver = new webdriver.Builder().forBrowser('firefox').build();
-            driver.get(href1);
             var href2 = [];
-            driver.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr")).then(function (trs) {
-                async.eachSeries(trs, function (tr, doneOneTr) {
-                    tr.findElements(webdriver.By.css('a')).then(function (links) {
-                        links[1].getAttribute('href').then(function (text) {
-                            href2.push(text);
-                            doneOneTr();
-                        })
-                    });
-                }, function doneAllTrs() {
+            driver.get(href1);
+            driver.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]")).then(function (links) {
+                async.eachSeries(links, function (link, doneOneLink) {
+                    links.getAttribute('href').then(function (text) {
+                        href2.push(text);
+                        doneOneLink();
+                    })
+                }, function doneAllLinks() {
                     cache.set('href2', href2);
                     cache.save(function () {
-                        driver.quit();
                         counter++;
                         console.log("saved " + counter);
-                        doneOne();
+                        doneOneCache();
                     });
                 });
             });
-        }, function doneAll() {
+        }, function doneAllCache() {
+            driver.quit();
             console.log('finished all');
         });
     })
@@ -88,8 +86,8 @@ var step2 = function () {
 var step3 = function () {
     Cache.find({}, function (err, caches) {
         if (err) throw err;
+        var driver = new webdriver.Builder().forBrowser('firefox').build();
         async.eachSeries(caches, function (cache, doneOneCache) {
-            var driver = new webdriver.Builder().forBrowser('firefox').build();
             var href2 = cache.get('href2');
             var protocols = [];
             protocolCounter = 0;
@@ -109,9 +107,10 @@ var step3 = function () {
                                 })
                             });
                         }, function donAllLabels() {
-                            doneOneHref2();
+                            protocols.push(protocol);
                             protocolCounter++;
                             console.log('finished protocol ' + protocolCounter);
+                            doneOneHref2();
                         });
                     })
                 });
@@ -120,13 +119,12 @@ var step3 = function () {
                 cache.save(function () {
                     measureCounter++;
                     console.log('finished measure ' + measureCounter);
-
-                    driver.quit();
                     doneOneCache()
                 });
             });
         }, function doneAllCaches() {
             console.log('finished all');
+            driver.quit();
         });
     })
 };
@@ -137,7 +135,7 @@ conn.on('error', function (err) {
 conn.once('open', function callback() {
     console.log("connected to " + mongoUrl);
 //    setTimeout(step1(), 3000);
-//    setTimeout(step2(), 3000);
-    setTimeout(step3(), 3000);
+    setTimeout(step2(), 3000);
+//    setTimeout(step3(), 3000);
 });
 
