@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
     , logging = require('./logging')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
+    , mongoosastic = require('mongoosastic')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
@@ -64,6 +65,8 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedElements2: [String]
     }, { safe: {w: 0}});
 
+storedQuerySchema.plugin(mongoosastic);
+
 var feedbackIssueSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
     , user: {
@@ -106,15 +109,21 @@ exports.storeQuery = function(settings, callback) {
 
     if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
     } else {
-        StoredQueryModel.findOneAndUpdate(
-            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            storedQuery,
-            {upsert: true},
-            function (err) {
-                if (err) console.log(err);
-                if (callback) callback(err);
-            }
-        );
+        //StoredQueryModel.findOneAndUpdate(
+        //    {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+        //    storedQuery,
+        //    {upsert: true},
+        //    function (err) {
+        //        if (err) console.log(err);
+        //        if (callback) callback(err);
+        //    }
+        //);
+        var q = new StoredQueryModel(storedQuery);
+        q.save(function(err){
+            q.on('es-indexed', function(err, res){
+                if (err) throw err;
+            });
+        });
     }
 };
 
