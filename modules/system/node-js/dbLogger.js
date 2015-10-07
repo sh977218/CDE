@@ -123,10 +123,9 @@ exports.storeQuery = function(settings, callback) {
             {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
             storedQuery,
             {upsert: true},
-            function (err, finalDoc) {
+            function (err) {
                 if (err) console.log(err);
                 if (callback) callback(err);
-                //finalDoc.index();
             }
         );
     }
