@@ -161,6 +161,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 $scope.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
                 $scope.newOrg = {};
+            }, function(response) {
+                $scope.alert("An error occured.");
             }
         );
     };
