@@ -25,12 +25,12 @@
         </h1>
 
         <div tabset>
-           <div tab heading="{{tabs['general'].heading}}">
-               <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
-               <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
-           </div>
-           <div tab heading="{{tabs['pvs'].heading}}">
-               <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
+            <div tab heading="{{tabs['general'].heading}}">
+                <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
+                <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
+            </div>
+            <div tab heading="{{tabs['pvs'].heading}}">
+                <div ng-include="'/cde/public/html/valueDomainView.html'"></div>
             </div>
             <div tab heading="{{tabs['naming'].heading}}">
                 <div ng-include="'/system/public/html/naming.html'"></div>
@@ -41,7 +41,7 @@
             <div tab heading="{{tabs['concepts'].heading}}">
                 <div ng-include="'/cde/public/html/concepts.html'"></div>
             </div>
-            <div tab heading="{{tabs['status'].heading}}">
+            <div tab heading="{{tabs['status'].heading}}" id="statusTab">
                 <div ng-include="'/system/public/html/status.html'"></div>
             </div>
             <div tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">
@@ -53,7 +53,8 @@
             <div tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
                 <div ng-include="'/system/public/html/identifiers.html'"></div>
             </div>
-            <div tab ng-if="formEnabled" heading="{{tabs['forms'].heading}}" active="tabs['forms'].active">
+            <div tab ng-if="formEnabled" heading="{{tabs['forms'].heading}}"
+                 active="tabs['forms'].active" select="$broadcast('loadLinkedForms')">
                 <div ng-include="'/cde/public/html/forms.html'"></div>
             </div>
             <div tab heading="{{tabs['mappingSpecifications'].heading}}" active="tabs['mappingSpecifications'].active">
@@ -69,14 +70,18 @@
             <div tab heading="{{tabs['attachments'].heading}}">
                 <div ng-include="'/system/public/html/attachments.html'"></div>
             </div>
-            <div tab heading="{{tabs['mlt'].heading}}">
+            <div tab heading="{{tabs['derivationRules'].heading}}" select="$broadcast('loadDerivationRules')"
+                 active="tabs['derivationRules'].active">
+                <div ng-include="'/cde/public/html/derivationRules.html'"></div>
+            </div>
+            <div tab heading="{{tabs['mlt'].heading}}" select="$broadcast('loadMlt')">
                 <div ng-include="'/cde/public/html/deMlt.html'"></div>
             </div>
-            <div tab heading="{{tabs['history'].heading}}">
+            <div tab heading="{{tabs['history'].heading}}" select="$broadcast('loadPriorCdes')">
                 <div ng-include="'/cde/public/html/cdeHistory.html'"></div>
             </div>
-            <div ng-show="!elt.forkOf" tab heading="{{tabs['forks'].heading}}">
-                <div ng-include="'/cde/public/html/forks.html'" ng-controller="ForkCtrl"></div>
+            <div ng-show="!elt.forkOf" tab heading="{{tabs['forks'].heading}}" select="$broadcast('loadForks')">
+                <div ng-include="'/cde/public/html/forks.html'"></div>
             </div>
         </div>
 

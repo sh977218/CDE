@@ -1,5 +1,6 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.valueDomain;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;

@@ -14,6 +14,12 @@
     <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i>
         <strong>Note: </strong>Some CDEs in this form have newer version.
     </div>
+    <div class="alert alert-warning mt20" role="alert" ng-if="missingCdes.length > 0">
+        <i class="fa fa-exclamation-triangle"></i> The following CDEs are part of a score but are missing from this form:
+        <ul class="list-inline">
+            <li ng-repeat="mc in missingCdes"><a href="/#/deview?tinyId={{mc.tinyId}}" target="_blank">CDE {{$index+1}}, id: {{mc.tinyId}}</a><span ng-if="!$last">,</span> </li>
+        </ul>
+    </div>
 
     <h3>{{elt.naming[0].designation}}
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
@@ -50,7 +56,7 @@
         <div tab heading="{{tabs['classification'].heading}}">
             <div ng-include="'/form/public/html/formClassification.html'"></div>
         </div>
-        <div tab heading="{{tabs['status'].heading}}">
+        <div tab heading="{{tabs['status'].heading}}" id="statusTab">
             <div ng-include="'/system/public/html/status.html'"></div>
         </div>
         <div tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">

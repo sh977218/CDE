@@ -1,9 +1,9 @@
-package gov.nih.nlm.cde.test.regstatus;
+package gov.nih.nlm.form.test.regstatus;
 
 import gov.nih.nlm.common.test.RegStatusTest;
 import org.testng.annotations.Test;
 
-public class FormRegStatus extends RegStatusTest {
+public class FormRegStatusTest extends RegStatusTest {
 
     @Override
     public void goToEltByName(String name, String status) {
