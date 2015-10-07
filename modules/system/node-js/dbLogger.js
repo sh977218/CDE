@@ -5,9 +5,15 @@ var mongoose = require('mongoose')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
     , mongoosastic = require('mongoosastic')
+    , elasticsearch = require('elasticsearch')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
+
+var esClient = new elasticsearch.Client({
+    host: config.elastic.uri
+});
+
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -65,7 +71,11 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedElements2: [String]
     }, { safe: {w: 0}});
 
-storedQuerySchema.plugin(mongoosastic);
+storedQuerySchema.plugin(mongoosastic, {
+    esClient: esClient
+    , index: config.elastic.storedQueryIndex.name
+    , type: "storedquery"
+});
 
 var feedbackIssueSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
@@ -109,21 +119,16 @@ exports.storeQuery = function(settings, callback) {
 
     if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
     } else {
-        //StoredQueryModel.findOneAndUpdate(
-        //    {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-        //    storedQuery,
-        //    {upsert: true},
-        //    function (err) {
-        //        if (err) console.log(err);
-        //        if (callback) callback(err);
-        //    }
-        //);
-        var q = new StoredQueryModel(storedQuery);
-        q.save(function(err){
-            q.on('es-indexed', function(err, res){
-                if (err) throw err;
-            });
-        });
+        StoredQueryModel.findOneAndUpdate(
+            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+            storedQuery,
+            {upsert: true},
+            function (err, finalDoc) {
+                if (err) console.log(err);
+                if (callback) callback(err);
+                //finalDoc.index();
+            }
+        );
     }
 };
 
