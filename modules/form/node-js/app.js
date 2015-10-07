@@ -227,17 +227,19 @@ exports.init = function (app, daoManager) {
                         }
                         , ItemGroupDef: []
                         , ItemDef: []
+                        , CodeList: []
                     }
                 }
             };
             var sections = [];
             var questions = [];
+            var codeLists = [];
             form.formElements.forEach(function (s1,si) {
                 var childrenOids = [];
                 s1.formElements.forEach(function (q1, qi) {
                     var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
                     childrenOids.push(oid);
-                    questions.push({
+                    var odmQuestion = {
                         Question: {
                             TranslatedText: {
                                 '@': {
@@ -251,7 +253,36 @@ exports.init = function (app, daoManager) {
                             , 'Name': escapeHTML(q1.label)
                             , 'OID': oid
                         }
-                    });
+                    };
+                    if (q1.question.answers) {
+                        odmQuestion.CodeListRef = {'@': {CodeListOID: 'CL_' + oid}};
+                        questions.push(odmQuestion);
+                        var codeList = {
+                            '@': {
+                                'DataType': cdeToOdmDatatype(q1.question.datatype)
+                                , OID: 'CL_' + oid
+                                , Name: q1.label
+                            }
+                        };
+                        codeList.CodeListItem = q1.question.answers.map(function (pv) {
+                            return {
+                                '@': {
+                                    CodedValue: pv.permissibleValue
+                                }
+                                ,
+                                Decode: {
+                                    TranslatedText: {
+                                        '@': {
+                                            'xml:lang': 'en'
+                                        }
+                                        ,
+                                        '#': pv.valueMeaningName
+                                    }
+                                }
+                            }
+                        });
+                        codeLists.push(codeList);
+                    }
                 });
                 var oid = Math.floor(Math.random() * 1000);
                 odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
@@ -283,6 +314,7 @@ exports.init = function (app, daoManager) {
             });
             sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
             questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
+            codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
             var xmlForm = js2xml("ODM", odmJsonForm);
             console.log(xmlForm);
             res.set('Content-Type', 'text/xml');
