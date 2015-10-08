@@ -44,7 +44,6 @@ exports.createIndexJson = {
                 , "imported": {"type": "date", "index": "no"}
                 , "naming.languageCode": {"type": "string", "index": "no"}
                 , "naming.context.contextName": {"type": "string", "index": "no"}
-                , "views": {"type": "integer", "index": "no"}
                 , "version": {"type": "string", "index": "no"}
             }
         }
