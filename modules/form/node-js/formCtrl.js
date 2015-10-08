@@ -63,8 +63,7 @@ var getFormJson = function(req, res){
     });
 };
 
-<<<<<<< HEAD
-=======
+
 var getFormPlainXml = function(req, res){
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if(!form) return res.status(404).end();
@@ -305,4 +304,3 @@ var getFormOdm = function(req, res){
         res.send(xmlForm);
     });
 };
->>>>>>> 7ddd22e766c4e1c14646e0ffb9a9cd3693fb5b44
