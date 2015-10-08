@@ -13,6 +13,7 @@ public class SdcExport extends NlmCdeBaseTest {
     public void sdcExport() {
         goToFormByName("Apathy Scale (AS)");
 
+        findElement(By.id('export')).click();
         String url = findElement(By.id("sdcExport")).getAttribute("href");
 
         String response = get(url).asString();
