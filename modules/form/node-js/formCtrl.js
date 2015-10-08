@@ -2,6 +2,8 @@ var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , js2xml = require('js2xmlparser')
+    , logging = require('../../system/node-js/logging')
+    , sdc = require('./sdcForm')
     ;
 
 exports.findForms = function (req, res) {
@@ -27,7 +29,7 @@ exports.findAllCdesInForm = function (node, map, array) {
     }
 };
 
-exports.formById = function (req, res) {
+var getFormJson = function(req, res){
     var markCDE = function (form, cb) {
         var allTinyId = [];
         var allCdes = {};
@@ -50,8 +52,8 @@ exports.formById = function (req, res) {
             if (cb) cb();
         });
     };
-    var type = req.query.type === 'tinyId' ? 'eltByTinyId' : 'byId';
-    mongo_data_form[type](req.params.id, function (err, form) {
+    //var type = req.query.type === 'tinyId' ? 'eltByTinyId' : 'byId';
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (form) {
             adminSvc.hideUnapprovedComments(form);
             var resForm = form.toObject();
@@ -64,7 +66,37 @@ exports.formById = function (req, res) {
     });
 };
 
-exports.exportToOdm = function(req, res){
+var getFormPlainXml = function(req, res){
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        if(!form) return res.status(404).end();
+        res.setHeader("Content-Type", "application/xml");
+        res.send(js2xml("Form", form.toObject()));
+    });
+};
+
+exports.formById = function (req, res) {
+    if(req.query.type==='xml' && req.query.subtype==='odm') getFormOdm(req, res);
+    else if(req.query.type==='xml' && req.query.subtype==='sdc') getFormSdc(req, res);
+    else if(req.query.type==='xml') getFormPlainXml(req, res);
+    else getFormJson(req, res);
+};
+
+var getFormSdc = function(req, res){
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        if (err) {
+            logging.errorLogger.error("Error: Cannot find element by tiny id.", {
+                origin: "system.adminItemSvc.approveComment",
+                stack: new Error().stack
+            }, req);
+            return res.status(500).send();
+        } else {
+            res.setHeader("Content-Type", "application/xml");
+            res.send(sdc.formToSDC(form));
+        }
+    });
+};
+
+var getFormOdm = function(req, res){
     function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {
             "Value List": "text",
@@ -101,7 +133,7 @@ exports.exportToOdm = function(req, res){
         return text.replace(/\<.+?\>/gi, "");
     }
 
-    mongo_data_form.eltByTinyId(req.params.tinyId, function (err, form) {
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         for (var i = 0; i < form.formElements.length; i++) {
             var sec = form.formElements[i];
             for (var j = 0; j < sec.formElements.length; j++) {

@@ -30,11 +30,14 @@
 
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i>
                 Export <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a ng-href="export/odm/form/{{elt.tinyId}}" target="_blank">ODM</a></li>
-                <li><a ng-href="sdcExport/{{elt._id}}" target="_blank">SDC</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">XML File, SDC Schema</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
             </ul>
         </div>
 
