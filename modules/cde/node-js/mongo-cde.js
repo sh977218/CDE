@@ -21,12 +21,6 @@ var PinningBoard;
 var User;
 var CdeAudit;
 
-
-//var connectionEstablisher = connHelper.connectionEstablisher;
-//var connection = null;
-//
-//var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
-//iConnectionEstablisherCde.connect(function (conn) {
 var createModels = function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
@@ -466,7 +460,7 @@ exports.derivationOutputs = function(inputTinyId, cb) {
 };
 
 var correctBoardPinsForCde = function(doc, cb){
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
         if (err) throw err;
         if (cb) cb();
     });
