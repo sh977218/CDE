@@ -34,7 +34,6 @@ exports.init = function(app) {
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
         app.get(path, function(req, res) {
-            console.log(JSON.stringify(config));
             res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
         });
     });
