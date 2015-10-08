@@ -21,6 +21,8 @@ exports.init = function (app, daoManager) {
     app.post('/form', formCtrl.save);
     app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
+    app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
+
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);

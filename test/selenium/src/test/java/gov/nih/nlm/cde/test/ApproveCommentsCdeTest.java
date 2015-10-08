@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.cde.test.comments.CdeCommentTest;
 import org.testng.annotations.Test;
 
 public class ApproveCommentsCdeTest extends CdeCommentTest {

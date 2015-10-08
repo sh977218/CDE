@@ -44,8 +44,9 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.resultPerPage = 10;
 
-    if (route._id) var query = {formId: route._id, type: '_id'};
-    if (route.tinyId) var query = {formId: route.tinyId, type: 'tinyId'};
+    var query;
+    if (route._id) query = {formId: route._id, type: '_id'};
+    if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -54,6 +55,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
+            areDerivationRulesSatisfied();
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -62,7 +64,6 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.reload();
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
@@ -79,6 +80,7 @@ angular.module('formModule').controller('FormViewCtrl',
     };
 
     $scope.stageElt = function () {
+        areDerivationRulesSatisfied();
         $scope.elt.unsaved = true;
     };
 
@@ -127,7 +129,7 @@ angular.module('formModule').controller('FormViewCtrl',
                             $scope.elt.formElements.forEach(function (e) {
                                 getChildren(e);
                             });
-                            BulkClassification.classifyTinyidList(ids, newClassification, function (res) {
+                            BulkClassification.classifyTinyidList(ids, newClassification, function () {
                                 $scope.addAlert("success", "CDEs classified!");
                             });
                         }
@@ -218,13 +220,47 @@ angular.module('formModule').controller('FormViewCtrl',
             var question = questions[0];
             var answers = question.question.answers;
             return answers.map(function (a) {
-                return '"' + a.valueMeaningName + '"';
+                return '"' + a.permissibleValue + '"';
             });
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];
     };
 
+    $scope.missingCdes = [];
+    $scope.inScoreCdes = [];
+    var areDerivationRulesSatisfied = function() {
+        $scope.missingCdes = [];
+        $scope.inScoreCdes = [];
+        var allCdes = {};
+        var allQuestions = [];
+        var doFormElement = function(formElt) {
+            if (formElt.elementType === 'question') {
+                allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
+                allQuestions.push(formElt);
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        $scope.elt.formElements.forEach(doFormElement);
+        allQuestions.forEach(function(quest) {
+            if (quest.question.cde.derivationRules)
+            quest.question.cde.derivationRules.forEach(function(derRule) {
+                delete quest.incompleteRule;
+                if (derRule.ruleType === 'score') {
+                    quest.question.isScore = true;
+                    quest.question.scoreFormula = derRule.formula;
+                    $scope.inScoreCdes = derRule.inputs;
+                }
+                derRule.inputs.forEach(function(input) {
+                    if (!allCdes[input]) {
+                        $scope.missingCdes.push({tinyId: input});
+                        quest.incompleteRule = true;
+                    }
+                });
+            });
+        });
+    };
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
@@ -249,6 +285,17 @@ angular.module('formModule').controller('FormViewCtrl',
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
         }, function () {
+        });
+    };
+
+    $scope.reload();
+    
+    $scope.save = function() {
+        $scope.elt.$save({}, function () {
+            $scope.reload();
+            $scope.addAlert("success", "Saved.");
+        }, function() {
+            $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
 

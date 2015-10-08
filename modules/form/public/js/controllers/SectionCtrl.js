@@ -73,6 +73,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                         cde: {
                             tinyId: cde.tinyId
                             , version: cde.version
+                            , derivationRules: cde.derivationRules
                         }
                         , datatype: cde.valueDomain.datatype
                         , required: false
@@ -162,5 +163,10 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.elt.formElements.splice(index + inc, 0, $scope.elt.formElements.splice(index, 1)[0]);
         $scope.stageElt();
     };
+
+    $scope.isScore = function(formElt) {
+        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
+    };
+
 
 }]);

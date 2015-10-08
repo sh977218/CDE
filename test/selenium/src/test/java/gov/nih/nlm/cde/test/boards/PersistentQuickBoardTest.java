@@ -11,6 +11,7 @@ public class PersistentQuickBoardTest extends NlmCdeBaseTest {
         String eltName = "Concomitant Agent Usage End Date";
         openCdeInList(eltName);
         clickElement(By.id("addToCompare_0"));
+        clickElement(By.linkText("Quick Board ( 1 )"));
         driver.get(baseUrl);
         clickElement(By.linkText("Quick Board ( 1 )"));
         textPresent(eltName);

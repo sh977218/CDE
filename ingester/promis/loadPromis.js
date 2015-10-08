@@ -328,7 +328,6 @@ var loadForm = function(file, cb) {
                         tinyId: cde.tinyId
                     },
                     uoms: [],
-                    otherPleaseSpecify: false
                 };
 
                 if (cde.valueDomain.permissibleValues.length > 0) {
