@@ -217,35 +217,57 @@ var getFormOdm = function(req, res){
                     }
                 };
                 if (q1.question.answers) {
-                    odmQuestion.CodeListRef = {'@': {CodeListOID: 'CL_' + oid}};
-                    questions.push(odmQuestion);
-                    var codeList = {
-                        '@': {
-                            'DataType': cdeToOdmDatatype(q1.question.datatype)
-                            , OID: 'CL_' + oid
-                            , Name: q1.label
+                    var codeListAlreadyPresent = false;
+                    codeLists.forEach(function (cl) {
+                        var codeListInHouse = cl.CodeListItem.map(function (i) {
+                            return i.Decode.TranslatedText['#']
+                        }).sort();
+                        var codeListToAdd = q1.question.answers.map(function (a) {
+                            return a.valueMeaningName;
+                        }).sort();
+                        if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
+                            odmQuestion.CodeListRef = {'@': {CodeListOID: cl['@'].OID}};
+                            questions.push(odmQuestion);
+                            codeListAlreadyPresent = true;
                         }
-                    };
-                    codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        var cl = {
+                    });
+
+                    if (!codeListAlreadyPresent){
+                        odmQuestion.CodeListRef = {'@': {CodeListOID: 'CL_' + oid}};
+                        questions.push(odmQuestion);
+                        var codeList = {
                             '@': {
-                                CodedValue: pv.permissibleValue
-                            }
-                            ,
-                            Decode: {
-                                TranslatedText: {
-                                    '@': {
-                                        'xml:lang': 'en'
-                                    }
-                                    ,
-                                    '#': pv.valueMeaningName
-                                }
+                                'DataType': cdeToOdmDatatype(q1.question.datatype)
+                                , OID: 'CL_' + oid
+                                , Name: q1.label
                             }
                         };
-                        if (pv.valueMeaningCode) cl.Alias = {'@':{Context: pv.codeSystemName + pv.codeSystemVersion, Name: pv.valueMeaningCode}};
-                        return cl;
-                    });
-                    codeLists.push(codeList);
+                        codeList.CodeListItem = q1.question.answers.map(function (pv) {
+                            var cl = {
+                                '@': {
+                                    CodedValue: pv.permissibleValue
+                                }
+                                ,
+                                Decode: {
+                                    TranslatedText: {
+                                        '@': {
+                                            'xml:lang': 'en'
+                                        }
+                                        ,
+                                        '#': pv.valueMeaningName
+                                    }
+                                }
+                            };
+                            if (pv.valueMeaningCode) cl.Alias = {
+                                '@': {
+                                    Context: pv.codeSystemName,
+                                    Name: pv.valueMeaningCode
+                                }
+                            };
+                            return cl;
+                        });
+                        codeLists.push(codeList);
+                    }
                 }
             });
             var oid = Math.floor(Math.random() * 1000);
@@ -280,7 +302,6 @@ var getFormOdm = function(req, res){
         questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
         codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
         var xmlForm = js2xml("ODM", odmJsonForm);
-        console.log(xmlForm);
         res.set('Content-Type', 'text/xml');
         res.send(xmlForm);
     });
