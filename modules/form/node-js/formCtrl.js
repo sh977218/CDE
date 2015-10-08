@@ -70,7 +70,12 @@ var getFormPlainXml = function(req, res){
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if(!form) return res.status(404).end();
         res.setHeader("Content-Type", "application/xml");
-        res.send(js2xml("Form", form.toObject()));
+        var exportForm = form.toObject();
+        delete exportForm._id;
+        exportForm.formElements.forEach(function(s){
+            s.formElements.forEach(function(q){delete q._id;});
+        });
+        res.send(js2xml("Form", exportForm));
     });
 };
 
