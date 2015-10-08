@@ -47,7 +47,7 @@ angular.module('formModule')
     };
 
     var findQuestionByTinyId = function(tinyId) {
-        var result;
+        var result = null;
         var doFormElement = function(formElt) {
             if (formElt.elementType === 'question') {
                 if (formElt.question.cde.tinyId === tinyId) {
@@ -72,7 +72,7 @@ angular.module('formModule')
                     if (q) {
                         var answer = q.question.answer;
                         if (answer === undefined) return result = "Incomplete answers";
-                        if (isNaN(answer)) return result = "Unable to score"
+                        if (isNaN(answer)) return result = "Unable to score";
                         else result = result + parseFloat(answer);
                     }
                 });
@@ -99,13 +99,6 @@ angular.module('formModule')
             delete elt.question.datatype;
             if (elt.question.cde) {
                 delete elt.question.cde.permissibleValues;
-            }
-            if (elt.question.otherPleaseSpecify) {
-                if (!elt.question.otherPleaseSpecify.value) {
-                    delete elt.question.otherPleaseSpecify;
-                } else {
-                    delete elt.question.otherPleaseSpecify.value;
-                }
             }
         }
         if (elt.formElements) {

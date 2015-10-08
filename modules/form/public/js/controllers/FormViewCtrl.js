@@ -229,7 +229,7 @@ angular.module('formModule').controller('FormViewCtrl',
             var question = questions[0];
             var answers = question.question.answers;
             return answers.map(function (a) {
-                return '"' + a.valueMeaningName + '"';
+                return '"' + a.permissibleValue + '"';
             });
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
@@ -255,6 +255,7 @@ angular.module('formModule').controller('FormViewCtrl',
         allQuestions.forEach(function(quest) {
             if (quest.question.cde.derivationRules)
             quest.question.cde.derivationRules.forEach(function(derRule) {
+                delete quest.incompleteRule;
                 if (derRule.ruleType === 'score') {
                     quest.question.isScore = true;
                     quest.question.scoreFormula = derRule.formula;
@@ -297,9 +298,7 @@ angular.module('formModule').controller('FormViewCtrl',
     };
 
     $scope.reload();
-
-    //$scope.$on('elementReloaded', areDerivationRulesSatisfied);
-
+    
     $scope.save = function() {
         $scope.elt.$save({}, function () {
             $scope.reload();

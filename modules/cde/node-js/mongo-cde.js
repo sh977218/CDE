@@ -461,14 +461,12 @@ exports.derivationOutputs = function(inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-
 var correctBoardPinsForCde = function(doc, cb){
     PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
         if (err) throw err;
         if (cb) cb();
     });
 };
-
 
 schemas.dataElementSchema.post('save', function(doc) {
     if (doc.archived) return;

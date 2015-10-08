@@ -15,6 +15,18 @@ exports.save = function (req, res) {
     adminSvc.save(req, res, mongo_data_form);
 };
 
+exports.findAllCdesInForm = function (node, map, array) {
+    if (node.formElements) {
+        for (var i = 0; i < node.formElements.length; i++) {
+            if (node.formElements[i].elementType === "question") {
+                map[node.formElements[i].question.cde.tinyId] = node.formElements[i].question.cde;
+                array.push(node.formElements[i].question.cde.tinyId);
+            }
+            exports.findAllCdesInForm(node.formElements[i], map, array);
+        }
+    }
+};
+
 exports.formById = function (req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);

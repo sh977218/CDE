@@ -73,6 +73,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                         cde: {
                             tinyId: cde.tinyId
                             , version: cde.version
+                            , derivationRules: cde.derivationRules
                         }
                         , datatype: cde.valueDomain.datatype
                         , required: false

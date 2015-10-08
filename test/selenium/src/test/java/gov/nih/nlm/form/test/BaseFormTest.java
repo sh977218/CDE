@@ -58,7 +58,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.id("createForm")).click();
         textPresent("Form created");
         closeAlert();
-        hangon(1);
     }
 
     public void addSection(String title, String card) {
