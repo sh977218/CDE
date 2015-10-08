@@ -15,14 +15,14 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.name("commentTextArea")).sendKeys(text);
         hangon(1);
         findElement(By.name("postComment")).click();
-        Assert.assertTrue(textPresent("Comment added"));    
+        textPresent("Comment added");
     }
     
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, test_password);
         goToEltByName(eltName);
         addComment("My First Comment!");
-        Assert.assertTrue(textPresent("testuser"));
+        textPresent("testuser");
         Assert.assertTrue(textPresent("My First Comment!"));
         findElement(By.name("commentTextArea")).sendKeys("another comment");
         findElement(By.name("postComment")).click();

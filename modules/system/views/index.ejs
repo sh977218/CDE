@@ -63,12 +63,13 @@
     <script type="text/javascript">
         (function () {
             window.loggedIn = <%= loggedIn %>;
-            window.maxPin = <%= config.maxPin %>;
-            window.formEditable = <%= config.modules.forms.editable %>;
-            window.formLocalRender = <%= config.modules.forms.localRender %>;
-            window.formLoincRender = <%= config.modules.forms.loincRender %>;
-            window.formLoincRenderUrl = '<%= config.modules.forms.loincRenderUrl %>';
-            window.formEnabled = <%= config.modules.forms !== undefined %>;
+            window.maxPin = <%= config.config.maxPin %>;
+            window.formEditable = <%= config.config.modules.forms.editable %>;
+            window.formLocalRender = <%= config.config.modules.forms.localRender %>;
+            window.formLoincRender = <%= config.config.modules.forms.loincRender %>;
+            window.formLoincRenderUrl = '<%= config.config.modules.forms.loincRenderUrl %>';
+            window.formEnabled = <%= config.config.modules.forms !== undefined %>;
+            window.userAlertTime = <%= config.config.userAlertTime || 5000 %>;
         })();
     </script>
 

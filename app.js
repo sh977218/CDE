@@ -21,8 +21,7 @@ var express = require('express')
   , methodOverride = require('method-override')
   , morganLogger = require('morgan')
     , async = require('async')
-    ;
-
+;
 
 require('log-buffer')(config.logBufferSize || 4096);
 
