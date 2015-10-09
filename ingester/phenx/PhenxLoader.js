@@ -26,15 +26,9 @@ var cdeBrowsers = [];
 var loinc = [];
 var forms = [];
 var allMeasureLinks = [];
-
-
 var skipShortNameMap = {};
-skipShortNameMap['http://r.details.loinc.org/LOINC/46098-0.html?sections=Comprehensive'] = true;
-skipShortNameMap['http://r.details.loinc.org/LOINC/52458-7.html?sections=Comprehensive'] = true;
-skipShortNameMap['http://r.details.loinc.org/LOINC/52797-8.html?sections=Comprehensive'] = true;
 
-
-var step1 = function () {
+var step1 = function (doneStep1) {
     var allProtocolCounter = 0;
     var allMeasureCounter = 0;
     var xpathCounter = 0;
@@ -109,13 +103,15 @@ var step1 = function () {
                 function doneAllMeasureLinks() {
                     driver.quit();
                     console.log('finished all measures.');
+                    console.log("**********done step1");
+                    doneStep1();
                 }
             )
         }
     );
 };
 
-var step2 = function () {
+var step2 = function (doneStep2) {
     var measureCounter = 0;
     var protocolCounter = 0;
     Measure.find({}, function (err, measures) {
@@ -259,13 +255,14 @@ var step2 = function () {
             cache.save(function () {
                 driver.quit();
                 console.log('saved log into cache collection');
-                process.exit(0);
+                console.log("*************done step 2");
+                doneStep2();
             });
         });
     })
 };
 
-var step3 = function () {
+var step3 = function (doneStep3) {
     var loincCounter = 0;
     var cdeCounter = 0;
     var formCounter = 0;
@@ -400,13 +397,15 @@ var step3 = function () {
                 }
             );
         }, function doneAllLoinc() {
-            console.log("finished all loincCounter: " + loincCounter);
             driver.quit();
+            console.log("finished all loincCounter: " + loincCounter);
+            console.log("************done step 3");
+            doneStep3();
         });
     });
 };
 
-var step4 = function () {
+var step4 = function (doneStep4) {
     var cdeCounter = 0;
     Cde.find({}, function (err, cdes) {
         if (err) throw err;
@@ -415,20 +414,27 @@ var step4 = function () {
             var skipShortName = false;
             var href = cde.get('href');
             var classification = cde.get('classification');
-            console.log(href);
-            if (skipShortNameMap[href.trim()] === true)
-                skipShortName = true;
             driver.get(href);
             var naming = [];
             var pvs = [];
+            var ids = [];
             async.parallel({
                 parsingName: function (doneParsingAllNames) {
                     driver.findElements(webdriver.By.xpath("//*[@class='Section1000000F00']/table/tbody/tr[td]")).then(function (trs) {
                         if (trs.length == 2) {
-                            skipShortName === true;
+                            skipShortName = true;
                             skipShortNameMap[href] = true;
                         }
                         async.parallel({
+                            parsingId: function (doneParsingId) {
+                                var id = {};
+                                driver.findElement(webdriver.By.xpath("//*[@id='ln']")).getText().then(function (text) {
+                                    id['source'] = 'loinc';
+                                    id['id'] = text;
+                                    ids.push(id);
+                                    doneParsingId();
+                                })
+                            },
                             parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                                 var name = {};
                                 driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (text) {
@@ -568,6 +574,7 @@ var step4 = function () {
                 var o = {};
                 o['naming'] = naming;
                 o['valueDomain'] = valueDomain;
+                o['ids'] = ids;
 
 
                 var classi = [{
@@ -594,23 +601,89 @@ var step4 = function () {
             obj['skipShortNameMap'] = Object.keys(skipShortNameMap);
             var cache = new Cache(obj);
             cache.save(function () {
-                console.log("finished all cdes: " + cdeCounter);
                 driver.quit();
+                console.log("finished all cdes: " + cdeCounter);
+                console.log("done step 4");
+                doneStep4();
             })
         })
 
     })
 };
+var wipeDB = function (cb) {
+    async.parallel({
+            wipeDateElement: function (doneWipeDataElement) {
+                DataElement.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe DataElement");
+                    doneWipeDataElement();
+                });
+            },
+            wipeCache: function (doneWipeCache) {
+                Cache.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Cache");
+                    doneWipeCache();
+                });
+            },
+            wipeForm: function (doneWipeForm) {
+                Form.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Form");
+                    doneWipeForm();
+                });
+            },
+            wipeMeasure: function (doneWipeMeasure) {
+                Measure.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Measure");
+                    doneWipeMeasure();
+                });
+            },
+            wipeCde: function (doneWipeCde) {
+                Cde.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Cde");
+                    doneWipeCde();
+                });
+            }
+        },
+        function doneWipeAllDB() {
+            console.log("done step1: wipe all db");
+            cb();
+        })
+};
 
-conn.on('error', function (err) {
-    throw err;
-});
-conn.once('open', function callback() {
-    console.log("connected to " + mongoUrl);
-//    setTimeout(step1(), 3000);
-//    setTimeout(step2(), 3000);
-//    setTimeout(step3(), 3000);
-    setTimeout(step4(), 3000);
+async.series([
+    function (doneConnection) {
+        conn.on('error', function (err) {
+            throw err;
+        });
+        conn.once('open', function callback() {
+            console.log("connected to " + mongoUrl);
+            doneConnection();
+        });
+    },
+    function (doneWipeDB) {
+        wipeDB(doneWipeDB);
+    },
+    function (doneStep1) {
+        step1(doneStep1);
+    },
+    function (doneStep2) {
+        step2(doneStep2);
+    },
+    function (doneStep3) {
+        step3(doneStep3);
+    },
+    function (doneStep4) {
+        step4(doneStep4);
+    },
+    function (doneCleanUp) {
+        process.exit(1);
+    }
+]);
 
-});
+
+
 
