@@ -13,15 +13,18 @@ status.restartAttempted = false;
 
 status.statusReport = {
     elastic: {
-        up: false
-        , results: false
-        , sync: false
-        , updating: false
+        up: true
+        , results: true
+        , sync: true
+        , updating: true
     }
 };    
 
 exports.everythingOk = function() {
-    return status.statusReport.elastic.up && status.statusReport.elastic.results && status.statusReport.elastic.sync && status.statusReport.elastic.updating;
+    return status.statusReport.elastic.up
+        && status.statusReport.elastic.results
+        && status.statusReport.elastic.sync
+        && status.statusReport.elastic.updating;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
