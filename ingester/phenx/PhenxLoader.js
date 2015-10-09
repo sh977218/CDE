@@ -27,6 +27,13 @@ var loinc = [];
 var forms = [];
 var allMeasureLinks = [];
 
+
+var skipShortNameMap = {};
+skipShortNameMap['http://r.details.loinc.org/LOINC/46098-0.html?sections=Comprehensive'] = true;
+skipShortNameMap['http://r.details.loinc.org/LOINC/52458-7.html?sections=Comprehensive'] = true;
+skipShortNameMap['http://r.details.loinc.org/LOINC/52797-8.html?sections=Comprehensive'] = true;
+
+
 var step1 = function () {
     var allProtocolCounter = 0;
     var allMeasureCounter = 0;
@@ -59,7 +66,7 @@ var step1 = function () {
                     async.parallel({
                         parsingClassification: function (doneParsingClassification) {
                             driver.findElement(webdriver.By.xpath("//*[@class='back'][1]")).getText().then(function (classifcationText) {
-                                var arr = classifcationText.split(/[^A-z ]/).map(function (a) {
+                                var arr = classifcationText.split(/[^A-z \:]/).map(function (a) {
                                     return a.trim()
                                 });
                                 var classification = arr.slice(1, arr.length);
@@ -162,7 +169,10 @@ var step2 = function () {
                                                                             cdeBrowsers[href] = href;
                                                                         }
                                                                         if (source['text'] === 'LOINC') {
-                                                                            loinc[href] = href;
+                                                                            loinc.push({
+                                                                                classification: measure.get('classification'),
+                                                                                loincHref: href
+                                                                            });
                                                                         }
                                                                         standard['Source'] = source;
                                                                         doneParsingSource();
@@ -241,7 +251,7 @@ var step2 = function () {
             console.log('finished all measures');
             var obj = {};
             obj['cdeBrowser'] = Object.keys(cdeBrowsers);
-            obj['loinc'] = Object.keys(loinc);
+            obj['loinc'] = loinc;
             obj['log'] = true;
             obj['measures'] = measureCounter;
             obj['protocols'] = protocolCounter;
@@ -256,16 +266,17 @@ var step2 = function () {
 };
 
 var step3 = function () {
-    var cdeMap = {};
-    var formMap = {};
     var loincCounter = 0;
     var cdeCounter = 0;
     var formCounter = 0;
     Cache.findOne({"log": true}, function (err, cache) {
         if (err) throw err;
         var driver = new webdriver.Builder().forBrowser('firefox').build();
-        async.eachSeries(cache.get('loinc'), function (loincHref, doneOneLoinc) {
+        async.eachSeries(cache.get('loinc'), function (loinc, doneOneLoinc) {
+            var loincHref = loinc['loincHref'];
+            var classification = loinc['classification'];
             var form = {};
+            form['classification'] = classification;
             form['href1'] = loincHref;
             driver.get(loincHref);
             driver.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[td]")).then(function (trs) {
@@ -278,41 +289,42 @@ var step3 = function () {
                                 var cdes = [];
                                 if (text.indexOf("     ") > -1) {
                                     var cde = {};
+                                    cde['classification'] = classification;
                                     tr.findElements(webdriver.By.css('td')).then(function (tds) {
                                         async.parallel({
-                                            one: function (cb) {
+                                            parsingLoincNum: function (doneParsingLoincNum) {
                                                 tds[1].getText().then(function (text) {
                                                     cde['LOINC#'] = text.trim();
                                                     tds[1].findElement(webdriver.By.css('a')).then(function (a) {
                                                         a.getAttribute('href').then(function (href) {
                                                             cde['href'] = href;
-                                                            cb();
+                                                            doneParsingLoincNum();
                                                         })
                                                     })
                                                 });
                                             },
-                                            two: function (cb) {
+                                            parsingLoincName: function (doneParsingLoincName) {
                                                 tds[2].getText().then(function (tdText) {
                                                     cde['LOINC Name'] = tdText;
-                                                    cb();
+                                                    doneParsingLoincName();
                                                 })
                                             },
-                                            three: function (cb) {
+                                            parsingRoc: function (doneParsingRoc) {
                                                 tds[3].getText().then(function (tdText) {
                                                     cde['R/O/C'] = tdText;
-                                                    cb();
+                                                    doneParsingRoc();
                                                 })
                                             },
-                                            four: function (cb) {
+                                            parsingCardinality: function (doneParsingCardinality) {
                                                 tds[4].getText().then(function (tdText) {
                                                     cde['Cardinality'] = tdText;
-                                                    cb();
+                                                    doneParsingCardinality();
                                                 })
                                             },
-                                            five: function (cb) {
+                                            parsingUCUM: function (doneParsingUCUM) {
                                                 tds[5].getText().then(function (tdText) {
                                                     cde['Ex. UCUM Units'] = tdText;
-                                                    cb();
+                                                    doneParsingUCUM();
                                                 })
                                             }
                                         }, function doneAllTds() {
@@ -329,44 +341,43 @@ var step3 = function () {
                                 } else {
                                     tr.findElements(webdriver.By.css('td')).then(function (tds) {
                                         async.parallel({
-                                            one: function (cb) {
+                                            parsingLoincNum: function (doneParsingLoincNum) {
                                                 tds[1].getText().then(function (text) {
                                                     form['LOINC#'] = text.trim();
                                                     tds[1].findElement(webdriver.By.css('a')).then(function (a) {
                                                         a.getAttribute('href').then(function (href) {
                                                             form['href2'] = href;
-                                                            cb();
+                                                            doneParsingLoincNum();
                                                         })
                                                     })
                                                 })
 
                                             },
-                                            two: function (cb) {
+                                            parsingLoincName: function (doneParsingLoincName) {
                                                 tds[2].getText().then(function (tdText) {
                                                     form['LOINC Name'] = tdText;
-                                                    cb();
+                                                    doneParsingLoincName();
                                                 })
                                             },
-                                            three: function (cb) {
+                                            parsingRoc: function (doneParsingRoc) {
                                                 tds[3].getText().then(function (tdText) {
                                                     form['R/O/C'] = tdText;
-                                                    cb();
+                                                    doneParsingRoc();
                                                 })
                                             },
-                                            four: function (cb) {
+                                            parsingCardinality: function (doneParsingCardinality) {
                                                 tds[4].getText().then(function (tdText) {
                                                     form['Cardinality'] = tdText;
-                                                    cb();
+                                                    doneParsingCardinality();
                                                 })
                                             },
-                                            five: function (cb) {
+                                            parsingUCUM: function (doneParsingUCUM) {
                                                 tds[5].getText().then(function (tdText) {
                                                     form['Ex. UCUM Units'] = tdText;
-                                                    cb();
+                                                    doneParsingUCUM();
                                                 })
                                             }
                                         }, function doneAllTds() {
-
                                             var newForm = new Form(form);
                                             newForm.save(function () {
                                                 formCounter++;
@@ -401,15 +412,24 @@ var step4 = function () {
         if (err) throw err;
         var driver = new webdriver.Builder().forBrowser('firefox').build();
         async.eachSeries(cdes, function (cde, doneOneCde) {
+            var skipShortName = false;
             var href = cde.get('href');
+            var classification = cde.get('classification');
+            console.log(href);
+            if (skipShortNameMap[href.trim()] === true)
+                skipShortName = true;
             driver.get(href);
             var naming = [];
             var pvs = [];
             async.parallel({
-                parsingName: function (cb) {
+                parsingName: function (doneParsingAllNames) {
                     driver.findElements(webdriver.By.xpath("//*[@class='Section1000000F00']/table/tbody/tr[td]")).then(function (trs) {
+                        if (trs.length == 2) {
+                            skipShortName === true;
+                            skipShortNameMap[href] = true;
+                        }
                         async.parallel({
-                            parsingFullySpecifiedName: function (c) {
+                            parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                                 var name = {};
                                 driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (text) {
                                     var context = {};
@@ -417,10 +437,10 @@ var step4 = function () {
                                     name['designation'] = text;
                                     name['context'] = context;
                                     naming.push(name);
-                                    c();
+                                    doneParsingFullySpecifiedName();
                                 })
                             },
-                            parsingLongCommonName: function (c) {
+                            parsingLongCommonName: function (doneParsingLongCommonName) {
                                 var name = {};
                                 trs[1].findElements(webdriver.By.css('td')).then(function (tds) {
                                     tds[2].getText().then(function (text) {
@@ -429,41 +449,51 @@ var step4 = function () {
                                         name['designation'] = text;
                                         name['context'] = context;
                                         naming.push(name);
-                                        c();
+                                        doneParsingLongCommonName();
                                     })
                                 })
                             },
-                            parsingShortName: function (c) {
-                                var name = {};
-                                trs[2].findElements(webdriver.By.css('td')).then(function (tds) {
-                                    tds[2].getText().then(function (text) {
+                            parsingShortName: function (doneParsingShortName) {
+                                if (skipShortName === true) {
+                                    doneParsingShortName()
+                                }
+                                else {
+                                    var name = {};
+                                    trs[2].findElements(webdriver.By.css('td')).then(function (tds) {
+                                        tds[2].getText().then(function (text) {
+                                            var context = {};
+                                            context['contextName'] = 'Shortname';
+                                            name['designation'] = text;
+                                            name['context'] = context;
+                                            naming.push(name);
+                                            doneParsingShortName();
+                                        })
+                                    })
+                                }
+                            },
+                            parsingQuestionName: function (doneParsingQuestionName) {
+                                if (skipShortName) {
+                                    doneParsingQuestionName();
+                                }
+                                else {
+                                    var name = {};
+                                    driver.findElements(webdriver.By.xpath("/html/body/div[5]/table/tbody/tr[2]/td[3]")).then(function (text) {
                                         var context = {};
-                                        context['contextName'] = 'Shortname';
+                                        context['contextName'] = 'Question';
                                         name['designation'] = text;
                                         name['context'] = context;
                                         naming.push(name);
-                                        c();
+                                        doneParsingQuestionName();
                                     })
-                                })
-                            },
-                            parsingFullySpecifiedName: function (c) {
-                                var name = {};
-                                driver.findElements(webdriver.By.xpath("/html/body/div[5]/table/tbody/tr[2]/td[3]")).then(function (text) {
-                                    var context = {};
-                                    context['contextName'] = 'Question';
-                                    name['designation'] = text;
-                                    name['context'] = context;
-                                    naming.push(name);
-                                    c();
-                                })
+                                }
                             }
-                        }, function doneAllNames() {
+                        }, function doneParsingOneNames() {
                             console.log("finished name");
-                            cb();
+                            doneParsingAllNames();
                         })
                     })
                 },
-                parsingPermissibleValue: function (cb) {
+                parsingPermissibleValue: function (doneParsingAllPermissibleValues) {
                     driver.findElements(webdriver.By.xpath("//*[@class='Section80000']/table/tbody/tr")).then(function (trs) {
                         var num_trs = trs.length;
                         var i = 0;
@@ -528,7 +558,7 @@ var step4 = function () {
                             }
                         }, function doneAllTrs() {
                             console.log("finished PVs");
-                            cb();
+                            doneParsingAllPermissibleValues();
                         })
                     })
                 }
@@ -538,6 +568,21 @@ var step4 = function () {
                 var o = {};
                 o['naming'] = naming;
                 o['valueDomain'] = valueDomain;
+
+
+                var classi = [{
+                    stewardOrg: {name: "PhenX"},
+                    elements: []
+                }];
+                var temp = classi[0].elements;
+                for (var i = 0; i < classification.length; i++) {
+                    var ele = {};
+                    ele['name'] = classification[i];
+                    ele['elements'] = [];
+                    temp.push(ele);
+                    temp = temp[0].elements;
+                }
+                o['classification'] = classi;
                 mongo_cde.create(o, user, function () {
                     cdeCounter++;
                     console.log("finished cde: " + cdeCounter);
@@ -545,8 +590,13 @@ var step4 = function () {
                 });
             });
         }, function doneAllCdes() {
-            console.log("finished all cdes: " + cdeCounter);
-            driver.quit();
+            var obj = {};
+            obj['skipShortNameMap'] = Object.keys(skipShortNameMap);
+            var cache = new Cache(obj);
+            cache.save(function () {
+                console.log("finished all cdes: " + cdeCounter);
+                driver.quit();
+            })
         })
 
     })
@@ -557,10 +607,10 @@ conn.on('error', function (err) {
 });
 conn.once('open', function callback() {
     console.log("connected to " + mongoUrl);
-//     setTimeout(step1(), 3000);
-    setTimeout(step2(), 3000);
+//    setTimeout(step1(), 3000);
+//    setTimeout(step2(), 3000);
 //    setTimeout(step3(), 3000);
-//    setTimeout(step4(), 3000);
+    setTimeout(step4(), 3000);
 
 });
 
