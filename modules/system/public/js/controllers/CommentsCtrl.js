@@ -15,8 +15,8 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         }).then(function(res) {
               $scope.addAlert("success", res.data.message);  
               $scope.elt = res.data.elt;
+              $scope.comment.content = "";
         });
-        $scope.comment.content = "";
     };
     
     $scope.removeComment = function(commentId) {

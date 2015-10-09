@@ -13,7 +13,7 @@ public abstract class CommentTest extends CommonTest {
     public void addComment(String text){
         gotoComments();
         findElement(By.name("commentTextArea")).sendKeys(text);
-        hangon(1);
+        hangon(2);
         findElement(By.name("postComment")).click();
         textPresent("Comment added");
     }
