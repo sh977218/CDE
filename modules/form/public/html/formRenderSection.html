@@ -1,10 +1,9 @@
 <div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements)"
-     class="panel panel-default formRenderSection" id="formRenderSection_{{section.label}}">
+     class="panel panel-default formRenderSection" id="formRenderSection_{{section.label}}" style="margin-left:10px">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-9">
                 <h4 tabindex="0">{{section.label}}</h4>
-
                 <p tabindex="0">{{section.instructions}}</p>
             </div>
             <div class="col-md-3" ng-if="canRepeat(section)">

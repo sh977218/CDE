@@ -32,9 +32,15 @@ angular.module('formModule')
     }
     setSelectedProfile();
 
+    var removeAnswers = function(formElt) {
+        if (formElt.question) delete formElt.question.answer;
+        formElt.formElements.forEach(function(fe) {removeAnswers(fe);});
+    };
+
     $scope.addSection = function(section, formElements, index) {
         var newElt =  JSON.parse(JSON.stringify(section));
         newElt.isCopy = true;
+        removeAnswers(newElt);
         formElements.splice(index + 1, 0, newElt);
     };
 
