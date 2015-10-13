@@ -10,7 +10,8 @@ var webdriver = require('selenium-webdriver'),
 
 // global variables
 var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
-var mongoUrl = config.mongoUri.replace('test', 'migration');
+//var mongoUrl = config.mongoMigrationUri;
+var mongoUrl = config.mongoUri;
 var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
 var cacheSchema = mongoose.Schema({}, {strict: false});
 var cdeSchema = mongoose.Schema({}, {strict: false});
@@ -664,9 +665,11 @@ async.series([
             doneConnection();
         });
     },
+/*
     function (doneWipeDB) {
         wipeDB(doneWipeDB);
     },
+*/
     function (doneStep1) {
         step1(doneStep1);
     },
