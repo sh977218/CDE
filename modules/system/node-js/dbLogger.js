@@ -71,11 +71,11 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedElements2: [String]
     }, { safe: {w: 0}});
 
-//storedQuerySchema.plugin(mongoosastic, {
-//    esClient: esClient
-//    , index: config.elastic.storedQueryIndex.name
-//    , type: "storedquery"
-//});
+storedQuerySchema.plugin(mongoosastic, {
+    esClient: esClient
+    , index: config.elastic.storedQueryIndex.name
+    , type: "storedquery"
+});
 
 var feedbackIssueSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
