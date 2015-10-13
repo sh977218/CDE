@@ -521,7 +521,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).sendKeys(password);
         waitAndClick(By.id("login_button"));
         try {
-            textPresent(checkText, By.id("username_link"));
+            textPresent(checkText);
             // Assumption is that UMLS sometimes throws an error on login. With
             // a socket hangup. login fails, we retry.
         } catch (TimeoutException e) {
@@ -529,7 +529,7 @@ public class NlmCdeBaseTest {
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
             findElement(By.id("login_button")).click();
-            textPresent(checkText, By.id("username_link"));
+            textPresent(checkText);
         }
     }
 
