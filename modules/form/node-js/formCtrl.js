@@ -51,7 +51,7 @@ var getFormJson = function(req, res){
             if (cb) cb();
         });
     };
-    //var type = req.query.type === 'tinyId' ? 'eltByTinyId' : 'byId';
+
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (form) {
             adminSvc.hideUnapprovedComments(form);
