@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
+    , js2xml = require('js2xmlparser')
     ;
 
 
@@ -82,11 +83,30 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/cde/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+        function sendNativeJson(cde, res){
+            res.send(cde);
+        }
+
+        function sendNativeXml(cde, res){
+            res.setHeader("Content-Type", "application/xml");
+            //var exportCde = cde.toObject();
+            //delete exportCde._id;
+            //exportForm.formElements.forEach(function(s){
+            //    s.formElements.forEach(function(q){delete q._id;});
+            //});
+            res.send(js2xml("CDE", cde));
+        }
+
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
-            res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+            cde = cdesvc.hideProprietaryPvs(cde, req.user);
+
+
+            if(req.query.type==='xml') sendNativeXml(req, res);
+            else sendNativeJson(cde, res);
+
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
@@ -99,7 +119,7 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/debytinyid/:tinyId/:version?', function (req, res) {
+    app.post('/cde/:tinyId/:version?', function (req, res) {
         return cdesvc.save(req, res);
     });
 
