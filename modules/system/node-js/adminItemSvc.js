@@ -227,7 +227,7 @@ exports.addComment = function (req, res, dao) {
             }
         });
     } else {
-        res.send({message: "You are not authorized."});
+        res.status(403).send({message: "You are not authorized."});
     }
 };
 
@@ -261,7 +261,7 @@ exports.removeComment = function (req, res, dao) {
             });
         });
     } else {
-        res.send("You are not authorized.");
+        res.status(403).send("You are not authorized.");
     }
 };
 

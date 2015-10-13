@@ -270,6 +270,7 @@ exports.newBoard = function (board, callback) {
     });
 };
 
+// TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
     mongooseObject.save(function (err) {
         callback(err, mongooseObject);
