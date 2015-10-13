@@ -1,9 +1,13 @@
 var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
+<<<<<<< HEAD
     , js2xml = require('js2xmlparser')
     , logging = require('../../system/node-js/logging')
     , sdc = require('./sdcForm')
+=======
+    , formShared = require('../shared/formShared')
+>>>>>>> b165b44d4e41d2af358ce81f773c5ed200f14078
     ;
 
 exports.findForms = function (req, res) {
@@ -31,24 +35,22 @@ exports.findAllCdesInForm = function (node, map, array) {
 
 var getFormJson = function(req, res){
     var markCDE = function (form, cb) {
-        var allTinyId = [];
-        var allCdes = {};
-        exports.findAllCdesInForm(form, allCdes, allTinyId);
-        mongo_data_cde.findCurrCdesInFormElement(allTinyId, function (error, currCdes) {
-            var currCdeMap = {};
-            for (var i = 0; i < currCdes.length; i++) {
-                var currCde = currCdes[i];
-                currCdeMap[currCde['tinyId']] = currCde['version'];
-            }
-            for (var tinyId in allCdes) {
-                var cde = allCdes[tinyId];
-                var version = cde['version'];
-                var currVersion = currCdeMap[tinyId];
-                if (version !== currVersion) {
-                    cde['outdated'] = true;
-                    form['outdated'] = true;
-                }
-            }
+        var cdes = formShared.getFormCdes(form);
+        var ids = cdes.map(function(cde){
+            return cde.tinyId;
+        });
+        mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
+            cdes.forEach(function(formCde){
+                currCdes.forEach(function(systemCde){
+                    if (formCde.tinyId === systemCde.tinyId) {
+                        if (formCde.version !== systemCde.version) {
+                            formCde.outdated = true;
+                            form.outdated = true;
+                        }
+                        formCde.derivationRules = systemCde.derivationRules;
+                    }
+                });
+            });
             if (cb) cb();
         });
     };

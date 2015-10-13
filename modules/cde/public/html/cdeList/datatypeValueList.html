@@ -1,14 +1,7 @@
-<dl class="dl-horizontal"
-    ng-if="cde.valueDomain.datatypeValueList.multi === true || cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
+<dl class="dl-horizontal" ng-if="cde.valueDomain.datatypeValueList.multi === true">
     <span ng-if="cde.valueDomain.datatypeValueList.multi === true">
         <dt>Multiple Values:</dt>
         <dd>Yes</dd>
-    </span>
-    <span ng-if="cde.valueDomain.datatypeValueList.otherPleaseSpecify === true">
-        <dt>Other (Please Specify):</dt>
-        <dd>Yes</dd>        
-        <dt>Please Specify Text:</dt>
-        <dd>{{cde.valueDomain.datatypeValueList.otherPleaseSpecifyText | placeholdEmpty}}</dd>      
     </span>
 </dl>
 

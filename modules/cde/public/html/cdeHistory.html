@@ -32,7 +32,7 @@
             </tbody>
 
         </table>
-        <div tabindex="0" ng-show="priorCdes.length == 0">This Data Element has no history</div>
+        <div tabindex="0" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
     </div>
     <div class="col-md-7">
         <div ng-include="'/cde/public/html/cdeDiff.html'"></div>
