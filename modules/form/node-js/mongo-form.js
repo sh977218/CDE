@@ -85,7 +85,7 @@ exports.allPropertiesKeys = function (callback) {
 
 exports.transferSteward = function (from, to, callback) {
     Form.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
-        callback(err, result.nModified);
+        callback(err, result);
     });
 };
 
