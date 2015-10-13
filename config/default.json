@@ -74,7 +74,7 @@
   "node": {
     "scripts": {
       "stop": "",
-      "start": "node ../run/node-js/app &"
+      "start": "node --harmony ../run/node-js/app &"
     },
     "buildDir": "../build"
   },
