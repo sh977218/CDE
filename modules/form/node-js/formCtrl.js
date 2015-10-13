@@ -1,13 +1,10 @@
 var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
-<<<<<<< HEAD
     , js2xml = require('js2xmlparser')
     , logging = require('../../system/node-js/logging')
     , sdc = require('./sdcForm')
-=======
     , formShared = require('../shared/formShared')
->>>>>>> b165b44d4e41d2af358ce81f773c5ed200f14078
     ;
 
 exports.findForms = function (req, res) {
