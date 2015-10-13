@@ -5,6 +5,8 @@ var webdriver = require('selenium-webdriver'),
     mongoose = require('mongoose'),
     config = require('../../modules/system/node-js/parseConfig'),
     cde_schemas = require('../../modules/cde/node-js/schemas'),
+    classificationShared = require('../../modules/system/shared/classificationShared'),
+    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     async = require('async');
 
@@ -28,6 +30,7 @@ var loinc = [];
 var forms = [];
 var allMeasureLinks = [];
 var skipShortNameMap = {};
+var phenxOrg = null;
 
 var step1 = function (doneStep1) {
     var allProtocolCounter = 0;
@@ -65,7 +68,21 @@ var step1 = function (doneStep1) {
                                     return a.trim()
                                 });
                                 var classification = arr.slice(1, arr.length);
-                                obj['classification'] = classification;
+                                var classi = [{
+                                    stewardOrg: {name: "PhenX"},
+                                    elements: []
+                                }];
+                                var temp = classi[0].elements;
+                                for (var i = 0; i < classification.length; i++) {
+                                    var ele = {};
+                                    ele['name'] = classification[i];
+                                    ele['elements'] = [];
+                                    temp.push(ele);
+                                    temp = temp[0].elements;
+                                }
+                                obj['classification'] = classi;
+                                classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", classi[0]]);
+
                                 doneParsingClassification();
                             });
                         },
@@ -265,8 +282,10 @@ var step2 = function (doneStep2) {
 
 var step3 = function (doneStep3) {
     var loincCounter = 0;
-    var cdeCounter = 0;
+    var cdeSaveCounter = 0;
+    var cdeUpdateCounter = 0;
     var formCounter = 0;
+    var CdeUpdateMap = [];
     Cache.findOne({"log": true}, function (err, cache) {
         if (err) throw err;
         var driver = new webdriver.Builder().forBrowser('firefox').build();
@@ -327,11 +346,26 @@ var step3 = function (doneStep3) {
                                             }
                                         }, function doneAllTds() {
                                             cdes.push(cde);
-                                            var newCde = new Cde(cde);
-                                            newCde.save(function () {
-                                                cdeCounter++;
-                                                console.log('finish saving cde ' + cdeCounter);
-                                                doneOneTr();
+                                            Cde.findOne({"LOINC#": cde["LOINC#"]}, function (err, result) {
+                                                if (err) throw err;
+                                                if (result) {
+                                                    var classi = result.get('classification');
+                                                    classi[0].elements.push(cde['classification'][0].elements[0]);
+                                                    result.save(function () {
+                                                        CdeUpdateMap.push(cde["LOINC#"]);
+                                                        cdeUpdateCounter++;
+                                                        console.log('finish update cde ' + cdeUpdateCounter);
+                                                        doneOneTr();
+                                                    });
+                                                }
+                                                else {
+                                                    var newCde = new Cde(cde);
+                                                    newCde.save(function () {
+                                                        cdeSaveCounter++;
+                                                        console.log('finish saving cde ' + cdeSaveCounter);
+                                                        doneOneTr();
+                                                    });
+                                                }
                                             });
                                         })
 
@@ -399,9 +433,14 @@ var step3 = function (doneStep3) {
             );
         }, function doneAllLoinc() {
             driver.quit();
-            console.log("finished all loincCounter: " + loincCounter);
-            console.log("************done step 3");
-            doneStep3();
+            o['CdeUpdateMap'] = CdeUpdateMap;
+            var cache = new Cache(o);
+
+            cache.save(function () {
+                console.log("finished all loincCounter: " + loincCounter);
+                console.log("************done step 3");
+                doneStep3();
+            });
         });
     });
 };
@@ -414,7 +453,6 @@ var step4 = function (doneStep4) {
         async.eachSeries(cdes, function (cde, doneOneCde) {
             var skipShortName = false;
             var href = cde.get('href');
-            var classification = cde.get('classification');
             driver.get(href);
             var naming = [];
             var pvs = [];
@@ -576,21 +614,8 @@ var step4 = function (doneStep4) {
                 o['naming'] = naming;
                 o['valueDomain'] = valueDomain;
                 o['ids'] = ids;
+                o['classification'] = cde.get('classification');
 
-
-                var classi = [{
-                    stewardOrg: {name: "PhenX"},
-                    elements: []
-                }];
-                var temp = classi[0].elements;
-                for (var i = 0; i < classification.length; i++) {
-                    var ele = {};
-                    ele['name'] = classification[i];
-                    ele['elements'] = [];
-                    temp.push(ele);
-                    temp = temp[0].elements;
-                }
-                o['classification'] = classi;
                 mongo_cde.create(o, user, function () {
                     cdeCounter++;
                     console.log("finished cde: " + cdeCounter);
@@ -662,12 +687,18 @@ async.series([
         });
         conn.once('open', function callback() {
             console.log("connected to " + mongoUrl);
-            doneConnection();
+            mongo_data_system.orgByName("PhenX", function (stewardOrg) {
+                phenxOrg = stewardOrg;
+                if (!phenxOrg) {
+                    throw "PhenX Org does not exists!";
+                }
+                doneConnection();
+            });
         });
     },
 /*
-    function (doneWipeDB) {
-        wipeDB(doneWipeDB);
+    function (doneWipeAllDB) {
+        wipeDB(doneWipeAllDB);
     },
 */
     function (doneStep1) {
