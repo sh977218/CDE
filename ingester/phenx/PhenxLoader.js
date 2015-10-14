@@ -12,9 +12,10 @@ var webdriver = require('selenium-webdriver'),
 
 // global variables
 var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
-//var mongoUrl = config.mongoMigrationUri;
+var mongoUrlMigration = config.mongoMigrationUri;
 var mongoUrl = config.mongoUri;
 var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
+var connMigration = mongoose.createConnection(mongoUrlMigration, {auth: {authdb: "admin"}});
 var cacheSchema = mongoose.Schema({}, {strict: false});
 var cdeSchema = mongoose.Schema({}, {strict: false});
 var formSchema = mongoose.Schema({}, {strict: false});
@@ -81,9 +82,11 @@ var step1 = function (doneStep1) {
                                     temp = temp[0].elements;
                                 }
                                 obj['classification'] = classi;
-                                classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", classi[0]]);
-
-                                doneParsingClassification();
+                                classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
+                                phenxOrg.save(function (err) {
+                                    if (err) throw err;
+                                    doneParsingClassification();
+                                });
                             });
                         },
                         parsingProtocolsLink: function (doneParsingProtocolsLink) {
@@ -267,8 +270,8 @@ var step2 = function (doneStep2) {
             obj['cdeBrowser'] = Object.keys(cdeBrowsers);
             obj['loinc'] = loinc;
             obj['log'] = true;
-            obj['measures'] = measureCounter;
-            obj['protocols'] = protocolCounter;
+            obj['measureCounter'] = measureCounter;
+            obj['protocolCounter'] = protocolCounter;
             var cache = new Cache(obj);
             cache.save(function () {
                 driver.quit();
@@ -349,8 +352,8 @@ var step3 = function (doneStep3) {
                                             Cde.findOne({"LOINC#": cde["LOINC#"]}, function (err, result) {
                                                 if (err) throw err;
                                                 if (result) {
-                                                    var classi = result.get('classification');
-                                                    classi[0].elements.push(cde['classification'][0].elements[0]);
+                                                    classificationShared.transferClassifications(cde, result.toObject());
+                                                    result.markModified('classification');
                                                     result.save(function () {
                                                         CdeUpdateMap.push(cde["LOINC#"]);
                                                         cdeUpdateCounter++;
@@ -433,7 +436,10 @@ var step3 = function (doneStep3) {
             );
         }, function doneAllLoinc() {
             driver.quit();
+            var o = {};
             o['CdeUpdateMap'] = CdeUpdateMap;
+            o['cdeSaveCounter'] = cdeSaveCounter;
+            o['cdeUpdateCounter'] = cdeUpdateCounter;
             var cache = new Cache(o);
 
             cache.save(function () {
@@ -476,7 +482,7 @@ var step4 = function (doneStep4) {
                             },
                             parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                                 var name = {};
-                                driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (text) {
+                                driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).getText().then(function (text) {
                                     var context = {};
                                     context['contextName'] = 'Primary Name';
                                     name['designation'] = text;
@@ -522,7 +528,7 @@ var step4 = function (doneStep4) {
                                 }
                                 else {
                                     var name = {};
-                                    driver.findElements(webdriver.By.xpath("/html/body/div[5]/table/tbody/tr[2]/td[3]")).then(function (text) {
+                                    driver.findElements(webdriver.By.xpath("/html/body/div[5]/table/tbody/tr[2]/td[3]")).getText().then(function (text) {
                                         var context = {};
                                         context['contextName'] = 'Question';
                                         name['designation'] = text;
@@ -681,7 +687,7 @@ var wipeDB = function (cb) {
 };
 
 async.series([
-    function (doneConnection) {
+    function (doneConnectionTest) {
         conn.on('error', function (err) {
             throw err;
         });
@@ -692,27 +698,30 @@ async.series([
                 if (!phenxOrg) {
                     throw "PhenX Org does not exists!";
                 }
-                doneConnection();
+                doneConnectionTest();
             });
         });
     },
-/*
-    function (doneWipeAllDB) {
-        wipeDB(doneWipeAllDB);
-    },
-*/
+    /*
+     function (doneWipeAllDB) {
+     wipeDB(doneWipeAllDB);
+     },
+     */
     function (doneStep1) {
         step1(doneStep1);
     },
+
     function (doneStep2) {
         step2(doneStep2);
     },
+
     function (doneStep3) {
         step3(doneStep3);
     },
     function (doneStep4) {
         step4(doneStep4);
     },
+
     function (doneCleanUp) {
         process.exit(1);
     }
