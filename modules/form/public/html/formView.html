@@ -25,9 +25,20 @@
         <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
            ng-if="formLoincRender && !elt.noRenderAllowed"
            ng-href="{{formLoincRenderUrl}}/{{elt._id}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
-        <a class="btn btn-small btn-default" target="_blank" title="SDC Export" id="sdcExport"
-           href="sdcExport/{{elt._id}}">
-            <i class="fa fa-download"></i> SDC Export</a>
+
+        <div class="btn-group">
+            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-download"></i>
+                Export <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a></li>
+                <li><a id="sdcExport" ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">XML File, SDC Schema</a></li>
+                <li><a ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
+            </ul>
+        </div>
+
         <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
                 ng-if="user._id" ng-click="pinAllCdesModal()"><i class="fa fa-cogs"></i> Pin CDEs
         </button>
