@@ -90,12 +90,9 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-            //var exportCde = cde.toObject();
-            //delete exportCde._id;
-            //exportForm.formElements.forEach(function(s){
-            //    s.formElements.forEach(function(q){delete q._id;});
-            //});
-            res.send(js2xml("CDE", cde));
+            var exportCde = cde.toObject();
+            delete exportCde._id;
+            res.send(js2xml("cde", exportCde));
         }
 
         var serveCde = function (err, cde) {
@@ -104,13 +101,8 @@ exports.init = function (app, daoManager) {
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
 
 
-            if(req.query.type==='xml') sendNativeXml(req, res);
+            if(req.query.type==='xml') sendNativeXml(cde, res);
             else sendNativeJson(cde, res);
-
-            if (req.isAuthenticated()) {
-                mongo_data.addToViewHistory(cde, req.user);
-            }
-            mongo_data.incDeView(cde);
         };
         if (!req.params.version) {
             mongo_data.eltByTinyId(req.params.tinyId, serveCde);
