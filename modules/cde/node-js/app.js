@@ -68,14 +68,14 @@ exports.init = function (app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
-        cdesvc.show(req, function (result) {
-            if (!result) res.status(404).send();
-            var cde = cdesvc.hideProprietaryPvs(result, req.user);
-            adminItemSvc.hideUnapprovedComments(cde);
-            res.send(cde);
-        });
-    });
+    //app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
+    //    cdesvc.show(req, function (result) {
+    //        if (!result) res.status(404).send();
+    //        var cde = cdesvc.hideProprietaryPvs(result, req.user);
+    //        adminItemSvc.hideUnapprovedComments(cde);
+    //        res.send(cde);
+    //    });
+    //});
 
     app.get('/deExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
