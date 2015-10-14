@@ -33,6 +33,50 @@ var allMeasureLinks = [];
 var skipShortNameMap = {};
 var phenxOrg = null;
 
+var wipeDB = function (cb) {
+    async.parallel({
+            wipeDateElement: function (doneWipeDataElement) {
+                DataElement.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe DataElement");
+                    doneWipeDataElement();
+                });
+            },
+            wipeCache: function (doneWipeCache) {
+                Cache.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Cache");
+                    doneWipeCache();
+                });
+            },
+            wipeForm: function (doneWipeForm) {
+                Form.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Form");
+                    doneWipeForm();
+                });
+            },
+            wipeMeasure: function (doneWipeMeasure) {
+                Measure.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Measure");
+                    doneWipeMeasure();
+                });
+            },
+            wipeCde: function (doneWipeCde) {
+                Cde.remove(function (err) {
+                    if (err) throw err;
+                    console.log("done wipe Cde");
+                    doneWipeCde();
+                });
+            }
+        },
+        function doneWipeAllDB() {
+            console.log("done step1: wipe all db");
+            cb();
+        })
+};
+
 var step1 = function (doneStep1) {
     var allProtocolCounter = 0;
     var allMeasureCounter = 0;
@@ -458,7 +502,6 @@ var step4 = function (doneStep4) {
         var driver = new webdriver.Builder().forBrowser('firefox').build();
         async.eachSeries(cdes, function (cde, doneOneCde) {
             var skipShortName = false;
-            var skipQuestionName = false;
             var href = cde.get('href');
             driver.get(href);
             var naming = [];
@@ -471,15 +514,11 @@ var step4 = function (doneStep4) {
                             skipShortName = true;
                             skipShortNameMap[href] = true;
                         }
-                        if (href === 'http://r.details.loinc.org/LOINC/24547-2.html?sections=Comprehensive') {
-                            skipQuestionName = true;
-                            skipShortNameMap[href] = true;
-                        }
                         async.parallel({
                             parsingId: function (doneParsingId) {
                                 var id = {};
                                 driver.findElement(webdriver.By.xpath("//*[@id='ln']")).getText().then(function (text) {
-                                    id['source'] = 'loinc';
+                                    id['source'] = 'LOINC';
                                     id['id'] = text;
                                     ids.push(id);
                                     doneParsingId();
@@ -487,68 +526,76 @@ var step4 = function (doneStep4) {
                             },
                             parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                                 var name = {};
-                                driver.findElement(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).getText().then(function (text) {
-                                    var context = {};
-                                    context['contextName'] = 'Primary Name';
-                                    name['designation'] = text;
-                                    name['context'] = context;
-                                    naming.push(name);
-                                    doneParsingFullySpecifiedName();
+                                driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (temp) {
+                                    if (temp.length > 0) {
+                                        temp[0].getText().then(function (text) {
+                                            var context = {};
+                                            context['contextName'] = 'Primary Name';
+                                            name['designation'] = text.trim();
+                                            name['definition'] = '';
+                                            name['context'] = context;
+                                            naming.push(name);
+                                            doneParsingFullySpecifiedName();
+                                        })
+                                    } else {
+                                        doneParsingFullySpecifiedName();
+                                    }
                                 })
                             },
                             parsingLongCommonName: function (doneParsingLongCommonName) {
                                 var name = {};
-                                trs[1].findElements(webdriver.By.css('td')).then(function (tds) {
-                                    tds[2].getText().then(function (text) {
-                                        var context = {};
-                                        context['contextName'] = 'Long Common Name';
-                                        name['designation'] = text;
-                                        name['context'] = context;
-                                        naming.push(name);
+                                driver.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[3]/td[3]')).then(function (temp) {
+                                    if (temp.length > 0) {
+                                        temp[0].getText().then(function (text) {
+                                            var context = {};
+                                            context['contextName'] = 'Long Common Name';
+                                            name['designation'] = text.trim();
+                                            name['definition'] = '';
+                                            name['context'] = context;
+                                            naming.push(name);
+                                            doneParsingLongCommonName();
+                                        })
+                                    } else {
                                         doneParsingLongCommonName();
-                                    })
+                                    }
                                 })
                             },
                             parsingShortName: function (doneParsingShortName) {
-                                if (skipShortName === true) {
-                                    doneParsingShortName()
-                                }
-                                else {
-                                    var name = {};
-                                    trs[2].findElements(webdriver.By.css('td')).then(function (tds) {
-                                        tds[2].getText().then(function (text) {
+                                var name = {};
+                                driver.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[4]/td[3]')).then(function (temp) {
+                                    if (temp.length > 0) {
+                                        temp[0].getText().then(function (text) {
                                             var context = {};
                                             context['contextName'] = 'Shortname';
-                                            name['designation'] = text;
+                                            name['designation'] = text.trim();
+                                            name['definition'] = '';
                                             name['context'] = context;
                                             naming.push(name);
                                             doneParsingShortName();
                                         })
-                                    })
-                                }
+                                    } else {
+                                        doneParsingShortName();
+                                    }
+                                })
                             },
                             parsingQuestionName: function (doneParsingQuestionName) {
-                                if (skipShortName || skipQuestionName) {
-                                    doneParsingQuestionName();
-                                }
-                                else {
-                                    var name = {};
-                                    driver.findElements(webdriver.By.xpath("//div[@class='Section200000']/table/tbody/tr[2]/td[3]")).then(function (temp) {
-                                        if (temp.size > 0) {
-                                            temp[0].getText().then(function (text) {
-                                                var context = {};
-                                                context['contextName'] = 'Question';
-                                                name['designation'] = text;
-                                                name['context'] = context;
-                                                naming.push(name);
-                                                doneParsingQuestionName();
-                                            })
-                                        }
-                                        else {
+                                var name = {};
+                                driver.findElements(webdriver.By.xpath("//div[@class='Section200000']/table/tbody/tr[2]/td[3]")).then(function (temp) {
+                                    if (temp.length > 0) {
+                                        temp[0].getText().then(function (text) {
+                                            var context = {};
+                                            context['contextName'] = 'Question';
+                                            name['designation'] = text.trim();
+                                            name['definition'] = '';
+                                            name['context'] = context;
+                                            naming.push(name);
                                             doneParsingQuestionName();
-                                        }
-                                    })
-                                }
+                                        })
+                                    }
+                                    else {
+                                        doneParsingQuestionName();
+                                    }
+                                })
                             }
                         }, function doneParsingOneNames() {
                             console.log("finished name");
@@ -570,14 +617,14 @@ var step4 = function (doneStep4) {
                                         async.parallel({
                                             one: function (b) {
                                                 tds[3].getText().then(function (text) {
-                                                    pv['valueMeaningName'] = text;
-                                                    pv['permissibleValue'] = text;
+                                                    pv['valueMeaningName'] = text.trim();
+                                                    pv['permissibleValue'] = text.trim();
                                                     b();
                                                 });
                                             },
                                             two: function (b) {
                                                 tds[5].getText().then(function (text) {
-                                                    pv['valueMeaningCode'] = text;
+                                                    pv['valueMeaningCode'] = text.trim();
                                                     b();
                                                 });
                                             }
@@ -590,20 +637,20 @@ var step4 = function (doneStep4) {
                                         async.parallel({
                                             one: function (b) {
                                                 tds[3].getText().then(function (text) {
-                                                    pv['valueMeaningName'] = text;
+                                                    pv['valueMeaningName'] = text.trim();
                                                     b();
                                                 });
                                             },
                                             two: function (b) {
                                                 tds[5].getText().then(function (text) {
-                                                    pv['permissibleValue'] = text;
-                                                    pv['valueMeaningCode'] = text;
+                                                    pv['permissibleValue'] = text.trim();
+                                                    pv['valueMeaningCode'] = text.trim();
                                                     b();
                                                 });
                                             },
                                             three: function (b) {
                                                 tds[7].getText().then(function (text) {
-                                                    pv['valueMeaningCode'] = text;
+                                                    pv['valueMeaningCode'] = text.trim();
                                                     b();
                                                 });
                                             }
@@ -627,8 +674,11 @@ var step4 = function (doneStep4) {
                 }
             }, function doneAllParsing() {
                 var valueDomain = {};
+                valueDomain['datatype'] = 'Value List';
                 valueDomain['permissibleValues'] = pvs;
                 var o = {};
+                o['stewardOrg'] = {"name": 'PhenX'};
+                o['registrationState'] = {"registrationStatus": "Qualified"};
                 o['naming'] = naming;
                 o['valueDomain'] = valueDomain;
                 o['ids'] = ids;
@@ -654,49 +704,6 @@ var step4 = function (doneStep4) {
 
     })
 };
-var wipeDB = function (cb) {
-    async.parallel({
-            wipeDateElement: function (doneWipeDataElement) {
-                DataElement.remove(function (err) {
-                    if (err) throw err;
-                    console.log("done wipe DataElement");
-                    doneWipeDataElement();
-                });
-            },
-            wipeCache: function (doneWipeCache) {
-                Cache.remove(function (err) {
-                    if (err) throw err;
-                    console.log("done wipe Cache");
-                    doneWipeCache();
-                });
-            },
-            wipeForm: function (doneWipeForm) {
-                Form.remove(function (err) {
-                    if (err) throw err;
-                    console.log("done wipe Form");
-                    doneWipeForm();
-                });
-            },
-            wipeMeasure: function (doneWipeMeasure) {
-                Measure.remove(function (err) {
-                    if (err) throw err;
-                    console.log("done wipe Measure");
-                    doneWipeMeasure();
-                });
-            },
-            wipeCde: function (doneWipeCde) {
-                Cde.remove(function (err) {
-                    if (err) throw err;
-                    console.log("done wipe Cde");
-                    doneWipeCde();
-                });
-            }
-        },
-        function doneWipeAllDB() {
-            console.log("done step1: wipe all db");
-            cb();
-        })
-};
 
 async.series([
     function (doneConnectionTest) {
@@ -719,17 +726,17 @@ async.series([
      wipeDB(doneWipeAllDB);
      },
      */
-    /*function (doneStep1) {
-     step1(doneStep1);
-     },
+    function (doneStep1) {
+        step1(doneStep1);
+    },
 
-     function (doneStep2) {
-     step2(doneStep2);
-     },
+    function (doneStep2) {
+        step2(doneStep2);
+    },
 
-     function (doneStep3) {
-     step3(doneStep3);
-     },*/
+    function (doneStep3) {
+        step3(doneStep3);
+    },
     function (doneStep4) {
         step4(doneStep4);
     },
