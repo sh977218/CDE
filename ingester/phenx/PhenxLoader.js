@@ -458,6 +458,7 @@ var step4 = function (doneStep4) {
         var driver = new webdriver.Builder().forBrowser('firefox').build();
         async.eachSeries(cdes, function (cde, doneOneCde) {
             var skipShortName = false;
+            var skipQuestionName = false;
             var href = cde.get('href');
             driver.get(href);
             var naming = [];
@@ -468,6 +469,10 @@ var step4 = function (doneStep4) {
                     driver.findElements(webdriver.By.xpath("//*[@class='Section1000000F00']/table/tbody/tr[td]")).then(function (trs) {
                         if (trs.length == 2) {
                             skipShortName = true;
+                            skipShortNameMap[href] = true;
+                        }
+                        if (href === 'http://r.details.loinc.org/LOINC/24547-2.html?sections=Comprehensive') {
+                            skipQuestionName = true;
                             skipShortNameMap[href] = true;
                         }
                         async.parallel({
@@ -482,7 +487,7 @@ var step4 = function (doneStep4) {
                             },
                             parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                                 var name = {};
-                                driver.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).getText().then(function (text) {
+                                driver.findElement(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).getText().then(function (text) {
                                     var context = {};
                                     context['contextName'] = 'Primary Name';
                                     name['designation'] = text;
@@ -523,18 +528,25 @@ var step4 = function (doneStep4) {
                                 }
                             },
                             parsingQuestionName: function (doneParsingQuestionName) {
-                                if (skipShortName) {
+                                if (skipShortName || skipQuestionName) {
                                     doneParsingQuestionName();
                                 }
                                 else {
                                     var name = {};
-                                    driver.findElements(webdriver.By.xpath("/html/body/div[5]/table/tbody/tr[2]/td[3]")).getText().then(function (text) {
-                                        var context = {};
-                                        context['contextName'] = 'Question';
-                                        name['designation'] = text;
-                                        name['context'] = context;
-                                        naming.push(name);
-                                        doneParsingQuestionName();
+                                    driver.findElements(webdriver.By.xpath("//div[@class='Section200000']/table/tbody/tr[2]/td[3]")).then(function (temp) {
+                                        if (temp.size > 0) {
+                                            temp[0].getText().then(function (text) {
+                                                var context = {};
+                                                context['contextName'] = 'Question';
+                                                name['designation'] = text;
+                                                name['context'] = context;
+                                                naming.push(name);
+                                                doneParsingQuestionName();
+                                            })
+                                        }
+                                        else {
+                                            doneParsingQuestionName();
+                                        }
                                     })
                                 }
                             }
@@ -707,17 +719,17 @@ async.series([
      wipeDB(doneWipeAllDB);
      },
      */
-    function (doneStep1) {
-        step1(doneStep1);
-    },
+    /*function (doneStep1) {
+     step1(doneStep1);
+     },
 
-    function (doneStep2) {
-        step2(doneStep2);
-    },
+     function (doneStep2) {
+     step2(doneStep2);
+     },
 
-    function (doneStep3) {
-        step3(doneStep3);
-    },
+     function (doneStep3) {
+     step3(doneStep3);
+     },*/
     function (doneStep4) {
         step4(doneStep4);
     },
