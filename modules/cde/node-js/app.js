@@ -90,11 +90,6 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-            //var exportCde = cde.toObject();
-            //delete exportCde._id;
-            //exportForm.formElements.forEach(function(s){
-            //    s.formElements.forEach(function(q){delete q._id;});
-            //});
             res.send(js2xml("CDE", cde));
         }
 
