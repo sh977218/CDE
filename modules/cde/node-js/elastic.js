@@ -71,10 +71,9 @@ exports.morelike = function (id, callback) {
         }
     };
 
-    esClient.mlt({
+    esClient.search({
         index: config.elastic.index.name,
         type: "dataelement",
-        id: id,
         body: mltPost
     }, function (error, response) {
         if (error) {
