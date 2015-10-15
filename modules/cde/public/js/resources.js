@@ -7,7 +7,7 @@ angular.module('resourcesCde', ['ngResource'])
         save: {method: 'POST', params: {type: null} }});
 })
 .factory('DataElementTinyId', function($resource) {
-    return $resource('/dataelement/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
+    return $resource('/cdebytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
 })
 .factory('CdeList', function($http) {
     return {
@@ -101,7 +101,7 @@ angular.module('resourcesCde', ['ngResource'])
         add: function(elt) {
             var qb = this;
             if(this.elts.length < this.max_elts) {
-                $http.get("/dataelement/" + elt.tinyId).then(function(result) {
+                $http.get("/cdebytinyid/" + elt.tinyId).then(function(result) {
                     var de = result.data;
                     if (de) {
                         de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);

@@ -13,7 +13,7 @@ var addCardinality = function(parent, formElement) {
 var doQuestion = function(parent, question) {
     var newQuestion = parent.ele("sdc:question",
         {"initial_state": "enabled",
-        "data_element_scoped_identifier": config.publicUrl + "/dataelement/" +
+        "data_element_scoped_identifier": config.publicUrl + "/cdebytinyid/" +
             question.question.cde.tinyId + "/" + question.question.cde.version});
 
     addCardinality(newQuestion, question);

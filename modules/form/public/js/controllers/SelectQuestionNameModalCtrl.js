@@ -1,7 +1,7 @@
  angular.module('formModule').controller('SelectQuestionNameModalCtrl',
      ['$scope', '$modalInstance', '$http', 'cde', function($scope, $modalInstance, $http, cde) {
      
-    $http.get("/dataelement/" + cde.tinyId + "/" + cde.version).then(function (result) {
+    $http.get("/cdebytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
         $scope.cde = result.data;
     });
      
