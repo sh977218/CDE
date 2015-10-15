@@ -32,9 +32,15 @@ angular.module('formModule')
     }
     setSelectedProfile();
 
+    var removeAnswers = function(formElt) {
+        if (formElt.question) delete formElt.question.answer;
+        formElt.formElements.forEach(function(fe) {removeAnswers(fe);});
+    };
+
     $scope.addSection = function(section, formElements, index) {
         var newElt =  JSON.parse(JSON.stringify(section));
         newElt.isCopy = true;
+        removeAnswers(newElt);
         formElements.splice(index + 1, 0, newElt);
     };
 
@@ -44,6 +50,41 @@ angular.module('formModule')
 
     $scope.canRepeat = function(formElt) {
         return formElt.cardinality === '*' || formElt.cardinality === '+';
+    };
+
+    var findQuestionByTinyId = function(tinyId) {
+        var result = null;
+        var doFormElement = function(formElt) {
+            if (formElt.elementType === 'question') {
+                if (formElt.question.cde.tinyId === tinyId) {
+                    result =   formElt;
+                }
+            } else if (formElt.elementType === 'section') {
+                formElt.formElements.forEach(doFormElement);
+            }
+        };
+        $scope.elt.formElements.forEach(doFormElement);
+        return result;
+    };
+
+    $scope.score = function(question) {
+        if (!question.question.isScore) return;
+        var result = 0;
+        question.question.cde.derivationRules.forEach(function(derRule) {
+            if (derRule.ruleType === 'score' && derRule.formula === "sumAll") {
+                derRule.inputs.forEach(function(cdeTinyId) {
+                    var q = findQuestionByTinyId(cdeTinyId);
+                    if (isNaN(result)) return;
+                    if (q) {
+                        var answer = q.question.answer;
+                        if (answer === undefined) return result = "Incomplete answers";
+                        if (isNaN(answer)) return result = "Unable to score";
+                        else result = result + parseFloat(answer);
+                    }
+                });
+            }
+        });
+        return result;
     };
 
     $scope.isIe = function() {
@@ -64,13 +105,6 @@ angular.module('formModule')
             delete elt.question.datatype;
             if (elt.question.cde) {
                 delete elt.question.cde.permissibleValues;
-            }
-            if (elt.question.otherPleaseSpecify) {
-                if (!elt.question.otherPleaseSpecify.value) {
-                    delete elt.question.otherPleaseSpecify;
-                } else {
-                    delete elt.question.otherPleaseSpecify.value;
-                }
             }
         }
         if (elt.formElements) {

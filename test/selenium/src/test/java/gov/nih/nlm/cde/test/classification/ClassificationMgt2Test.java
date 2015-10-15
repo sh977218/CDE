@@ -1,9 +1,11 @@
 
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.classification;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,9 +18,8 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         String newClassification = "NewClassification";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassifMgt();
-        findElement(By.id("orgToManage")).click();
-        textPresent("org / or Org");
-        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        textPresent("Clinical Trial Mgmt Systems");
+        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
         textPresent("org / or Org", By.id("classMgt"));
         findElement(By.id("addClassification")).click();
         textPresent("Add Classification Under");

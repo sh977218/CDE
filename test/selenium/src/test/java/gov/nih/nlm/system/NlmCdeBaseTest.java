@@ -357,7 +357,7 @@ public class NlmCdeBaseTest {
 
     protected void newCdeVersion(String changeNote) {
         scrollToEltByCss("#openSave");
-        findElement(By.id("openSave")).click();
+        clickElement(By.id("openSave"));
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys(

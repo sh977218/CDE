@@ -345,6 +345,15 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get("/cde/derivationOutputs/:inputCdeTinyId", function(req, res) {
+        mongo_data.derivationOutputs(req.params.inputCdeTinyId, function(err, cdes) {
+            if (err) res.status(500).send();
+            else {
+                res.send(cdes);
+            }
+        });
+    });
+
     app.post('/desByConcept', function (req, res) {
         mongo_data.desByConcept(req.body, function (result) {
             result.forEach(adminItemSvc.hideUnapprovedComments);

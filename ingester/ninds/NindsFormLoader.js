@@ -150,11 +150,6 @@ var processFile = function () {
                                 type: true
                             },
                             multiselect: false,
-                            otherPleaseSpecify: {
-                                value: {
-                                    type: false
-                                }
-                            },
                             answers: answers
                         }
                     };

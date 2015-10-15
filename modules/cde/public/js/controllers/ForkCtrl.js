@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', function($scope, $http, $modal, $window, userResource, $route) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route',
+    function($scope, $http, $modal, $window, userResource, $route) {
     
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
@@ -6,8 +7,8 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
         }); 
     };
     
-    $scope.$watch('elt', function() {
-        if ($scope.elt !== undefined ) {
+    $scope.$on('loadForks', function() {
+        if (!$scope.forks) {
             getForks();
         }
     });
@@ -17,7 +18,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
             if (result.data !== "") {
                 $scope.addAlert("danger", "Unable to accept. This fork may have been updated. Refresh page and try again.");
             } else {
-                $scope.addAlert("success", "Fork merged.")
+                $scope.addAlert("success", "Fork merged.");
                 $route.reload();
             }
         });
@@ -33,7 +34,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
         });
 
         modalInstance.result.then(function (result) {
-            $http.post('/dataelement/fork', {id: $scope.elt._id, org: result.org, changeNote: result.changeNote}).then(function(result) {
+            $http.post('/dataelement/fork', {id: $scope.elt._id, org: result.org, changeNote: result.changeNote}).then(function() {
                 getForks();
             });
         });

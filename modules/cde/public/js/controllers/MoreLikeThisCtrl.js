@@ -19,7 +19,9 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
         ;
     };
 
-    $scope.cdeLoadedPromise.then(loadMlt);
+    $scope.$on('loadMlt', function() {
+        loadMlt();
+    });
 
 
 }]);
