@@ -62,6 +62,7 @@
     "tar-fs": "0.5.2",
     "tar": "2.1.0",
     "fstream": "1.0.4",
+    "js2xmlparser": "1.0.0",
     "streamifier": "0.1.1"
   }
 }
