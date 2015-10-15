@@ -108,29 +108,29 @@ var step1 = function (doneStep1) {
                     driver.get(measureLink);
                     async.parallel({
                         parsingClassification: function (doneParsingClassification) {
-                            driver.findElement(webdriver.By.xpath("//*[@class='back'][1]")).getText().then(function (classifcationText) {
-                                var arr = classifcationText.split(/[^A-z \:]/).map(function (a) {
-                                    return a.trim()
-                                });
-                                var classification = arr.slice(1, arr.length);
-                                var classi = [{
-                                    stewardOrg: {name: "PhenX"},
-                                    elements: []
-                                }];
-                                var temp = classi[0].elements;
-                                for (var i = 0; i < classification.length; i++) {
-                                    var ele = {};
-                                    ele['name'] = classification[i];
-                                    ele['elements'] = [];
-                                    temp.push(ele);
-                                    temp = temp[0].elements;
-                                }
-                                obj['classification'] = classi;
-                                classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
-                                phenxOrg.save(function (err) {
-                                    if (err) throw err;
+                            driver.findElements(webdriver.By.xpath("//p[@class='back'][1]/a")).then(function (classification) {
+                                if (classification.length > 0) {
+                                    var classi = [{
+                                        stewardOrg: {name: "PhenX"},
+                                        elements: []
+                                    }];
+                                    var temp = classi[0].elements;
+                                    for (var i = 0; i < classification.length; i++) {
+                                        var ele = {};
+                                        ele['name'] = classification[i];
+                                        ele['elements'] = [];
+                                        temp.push(ele);
+                                        temp = temp[0].elements;
+                                    }
+                                    obj['classification'] = classi;
+                                    classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
+                                    phenxOrg.save(function (err) {
+                                        if (err) throw err;
+                                        doneParsingClassification();
+                                    });
+                                } else {
                                     doneParsingClassification();
-                                });
+                                }
                             });
                         },
                         parsingProtocolsLink: function (doneParsingProtocolsLink) {
@@ -292,9 +292,21 @@ var step2 = function (doneStep2) {
                                 })
                             });
                         }, function donAllLabels() {
-                            protocolCounter++;
-                            console.log('finished protocol ' + protocolCounter);
-                            doneOneProtocol();
+                            driver.findElements(webdriver.By.xpath("//*[@class='back'][1]/a")).then(function (temp) {
+                                if (temp.length > 0) {
+                                    temp[temp.length - 1].getText().then(function (text) {
+                                        protocol['Protocol Name'] = text.trim();
+                                        protocolCounter++;
+                                        console.log('finished protocol ' + protocolCounter);
+                                        doneOneProtocol();
+                                    })
+                                }
+                                else {
+                                    protocolCounter++;
+                                    console.log('finished protocol ' + protocolCounter);
+                                    doneOneProtocol();
+                                }
+                            });
                         });
                     });
                 });
@@ -418,53 +430,7 @@ var step3 = function (doneStep3) {
 
                                     })
                                 } else {
-                                    tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                                        async.parallel({
-                                            parsingLoincNum: function (doneParsingLoincNum) {
-                                                tds[1].getText().then(function (text) {
-                                                    form['LOINC#'] = text.trim();
-                                                    tds[1].findElement(webdriver.By.css('a')).then(function (a) {
-                                                        a.getAttribute('href').then(function (href) {
-                                                            form['href2'] = href;
-                                                            doneParsingLoincNum();
-                                                        })
-                                                    })
-                                                })
-
-                                            },
-                                            parsingLoincName: function (doneParsingLoincName) {
-                                                tds[2].getText().then(function (tdText) {
-                                                    form['LOINC Name'] = tdText;
-                                                    doneParsingLoincName();
-                                                })
-                                            },
-                                            parsingRoc: function (doneParsingRoc) {
-                                                tds[3].getText().then(function (tdText) {
-                                                    form['R/O/C'] = tdText;
-                                                    doneParsingRoc();
-                                                })
-                                            },
-                                            parsingCardinality: function (doneParsingCardinality) {
-                                                tds[4].getText().then(function (tdText) {
-                                                    form['Cardinality'] = tdText;
-                                                    doneParsingCardinality();
-                                                })
-                                            },
-                                            parsingUCUM: function (doneParsingUCUM) {
-                                                tds[5].getText().then(function (tdText) {
-                                                    form['Ex. UCUM Units'] = tdText;
-                                                    doneParsingUCUM();
-                                                })
-                                            }
-                                        }, function doneAllTds() {
-                                            var newForm = new Form(form);
-                                            newForm.save(function () {
-                                                formCounter++;
-                                                console.log("formCounter: " + formCounter);
-                                                doneOneTr();
-                                            });
-                                        })
-                                    });
+                                    doneOneTr();
                                 }
                             })
                         }
