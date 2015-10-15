@@ -4,7 +4,7 @@
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
   "elastic": {
-    "uri": "http://localhost:9200",
+    "hosts": ["http://localhost:9200", "http://localhost:9201"],
     "index": {"name": "cdetest"},
     "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},

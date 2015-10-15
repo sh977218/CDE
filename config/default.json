@@ -41,7 +41,7 @@
   "logdir": "",
   "port": 3000,
   "elastic": {
-    "uri": "http://localhost:9200",
+    "hosts": ["http://localhost:9200"],
     "index": {"name": "cdetest"},
     "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},

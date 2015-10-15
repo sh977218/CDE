@@ -1,18 +1,18 @@
-var request = require('request')
-    , config = require('./parseConfig')
+var config = require('./parseConfig')
     , logging = require('../../system/node-js/logging')
     , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require("./usersrvc")
+    , elasticsearch = require('elasticsearch')
     ;
 
-exports.elasticCdeUri = config.elasticUri;
-exports.elasticFormUri = config.elasticFormUri;
+var esClient = new elasticsearch.Client({
+    hosts: config.elastic.hosts
+});
 
 exports.completionSuggest = function (term, cb) {
-    var url = config.elasticStoredQueryUri;
     var suggestQuery = {
         "search_suggest": {
             "text": term,
@@ -21,14 +21,16 @@ exports.completionSuggest = function (term, cb) {
             }
         }
     };
-    request.post(url + "_suggest", {body: JSON.stringify(suggestQuery)}, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            var resp = JSON.parse(body);
-            cb(resp);
-        } else {
+    esClient.suggest({
+        index: config.elastic.storedQueryIndex.name,
+        body: suggestQuery
+    }, function(error, response) {
+        if (error) {
             cb(error);
+        } else {
+            cb(response);
         }
-    })
+    });
 };
 
 exports.buildElasticSearchQuery = function (user, settings) {
@@ -256,109 +258,111 @@ exports.buildElasticSearchQuery = function (user, settings) {
     return queryStuff;
 };
 
+var searchTemplate = {
+    cde: {
+        index: config.elastic.index.name,
+        type: "dataelement"
+    },
+    form: {
+        index: config.elastic.formIndex.name,
+        type: "form"
+    }
+};
+
+
 exports.elasticsearch = function (query, type, cb) {
-    var url = null;
-    if (type === "cde") url = exports.elasticCdeUri;
-    if (type === "form") url = exports.elasticFormUri;
-    request.post(url + "_search", {body: JSON.stringify(query)}, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            var resp = JSON.parse(body);
-            var result = {
-                cdes: []
-                , totalNumber: resp.hits.total
-            };
-            for (var i = 0; i < resp.hits.hits.length; i++) {
-                var thisCde = resp.hits.hits[i]._source;
-                thisCde.score = resp.hits.hits[i]._score;
-                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues.length > 10) {
-                    thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
-                }
-                thisCde.properties = [];
-                thisCde.flatProperties = [];
-                thisCde.highlight = resp.hits.hits[i].highlight;
-                result.cdes.push(thisCde);
-            }
-            result.aggregations = resp.aggregations;
-            cb(null, result);
-        } else {
+    var search = searchTemplate[type];
+    search.body = query;
+    esClient.search(search, function(error, response) {
+        if (error) {
             if (response.statusCode === 400) {
                 logging.errorLogger.error("Error: ElasticSearch Error",
                     {
-                        origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                        origin: "system.elastic.elasticsearch", stack: error.stack,
                         details: JSON.stringify(query)
                     });
                 cb("Invalid Query");
             } else {
                 var querystr = "cannot stringify query";
-                var errBody;
                 try {
                     querystr = JSON.stringify(query);
-                    errBody = JSON.stringify(body);
                 } catch (e) {
                 }
                 logging.errorLogger.error("Error: ElasticSearch Error",
                     {
-                        origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                        details: "query " + querystr + ", body " + errBody
+                        origin: "system.elastic.elasticsearch", stack: error.stack,
+                        details: "query " + querystr
                     });
                 cb("Server Error");
             }
+        } else {
+            var result = {
+                cdes: []
+                , totalNumber: response.hits.total
+            };
+            for (var i = 0; i < response.hits.hits.length; i++) {
+                var thisCde = response.hits.hits[i]._source;
+                thisCde.score = response.hits.hits[i]._score;
+                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues.length > 10) {
+                    thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
+                }
+                thisCde.properties = [];
+                thisCde.flatProperties = [];
+                thisCde.highlight = response.hits.hits[i].highlight;
+                result.cdes.push(thisCde);
+            }
+            result.aggregations = response.aggregations;
+            cb(null, result);
         }
     });
 };
 
 var lock = false;
+
 exports.elasticSearchExport = function (res, query, type, converter, header) {
     if (lock) return res.status(503).send("Servers busy");
 
     lock = true;
 
-    var url;
-    if (type === "cde") url = exports.elasticCdeUri;
-    if (type === "form") url = exports.elasticFormUri;
     query.size = 500;
-    res.write(header);
-
     delete query.aggregations;
 
+    var search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    search.scroll = '1m';
+    search.search_type = 'scan';
+    res.write(header);
+    search.body = query;
+
     var scrollThrough = function (scrollId) {
-        var uri = config.elastic.uri + "/_search/scroll?scroll=1m" + "&size=20&scroll_id=" + scrollId;
-        request({uri: uri, method: "GET"}, function (err, response, body) {
-            if (!err && response.statusCode === 200) {
-                var resp = JSON.parse(body);
-                var newScrollId = resp._scroll_id;
-                if (resp.hits.hits.length === 0) {
+        esClient.scroll({scrollId: scrollId, scroll: '1m'},
+            function (err, response) {
+                if (err) {
                     lock = false;
-                    res.send();
-                }
-                else {
-                    for (var i = 0; i < resp.hits.hits.length; i++) {
-                        var thisCde = resp.hits.hits[i]._source;
-                        res.write(converter(exportShared.projectCdeForExport(thisCde)));
+                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                        {
+                            origin: "system.elastic.elasticsearch", stack: new Error().stack,
+                            details: "body " + body
+                        });
+                    res.status(500).send("ES Error");
+                } else {
+                    var newScrollId = response._scroll_id;
+                    if (response.hits.hits.length === 0) {
+                        lock = false;
+                        res.send();
                     }
-                    scrollThrough(newScrollId);
+                    else {
+                        for (var i = 0; i < response.hits.hits.length; i++) {
+                            var thisCde = response.hits.hits[i]._source;
+                            res.write(converter(exportShared.projectCdeForExport(thisCde)));
+                        }
+                        scrollThrough(newScrollId);
+                    }
                 }
-            } else {
-                lock = false;
-                logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
-                    {
-                        origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                        details: "body " + body
-                    });
-                res.status(500).send("ES Error");
-            }
         });
     };
 
-    request({
-        uri: url + "_search?search_type=scan&scroll=1m",
-        body: JSON.stringify(query),
-        method: "POST"
-    }, function (err, response, body) {
-        if (!err && response.statusCode === 200) {
-            var resp = JSON.parse(body);
-            scrollThrough(resp._scroll_id);
-        } else {
+    esClient.search(search, function (err, response) {
+        if (err) {
             lock = false;
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
@@ -366,6 +370,8 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
                     details: "body " + body + ", query: " + query
                 });
             res.status(500).send("ES Error");
+        } else {
+            scrollThrough(response._scroll_id);
         }
     });
 
