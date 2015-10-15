@@ -42,8 +42,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
                 ui.item.sortable.cancel();
         }
-        , helper: function (e, ui) {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i>Drop Me</div>')
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
         }
     };
 
@@ -59,8 +59,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         , stop: function (event, ui) {
             $('.dragQuestions').css('border', '');
         }
-        , helper: function (event, ui) {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i>Drop Me</div>')
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
         }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
