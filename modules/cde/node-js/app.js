@@ -68,7 +68,7 @@ exports.init = function (app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_data);
     });
 
-    app.get('/cdebyid/:id', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.show(req, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
