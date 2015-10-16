@@ -5,7 +5,7 @@
   "viewsIncrementThreshold": 1,
   "elastic": {
     "hosts": ["http://localhost:9200", "http://localhost:9201"],
-    "index": {"name": "cdetest"},
+    "index": {"name": "auto"},
     "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
     "formRiver": {"name": "formtest"},

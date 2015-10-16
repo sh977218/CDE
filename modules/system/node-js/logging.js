@@ -67,7 +67,7 @@ MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
             if (err) console.log("CANNOT LOG: ");  
         });
     } catch (e) {
-        console.log("unable to log error to DB: ");
+        console.log("unable to log error to DB: " + msg);
     }
 };
 

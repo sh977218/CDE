@@ -13,18 +13,18 @@ status.restartAttempted = false;
 
 status.statusReport = {
     elastic: {
-        up: true
-        , results: true
-        , sync: true
-        , updating: true
+        up: false
+        , results: false
+        , sync: false
+        , updating: false
     }
 };    
 
 exports.everythingOk = function() {
     return status.statusReport.elastic.up
         && status.statusReport.elastic.results
-        && status.statusReport.elastic.sync
-        && status.statusReport.elastic.updating;
+        && status.statusReport.elastic.sync;
+        //&& status.statusReport.elastic.updating;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
@@ -117,15 +117,21 @@ status.checkElasticResults = function(body, statusReport) {
     }    
 };
 
-status.checkElasticSync = function(body, statusReport, mongoCollection) {
-    var elasticElt = body.hits.hits[0]._source;
-    mongoCollection.byId(elasticElt._id, function(err, elt) {
-        if (err) {
-            statusReport.elastic.sync = false; 
-            statusReport.elastic.updating = false;      
-            return;
-        }
-        statusReport.elastic.sync = elasticElt.tinyId === elt.tinyId;
+status.checkElasticSync = function(body, statusReport) {
+    mongo.deCount(function(deCount) {
+        elastic.esClient.count(
+            {
+                index: config.elastic.index.name
+                , type: "dataelement"
+            }
+        , function(error, response) {
+                statusReport.elastic.sync = response.count >= deCount;
+                if (!statusReport.elastic.sync) {
+                    console.log("Setting status sync to false because deCount = " + deCount +
+                    "and esCount = " + response.count);
+                }
+            }
+        )
     });
 };
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
@@ -178,8 +184,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 };
 
 setInterval(function() {
-    status.checkElastic(elastic.elasticCdeUri, mongo);
-}, config.status.timeouts.statusCheck);
+    status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
+}, 20000);
 
 setInterval(function() {
     var server = {hostname: config.hostname, port: config.port, nodeStatus: "Running",

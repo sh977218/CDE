@@ -6,11 +6,49 @@ var config = require('./parseConfig')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
+    , esInit = require('../../../deploy/elasticSearchInit')
+    , request = require('request')
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+exports.esClient = esClient;
+
+exports.initEs = function () {
+    // does index exits?
+    esClient.indices.exists({index: config.elastic.index.name}, function (error, doesIt) {
+        if (!doesIt) {
+            console.log("creating index: " + config.elastic.index.name);
+            request.post(config.elastic.hosts[0] + "/" + config.elastic.index.name,
+                {
+                    json: true,
+                    body: esInit.createIndexJson
+                },
+                function (error) {
+                    if (error) {
+                        console.log("error creating index. " + error);
+                    } else {
+                        console.log("creating river: ");
+                        // create river
+                        // TODO remove and replace with something else
+                        esInit.createRiverJson.index.name = config.elastic.index.name;
+                        request.post(config.elastic.hosts[0] + "/_river/" + config.elastic.index.name + "/_meta",
+                            {
+                                json: true,
+                                body: esInit.createRiverJson
+                            },
+                            function (error, response) {
+                                if (error) console.log("could not create river. " + error);
+                                else {
+                                    console.log("created river");
+                                }
+                            });
+                    }
+                });
+        }
+    });
+};
 
 exports.completionSuggest = function (term, cb) {
     var suggestQuery = {
