@@ -83,7 +83,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/cdebytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
         function sendNativeJson(cde, res){
             res.send(cde);
         }
@@ -114,7 +114,7 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/cdebytinyid/:tinyId/:version?', function (req, res) {
+    app.post('/debytinyid/:tinyId/:version?', function (req, res) {
         return cdesvc.save(req, res);
     });
 
