@@ -1,10 +1,17 @@
 var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
+<<<<<<< HEAD
     , formShared = require('../shared/formShared')
     , js2xml = require('js2xmlparser')
     , logging = require('../../system/node-js/logging')
     , sdc = require('./sdcForm')
+=======
+    , js2xml = require('js2xmlparser')
+    , logging = require('../../system/node-js/logging')
+    , sdc = require('./sdcForm')
+    , formShared = require('../shared/formShared')
+>>>>>>> 8e7eb8df070ea946cb7aa3ed8f97a121ca631d61
     ;
 
 exports.findForms = function (req, res) {
@@ -49,6 +56,7 @@ var getFormJson = function(form, req, res){
             if (cb) cb();
         });
     };
+//<<<<<<< HEAD
     adminSvc.hideUnapprovedComments(form);
     var resForm = form.toObject();
     markCDE(resForm, function () {
@@ -64,6 +72,32 @@ var getFormPlainXml = function(form, req, res){
     delete exportForm._id;
     exportForm.formElements.forEach(function(s){
         s.formElements.forEach(function(q){delete q._id;});
+//=======
+//
+//    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+//        if (form) {
+//            adminSvc.hideUnapprovedComments(form);
+//            var resForm = form.toObject();
+//            markCDE(resForm, function () {
+//                res.send(resForm);
+//            });
+//        } else {
+//            res.status(404).end();
+//        }
+//    });
+//};
+//
+//var getFormPlainXml = function(req, res){
+//    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+//        if(!form) return res.status(404).end();
+//        res.setHeader("Content-Type", "application/xml");
+//        var exportForm = form.toObject();
+//        delete exportForm._id;
+//        exportForm.formElements.forEach(function(s){
+//            s.formElements.forEach(function(q){delete q._id;});
+//        });
+//        res.send(js2xml("Form", exportForm));
+//>>>>>>> 8e7eb8df070ea946cb7aa3ed8f97a121ca631d61
     });
     res.send(js2xml("Form", exportForm));
 };

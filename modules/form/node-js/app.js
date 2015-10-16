@@ -39,6 +39,13 @@ exports.init = function (app, daoManager) {
 
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
+<<<<<<< HEAD
+=======
+    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
+        res.send("");
+    });
+
+>>>>>>> 8e7eb8df070ea946cb7aa3ed8f97a121ca631d61
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
             if (err) {
@@ -119,5 +126,4 @@ exports.init = function (app, daoManager) {
             res.send("Please login first.");
         }
     });
-
 };
