@@ -123,7 +123,7 @@ var getFormOdm = function(form, req, res){
     for (var i = 0; i < form.formElements.length; i++) {
         var sec = form.formElements[i];
         for (var j = 0; j < sec.formElements.length; j++) {
-            if (sec.formElements[j].elementType === 'section') return res.status(202).send("Form with nested sections cannot be exported to ODM.");
+            if (sec.formElements[j].elementType === 'section') return res.status(202).send("Forms with nested sections cannot be exported to ODM.");
         }
     }
 
