@@ -43,7 +43,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                 ui.item.sortable.cancel();
         }
         , helper: function () {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Section</div>')
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
         }
     };
 
@@ -60,7 +60,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             $('.dragQuestions').css('border', '');
         }
         , helper: function () {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Question</div>')
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
         }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
@@ -164,7 +164,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.stageElt();
     };
 
-    $scope.isScore = function(formElt) {
+    $scope.isScore = function (formElt) {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     };
 
