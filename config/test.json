@@ -6,11 +6,9 @@
   "elastic": {
     "hosts": ["http://localhost:9200", "http://localhost:9201"],
     "index": {"name": "auto"},
-    "river": {"name": "cdetest"},
-    "formIndex": {"name": "formtest"},
-    "formRiver": {"name": "formtest"},
-    "storedQueryIndex": {"name": "storedquerytest"},
-    "storedQueryRiver": {"name": "storedquerytest"},
+    "formIndex": {"name": "auto"},
+    "storedQueryIndex": {"name": "auto"},
+    "boardIndex": {"name": "auto"},
     "scripts": {
       "stop": "sudo /sbin/service elasticsearch stop",
       "start": "sudo /sbin/service elasticsearch start"

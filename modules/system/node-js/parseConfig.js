@@ -1,5 +1,5 @@
 var config = require('config')
-    , hash = require("crypto").createHash('md5')
+    , hash = require("crypto")
     , esInit = require('../../../deploy/elasticSearchInit')
 ;
 
@@ -16,10 +16,23 @@ config.mongoUri = "mongodb://" + config.database.dbUser + ":" + config.database.
         return srv.host + ":" + srv.port;
     }).join(",") + "/" + config.database.dbname;
 
+var shortHash = function(content) {
+    return hash.createHash('md5')
+        .update(JSON.stringify(content)).digest("hex")
+        .substr(0, 5).toLowerCase();
+};
+
 if (config.elastic.index.name === "auto") {
-    // genarate index name
-    config.elastic.index.name = "cde_" + hash.update(JSON.stringify(esInit.createIndexJson)).digest("hex")
-            .substr(0, 5).toLowerCase();
+    config.elastic.index.name = "cde_" + shortHash(esInit.createIndexJson);
+}
+if (config.elastic.formIndex.name === "auto") {
+    config.elastic.formIndex.name = "form_" + shortHash(esInit.createFormIndexJson);
+}
+if (config.elastic.boardIndex.name === "auto") {
+    config.elastic.boardIndex.name = "board_" + shortHash(esInit.createBoardIndexJson);
+}
+if (config.elastic.storedQueryIndex.name === "auto") {
+    config.elastic.storedQueryIndex.name = "sq_" + shortHash(esInit.createStoredQueryIndexJson);
 }
 
 

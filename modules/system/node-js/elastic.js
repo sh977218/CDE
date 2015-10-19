@@ -16,38 +16,49 @@ var esClient = new elasticsearch.Client({
 exports.esClient = esClient;
 
 exports.initEs = function () {
-    // does index exits?
-    esClient.indices.exists({index: config.elastic.index.name}, function (error, doesIt) {
-        if (!doesIt) {
-            console.log("creating index: " + config.elastic.index.name);
-            request.post(config.elastic.hosts[0] + "/" + config.elastic.index.name,
-                {
-                    json: true,
-                    body: esInit.createIndexJson
-                },
-                function (error) {
-                    if (error) {
-                        console.log("error creating index. " + error);
-                    } else {
-                        console.log("creating river: ");
-                        // create river
-                        // TODO remove and replace with something else
-                        esInit.createRiverJson.index.name = config.elastic.index.name;
-                        request.post(config.elastic.hosts[0] + "/_river/" + config.elastic.index.name + "/_meta",
-                            {
-                                json: true,
-                                body: esInit.createRiverJson
-                            },
-                            function (error, response) {
-                                if (error) console.log("could not create river. " + error);
-                                else {
-                                    console.log("created river");
-                                }
-                            });
-                    }
-                });
-        }
-    });
+    var createIndex = function (indexName, indexMapping, river) {
+        esClient.indices.exists({index: indexName}, function (error, doesIt) {
+            if (!doesIt) {
+                console.log("creating index: " + indexName);
+                request.post(config.elastic.hosts[0] + "/" + indexName,
+                    {
+                        json: true,
+                        body: indexMapping
+                    },
+                    function (error) {
+                        if (error) {
+                            console.log("error creating index. " + error);
+                        } else {
+                            console.log("deleting old river: " + indexName);
+                            // create river
+                            // TODO remove and replace with something else
+                            river.index.name = indexName;
+                            request.del(config.elastic.hosts[0] + "/_river/" + indexName,
+                                function (error, response) {
+                                    console.log("re-creating river: " + indexName);
+                                    request.post(config.elastic.hosts[0] + "/_river/" + indexName + "/_meta",
+                                        {
+                                            json: true,
+                                            body: river
+                                        },
+                                        function (error, response) {
+                                            if (error) console.log("could not create river. " + error);
+                                            else {
+                                                console.log("created river");
+                                            }
+                                        });
+                                });
+                        }
+                    });
+            }
+        });
+    };
+
+    createIndex(config.elastic.index.name, esInit.createIndexJson, esInit.createRiverJson);
+    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
+    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
+    createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
+
 };
 
 exports.completionSuggest = function (term, cb) {
