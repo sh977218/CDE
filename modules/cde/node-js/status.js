@@ -9,8 +9,6 @@ var request = require('request')
 
 var status = this;
 
-status.restartAttempted = false; 
-
 status.statusReport = {
     elastic: {
         up: false
@@ -37,7 +35,6 @@ exports.assembleErrorMessage = function(statusReport) {
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
         res.send("ALL SERVICES UP");   
-        status.restartAttempted = false; 
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -52,10 +49,9 @@ status.delayReports = function() {
 };
 
 exports.evaluateResult = function() {
-    if (process.uptime()<config.status.timeouts.minUptime) return;
-    if (status.everythingOk()) return;
+    if (process.uptime() < config.status.timeouts.minUptime) return;
+    if (status.statusReport.elastic.updating) return;
     if (status.reportSent) return;    
-    if (!status.restartAttempted) status.tryRestart();
     var emailContent = {
         subject: "Urgent: ElasticSearch issue on " + config.name
         , body: status.assembleErrorMessage(status.statusReport)
@@ -66,18 +62,6 @@ exports.evaluateResult = function() {
             if (!err) status.delayReports();
         });
     });
-};
-
-status.tryRestart = function() {
-    var exec = require('child_process').exec;
-    exec(config.elastic.scripts.stop, function (error, stdout, stderr) {
-        console.log("Elastic Search Stopped, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
-        exec(config.elastic.scripts.start, function (error, stdout, stderr) {
-            console.log("Elastic Search Started, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
-            status.delayReports();
-            status.restartAttempted = true;
-        });    
-    });    
 };
 
 status.checkElastic = function(elasticUrl, mongoCollection) {
@@ -185,7 +169,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
 setInterval(function() {
     status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
-}, 20000);
+}, config.status.timeouts.statusCheck);
 
 setInterval(function() {
     var server = {hostname: config.hostname, port: config.port, nodeStatus: "Running",

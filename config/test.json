@@ -3,17 +3,6 @@
   "logBufferSize": 2,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "elastic": {
-    "hosts": ["http://localhost:9200", "http://localhost:9201"],
-    "index": {"name": "auto"},
-    "formIndex": {"name": "auto"},
-    "storedQueryIndex": {"name": "auto"},
-    "boardIndex": {"name": "auto"},
-    "scripts": {
-      "stop": "sudo /sbin/service elasticsearch stop",
-      "start": "sudo /sbin/service elasticsearch start"
-    }
-  },
   "database": {
     "servers": [
       {
