@@ -56,13 +56,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
 
     $scope.reload = function(route) {
-        var service = DataElement;
+        var service;
         var query = {};
-        if (route.cdeId) query = {deId: route.cdeId};
-        else if (route.tinyId) {
+        if (route.tinyId) {
             service = DataElementTinyId;
             query = {tinyId: route.tinyId};
             if (route.version) query.version = route.version;
+        } else {
+            service = DataElement;
+            query = {deId: route.cdeId};
         }
         service.get(query, function(de) {
             $scope.elt = de;

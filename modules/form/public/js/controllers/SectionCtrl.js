@@ -87,7 +87,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                 question.question.cde.permissibleValues = [];
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     if (cde.valueDomain.permissibleValues.length > 9) {
-                        $http.get("/cde/" + cde.tinyId + "/" + cde.version).then(function (result) {
+                        $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
