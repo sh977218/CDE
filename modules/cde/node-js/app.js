@@ -90,7 +90,7 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-            res.send(js2xml("CDE", cde));
+            res.send(js2xml("CDE", cde.toObject()));
         }
 
         var serveCde = function (err, cde) {
@@ -99,7 +99,7 @@ exports.init = function (app, daoManager) {
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
 
 
-            if(req.query.type==='xml') sendNativeXml(req, res);
+            if(req.query.type==='xml') sendNativeXml(cde, res);
             else sendNativeJson(cde, res);
 
             if (req.isAuthenticated()) {
