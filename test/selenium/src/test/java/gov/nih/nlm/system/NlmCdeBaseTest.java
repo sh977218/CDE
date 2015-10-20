@@ -85,18 +85,14 @@ public class NlmCdeBaseTest {
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         DesiredCapabilities caps;
-        switch (browser) {
-            case "firefox":
-                caps = DesiredCapabilities.firefox();
-                break;
-            case "chrome":
-                caps = DesiredCapabilities.chrome();
-                break;
-            case "ie":
-                caps = DesiredCapabilities.internetExplorer();
-                break;
-            default:
-                caps = DesiredCapabilities.chrome();
+        if ("firefox".equals(browser)) {
+            caps = DesiredCapabilities.firefox();
+        } else if ("chrome".equals(browser)) {
+            caps = DesiredCapabilities.chrome();
+        } else if ("ie".equals(browser)) {
+            caps = DesiredCapabilities.internetExplorer();
+        } else {
+            caps = DesiredCapabilities.chrome();
         }
 
         LoggingPreferences loggingprefs = new LoggingPreferences();
@@ -285,6 +281,7 @@ public class NlmCdeBaseTest {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
+            goToCdeSearch();
             hoverOverElement(findElement(By.id("searchSettings")));
             hoverOverElement(findElement(by));
             textPresent(text);
@@ -536,14 +533,14 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
