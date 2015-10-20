@@ -323,6 +323,7 @@ var step1 = function (doneStep1) {
                                             async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
                                                 protocolLink.getAttribute('href').then(function (text) {
                                                     var protocol = {};
+                                                    protocol['classification'] = measure['classification'];
                                                     protocol['href'] = text.trim();
                                                     driver2.get(protocol['href']);
                                                     driver2.findElement(webdriver.By.id('button_showfull')).click().then(function () {
@@ -365,6 +366,7 @@ var step1 = function (doneStep1) {
                                                                                                             source['href'] = href.trim();
                                                                                                             if (text.trim() === 'LOINC') {
                                                                                                                 var form = {};
+                                                                                                                form['classification'] = protocol['classification'];
                                                                                                                 driver3.get(source['href']);
                                                                                                                 driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[td]/td[2]/span/a")).then(function (temp) {
                                                                                                                     if (temp.length > 0) {
@@ -403,6 +405,7 @@ var step1 = function (doneStep1) {
                                                                                                                             });
                                                                                                                         }, function doneAllAs() {
                                                                                                                             async.eachSeries(elements, function (ele, doneOneEle) {
+                                                                                                                                ele['classification'] = form['classification'];
                                                                                                                                 var eleHref = ele['href'];
                                                                                                                                 driver4.get(eleHref);
                                                                                                                                 driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th/a")).then(function (isPanel) {
@@ -502,6 +505,7 @@ var step1 = function (doneStep1) {
                         }
                     ],
                     function doneAllMeasureParsing(err, result) {
+                        measure['step1'] = 'done';
                         var newMeasure = new Measure(measure);
                         newMeasure.save(function () {
                             measureCounter++;
@@ -520,6 +524,7 @@ var step1 = function (doneStep1) {
                     driver3.quit();
                     driver4.quit();
                     console.log('saved log into cache');
+                    doneStep1();
                 });
             });
         }
@@ -540,6 +545,7 @@ var parsingPanel = function (driver, element, numElements, doneOneElement) {
                     doneOneLink();
                 } else {
                     var anotherElement = {};
+                    anotherElement['classification'] = element['classification'];
                     async.parallel({
                         parsingHref: function (doneParsingHref) {
                             link.getAttribute('href').then(function (hrefText) {
@@ -599,14 +605,14 @@ var f = function (elements, doneOneProtocol) {
 var step2 = function (doneStep2) {
     var cdeCounter = 0;
     var panelCde = [];
-    Measure.find({}, function (err, measures) {
+    Measure.find({step1: 'done', step2: null}, function (err, measures) {
         if (err) throw err;
         async.eachSeries(measures, function (measure, doneOneMeasure) {
             console.log('measure:' + measure.get('href'));
             async.eachSeries(measure.get('protocols'), function (protocol, doneOneProtocol) {
                 console.log('protocol:' + protocol['href']);
                 var form = protocol['form'];
-                if (form) {
+                if (form && form['elements']) {
                     var elements = form['elements'];
                     f(elements, doneOneProtocol);
                 }
@@ -614,6 +620,7 @@ var step2 = function (doneStep2) {
                     doneOneProtocol();
                 }
             }, function doneAllProtocols() {
+                measure.set('step2', 'done');
                 measure.markModified('protocols');
                 measure.save(function () {
                     doneOneMeasure();
@@ -624,7 +631,79 @@ var step2 = function (doneStep2) {
         })
     })
 };
-var parseForm = function (doneForm) {
+
+var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, cb) {
+    async.eachSeries(elements, function (element, doneOneElement) {
+        if (element['type'] === 'Question' && element['remove'] != true) {
+            cdeCounter++;
+            DataElement.findOne({'ids.id': element['loincId']}, function (err, result) {
+                if (err) throw err;
+                if (result) {
+                    classificationShared.transferClassifications(element, result.toObject());
+                    result.markModified('classification');
+                    result.save(function () {
+                        cdeUpdateCounter++;
+                        console.log('finish update cde ' + cdeUpdateCounter);
+                        doneOneElement();
+                    });
+                }
+                else {
+                    mongo_cde.create(element, user, function () {
+                        cdes.push(element);
+                        cdeSaveCounter++;
+                        console.log('finish saving cde ' + cdeSaveCounter);
+                        doneOneElement();
+                    });
+                }
+            });
+        }
+        else {
+            loadCdeLoop(element['elements'], cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, null);
+        }
+    }, function doneAllElements() {
+        if (cb)
+            cb();
+    });
+};
+
+var loadCde = function (doneLoadCde) {
+    var cdeCounter = 0;
+    var cdeUpdateCounter = 0;
+    var cdeSaveCounter = 0;
+    var cdes = [];
+    Measure.find({href: "https://www.phenxtoolkit.org/index.php?pageLink=browse.protocols&id=61200"}, function (err, measures) {
+        if (err) throw err;
+        async.eachSeries(measures, function (measure, doneOneMeasure) {
+            console.log('measure:' + measure.get('href'));
+            async.eachSeries(measure.get('protocols'), function (protocol, doneOneProtocol) {
+                var form = protocol['form'];
+                if (form && form['elements']) {
+                    var elements = form['elements'];
+                    loadCdeLoop(elements, cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, doneOneProtocol);
+                }
+                else {
+                    doneOneProtocol();
+                }
+            }, function doneAllProtocols() {
+                doneOneMeasure();
+            });
+        }, function doneAllMeasures() {
+            var obj = {};
+            obj['formInfo'] = true;
+            obj['cdes'] = cdes;
+            obj['cdeCounter'] = cdeCounter;
+            obj['cdeUpdateCounter'] = cdeUpdateCounter;
+            obj['cdeSaveCounter'] = cdeSaveCounter;
+            var cache = new Cache(obj);
+            cache.save(function () {
+                console.log("finished load cde.");
+                doneLoadCde();
+            })
+        });
+    });
+};
+
+var loadForm = function (doneForm) {
     var measureCounter = 0;
     var protocolCounter = 0;
     var formCounter = 0;
@@ -706,6 +785,49 @@ var parseForm = function (doneForm) {
     });
 };
 
+var removePanelElementsLoop = function (elements, cb) {
+    var num = 0;
+    elements.forEach(function (element) {
+        if (element['numElement']) {
+            num = element['numElement'];
+            removePanelElementsLoop(element['elements'], null);
+        }
+        else {
+            if (num != 0) {
+                element['remove'] = true;
+                num--;
+            }
+        }
+    });
+    if (cb)
+        cb();
+};
+
+var removePanelElements = function (doneRemovePanelElements) {
+    Measure.find({}, function (err, measures) {
+        if (err) throw err;
+        async.eachSeries(measures, function (measure, doneOneMeasure) {
+            console.log('measure:' + measure.get('href'));
+            async.eachSeries(measure.get('protocols'), function (protocol, doneOneProtocol) {
+                var form = protocol['form'];
+                if (form && form['elements']) {
+                    removePanelElementsLoop(form['elements'], doneOneProtocol);
+                }
+                else {
+                    doneOneProtocol();
+                }
+            }, function doneAllProtocols() {
+                measure.markModified('protocols');
+                measure.save(function () {
+                    doneOneMeasure();
+                });
+            });
+        }, function doneAllMeasures() {
+            doneRemovePanelElements();
+        });
+    });
+};
+
 async.series([
     function (doneConnectionTest) {
         conn.on('error', function (err) {
@@ -728,6 +850,16 @@ async.series([
     function (doneStep2) {
         step2(doneStep2);
     },
+
+    function (doneRemovePanelElements) {
+        removePanelElements(doneRemovePanelElements);
+    },
+
+    function (doneLoadCde) {
+        loadCde(doneLoadCde);
+    },
+
+
     function (doneCleanUp) {
         process.exit(1);
     }
