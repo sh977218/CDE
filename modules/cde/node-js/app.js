@@ -90,7 +90,8 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-            res.send(js2xml("CDE", cde.toObject()));
+            delete cde._doc._id;
+            res.send(js2xml("DataElement", cde.toObject()));
         }
 
         var serveCde = function (err, cde) {
@@ -98,9 +99,10 @@ exports.init = function (app, daoManager) {
             adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
 
-
-            if(req.query.type==='xml') sendNativeXml(cde, res);
-            else sendNativeJson(cde, res);
+            if(!req.query.type) sendNativeJson(cde, res);
+            else if (req.query.type==='json') sendNativeJson(cde, res);
+            else if (req.query.type==='xml') sendNativeXml(cde, res);
+            else return res.status(404).send("Cannot recognize export type.");
 
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);

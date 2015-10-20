@@ -22,5 +22,6 @@ public class FormCdesTest extends BaseFormTest {
         textPresent("Quick Board ( 1 )");
         findElement(By.id("pinToBoard_1")).click();
         textPresent("Select Board");
+        findElement(By.id("cancelSelect")).click();
     }
 }
