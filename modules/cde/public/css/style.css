@@ -779,3 +779,7 @@ div + .questionPlaceholder {
     margin-bottom: 20px;
     border-radius: 5px;
 }
+
+.ui-select-focusser {
+    display: none
+}
