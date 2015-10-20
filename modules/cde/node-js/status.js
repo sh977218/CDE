@@ -22,7 +22,6 @@ exports.everythingOk = function() {
     return status.statusReport.elastic.up
         && status.statusReport.elastic.results
         && status.statusReport.elastic.sync;
-        //&& status.statusReport.elastic.updating;
 };
 
 exports.assembleErrorMessage = function(statusReport) {

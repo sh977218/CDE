@@ -30,8 +30,6 @@ exports.initEs = function () {
                             console.log("error creating index. " + error);
                         } else {
                             console.log("deleting old river: " + indexName);
-                            // create river
-                            // TODO remove and replace with something else
                             river.index.name = indexName;
                             request.del(config.elastic.hosts[0] + "/_river/" + indexName,
                                 function (error, response) {
