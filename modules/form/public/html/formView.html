@@ -34,7 +34,7 @@
             <ul class="dropdown-menu">
                 <li><a ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
                 <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a></li>
-                <li><a id="sdcExport" ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">XML File, SDC Schema</a></li>
+                <li><a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">XML File, SDC Schema</a></li>
                 <li><a ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
             </ul>
         </div>
@@ -57,6 +57,9 @@
         </div>
         <div tab heading="{{tabs['description'].heading}}">
             <div ng-include="'/form/public/html/formDescription.html'"></div>
+        </div>
+        <div tab heading="{{tabs['cdeList'].heading}}" select="getFormCdes()">
+            <div ng-controller="FormCdeCtrl" ng-include="'/form/public/html/cdeList.html'"></div>
         </div>
         <div tab heading="{{tabs['naming'].heading}}">
             <div ng-include="'/system/public/html/naming.html'"></div>
