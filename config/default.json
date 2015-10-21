@@ -41,14 +41,14 @@
   "logdir": "",
   "port": 3000,
   "elastic": {
-    "uri": "http://localhost:9200",
-    "index": {"name": "cdetest"},
+    "hosts": ["http://localhost:9200"],
+    "index": {"name": "auto"},
     "river": {"name": "cdetest"},
-    "formIndex": {"name": "formtest"},
+    "formIndex": {"name": "auto"},
     "formRiver": {"name": "formtest"},
-    "boardIndex": {"name": "boardtest"},
+    "boardIndex": {"name": "auto"},
     "boardRiver": {"name": "boardtest"},
-    "storedQueryIndex": {"name": "storedquerytest"},
+    "storedQueryIndex": {"name": "auto"},
     "storedQueryRiver": {"name": "storedquerytest"},
     "scripts": {
       "stop": "sudo /sbin/service elasticsearch stop",
@@ -104,7 +104,7 @@
   },
   "status": {
     "timeouts": {
-      "statusCheck": 120000,
+      "statusCheck": 20000,
       // How often to update /status/cde page ? (miliseconds),
       "dummyElementCheck": 30000,
       // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds),
