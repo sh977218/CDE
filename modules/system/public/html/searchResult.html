@@ -54,8 +54,8 @@
             Export Search<span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a ng-click="exportSearchResults()">CSV File</a></li>
-            <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a></li>
+            <li><a ng-click="exportSearchResults('csv')">CSV File</a></li>
+            <li><a ng-click="exportSearchResults('json')">JSON File</a></li>
         </ul>
     </div>
 

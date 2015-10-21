@@ -26,7 +26,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.exportQuickBoard = function () {
                 var result = exports.exportHeader.cdeHeader;
                 $scope.cdes.forEach(function (ele) {
-                    result += exports.convertToCsv(exports.projectCdeForExport(ele));
+                    result += exports.convertToCsv(ele);
                 });
                 if (result) {
                     var blob = new Blob([result], {

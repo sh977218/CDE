@@ -505,7 +505,10 @@ exports.init = function (app, daoManager) {
     app.post('/elasticSearchExport/cde', function (req, res) {
         var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
+        var exporter;
+        if (req.query.type==='csv') exporter = exportShared.convertToCsv;
+        if (req.query.type==='json') exporter = function(c){return c};
+        return elastic_system.elasticSearchExport(res, query, 'cde', exporter, cdeHeader);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {

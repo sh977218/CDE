@@ -3,7 +3,6 @@ var config = require('./parseConfig')
     , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
-    , exportShared = require('../../system/shared/exportShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
@@ -400,7 +399,7 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(converter(exportShared.projectCdeForExport(thisCde)));
+                            res.write(converter(thisCde));
                         }
                         scrollThrough(newScrollId);
                     }
