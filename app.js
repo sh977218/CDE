@@ -23,6 +23,7 @@ var express = require('express')
     , async = require('async')
     ;
 
+require('./modules/system/node-js/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 
@@ -42,22 +43,24 @@ var app = express();
 app.use(auth.ticketAuth);
 
 var request = require('request');
-app.use('/kibana/', function(req, res, next) {
-    req.pipe(request('http://localhost:5601' + req.url)).on('error', function(err) {res.sendStatus(500)}).pipe(res);
+app.use('/kibana/', function(req, res) {
+    req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500)}).pipe(res);
 });
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
+    console.log(err.stack);
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
 });
 
 domain.on('error', function(err){
     console.log("ERROR2: " + err);
+    console.log(err.stack);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
 });
 
 var winstonStream = {
-    write: function(message, encoding){
+    write: function(message){
         logging.expressLogger.info(message);
     }
 };
@@ -111,8 +114,8 @@ app.use(function preventSessionCreation(req, res, next) {
     this.isFile = function(req) {
         if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
         if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
-        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".gif") return true;
-        return false;
+        return req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".gif";
+
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
         expressSettings.store = mongo_data_system.sessionStore;
@@ -201,6 +204,8 @@ app.use(function(err, req, res, next){
     }
     next();
 });
+
+
 
 domain.run(function(){
     http.createServer(app).listen(app.get('port'), function(){
