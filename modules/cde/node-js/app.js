@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
+    , js2xml = require('js2xmlparser')
     ;
 
 
@@ -83,10 +84,26 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+        function sendNativeJson(cde, res){
+            res.send(cde);
+        }
+
+        function sendNativeXml(cde, res){
+            res.setHeader("Content-Type", "application/xml");
+            delete cde._doc._id;
+            res.send(js2xml("DataElement", cde.toObject()));
+        }
+
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
-            res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+            cde = cdesvc.hideProprietaryPvs(cde, req.user);
+
+            if(!req.query.type) sendNativeJson(cde, res);
+            else if (req.query.type==='json') sendNativeJson(cde, res);
+            else if (req.query.type==='xml') sendNativeXml(cde, res);
+            else return res.status(404).send("Cannot recognize export type.");
+
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }

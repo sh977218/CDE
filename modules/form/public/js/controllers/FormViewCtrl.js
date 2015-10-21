@@ -1,6 +1,6 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource)
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', 'CdeList',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource, CdeList)
 {
 
     $scope.module = "form";
@@ -16,6 +16,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
+        cdeList: {heading: "CDE List"},
         naming: {heading: "Naming"},
         displayProfiles: {heading: "Display Profiles"},
         classification: {heading: "Classification"},
@@ -48,6 +49,8 @@ angular.module('formModule').controller('FormViewCtrl',
     if (route._id) query = {formId: route._id, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
+    var formCdeIds;
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
@@ -55,6 +58,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
+            formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
             areDerivationRulesSatisfied();
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
@@ -64,6 +68,11 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
+    $scope.getFormCdes = function(){
+        CdeList.byTinyIdList(formCdeIds, function(cdes){
+            $scope.cdes = cdes;
+        });
+    };
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
@@ -297,6 +306,10 @@ angular.module('formModule').controller('FormViewCtrl',
         }, function() {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
+    };
+
+    $scope.dragSortableOptions = {
+        handle: ".fa.fa-arrows"
     };
 
 }]);
