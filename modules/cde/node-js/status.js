@@ -9,22 +9,19 @@ var request = require('request')
 
 var status = this;
 
-status.restartAttempted = false; 
-
 status.statusReport = {
     elastic: {
-        up: true
-        , results: true
-        , sync: true
-        , updating: true
+        up: false
+        , results: false
+        , sync: false
+        , updating: false
     }
 };    
 
 exports.everythingOk = function() {
     return status.statusReport.elastic.up
         && status.statusReport.elastic.results
-        && status.statusReport.elastic.sync
-        && status.statusReport.elastic.updating;
+        && status.statusReport.elastic.sync;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
@@ -37,7 +34,6 @@ exports.assembleErrorMessage = function(statusReport) {
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
         res.send("ALL SERVICES UP");   
-        status.restartAttempted = false; 
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -52,10 +48,9 @@ status.delayReports = function() {
 };
 
 exports.evaluateResult = function() {
-    if (process.uptime()<config.status.timeouts.minUptime) return;
-    if (status.everythingOk()) return;
+    if (process.uptime() < config.status.timeouts.minUptime) return;
+    if (status.statusReport.elastic.updating) return;
     if (status.reportSent) return;    
-    if (!status.restartAttempted) status.tryRestart();
     var emailContent = {
         subject: "Urgent: ElasticSearch issue on " + config.name
         , body: status.assembleErrorMessage(status.statusReport)
@@ -66,18 +61,6 @@ exports.evaluateResult = function() {
             if (!err) status.delayReports();
         });
     });
-};
-
-status.tryRestart = function() {
-    var exec = require('child_process').exec;
-    exec(config.elastic.scripts.stop, function (error, stdout, stderr) {
-        console.log("Elastic Search Stopped, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
-        exec(config.elastic.scripts.start, function (error, stdout, stderr) {
-            console.log("Elastic Search Started, STDOUT:" + stdout + "STDERR:" + stderr + "ERROR:" + error);
-            status.delayReports();
-            status.restartAttempted = true;
-        });    
-    });    
 };
 
 status.checkElastic = function(elasticUrl, mongoCollection) {
@@ -117,15 +100,21 @@ status.checkElasticResults = function(body, statusReport) {
     }    
 };
 
-status.checkElasticSync = function(body, statusReport, mongoCollection) {
-    var elasticElt = body.hits.hits[0]._source;
-    mongoCollection.byId(elasticElt._id, function(err, elt) {
-        if (err) {
-            statusReport.elastic.sync = false; 
-            statusReport.elastic.updating = false;      
-            return;
-        }
-        statusReport.elastic.sync = elasticElt.tinyId === elt.tinyId;
+status.checkElasticSync = function(body, statusReport) {
+    mongo.deCount(function(deCount) {
+        elastic.esClient.count(
+            {
+                index: config.elastic.index.name
+                , type: "dataelement"
+            }
+        , function(error, response) {
+                statusReport.elastic.sync = response.count >= deCount;
+                if (!statusReport.elastic.sync) {
+                    console.log("Setting status sync to false because deCount = " + deCount +
+                    "and esCount = " + response.count);
+                }
+            }
+        )
     });
 };
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
@@ -178,7 +167,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 };
 
 setInterval(function() {
-    status.checkElastic(elastic.elasticCdeUri, mongo);
+    status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
 }, config.status.timeouts.statusCheck);
 
 setInterval(function() {

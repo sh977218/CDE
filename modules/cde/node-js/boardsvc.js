@@ -1,6 +1,6 @@
-var mongo_data = require('./mongo-cde')
-    , elasticsearch = require('elasticsearch')
-    , config = require('../../system/node-js/parseConfig');
+var elasticsearch = require('elasticsearch')
+    , config = require('../../system/node-js/parseConfig')
+    ;
 
 var client = new elasticsearch.Client({
     host: config.elasticBoardIndexUri

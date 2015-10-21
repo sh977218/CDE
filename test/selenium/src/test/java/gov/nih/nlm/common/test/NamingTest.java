@@ -13,7 +13,9 @@ public abstract class NamingTest extends CommonTest {
         findElement(By.linkText("Naming")).click();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
         findElement(By.id("addNamePair")).click();
+        wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createNamePair"))));
         findElement(By.name("designation")).sendKeys("New Name");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("createNamePair")));
         findElement(By.name("definition")).sendKeys("New Definition");
         findElement(By.id("createNamePair")).click();
         modalGone();
@@ -21,7 +23,7 @@ public abstract class NamingTest extends CommonTest {
         newCdeVersion();
 
         findElement(By.linkText("Naming")).click();
-        Assert.assertTrue(textPresent("New Name"));
+        textPresent("New Name");
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeNaming-0")));
         findElement(By.cssSelector("#dd_name_1 .fa-edit")).click();
@@ -56,7 +58,6 @@ public abstract class NamingTest extends CommonTest {
         newCdeVersion();
 
         Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("New Name") < 0);
-
     }
 
     public void reorderNamingTest(String eltName) {
