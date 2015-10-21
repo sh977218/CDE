@@ -8,6 +8,7 @@ var webdriver = require('selenium-webdriver'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
     async = require('async');
 
 // global variables
@@ -368,16 +369,37 @@ var step1 = function (doneStep1) {
                                                                                                                 var form = {};
                                                                                                                 form['classification'] = protocol['classification'];
                                                                                                                 driver3.get(source['href']);
-                                                                                                                driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[td]/td[2]/span/a")).then(function (temp) {
+                                                                                                                driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[.//a]")).then(function (temp) {
                                                                                                                     if (temp.length > 0) {
                                                                                                                         var elements = [];
                                                                                                                         var i = 0;
-                                                                                                                        async.eachSeries(temp, function (a, doneOneA) {
+                                                                                                                        async.eachSeries(temp, function (tr, doneOneTr) {
                                                                                                                             var element = {};
                                                                                                                             i++;
                                                                                                                             async.parallel({
+                                                                                                                                parsingFormAndElementName: function (doneParsingFormAndElementName) {
+                                                                                                                                    tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                                                                                                        if (tds.length > 0) {
+                                                                                                                                            if (i === 1) {
+                                                                                                                                                tds[2].getText().then(function (elementNameText) {
+                                                                                                                                                    form['name'] = elementNameText.trim();
+                                                                                                                                                    doneParsingFormAndElementName();
+                                                                                                                                                });
+                                                                                                                                            }
+                                                                                                                                            else {
+                                                                                                                                                tds[2].getText().then(function (elementNameText) {
+                                                                                                                                                    element['name'] = elementNameText.trim();
+                                                                                                                                                    doneParsingFormAndElementName();
+                                                                                                                                                });
+                                                                                                                                            }
+                                                                                                                                        }
+                                                                                                                                        else {
+                                                                                                                                            doneParsingFormAndElementName();
+                                                                                                                                        }
+                                                                                                                                    });
+                                                                                                                                },
                                                                                                                                 parsingLinks: function (doneParsingLink) {
-                                                                                                                                    a.getAttribute('href').then(function (elementHrefText) {
+                                                                                                                                    tr.findElement(webdriver.By.css('a')).getAttribute('href').then(function (elementHrefText) {
                                                                                                                                         if (i === 1) {
                                                                                                                                             form['href'] = elementHrefText.trim();
                                                                                                                                         }
@@ -388,7 +410,7 @@ var step1 = function (doneStep1) {
                                                                                                                                     });
                                                                                                                                 },
                                                                                                                                 parsingLoincId: function (doneParsingLoinc) {
-                                                                                                                                    a.getText().then(function (elementHrefText) {
+                                                                                                                                    tr.findElement(webdriver.By.css('a')).getText().then(function (elementHrefText) {
                                                                                                                                         if (i === 1) {
                                                                                                                                             form['loincId'] = elementHrefText.trim();
                                                                                                                                         }
@@ -401,9 +423,9 @@ var step1 = function (doneStep1) {
                                                                                                                             }, function doneAllHref() {
                                                                                                                                 if (i != 1)
                                                                                                                                     elements.push(element);
-                                                                                                                                doneOneA();
+                                                                                                                                doneOneTr();
                                                                                                                             });
-                                                                                                                        }, function doneAllAs() {
+                                                                                                                        }, function doneAllTrs() {
                                                                                                                             async.eachSeries(elements, function (ele, doneOneEle) {
                                                                                                                                 ele['classification'] = form['classification'];
                                                                                                                                 var eleHref = ele['href'];
@@ -457,6 +479,7 @@ var step1 = function (doneStep1) {
                                                                             driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
                                                                                 if (temp.length > 0) {
                                                                                     temp[0].getOuterHtml().then(function (html) {
+                                                                                        protocol[key.trim()] = html;
                                                                                         doneOneLabel();
                                                                                     });
                                                                                 }
@@ -477,13 +500,29 @@ var step1 = function (doneStep1) {
                                                                     if (temp.length > 0) {
                                                                         temp[temp.length - 1].getText().then(function (text) {
                                                                             protocol['Protocol Name'] = text.trim();
-                                                                            protocolCounter++;
-                                                                            protocols.push(protocol);
-                                                                            console.log('finished protocol ' + protocolCounter);
-                                                                            doneOneProtocolLink();
+                                                                            driver2.findElements(webdriver.By.xpath("/html/body/center/table/tbody/tr[3]/td/div/div[3]/div[1]/span")).then(function (protocolIdTemp) {
+                                                                                if (protocolIdTemp.length > 0) {
+                                                                                    protocolIdTemp[0].getText().then(function (protcolIdText) {
+                                                                                        protocol['protcolId'] = protcolIdText.replace('#', '').trim();
+                                                                                        protocolCounter++;
+                                                                                        protocols.push(protocol);
+                                                                                        console.log('finished protocol ' + protocolCounter);
+                                                                                        doneOneProtocolLink();
+                                                                                    });
+                                                                                }
+                                                                                else {
+                                                                                    protocolCounter++;
+                                                                                    protocols.push(protocol);
+                                                                                    console.log('finished protocol ' + protocolCounter);
+                                                                                    doneOneProtocolLink();
+                                                                                }
+                                                                            });
                                                                         })
                                                                     }
                                                                     else {
+                                                                        protocolCounter++;
+                                                                        protocols.push(protocol);
+                                                                        console.log('finished protocol ' + protocolCounter);
                                                                         doneOneProtocolLink();
                                                                     }
                                                                 });
@@ -633,37 +672,41 @@ var step2 = function (doneStep2) {
 };
 
 var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, cb) {
-    async.eachSeries(elements, function (element, doneOneElement) {
-        if (element['type'] === 'Question' && element['remove'] != true) {
-            cdeCounter++;
-            DataElement.findOne({'ids.id': element['loincId']}, function (err, result) {
-                if (err) throw err;
-                if (result) {
-                    classificationShared.transferClassifications(element, result.toObject());
-                    result.markModified('classification');
-                    result.save(function () {
-                        cdeUpdateCounter++;
-                        console.log('finish update cde ' + cdeUpdateCounter);
-                        doneOneElement();
-                    });
-                }
-                else {
-                    mongo_cde.create(element, user, function () {
-                        cdes.push(element);
-                        cdeSaveCounter++;
-                        console.log('finish saving cde ' + cdeSaveCounter);
-                        doneOneElement();
-                    });
-                }
-            });
-        }
-        else {
-            loadCdeLoop(element['elements'], cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, null);
-        }
-    }, function doneAllElements() {
-        if (cb)
-            cb();
-    });
+    if (elements) {
+        async.eachSeries(elements, function (element, doneOneElement) {
+            if (element['type'] === 'Question' && element['remove'] != true) {
+                cdeCounter++;
+                DataElement.findOne({'ids.id': element['loincId']}, function (err, result) {
+                    if (err) throw err;
+                    if (result) {
+                        classificationShared.transferClassifications(element, result.toObject());
+                        result.markModified('classification');
+                        result.save(function () {
+                            cdeUpdateCounter++;
+                            console.log('finish update cde ' + cdeUpdateCounter);
+                            doneOneElement();
+                        });
+                    }
+                    else {
+                        mongo_cde.create(element, user, function () {
+                            cdes.push(element);
+                            cdeSaveCounter++;
+                            console.log('finish saving cde ' + cdeSaveCounter);
+                            doneOneElement();
+                        });
+                    }
+                });
+            }
+            else {
+                loadCdeLoop(element['elements'], cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, doneOneElement);
+            }
+        }, function doneAllElements() {
+            if (cb)
+                cb();
+        });
+    } else {
+        cb();
+    }
 };
 
 var loadCde = function (doneLoadCde) {
@@ -671,7 +714,7 @@ var loadCde = function (doneLoadCde) {
     var cdeUpdateCounter = 0;
     var cdeSaveCounter = 0;
     var cdes = [];
-    Measure.find({href: "https://www.phenxtoolkit.org/index.php?pageLink=browse.protocols&id=61200"}, function (err, measures) {
+    Measure.find({}, function (err, measures) {
         if (err) throw err;
         async.eachSeries(measures, function (measure, doneOneMeasure) {
             console.log('measure:' + measure.get('href'));
@@ -698,88 +741,6 @@ var loadCde = function (doneLoadCde) {
             cache.save(function () {
                 console.log("finished load cde.");
                 doneLoadCde();
-            })
-        });
-    });
-};
-
-var loadForm = function (doneForm) {
-    var measureCounter = 0;
-    var protocolCounter = 0;
-    var formCounter = 0;
-    Measure.find({}, function (err, measures) {
-        if (err) throw err;
-        var driver = new webdriver.Builder().forBrowser('firefox').build();
-        async.eachSeries(measures, function (measure, doneOneMeasure) {
-            var protocols = measure.get('protocols');
-            var form = {
-                classification: measure['classification']
-            };
-            async.eachSeries(protocols, function (protocol, doneOneProtocol) {
-                    var stewardOrg = {name: "PhenX"};
-                    form['stewardOrg'] = stewardOrg;
-                    var properties = [];
-                    for (var p in protocol) {
-                        if (protocol.hasOwnProperty(p)) {
-                            if (p === 'Protocol Name' || p === 'Description of Protocol') {
-                                var naming = [];
-                                var name = {};
-                                name['designation'] = protocol['Protocol Name'];
-                                name['definition'] = protocol['Description of Protocol'];
-                                naming.push(name);
-                                form['naming'] = naming;
-                            }
-                            else if (p === 'Protocol Release Date') {
-                                var registrationState = {
-                                    registrationStatus: "Qualified",
-                                    effectiveDate: protocol['Protocol Release Date']
-                                };
-                                form['registrationState'] = registrationState;
-                            }
-                            else if (p === 'protocolHref') {
-                                var referenceDocuments = [];
-                                var referenceDocument = {uri: protocol['protocolHref']};
-                                referenceDocuments.push(referenceDocument);
-                                form['referenceDocuments'] = referenceDocuments;
-                            }
-                            else if (p === 'Standards') {
-                            }
-                            else {
-                                var property = {
-                                    key: p,
-                                    value: protocol[p],
-                                    valueFormat: "html"
-                                };
-                                properties.push(property);
-                            }
-                        }
-                    }
-                    form['properties'] = properties;
-                    protocolCounter++;
-                    var newForm = new Form(form);
-                    newForm.save(function () {
-                        formCounter++;
-                        doneOneProtocol();
-                    })
-                }
-                ,
-                function doneAllProtocols() {
-                    measureCounter++;
-                    doneOneMeasure();
-                }
-            )
-            ;
-        }, function doneAllMeasures() {
-            var obj = {};
-            obj['formInfo'] = true;
-            obj['measureCounter'] = measureCounter;
-            obj['protocolCounter'] = protocolCounter;
-            obj['formCounter'] = formCounter;
-            var cache = new Cache(obj);
-            cache.save(function () {
-                driver.quit();
-                console.log("finished all protocols to forms.");
-                doneForm();
             })
         });
     });
@@ -828,6 +789,186 @@ var removePanelElements = function (doneRemovePanelElements) {
     });
 };
 
+var findFormQuestionLoop = function (form, elements, cb, saveForm) {
+    async.eachSeries(elements, function (element, doneOneElement) {
+        if (element['remove'] === true) {
+            doneOneElement();
+        } else {
+            if (element['type'] === 'Question') {
+                mongo_cde.byOtherId("LOINC", element['loincId'], function (err, data) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        var pvs = data.valueDomain.permissibleValues;
+                        var answers = [];
+                        for (var m = 0; m < pvs.length; m++) {
+                            if (pvs[m] !== "") {
+                                var answer = {
+                                    permissibleValue: pvs[m].permissibleValue,
+                                    valueMeaningName: pvs[m].valueMeaningName
+                                };
+                                answers.push(answer);
+                            }
+                        }
+                        var formElement = {
+                            elementType: 'question',
+                            label: element.name,
+                            formElements: [],
+                            question: {
+                                cde: {
+                                    tinyId: "",
+                                    version: "",
+                                    label: '',
+                                    permissibleValues: []
+                                },
+                                datatype: "",
+                                uoms: [],
+                                required: {
+                                    type: false
+                                },
+                                editable: {
+                                    type: true
+                                },
+                                multiselect: false,
+                                answers: answers
+                            }
+                        };
+                        formElement.question.cde.tinyId = data.tinyId;
+                        formElement.question.cde.version = data.version;
+                        formElement.question.cde.permissibleValues = data.valueDomain.permissibleValues;
+                        formElement.question.datatype = data.valueDomain.datatype;
+                        form.formElements.push(formElement);
+                    }
+                    doneOneElement();
+                });
+            }
+            else {
+                var formElement = {
+                    elementType: 'section',
+                    label: element.name,
+                    formElements: [],
+                    section: {}
+                };
+                form.formElements.push(formElement);
+                findFormQuestionLoop(formElement, element.elements, doneOneElement, false);
+            }
+        }
+    }, function doneAllElements() {
+        if (saveForm) {
+            mongo_form.create(form, user, function () {
+                cb();
+            })
+        }
+        else {
+            cb();
+        }
+    });
+};
+
+var loadForm = function (doneLoadForm) {
+    var measureCounter = 0;
+    var protocolCounter = 0;
+    Measure.find({}, function (err, measures) {
+        if (err) throw err;
+        async.eachSeries(measures, function (measure, doneOneMeasure) {
+                var protocols = measure.get('protocols');
+                async.eachSeries(protocols, function (protocol, doneOneProtocol) {
+                        protocolCounter++;
+                        console.log('protocolCounter: ' + protocolCounter);
+                        var form = {
+                            displayProfiles: [{
+                                name: 'default',
+                                sectionsAsMatrix: true,
+                                displayValues: true,
+                                context: 'default'
+                            }], formElements: []
+                        };
+                        var ids = [];
+                        var phenXId = {
+                            source: 'PhenX',
+                            id: protocol.protocolId
+                        };
+                        ids.push(phenXId);
+                        form['ids'] = ids;
+                        form['classification'] = protocol['classification'];
+                        var stewardOrg = {name: "PhenX"};
+                        form['stewardOrg'] = stewardOrg;
+                        var properties = [];
+                        for (var p in protocol) {
+                            if (protocol.hasOwnProperty(p)) {
+                                if (p === 'Protocol Name' || p === 'Description of Protocol') {
+                                    var naming = [];
+                                    var name = {};
+                                    name['designation'] = protocol['Protocol Name'];
+                                    name['definition'] = protocol['Description of Protocol'];
+                                    naming.push(name);
+                                    form['naming'] = naming;
+                                }
+                                else if (p === 'Protocol Release Date') {
+                                    var registrationState = {
+                                        registrationStatus: "Qualified",
+                                        effectiveDate: protocol['Protocol Release Date']
+                                    };
+                                    form['registrationState'] = registrationState;
+                                }
+                                else if (p === 'protocolHref') {
+                                    var referenceDocuments = [];
+                                    var referenceDocument = {uri: protocol['protocolHref']};
+                                    referenceDocuments.push(referenceDocument);
+                                    form['referenceDocuments'] = referenceDocuments;
+                                }
+                                else if (p === 'Standards') {
+                                }
+                                else {
+                                    var property = {
+                                        key: p,
+                                        value: protocol[p],
+                                        valueFormat: "html"
+                                    };
+                                    properties.push(property);
+                                }
+                            }
+                        }
+                        form['properties'] = properties;
+                        var isFormExist = protocol['form'];
+                        if (isFormExist) {
+                            var loincId = {
+                                source: 'LOINC',
+                                id: protocol.form.loincId
+                            };
+                            ids.push(loincId);
+                            var elements = isFormExist['elements'];
+                            if (elements) {
+                                findFormQuestionLoop(form, elements, doneOneProtocol, true);
+                            }
+                            else {
+                                mongo_form.create(form, user, function () {
+                                    doneOneProtocol();
+                                })
+                            }
+                        }
+                        else {
+                            mongo_form.create(form, user, function () {
+                                doneOneProtocol();
+                            })
+                        }
+                    },
+                    function doneAllProtocols() {
+                        measureCounter++;
+                        console.log('measureCounter: ' + measureCounter);
+                        doneOneMeasure();
+                    }
+                )
+                ;
+            }, function
+                doneAllMeasures() {
+                doneLoadForm();
+            }
+        );
+    });
+};
+
+
 async.series([
     function (doneConnectionTest) {
         conn.on('error', function (err) {
@@ -844,9 +985,12 @@ async.series([
             });
         });
     },
+
+
     function (doneStep1) {
         step1(doneStep1);
     },
+
     function (doneStep2) {
         step2(doneStep2);
     },
@@ -859,7 +1003,9 @@ async.series([
         loadCde(doneLoadCde);
     },
 
-
+    function (doneLoadForm) {
+        loadForm(doneLoadForm);
+    },
     function (doneCleanUp) {
         process.exit(1);
     }
