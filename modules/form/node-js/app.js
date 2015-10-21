@@ -37,25 +37,10 @@ exports.init = function (app, daoManager) {
         });
     }
 
-    app.get('/formById/:id/:type', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
         res.send("");
-    });
-
-    app.get("/sdcExport/:id", exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.byId(req.params.id, function (err, form) {
-            if (err) {
-                logging.errorLogger.error("Error: Cannot find element by tiny id.", {
-                    origin: "system.adminItemSvc.approveComment",
-                    stack: new Error().stack
-                }, req);
-                return res.status(500).send();
-            } else {
-                res.setHeader("Content-Type", "application/xml");
-                res.send(sdc.formToSDC(form));
-            }
-        });
     });
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
@@ -137,5 +122,4 @@ exports.init = function (app, daoManager) {
             res.send("Please login first.");
         }
     });
-
 };
