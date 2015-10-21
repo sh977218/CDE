@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -48,7 +47,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 5);
+        Assert.assertEquals(driver.findElements(
+                By.xpath("//div[@ng-model='question.question.answer'][contains(@class, 'ui-select-container')]")).size(), 5);
 
         findElement(By.linkText("Display Profiles")).click();
 
@@ -60,7 +60,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         saveForm();
         findElement(By.linkText("General Details")).click();
         textNotPresent("Display Profile:");
-
     }
 
 }

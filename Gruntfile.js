@@ -407,7 +407,7 @@ module.exports = function(grunt) {
                 files: {
                     'css/bootstrap.min.css': 'bootstrap/dist/css/bootstrap.min.css',
                     'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
-                    'css/select.css': "angular-ui.select/dist/select.css",
+                    'css/select.css': "angular-ui-select/dist/select.css",
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
                     'css/textAngular.css': 'textAngular/src/textAngular.css',
                     'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css',

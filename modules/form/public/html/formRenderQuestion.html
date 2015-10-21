@@ -8,15 +8,9 @@
         </div>
         <div ng-switch-default>
             <div ng-switch="question.question.datatype" class="col-md-9">
-                <div ng-switch-when="Value List">
-                    <ui-select ng-model="question.question.answer" theme="selectize">
-                        <ui-select-match placeholder="Select an answer">{{$select.selected.valueMeaningName}}</ui-select-match>
-                        <ui-select-choices
-                                repeat="item.permissibleValue as item in question.question.answers | filter: $select.search">
-                            <div ng-bind="item.valueMeaningName"></div>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
+                <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
+                        ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
+                </select>
 
                 <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required
                        ng-model="question.question.answer"/>
