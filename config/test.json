@@ -3,19 +3,6 @@
   "logBufferSize": 2,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "elastic": {
-    "uri": "http://localhost:9200",
-    "index": {"name": "cdetest"},
-    "river": {"name": "cdetest"},
-    "formIndex": {"name": "formtest"},
-    "formRiver": {"name": "formtest"},
-    "storedQueryIndex": {"name": "storedquerytest"},
-    "storedQueryRiver": {"name": "storedquerytest"},
-    "scripts": {
-      "stop": "sudo /sbin/service elasticsearch stop",
-      "start": "sudo /sbin/service elasticsearch start"
-    }
-  },
   "database": {
     "servers": [
       {
