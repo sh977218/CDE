@@ -90,26 +90,15 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-//<<<<<<< HEAD
             var exportCde = cde.toObject();
             delete exportCde._id;
             res.send(js2xml("cde", exportCde));
-//=======
-//            delete cde._doc._id;
-//            res.send(js2xml("DataElement", cde.toObject()));
-//>>>>>>> 49284e5a3cd88f8710ad7a89cb95f52940b96303
         }
 
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
-
-//<<<<<<< HEAD
-//
-//            if(req.query.type==='xml') sendNativeXml(cde, res);
-//            else sendNativeJson(cde, res);
-//=======
             if(!req.query.type) sendNativeJson(cde, res);
             else if (req.query.type==='json') sendNativeJson(cde, res);
             else if (req.query.type==='xml') sendNativeXml(cde, res);
@@ -119,7 +108,6 @@ exports.init = function (app, daoManager) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
             mongo_data.incDeView(cde);
-//>>>>>>> 49284e5a3cd88f8710ad7a89cb95f52940b96303
         };
         if (!req.params.version) {
             mongo_data.eltByTinyId(req.params.tinyId, serveCde);
