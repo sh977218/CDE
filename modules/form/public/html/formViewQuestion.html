@@ -98,6 +98,7 @@
                         <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}</ui-select-match>
                         <ui-select-choices
                                 repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
+                            {{pv.valueMeaningName}}
                         </ui-select-choices>
                     </ui-select>
                 </div>

@@ -47,8 +47,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 0);
-        Assert.assertEquals(driver.findElements(
-                By.xpath("//div[@ng-model='question.question.answer'][contains(@class, 'ui-select-container')]")).size(), 5);
+        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 5);
 
         findElement(By.linkText("Display Profiles")).click();
 
