@@ -30,7 +30,13 @@
                     <dt tabindex="0">Source:</dt>
                     <dd tabindex="0" id="dd_id_origin_{{$index}}">{{id.source}}</dd>
                     <dt tabindex="0">Id:</dt>
-                    <dd tabindex="0" id="dd_id_id_{{$index}}">{{id.id}}</dd>
+                    <span ng-switch="id.source">
+                        <dd tabindex="0" id="dd_id_id_link_{{$index}}" ng-switch-when="LOINC">
+                            <a ng-href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Simple"
+                               target="_blank">{{id.id}}</a>
+                        </dd>
+                        <dd tabindex="0" id="dd_id_id_{{$index}}" ng-switch-default>{{id.id}}</dd>
+                    </span>
                     <dt tabindex="0">Version:</dt>
                     <dd tabindex="0" id="dd_id_version_{{$index}}">{{id.version}}</dd>
                 </dl>
