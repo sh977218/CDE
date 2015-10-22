@@ -6,7 +6,7 @@ NODE_LOC='.'
 db_user='siteRootAdmin'
 db_password='password'
 
-target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
+target='{"count":0,"_shards":{"total":2,"successful":2,"failed":0}}'
 
 gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any clean compileTest &
 
@@ -14,26 +14,26 @@ mongo test deploy/dbInit.js -u $db_user -p $db_password -authenticationDatabase 
 
 #wait for empty
 
-#COUNTER=0
-#while [ $COUNTER -lt 60 ]; do
-#    curl_res=$(curl http://localhost:9200/cdetest/_count)
-#    if [ "$curl_res" == "$target" ]
-#    then
-#        COUNTER=60
-#    else
-#        sleep 1
-#        let COUNTER=COUNTER+1
-#    fi
-#done
-#
-#if [ "$curl_res" == "$target" ]
-#then
-#    echo "All documents Removed"
-#else
-#    echo "Not all documents removed. Aborting"
-#    echo $curl_res
-#    exit
-#fi
+COUNTER=0
+while [ $COUNTER -lt 60 ]; do
+    curl_res=$(curl http://localhost:9200/cdetest/_count)
+    if [ "$curl_res" == "$target" ]
+    then
+        COUNTER=60
+    else
+        sleep 1
+        let COUNTER=COUNTER+1
+    fi
+done
+
+if [ "$curl_res" == "$target" ]
+then
+    echo "All documents Removed"
+else
+    echo "Not all documents removed. Aborting"
+    echo $curl_res
+    exit
+fi
 
 
 mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticationDatabase admin
@@ -47,14 +47,14 @@ mongo test test/createLargeBoard.js -u $db_user -p $db_password -authenticationD
 mongo test test/createManyBoards.js -u $db_user -p $db_password -authenticationDatabase admin
 mongo test test/initOrgs.js -u $db_user -p $db_password -authenticationDatabase admin
 
-target='{"count":9576,"_shards":{"total":1,"successful":1,"failed":0}}'
+target='{"count":11669,"_shards":{"total":2,"successful":2,"failed":0}}'
 #wait for full
 COUNTER=0
-while [ $COUNTER -lt 45 ]; do
+while [ $COUNTER -lt 80 ]; do
     curl_res=$(curl http://localhost:9200/cdetest/_count)
     if [ "$curl_res" == "$target" ] 
     then
-        COUNTER=45
+        COUNTER=80
     else
         sleep 1
         let COUNTER=COUNTER+1
