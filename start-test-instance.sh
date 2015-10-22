@@ -14,26 +14,26 @@ mongo test deploy/dbInit.js -u $db_user -p $db_password -authenticationDatabase 
 
 #wait for empty
 
-COUNTER=0
-while [ $COUNTER -lt 60 ]; do
-    curl_res=$(curl http://localhost:9200/cdetest/_count)
-    if [ "$curl_res" == "$target" ] 
-    then
-        COUNTER=60
-    else 
-        sleep 1
-        let COUNTER=COUNTER+1
-    fi
-done
-
-if [ "$curl_res" == "$target" ] 
-then
-    echo "All documents Removed"
-else
-    echo "Not all documents removed. Aborting"
-    echo $curl_res
-    exit
-fi
+#COUNTER=0
+#while [ $COUNTER -lt 60 ]; do
+#    curl_res=$(curl http://localhost:9200/cdetest/_count)
+#    if [ "$curl_res" == "$target" ]
+#    then
+#        COUNTER=60
+#    else
+#        sleep 1
+#        let COUNTER=COUNTER+1
+#    fi
+#done
+#
+#if [ "$curl_res" == "$target" ]
+#then
+#    echo "All documents Removed"
+#else
+#    echo "Not all documents removed. Aborting"
+#    echo $curl_res
+#    exit
+#fi
 
 
 mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticationDatabase admin
