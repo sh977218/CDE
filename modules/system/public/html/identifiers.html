@@ -30,7 +30,14 @@
                     <dt tabindex="0">Source:</dt>
                     <dd tabindex="0" id="dd_id_origin_{{$index}}">{{id.source}}</dd>
                     <dt tabindex="0">Id:</dt>
-                    <dd tabindex="0" id="dd_id_id_{{$index}}">{{id.id}}</dd>
+                    <dd tabindex="0" id="dd_id_id_{{$index}}" ng-switch="id.source">
+                        <a ng-switch-when="LOINC" ng-href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
+                           target="_blank">{{id.id}}</a>
+                        <a ng-switch-when="PhenX" ng-href="https://www.phenxtoolkit.org/index.php?pageLink=browse.protocoldetails&id={{id.id}}"
+                           target="_blank">{{id.id}}</a>
+                        <span ng-switch-default>{{id.id}}</span>
+                    </dd>
+
                     <dt tabindex="0">Version:</dt>
                     <dd tabindex="0" id="dd_id_version_{{$index}}">{{id.version}}</dd>
                 </dl>
