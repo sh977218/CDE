@@ -55,5 +55,4 @@ public abstract class IdentifiersTest extends CommonTest {
         textNotPresent("MyId2");
     }
 
-
 }
