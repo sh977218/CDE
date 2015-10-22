@@ -9,13 +9,15 @@
         <div ng-switch-default>
             <div ng-switch="question.question.datatype" class="col-md-9">
                 <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
-                        ng-options="pv.permissibleValue as pv.valueMeaningName for pv in question.question.answers">
+                        ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
                 </select>
+
                 <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required
                        ng-model="question.question.answer"/>
                 <span ng-switch-default class="form-group">
                   <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>
-                  <select class="form-control" ng-if="question.question.uoms.length > 0" ng-model="question.question.answerUom"
+                  <select class="form-control" ng-if="question.question.uoms.length > 0"
+                          ng-model="question.question.answerUom"
                           ng-init="question.question.answerUom = question.question.uoms[0]">
                       <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
                   </select>

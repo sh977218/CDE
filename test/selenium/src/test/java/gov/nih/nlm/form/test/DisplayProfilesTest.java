@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -60,7 +59,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         saveForm();
         findElement(By.linkText("General Details")).click();
         textNotPresent("Display Profile:");
-
     }
 
 }
