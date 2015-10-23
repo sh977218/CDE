@@ -96,6 +96,7 @@ exports.treeChildren = function(tree, path, cb) {
         }
     });
 };
+
 exports.transferClassifications = function (source, destination) {
     var classification = this;
     source.classification.forEach(function(stewardOrgSource){

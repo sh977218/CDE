@@ -621,7 +621,6 @@ var f = function (elements, doneOneProtocol) {
 };
 
 var step2 = function (doneStep2) {
-    var cdeCounter = 0;
     var panelCde = [];
     Measure.find({step1: 'done', step2: null}, function (err, measures) {
         if (err) throw err;
@@ -714,7 +713,7 @@ var loadCde = function (doneLoadCde) {
             var obj = {};
             obj['formInfo'] = true;
             obj['cdes'] = cdes;
-            obj['cdeCounter'] = cdeCounter;
+            obj.cdeCounter = cdeCounter;
             obj['cdeUpdateCounter'] = cdeUpdateCounter;
             obj['cdeSaveCounter'] = cdeSaveCounter;
             var cache = new Cache(obj);
@@ -880,8 +879,7 @@ var loadForm = function (doneLoadForm) {
                         ids.push(phenXId);
                         form['ids'] = ids;
                         form['classification'] = protocol['classification'];
-                        var stewardOrg = {name: "PhenX"};
-                        form['stewardOrg'] = stewardOrg;
+                        form.stewardOrg = {name: "PhenX"};
                         var properties = [];
                         for (var p in protocol) {
                             if (protocol.hasOwnProperty(p)) {
@@ -897,11 +895,10 @@ var loadForm = function (doneLoadForm) {
                                     form['naming'] = naming;
                                 }
                                 else if (p === 'Protocol Release Date') {
-                                    var registrationState = {
+                                    form.registrationState = {
                                         registrationStatus: "Qualified",
                                         effectiveDate: protocol['Protocol Release Date']
                                     };
-                                    form['registrationState'] = registrationState;
                                 }
                                 else if (p === 'protocolHref') {
                                     var referenceDocuments = [];
@@ -1015,32 +1012,41 @@ var movePhenXToNCI = function (doneMovePhenXToNCI) {
     DataElement.find({'classification.stewardOrg.name': 'PhenX'}, function (err, cdes) {
         if (err) throw err;
         async.eachSeries(cdes, function (cde, doneOneCde) {
-            var oldClassification = cde.get('classification');
-            var newClassification = [];
-            for (var i = 0; i < oldClassification.length; i++) {
-                if (oldClassification[i].stewardOrg.name === 'PhenX') {
-                    var c = {
-                        stewardOrg: {name: 'NCI'},
+            var phenXClassif = classificationShared.findSteward(cde, "PhenX");
+            var nciClassif = classificationShared.findSteward(cde, "NCI");
+            if (!nciClassif) {
+                nciClassif = {
+                    stewardOrg: {name: 'NCI'},
+                    elements: [{
+                        name: "caBIG",
                         elements: []
-                    };
-                    c.elements.push(oldClassification[i]);
-                    newClassification.push(c);
-                }
-                else {
-                    newClassification.push(oldClassification[i]);
+                    }]
+                };
+            } else {
+                nciClassif = nciClassif.object;
+                var caBIG = classificationShared.fetchLevel(nciClassif, ["caBIG", ""]);
+                if (caBIG.elements.length > 0) {
+                    caBIG.elements.push(phenXClassif.elements[0]);
+                } else {
+                    nciClassif.push({
+                        name: "caBIG",
+                        elements: phenXClassif.elements[0]
+                    });
                 }
             }
-            cde.set('classification', newClassification);
-            classificationShared.addCategory({elements: nciOrg.classifications}, newClassification, function () {
-                cde.save(function () {
-                    phenXCdeCounter++;
-                    console.log('phenXCdeCounter: ' + phenXCdeCounter);
-                    doneOneCde();
-                })
+            phenXClassif.elements[0].elements.forEach(function(phenXSubClassif) {
+                classificationShared.addCategory(nciOrg.classifications, ['caBIG', 'PhenX', phenXSubClassif]);
+            });
+            cde.save(function () {
+                phenXCdeCounter++;
+                console.log('phenXCdeCounter: ' + phenXCdeCounter);
+                doneOneCde();
             });
         }, function doneAllCdes() {
-            console.log('finished all phenX cde');
-            doneMovePhenXToNCI();
+            nciOrg.save(function() {
+                console.log('finished all phenX cde');
+                doneMovePhenXToNCI();
+            });
         })
     })
 };
