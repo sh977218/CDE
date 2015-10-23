@@ -22,7 +22,19 @@
             {{elt.naming[0].designation}}
             <a class="btn btn-small btn-default" ng-show="quickBoard.canAddElt(elt)" role="button" tabindex="0"
                ng-click="quickBoard.add(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
+            <div class="btn-group">
+                <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-download"></i>
+                    Export <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a id='jsonExport' ng-href="cde/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
+                    <li><a id='xmlExport' ng-href="cde/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
+                </ul>
+            </div>
         </h1>
+
+
 
         <div tabset>
             <div tab heading="{{tabs['general'].heading}}">

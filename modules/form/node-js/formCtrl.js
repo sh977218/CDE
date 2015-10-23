@@ -56,14 +56,16 @@ var getFormJson = function(form, req, res){
     });
 };
 
-
-var getFormPlainXml = function(form, req, res){
-    if(!form) return res.status(404).end();
-    res.setHeader("Content-Type", "application/xml");
-    var exportForm = form.toObject();
-    delete exportForm._id;
-    exportForm.formElements.forEach(function(s){
-        s.formElements.forEach(function(q){delete q._id;});
+var getFormPlainXml = function(req, res){
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        if(!form) return res.status(404).end();
+        res.setHeader("Content-Type", "application/xml");
+        var exportForm = form.toObject();
+        delete exportForm._id;
+        exportForm.formElements.forEach(function(s){
+            s.formElements.forEach(function(q){delete q._id;});
+        });
+        res.send(js2xml("Form", exportForm));
     });
     res.send(js2xml("Form", exportForm));
 };
