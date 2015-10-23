@@ -54,7 +54,7 @@ var storedQueryRiverFunction =
     "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];} ctx.document.search_suggest = ctx.document.searchTerm";
 
 var riverFunction =
-    "if (ctx.operation !== 'd') {\
+    "if (ctx.operation !== 'd' || ctx.operation !== 'dc') {\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
      function doClassif(currentString, classif) {\
