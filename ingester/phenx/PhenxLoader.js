@@ -13,237 +13,18 @@ var webdriver = require('selenium-webdriver'),
 
 // global variables
 var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
-var mongoUrlMigration = config.mongoMigrationUri;
 var mongoUrl = config.mongoUri;
 var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
-var connMigration = mongoose.createConnection(mongoUrlMigration, {auth: {authdb: "admin"}});
 var cacheSchema = mongoose.Schema({}, {strict: false});
-var cdeSchema = mongoose.Schema({}, {strict: false});
 var formSchema = mongoose.Schema({}, {strict: false});
 var measureSchema = mongoose.Schema({}, {strict: false});
 var Measure = conn.model('measure', measureSchema);
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var Cache = conn.model('cache', cacheSchema);
-var Cde = conn.model('cde', cdeSchema);
 var Form = conn.model('form', formSchema);
 var user = {username: "batchloader"};
-var skipShortNameMap = {};
 var phenxOrg = null;
-
-var parsingQuestion = function (driver4, ele, doneOneEle) {
-    driver4.get(ele['href']);
-    driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th")).then(function (temp) {
-        var namingCounter = 0;
-        var pvsCounter = 0;
-        var idsCounter = 0;
-        var naming = [];
-        var pvs = [];
-        var ids = [];
-        async.parallel({
-            parsingName: function (doneParsingAllNames) {
-                driver4.findElements(webdriver.By.xpath("//*[@class='Section1000000F00']/table/tbody/tr[td]")).then(function (trs) {
-                    async.parallel({
-                        parsingId: function (doneParsingId) {
-                            var id = {};
-                            driver4.findElement(webdriver.By.xpath("//*[@id='ln']")).getText().then(function (idText) {
-                                id['source'] = 'LOINC';
-                                id['id'] = idText.trim();
-                                ids.push(id);
-                                idsCounter++;
-                                console.log('idsCounter: ' + idsCounter);
-                                doneParsingId();
-                            })
-                        },
-                        parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
-                            var name = {};
-                            driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (isFullySpecifiedName) {
-                                if (isFullySpecifiedName.length > 0) {
-                                    isFullySpecifiedName[0].getText().then(function (fullySpecifiedNameText) {
-                                        var context = {};
-                                        context['contextName'] = 'Primary Name';
-                                        name['designation'] = fullySpecifiedNameText.trim();
-                                        name['definition'] = '';
-                                        name['context'] = context;
-                                        namingCounter++;
-                                        console.log('namingCounter: ' + namingCounter);
-                                        naming.push(name);
-                                        doneParsingFullySpecifiedName();
-                                    })
-                                } else {
-                                    doneParsingFullySpecifiedName();
-                                }
-                            })
-                        },
-                        parsingLongCommonName: function (doneParsingLongCommonName) {
-                            var name = {};
-                            driver4.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[3]/td[3]')).then(function (isLongCommonName) {
-                                if (isLongCommonName.length > 0) {
-                                    isLongCommonName[0].getText().then(function (longCommonNameText) {
-                                        var context = {};
-                                        context['contextName'] = 'Long Common Name';
-                                        name['designation'] = longCommonNameText.trim();
-                                        name['definition'] = '';
-                                        name['context'] = context;
-                                        namingCounter++;
-                                        console.log('namingCounter: ' + namingCounter);
-                                        naming.push(name);
-                                        doneParsingLongCommonName();
-                                    })
-                                } else {
-                                    doneParsingLongCommonName();
-                                }
-                            })
-                        },
-                        parsingShortName: function (doneParsingShortName) {
-                            var name = {};
-                            driver4.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[4]/td[3]')).then(function (isShortName) {
-                                if (isShortName.length > 0) {
-                                    isShortName[0].getText().then(function (shortNameText) {
-                                        var context = {};
-                                        context['contextName'] = 'Shortname';
-                                        name['designation'] = shortNameText.trim();
-                                        name['definition'] = '';
-                                        name['context'] = context;
-                                        namingCounter++;
-                                        console.log('namingCounter: ' + namingCounter);
-                                        naming.push(name);
-                                        doneParsingShortName();
-                                    })
-                                } else {
-                                    doneParsingShortName();
-                                }
-                            })
-                        },
-                        parsingQuestionName: function (doneParsingQuestionName) {
-                            var name = {};
-                            driver4.findElements(webdriver.By.xpath("//div[@class='Section200000']/table/tbody/tr[2]/td[3]")).then(function (isQuestionName) {
-                                if (isQuestionName.length > 0) {
-                                    isQuestionName[0].getText().then(function (questionNameText) {
-                                        var context = {};
-                                        context['contextName'] = 'Question';
-                                        name['designation'] = questionNameText.trim();
-                                        name['definition'] = '';
-                                        name['context'] = context;
-                                        namingCounter++;
-                                        console.log('namingCounter: ' + namingCounter);
-                                        naming.push(name);
-                                        doneParsingQuestionName();
-                                    })
-                                }
-                                else {
-                                    doneParsingQuestionName();
-                                }
-                            })
-                        }
-                    }, function doneParsingOneNames() {
-                        doneParsingAllNames();
-                    })
-                })
-            },
-            parsingPermissibleValue: function (doneParsingAllPermissibleValues) {
-                driver4.findElements(webdriver.By.xpath("//*[@class='Section80000']/table/tbody/tr")).then(function (pvTrs) {
-                    var i = 0;
-                    async.eachSeries(pvTrs, function (pvTr, doneOnePvTr) {
-                        var pv = {codeSystemName: "LOINC"};
-                        i++;
-                        if (i > 2) {
-                            pvTr.findElements(webdriver.By.css('td')).then(function (pvTds) {
-                                var num_tds = pvTds.length;
-                                if (num_tds == 8) {
-                                    async.parallel({
-                                        one: function (b) {
-                                            pvTds[3].getText().then(function (pvText) {
-                                                pv['valueMeaningName'] = pvText.trim();
-                                                pv['permissibleValue'] = pvText.trim();
-                                                b();
-                                            });
-                                        },
-                                        two: function (b) {
-                                            pvTds[5].getText().then(function (pvText) {
-                                                pv['valueMeaningCode'] = pvText.trim();
-                                                b();
-                                            });
-                                        }
-                                    }, function () {
-                                        pvsCounter++;
-                                        console.log('pvsCounter: ' + pvsCounter);
-                                        pvs.push(pv);
-                                        doneOnePvTr();
-                                    });
-                                }
-                                else if (num_tds == 9) {
-                                    async.parallel({
-                                        one: function (b) {
-                                            pvTds[3].getText().then(function (pvText) {
-                                                pv['valueMeaningName'] = pvText.trim();
-                                                b();
-                                            });
-                                        },
-                                        two: function (b) {
-                                            pvTds[5].getText().then(function (pvText) {
-                                                pv['permissibleValue'] = pvText.trim();
-                                                pv['valueMeaningCode'] = pvText.trim();
-                                                b();
-                                            });
-                                        },
-                                        three: function (b) {
-                                            pvTds[7].getText().then(function (pvText) {
-                                                pv['valueMeaningCode'] = pvText.trim();
-                                                b();
-                                            });
-                                        }
-                                    }, function () {
-                                        pvsCounter++;
-                                        console.log('pvsCounter: ' + pvsCounter);
-                                        pvs.push(pv);
-                                        doneOnePvTr();
-                                    });
-                                } else if (num_tds == 7) {
-                                    async.parallel({
-                                        one: function (b) {
-                                            pvTds[3].getText().then(function (pvText) {
-                                                pv['valueMeaningName'] = pvText.trim();
-                                                pv['permissibleValue'] = pvText.trim();
-                                                b();
-                                            });
-                                        },
-                                        three: function (b) {
-                                            pvTds[6].getText().then(function (pvText) {
-                                                pv['valueMeaningCode'] = pvText.trim();
-                                                b();
-                                            });
-                                        }
-                                    }, function () {
-                                        pvsCounter++;
-                                        console.log('pvsCounter: ' + pvsCounter);
-                                        pvs.push(pv);
-                                        doneOnePvTr();
-                                    });
-                                }
-                                else
-                                    doneOnePvTr();
-                            });
-                        }
-                        else {
-                            doneOnePvTr();
-                        }
-                    }, function doneAllPvTrs() {
-                        doneParsingAllPermissibleValues();
-                    })
-                })
-            }
-        }, function doneAllParsingCdeDetail() {
-            var valueDomain = {'datatype': pvs.length > 0 ? 'Value List' : 'Text'};
-            valueDomain['permissibleValues'] = pvs;
-            ele['stewardOrg'] = {"name": 'PhenX'};
-            ele['registrationState'] = {"registrationStatus": "Qualified"};
-            ele['naming'] = naming;
-            ele['valueDomain'] = valueDomain;
-            ele['ids'] = ids;
-            doneOneEle();
-        });
-    });
-};
+var nciOrg = null;
 
 var step1 = function (doneStep1) {
     var log = {};
@@ -570,6 +351,203 @@ var step1 = function (doneStep1) {
         }
     );
 };
+
+var parsingQuestion = function (driver4, ele, doneOneEle) {
+    driver4.get(ele['href']);
+    driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th")).then(function (temp) {
+        var naming = [];
+        var pvs = [];
+        var ids = [];
+        async.parallel({
+            parsingName: function (doneParsingAllNames) {
+                driver4.findElements(webdriver.By.xpath("//*[@class='Section1000000F00']/table/tbody/tr[td]")).then(function (trs) {
+                    async.parallel({
+                        parsingId: function (doneParsingId) {
+                            var id = {};
+                            driver4.findElement(webdriver.By.xpath("//*[@id='ln']")).getText().then(function (idText) {
+                                id['source'] = 'LOINC';
+                                id['id'] = idText.trim();
+                                ids.push(id);
+                                doneParsingId();
+                            })
+                        },
+                        parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
+                            var name = {};
+                            driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table/tbody/tr[2]/td[3]/table/tbody/tr[2]/td[1]")).then(function (isFullySpecifiedName) {
+                                if (isFullySpecifiedName.length > 0) {
+                                    isFullySpecifiedName[0].getText().then(function (fullySpecifiedNameText) {
+                                        var context = {};
+                                        context['contextName'] = 'Primary Name';
+                                        name['designation'] = fullySpecifiedNameText.trim();
+                                        name['definition'] = '';
+                                        name['context'] = context;
+                                        naming.push(name);
+                                        doneParsingFullySpecifiedName();
+                                    })
+                                } else {
+                                    doneParsingFullySpecifiedName();
+                                }
+                            })
+                        },
+                        parsingLongCommonName: function (doneParsingLongCommonName) {
+                            var name = {};
+                            driver4.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[3]/td[3]')).then(function (isLongCommonName) {
+                                if (isLongCommonName.length > 0) {
+                                    isLongCommonName[0].getText().then(function (longCommonNameText) {
+                                        var context = {};
+                                        context['contextName'] = 'Long Common Name';
+                                        name['designation'] = longCommonNameText.trim();
+                                        name['definition'] = '';
+                                        name['context'] = context;
+                                        naming.push(name);
+                                        doneParsingLongCommonName();
+                                    })
+                                } else {
+                                    doneParsingLongCommonName();
+                                }
+                            })
+                        },
+                        parsingShortName: function (doneParsingShortName) {
+                            var name = {};
+                            driver4.findElements(webdriver.By.xpath('/html/body/div[2]/table/tbody/tr[4]/td[3]')).then(function (isShortName) {
+                                if (isShortName.length > 0) {
+                                    isShortName[0].getText().then(function (shortNameText) {
+                                        var context = {};
+                                        context['contextName'] = 'Shortname';
+                                        name['designation'] = shortNameText.trim();
+                                        name['definition'] = '';
+                                        name['context'] = context;
+                                        naming.push(name);
+                                        doneParsingShortName();
+                                    })
+                                } else {
+                                    doneParsingShortName();
+                                }
+                            })
+                        },
+                        parsingQuestionName: function (doneParsingQuestionName) {
+                            var name = {};
+                            driver4.findElements(webdriver.By.xpath("//div[@class='Section200000']/table/tbody/tr[2]/td[3]")).then(function (isQuestionName) {
+                                if (isQuestionName.length > 0) {
+                                    isQuestionName[0].getText().then(function (questionNameText) {
+                                        var context = {};
+                                        context['contextName'] = 'Question';
+                                        name['designation'] = questionNameText.trim();
+                                        name['definition'] = '';
+                                        name['context'] = context;
+                                        naming.push(name);
+                                        doneParsingQuestionName();
+                                    })
+                                }
+                                else {
+                                    doneParsingQuestionName();
+                                }
+                            })
+                        }
+                    }, function doneParsingOneNames() {
+                        doneParsingAllNames();
+                    })
+                })
+            },
+            parsingPermissibleValue: function (doneParsingAllPermissibleValues) {
+                driver4.findElements(webdriver.By.xpath("//*[@class='Section80000']/table/tbody/tr")).then(function (pvTrs) {
+                    var i = 0;
+                    async.eachSeries(pvTrs, function (pvTr, doneOnePvTr) {
+                        var pv = {codeSystemName: "LOINC"};
+                        i++;
+                        if (i > 2) {
+                            pvTr.findElements(webdriver.By.css('td')).then(function (pvTds) {
+                                var num_tds = pvTds.length;
+                                if (num_tds == 8) {
+                                    async.parallel({
+                                        one: function (b) {
+                                            pvTds[3].getText().then(function (pvText) {
+                                                pv['valueMeaningName'] = pvText.trim();
+                                                pv['permissibleValue'] = pvText.trim();
+                                                b();
+                                            });
+                                        },
+                                        two: function (b) {
+                                            pvTds[5].getText().then(function (pvText) {
+                                                pv['valueMeaningCode'] = pvText.trim();
+                                                b();
+                                            });
+                                        }
+                                    }, function () {
+                                        pvs.push(pv);
+                                        doneOnePvTr();
+                                    });
+                                }
+                                else if (num_tds == 9) {
+                                    async.parallel({
+                                        one: function (b) {
+                                            pvTds[3].getText().then(function (pvText) {
+                                                pv['valueMeaningName'] = pvText.trim();
+                                                b();
+                                            });
+                                        },
+                                        two: function (b) {
+                                            pvTds[5].getText().then(function (pvText) {
+                                                pv['permissibleValue'] = pvText.trim();
+                                                pv['valueMeaningCode'] = pvText.trim();
+                                                b();
+                                            });
+                                        },
+                                        three: function (b) {
+                                            pvTds[7].getText().then(function (pvText) {
+                                                pv['valueMeaningCode'] = pvText.trim();
+                                                b();
+                                            });
+                                        }
+                                    }, function () {
+                                        pvs.push(pv);
+                                        doneOnePvTr();
+                                    });
+                                } else if (num_tds == 7) {
+                                    async.parallel({
+                                        one: function (b) {
+                                            pvTds[3].getText().then(function (pvText) {
+                                                pv['valueMeaningName'] = pvText.trim();
+                                                pv['permissibleValue'] = pvText.trim();
+                                                b();
+                                            });
+                                        },
+                                        three: function (b) {
+                                            pvTds[6].getText().then(function (pvText) {
+                                                pv['valueMeaningCode'] = pvText.trim();
+                                                b();
+                                            });
+                                        }
+                                    }, function () {
+                                        pvs.push(pv);
+                                        doneOnePvTr();
+                                    });
+                                }
+                                else
+                                    doneOnePvTr();
+                            });
+                        }
+                        else {
+                            doneOnePvTr();
+                        }
+                    }, function doneAllPvTrs() {
+                        doneParsingAllPermissibleValues();
+                    })
+                })
+            }
+        }, function doneAllParsingCdeDetail() {
+            var valueDomain = {'datatype': pvs.length > 0 ? 'Value List' : 'Text'};
+            valueDomain['permissibleValues'] = pvs;
+            ele['stewardOrg'] = {"name": 'PhenX'};
+            ele['registrationState'] = {"registrationStatus": "Qualified"};
+            ele['naming'] = naming;
+            ele['valueDomain'] = valueDomain;
+            ele['ids'] = ids;
+            doneOneEle();
+        });
+    });
+};
+
 var parsingPanel = function (driver, element, numElements, doneOneElement) {
     driver.get(element['href']);
     var driver1 = new webdriver.Builder().forBrowser('firefox').build();
@@ -689,8 +667,8 @@ var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSav
                         });
                     }
                     else {
+                        element['version'] = "1.0";
                         mongo_cde.create(element, user, function () {
-                            element['version'] = "1.0";
                             cdes.push(element);
                             cdeSaveCounter++;
                             console.log('finish saving cde ' + cdeSaveCounter);
@@ -750,9 +728,14 @@ var loadCde = function (doneLoadCde) {
 
 var removePanelElementsLoop = function (elements, cb) {
     var num = 0;
+    var j = 0;
     elements.forEach(function (element) {
+        j++;
         if (element['numElement']) {
             num = element['numElement'];
+            for (var i = 0; i < num; i++) {
+                element.elements[i].name = elements[i + j].name;
+            }
             removePanelElementsLoop(element['elements'], null);
         }
         else {
@@ -936,13 +919,6 @@ var loadForm = function (doneLoadForm) {
                                             };
                                             ids.push(loincId);
                                         }
-                                        if (standard.Source.text === 'CDE Browser') {
-                                            var caDSRId = {
-                                                source: 'caDSRId',
-                                                id: standard.ID
-                                            };
-                                            ids.push(loincId);
-                                        }
                                     });
                                 }
                                 else if (p === 'form' || p === 'classification' || p === 'href' || p === 'protocolId') {
@@ -999,40 +975,74 @@ async.series([
         });
         conn.once('open', function callback() {
             console.log("connected to " + mongoUrl);
-            mongo_data_system.orgByName("PhenX", function (stewardOrg) {
-                phenxOrg = stewardOrg;
-                if (!phenxOrg) {
-                    throw "PhenX Org does not exists!";
+            mongo_data_system.orgByName("NCI", function (stewardOrg) {
+                nciOrg = stewardOrg;
+                if (!nciOrg) {
+                    throw "nci Org does not exists!";
                 }
                 doneConnectionTest();
             });
         });
     },
+    /*    function (doneStep1) {
+     step1(doneStep1);
+     },
+     function (doneStep2) {
+     step2(doneStep2);
+     },
 
+     function (doneRemovePanelElements) {
+     removePanelElements(doneRemovePanelElements);
+     },
 
-    function (doneStep1) {
-        step1(doneStep1);
-    },
+     function (doneLoadCde) {
+     loadCde(doneLoadCde);
+     },
 
-    function (doneStep2) {
-        step2(doneStep2);
-    },
-
-    function (doneRemovePanelElements) {
-        removePanelElements(doneRemovePanelElements);
-    },
-
-    function (doneLoadCde) {
-        loadCde(doneLoadCde);
-    },
-    function (doneLoadForm) {
-        loadForm(doneLoadForm);
+     function (doneLoadForm) {
+     loadForm(doneLoadForm);
+     },*/
+    function (doneMovePhenXToNCI) {
+        movePhenXToNCI(doneMovePhenXToNCI);
     },
     function (doneCleanUp) {
         process.exit(1);
     }
 ]);
 
-
+var movePhenXToNCI = function (doneMovePhenXToNCI) {
+    var phenXCdeCounter = 0;
+    DataElement.find({'classification.stewardOrg.name': 'PhenX'}, function (err, cdes) {
+        if (err) throw err;
+        async.eachSeries(cdes, function (cde, doneOneCde) {
+            var oldClassification = cde.get('classification');
+            var newClassification = [];
+            for (var i = 0; i < oldClassification.length; i++) {
+                if (oldClassification[i].stewardOrg.name === 'PhenX') {
+                    var c = {
+                        stewardOrg: {name: 'NCI'},
+                        elements: []
+                    };
+                    c.elements.push(oldClassification[i]);
+                    newClassification.push(c);
+                }
+                else {
+                    newClassification.push(oldClassification[i]);
+                }
+            }
+            cde.set('classification', newClassification);
+            classificationShared.addCategory({elements: nciOrg.classifications}, newClassification, function () {
+                cde.save(function () {
+                    phenXCdeCounter++;
+                    console.log('phenXCdeCounter: ' + phenXCdeCounter);
+                    doneOneCde();
+                })
+            });
+        }, function doneAllCdes() {
+            console.log('finished all phenX cde');
+            doneMovePhenXToNCI();
+        })
+    })
+};
 
 
