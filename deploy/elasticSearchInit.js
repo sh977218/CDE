@@ -55,7 +55,6 @@ var storedQueryRiverFunction =
 
 var riverFunction =
     "if (ctx.operation !== 'd') {\
-    if (ctx.document.archived) {ctx.deleted = true; return;}\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
      function doClassif(currentString, classif) {\
@@ -79,39 +78,40 @@ var riverFunction =
             }\
         }\
     }\
-    flattenClassification(ctx.document); \
-    if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValues) {\
-        ctx.document.valueDomain.nbOfPVs = ctx.document.valueDomain.permissibleValues.length;\
-        if (ctx.document.valueDomain.permissibleValues.length > 20) {\
-            ctx.document.valueDomain.permissibleValues.length = 20;\
+    if (ctx.document.archived) {ctx.deleted = true;}  else {\
+        flattenClassification(ctx.document); \
+        if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValues) {\
+            ctx.document.valueDomain.nbOfPVs = ctx.document.valueDomain.permissibleValues.length;\
+            if (ctx.document.valueDomain.permissibleValues.length > 20) {\
+                ctx.document.valueDomain.permissibleValues.length = 20;\
+            }\
         }\
-    }\
-    ctx.document.flatClassifications = flatArray; \
-    ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
-    ctx.document.steward = ctx.document.stewardOrg.name;\
-    ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
-    ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
-    var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
-    ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
-    if (ctx.document.classification) { \
-        var size = ctx.document.classification.length; \
-        if (size > 10) {ctx.document.classificationBoost = 2.1;} \
-        else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
-    } else {ctx.document.classificationBoost = .1;}\
-    ctx.document.flatIds = [];\
-    if (ctx.document.ids) {\
-        for (var i=0; i < ctx.document.ids.length; i++) {\
-            ctx.document.flatIds.push(ctx.document.ids[i].source + ' ' + ctx.document.ids[i].id + ' ' + ctx.document.ids[i].version);\
+        ctx.document.flatClassifications = flatArray; \
+        ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
+        ctx.document.steward = ctx.document.stewardOrg.name;\
+        ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
+        ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
+        var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
+        ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
+        if (ctx.document.classification) { \
+            var size = ctx.document.classification.length; \
+            if (size > 10) {ctx.document.classificationBoost = 2.1;} \
+            else {ctx.document.classificationBoost = 0.1 + 0.2 * size;} \
+        } else {ctx.document.classificationBoost = .1;}\
+        ctx.document.flatIds = [];\
+        if (ctx.document.ids) {\
+            for (var i=0; i < ctx.document.ids.length; i++) {\
+                ctx.document.flatIds.push(ctx.document.ids[i].source + ' ' + ctx.document.ids[i].id + ' ' + ctx.document.ids[i].version);\
+            }\
         }\
-    }\
-    ctx.document.flatProperties = [];\
-    if (ctx.document.properties) {\
-        for (var i=0; i < ctx.document.properties.length; i++) {\
-            ctx.document.flatProperties.push(ctx.document.properties[i].key + ' ' + ctx.document.properties[i].value);\
+        ctx.document.flatProperties = [];\
+        if (ctx.document.properties) {\
+            for (var i=0; i < ctx.document.properties.length; i++) {\
+                ctx.document.flatProperties.push(ctx.document.properties[i].key + ' ' + ctx.document.properties[i].value);\
+            }\
         }\
-    }\
-    if (ctx.document.forkOf) {ctx.document.isFork = true;}\
-    }";
+        if (ctx.document.forkOf) {ctx.document.isFork = true;}\
+    }}";
 
 
 exports.createRiverJson = {
