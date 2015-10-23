@@ -55,6 +55,7 @@ var storedQueryRiverFunction =
 
 var riverFunction =
     "if (ctx.operation !== 'd') {\
+    if (ctx.document.archived) {ctx.deleted = true; return;}\
     function escapeHTML(s) {return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}\
      var flatArray = [];\
      function doClassif(currentString, classif) {\
@@ -110,7 +111,6 @@ var riverFunction =
         }\
     }\
     if (ctx.document.forkOf) {ctx.document.isFork = true;}\
-    if (ctx.document.archived) {ctx.deleted = true;}\
     }";
 
 
