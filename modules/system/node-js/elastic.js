@@ -365,8 +365,10 @@ exports.elasticsearch = function (query, type, cb) {
 
 var lock = false;
 
-exports.elasticSearchExport = function (res, query, type, converter, header) {
+exports.elasticSearchExport = function (res, query, type, exporter) {
     if (lock) return res.status(503).send("Servers busy");
+
+    res.type(exporter.type);
 
     lock = true;
 
@@ -376,7 +378,7 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    res.write(header);
+    if (exporter.header) res.write(exporter.header);
     search.body = query;
 
     var scrollThrough = function (scrollId) {
@@ -394,12 +396,14 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
+                        if (exporter.footer) res.write(exporter.footer);
                         res.send();
                     }
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(converter(thisCde));
+                            res.write(exporter.transformObject(thisCde));
+                            if (exporter.delimiter) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }

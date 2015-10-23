@@ -94,8 +94,19 @@ angular.module('ElasticSearchResource', ['ngResource'])
             cde.highlight.matchedBy = field;
         }
         , getExport: function(query, type, output, cb) {
-            $http.post("/elasticSearchExport/" + type + '?type=' + output, query)
-            .success(function (response) {
+            //$http.post("/elasticSearchExport/" + type + '?type=' + output, query)
+            //.success(function (response) {
+            //    cb(response);
+            //})
+            //.error(function(data, status, headers, config) {
+            //    cb();
+            //});
+            $http({
+                url: "/elasticSearchExport/" + type + '?type=' + output
+                , method: "POST"
+                , data: query
+                , transformResponse: function(a){return a;}
+            }).success(function (response) {
                 cb(response);
             })
             .error(function(data, status, headers, config) {

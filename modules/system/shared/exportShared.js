@@ -63,7 +63,7 @@ exports.convertToCsv = function (ele) {
         }
         row += "\",";
     });
-    return row + "\n";
+    return row;
 };
 
 exports.nocacheMiddleware = function(req, res, next) {
