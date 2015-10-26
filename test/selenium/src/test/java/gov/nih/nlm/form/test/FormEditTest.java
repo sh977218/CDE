@@ -42,9 +42,9 @@ public class FormEditTest extends BaseFormTest {
     public void editSectionAndQuestions() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("History of Injury");
-        textPresent("Spinal cord injury type");
+        textPresent("Timeframe of onset of NTSCI");
         findElement(By.linkText("Form Description")).click();
-        textPresent("Main Section");
+        textPresent("N/A");
         editSection();
         editQuestion();
         saveForm();
