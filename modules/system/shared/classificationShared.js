@@ -36,7 +36,7 @@ exports.modifyCategory = function(tree, fields, action, cb) {
     }
 };
 
-exports.classifyItem = function(item, orgName, classifPath, cb) {
+exports.classifyItem = function(item, orgName, classifPath) {
     var steward = exports.findSteward(item, orgName);
     if (!steward) {
         item.classification.push({
@@ -101,11 +101,12 @@ exports.transferClassifications = function (source, destination) {
     var classification = this;
     source.classification.forEach(function(stewardOrgSource){
         var st = exports.findSteward(destination, stewardOrgSource.stewardOrg.name);
+        var stewardOrgDestination;
         if (st) {
-            var stewardOrgDestination = st.object;
+            stewardOrgDestination = st.object;
         } else {
             destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
-            var stewardOrgDestination = destination.classification[destination.classification.length-1];
+            stewardOrgDestination = destination.classification[destination.classification.length-1];
         }
         stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
         classification.treeChildren(stewardOrgSource, [], function(path){
@@ -117,7 +118,7 @@ exports.transferClassifications = function (source, destination) {
 /**
  * Delete data element classification given an organization name.
  * 
- * @param {type} de - data element
+ * @param {type} elt - data element or form
  * @param {type} orgName - organization name
  * @returns none
  */

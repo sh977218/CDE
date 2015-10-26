@@ -24,24 +24,18 @@ async.series([
         DataElement.find({'classification.stewardOrg.name': 'PhenX'}, function (err, cdes) {
             if (err) throw err;
             async.eachSeries(cdes, function (cde, doneOnePhenXCDE) {
-
                 var oldClassifications = cde.get('classification').toObject();
                 async.eachSeries(oldClassifications, function (oldClassification, doneOneClassification) {
-
                     if (oldClassification.stewardOrg.name === 'PhenX') {
-                        var temp = oldClassification.elements;
                         var newClassification = {
                             name: "caBIG",
-                            elements: temp
+                            elements: oldClassification.elements
                         };
-                        classificationShared.classifyItem(cde, 'NCI', newClassification, function (err) {
-                            if (err) throw err;
-                            doneOneClassification();
-                        })
+                        //classificationShared.classifyItem(cde, 'NCI', ['caBIG', 'PhenX', 'ATOS....']);
+
+                        classificationShared.classifyItem(cde, 'NCI', newClassification);
                     }
-                    else {
-                        doneOneClassification();
-                    }
+                    doneOneClassification();
                 }, function doneAllClassification() {
                     cde.markModified('classification');
                     cde.save(function (e) {
@@ -55,7 +49,7 @@ async.series([
             })
         })
     },
-    function (cb) {
+    function () {
         process.exit(0);
     }
 ]);
