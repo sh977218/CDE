@@ -999,57 +999,9 @@ async.series([
      function (doneLoadForm) {
      loadForm(doneLoadForm);
      },*/
-    function (doneMovePhenXToNCI) {
-        movePhenXToNCI(doneMovePhenXToNCI);
-    },
     function (doneCleanUp) {
         process.exit(1);
     }
 ]);
-
-var movePhenXToNCI = function (doneMovePhenXToNCI) {
-    var phenXCdeCounter = 0;
-    DataElement.find({'classification.stewardOrg.name': 'PhenX'}, function (err, cdes) {
-        if (err) throw err;
-        async.eachSeries(cdes, function (cde, doneOneCde) {
-            var phenXClassif = classificationShared.findSteward(cde, "PhenX");
-            var nciClassif = classificationShared.findSteward(cde, "NCI");
-            if (!nciClassif) {
-                nciClassif = {
-                    stewardOrg: {name: 'NCI'},
-                    elements: [{
-                        name: "caBIG",
-                        elements: []
-                    }]
-                };
-            } else {
-                nciClassif = nciClassif.object;
-                phenXClassif = phenXClassif.object;
-                var caBIG = classificationShared.fetchLevel(nciClassif, ["caBIG", ""]);
-                if (caBIG.elements.length > 0) {
-                    caBIG.elements.push(phenXClassif.elements[0]);
-                } else {
-                    nciClassif.push({
-                        name: "caBIG",
-                        elements: phenXClassif.elements[0]
-                    });
-                }
-            }
-            phenXClassif.elements[0].elements.forEach(function (phenXSubClassif) {
-                classificationShared.addCategory(nciOrg.classifications, ['caBIG', 'PhenX', phenXSubClassif]);
-            });
-            cde.save(function () {
-                phenXCdeCounter++;
-                console.log('phenXCdeCounter: ' + phenXCdeCounter);
-                doneOneCde();
-            });
-        }, function doneAllCdes() {
-            nciOrg.save(function () {
-                console.log('finished all phenX cde');
-                doneMovePhenXToNCI();
-            });
-        })
-    })
-};
 
 
