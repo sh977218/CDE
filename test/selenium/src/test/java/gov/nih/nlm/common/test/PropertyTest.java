@@ -112,10 +112,10 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Add Property");
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk1"));
+        textPresent("pk1", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk3"));
+        textPresent("pk3", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("pk1"));
+        textPresent("pk1", By.xpath(prefix + "dd_name_0" + postfix));
     }
 }
