@@ -9,12 +9,12 @@ public class DisallowRenderingTest extends BaseFormTest {
     public void disallowRendering() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Short Form 36-Item Health Survey (SF-36)");
-        textNotPresent("Main Section");
+        textNotPresent("In general, would you say");
         findElement(By.id("disallowRendering")).click();
-        textPresent("Main Section");
+        textPresent("In general, would you say");
         saveForm();
         goToFormByName("Short Form 36-Item Health Survey (SF-36)");
-        textPresent("Main Section");
+        textPresent("In general, would you say");
     }
 
 }

@@ -14,7 +14,7 @@ public class FormCdesTest extends BaseFormTest {
         findElement(By.partialLinkText("- memory sub score")).click();
         textPresent("Sub-score for memory section as part of Addenbrooke's Cognitive Examination - Revised (ACE-R).");
         textPresent("ACERMemrySubScore");
-        findElement(By.id("addToCompare_1")).click();
+        clickElement(By.id("addToCompare_1"));
         textPresent("Quick Board ( 1 )");
         findElement(By.id("pinToBoard_1")).click();
         textPresent("Select Board");

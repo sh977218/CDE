@@ -103,7 +103,7 @@ public abstract class PropertyTest extends CommonTest {
 
     public void reorderPropertyTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, null);
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
