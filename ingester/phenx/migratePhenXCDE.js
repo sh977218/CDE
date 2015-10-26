@@ -27,13 +27,10 @@ async.series([
                 var oldClassifications = cde.get('classification').toObject();
                 async.eachSeries(oldClassifications, function (oldClassification, doneOneClassification) {
                     if (oldClassification.stewardOrg.name === 'PhenX') {
-                        var newClassification = {
-                            name: "caBIG",
-                            elements: oldClassification.elements
-                        };
-                        //classificationShared.classifyItem(cde, 'NCI', ['caBIG', 'PhenX', 'ATOS....']);
-
-                        classificationShared.classifyItem(cde, 'NCI', newClassification);
+                        oldClassification.elements[0].elements.forEach(function (element) {
+                            var newClassificationPath = ['caBIG', 'PhenX', element.name];
+                            classificationShared.classifyItem(cde, 'NCI', newClassificationPath);
+                        });
                     }
                     doneOneClassification();
                 }, function doneAllClassification() {
