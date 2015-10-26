@@ -29,7 +29,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
     
     @Test
     public void editCdeByTinyId() {
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(ctepCurator_username, password);
         // "Left Lymph Node Positive Total Count";
         driver.get(baseUrl + "/#/deview?tinyId=xNugcDxoqKW");
         findElement(By.cssSelector("i.fa-edit")).click();
