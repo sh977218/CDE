@@ -10,7 +10,7 @@
         "port": 27017
       }
     ],
-    "dbname": "nlmcde",
+    "dbname": "test",
     "dbUser": "siteRootAdmin",
     "dbPassword": "password",
     "log": {

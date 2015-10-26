@@ -1024,6 +1024,7 @@ var movePhenXToNCI = function (doneMovePhenXToNCI) {
                 };
             } else {
                 nciClassif = nciClassif.object;
+                phenXClassif = phenXClassif.object;
                 var caBIG = classificationShared.fetchLevel(nciClassif, ["caBIG", ""]);
                 if (caBIG.elements.length > 0) {
                     caBIG.elements.push(phenXClassif.elements[0]);
@@ -1034,7 +1035,7 @@ var movePhenXToNCI = function (doneMovePhenXToNCI) {
                     });
                 }
             }
-            phenXClassif.elements[0].elements.forEach(function(phenXSubClassif) {
+            phenXClassif.elements[0].elements.forEach(function (phenXSubClassif) {
                 classificationShared.addCategory(nciOrg.classifications, ['caBIG', 'PhenX', phenXSubClassif]);
             });
             cde.save(function () {
@@ -1043,7 +1044,7 @@ var movePhenXToNCI = function (doneMovePhenXToNCI) {
                 doneOneCde();
             });
         }, function doneAllCdes() {
-            nciOrg.save(function() {
+            nciOrg.save(function () {
                 console.log('finished all phenX cde');
                 doneMovePhenXToNCI();
             });
