@@ -65,7 +65,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         newCdeVersion();
-        findElement(By.linkText("Disability Rating Scale (DRS) - Function level scale")).click();
+        findElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale")).click();
         textPresent("Level of functioning (Physical, mental, emotional,");
         findElement(By.linkText("Score / Derivations")).click();
         textPresent("This Data Element is used to derive to the following Data Elements:");
