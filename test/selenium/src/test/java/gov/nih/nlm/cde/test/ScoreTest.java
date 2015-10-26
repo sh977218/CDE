@@ -62,7 +62,8 @@ public class ScoreTest extends NlmCdeBaseTest {
         textPresent("All 2 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("DRS Score");
         findElement(By.id("createDerivationRule")).click();
-        textPresent("Disability Rating Scale (DRS) - Grooming disability scale - Disability Rating Scale (DRS) - Function level scale");
+        textPresent("Disability Rating Scale (DRS) - Grooming disability scale)");
+        textPresent("Disability Rating Scale (DRS) - Function level scale");
         newCdeVersion();
         findElement(By.linkText("Disability Rating Scale (DRS) - Function level scale")).click();
         textPresent("Level of functioning (Physical, mental, emotional,");
@@ -70,7 +71,8 @@ public class ScoreTest extends NlmCdeBaseTest {
         textPresent("This Data Element is used to derive to the following Data Elements:");
         findElement(By.linkText("DRS Total Score")).click();
         findElement(By.linkText("Score / Derivations")).click();
-        textPresent("Disability Rating Scale (DRS) - Grooming disability scale - Disability Rating Scale (DRS) - Function level scale");
+        textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
+        textPresent("Disability Rating Scale (DRS) - Function level scale");
         textNotPresent("Add Score");
         findElement(By.id("removeDerivationRule-0")).click();
         newCdeVersion();

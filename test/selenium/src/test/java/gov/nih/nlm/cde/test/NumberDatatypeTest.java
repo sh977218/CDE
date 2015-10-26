@@ -10,7 +10,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
     @Test
     public void numberDatatype() {
         mustBeLoggedInAs(ninds_username, password);
-        String cdeName = "Risk Factor Questionnaire (RFQ) - aspirin pills per week value";
+        String cdeName = "Resource Utilization Group Version IV (RUG IV) - alpha-numeric code";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
