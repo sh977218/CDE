@@ -16,7 +16,7 @@ public class CdeExport extends NlmCdeBaseTest {
         findElement(By.id("export")).click();
         String url = findElement(By.id("jsonExport")).getAttribute("href");
         String response = get(url).asString();
-        Assert.assertTrue(response.contains("{\"_id\":\"546622688d415842c0a5d16b\",\"tinyId\":\"XrRcjp5byho\",\"imported\":\"2014-11-14T15:40:24.326Z\",\"source\":\"NINDS\",\"version\":\"3\",\"derivationRules\":[],\"referenceDocuments\":[],\"attachments\":[],\"comments\":[],\"mappingSpecifications\":[],\"ids\":[{\"source\":\"NINDS\",\"id\":\"C06429\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"SpnlColmInjNum\"}],\"properties\":[{\"key\":\"NINDS Guidelines\",\"value\":\"SCI:\\nRecord the injury number if 2 or more injuries were experienced. Check against single/multiple variable to ensure only one record exists if Single was checked, and 2 or more records exist if Multiple was checked.\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Notes\",\"value\":\"SCI:\\nSCI Variable: SPNINJNO\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Suggested Question\",\"value\":\"SCI (F0831):\\nSpinal column injury number\",\"valueFormat\":\"html\"},{\"key\":\"NINDS References\",\"value\":\"SCI:\\nDvorak MF, Wing PC, Fehlings MG, Vaccaro AR, Itshayek E, Biering-Sorensen F, Noonan VK. International Spinal Cord Injury Spinal Column Injury Basic Data Set. Spinal Cord. 2012 Jun 5. [Epub ahead of print]\",\"valueFormat\":\"html\"}],\"classification\":[{\"elements\":[{\"name\":\"Population\",\"elements\":[{\"name\":\"Adult\"}]},{\"name\":\"Domain\",\"elements\":[{\"elements\":[{\"name\":\"The International SCI Data Sets\"}],\"name\":\"The International SCI Data Sets\"}]},{\"name\":\"Disease\",\"elements\":[{\"elements\":[{\"elements\":[{\"name\":\"Supplemental\"}],\"name\":\"Classification\"}],\"name\":\"Spinal Cord Injury\"}]}],\"stewardOrg\":{\"name\":\"NINDS\"}}],\"registrationState\":{\"registrationStatus\":\"Qualified\"},\"history\":[],\"valueDomain\":{\"datatype\":\"Integer\",\"permissibleValues\":[]},\"property\":{\"concepts\":[]},\"objectClass\":{\"concepts\":[]},\"dataElementConcept\":{\"concepts\":[]},\"stewardOrg\":{\"name\":\"NINDS\"},\"naming\":[{\"designation\":\"Spinal column injury number\",\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"languageCode\":\"EN-US\",\"context\":{\"contextName\":\"Health\",\"acceptability\":\"preferred\"}}]}"));
+        Assert.assertTrue(response.contains("derivationRules\":[],\"referenceDocuments\":[],\"attachments\":[],\"comments\":[],\"mappingSpecifications\":[],\"ids\":[{\"source\":\"NINDS\",\"id\":\"C06429\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"SpnlColmInjNum\"}],\"properties\":[{\"key\":\"NINDS Guidelines\",\"value\":\"SCI:\\nRecord the injury number if 2 or more injuries were experienced. Check against single/multiple variable to ensure only one record exists if Single was checked, and 2 or more records exist if Multiple was checked.\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Notes\",\"value\":\"SCI:\\nSCI Variable: SPNINJNO\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Suggested Question\",\"value\":\"SCI (F0831):\\nSpinal column injury number\",\"valueFormat\":\"html\"},{\"key\":\"NINDS References\",\"value\":\"SCI:\\nDvorak MF, Wing PC, Fehlings MG, Vaccaro AR, Itshayek E, Biering-Sorensen F, Noonan VK. International Spinal Cord Injury Spinal Column Injury Basic Data Set. Spinal Cord. 2012 Jun 5. [Epub ahead of print]\",\"valueFormat\":\"html\"}],\"classification\":[{\"elements\":[{\"name\":\"Population\",\"elements\":[{\"name\":\"Adult\"}]},{\"name\":\"Domain\",\"elements\":[{\"elements\":[{\"name\":\"The International SCI Data Sets\"}],\"name\":\"The International SCI Data Sets\"}]},{\"name\":\"Disease\",\"elements\":[{\"elements\":[{\"elements\":[{\"name\":\"Supplemental\"}],\"name\":\"Classification\"}],\"name\":\"Spinal Cord Injury\"}]}],\"stewardOrg\":{\"name\":\"NINDS\"}}],\"registrationState\":{\"registrationStatus\":\"Qualified\"},\"history\":[],\"valueDomain\":{\"datatype\":\"Integer\",\"permissibleValues\":[]},\"property\":{\"concepts\":[]},\"objectClass\":{\"concepts\":[]},\"dataElementConcept\":{\"concepts\":[]},\"stewardOrg\":{\"name\":\"NINDS\"},\"naming\":[{\"designation\":\"Spinal column injury number\",\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"languageCode\":\"EN-US\",\"context\":{\"contextName\":\"Health\",\"acceptability\":\"preferred\"}}]}"));
     }
 
     @Test
@@ -27,17 +27,6 @@ public class CdeExport extends NlmCdeBaseTest {
         String url = findElement(By.id("xmlExport")).getAttribute("href");
         String response = get(url).asString();
         Assert.assertTrue(response.replaceAll("\\s+","").contains((
-                "<cde>\n" +
-                        "<tinyId>XrRcjp5byho</tinyId>\n" +
-                        "<imported>\n" +
-                        "Fri Nov 14 2014 10:40:24 GMT-0500 (Eastern Standard Time)\n" +
-                        "</imported>\n" +
-                        "<source>NINDS</source>\n" +
-                        "<version>3</version>\n" +
-                        "<ids>\n" +
-                        "<source>NINDS</source>\n" +
-                        "<id>C06429</id>\n" +
-                        "<version>3</version>\n" +
                         "</ids>\n" +
                         "<ids>\n" +
                         "<source>NINDS Variable Name</source>\n" +
@@ -121,7 +110,6 @@ public class CdeExport extends NlmCdeBaseTest {
                         "<contextName>Health</contextName>\n" +
                         "<acceptability>preferred</acceptability>\n" +
                         "</context>\n" +
-                        "</naming>\n" +
-                        "</cde>").replaceAll("\\s+","")));
+                        "</naming>\n").replaceAll("\\s+","")));
     }
 }
