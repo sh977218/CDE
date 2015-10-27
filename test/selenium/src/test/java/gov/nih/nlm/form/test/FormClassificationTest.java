@@ -35,12 +35,12 @@ public class FormClassificationTest extends BaseFormTest {
         clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
-        goToCdeByName("While deployed…I went on combat patrols or missions.");
+        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Combat patrol frequency scale");
         findElement(By.linkText("Classification")).click();
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
-        goToCdeByName("While deployed…I was exposed to hostile incoming fire.");
+        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Witness enemy serious injury casuality frequency scale");
         findElement(By.linkText("Classification")).click();
         textPresent("ABTC");
         textPresent("ABTC 0904");
