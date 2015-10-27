@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.common.test.IdentifiersTest;
+import gov.nih.nlm.common.test.IdentifiersTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -40,6 +40,18 @@ public class CdeIdentifierTest extends IdentifiersTest {
     public void goToEltSearch() {
         goToCdeSearch();
     }
-    
-    
+
+    @Test
+    public void loincLink() {
+        mustBeLoggedInAs(ninds_username, password);
+        goToCdeByName("Ethnicity USA maternal category");
+        findElement(By.linkText("Identifiers")).click();
+        findElement(By.id("addId")).click();
+        findElement(By.name("source")).sendKeys("LOINC");
+        findElement(By.name("id")).sendKeys("59362-4");
+        findElement(By.id("createId")).click();
+        textPresent("Identifier Added");
+        closeAlert();
+        findElement(By.linkText("59362-4"));
+    }
 }

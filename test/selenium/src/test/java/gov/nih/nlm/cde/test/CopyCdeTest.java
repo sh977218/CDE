@@ -12,6 +12,7 @@ public class CopyCdeTest extends BaseClassificationTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Medication affecting cardiovascular function type exam day indicator");
         findElement(By.linkText("Forks")).click();
+        textPresent("This element has no forks");
         findElement(By.id("openCdeCopyModal")).click();
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("saveCopy")).isEnabled());

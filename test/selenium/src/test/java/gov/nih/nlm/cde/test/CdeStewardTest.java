@@ -36,16 +36,22 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     public void checkStewardOrgDetails() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
-        hangon(1);
         By by = By.linkText("caBIG");
-        hoverOverElement(findElement(by));
-        checkTooltipText(by, "Organization Details");
+        try {
+            hoverOverElement(findElement(by));
+            checkTooltipText(by, "Organization Details");
+        } catch (TimeoutException e) {
+            hoverOverElement(findElement(By.id("searchSettings")));
+            hoverOverElement(findElement(by));
+            checkTooltipText(by, "Organization Details");
+        }
         checkTooltipText(by, "Cancer Biomedical Informatics Grid");
         checkTooltipText(by, "123 Somewhere On Earth, Abc, Def, 20001");
         checkTooltipText(by, "caBig@nih.gov");
         checkTooltipText(by, "111-222-3333");
         checkTooltipText(by, "https://cabig.nci.nih.gov/");
-        
+
+
         // Changes Steward and save
         findElement(By.id("dd_edit_steward")).click();
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("CTEP");

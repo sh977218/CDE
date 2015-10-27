@@ -27,19 +27,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
     $scope.addPv = function() {
         $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
     };
-    
-    $scope.movePvUp = function(index) {
-        var pvArray = $scope.elt.valueDomain.permissibleValues;
-        pvArray.splice(index - 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.elt);
-    };
-    
-    $scope.movePvDown = function(index) {
-        var pvArray = $scope.elt.valueDomain.permissibleValues;
-        pvArray.splice(index + 1, 0, pvArray.splice(index, 1)[0]);    
-        $scope.stageElt($scope.elt);
-    };
-    
+
 
     $scope.canAddPv = function() {
         var result = true;
@@ -84,16 +72,6 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', funct
             "codeSystemVersion": vsacValue.codeSystemVersion
         };        
         return mongoPv;
-    };
-
-    $scope.changeOtherPleaseSpecify = function() {
-        var elt = $scope.elt;
-        if (elt.valueDomain.datatypeValueList.otherPleaseSpecify === true) {
-            elt.valueDomain.datatypeValueList.otherPleaseSpecifyText = "Other (Please specify)";
-        } else {
-            delete elt.valueDomain.datatypeValueList.otherPleaseSpecifyText;
-        }
-        $scope.stageElt(elt);
     };
 
 }]);

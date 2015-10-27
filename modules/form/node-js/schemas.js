@@ -15,14 +15,10 @@ var questionSchema =  {
     , required: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
     , multiselect: Boolean
-    , otherPleaseSpecify: {
-        value: {type: Boolean, default: false}
-    }
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
 var sectionSchema = {    
-    displayAsMatrix: {type: Boolean, default: false}
 };
 
 var formElementTreeRoot = {
@@ -100,6 +96,12 @@ exports.formSchema = new Schema({
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]
+    , displayProfiles: [{
+        name: String
+        , sectionsAsMatrix: {type: Boolean}
+        , displayValues: {type: Boolean}
+        , context: {contextName: String}
+    }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
 

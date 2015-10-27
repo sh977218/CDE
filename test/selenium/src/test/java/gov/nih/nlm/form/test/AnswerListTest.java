@@ -1,8 +1,7 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.regstatus.FormRegStatus;
+import gov.nih.nlm.form.test.regstatus.FormRegStatusTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -28,38 +27,39 @@ public class AnswerListTest extends BaseFormTest {
 
         startAddingQuestions();
         questionTest.addQuestionToSection("Patient Gender Category", 0);
+        scrollToTop();
         findElement(By.id("question_accordion_0_0")).click();
         hangon(1);
 
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 3);
-        Assert.assertEquals(lis.get(0).getText(), "FEMALE");
-        Assert.assertEquals(lis.get(1).getText(), "MALE");
-        Assert.assertEquals(lis.get(2).getText(), "UNKNOWN");
+        Assert.assertEquals(lis.get(0).getText(), "Female Gender");
+        Assert.assertEquals(lis.get(1).getText(), "Male Gender");
+        Assert.assertEquals(lis.get(2).getText(), "Unknown");
 
         findElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a")).click();
-        textNotPresent("FEMALE");
+        textNotPresent("Female Gender");
         lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 2);
-        Assert.assertEquals("MALE", lis.get(0).getText());
-        Assert.assertEquals("UNKNOWN", lis.get(1).getText());
+        Assert.assertEquals("Male Gender", lis.get(0).getText());
+        Assert.assertEquals("Unknown", lis.get(1).getText());
 
         saveForm();
 
         goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("question_accordion_0_0")).click();
-        textNotPresent("FEMALE");
+        textNotPresent("Female Gender");
         findElement(By.xpath("//input[@ng-click='$select.activate()']")).click();
-        findElement(By.xpath("//span[contains(text(), 'FEMALE')]")).click();
+        findElement(By.xpath("//span[contains(text(), 'Female Gender')]")).click();
         saveForm();
 
         goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("question_accordion_0_0")).click();
-        textPresent("FEMALE");
+        textPresent("Female Gender");
 
-        new FormRegStatus().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
+        new FormRegStatusTest().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
     }
 
 }

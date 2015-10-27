@@ -25,15 +25,43 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
     $scope.sortableOptionsSections = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , revert: true
+        , placeholder: "questionPlaceholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
         , receive: function (e, ui) {
-            if (!ui.item.sortable.moved) return ui.item.sortable.cancel();
-            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question") ui.item.sortable.cancel();
+            if (!ui.item.sortable.moved) {
+                ui.item.sortable.cancel();
+                return;
+            }
+            if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
+                ui.item.sortable.cancel();
+        }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
         }
     };
 
     $scope.sortableOptions = {
         connectWith: ".dragQuestions"
         , handle: ".fa.fa-arrows"
+        , revert: true
+        , placeholder: "questionPlaceholder"
+        , start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        }
+        , stop: function (event, ui) {
+            $('.dragQuestions').css('border', '');
+        }
+        , helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+        }
         , receive: function (e, ui) {
             var cde = ui.item.sortable.moved;
             if (cde.valueDomain !== undefined) {
@@ -45,6 +73,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                         cde: {
                             tinyId: cde.tinyId
                             , version: cde.version
+                            , derivationRules: cde.derivationRules
                         }
                         , datatype: cde.valueDomain.datatype
                         , required: false
@@ -58,7 +87,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
                 question.question.cde.permissibleValues = [];
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     if (cde.valueDomain.permissibleValues.length > 9) {
-                        $http.get("debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+                        $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
@@ -75,7 +104,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
             }
             $scope.stageElt();
         }
-        , update: function(e, ui) {$scope.stageElt();}
+        , update: function (e, ui) {
+            $scope.stageElt();
+        }
     };
 
     $scope.openNameSelect = function (question) {
@@ -133,27 +164,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$ti
         $scope.stageElt();
     };
 
-    $scope.canBeDisplayedAsMatrix = function(section) {
-        var result = true;
-        var answerHash;
-        section.formElements.forEach(function(formElem) {
-            if (formElem.elementType !== 'question') {
-                return result = false;
-            } else {
-                if (formElem.question.datatype !== "Value List") {
-                    return result = false;
-                }
-                if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
-                    return result = false;
-                if (!answerHash) {
-                    answerHash = angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}));
-                }
-                if (answerHash !== angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}))) {
-                    return result = false;
-                }
-            }
-        });
-        return result;
+    $scope.isScore = function (formElt) {
+        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     };
+
 
 }]);

@@ -50,10 +50,7 @@
         <dt tabindex="0" ng-show="elt.source">Source:</dt>
         <dd tabindex="0">{{elt.source}}</dd>
         <dt tabindex="0" id="dt_status">Status:</dt>
-        <dd tabindex="0" id="dd_status" ng-controller="RegistrationCtrl">
-            <i tabindex="0" title="Edit Status" role="link" id="editStatus"
-               ng-show="canCurate && !elt.unsaved" class="fa fa-edit"
-               ng-click="openRegStatusUpdate()"></i>
+        <dd tabindex="0" id="dd_status">
             {{elt.registrationState.registrationStatus}}
         </dd>
         <dt tabindex="0" ng-show="elt.views">Views:</dt>

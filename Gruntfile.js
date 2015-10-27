@@ -35,9 +35,9 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticUri
                     , method: 'POST'
-                    , json: elastic.createIndexJson             
+                    , json: elastic.createIndexJson
                 }
-            } 
+            }
             , elasticDeleteRiver: {
                 options: {
                     uri: config.elasticRiverUri
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createRiverJson                   
+                    , json: elastic.createRiverJson
                 }
             }
             , elasticDeleteFormIndex: {
@@ -58,14 +58,14 @@ module.exports = function(grunt) {
                     , method: 'DELETE'
                     , ignoreErrors: true
                 }
-            }               
+            }
             , elasticCreateFormIndex: {
                 options: {
                     uri: config.elasticFormUri
                     , method: 'POST'
-                    , json: elastic.createFormIndexJson             
+                    , json: elastic.createFormIndexJson
                 }
-            } 
+            }
             , elasticDeleteFormRiver: {
                 options: {
                     uri: config.elasticFormRiverUri
@@ -77,7 +77,35 @@ module.exports = function(grunt) {
                 options: {
                     uri: config.elasticFormRiverUri + "/_meta"
                     , method: 'POST'
-                    , json: elastic.createFormRiverJson                   
+                    , json: elastic.createFormRiverJson
+                }
+            }
+            , elasticDeleteBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardIndex: {
+                options: {
+                    uri: config.elasticBoardIndexUri
+                    , method: 'POST'
+                    , json: elastic.createBoardIndexJson
+                }
+            }
+            , elasticDeleteBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri
+                    , method: 'DELETE'
+                    , ignoreErrors: true
+                }
+            }
+            , elasticCreateBoardRiver: {
+                options: {
+                    uri: config.elasticBoardRiverUri + "/_meta"
+                    , method: 'POST'
+                    , json: elastic.createBoardRiverJson
                 }
             }
             , elasticDeleteStoredQueryIndex: {
@@ -175,84 +203,7 @@ module.exports = function(grunt) {
             }
         }        
         , prompt: {
-            git: {
-                options: {
-                    questions: [
-                        {
-                            config: 'git.pull'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'pull'.green  + ' the latest source-code from the ' + 'master'.green + ' branch?'
-                        }                        
-                    ]
-                }
-            }              
-            , elastic: {
-                options: {
-                    questions: [
-                        {
-                            config: 'elastic.index.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
-                        } 
-                        , {
-                            config: 'elastic.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.index.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.form.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
-                        } 
-                        , {
-                            config: 'elastic.form.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'form river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.index.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.index.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query index for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.river.delete'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'delete'.red  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
-                        }
-                        , {
-                            config: 'elastic.storedquery.river.create'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'create'.green  + ' Elastic Search ' + 'stored query river for ' + config.name + ' configuration?'
-                        }
-                    ]
-                }
-            }  
-            , node: {
+            node: {
                 options: {
                     questions: [
                         {
@@ -428,7 +379,8 @@ module.exports = function(grunt) {
                     'js/ui-bootstrap-tpls.js': 'angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
                     'js/ng-grid.js': 'ng-grid/build/ng-grid.js',
                     'js/feedback.js': 'angular-send-feedback/dist/angular-send-feedback.js',
-                    'js/html2canvas.js': 'html2canvas/build/html2canvas.js'
+                    'js/html2canvas.js': 'html2canvas/build/html2canvas.js',
+                    'js/select.js': 'angular-ui-select/dist/select.js'
                 }
             },
             map: {
@@ -457,6 +409,7 @@ module.exports = function(grunt) {
                     'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
                     'css/select2.css': 'select2/select2.css',
                     'css/select2.png': 'select2/select2.png',
+                    'css/select.css': "angular-ui-select/dist/select.css",
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
                     'css/textAngular.css': 'textAngular/src/textAngular.css',
                     'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css',
@@ -475,22 +428,6 @@ module.exports = function(grunt) {
                 }
             }
         }
-        
-//        , watch: {
-//            files: [
-//                'modules/cde/public/assets/js/**/*.js',
-//                'modules/system/public/js/controllers/**/*.js',
-//                'modules/cde/public/js/**/*.js',
-//                'modules/form/public/js/**/*.js',
-//                'modules/system/public/js/**/*.js',
-//                'modules/cde/shared/**/*.js',
-//                'modules/cde/public/css/**/*.css'
-//            ],
-//            tasks: ['build'],
-//            options: {
-//                spawn: true
-//            }
-//        }
     });  
     
     grunt.loadNpmTasks('grunt-git');
@@ -513,54 +450,26 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('do-elastic', function() {
-        if (grunt.config('elastic.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search River!');
-            grunt.task.run('http:elasticDeleteRiver');
-        }        
-        if (grunt.config('elastic.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Index!');
-            grunt.task.run('http:elasticDeleteIndex');
-        }
-        if (grunt.config('elastic.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Index!');
-            grunt.task.run('http:elasticCreateIndex');
-        }
-        if (grunt.config('elastic.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search River!');
-            grunt.task.run('http:elasticCreateRiver');
-        }
-        if (grunt.config('elastic.form.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Form River!');
-            grunt.task.run('http:elasticDeleteFormRiver');
-        }        
-        if (grunt.config('elastic.form.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Form Index!');
-            grunt.task.run('http:elasticDeleteFormIndex');
-        }
-        if (grunt.config('elastic.form.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Form Index!');
-            grunt.task.run('http:elasticCreateFormIndex');
-        }
-        if (grunt.config('elastic.form.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Form River!');
-            grunt.task.run('http:elasticCreateFormRiver');
-        }
-        if (grunt.config('elastic.storedquery.river.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query River!');
-            grunt.task.run('http:elasticDeleteStoredQueryRiver');
-        }
-        if (grunt.config('elastic.storedquery.index.delete')) {
-            grunt.log.writeln('\n\nDeleting Elastic Search Stored Query Index!');
-            grunt.task.run('http:elasticDeleteStoredQueryIndex');
-        }
-        if (grunt.config('elastic.storedquery.index.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Stored Query Index!');
-            grunt.task.run('http:elasticCreateStoredQueryIndex');
-        }
-        if (grunt.config('elastic.storedquery.river.create')) {
-            grunt.log.writeln('\n\nCreating Elastic Search Stored Query River!');
-            grunt.task.run('http:elasticCreateStoredQueryRiver');
-        }
+        grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
+        grunt.task.run('http:elasticDeleteRiver');
+        grunt.task.run('http:elasticDeleteIndex');
+        grunt.task.run('http:elasticCreateIndex');
+        grunt.task.run('http:elasticCreateRiver');
+
+        grunt.task.run('http:elasticDeleteFormRiver');
+        grunt.task.run('http:elasticDeleteFormIndex');
+        grunt.task.run('http:elasticCreateFormIndex');
+        grunt.task.run('http:elasticCreateFormRiver');
+
+        grunt.task.run('http:elasticDeleteBoardRiver');
+        grunt.task.run('http:elasticDeleteBoardIndex');
+        grunt.task.run('http:elasticCreateBoardIndex');
+        grunt.task.run('http:elasticCreateBoardRiver');
+
+        grunt.task.run('http:elasticDeleteStoredQueryRiver');
+        grunt.task.run('http:elasticDeleteStoredQueryIndex');
+        grunt.task.run('http:elasticCreateStoredQueryIndex');
+        grunt.task.run('http:elasticCreateStoredQueryRiver');
     });
     
     grunt.registerTask('do-node', function() {
@@ -636,11 +545,11 @@ module.exports = function(grunt) {
 
         return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
-        //tar.pack(config.node.buildDir).pipe(gzip).pipe(writeS);
     });
 
+
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
-    grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['prompt:elastic', 'do-elastic']);
+    grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
@@ -658,6 +567,4 @@ module.exports = function(grunt) {
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple','divider','bowercopy','divider','build']);
     grunt.registerTask('help', ['availabletasks']);    
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
-    // https://www.npmjs.org/package/grunt-bower-install-simple
-    //grunt.registerTask("bower-install", [ "bower-install-simple" ]);
 };

@@ -3,7 +3,8 @@ angular.module('resourcesCde', ['ngResource'])
     return $resource('/listboards');
 })
 .factory('DataElement', function($resource) {
-    return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'}, save: {method: 'POST', params: {type: null} }});
+    return $resource('/dataelement/:deId', {deId: '@deId'}, {update: {method: 'PUT'},
+        save: {method: 'POST', params: {type: null} }});
 })
 .factory('DataElementTinyId', function($resource) {
     return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
@@ -16,7 +17,16 @@ angular.module('resourcesCde', ['ngResource'])
             });
         }
     }; 
-})    
+})
+.factory('ElasticBoard', function($http) {
+    return {
+        basicSearch: function(query, cb) {
+            $http.post("/boardSearch", query).then(function(response) {
+                cb(response.data);
+            });
+        }
+    };
+})
 .factory('PriorCdes', function($resource) {
     return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'}, 
         {'getCdes': {method: 'GET', isArray: true}});
@@ -62,10 +72,10 @@ angular.module('resourcesCde', ['ngResource'])
                 $http({
                     method: 'GET',
                     url: url
-                }).success(function(data, status, headers, cfg) {
+                }).success(function(data) {
                     if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', !data);
-                }).error(function(data, status, headers, cfg) {
+                }).error(function() {
                     if (lastVersion !== scope.elt.version) return;
                     ctrl.$setValidity('unique', false);
                 });
@@ -73,21 +83,33 @@ angular.module('resourcesCde', ['ngResource'])
         }
     };
 }])
-.factory("QuickBoard", function(CdeList, OrgHelpers, userResource, localStorageService) {
+.factory("QuickBoard", function($http, OrgHelpers, userResource, localStorageService) {
     return {
         restoreFromLocalStorage: function() {
             var res = localStorageService.get("quickBoard");
             if (!res) res = [];
             this.elts = res;
         },
-        max_elts: 10,
+        max_elts: 50,
         elts: [],
+        numberDisplay: function() {
+            if (this.elts.length === 0) return " empty "
+            if (this.elts.length > this.max_elts - 1) return " full ";
+            return " " + this.elts.length + " ";
+        },
         loading: false,
         add: function(elt) {
+            var qb = this;
             if(this.elts.length < this.max_elts) {
-                this.elts.push(elt);
+                $http.get("/debytinyid/" + elt.tinyId).then(function(result) {
+                    var de = result.data;
+                    if (de) {
+                        de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
+                        qb.elts.push(de);
+                        localStorageService.add("quickBoard", qb.elts);
+                    }
+                });
             }
-            localStorageService.add("quickBoard", this.elts);
         },
         remove: function(index) {
             this.elts.splice(index, 1);
@@ -109,32 +131,6 @@ angular.module('resourcesCde', ['ngResource'])
             else {
                 return false;
             }
-        },
-        loadElts: function(cb) {
-            if (this.elts.length > 0) {
-                var qb = this;
-                qb.loading = true;
-                var tinyIds = this.elts.map(function(elt) {
-                    return elt.tinyId;
-                });
-                CdeList.byTinyIdList(tinyIds, function(result) {
-                    if(result) {
-                        for (var i = 0; i < qb.elts.length; i++) {
-                            result.forEach(function(res) {
-                                if (res.tinyId === qb.elts[i].tinyId) {
-                                     qb.elts[i] = res;
-                                }
-                            })
-                        }
-                        qb.elts.forEach(function (elt) {
-                            elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                        });
-                    }
-                    qb.loading = false;
-                    if (cb) cb();
-                });
-            }
         }
     }
 });
-;    

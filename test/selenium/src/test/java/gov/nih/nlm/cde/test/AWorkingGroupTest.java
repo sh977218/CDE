@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.regstatus.CdeRegStatusTest;
+import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
@@ -50,7 +50,8 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         textPresent(classification);
         textPresent(subClassification);
         findElement(By.id("submit")).click();
-
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Qualified");
         findElement(By.id("saveRegStatus")).click();

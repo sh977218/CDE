@@ -19,6 +19,7 @@ var cdesvc = require('./cdesvc')
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
+    , js2xml = require('js2xmlparser')
     ;
 
 
@@ -30,8 +31,8 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.get('/listboards', function (req, res) {
-        boardsvc.boardList(req, res);
+    app.post('/boardSearch', function (req, res) {
+        boardsvc.boardSearch(req, res);
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
@@ -83,10 +84,26 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
+        function sendNativeJson(cde, res){
+            res.send(cde);
+        }
+
+        function sendNativeXml(cde, res){
+            res.setHeader("Content-Type", "application/xml");
+            var exportCde = cde.toObject();
+            delete exportCde._id;
+            res.send(js2xml("dataElement", exportCde));
+        }
+
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
-            res.send(cdesvc.hideProprietaryPvs(cde, req.user));
+            cde = cdesvc.hideProprietaryPvs(cde, req.user);
+            if(!req.query.type) sendNativeJson(cde, res);
+            else if (req.query.type==='json') sendNativeJson(cde, res);
+            else if (req.query.type==='xml') sendNativeXml(cde, res);
+            else return res.status(404).send("Cannot recognize export type.");
+
             if (req.isAuthenticated()) {
                 mongo_data.addToViewHistory(cde, req.user);
             }
@@ -342,6 +359,15 @@ exports.init = function (app, daoManager) {
         elastic.morelike(req.params.cdeId, function (result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
+        });
+    });
+
+    app.get("/cde/derivationOutputs/:inputCdeTinyId", function(req, res) {
+        mongo_data.derivationOutputs(req.params.inputCdeTinyId, function(err, cdes) {
+            if (err) res.status(500).send();
+            else {
+                res.send(cdes);
+            }
         });
     });
 

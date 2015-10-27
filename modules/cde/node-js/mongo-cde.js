@@ -8,6 +8,8 @@ var mongoose = require('mongoose')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , cdesvc = require("./cdesvc")
     , deValidator = require("../shared/deValidator.js").deValidator
+    , async = require('async')
+    , CronJob = require('cron').CronJob
     ;
 
 exports.type = "cde";
@@ -150,7 +152,7 @@ exports.cdesByTinyIdList = function (idList, callback) {
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
     exports.cdesByTinyIdList(idList, function (err, cdes) {
         var reorderedCdes = idList.map(function (id) {
-            for (var i=0; i < cdes.length; i++) {
+            for (var i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
             }
         });
@@ -302,10 +304,6 @@ exports.fork = function (elt, user, callback) {
 };
 
 exports.update = function (elt, user, callback, special) {
-    if (!deValidator.checkPvUnicity(elt.valueDomain).allValid) {
-        return callback("Invalid Permissible Value");
-    }
-
     return DataElement.findById(elt._id, function (err, dataElement) {
         delete elt._id;
         if (!elt.history) elt.history = [];
@@ -441,7 +439,11 @@ exports.byOtherId = function (source, id, cb) {
 };
 
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {source: source, id: id, version: version}).exec(function (err, cdes) {
+    DataElement.find({"archived": null}).elemMatch("ids", {
+        source: source,
+        id: id,
+        version: version
+    }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
@@ -452,7 +454,45 @@ exports.fileUsed = function (id, cb) {
 };
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
-    DataElement.find({archived: null}, "tinyId version").where("tinyId").in(allCdes).exec(function (err, cdes) {
-        cb(err, cdes);
+    DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
+};
+
+exports.derivationOutputs = function(inputTinyId, cb) {
+    DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
+};
+
+var correctBoardPinsForCde = function(doc, cb){
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
+        if (err) throw err;
+        if (cb) cb();
     });
 };
+
+schemas.dataElementSchema.post('save', function(doc) {
+    if (doc.archived) return;
+    correctBoardPinsForCde(doc);
+});
+
+var cj = new CronJob({
+    cronTime: '00 00 4 * * *',
+    onTick: function() {
+        console.log("Repairing Board <-> CDE references.");
+        var dayBeforeYesterday = new Date();
+        dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+        PinningBoard.find().distinct('pins.deTinyId', function(err, ids){
+            if (err) throw "Cannot repair CDE references.";
+            async.eachSeries(ids, function (id, cb) {
+                DataElement.findOne({tinyId:id, archived: null}).exec(function(err, de){
+                    correctBoardPinsForCde(de, function(){
+                        cb();
+                    });
+                });
+            }, function () {
+                console.log("Board <-> CDE reference repair done!");
+            });
+        });
+    },
+    start: false,
+    timeZone: "America/New_York"
+});
+cj.start();

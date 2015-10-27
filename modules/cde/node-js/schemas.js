@@ -10,6 +10,16 @@ var conceptSchema = new mongoose.Schema({
     originId: String
 }, {_id: false});
 
+var derivationRuleSchema = new mongoose.Schema(
+    {
+        name: String,
+        inputs: [String],
+        outputs: [String],
+        ruleType: {type: String, enum: ['score', 'panel']},
+        formula: {type: String, enum: ['sumAll']}
+    }, {_id: true}
+);
+
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]
     , source: String
@@ -93,12 +103,14 @@ var deJsonSchema = {
     , attachments: [sharedSchemas.attachmentSchema]
     , views: Number
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+    , derivationRules: [derivationRuleSchema]
 };
 
 var pinSchema = new mongoose.Schema({
     name: String
     , pinnedDate: Date
     , deTinyId: String
+    , deName: String
 });
 
 schemas.pinningBoardSchema = new mongoose.Schema({

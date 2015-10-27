@@ -21,6 +21,8 @@ exports.init = function (app, daoManager) {
     app.post('/form', formCtrl.save);
     app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
+    app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
+
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);
@@ -35,25 +37,10 @@ exports.init = function (app, daoManager) {
         });
     }
 
-    app.get('/formById/:id/:type', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
         res.send("");
-    });
-
-    app.get("/sdcExport/:id", exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.byId(req.params.id, function (err, form) {
-            if (err) {
-                logging.errorLogger.error("Error: Cannot find element by tiny id.", {
-                    origin: "system.adminItemSvc.approveComment",
-                    stack: new Error().stack
-                }, req);
-                return res.status(500).send();
-            } else {
-                res.setHeader("Content-Type", "application/xml");
-                res.send(sdc.formToSDC(form));
-            }
-        });
     });
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
@@ -136,5 +123,4 @@ exports.init = function (app, daoManager) {
             res.send("Please login first.");
         }
     });
-
 };

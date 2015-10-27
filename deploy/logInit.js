@@ -1,1 +1,2 @@
-db.dbLoggers.remove({});
+db.dbLoggers.drop();
+db.storedqueries.drop();

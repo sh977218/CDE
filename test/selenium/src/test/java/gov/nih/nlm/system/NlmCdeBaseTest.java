@@ -1,8 +1,6 @@
 package gov.nih.nlm.system;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
@@ -10,12 +8,15 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
-import java.lang.System;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -84,18 +85,14 @@ public class NlmCdeBaseTest {
             System.setProperty("webdriver.chrome.driver", "./chromedriver");
         }
         DesiredCapabilities caps;
-        switch (browser) {
-            case "firefox":
-                caps = DesiredCapabilities.firefox();
-                break;
-            case "chrome":
-                caps = DesiredCapabilities.chrome();
-                break;
-            case "ie":
-                caps = DesiredCapabilities.internetExplorer();
-                break;
-            default:
-                caps = DesiredCapabilities.chrome();
+        if ("firefox".equals(browser)) {
+            caps = DesiredCapabilities.firefox();
+        } else if ("chrome".equals(browser)) {
+            caps = DesiredCapabilities.chrome();
+        } else if ("ie".equals(browser)) {
+            caps = DesiredCapabilities.internetExplorer();
+        } else {
+            caps = DesiredCapabilities.chrome();
         }
 
         LoggingPreferences loggingprefs = new LoggingPreferences();
@@ -113,6 +110,7 @@ public class NlmCdeBaseTest {
                     null, ex);
         }
 
+        System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts()
                 .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
@@ -189,6 +187,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         hangon(.5);
         findElement(By.linkText("Classifications")).click();
+        textPresent("Manage Classifications");
     }
 
     protected void mustBeLoggedOut() {
@@ -282,6 +281,7 @@ public class NlmCdeBaseTest {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
+            goToCdeSearch();
             hoverOverElement(findElement(By.id("searchSettings")));
             hoverOverElement(findElement(by));
             textPresent(text);
@@ -308,7 +308,13 @@ public class NlmCdeBaseTest {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
             Integer value = (int) (long) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
-            findElement(by).click();
+            try {
+                findElement(by).click();
+            } catch (WebDriverException e2) {
+                scrollToTop();
+                findElement(by).click();
+            }
+
         }
     }
 
@@ -348,7 +354,7 @@ public class NlmCdeBaseTest {
 
     protected void newCdeVersion(String changeNote) {
         scrollToEltByCss("#openSave");
-        findElement(By.id("openSave")).click();
+        clickElement(By.id("openSave"));
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys(
@@ -414,7 +420,7 @@ public class NlmCdeBaseTest {
         textPresent("Nothing here");
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
-        textPresent("Browse by organization");
+        textPresent("Browse by classification");
         textPresent("Cancer Therapy Evaluation Program");
     }
 
@@ -527,14 +533,14 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
@@ -659,4 +665,19 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void reorderIconTest(String tabName) {
+        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
+        String postfix = "']";
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
+
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-1" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-1" + postfix)).size(), 1);
+
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-2" + postfix)).size(), 1);
+        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-2" + postfix)).size(), 1);
+    }
 }

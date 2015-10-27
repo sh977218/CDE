@@ -8,6 +8,21 @@ angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller'
         $scope.search("form");
     });
 
+    var findFormQuestionNr = function (fe) {
+        var n = 0;
+        if (fe.formElements != undefined) {
+            fe.formElements.forEach(function (e) {
+                if (e.elementType && e.elementType === 'question') n++;
+                else n = n + findFormQuestionNr(e);
+            })
+        }
+        return n;
+    };
+
+    $scope.localEltTransform = function(elt) {
+        elt.numQuestions = findFormQuestionNr(elt);
+    };
+
 }]);
 
 angular.module('formModule').controller('FormDEListCtrl', ['$scope'
@@ -22,6 +37,10 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope'
     };
 
     $scope.termSearch = function() {
+        $scope.reload();
+    };
+
+    $scope.pageChange = function() {
         $scope.reload();
     };
 

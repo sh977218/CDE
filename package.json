@@ -2,10 +2,10 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js"
+    "start": "node --harmony app.js"
   },
   "engines": {
-    "node": "0.10.x",
+    "node": "0.12.x",
     "npm": "1.2.x"
   },
   "dependencies": {
@@ -44,6 +44,8 @@
     "grunt-bower-install-simple": "1.0.3",
     "grunt-bowercopy": "1.1.0",   
     "config": "*",
+    "cron": "1.0.9",
+    "elasticsearch": "8.1.0",
     "grunt": "*",
     "grunt-git": "*",
     "grunt-http": "*",
@@ -60,6 +62,7 @@
     "tar-fs": "0.5.2",
     "tar": "2.1.0",
     "fstream": "1.0.4",
+    "js2xmlparser": "1.0.0",
     "streamifier": "0.1.1"
   }
 }

@@ -13,13 +13,15 @@ public class ForkMineMineTest extends ForkTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Other Group Patient Identifier Number");
         findElement(By.linkText("Forks")).click();
-        textPresent("This Element has no forks");
+        textPresent("This element has no forks");
         addFork("Fork will be retired", "CTEP");
 
         findElement(By.id("fork-0")).click();
         switchTab(1);
         textPresent("You are editing a fork");
         Assert.assertEquals("Incomplete", findElement(By.id("dd_status")).getText());
+        findElement(By.id("statusTab")).click();
+        textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         findElement(By.id("saveRegStatus")).click();
@@ -30,7 +32,7 @@ public class ForkMineMineTest extends ForkTest {
         closeAlert();
         driver.get(driver.getCurrentUrl());
         findElement(By.linkText("Forks")).click();
-        textPresent("This Element has no forks");
+        textPresent("This element has no forks");
 
         addFork("fork will be merged", "CTEP");
         findElement(By.id("fork-0")).click();

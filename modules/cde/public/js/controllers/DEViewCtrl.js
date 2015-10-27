@@ -1,7 +1,7 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
-        'DataElementTinyId', 'PriorCdes', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
-        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId, PriorCdes,
+        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
+        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
                  isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard)
 {
 
@@ -35,12 +35,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
         discussions: {heading: "Discussions"},
         boards: {heading: "Boards"},
         attachments: {heading: "Attachments"},
+        derivationRules: {heading: "Score / Derivations"},
         mlt: {heading: "More Like This"},
         history: {heading: "History"},
         forks: {heading: "Forks"}
     };
     $scope.resolveCdeLoaded = null;
-    $scope.cdeLoadedPromise = $q(function(resolve, reject) {
+    $scope.cdeLoadedPromise = $q(function(resolve) {
         $scope.resolveCdeLoaded = resolve;
     });
 
@@ -53,20 +54,17 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     });
 
-    $scope.loadPriorCdes = function() {
-        PriorCdes.getCdes({cdeId: $scope.elt._id}, function(dataElements) {
-            $scope.priorCdes = dataElements;
-        });
-    };
 
-    $scope.reload = function(route, cb) {
-        var service = DataElement;
+    $scope.reload = function(route) {
+        var service;
         var query = {};
-        if (route.cdeId) query = {deId: route.cdeId};
-        else if (route.tinyId) {
+        if (route.tinyId) {
             service = DataElementTinyId;
             query = {tinyId: route.tinyId};
             if (route.version) query.version = route.version;
+        } else {
+            service = DataElement;
+            query = {deId: route.cdeId};
         }
         service.get(query, function(de) {
             $scope.elt = de;
@@ -74,16 +72,16 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.canLinkPvFunc();
             $scope.loadBoards();
             $scope.getPVTypeaheadCodeSystemNameList();
-            $scope.loadPriorCdes();
             if ($scope.elt.forkOf) {
                 $http.get('/forkroot/' + $scope.elt.tinyId).then(function(result) {
                     $scope.rootFork = result.data;
                 });
-            };
+            }
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             $scope.resolveCdeLoaded();
+            $scope.$broadcast("elementReloaded");
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -105,10 +103,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
         };
         $http.post('/mail/messages/new', message)
-            .success(function(result) {
+            .success(function() {
                 $scope.addAlert("success", "Notification sent.");
             })
-            .error(function(result) {
+            .error(function() {
                 $scope.addAlert("danger", "Unable to notify user. ");
             });
     };
@@ -120,10 +118,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
     };
 
     $scope.save = function() {
-        $scope.elt.$save({}, function (elt, headers) {
+        $scope.elt.$save({}, function (elt) {
             $scope.elt = elt;
-            $scope.loadPriorCdes();
-        }, function(resp) {
+            $scope.$broadcast("elementReloaded");
+            $scope.addAlert("success", "Saved.");
+        }, function() {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
@@ -224,7 +223,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                    $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
                 }
              }).
-             success(function(data, status) {
+             success(function(data) {
                 if (data.error) {
 
                 }

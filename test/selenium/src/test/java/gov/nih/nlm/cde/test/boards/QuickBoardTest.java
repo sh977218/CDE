@@ -11,6 +11,7 @@ import java.util.List;
 public class QuickBoardTest extends NlmCdeBaseTest {
 
     public void emptyQuickBoard() {
+        if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         findElement(By.partialLinkText("Quick Board (")).click();
         findElement(By.id("qb.empty")).click();
         findElement(By.linkText("Quick Board ( empty )")).click();
@@ -30,28 +31,6 @@ public class QuickBoardTest extends NlmCdeBaseTest {
             findElement(By.linkText("Quick Board ( empty )")).click();
             textPresent("The quick board is empty.");
         }
-    }
-
-    @Test
-    public void addtoQuickBoardUntilFull() {
-        goToCdeSearch();
-        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
-        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
-        addToQuickBoard( "Common Toxicity Criteria Adverse Event Platelet Count Grade" );
-        addToQuickBoard( "Direct Pulp Cap Caries Removal Carious Dentin Treatment Tooth 30 Pulp Horn Hemorrhage Event Next Decision Type" );
-        addToQuickBoard( "Transurethral Resection Invasive Prostate Carcinoma Incidental Prostatic Tissue Involvement Percentage Range" );
-        addToQuickBoard( "Laboratory Procedure Magnesium Result Unspecified Lower Limit of Normal Value" );
-        addToQuickBoard( "Central Nervous System Preventive Intervention Administered Indicator" );
-     
-        textPresent("Quick Board ( full )");
-    
-        findElement(By.linkText("Quick Board ( full )")).click();
-        textNotPresent("The quick board is empty.");
-        findElement(By.id("qb.empty")).click();
-        textPresent("Quick Board ( empty )");
     }
 
     @Test
