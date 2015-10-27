@@ -54,8 +54,7 @@ public class ClassificationTest extends BaseClassificationTest {
 		deleteClassification("classification-" + selector);
 		driver.navigate().refresh();
 		findElement(By.linkText("Classification")).click();
-		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"
-				+ selector + "']"));
+		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-" + selector + "']"));
 	}
 
 	@Test
@@ -63,21 +62,17 @@ public class ClassificationTest extends BaseClassificationTest {
 		mustBeLoggedInAs(classificationMgtUser_username, password);
 		goToCdeByName("Spectroscopy geometry location not applicable indicator");
 		findElement(By.linkText("Classification")).click();
-		List<WebElement> linkList = driver.findElements(By
-				.cssSelector("li[id$='Imaging Diagnostics']"));
+		List<WebElement> linkList = driver.findElements(
+                By.id("classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
 		Assert.assertEquals(linkList.size(), 1);
-		removeClassificationMethod(new String[] { "Domain",
-				"Assessments and Examinations", "Imaging Diagnostics" });
-		linkList = driver.findElements(By
-				.cssSelector("li[id$='Imaging Diagnostics']"));
+		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
+		linkList = driver.findElements( By.id("classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
 		Assert.assertEquals(linkList.size(), 0);
-		linkList = driver.findElements(By
-				.cssSelector("li[id$='Assessments and Examinations']"));
-		Assert.assertTrue(linkList.size() == 1);
+		linkList = driver.findElements(By.id("classification-Assessments and Examinations"));
+		Assert.assertEquals(linkList.size(), 1);
 
-		removeClassificationMethod(new String[] { "Disease",
-				"Myasthenia Gravis" });
-		Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
+		removeClassificationMethod(new String[] { "Disease", "Myasthenia Gravis"});
+		textNotPresent("Myasthenia Gravis");
 
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
 		textPresent("classMgtUser");
@@ -86,15 +81,15 @@ public class ClassificationTest extends BaseClassificationTest {
 
 	@Test
 	public void classificationLink() {
-		mustBeLoggedInAs(classificationMgtUser_username, password);
-		goToCdeByName("Spectroscopy water signal removal filter text");
-		findElement(By.linkText("Classification")).click();
+        mustBeLoggedInAs(classificationMgtUser_username, password);
+        goToCdeByName("Spectroscopy water signal removal filter text");
+        findElement(By.linkText("Classification")).click();
 		findElement(
 				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
 				.click();
-		showSearchFilters();
+        showSearchFilters();
 		textPresent("Classification");
-		textPresent("NINDS (12");
+        textPresent("NINDS (12");
 		textPresent("Imaging Diagnostics");
 	}
 
