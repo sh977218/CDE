@@ -518,7 +518,7 @@ exports.init = function (app, daoManager) {
                 transformObject: function(c){return JSON.stringify(c)}
                 , header: "["
                 , delimiter: ",\n"
-                , footer: "{}]"
+                , footer: "]"
                 , type: 'appplication/json'
             };
         }

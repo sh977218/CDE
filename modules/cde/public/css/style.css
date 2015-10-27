@@ -780,3 +780,6 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
+#exportEverything {
+    margin-top: 17px;
+}

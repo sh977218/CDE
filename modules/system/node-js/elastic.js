@@ -7,6 +7,7 @@ var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
+    , cdesvc = require('../../cde/node-js/cdesvc')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -381,6 +382,8 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
     if (exporter.header) res.write(exporter.header);
     search.body = query;
 
+    var sentElements = 0;
+
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
             function (err, response) {
@@ -388,8 +391,7 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                     lock = false;
                     logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
                         {
-                            origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                            details: "body " + body
+                            origin: "system.elastic.elasticsearch", stack: new Error().stack
                         });
                     res.status(500).send("ES Error");
                 } else {
@@ -402,8 +404,10 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(exporter.transformObject(thisCde));
-                            if (exporter.delimiter) res.write(exporter.delimiter);
+                            res.write(exporter.transformObject(cdesvc.hideProprietaryPvs([thisCde])));
+                            sentElements++;
+                            var isLast = sentElements === response.hits.total;
+                            if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }

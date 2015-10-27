@@ -36,17 +36,12 @@
             <span class="label label-success">{{getSelectedClassificationsAlt()}}
                 <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
                    ng-click="toggleAltClassificationFilterMode()" tooltip="Remove this classifications filter"
-                   tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true"></i></span>
-        </span> | {{getSelectedStatuses()}}</span>
-
-        <!--<span ng-controller="ExportCtrl">-->
-            <!--<a ng-click="exportSearchResults()" ng-show="totalItems > 0" ng-hide="module === 'form'">-->
-                <!--<button id="exportSearch" value="Export Search" class="btn btn-default pull-right">-->
-                    <!--<i class="fa" ng-class="feedbackClass"></i>-->
-                    <!--Export Search-->
-                <!--</button>-->
-            <!--</a>-->
-        <!--</span>-->
+                   tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                </i>
+            </span>
+        </span>
+        | {{getSelectedStatuses()}}
+    </span>
 
     <div class="btn-group pull-right" ng-controller="ExportCtrl">
         <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

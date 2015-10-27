@@ -13,7 +13,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (result) {
             if (result) {
-                //if (type='json') result = JSON.stringify(result);
                 var blob = new Blob([result], {
                     type: type === 'csv' ? 'text/csv' : 'application/json'
                 });
