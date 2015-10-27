@@ -48,7 +48,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         Assert.assertEquals(linkList.size(), 2);
 
         findElement(By.id("li-checked-caBIG")).click();
-        textPresent("92 results for");
+        textPresent("98 results for");
     }
 
 }
