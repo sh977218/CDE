@@ -47,7 +47,7 @@ var initKibana = function() {
     console.log("Cleaning Kibana");
     // start by removing everything from each kibana index
     kibanaData.hits.hits.forEach(function(hit) {
-        request.del(config.elastic.uri + "/" + hit._index + "/" + hit._type).on("error", function(err){
+        request.del(config.elastic.hosts[0] + "/" + hit._index + "/" + hit._type).on("error", function(err){
             console.log("Unable to empty index");
         });
     });
@@ -57,7 +57,7 @@ var initKibana = function() {
         console.log("Initializing Kibana");
         kibanaData.hits.hits.forEach(function (hit) {
             request({
-                uri: config.elastic.uri + "/" + hit._index + "/" + hit._type + "/" + hit._id
+                uri: config.elastic.hosts[0] + "/" + hit._index + "/" + hit._type + "/" + hit._id
                 , method: "PUT"
                 , json: true
                 , body: hit._source
