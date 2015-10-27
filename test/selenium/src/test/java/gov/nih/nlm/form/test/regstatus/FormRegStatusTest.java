@@ -22,7 +22,7 @@ public class FormRegStatusTest extends RegStatusTest {
     
     @Test
     public void cancelRegStatus() {
-        cancelRegStatus("Supplemental Laboratory Tests", ninds_username);
+        cancelRegStatus("Anti Epileptic Drug (AED) Log", ninds_username);
     }   
         
     @Test
