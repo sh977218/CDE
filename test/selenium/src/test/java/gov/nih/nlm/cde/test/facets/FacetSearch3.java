@@ -59,7 +59,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Domain")).click();
         findElement(By.id("li-blank-Assessments and Examinations")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations" );
-        textPresent( "Imaging Diagnostics (23" );
+        textPresent( "Imaging Diagnostics (30" );
         
         findElement(By.id("li-blank-Imaging Diagnostics")).click();
         textPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
@@ -71,9 +71,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         
         findElement(By.id("removeAltClassificationFilterMode")).click();
         textNotPresent( "and NINDS > Domain > Assessments and Examinations > Imaging Diagnostics" );
-        textPresent( "NINDS (100" );
-
-        hangon(1);
+        textPresent( "NINDS (30" );
 
         findElement(By.id("menu_cdes_link")).click();
         findElement(By.id("browseOrg-caCORE"));
