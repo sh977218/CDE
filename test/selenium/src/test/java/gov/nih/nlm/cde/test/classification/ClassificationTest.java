@@ -93,10 +93,9 @@ public class ClassificationTest extends BaseClassificationTest {
 				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
 				.click();
 		showSearchFilters();
-		hangon(1);
-		Assert.assertTrue(textPresent("Classification"));
-		Assert.assertTrue(textPresent("NINDS (10"));
-		Assert.assertTrue(textPresent("Imaging Diagnostics"));
+		textPresent("Classification");
+		textPresent("NINDS (12");
+		textPresent("Imaging Diagnostics");
 	}
 
 	// Feature is Temporarily Disabled
