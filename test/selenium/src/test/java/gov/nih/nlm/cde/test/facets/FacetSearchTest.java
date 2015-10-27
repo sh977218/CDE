@@ -55,7 +55,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Basic")).click();
         textPresent("251 results for");
         findElement(By.id("li-checked-Acute Hospitalized")).click();
-        textPresent("117");
         textPresent("Domain (194");
         findElement(By.id("li-blank-Domain")).click();
         textPresent("Outcomes and End Points (12");
