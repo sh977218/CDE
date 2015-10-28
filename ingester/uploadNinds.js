@@ -313,8 +313,8 @@ parseCde = function (obj, cb) {
             console.log(err);
             process.exit(1);
         } else {
-            cb();
             console.log("saved");
+            cb();
         }
     });
 };
