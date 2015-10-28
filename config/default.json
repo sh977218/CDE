@@ -42,9 +42,9 @@
   "port": 3000,
   "elastic": {
     "hosts": ["http://localhost:9200"],
-    "index": {"name": "cdetest"},
+    "index": {"name": "auto"},
     "river": {"name": "cdetest"},
-    "formIndex": {"name": "formtest"},
+    "formIndex": {"name": "auto"},
     "formRiver": {"name": "formtest"},
     "boardIndex": {"name": "auto"},
     "boardRiver": {"name": "boardtest"},
