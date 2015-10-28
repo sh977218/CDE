@@ -4,12 +4,18 @@ var fs = require('fs'),
     config = require('config'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
-    async = require('async'),
-    xml2js = require('xml2js'),
-    ninds = require('./convertcsv');
+    async = require('async')
+    , xml2js = require('xml2js')
+    , ninds = require('./convertcsv');
 
 
 var nindsOrg = null;
+
+setTimeout(function () {
+    mongo_data_system.orgByName("NINDS", function (stewardOrg) {
+        nindsOrg = stewardOrg;
+    });
+}, 1000);
 
 addDomain = function (cde, disease, subDisease, value) {
     value = value.trim();
@@ -192,7 +198,7 @@ parseCde = function (obj, cb) {
                         contextName: "Question Text"
                         , acceptability: "preferred"
                     }
-                };
+                }
                 namings.push(name);
                 exitingName[nameString[1].trim()] = nameString[1].trim();
             }
@@ -300,9 +306,10 @@ parseCde = function (obj, cb) {
     addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Epidemiology", obj["Classification.Epidemiology"]);
     addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", obj["Classification.Moderate/Severe TBI: Rehabilitation"]);
 
-    mongo_cde.create(cde, {username: 'batchloader'}, function (err) {
+
+    mongo_cde.create(cde, {username: 'batchloader'}, function (err, newCde) {
         if (err) {
-            console.log("unable to create CDE: " + JSON.stringify(cde));
+            console.log("unable to create CDE. " + JSON.stringify(cde));
             console.log(err);
             process.exit(1);
         } else {
@@ -312,31 +319,21 @@ parseCde = function (obj, cb) {
     });
 };
 
-async.series([
-    function (cb) {
-        mongo_data_system.orgByName("NINDS", function (stewardOrg) {
-            nindsOrg = stewardOrg;
-            cb();
+setTimeout(function () {
+    if (ninds.length > 0) {
+        async.forEach(ninds, function (thisNinds, cb) {
+            parseCde(thisNinds, cb);
+        }, function (err) {
+            if (err)
+                console.log(err);
+            else {
+                nindsOrg.save(function (err) {
+                    if (err) console.log(err);
+                    console.log("finished");
+                    process.exit(0);
+                })
+            }
+
         });
-    },
-    function (cb) {
-        if (ninds.length > 0) {
-            async.forEach(ninds, function (thisNinds, doneOneNindsCDE) {
-                parseCde(thisNinds, doneOneNindsCDE);
-            }, function doneAllNindsCDEs(err) {
-                if (err) {
-                    console.log(err);
-                    cb();
-                }
-                else {
-                    nindsOrg.save(function (err) {
-                        if (err) console.log(err);
-                        console.log("finished");
-                        cb();
-                        process.exit(0);
-                    })
-                }
-            });
-        }
     }
-]);
+}, 2000);
