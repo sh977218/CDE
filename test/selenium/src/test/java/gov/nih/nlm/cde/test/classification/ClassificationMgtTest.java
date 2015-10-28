@@ -68,7 +68,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textNotPresent("NINDS (44)");
 
         openClassificationAudit("NINDS > Disease > Epilepsy");
-        textPresent("867 elements");
+        textPresent("941 elements");
         textPresent("Delete NINDS > Disease > Epilepsy");
     }
     

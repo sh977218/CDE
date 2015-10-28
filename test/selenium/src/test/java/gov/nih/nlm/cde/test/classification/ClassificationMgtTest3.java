@@ -19,11 +19,11 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         createClassificationName(org, new String[]{"_a"});        
         createClassificationName(org, new String[]{"_a"});
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()=\"_a\"]"));
-        Assert.assertTrue(linkList.size() == 1);
+        Assert.assertEquals(linkList.size(), 1);
         createClassificationName(org, new String[]{"_a","_a_a"});        
         createClassificationName(org, new String[]{"_a","_a_a"});
         linkList = driver.findElements(By.xpath("//span[text()=\"_a_a\"]"));
-        Assert.assertTrue(linkList.size() == 1);        
+        Assert.assertEquals(linkList.size(), 1);
         createClassificationName(org, new String[]{"_a","_a_a","_a_a_a"});
         createClassificationName(org, new String[]{"_a","_a_b"});
         createClassificationName(org, new String[]{"_a","_a_c"});          
@@ -53,10 +53,10 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
         hangon(1);
-        Assert.assertTrue(textPresent("Spinal Cord Injuries"));
+        textPresent("Spinal Cord Injuries");
 
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
-        textPresent("1236 elements");
+        textPresent("1281 elements");
         textPresent("Rename NINDS > Disease > Spinal Cord Injury to Spinal Cord Injuries");
     }
     

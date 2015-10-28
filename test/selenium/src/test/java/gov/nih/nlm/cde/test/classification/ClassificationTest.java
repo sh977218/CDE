@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -66,8 +67,9 @@ public class ClassificationTest extends BaseClassificationTest {
                 By.cssSelector("li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
 		Assert.assertEquals(linkList.size(), 1);
 		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
-		linkList = driver.findElements( By.cssSelector("li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
-		Assert.assertEquals(linkList.size(), 0);
+        wait.until(ExpectedConditions.not(ExpectedConditions.
+                presenceOfAllElementsLocatedBy(By.cssSelector(
+                        "li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
 		linkList = driver.findElements(By.cssSelector("li#classification-Assessments and Examinations"));
 		Assert.assertEquals(linkList.size(), 1);
 
