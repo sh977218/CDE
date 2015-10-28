@@ -92,6 +92,8 @@ exports.init = function (app, daoManager) {
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
             delete exportCde._id;
+            delete exportCde.history;
+            delete exportCde.updatedBy.userId;
             res.send(js2xml("dataElement", exportCde));
         }
 

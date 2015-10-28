@@ -28,10 +28,8 @@ public class CdeExport extends NlmCdeBaseTest {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
         findElement(By.id("export")).click();
-        findElement(By.id("xmlExport")).click();
-
-        switchTab(1);
-        String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
+        String url = findElement(By.id("xmlExport")).getAttribute("href");
+        String response = get(url).asString();
         Assert.assertTrue(response.replaceAll("\\s+", "").contains((
                 "</ids>\n" +
                         "<ids>\n" +
@@ -117,6 +115,7 @@ public class CdeExport extends NlmCdeBaseTest {
                         "<acceptability>preferred</acceptability>\n" +
                         "</context>\n" +
                         "</naming>\n").replaceAll("\\s+","")));
-        switchTabAndClose(0);
+        findElement(By.id("xmlExport")).click();
+
     }
 }
