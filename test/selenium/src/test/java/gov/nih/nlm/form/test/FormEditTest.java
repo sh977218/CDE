@@ -86,13 +86,10 @@ public class FormEditTest extends BaseFormTest {
         textPresent("Value List");
         scrollTo(findElement(By.xpath("//*[@id='question_2']")).getLocation().getY());
 
-
-        String newQuestionLabel = "N/A";
         findElement(By.xpath("//*[@id='dd_question_title_2']/i")).click();
         textPresent("Select a question label from a CDE Name");
         findElement(By.xpath("//*[@id='q_select_name_1']/div/button")).click();
-        textPresent(newQuestionLabel, By.xpath("//*[@id='dd_question_title_2']"));
-        hangon(1);
+        textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_2']"));
 
         String newQuestionInstruction = "New Question Instruction";
         findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/span/i")).click();
