@@ -10,11 +10,22 @@
         "port": 27017
       }
     ],
-    "dbname": "test",
-    "dbUser": "siteRootAdmin",
-    "dbPassword": "password",
+    "admin": {
+      "dbname": "admin",
+      "dbUser": "siteRootAdmin",
+      "dbPassword": "password",
+      "uri": ""
+    },
+    "nlmcde": {
+      "dbname": "test",
+      "dbUser": "siteRootAdmin",
+      "dbPassword": "password",
+      "uri": ""
+    },
     "log": {
       "dbname": "cde-logs-test",
+      "dbUser": "siteRootAdmin",
+      "dbPassword": "password",
       "cappedCollectionSizeMB": 262144000,
       "uri": ""
     },

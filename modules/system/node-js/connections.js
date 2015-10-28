@@ -3,8 +3,12 @@ var mongoose = require('mongoose');
 var connectionEstablisher = function (uri, type) {
     this.uri = uri;
     var _type = type;
-    var opts = {auth: {authdb: "admin"}}
-    var conn = mongoose.createConnection(uri, opts);
+    var opts = {auth: {authdb: "admin"}};
+    var conn;
+    if (uri.indexOf('/local') > -1) {
+        conn = mongoose.createConnection(uri, opts);
+    }
+    else conn = mongoose.createConnection(uri);
     this.connect = function (openCb) {
         console.log("connecting to : " + type);
         conn.once('open', function () {
