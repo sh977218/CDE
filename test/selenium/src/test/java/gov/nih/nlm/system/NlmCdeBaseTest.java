@@ -73,6 +73,9 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
+//    RestAssured.baseURI = baseUrl;
+//    RestAssured.port = 80;
+
     @BeforeTest
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
