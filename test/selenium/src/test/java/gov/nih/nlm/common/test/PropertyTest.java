@@ -62,7 +62,6 @@ public abstract class PropertyTest extends CommonTest {
     }
 
     public void richText(String eltName, String status) {
-        mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
@@ -70,7 +69,6 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
         textPresent("Hello From Selenium");
-        hangon(1);
     }
 
     public void truncateRichText(String eltName, String status) {
@@ -83,7 +81,6 @@ public abstract class PropertyTest extends CommonTest {
         hangon(1);
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        hangon(1);
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
