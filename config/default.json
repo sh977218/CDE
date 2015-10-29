@@ -62,13 +62,24 @@
         "port": 27017
       }
     ],
-    "dbname": "test",
-    "log": {
-      "dbname": "cde-logs-test",
-      "cappedCollectionSizeMB": 262144000
-    },
     "local": {
-      "uri": "mongodb://localhost/local"
+      "db": "local",
+      "username": "dbAdmin",
+      "password": "password",
+      "options": {
+        "auth": {"authdb": "admin"}
+      }
+    },
+    "appData": {
+      "db": "test",
+      "username": "cdeuser",
+      "password": "password"
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "cdeuser",
+      "password": "password",
+      "cappedCollectionSizeMB": 262144000
     }
   },
   "node": {

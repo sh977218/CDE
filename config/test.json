@@ -3,36 +3,6 @@
   "logBufferSize": 2,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "database": {
-    "servers": [
-      {
-        "host": "localhost",
-        "port": 27017
-      }
-    ],
-    "admin": {
-      "dbname": "admin",
-      "dbUser": "siteRootAdmin",
-      "dbPassword": "password",
-      "uri": ""
-    },
-    "nlmcde": {
-      "dbname": "test",
-      "dbUser": "siteRootAdmin",
-      "dbPassword": "password",
-      "uri": ""
-    },
-    "log": {
-      "dbname": "cde-logs-test",
-      "dbUser": "siteRootAdmin",
-      "dbPassword": "password",
-      "cappedCollectionSizeMB": 262144000,
-      "uri": ""
-    },
-    "local": {
-      "dbname": "local"
-    }
-  },
   "vsac": {
     "username": "user",
     "password": "pass",
