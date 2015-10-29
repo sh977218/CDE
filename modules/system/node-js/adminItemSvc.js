@@ -66,7 +66,7 @@ var commentPendingApprovalText = "This comment is pending approval.";
                                     return dao.update(elt, req.user, function (err, response) {
                                         if (err) res.status(400).send();
                                         res.send(response);
-                                        cb();
+                                        if (cb) cb();
                                     });
                                 }
                             });
