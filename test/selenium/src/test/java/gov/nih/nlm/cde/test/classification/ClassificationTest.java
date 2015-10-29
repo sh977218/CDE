@@ -63,15 +63,12 @@ public class ClassificationTest extends BaseClassificationTest {
 		mustBeLoggedInAs(classificationMgtUser_username, password);
 		goToCdeByName("Spectroscopy geometry location not applicable indicator");
 		findElement(By.linkText("Classification")).click();
-		List<WebElement> linkList = driver.findElements(
-                By.cssSelector("li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
-		Assert.assertEquals(linkList.size(), 1);
+		findElement(By.id("li#classification-Domain,Assessments and Examinations,Imaging Diagnostics");
 		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
         wait.until(ExpectedConditions.not(ExpectedConditions.
-                presenceOfAllElementsLocatedBy(By.cssSelector(
+                presenceOfAllElementsLocatedBy(By.id(
                         "li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
-		linkList = driver.findElements(By.cssSelector("li#classification-Assessments and Examinations"));
-		Assert.assertEquals(linkList.size(), 1);
+		findElement(By.id("li#classification-Assessments and Examinations"));
 
 		removeClassificationMethod(new String[] { "Disease", "Myasthenia Gravis"});
 		textNotPresent("Myasthenia Gravis");
