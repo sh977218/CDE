@@ -62,7 +62,7 @@ public abstract class NamingTest extends CommonTest {
 
     public void reorderNamingTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, null);
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

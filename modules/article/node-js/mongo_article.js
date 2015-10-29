@@ -6,17 +6,9 @@ var mongoose = require('mongoose')
 
 exports.name = "Help";
         
-var mongoUri = config.mongoUri;
-var Article;
+var connection = connHelper.establishConnection(config.database.appData);
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-var connection = null;
-
-var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
-iConnectionEstablisherCde.connect(function(conn) {
-    Article = conn.model('Article', schemas.articleSchema);
-    connection = conn;
-});
+var Article = connection.model('Article', schemas.articleSchema);
 
 exports.byKey = function(key, cb) {
     Article.findOne({key: key, archived: null}).exec(cb);

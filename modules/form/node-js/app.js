@@ -66,7 +66,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    if (config.modules.forms.comments) {
+    //if (config.modules.forms.comments) {
         app.post('/comments/form/add', function (req, res) {
             adminItemSvc.addComment(req, res, mongo_data);
         });
@@ -87,8 +87,7 @@ exports.init = function (app, daoManager) {
                 elt.comments.splice(req.body.comment.index, 1);
             }, "Comment declined!");
         });
-
-    }
+    //}
 
     app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);

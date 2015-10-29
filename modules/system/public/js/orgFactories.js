@@ -15,7 +15,7 @@ angular.module('OrgFactories', ['ngResource'])
         , createOrgDetailedInfoHtml : function(orgName) {
             if(this.orgsDetailedInfo && this.orgsDetailedInfo[orgName]) {
                 var anOrg = this.orgsDetailedInfo[orgName];
-                
+
                 if(anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
                     var orgDetailsInfoHtml = '<strong>Organization Details</strong><br/><br/>Name: '+anOrg.name;
                     orgDetailsInfoHtml += (anOrg.longName ? '<br/>Long name: '+anOrg.longName : '');
@@ -23,7 +23,7 @@ angular.module('OrgFactories', ['ngResource'])
                     orgDetailsInfoHtml += (anOrg.emailAddress ? '<br/>E-mail address: '+anOrg.emailAddress : '');
                     orgDetailsInfoHtml += (anOrg.phoneNumber ? '<br/>Phone number: '+anOrg.phoneNumber : '');
                     orgDetailsInfoHtml += (anOrg.uri ? '<br/>Website: '+anOrg.uri : '');
-                    
+
                     return orgDetailsInfoHtml;
                 }
             }
@@ -32,10 +32,7 @@ angular.module('OrgFactories', ['ngResource'])
         }
         , orgIsWorkingGroupOf : function(orgName) {
             if (!this.orgsDetailedInfo) return false;
-            if( this.orgsDetailedInfo[orgName].workingGroupOf && this.orgsDetailedInfo[orgName].workingGroupOf.trim()!=='' ) {
-                return true;
-            }
-            return false;
+            return this.orgsDetailedInfo[orgName].workingGroupOf && this.orgsDetailedInfo[orgName].workingGroupOf.trim()!=='';
         }
         , getOrgsDetailedInfoAPI : function() {
             var OrgHelpers = this;
@@ -49,7 +46,7 @@ angular.module('OrgFactories', ['ngResource'])
                 OrgHelpers.deferred.resolve();
             }).error(function() {
             });
-        }    
+        }
         , showWorkingGroup: function(orgToHide, user) {
             var OrgHelpers = this;
             var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
@@ -57,7 +54,7 @@ angular.module('OrgFactories', ['ngResource'])
             var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);
             if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);
             if (!isNotWorkingGroup) {
-                var isSisterOfWg = false;  
+                var isSisterOfWg = false;
                 if (!user.orgAdmin) user.orgAdmin = [];
                 if (!user.orgCurator) user.orgCurator = [];
                 var userOrgs = [].concat(user.orgAdmin, user.orgCurator);
@@ -68,9 +65,9 @@ angular.module('OrgFactories', ['ngResource'])
                 });
                 userWgsParentOrgs.forEach(function(parentOrg){
                     if (parentOrg===parentOrgOfThisClass) isSisterOfWg = true;
-                });                
+                });
             }
-            return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;        
+            return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
         }
         , getUsedBy: function(elt, user) {
             if (elt.classification)

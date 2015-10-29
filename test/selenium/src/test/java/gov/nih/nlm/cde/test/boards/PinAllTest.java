@@ -29,7 +29,7 @@ public class PinAllTest extends BoardTest {
         findElement(By.id("li-blank-Exploratory")).click();
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
-        findElement(By.id("pinAll")).click();
+        clickElement(By.id("pinAll"));
         textPresent("Select Board");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
@@ -53,7 +53,7 @@ public class PinAllTest extends BoardTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Stroke")).click();
+        findElement(By.id("li-blank-Spinal Cord Injury")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
         hangon(3);

@@ -15,24 +15,13 @@ var mongoose = require('mongoose')
 exports.type = "cde";
 exports.name = "CDEs";
 
-var mongoUri = config.mongoUri;
-var DataElement;
-var PinningBoard;
-var User;
-var CdeAudit;
+var conn = connHelper.establishConnection(config.database.appData);
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-var connection = null;
-
-var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
-iConnectionEstablisherCde.connect(function (conn) {
-    DataElement = conn.model('DataElement', schemas.dataElementSchema);
-    exports.DataElement = DataElement;
-    PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-    User = conn.model('User', schemas_system.userSchema);
-    CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-    connection = conn;
-});
+var DataElement = conn.model('DataElement', schemas.dataElementSchema);
+var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+var User = conn.model('User', schemas_system.userSchema);
+var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+exports.DataElement = DataElement;
 
 var mongo_data = this;
 
@@ -272,6 +261,7 @@ exports.newBoard = function (board, callback) {
     });
 };
 
+// TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
     mongooseObject.save(function (err) {
         callback(err, mongooseObject);
@@ -384,7 +374,7 @@ exports.query = function (query, callback) {
 
 exports.transferSteward = function (from, to, callback) {
     DataElement.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
-        callback(err, result);
+        callback(err, result.nModified);
     });
 };
 
@@ -462,7 +452,7 @@ exports.derivationOutputs = function(inputTinyId, cb) {
 };
 
 var correctBoardPinsForCde = function(doc, cb){
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err, de){
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
         if (err) throw err;
         if (cb) cb();
     });

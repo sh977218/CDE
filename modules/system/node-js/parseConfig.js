@@ -11,10 +11,10 @@ config.database.local.uri = "mongodb://" + config.database.admin.dbUser + ":" + 
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + config.database.local.dbname;
-config.mongoUri = "mongodb://" + config.database.nlmcde.dbUser + ":" + config.database.nlmcde.dbPassword + "@" +
-config.database.servers.map(function (srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.dbname;
+//config.mongoUri = "mongodb://" + config.database.nlmcde.dbUser + ":" + config.database.nlmcde.dbPassword + "@" +
+//config.database.servers.map(function (srv) {
+//    return srv.host + ":" + srv.port;
+//}).join(",") + "/" + config.database.dbname;
 
 var shortHash = function (content) {
     return hash.createHash('md5')
@@ -47,6 +47,7 @@ config.elasticStoredQueryUri = config.elastic.hosts[0] + "/" + config.elastic.st
 config.elasticStoredQueryRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.storedQueryIndex.name;
 
 config.mongoMigrationUri = "mongodb://" + config.database.nlmcde.dbUser + ":" + config.database.nlmcde.dbPassword + "@" +
+
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + "migration";

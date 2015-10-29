@@ -29,14 +29,14 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
     
     @Test
     public void editCdeByTinyId() {
-        mustBeLoggedInAs(ninds_username, password);
-        String cdeName = "Left Lymph Node Positive Total Count";
-        driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
+        mustBeLoggedInAs(ctepCurator_username, password);
+        // "Left Lymph Node Positive Total Count";
+        driver.get(baseUrl + "/#/deview?tinyId=xNugcDxoqKW");
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         newCdeVersion("Change note for change number 1");
-        driver.get(baseUrl + "/#/deview?tinyId=SPFteb8X6aB");
+        driver.get(baseUrl + "/#/deview?tinyId=xNugcDxoqKW");
         textPresent("General Details");
         textPresent("[name change number 1]");
               

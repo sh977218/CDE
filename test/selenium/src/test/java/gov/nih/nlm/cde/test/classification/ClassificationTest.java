@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -54,8 +55,7 @@ public class ClassificationTest extends BaseClassificationTest {
 		deleteClassification("classification-" + selector);
 		driver.navigate().refresh();
 		findElement(By.linkText("Classification")).click();
-		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-"
-				+ selector + "']"));
+		Assert.assertTrue(checkElementDoesNotExistByCSS("[id='classification-" + selector + "']"));
 	}
 
 	@Test
@@ -63,22 +63,14 @@ public class ClassificationTest extends BaseClassificationTest {
 		mustBeLoggedInAs(classificationMgtUser_username, password);
 		goToCdeByName("Spectroscopy geometry location not applicable indicator");
 		findElement(By.linkText("Classification")).click();
-		List<WebElement> linkList = driver.findElements(By
-				.cssSelector("li[id$='Imaging Diagnostics']"));
-		Assert.assertEquals(linkList.size(), 1);
-		removeClassificationMethod(new String[] { "Domain",
-				"Assessments and Examinations", "Imaging Diagnostics" });
-		linkList = driver.findElements(By
-				.cssSelector("li[id$='Imaging Diagnostics']"));
-		Assert.assertEquals(linkList.size(), 0);
-		linkList = driver.findElements(By
-				.cssSelector("li[id$='Assessments and Examinations']"));
-		Assert.assertTrue(linkList.size() == 1);
-
-		removeClassificationMethod(new String[] { "Disease",
-				"Myasthenia Gravis" });
-		Assert.assertTrue(textNotPresent("Myasthenia Gravis"));
-
+		findElement(By.id("classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
+		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
+        wait.until(ExpectedConditions.not(ExpectedConditions.
+                presenceOfAllElementsLocatedBy(By.id(
+                        "classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
+		findElement(By.id("classification-Assessments and Examinations"));
+		removeClassificationMethod(new String[] { "Disease", "Myasthenia Gravis"});
+		textNotPresent("Myasthenia Gravis");
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
 		textPresent("classMgtUser");
 		textPresent("Delete NINDS > Disease > Myasthenia Gravis");
@@ -86,17 +78,16 @@ public class ClassificationTest extends BaseClassificationTest {
 
 	@Test
 	public void classificationLink() {
-		mustBeLoggedInAs(classificationMgtUser_username, password);
-		goToCdeByName("Spectroscopy water signal removal filter text");
-		findElement(By.linkText("Classification")).click();
+        mustBeLoggedInAs(classificationMgtUser_username, password);
+        goToCdeByName("Spectroscopy water signal removal filter text");
+        findElement(By.linkText("Classification")).click();
 		findElement(
 				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
 				.click();
-		showSearchFilters();
-		hangon(1);
-		Assert.assertTrue(textPresent("Classification"));
-		Assert.assertTrue(textPresent("NINDS (10"));
-		Assert.assertTrue(textPresent("Imaging Diagnostics"));
+        showSearchFilters();
+		textPresent("Classification");
+        textPresent("NINDS (12");
+		textPresent("Imaging Diagnostics");
 	}
 
 	// Feature is Temporarily Disabled

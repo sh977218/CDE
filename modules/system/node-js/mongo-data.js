@@ -18,43 +18,20 @@ var schemas = require('./schemas')
     , async = require('async')
     ;
 
-var conn;
-var localConn;
-var Org;
-var User;
-var gfs;
-var connectionEstablisher = connHelper.connectionEstablisher;
-var Message;
-var ClusterStatus;
-var sessionStore;
-var fs_files;
-var classificationAudit;
-
-var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
-iConnectionEstablisherSys.connect(function(resCon) {
-    exports.mongoose_connection = resCon;
-    conn = resCon;
-    Org = conn.model('Org', schemas.orgSchema);
-    User = conn.model('User', schemas.userSchema);
-    Message = conn.model('Message', schemas.message);
-    ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
-    gfs = Grid(conn.db, mongoose.mongo);
-    sessionStore = new MongoStore({ 
-        mongooseConnection: resCon  
-    });
-    exports.sessionStore = sessionStore;
-    fs_files = conn.model('fs_files', schemas.fs_files);
-    classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
-});
-
-var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
-iConnectionEstablisherLocal.connect(function(resCon) {
-        localConn = resCon;        
-});
-
-exports.sessionStore = sessionStore;
-
+var conn =  connHelper.establishConnection(config.database.appData);
 exports.mongoose_connection = conn;
+
+var Org = conn.model('Org', schemas.orgSchema);
+var User = conn.model('User', schemas.userSchema);
+var Message = conn.model('Message', schemas.message);
+var ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
+var gfs = Grid(conn.db, mongoose.mongo);
+exports.sessionStore = new MongoStore({
+    mongooseConnection: conn
+});
+var fs_files = conn.model('fs_files', schemas.fs_files);
+var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
+var localConn = connHelper.establishConnection(config.database.local);
 
 exports.getClusterHostStatus = function(server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {

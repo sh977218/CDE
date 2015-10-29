@@ -215,7 +215,10 @@ exports.addComment = function (req, res, dao) {
                 elt.comments.push(comment);
                 elt.save(function (err) {
                     if (err) {
-                        res.send(err);
+                        logging.errorLogger.error("Error: Cannot add comment.", {
+                            origin: "system.adminItemSvc.addComment",
+                            stack: new Error().stack});
+                        res.status(500).send(err);
                     } else {
                         exports.hideUnapprovedComments(elt);
                         res.send({message: "Comment added", elt: elt});
@@ -224,7 +227,7 @@ exports.addComment = function (req, res, dao) {
             }
         });
     } else {
-        res.send({message: "You are not authorized."});
+        res.status(403).send({message: "You are not authorized."});
     }
 };
 
@@ -243,7 +246,10 @@ exports.removeComment = function (req, res, dao) {
                         elt.comments.splice(i, 1);
                         elt.save(function (err) {
                             if (err) {
-                                res.send({message: err});
+                                logging.errorLogger.error("Error: Cannot remove comment.", {
+                                    origin: "system.adminItemSvc.removeComment",
+                                    stack: new Error().stack});
+                                res.status(500).send(err);
                             } else {
                                 res.send({message: "Comment removed", elt: elt});
                             }
@@ -255,7 +261,7 @@ exports.removeComment = function (req, res, dao) {
             });
         });
     } else {
-        res.send("You are not authorized.");
+        res.status(403).send("You are not authorized.");
     }
 };
 
