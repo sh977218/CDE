@@ -63,16 +63,14 @@ public class ClassificationTest extends BaseClassificationTest {
 		mustBeLoggedInAs(classificationMgtUser_username, password);
 		goToCdeByName("Spectroscopy geometry location not applicable indicator");
 		findElement(By.linkText("Classification")).click();
-		findElement(By.id("li#classification-Domain,Assessments and Examinations,Imaging Diagnostics");
+		findElement(By.id("classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
 		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
         wait.until(ExpectedConditions.not(ExpectedConditions.
                 presenceOfAllElementsLocatedBy(By.id(
-                        "li#classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
-		findElement(By.id("li#classification-Assessments and Examinations"));
-
+                        "classification-Domain,Assessments and Examinations,Imaging Diagnostics"))));
+		findElement(By.id("classification-Assessments and Examinations"));
 		removeClassificationMethod(new String[] { "Disease", "Myasthenia Gravis"});
 		textNotPresent("Myasthenia Gravis");
-
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
 		textPresent("classMgtUser");
 		textPresent("Delete NINDS > Disease > Myasthenia Gravis");
