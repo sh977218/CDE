@@ -78,7 +78,6 @@ public class ClassificationTest extends BaseClassificationTest {
 
 	@Test
 	public void classificationLink() {
-        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName("Spectroscopy water signal removal filter text");
         findElement(By.linkText("Classification")).click();
 		findElement(

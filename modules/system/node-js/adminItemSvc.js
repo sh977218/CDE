@@ -13,7 +13,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
 
 var commentPendingApprovalText = "This comment is pending approval.";
 
- exports.save = function (req, res, dao) {
+ exports.save = function (req, res, dao, cb) {
     var elt = req.body;
     if (req.isAuthenticated()) {
         if (!elt._id) {
@@ -66,6 +66,7 @@ var commentPendingApprovalText = "This comment is pending approval.";
                                     return dao.update(elt, req.user, function (err, response) {
                                         if (err) res.status(400).send();
                                         res.send(response);
+                                        cb();
                                     });
                                 }
                             });

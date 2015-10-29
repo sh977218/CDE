@@ -47,6 +47,7 @@ public abstract class NamingTest extends CommonTest {
         findElement(By.cssSelector("#dd_context_1 .fa-edit")).click();
         findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_context_1 .fa-check")).click();
+        textPresent("Health Changed");
 
         newCdeVersion();
 

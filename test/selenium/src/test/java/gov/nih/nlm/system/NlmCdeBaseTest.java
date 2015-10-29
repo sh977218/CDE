@@ -360,16 +360,14 @@ public class NlmCdeBaseTest {
             findElement(By.name("changeNote")).sendKeys(
                     "Change note for change number 1");
         }
-        // assumption is that text is sent before JS can load. So wait 1 sec.
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
         try {
             textPresent("Saved.");
         } catch (Exception e) {
-            findElement(By.id("confirmNewVersion")).click();
-            textPresent("Saved.");
         }
+        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("openSave"))));
         closeAlert();
         modalGone();
     }
