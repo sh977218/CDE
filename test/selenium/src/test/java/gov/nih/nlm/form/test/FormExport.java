@@ -154,7 +154,6 @@ public class FormExport extends BaseFormTest {
 
         switchTab(1);
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
-//        System.out.print(response);
         Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Parenchymal Imaging\",\"definition\":\"Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage.  (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\"}]}"));
         switchTabAndClose(0);
     }
@@ -173,6 +172,12 @@ public class FormExport extends BaseFormTest {
                 "<definition>\n" +
                 "Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
                 "</definition>\n" +
-                "</naming>").replaceAll("\\s+","")));
+                "</naming>").replaceAll("\\s+", "")));
+    }
+
+    @Test
+    public void yePaulTest(){
+        String response = get(baseUrl + "/form/546653ef1d5862042336e486").asString();
+        Assert.assertTrue(response.replaceAll("\\s+","").contains(("[{\"label\":\"Head circumference unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers\":[],\"editable\":true,\"required\":false,\"uoms\":[],\"cde\":{\"version\":\"3\",\"tinyId\":\"SYrBCuPsSHg\",\"permissibleValues\":[],\"derivationRules\":[]}},\"cardinality\":\"0.1\"},{\"label\":\"Weight unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers").replaceAll("\\s+","")));
     }
 }

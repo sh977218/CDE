@@ -72,6 +72,17 @@ var getFormPlainXml = function(form, req, res){
 };
 
 exports.formById = function (req, res) {
+
+    // Ye & Paul quick fix
+    // Once fixed by Y+P, please remove these lines
+    if (req.params.id.length>11) return mongo_data_form.byId(req.params.id, function(err, form){
+        console.log(err);
+        console.log(form);
+        if (err || !form) return res.status(404).end();
+        getFormJson(form, req, res);
+    });
+    //
+
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
         if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, req, res);
