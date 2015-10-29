@@ -4,7 +4,7 @@ var express = require('express')
   , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
   , adminSvc = require('../../system/node-js/adminItemSvc.js')
   , deepDiff = require('deep-diff')
-    , elastic = require('../../system/node-js/elastic')
+    , elastic = require('../../cde/node-js/elastic')
     ;
 
 exports.forks = function(req, res) {
