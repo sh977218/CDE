@@ -4,9 +4,9 @@ var fs = require('fs'),
     config = require('config'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
-    async = require('async')
-    , xml2js = require('xml2js')
-    , ninds = require('./convertcsv');
+    async = require('async'),
+    xml2js = require('xml2js'),
+    ninds = require('./convertcsv');
 
 
 var nindsOrg = null;
@@ -333,7 +333,6 @@ setTimeout(function () {
                     process.exit(0);
                 })
             }
-
         });
     }
 }, 2000);
