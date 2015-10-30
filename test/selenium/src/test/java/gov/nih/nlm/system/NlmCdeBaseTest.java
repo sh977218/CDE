@@ -508,8 +508,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username,
-                                               String password, String checkText) {
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -517,13 +516,19 @@ public class NlmCdeBaseTest {
         waitAndClick(By.id("login_button"));
         try {
             textPresent(checkText);
-            // Assumption is that UMLS sometimes throws an error on login. With
-            // a socket hangup. login fails, we retry.
+            // sometimes an issue with csrf, need to reload the whole page.
         } catch (TimeoutException e) {
+            // csrf collision, wait random before re-trying
+            hangon(new Random().nextInt(10));
             System.out.println("Login failed. Re-trying. error: "
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
-            findElement(By.id("login_button")).click();
+            goHome();
+            findElement(By.id("uname")).clear();
+            findElement(By.id("uname")).sendKeys(username);
+            findElement(By.id("passwd")).clear();
+            findElement(By.id("passwd")).sendKeys(password);
+            waitAndClick(By.id("login_button"));
             textPresent(checkText);
         }
     }
