@@ -127,11 +127,6 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
     }
 
-    @AfterMethod
-    public void goNowhere(){
-        driver.get(baseUrl + "/gonowhere");
-    }
-
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
