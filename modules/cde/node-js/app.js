@@ -192,6 +192,7 @@ exports.init = function (app, daoManager) {
         if (req.isAuthenticated()) {
             var board = req.body;
             if (!board._id) {
+                console.log("create board with name: " + board.name);
                 board.createdDate = Date.now();
                 board.owner = {
                     userId: req.user._id
@@ -200,6 +201,7 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
+                console.log("passed perm check");
                 async.parallel([
                         function (callback) {
                             mongo_data.newBoard(board, function (err, newBoard) {
@@ -213,8 +215,13 @@ exports.init = function (app, daoManager) {
                         }
                     ],
                     function (err, results) {
-                        if (results[1] < boardQuota) return res.send(results[0]);
+                        console.log("parall done")
+                        if (results[1] < boardQuota) {
+                            console.log("returning success")
+                            return res.send(results[0]);
+                        }
                         else {
+                            console.log("sending too many boards");
                             mongo_data.removeBoard(results[0]._id);
                             res.status(403).send("You have too many boards!");
                         }
