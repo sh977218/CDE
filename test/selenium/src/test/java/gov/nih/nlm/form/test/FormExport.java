@@ -175,8 +175,11 @@ public class FormExport extends BaseFormTest {
                 "</naming>").replaceAll("\\s+", "")));
     }
 
+    /**
+     * Maintain this test to ensure that LOINC Widget will integrate with ours.
+     */
     @Test
-    public void yePaulTest(){
+    public void formByBsonIDTest(){
         String response = get(baseUrl + "/form/546653ef1d5862042336e486").asString();
         Assert.assertTrue(response.replaceAll("\\s+","").contains(("[{\"label\":\"Head circumference unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers\":[],\"editable\":true,\"required\":false,\"uoms\":[],\"cde\":{\"version\":\"3\",\"tinyId\":\"SYrBCuPsSHg\",\"permissibleValues\":[],\"derivationRules\":[]}},\"cardinality\":\"0.1\"},{\"label\":\"Weight unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers").replaceAll("\\s+","")));
     }
