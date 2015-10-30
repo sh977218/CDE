@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
@@ -73,9 +74,6 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-//    RestAssured.baseURI = baseUrl;
-//    RestAssured.port = 80;
-
     @BeforeTest
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
@@ -128,6 +126,11 @@ public class NlmCdeBaseTest {
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+    }
+
+    @AfterMethod
+    public void goNowhere(){
+        driver.get(baseUrl + "/gonowhere");
     }
 
     protected void resizeWindow(int width, int height) {
