@@ -342,8 +342,7 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        } catch (Exception e) {
+                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS); } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
