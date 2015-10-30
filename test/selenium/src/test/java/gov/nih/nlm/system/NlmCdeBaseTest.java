@@ -74,7 +74,7 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-    @BeforeTest
+    @BeforeMethod
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {
@@ -130,7 +130,7 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void goNowhere(){
-        driver.get(baseUrl + "/gonowhere");
+        driver.quit();
     }
 
     protected void resizeWindow(int width, int height) {
