@@ -14,7 +14,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
@@ -74,7 +73,7 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-    @BeforeMethod
+    @BeforeTest
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {
@@ -130,7 +129,7 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void goNowhere(){
-        driver.quit();
+        driver.get(baseUrl + "/gonowhere");
     }
 
     protected void resizeWindow(int width, int height) {
