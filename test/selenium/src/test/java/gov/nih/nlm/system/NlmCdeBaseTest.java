@@ -524,6 +524,7 @@ public class NlmCdeBaseTest {
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
             goHome();
+            findElement(By.id("login_link")).click();
             findElement(By.id("uname")).clear();
             findElement(By.id("uname")).sendKeys(username);
             findElement(By.id("passwd")).clear();
