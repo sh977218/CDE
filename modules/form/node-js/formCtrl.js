@@ -57,7 +57,6 @@ var getFormJson = function(form, req, res){
 };
 
 var getFormPlainXml = function(form, req, res){
-    //res.setHeader("Content-Type", "application/xml");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if(!form) return res.status(404).end();
         res.setHeader("Content-Type", "application/xml");
@@ -68,14 +67,13 @@ var getFormPlainXml = function(form, req, res){
         });
         res.send(js2xml("Form", exportForm));
     });
-    //res.send(js2xml("Form", exportForm));
 };
 
 exports.formById = function (req, res) {
 
     // Ye & Paul quick fix
     // Once fixed by Y+P, please remove these lines
-    if (req.params.id.length>11) return mongo_data_form.byId(req.params.id, function(err, form){
+    if (req.params.id.length>20) return mongo_data_form.byId(req.params.id, function(err, form){
         console.log(err);
         console.log(form);
         if (err || !form) return res.status(404).end();
