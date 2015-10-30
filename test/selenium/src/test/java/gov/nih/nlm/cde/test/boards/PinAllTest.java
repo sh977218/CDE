@@ -53,7 +53,7 @@ public class PinAllTest extends BoardTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-checked-Amyotrophic Lateral Sclerosis")).click();
+        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
         findElement(By.id("li-blank-Classification")).click();
         findElement(By.id("li-blank-Core")).click();
         hangon(3);
