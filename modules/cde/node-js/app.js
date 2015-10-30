@@ -419,10 +419,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    //app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
-    //    elastic.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", function(list) {res.send(list);});
-    //});
-
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);
     });

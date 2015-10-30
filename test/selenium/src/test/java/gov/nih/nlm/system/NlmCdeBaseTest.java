@@ -367,7 +367,7 @@ public class NlmCdeBaseTest {
             textPresent("Saved.");
         } catch (Exception e) {
         }
-        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("openSave"))));
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
     }
