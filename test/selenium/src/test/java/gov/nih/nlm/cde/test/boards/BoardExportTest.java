@@ -46,7 +46,7 @@ public class BoardExportTest extends BoardTest {
         String bid = url.substring(url.lastIndexOf("/") + 1);
         String url_string = baseUrl + "/board/" + bid + "/0/500";
         String response = given().when().get(url_string).asString();
-        String result = "\"name\":\"Export my board test\",\"description\":\"This test tests export borad.\",\"shareStatus\":\"Public\",";
+        String result = "\"name\":\"Export my board test\",\"description\":\"This test tests export board.\",\"shareStatus\":\"Public\",";
         Assert.assertTrue(response.contains(result));
     }
 
