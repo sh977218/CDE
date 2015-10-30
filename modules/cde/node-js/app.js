@@ -90,15 +90,15 @@ exports.init = function (app, daoManager) {
 
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
-            delete cde._doc._id;
-            res.send(js2xml("DataElement", cde.toObject()));
+            var exportCde = cde.toObject();
+            delete exportCde._id;
+            res.send(js2xml("dataElement", exportCde));
         }
 
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
-
             if(!req.query.type) sendNativeJson(cde, res);
             else if (req.query.type==='json') sendNativeJson(cde, res);
             else if (req.query.type==='xml') sendNativeXml(cde, res);

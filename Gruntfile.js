@@ -379,7 +379,8 @@ module.exports = function(grunt) {
                     'js/ui-bootstrap-tpls.js': 'angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
                     'js/ng-grid.js': 'ng-grid/build/ng-grid.js',
                     'js/feedback.js': 'angular-send-feedback/dist/angular-send-feedback.js',
-                    'js/html2canvas.js': 'html2canvas/build/html2canvas.js'
+                    'js/html2canvas.js': 'html2canvas/build/html2canvas.js',
+                    'js/select.js': 'angular-ui-select/dist/select.js'
                 }
             },
             map: {
@@ -408,6 +409,7 @@ module.exports = function(grunt) {
                     'css/font-awesome.min.css': 'font-awesome/css/font-awesome.min.css',
                     'css/select2.css': 'select2/select2.css',
                     'css/select2.png': 'select2/select2.png',
+                    'css/select.css': "angular-ui-select/dist/select.css",
                     'css/selectize.default.css': 'selectize/dist/css/selectize.default.css',
                     'css/textAngular.css': 'textAngular/src/textAngular.css',
                     'css/bootstrap-tour.min.css': 'bootstrap-tour/build/css/bootstrap-tour.min.css',
