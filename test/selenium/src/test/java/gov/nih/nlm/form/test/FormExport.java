@@ -180,7 +180,7 @@ public class FormExport extends BaseFormTest {
      */
     @Test
     public void formByBsonIDTest(){
-        String response = get(baseUrl + "/form/546653ef1d5862042336e486").asString();
-        Assert.assertTrue(response.replaceAll("\\s+","").contains(("[{\"label\":\"Head circumference unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers\":[],\"editable\":true,\"required\":false,\"uoms\":[],\"cde\":{\"version\":\"3\",\"tinyId\":\"SYrBCuPsSHg\",\"permissibleValues\":[],\"derivationRules\":[]}},\"cardinality\":\"0.1\"},{\"label\":\"Weight unit of measure\",\"elementType\":\"question\",\"formElements\":[],\"question\":{\"answers").replaceAll("\\s+","")));
+        String response = get(baseUrl + "/form/560306d01c7581941db4a192").asString();
+        Assert.assertTrue(response.replaceAll("\\s+","").contains("[{\"designation\":\"Activities of Daily Living and Gait\",\"definition\":\"Contains data elements that determine participant's/ subject's ability to complete activities of daily living. (Examples of CDEs included: current level of swallowing, speech, dressing, etc.)\"}"));
     }
 }
