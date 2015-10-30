@@ -14,9 +14,11 @@ public class CdeExport extends NlmCdeBaseTest {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
         findElement(By.id("export")).click();
-        String url = findElement(By.id("jsonExport")).getAttribute("href");
-        String response = get(url).asString();
+        findElement(By.id("jsonExport")).click();
+        switchTab(1);
+        String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"derivationRules\":[],\"referenceDocuments\":[],\"attachments\":[],\"comments\":[],\"mappingSpecifications\":[],\"ids\":[{\"source\":\"NINDS\",\"id\":\"C06429\",\"version\":\"3\"},{\"source\":\"NINDS Variable Name\",\"id\":\"SpnlColmInjNum\"}],\"properties\":[{\"key\":\"NINDS Guidelines\",\"value\":\"SCI:<br/>Record the injury number if 2 or more injuries were experienced. Check against single/multiple variable to ensure only one record exists if Single was checked, and 2 or more records exist if Multiple was checked.\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Notes\",\"value\":\"SCI:<br/>SCI Variable: SPNINJNO\",\"valueFormat\":\"html\"},{\"key\":\"NINDS Previous Title\",\"value\":\"Spinal column injury order of nearness to head number\"},{\"key\":\"NINDS References\",\"value\":\"SCI:<br/>Dvorak MF, Wing PC, Fehlings MG, Vaccaro AR, Itshayek E, Biering-Sorensen F, Noonan VK. International Spinal Cord Injury Spinal Column Injury Basic Data Set. Spinal Cord. 2012 Jun 5. [Epub ahead of print]\",\"valueFormat\":\"html\"}],\"classification\":[{\"elements\":[{\"name\":\"Disease\",\"elements\":[{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Supplemental\"}],\"name\":\"Classification\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"The International SCI Data Sets\"}],\"name\":\"The International SCI Data Sets\"}],\"name\":\"Domain\"}],\"name\":\"Spinal Cord Injury\"}]},{\"name\":\"Domain\",\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"The International SCI Data Sets\"}],\"name\":\"The International SCI Data Sets\"}]},{\"name\":\"Population\",\"elements\":[{\"elements\":[],\"name\":\"Adult\"}]}],\"stewardOrg\":{\"name\":\"NINDS\"}}],\"registrationState\":{\"registrationStatus\":\"Qualified\"},\"history\":[\"5491b0dbe4b0fb61474b1c79\",\"5553b898239fc6f337a083ba\"],\"valueDomain\":{\"datatype\":\"Number\",\"permissibleValues\":[]},\"property\":{\"concepts\":[]},\"objectClass\":{\"concepts\":[]},\"dataElementConcept\":{\"concepts\":[]},\"updatedBy\":{\"username\":\"batchloader\"},\"stewardOrg\":{\"name\":\"NINDS\"},\"naming\":[{\"designation\":\"Spinal column injury number\",\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"languageCode\":\"EN-US\",\"context\":{\"contextName\":\"Health\",\"acceptability\":\"preferred\"}}]}"));
+        switchTabAndClose(0);
     }
 
     @Test
@@ -26,8 +28,8 @@ public class CdeExport extends NlmCdeBaseTest {
         findElement(By.id("export")).click();
         String url = findElement(By.id("xmlExport")).getAttribute("href");
         String response = get(url).asString();
-        Assert.assertTrue(response.replaceAll("\\s+","").contains((
-                        "</ids>\n" +
+        Assert.assertTrue(response.replaceAll("\\s+", "").contains((
+                "</ids>\n" +
                         "<ids>\n" +
                         "<source>NINDS Variable Name</source>\n" +
                         "<id>SpnlColmInjNum</id>\n" +
@@ -111,5 +113,7 @@ public class CdeExport extends NlmCdeBaseTest {
                         "<acceptability>preferred</acceptability>\n" +
                         "</context>\n" +
                         "</naming>\n").replaceAll("\\s+","")));
+        findElement(By.id("xmlExport")).click();
+
     }
 }
