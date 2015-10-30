@@ -30,7 +30,7 @@ public class PinAllTest extends BoardTest {
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         findElement(By.id("pinAll")).click();
-        textPresent("Select Board");
+        textPresent("Choose a Board to pin");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();
@@ -61,7 +61,7 @@ public class PinAllTest extends BoardTest {
         Assert.assertTrue(searchResultNum_int > 20);
         scrollToTop();
         findElement(By.id("pinAll")).click();
-        textPresent("Select Board");
+        textPresent("Choose a Board to pin");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();
