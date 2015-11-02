@@ -1,6 +1,5 @@
 package gov.nih.nlm.common.test;
 
-import gov.nih.nlm.common.test.CommonTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

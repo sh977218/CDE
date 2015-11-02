@@ -156,6 +156,7 @@ public class FormExport extends BaseFormTest {
         Assert.assertTrue(response.contains("\"stewardOrg\":{\"name\":\"NINDS\"}"));
         Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""));
         switchTabAndClose(0);
+        hangon(3);
     }
 
 
