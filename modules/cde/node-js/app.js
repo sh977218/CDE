@@ -224,6 +224,8 @@ exports.init = function (app, daoManager) {
                         }
                         else {
                             console.log("sending too many boards");
+                            console.log("nbOfBoards: " + results[1]);
+                            console.log("boardQuota: " + boardQuota);
                             mongo_data.removeBoard(results[0]._id);
                             res.status(403).send("You have too many boards!");
                         }
