@@ -41,7 +41,7 @@ exports.exists = function (condition, callback) {
 };
 
 exports.boardsByUserId = function (userId, callback) {
-    PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
+    PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
     });
 };

@@ -185,16 +185,13 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/board', function (req, res) {
-        console.log("in /board: boardname: " + req.body.name);
         var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function (user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
         if (req.isAuthenticated()) {
-            console.log("is auth: yes -- " + req.body.name);
             var board = req.body;
             if (!board._id) {
-                console.log("create board with name: " + board.name);
                 board.createdDate = Date.now();
                 board.owner = {
                     userId: req.user._id
@@ -203,35 +200,17 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                console.log("passed perm check");
-                async.parallel([
-                        function (callback) {
-                            mongo_data.newBoard(board, function (err, newBoard) {
-                                callback(err, newBoard);
-                            });
-                        },
-                        function (callback) {
-                            mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
-                                callback(err, nbBoards);
-                            });
-                        }
-                    ],
-                    function (err, results) {
-                        console.log("parall done")
-                        if (results[1] < boardQuota) {
-                            console.log("returning success")
-                            return res.send(results[0]);
-                        }
-                        else {
-                            console.log("sending too many boards");
-                            console.log("nbOfBoards: " + results[1]);
-                            console.log("boardQuota: " + boardQuota);
-                            mongo_data.removeBoard(results[0]._id);
-                            res.status(403).send("You have too many boards!");
-                        }
-                    });
+                mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                    if (nbBoards < boardQuota) {
+                        mongo_data.newBoard(board, function (err, newBoard) {
+                            if (err) res.status(500).send("An error occurred. ");
+                            res.send();
+                        });
+                    } else {
+                        res.status(403).send("You have too many boards!");
+                    }
+                });
             } else {
-                console.log("board id: yes -- " + req.body.name);
                 mongo_data.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
@@ -457,7 +436,6 @@ exports.init = function (app, daoManager) {
     app.post("/systemAlert", function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             systemAlert = req.body.alert;
-            console.log("system: " + systemAlert);
             res.send("OK");
         } else {
             res.status(401).send("Not Authorized");
