@@ -9,6 +9,7 @@ var fs = require('fs')
     , cdesvc = require('../modules/cde/node-js/cdesvc')
     , classificationShared = require('../modules/system/shared/classificationShared');
 
+var counter = 0;
 var cdeSource = process.argv[3];
 
 var importDate = new Date().toJSON();
@@ -91,10 +92,12 @@ var wipeUseless = function (toWipeCde) {
     delete toWipeCde.history;
     delete toWipeCde.imported;
     delete toWipeCde.created;
+    delete toWipeCde.createdBy;
     delete toWipeCde.updated;
     delete toWipeCde.comments;
     delete toWipeCde.registrationState;
     delete toWipeCde.tinyId;
+    delete toWipeCde.valueDomain.datatypeValueList;
 };
 
 var compareCdes = function (existingCde, newCde) {
@@ -113,6 +116,7 @@ var compareCdes = function (existingCde, newCde) {
         throw e;
     }
 
+    classificationShared.sortClassification(newCde);
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
@@ -137,19 +141,14 @@ var processCde = function (migrationCde, existingCde, orgName) {
             });
         });
     } else if (deepDiff.length > 0) {
-        var exitingName = {};
-        var allNames = newDe.naming.concat(migrationCde.naming);
-        var names = [];
-        allNames.forEach(function (name) {
-            if (!exitingName[name.designation]) {
-                names.push(name);
-                exitingName[name.designation] = name.designation;
-            }
-        })
-        newDe.naming = names;
+        newDe.naming = migrationCde.naming;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = importDate;
+        newDe.dataElementConcept = migrationCde.dataElementConcept;
+        newDe.valueDomain = migrationCde.valueDomain;
+        newDe.mappingSpecifications = migrationCde.mappingSpecifications;
+        newDe.referenceDocuments = migrationCde.referenceDocuments;
 
         for (var j = 0; j < migrationCde.properties.length; j++) {
             removeProperty(newDe, migrationCde.properties[j]);
@@ -272,7 +271,7 @@ var streamOnData = function (migrationCde) {
         findCde(cdeId, migrationCde, source, orgName, idv);
     } else {
         // No Cde.
-        console.log("CDE with no ID. !! ");
+        console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
         checkTodo();
     }
 };

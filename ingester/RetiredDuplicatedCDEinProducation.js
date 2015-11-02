@@ -13,7 +13,7 @@ var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var counter = 0;
 var user = {username: "peter"};
 var duplicatedCdeId = [];
-
+var orgName = "NINDS";
 async.series([
     function (doneConnectionEstablished) {
         conn.on('error', function (err) {
@@ -27,7 +27,7 @@ async.series([
         DataElement.aggregate([
             {$match: {archived: null, "registrationState.registrationStatus": {$ne: "Retired"}}}
             , {$unwind: "$ids"}
-            , {$match: {"ids.source": "NINDS"}}
+            , {$match: {"ids.source": orgName}}
             , {$group: {_id: {source: "$ids.source", id: "$ids.id"}, count: {$sum: 1}}}
             , {$match: {count: {$gte: 2}}}
         ], function (err, results) {

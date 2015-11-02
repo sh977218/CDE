@@ -112,23 +112,24 @@ parseCde = function (obj, cb) {
     if (dataTypeStr.toLowerCase() === "numeric values") {
         dataType = "Number";
         var dataTypeNum = {};
-        if (obj["Minimum Value"] > 0) {
+        if (obj["Minimum Value"] != null) {
             dataTypeNum.minValue = obj["Minimum Value"];
         }
-        if (obj["Maximum Value"] > 0) {
+        if (obj["Maximum Value"] != null) {
             dataTypeNum.maxValue = obj["Maximum Value"];
         }
         vd.datatypeNumber = dataTypeNum;
     } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
-        if (obj["Size"] > 0) {
+        if (obj["Size"] != null) {
             dataTypeText.maxLength = obj["Size"];
         }
         vd.datatypeText = dataTypeText;
     } else if (dataTypeStr.toLowerCase().trim() === "date or date & time") {
         dataType = "Date"
     }
+
 
     var inputType = obj["Input Restrictions"];
     var listDataType = {};
@@ -140,7 +141,7 @@ parseCde = function (obj, cb) {
         dataType = "Value List";
         listDataType.multi = true;
     }
-    vd.datatypeValueList = listDataType;
+//    vd.datatypeValueList = listDataType;
 
     var permValues = [];
     if (dataType === "Value List") {
@@ -198,7 +199,7 @@ parseCde = function (obj, cb) {
                         contextName: "Question Text"
                         , acceptability: "preferred"
                     }
-                }
+                };
                 namings.push(name);
                 exitingName[nameString[1].trim()] = nameString[1].trim();
             }

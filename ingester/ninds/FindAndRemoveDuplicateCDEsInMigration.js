@@ -59,37 +59,6 @@ async.series([
         })
 
 
-    }/*, function (cb) {
-     async.eachSeries(Object.keys(duplicatedCdeId), function (cdeId, doneOneCdeId) {
-     DataElement.find({archived: null, "ids.source": "NINDS", "ids.id": cdeId}, function (err, cdes) {
-     if (err) throw err;
-     else {
-     if (cdes.length == 2) {
-     var cde = cdes[0];
-
-     cde.registrationState.registrationStatus = "Retired";
-     cde.registrationState.administrativeNote = "This CDE is replaced by ?https://cde.nlm.nih.gov/deview?tinyId=" + cdes[1].tinyId;
-     cde.updatedBy.userId = "543592a2ca0aeea96df24299";
-     cde.updatedBy.username = "batchloader";
-     cde.markModified("registrationState");
-     var cdeAudit = new CdeAudit();
-     cdeAudit.save(function (err, a) {
-     });
-     cde.save(function (error) {
-     if (error) throw error;
-     doneOneCdeId();
-     });
-     }
-     else {
-     console.log("found " + cdes.length + " cdes with this cde id:" + cdeId);
-     doneOneCdeId();
-     }
-     }
-     });
-     }, function doneAllCdeIds() {
-     console.log('finished all');
-     cb();
-     })
-     }*/, function () {
+    }, function () {
         process.exit(0);
     }]);
