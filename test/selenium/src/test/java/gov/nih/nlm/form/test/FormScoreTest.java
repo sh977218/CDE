@@ -63,7 +63,7 @@ public class FormScoreTest extends BaseFormTest {
         textPresent("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
         saveForm();
-
+        waitForESUpdate();
         goToFormByName("ALS Score");
 
         findElement(By.linkText("General Details")).click();
