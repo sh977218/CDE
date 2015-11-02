@@ -40,10 +40,8 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textNotPresent("Common Terminology Criteria for Adverse Events v3.0");
         hangon(3);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
-        driver.manage().timeouts().implicitlyWait(defaultTimeout * 2, TimeUnit.SECONDS);
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
-        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");        
+        textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");
     }
     
     @Test
