@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class FormAttachmentsTest extends BaseAttachmentTest {
 
-//    @Test
+    @Test
     public void formAttachments() {
         String formName = "Skin Cancer Patient";
 

@@ -4,10 +4,6 @@ import static com.jayway.restassured.RestAssured.get;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.By;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.get;
 
 public class FormExport extends BaseFormTest {
     @Test
