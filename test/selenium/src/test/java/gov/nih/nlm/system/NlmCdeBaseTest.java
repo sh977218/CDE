@@ -319,9 +319,7 @@ public class NlmCdeBaseTest {
 
     @AfterTest
     public void endSession() {
-        try {
-            driver.quit();
-        } catch (Exception e) {}
+        driver.quit();
     }
 
     public void waitForESUpdate() {
