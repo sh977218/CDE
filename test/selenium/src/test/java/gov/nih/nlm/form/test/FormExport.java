@@ -4,10 +4,6 @@ import static com.jayway.restassured.RestAssured.get;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.By;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.get;
 
 public class FormExport extends BaseFormTest {
     @Test
@@ -146,7 +142,7 @@ public class FormExport extends BaseFormTest {
 
     @Test
     public void jsonExport() {
-        String form = "Parenchymal Imaging";
+        String form = "Adverse Event Tracking Log";
         goToFormByName(form);
 
         findElement(By.id("export")).click();
@@ -154,7 +150,11 @@ public class FormExport extends BaseFormTest {
 
         switchTab(1);
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
-        Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Parenchymal Imaging\",\"definition\":\"Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage.  (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\"}]}"));
+        Assert.assertTrue(response.contains("{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}"));
+        Assert.assertTrue(response.contains("{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}"));
+        Assert.assertTrue(response.contains("\"registrationState\":{\"registrationStatus\":\"Qualified\"}"));
+        Assert.assertTrue(response.contains("\"stewardOrg\":{\"name\":\"NINDS\"}"));
+        Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""));
         switchTabAndClose(0);
     }
 
@@ -175,12 +175,4 @@ public class FormExport extends BaseFormTest {
                 "</naming>").replaceAll("\\s+", "")));
     }
 
-    /**
-     * Maintain this test to ensure that LOINC Widget will integrate with ours.
-     */
-    @Test
-    public void formByBsonIDTest(){
-        String response = get(baseUrl + "/form/560306d01c7581941db4a192").asString();
-        Assert.assertTrue(response.replaceAll("\\s+","").contains("[{\"designation\":\"Activities of Daily Living and Gait\",\"definition\":\"Contains data elements that determine participant's/ subject's ability to complete activities of daily living. (Examples of CDEs included: current level of swallowing, speech, dressing, etc.)\"}"));
-    }
 }
