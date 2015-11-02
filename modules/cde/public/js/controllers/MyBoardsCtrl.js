@@ -40,11 +40,14 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$modal', '$ht
           }
         });
         modalInstance.result.then(function (newBoard) {
+            console.log("creating board")
             newBoard.shareStatus = "Private";
             Board.save(newBoard, function(res) {
+                console.log("save success");
                 $scope.addAlert("success", "Board created.");
                 $scope.loadMyBoards();
             }, function(message){
+                console.log("save fail: " + message.data);
                 $scope.addAlert("danger", message.data);
             });
         });
