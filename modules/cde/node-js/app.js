@@ -185,11 +185,13 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/board', function (req, res) {
+        console.log("in /board: boardname: " + req.body.name);
         var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function (user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
         };
         if (req.isAuthenticated()) {
+            console.log("is auth: yes -- " + req.body.name);
             var board = req.body;
             if (!board._id) {
                 console.log("create board with name: " + board.name);
@@ -226,8 +228,8 @@ exports.init = function (app, daoManager) {
                             res.status(403).send("You have too many boards!");
                         }
                     });
-
             } else {
+                console.log("board id: yes -- " + req.body.name);
                 mongo_data.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
