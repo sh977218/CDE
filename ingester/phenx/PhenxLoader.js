@@ -26,13 +26,282 @@ var user = {username: "batchloader"};
 var phenxOrg = null;
 var nciOrg = null;
 
-var step1 = function (doneStep1) {
+function goToMeasure(doneGoToMeasure) {
+    driver1.get(measure.href);
+    async.series([
+            function parsingMeasureIntroduction(doneParsingMeasureIntroduction) {
+                driver1.findElement(webdriver.By.xpath('/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]')).getText().then(function (text) {
+                    measure.introduction = text.trim();
+                    doneParsingMeasureIntroduction();
+                })
+            },
+            function parsingMeasureClassifiction(doneParsingMeasureClassification) {
+                driver1.findElements(webdriver.By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
+                    if (classificationArr.length > 0) {
+                        var classification = [];
+                        async.eachSeries(classificationArr, function (c, doneOneC) {
+                            c.getText().then(function (text) {
+                                classification.push(text.trim());
+                                doneOneC();
+                            })
+                        }, function doneAllC() {
+                            var classi = [{
+                                stewardOrg: {name: "PhenX"},
+                                elements: []
+                            }];
+                            var temp = classi[0].elements;
+                            for (var i = 0; i < classification.length; i++) {
+                                var ele = {
+                                    name: classification[i],
+                                    elements: []
+                                };
+                                temp.push(ele);
+                                temp = temp[0].elements;
+                            }
+                            measure.classification = classi;
+                            classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
+                            phenxOrg.save(function (err) {
+                                if (err) throw err;
+                                doneParsingMeasureClassification();
+                            });
+                        })
+                    } else {
+                        doneParsingMeasureClassification();
+                    }
+                })
+            },
+            function parsingMeasureProtocol(doneParsingMeasureProtocol) {
+                var protocols = [];
+                driver1.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]")).then(function (protocolLinks) {
+                    async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
+                        protocolLink.getAttribute('href').then(function (text) {
+                            var protocol = {
+                                classification: measure.classification,
+                                href: text.trim()
+                            };
+                            driver2.get(protocol.href);
+                            driver2.findElement(webdriver.By.id('button_showfull')).click().then(function () {
+                                driver2.findElements(webdriver.By.xpath("//*[contains(@id,'label')]")).then(function (labels) {
+                                    async.eachSeries(labels, function (label, doneOneLabel) {
+                                        label.getAttribute('id').then(function (id) {
+                                            label.getText().then(function (key) {
+                                                var newId = id.replace('label', 'element');
+                                                if (newId.indexOf('STANDARDS') > -1) {
+                                                    var standards = [];
+                                                    driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']//table/tbody/tr[td]")).then(function (trs) {
+                                                        async.eachSeries(trs, function (tr, doneOneStandardsTr) {
+                                                            var standard = {};
+                                                            tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                                async.parallel({
+                                                                    parsingStandard: function (doneParsingStandard) {
+                                                                        tds[0].getText().then(function (text) {
+                                                                            standard['Standard'] = text;
+                                                                            doneParsingStandard();
+                                                                        })
+                                                                    },
+                                                                    parsingName: function (doneParsingName) {
+                                                                        tds[1].getText().then(function (text) {
+                                                                            standard['Name'] = text;
+                                                                            doneParsingName();
+                                                                        })
+                                                                    },
+                                                                    parsingId: function (doneParsingId) {
+                                                                        tds[2].getText().then(function (text) {
+                                                                            standard['ID'] = text;
+                                                                            doneParsingId();
+                                                                        })
+                                                                    },
+                                                                    parsingSource: function (doneParsingSource) {
+                                                                        var source = {};
+                                                                        tds[3].getText().then(function (text) {
+                                                                            source.text = text.trim();
+                                                                            if (text.trim() === 'LOINC') {
+                                                                                tds[3].findElement(webdriver.By.css('a')).then(function (a) {
+                                                                                    a.getAttribute('href').then(function (href) {
+                                                                                        source.href = href.trim();
+                                                                                        var form = {
+                                                                                            classification: protocol.classification
+                                                                                        };
+                                                                                        driver3.get(source['href']);
+                                                                                        driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[.//a]")).then(function (temp) {
+                                                                                            if (temp.length > 0) {
+                                                                                                var elements = [];
+                                                                                                var i = 0;
+                                                                                                async.eachSeries(temp, function (tr, doneOneTr) {
+                                                                                                    var element = {};
+                                                                                                    i++;
+                                                                                                    async.parallel({
+                                                                                                        parsingFormAndElementName: function (doneParsingFormAndElementName) {
+                                                                                                            tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                                                                                if (tds.length > 0) {
+                                                                                                                    if (i === 1) {
+                                                                                                                        tds[2].getText().then(function (elementNameText) {
+                                                                                                                            form['name'] = elementNameText.trim();
+                                                                                                                            doneParsingFormAndElementName();
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                    else {
+                                                                                                                        tds[2].getText().then(function (elementNameText) {
+                                                                                                                            element['name'] = elementNameText.trim();
+                                                                                                                            doneParsingFormAndElementName();
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                else {
+                                                                                                                    doneParsingFormAndElementName();
+                                                                                                                }
+                                                                                                            });
+                                                                                                        },
+                                                                                                        parsingLinks: function (doneParsingLink) {
+                                                                                                            tr.findElement(webdriver.By.css('a')).getAttribute('href').then(function (elementHrefText) {
+                                                                                                                if (i === 1) {
+                                                                                                                    form['href'] = elementHrefText.trim();
+                                                                                                                }
+                                                                                                                else {
+                                                                                                                    element['href'] = elementHrefText.trim();
+                                                                                                                }
+                                                                                                                doneParsingLink();
+                                                                                                            });
+                                                                                                        },
+                                                                                                        parsingLoincId: function (doneParsingLoinc) {
+                                                                                                            tr.findElement(webdriver.By.css('a')).getText().then(function (elementHrefText) {
+                                                                                                                if (i === 1) {
+                                                                                                                    form['loincId'] = elementHrefText.trim();
+                                                                                                                }
+                                                                                                                else {
+                                                                                                                    element['loincId'] = elementHrefText.trim();
+                                                                                                                }
+                                                                                                                doneParsingLoinc();
+                                                                                                            });
+                                                                                                        }
+                                                                                                    }, function doneAllHref() {
+                                                                                                        if (i != 1)
+                                                                                                            elements.push(element);
+                                                                                                        doneOneTr();
+                                                                                                    });
+                                                                                                }, function doneAllTrs() {
+                                                                                                    async.eachSeries(elements, function (ele, doneOneEle) {
+                                                                                                        ele['classification'] = form['classification'];
+                                                                                                        var eleHref = ele['href'];
+                                                                                                        driver4.get(eleHref);
+                                                                                                        driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th/a")).then(function (isPanel) {
+                                                                                                            if (isPanel.length > 0) {
+                                                                                                                ele['type'] = 'Panel';
+                                                                                                                doneOneEle();
+                                                                                                            }
+                                                                                                            else {
+                                                                                                                ele['type'] = 'Question';
+                                                                                                                doneOneEle();
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }, function doneAllEles() {
+                                                                                                        form['elements'] = elements;
+                                                                                                        protocol['form'] = form;
+                                                                                                        standard['Source'] = source;
+                                                                                                        doneParsingSource();
+                                                                                                    });
+                                                                                                });
+
+                                                                                            }
+                                                                                            else {
+                                                                                                protocol['form'] = form;
+                                                                                                standard['Source'] = source;
+                                                                                                doneParsingSource();
+                                                                                            }
+
+                                                                                        });
+
+                                                                                    })
+                                                                                })
+                                                                            } else {
+                                                                                standard['Source'] = source;
+                                                                                doneParsingSource();
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                }, function doneAllStandardsTds() {
+                                                                    standards.push(standard);
+                                                                    doneOneStandardsTr();
+                                                                })
+                                                            });
+                                                        }, function doneAllStandardsTrs() {
+                                                            protocol['Standards'] = standards;
+                                                            doneOneLabel();
+                                                        });
+                                                    })
+                                                }
+                                                else if (newId.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
+                                                    driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
+                                                        if (temp.length > 0) {
+                                                            temp[0].getOuterHtml().then(function (html) {
+                                                                protocol[key.trim()] = html;
+                                                                doneOneLabel();
+                                                            });
+                                                        }
+                                                        else
+                                                            doneOneLabel();
+                                                    })
+                                                }
+                                                else {
+                                                    driver2.findElement(webdriver.By.id(newId)).getText().then(function (text) {
+                                                        protocol[key.trim()] = text;
+                                                        doneOneLabel();
+                                                    })
+                                                }
+                                            })
+                                        });
+                                    }, function donAllLabels() {
+                                        driver2.findElements(webdriver.By.xpath("//*[@class='back'][1]/a")).then(function (temp) {
+                                            if (temp.length > 0) {
+                                                temp[temp.length - 1].getText().then(function (text) {
+                                                    protocol['Protocol Name'] = text.trim();
+                                                    driver2.findElements(webdriver.By.xpath("/html/body/center/table/tbody/tr[3]/td/div/div[3]/div[1]/span")).then(function (protocolIdTemp) {
+                                                        if (protocolIdTemp.length > 0) {
+                                                            protocolIdTemp[0].getText().then(function (protocolIdText) {
+                                                                protocol['protocolId'] = protocolIdText.replace('#', '').trim();
+                                                                protocolCounter++;
+                                                                protocols.push(protocol);
+                                                                console.log('finished protocol ' + protocolCounter);
+                                                                doneOneProtocolLink();
+                                                            });
+                                                        }
+                                                        else {
+                                                            protocolCounter++;
+                                                            protocols.push(protocol);
+                                                            console.log('finished protocol ' + protocolCounter);
+                                                            doneOneProtocolLink();
+                                                        }
+                                                    });
+                                                })
+                                            }
+                                            else {
+                                                protocolCounter++;
+                                                protocols.push(protocol);
+                                                console.log('finished protocol ' + protocolCounter);
+                                                doneOneProtocolLink();
+                                            }
+                                        });
+                                    });
+                                });
+                            });
+                        })
+                    }, function doneAllProtocolLinks() {
+                        measure['protocols'] = protocols;
+                        doneParsingMeasureProtocol();
+                    });
+                });
+            }
+        ],
+        function doneParsingAllMeasureDetails() {
+            doneGoToMeasure();
+        }
+    )
+};
+
+var remoteGrabFromPhenX = function (doneStep1) {
     var log = {};
     var protocolCounter = 0;
     var measureCounter = 0;
-    var cdeCounter = 0;
-    var allMeasures = [];
-    var skipShortNameMap = {};
     var measureXpath = "//*[@id='phenxTooltip']//following-sibling::table/tbody/tr/td/div/div/a[2]";
     var driver = new webdriver.Builder().forBrowser('firefox').build();
     var driver1 = new webdriver.Builder().forBrowser('firefox').build();
@@ -56,277 +325,280 @@ var step1 = function (doneStep1) {
                                 doneParsingMeasureHref();
                             });
                         },
-                        function goToMeasure(doneGoToMeasure) {
-                            driver1.get(measure['href']);
-                            async.series([
-                                    function parsingMeasureIntroduction(doneParsingMeasureIntroduction) {
-                                        driver1.findElement(webdriver.By.xpath('/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]')).getText().then(function (text) {
-                                            measure['introduction'] = text.trim();
-                                            doneParsingMeasureIntroduction();
-                                        })
-                                    },
-                                    function parsingMeasureClassifiction(doneParsingMeasureClassification) {
-                                        driver1.findElements(webdriver.By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
-                                            if (classificationArr.length > 0) {
-                                                var classification = [];
-                                                async.eachSeries(classificationArr, function (c, doneOneC) {
-                                                    c.getText().then(function (text) {
-                                                        classification.push(text.trim());
-                                                        doneOneC();
-                                                    })
-                                                }, function doneAllC() {
-                                                    var classi = [{
-                                                        stewardOrg: {name: "PhenX"},
-                                                        elements: []
-                                                    }];
-                                                    var temp = classi[0].elements;
-                                                    for (var i = 0; i < classification.length; i++) {
-                                                        var ele = {};
-                                                        ele['name'] = classification[i];
-                                                        ele['elements'] = [];
-                                                        temp.push(ele);
-                                                        temp = temp[0].elements;
-                                                    }
-                                                    measure['classification'] = classi;
-                                                    classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
-                                                    phenxOrg.save(function (err) {
-                                                        if (err) throw err;
-                                                        doneParsingMeasureClassification();
-                                                    });
+                    function goToMeasure(doneGoToMeasure) {
+                        driver1.get(measure.href);
+                        async.series([
+                                function parsingMeasureIntroduction(doneParsingMeasureIntroduction) {
+                                    driver1.findElement(webdriver.By.xpath('/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]')).getText().then(function (text) {
+                                        measure.introduction = text.trim();
+                                        doneParsingMeasureIntroduction();
+                                    })
+                                },
+                                function parsingMeasureClassifiction(doneParsingMeasureClassification) {
+                                    driver1.findElements(webdriver.By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
+                                        if (classificationArr.length > 0) {
+                                            var classification = [];
+                                            async.eachSeries(classificationArr, function (c, doneOneC) {
+                                                c.getText().then(function (text) {
+                                                    classification.push(text.trim());
+                                                    doneOneC();
                                                 })
-                                            } else {
-                                                doneParsingMeasureClassification();
-                                            }
-                                        })
-                                    },
-                                    function parsingMeasureProtocol(doneParsingMeasureProtocol) {
-                                        var protocols = [];
-                                        driver1.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]")).then(function (protocolLinks) {
-                                            async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
-                                                protocolLink.getAttribute('href').then(function (text) {
-                                                    var protocol = {};
-                                                    protocol['classification'] = measure['classification'];
-                                                    protocol['href'] = text.trim();
-                                                    driver2.get(protocol['href']);
-                                                    driver2.findElement(webdriver.By.id('button_showfull')).click().then(function () {
-                                                        driver2.findElements(webdriver.By.xpath("//*[contains(@id,'label')]")).then(function (labels) {
-                                                            async.eachSeries(labels, function (label, doneOneLabel) {
-                                                                label.getAttribute('id').then(function (id) {
-                                                                    label.getText().then(function (key) {
-                                                                        var newId = id.replace('label', 'element');
-                                                                        if (newId.indexOf('STANDARDS') > -1) {
-                                                                            var standards = [];
-                                                                            driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']//table/tbody/tr[td]")).then(function (trs) {
-                                                                                async.eachSeries(trs, function (tr, doneOneStandardsTr) {
-                                                                                    var standard = {};
-                                                                                    tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                                                                                        async.parallel({
-                                                                                            parsingStandard: function (doneParsingStandard) {
-                                                                                                tds[0].getText().then(function (text) {
-                                                                                                    standard['Standard'] = text;
-                                                                                                    doneParsingStandard();
-                                                                                                })
-                                                                                            },
-                                                                                            parsingName: function (doneParsingName) {
-                                                                                                tds[1].getText().then(function (text) {
-                                                                                                    standard['Name'] = text;
-                                                                                                    doneParsingName();
-                                                                                                })
-                                                                                            },
-                                                                                            parsingId: function (doneParsingId) {
-                                                                                                tds[2].getText().then(function (text) {
-                                                                                                    standard['ID'] = text;
-                                                                                                    doneParsingId();
-                                                                                                })
-                                                                                            },
-                                                                                            parsingSource: function (doneParsingSource) {
-                                                                                                var source = {};
-                                                                                                tds[3].getText().then(function (text) {
-                                                                                                    source['text'] = text.trim();
-                                                                                                    if (text.trim() === 'LOINC') {
-                                                                                                        tds[3].findElement(webdriver.By.css('a')).then(function (a) {
-                                                                                                            a.getAttribute('href').then(function (href) {
-                                                                                                                source['href'] = href.trim();
-                                                                                                                var form = {};
-                                                                                                                form['classification'] = protocol['classification'];
-                                                                                                                driver3.get(source['href']);
-                                                                                                                driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[.//a]")).then(function (temp) {
-                                                                                                                    if (temp.length > 0) {
-                                                                                                                        var elements = [];
-                                                                                                                        var i = 0;
-                                                                                                                        async.eachSeries(temp, function (tr, doneOneTr) {
-                                                                                                                            var element = {};
-                                                                                                                            i++;
-                                                                                                                            async.parallel({
-                                                                                                                                parsingFormAndElementName: function (doneParsingFormAndElementName) {
-                                                                                                                                    tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                                                                                                                                        if (tds.length > 0) {
-                                                                                                                                            if (i === 1) {
-                                                                                                                                                tds[2].getText().then(function (elementNameText) {
-                                                                                                                                                    form['name'] = elementNameText.trim();
-                                                                                                                                                    doneParsingFormAndElementName();
-                                                                                                                                                });
-                                                                                                                                            }
-                                                                                                                                            else {
-                                                                                                                                                tds[2].getText().then(function (elementNameText) {
-                                                                                                                                                    element['name'] = elementNameText.trim();
-                                                                                                                                                    doneParsingFormAndElementName();
-                                                                                                                                                });
-                                                                                                                                            }
-                                                                                                                                        }
-                                                                                                                                        else {
-                                                                                                                                            doneParsingFormAndElementName();
-                                                                                                                                        }
-                                                                                                                                    });
-                                                                                                                                },
-                                                                                                                                parsingLinks: function (doneParsingLink) {
-                                                                                                                                    tr.findElement(webdriver.By.css('a')).getAttribute('href').then(function (elementHrefText) {
+                                            }, function doneAllC() {
+                                                var classi = [{
+                                                    stewardOrg: {name: "PhenX"},
+                                                    elements: []
+                                                }];
+                                                var temp = classi[0].elements;
+                                                for (var i = 0; i < classification.length; i++) {
+                                                    var ele = {
+                                                        name: classification[i],
+                                                        elements: []
+                                                    };
+                                                    temp.push(ele);
+                                                    temp = temp[0].elements;
+                                                }
+                                                measure.classification = classi;
+                                                classificationShared.addCategory({elements: phenxOrg.classifications}, classification);
+                                                phenxOrg.save(function (err) {
+                                                    if (err) throw err;
+                                                    doneParsingMeasureClassification();
+                                                });
+                                            })
+                                        } else {
+                                            doneParsingMeasureClassification();
+                                        }
+                                    })
+                                },
+                                function parsingMeasureProtocol(doneParsingMeasureProtocol) {
+                                    var protocols = [];
+                                    driver1.findElements(webdriver.By.xpath("//*[@id='browse_measure_protocol_list']/table/tbody/tr/td/div/div[@class='search']/a[2]")).then(function (protocolLinks) {
+                                        async.eachSeries(protocolLinks, function (protocolLink, doneOneProtocolLink) {
+                                            protocolLink.getAttribute('href').then(function (text) {
+                                                var protocol = {
+                                                    classification: measure.classification,
+                                                    href: text.trim()
+                                                };
+                                                driver2.get(protocol.href);
+                                                driver2.findElement(webdriver.By.id('button_showfull')).click().then(function () {
+                                                    driver2.findElements(webdriver.By.xpath("//*[contains(@id,'label')]")).then(function (labels) {
+                                                        async.eachSeries(labels, function (label, doneOneLabel) {
+                                                            label.getAttribute('id').then(function (id) {
+                                                                label.getText().then(function (key) {
+                                                                    var newId = id.replace('label', 'element');
+                                                                    if (newId.indexOf('STANDARDS') > -1) {
+                                                                        var standards = [];
+                                                                        driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']//table/tbody/tr[td]")).then(function (trs) {
+                                                                            async.eachSeries(trs, function (tr, doneOneStandardsTr) {
+                                                                                var standard = {};
+                                                                                tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                                                    async.parallel({
+                                                                                        parsingStandard: function (doneParsingStandard) {
+                                                                                            tds[0].getText().then(function (text) {
+                                                                                                standard['Standard'] = text;
+                                                                                                doneParsingStandard();
+                                                                                            })
+                                                                                        },
+                                                                                        parsingName: function (doneParsingName) {
+                                                                                            tds[1].getText().then(function (text) {
+                                                                                                standard['Name'] = text;
+                                                                                                doneParsingName();
+                                                                                            })
+                                                                                        },
+                                                                                        parsingId: function (doneParsingId) {
+                                                                                            tds[2].getText().then(function (text) {
+                                                                                                standard['ID'] = text;
+                                                                                                doneParsingId();
+                                                                                            })
+                                                                                        },
+                                                                                        parsingSource: function (doneParsingSource) {
+                                                                                            var source = {};
+                                                                                            tds[3].getText().then(function (text) {
+                                                                                                source.text = text.trim();
+                                                                                                if (text.trim() === 'LOINC') {
+                                                                                                    tds[3].findElement(webdriver.By.css('a')).then(function (a) {
+                                                                                                        a.getAttribute('href').then(function (href) {
+                                                                                                            source.href = href.trim();
+                                                                                                            var form = {
+                                                                                                                classification: protocol.classification
+                                                                                                            };
+                                                                                                            driver3.get(source['href']);
+                                                                                                            driver3.findElements(webdriver.By.xpath("/html/body/div[2]/table[2]/tbody/tr[.//a]")).then(function (temp) {
+                                                                                                                if (temp.length > 0) {
+                                                                                                                    var elements = [];
+                                                                                                                    var i = 0;
+                                                                                                                    async.eachSeries(temp, function (tr, doneOneTr) {
+                                                                                                                        var element = {};
+                                                                                                                        i++;
+                                                                                                                        async.parallel({
+                                                                                                                            parsingFormAndElementName: function (doneParsingFormAndElementName) {
+                                                                                                                                tr.findElements(webdriver.By.css('td')).then(function (tds) {
+                                                                                                                                    if (tds.length > 0) {
                                                                                                                                         if (i === 1) {
-                                                                                                                                            form['href'] = elementHrefText.trim();
+                                                                                                                                            tds[2].getText().then(function (elementNameText) {
+                                                                                                                                                form['name'] = elementNameText.trim();
+                                                                                                                                                doneParsingFormAndElementName();
+                                                                                                                                            });
                                                                                                                                         }
                                                                                                                                         else {
-                                                                                                                                            element['href'] = elementHrefText.trim();
+                                                                                                                                            tds[2].getText().then(function (elementNameText) {
+                                                                                                                                                element['name'] = elementNameText.trim();
+                                                                                                                                                doneParsingFormAndElementName();
+                                                                                                                                            });
                                                                                                                                         }
-                                                                                                                                        doneParsingLink();
-                                                                                                                                    });
-                                                                                                                                },
-                                                                                                                                parsingLoincId: function (doneParsingLoinc) {
-                                                                                                                                    tr.findElement(webdriver.By.css('a')).getText().then(function (elementHrefText) {
-                                                                                                                                        if (i === 1) {
-                                                                                                                                            form['loincId'] = elementHrefText.trim();
-                                                                                                                                        }
-                                                                                                                                        else {
-                                                                                                                                            element['loincId'] = elementHrefText.trim();
-                                                                                                                                        }
-                                                                                                                                        doneParsingLoinc();
-                                                                                                                                    });
-                                                                                                                                }
-                                                                                                                            }, function doneAllHref() {
-                                                                                                                                if (i != 1)
-                                                                                                                                    elements.push(element);
-                                                                                                                                doneOneTr();
-                                                                                                                            });
-                                                                                                                        }, function doneAllTrs() {
-                                                                                                                            async.eachSeries(elements, function (ele, doneOneEle) {
-                                                                                                                                ele['classification'] = form['classification'];
-                                                                                                                                var eleHref = ele['href'];
-                                                                                                                                driver4.get(eleHref);
-                                                                                                                                driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th/a")).then(function (isPanel) {
-                                                                                                                                    if (isPanel.length > 0) {
-                                                                                                                                        ele['type'] = 'Panel';
-                                                                                                                                        doneOneEle();
                                                                                                                                     }
                                                                                                                                     else {
-                                                                                                                                        ele['type'] = 'Question';
-                                                                                                                                        doneOneEle();
+                                                                                                                                        doneParsingFormAndElementName();
                                                                                                                                     }
                                                                                                                                 });
-                                                                                                                            }, function doneAllEles() {
-                                                                                                                                form['elements'] = elements;
-                                                                                                                                protocol['form'] = form;
-                                                                                                                                standard['Source'] = source;
-                                                                                                                                doneParsingSource();
-                                                                                                                            });
+                                                                                                                            },
+                                                                                                                            parsingLinks: function (doneParsingLink) {
+                                                                                                                                tr.findElement(webdriver.By.css('a')).getAttribute('href').then(function (elementHrefText) {
+                                                                                                                                    if (i === 1) {
+                                                                                                                                        form['href'] = elementHrefText.trim();
+                                                                                                                                    }
+                                                                                                                                    else {
+                                                                                                                                        element['href'] = elementHrefText.trim();
+                                                                                                                                    }
+                                                                                                                                    doneParsingLink();
+                                                                                                                                });
+                                                                                                                            },
+                                                                                                                            parsingLoincId: function (doneParsingLoinc) {
+                                                                                                                                tr.findElement(webdriver.By.css('a')).getText().then(function (elementHrefText) {
+                                                                                                                                    if (i === 1) {
+                                                                                                                                        form['loincId'] = elementHrefText.trim();
+                                                                                                                                    }
+                                                                                                                                    else {
+                                                                                                                                        element['loincId'] = elementHrefText.trim();
+                                                                                                                                    }
+                                                                                                                                    doneParsingLoinc();
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        }, function doneAllHref() {
+                                                                                                                            if (i != 1)
+                                                                                                                                elements.push(element);
+                                                                                                                            doneOneTr();
                                                                                                                         });
+                                                                                                                    }, function doneAllTrs() {
+                                                                                                                        async.eachSeries(elements, function (ele, doneOneEle) {
+                                                                                                                            ele['classification'] = form['classification'];
+                                                                                                                            var eleHref = ele['href'];
+                                                                                                                            driver4.get(eleHref);
+                                                                                                                            driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th/a")).then(function (isPanel) {
+                                                                                                                                if (isPanel.length > 0) {
+                                                                                                                                    ele['type'] = 'Panel';
+                                                                                                                                    doneOneEle();
+                                                                                                                                }
+                                                                                                                                else {
+                                                                                                                                    ele['type'] = 'Question';
+                                                                                                                                    doneOneEle();
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                        }, function doneAllEles() {
+                                                                                                                            form['elements'] = elements;
+                                                                                                                            protocol['form'] = form;
+                                                                                                                            standard['Source'] = source;
+                                                                                                                            doneParsingSource();
+                                                                                                                        });
+                                                                                                                    });
 
-                                                                                                                    }
-                                                                                                                    else {
-                                                                                                                        protocol['form'] = form;
-                                                                                                                        standard['Source'] = source;
-                                                                                                                        doneParsingSource();
-                                                                                                                    }
+                                                                                                                }
+                                                                                                                else {
+                                                                                                                    protocol['form'] = form;
+                                                                                                                    standard['Source'] = source;
+                                                                                                                    doneParsingSource();
+                                                                                                                }
 
-                                                                                                                });
+                                                                                                            });
 
-                                                                                                            })
                                                                                                         })
-                                                                                                    } else {
-                                                                                                        standard['Source'] = source;
-                                                                                                        doneParsingSource();
-                                                                                                    }
-                                                                                                })
-                                                                                            }
-                                                                                        }, function doneAllStandardsTds() {
-                                                                                            standards.push(standard);
-                                                                                            doneOneStandardsTr();
-                                                                                        })
-                                                                                    });
-                                                                                }, function doneAllStandardsTrs() {
-                                                                                    protocol['Standards'] = standards;
+                                                                                                    })
+                                                                                                } else {
+                                                                                                    standard['Source'] = source;
+                                                                                                    doneParsingSource();
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                    }, function doneAllStandardsTds() {
+                                                                                        standards.push(standard);
+                                                                                        doneOneStandardsTr();
+                                                                                    })
+                                                                                });
+                                                                            }, function doneAllStandardsTrs() {
+                                                                                protocol['Standards'] = standards;
+                                                                                doneOneLabel();
+                                                                            });
+                                                                        })
+                                                                    }
+                                                                    else if (newId.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
+                                                                        driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
+                                                                            if (temp.length > 0) {
+                                                                                temp[0].getOuterHtml().then(function (html) {
+                                                                                    protocol[key.trim()] = html;
                                                                                     doneOneLabel();
                                                                                 });
-                                                                            })
-                                                                        }
-                                                                        else if (newId.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
-                                                                            driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
-                                                                                if (temp.length > 0) {
-                                                                                    temp[0].getOuterHtml().then(function (html) {
-                                                                                        protocol[key.trim()] = html;
-                                                                                        doneOneLabel();
-                                                                                    });
-                                                                                }
-                                                                                else
-                                                                                    doneOneLabel();
-                                                                            })
-                                                                        }
-                                                                        else {
-                                                                            driver2.findElement(webdriver.By.id(newId)).getText().then(function (text) {
-                                                                                protocol[key.trim()] = text;
+                                                                            }
+                                                                            else
                                                                                 doneOneLabel();
-                                                                            })
-                                                                        }
-                                                                    })
-                                                                });
-                                                            }, function donAllLabels() {
-                                                                driver2.findElements(webdriver.By.xpath("//*[@class='back'][1]/a")).then(function (temp) {
-                                                                    if (temp.length > 0) {
-                                                                        temp[temp.length - 1].getText().then(function (text) {
-                                                                            protocol['Protocol Name'] = text.trim();
-                                                                            driver2.findElements(webdriver.By.xpath("/html/body/center/table/tbody/tr[3]/td/div/div[3]/div[1]/span")).then(function (protocolIdTemp) {
-                                                                                if (protocolIdTemp.length > 0) {
-                                                                                    protocolIdTemp[0].getText().then(function (protocolIdText) {
-                                                                                        protocol['protocolId'] = protocolIdText.replace('#', '').trim();
-                                                                                        protocolCounter++;
-                                                                                        protocols.push(protocol);
-                                                                                        console.log('finished protocol ' + protocolCounter);
-                                                                                        doneOneProtocolLink();
-                                                                                    });
-                                                                                }
-                                                                                else {
+                                                                        })
+                                                                    }
+                                                                    else {
+                                                                        driver2.findElement(webdriver.By.id(newId)).getText().then(function (text) {
+                                                                            protocol[key.trim()] = text;
+                                                                            doneOneLabel();
+                                                                        })
+                                                                    }
+                                                                })
+                                                            });
+                                                        }, function donAllLabels() {
+                                                            driver2.findElements(webdriver.By.xpath("//*[@class='back'][1]/a")).then(function (temp) {
+                                                                if (temp.length > 0) {
+                                                                    temp[temp.length - 1].getText().then(function (text) {
+                                                                        protocol['Protocol Name'] = text.trim();
+                                                                        driver2.findElements(webdriver.By.xpath("/html/body/center/table/tbody/tr[3]/td/div/div[3]/div[1]/span")).then(function (protocolIdTemp) {
+                                                                            if (protocolIdTemp.length > 0) {
+                                                                                protocolIdTemp[0].getText().then(function (protocolIdText) {
+                                                                                    protocol['protocolId'] = protocolIdText.replace('#', '').trim();
                                                                                     protocolCounter++;
                                                                                     protocols.push(protocol);
                                                                                     console.log('finished protocol ' + protocolCounter);
                                                                                     doneOneProtocolLink();
-                                                                                }
-                                                                            });
-                                                                        })
-                                                                    }
-                                                                    else {
-                                                                        protocolCounter++;
-                                                                        protocols.push(protocol);
-                                                                        console.log('finished protocol ' + protocolCounter);
-                                                                        doneOneProtocolLink();
-                                                                    }
-                                                                });
+                                                                                });
+                                                                            }
+                                                                            else {
+                                                                                protocolCounter++;
+                                                                                protocols.push(protocol);
+                                                                                console.log('finished protocol ' + protocolCounter);
+                                                                                doneOneProtocolLink();
+                                                                            }
+                                                                        });
+                                                                    })
+                                                                }
+                                                                else {
+                                                                    protocolCounter++;
+                                                                    protocols.push(protocol);
+                                                                    console.log('finished protocol ' + protocolCounter);
+                                                                    doneOneProtocolLink();
+                                                                }
                                                             });
                                                         });
                                                     });
-                                                })
-                                            }, function doneAllProtocolLinks() {
-                                                measure['protocols'] = protocols;
-                                                doneParsingMeasureProtocol();
-                                            });
+                                                });
+                                            })
+                                        }, function doneAllProtocolLinks() {
+                                            measure['protocols'] = protocols;
+                                            doneParsingMeasureProtocol();
                                         });
-                                    }
-                                ],
-                                function doneParsingAllMeasureDetails() {
-                                    doneGoToMeasure();
+                                    });
                                 }
-                            )
-                        }
+                            ],
+                            function doneParsingAllMeasureDetails() {
+                                doneGoToMeasure();
+                            }
+                        )
+                    }
                     ],
                     function doneAllMeasureParsing(err, result) {
-                        measure['step1'] = 'done';
+                        measure.step1 = 'done';
                         var newMeasure = new Measure(measure);
                         newMeasure.save(function () {
                             measureCounter++;
@@ -585,7 +857,7 @@ var parsingPanel = function (driver, element, numElements, doneOneElement) {
                         },
                         parsingLoincId: function (doneParsingLoincId) {
                             link.getText().then(function (loincIdText) {
-                                anotherElement['loincId'] = loincIdText.trim();
+                                anotherElement.loincId = loincIdText.trim();
                                 doneParsingLoincId();
                             });
                         }
@@ -620,7 +892,7 @@ var f = function (elements, doneOneProtocol) {
     });
 };
 
-var step2 = function (doneStep2) {
+var isElementPanelOrQuestion = function (doneStep2) {
     var panelCde = [];
     Measure.find({step1: 'done', step2: null}, function (err, measures) {
         if (err) throw err;
@@ -628,10 +900,9 @@ var step2 = function (doneStep2) {
             console.log('measure:' + measure.get('href'));
             async.eachSeries(measure.get('protocols'), function (protocol, doneOneProtocol) {
                 console.log('protocol:' + protocol['href']);
-                var form = protocol['form'];
-                if (form && form['elements']) {
-                    var elements = form['elements'];
-                    f(elements, doneOneProtocol);
+                var form = protocol.form;
+                if (form && form.elements) {
+                    f(form.elements, doneOneProtocol);
                 }
                 else {
                     doneOneProtocol();
@@ -652,9 +923,9 @@ var step2 = function (doneStep2) {
 var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, cb) {
     if (elements) {
         async.eachSeries(elements, function (element, doneOneElement) {
-            if (element['type'] === 'Question' && element['remove'] != true) {
+            if (element.type === 'Question' && element.remove != true) {
                 cdeCounter++;
-                DataElement.findOne({'ids.id': element['loincId']}, function (err, result) {
+                DataElement.findOne({'ids.id': element.loincId}, function (err, result) {
                     if (err) throw err;
                     if (result) {
                         classificationShared.transferClassifications(element, result.toObject());
@@ -664,9 +935,8 @@ var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSav
                             console.log('finish update cde ' + cdeUpdateCounter);
                             doneOneElement();
                         });
-                    }
-                    else {
-                        element['version'] = "1.0";
+                    } else {
+                        element.version = "1.0";
                         mongo_cde.create(element, user, function () {
                             cdes.push(element);
                             cdeSaveCounter++;
@@ -680,11 +950,10 @@ var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSav
                 loadCdeLoop(element['elements'], cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, doneOneElement);
             }
         }, function doneAllElements() {
-            if (cb)
-                cb();
+            if (cb) cb();
         });
     } else {
-        cb();
+        if (cb) cb();
     }
 };
 
@@ -754,18 +1023,16 @@ var removePanelElements = function (doneRemovePanelElements) {
         async.eachSeries(measures, function (measure, doneOneMeasure) {
             console.log('measure:' + measure.get('href'));
             async.eachSeries(measure.get('protocols'), function (protocol, doneOneProtocol) {
-                var form = protocol['form'];
-                if (form && form['elements']) {
-                    removePanelElementsLoop(form['elements'], doneOneProtocol);
+                var form = protocol.form;
+                if (form && form.elements) {
+                    removePanelElementsLoop(form.elements, doneOneProtocol);
                 }
                 else {
                     doneOneProtocol();
                 }
             }, function doneAllProtocols() {
                 measure.markModified('protocols');
-                measure.save(function () {
-                    doneOneMeasure();
-                });
+                measure.save(doneOneMeasure);
             });
         }, function doneAllMeasures() {
             doneRemovePanelElements();
@@ -775,10 +1042,10 @@ var removePanelElements = function (doneRemovePanelElements) {
 
 var findFormQuestionLoop = function (form, elements, cb, saveForm) {
     async.eachSeries(elements, function (element, doneOneElement) {
-        if (element['remove'] === true) {
+        if (element.remove === true) {
             doneOneElement();
         } else {
-            if (element['type'] === 'Question') {
+            if (element.type === 'Question') {
                 mongo_cde.byOtherId("LOINC", element['loincId'], function (err, data) {
                     if (err) {
                         throw err;
@@ -839,11 +1106,8 @@ var findFormQuestionLoop = function (form, elements, cb, saveForm) {
         }
     }, function doneAllElements() {
         if (saveForm) {
-            mongo_form.create(form, user, function () {
-                cb();
-            })
-        }
-        else {
+            mongo_form.create(form, user, cb);
+        } else {
             cb();
         }
     });
@@ -858,7 +1122,8 @@ var loadForm = function (doneLoadForm) {
                 var protocols = measure.get('protocols');
                 async.eachSeries(protocols, function (protocol, doneOneProtocol) {
                         if (protocol.Protocol) {
-                            protocol.Protocol = protocol.Protocol.replace(new RegExp('<img src="', 'g'), '<img src="https://www.phenxtoolkit.org/');
+                            protocol.Protocol = protocol.Protocol.replace(new RegExp('<img src="', 'g'),
+                                '<img src="https://www.phenxtoolkit.org/');
                         }
                         protocolCounter++;
                         console.log('protocolCounter: ' + protocolCounter);
@@ -871,65 +1136,56 @@ var loadForm = function (doneLoadForm) {
                                 context: 'default'
                             }], formElements: []
                         };
-                        var ids = [];
-                        var phenXId = {
-                            source: 'PhenX',
-                            id: protocol.protocolId
-                        };
-                        ids.push(phenXId);
-                        form['ids'] = ids;
+                        form.ids = [
+                            {
+                                source: 'PhenX',
+                                id: protocol.protocolId
+                            }
+                        ];
                         form['classification'] = protocol['classification'];
                         form.stewardOrg = {name: "PhenX"};
                         var properties = [];
-                        for (var p in protocol) {
-                            if (protocol.hasOwnProperty(p)) {
-                                if (p === 'Protocol Name' || p === 'Description of Protocol') {
-                                    var naming = [];
-                                    var name = {};
-                                    name['designation'] = protocol['Protocol Name'];
-                                    name['definition'] = protocol['Description of Protocol'];
-                                    name['context'] = {
+                        protocol.forEach(function (p) {
+                            if (p === 'Protocol Name' || p === 'Description of Protocol') {
+                                form.naming = [{
+                                    designation: protocol['Protocol Name'],
+                                    definition:  protocol['Description of Protocol'],
+                                    context: {
                                         contextName: 'Health'
-                                    };
-                                    naming.push(name);
-                                    form['naming'] = naming;
-                                }
-                                else if (p === 'Protocol Release Date') {
-                                    form.registrationState = {
-                                        registrationStatus: "Qualified",
-                                        effectiveDate: protocol['Protocol Release Date']
-                                    };
-                                }
-                                else if (p === 'protocolHref') {
-                                    var referenceDocuments = [];
-                                    var referenceDocument = {uri: protocol['protocolHref']};
-                                    referenceDocuments.push(referenceDocument);
-                                    form['referenceDocuments'] = referenceDocuments;
-                                }
-                                else if (p === 'Standards') {
-                                    var standards = protocol['Standards'];
-                                    standards.forEach(function (standard) {
-                                        if (standard.Source.text === 'LOINC') {
-                                            var loincId = {
-                                                source: 'LOINC',
-                                                id: standard.ID
-                                            };
-                                            ids.push(loincId);
-                                        }
-                                    });
-                                }
-                                else if (p === 'form' || p === 'classification' || p === 'href' || p === 'protocolId') {
-                                }
-                                else {
-                                    var property = {
-                                        key: p,
-                                        value: protocol[p],
-                                        valueFormat: "html"
-                                    };
-                                    properties.push(property);
-                                }
+                                    }
+                                }];
                             }
-                        }
+                            else if (p === 'Protocol Release Date') {
+                                form.registrationState = {
+                                    registrationStatus: "Qualified",
+                                    effectiveDate: protocol['Protocol Release Date']
+                                };
+                            }
+                            else if (p === 'protocolHref') {
+                                form.referenceDocuments = [{uri: protocol['protocolHref']}];
+                            }
+                            else if (p === 'Standards') {
+                                protocol.Standards.forEach(function (standard) {
+                                    if (standard.Source.text === 'LOINC') {
+                                        var loincId = {
+                                            source: 'LOINC',
+                                            id: standard.ID
+                                        };
+                                        form.ids.push(loincId);
+                                    }
+                                });
+                            }
+                            else if (p === 'form' || p === 'classification' || p === 'href' || p === 'protocolId') {
+                            }
+                            else {
+                                var property = {
+                                    key: p,
+                                    value: protocol[p],
+                                    valueFormat: "html"
+                                };
+                                properties.push(property);
+                            }
+                        });
                         form['properties'] = properties;
                         var isFormExist = protocol['form'];
                         if (isFormExist) {
@@ -966,7 +1222,7 @@ var loadForm = function (doneLoadForm) {
 
 
 async.series([
-    function (doneConnectionTest) {
+    function establishConnection(doneConnectionTest) {
         conn.on('error', function (err) {
             throw err;
         });
@@ -981,25 +1237,12 @@ async.series([
             });
         });
     },
-    /*    function (doneStep1) {
-     step1(doneStep1);
-     },
-     function (doneStep2) {
-     step2(doneStep2);
-     },
-
-     function (doneRemovePanelElements) {
-     removePanelElements(doneRemovePanelElements);
-     },
-
-     function (doneLoadCde) {
-     loadCde(doneLoadCde);
-     },
-
-     function (doneLoadForm) {
-     loadForm(doneLoadForm);
-     },*/
-    function (doneCleanUp) {
+    remoteGrabFromPhenX,
+    isElementPanelOrQuestion,
+    removePanelElements,
+    loadCde,
+    loadForm,
+    function () {
         process.exit(1);
     }
 ]);
