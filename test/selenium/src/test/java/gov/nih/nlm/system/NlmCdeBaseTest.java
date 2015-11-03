@@ -127,6 +127,12 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
     }
 
+    @AfterMethod
+    public void clearStorage() {
+        String clearStorage = "localStorage.clear();";
+        ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+    }
+
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
