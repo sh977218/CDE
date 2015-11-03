@@ -9,7 +9,7 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class CdeExport extends NlmCdeBaseTest {
 
-    @Test
+//    @Test
     public void exportJson() {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
