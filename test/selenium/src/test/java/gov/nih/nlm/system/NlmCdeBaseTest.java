@@ -12,11 +12,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -122,11 +120,18 @@ public class NlmCdeBaseTest {
         resizeWindow(1280, 800);
     }
 
+    @AfterMethod
+    public void countTabs(Method method) {
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+    }
+
     @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
-        System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
     protected void resizeWindow(int width, int height) {
