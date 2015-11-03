@@ -709,11 +709,11 @@ button#selectDefault {
     height: 140px;
 }
 
-.welcomeSearchOrganizationBox:hover {
-    display: block;
-    height: 140px;
-    content: ".";
-}
+/*.welcomeSearchOrganizationBox:hover {*/
+    /*display: block;*/
+    /*height: 140px;*/
+    /*content: ".";*/
+/*}*/
 
 .welcomeSearchSearch {
     margin: 65px 0px;
@@ -780,11 +780,12 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
-@media (max-width: 1024px) {
-    body{font-size: 40px!important;}
-}
-
-@media (max-width: 767px) {
-    body{font-size: 20px!important;}
-}
-
+/*@media (max-width: 1024px) and (min-resolution: 200dpi) {*/
+    /*body{font-size: 20px;}*/
+    /*.welcomeSearchOrganizationBox {*/
+        /*height: 185px;*/
+    /*}*/
+    /*.panel-title, .btn, .dropdown-menu>li>a, #repeatCs ul {*/
+        /*font-size: 20px;*/
+    /*}*/
+/*}*/
