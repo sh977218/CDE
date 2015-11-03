@@ -356,7 +356,7 @@ exports.elasticsearch = function (query, type, cb) {
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = response.hits.hits[i].highlight;
-                result.cdes.push(thisCde);
+                result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
             cb(null, result);

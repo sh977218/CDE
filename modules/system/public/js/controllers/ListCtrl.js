@@ -185,23 +185,21 @@ angular.module('systemModule').controller('ListCtrl',
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
-                $scope.cdes = [];
+                $scope[type + 's'] = [];
                 return;
             }
             if (timestamp < $scope.lastQueryTimeStamp) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
-            $scope.cdes = result.cdes;
-            if (type === "form")
-                $scope.forms = result.cdes;
-            $scope.cdes.forEach(function (elt) {
+            $scope[type + 's'] = result[type + 's'];
+            $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {
                     $scope.localEltTransform(elt);
                 }
             });
             $scope.accordionListStyle = "";
-            $scope.openCloseAll($scope.cdes, "list");
+            $scope.openCloseAll($scope[type + 's'], "list");
             $scope.aggregations = result.aggregations;
 
             if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
