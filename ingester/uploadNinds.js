@@ -132,16 +132,11 @@ parseCde = function (obj, cb) {
 
 
     var inputType = obj["Input Restrictions"];
-    var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
-        listDataType.datatype = dataType;
         dataType = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
-        listDataType.datatype = dataType;
         dataType = "Value List";
-        listDataType.multi = true;
     }
-//    vd.datatypeValueList = listDataType;
 
     var permValues = [];
     if (dataType === "Value List") {

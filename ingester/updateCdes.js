@@ -9,7 +9,6 @@ var fs = require('fs')
     , cdesvc = require('../modules/cde/node-js/cdesvc')
     , classificationShared = require('../modules/system/shared/classificationShared');
 
-var counter = 0;
 var cdeSource = process.argv[3];
 
 var importDate = new Date().toJSON();
