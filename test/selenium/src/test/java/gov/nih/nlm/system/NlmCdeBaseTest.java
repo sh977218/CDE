@@ -34,9 +34,8 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-//    protected static int defaultTimeout = Integer.parseInt(System
-//            .getProperty("timeout"));
-    protected static int defaultTimeout = 40;
+    protected static int defaultTimeout = Integer.parseInt(System
+            .getProperty("timeout"));
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -127,6 +126,7 @@ public class NlmCdeBaseTest {
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+        System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
     protected void resizeWindow(int width, int height) {
