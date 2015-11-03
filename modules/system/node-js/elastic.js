@@ -344,9 +344,9 @@ exports.elasticsearch = function (query, type, cb) {
             }
         } else {
             var result = {
-                cdes: []
-                , totalNumber: response.hits.total
+                totalNumber: response.hits.total
             };
+            result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {
                 var thisCde = response.hits.hits[i]._source;
                 thisCde.score = response.hits.hits[i]._score;

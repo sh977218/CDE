@@ -37,7 +37,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             var elastic = this; 
             $http.post("/elasticSearch/" + type, settings)
                     .success(function (response) {
-                        elastic.highlightResults(response.cdes);
+                        elastic.highlightResults(response[type + 's']);
                         cb(null, response);
                     })
                     .error(function(response) {
