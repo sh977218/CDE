@@ -33,7 +33,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                         type: "text/csv"
                     });
                     saveAs(blob, 'QuickBoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");

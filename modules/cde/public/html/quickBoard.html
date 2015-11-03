@@ -45,7 +45,7 @@
         <span ng-if="listViewType !== 'sideBySide'" ng-include="'/system/public/html/switchListViewContent.html'"
               ng-init="module='cde'; ejsPage='quickboard'"></span>
 
-        <div ng-if="listViewType==='sideBySide'">
+        <div ng-if="listViewType === 'sideBySide'">
             <div ng-include="'/cde/public/html/deCompare.html'"></div>
         </div>
     </div>
