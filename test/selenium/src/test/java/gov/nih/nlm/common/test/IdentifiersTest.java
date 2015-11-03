@@ -11,8 +11,8 @@ public abstract class IdentifiersTest extends CommonTest {
     protected void addId(String source, String id, String version) {
         findElement(By.linkText("Identifiers")).click();
         findElement(By.id("addId")).click();
-        findElement(By.name("source")).sendKeys(source);
-        findElement(By.name("id")).sendKeys(id);
+        findElement(By.id("newSource")).sendKeys(source);
+        findElement(By.id("newId")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         findElement(By.id("createId")).click();
