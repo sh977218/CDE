@@ -34,8 +34,10 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+//    protected static int defaultTimeout = Integer.parseInt(System
+//            .getProperty("timeout"));
+    protected static int defaultTimeout = 40;
+
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
 
@@ -538,6 +540,7 @@ public class NlmCdeBaseTest {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
+        hangon(3);
     }
 
     protected void switchTab(int i) {
