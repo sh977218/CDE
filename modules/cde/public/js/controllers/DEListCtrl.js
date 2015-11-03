@@ -1,6 +1,7 @@
-angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout',
-    function ($scope, $controller, TourContent, userResource, $timeout) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout', 'QuickBoard',
+    function ($scope, $controller, TourContent, userResource, $timeout, QuickBoard) {
         $scope.module = "cde";
+        $scope.quickBoard = QuickBoard;
 
         userResource.getPromise().then(function () {
             $scope.search("cde");

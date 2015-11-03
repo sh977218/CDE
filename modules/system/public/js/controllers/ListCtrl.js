@@ -1,12 +1,11 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller',
+        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller)
+                  SearchSettings, AutoCompleteResource, $location, $route, $controller)
 {
 
     $scope.autocomplete = AutoCompleteResource;
-    $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
 
     if ($route.current.subCtrl) {

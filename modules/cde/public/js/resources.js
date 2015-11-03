@@ -1,3 +1,67 @@
+function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageService) {
+    var params = {
+        cde: {
+            url: "/debytinyid/",
+            localStorage: "quickBoard"
+        },
+        form: {
+            url: "/form/",
+            localStorage: "formQuickBoard"
+        }
+    };
+    var param = params[type];
+
+    return {
+        restoreFromLocalStorage: function () {
+            var res = localStorageService.get(param.localStorage);
+            if (!res) res = [];
+            this.elts = res;
+        },
+        max_elts: 50,
+        elts: [],
+        numberDisplay: function () {
+            if (this.elts.length === 0) return " empty ";
+            if (this.elts.length > this.max_elts - 1) return " full ";
+            return " " + this.elts.length + " ";
+        },
+        loading: false,
+        add: function (elt) {
+            var qb = this;
+            if (this.elts.length < this.max_elts) {
+                $http.get(param.url + elt.tinyId).then(function (result) {
+                    var de = result.data;
+                    if (de) {
+                        de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
+                        qb.elts.push(de);
+                        localStorageService.add(param.localStorage, qb.elts);
+                    }
+                });
+            }
+        },
+        remove: function (index) {
+            this.elts.splice(index, 1);
+            localStorageService.add(param.localStorage, this.elts);
+        },
+        empty: function () {
+            this.elts = [];
+            localStorageService.add(param.localStorage, this.elts);
+        },
+        canAddElt: function (elt) {
+            if (this.elts.length < this.max_elts &&
+                elt !== undefined) {
+
+                var tinyIds = this.elts.map(function (_elt) {
+                    return _elt.tinyId;
+                });
+                return tinyIds.indexOf(elt.tinyId) === -1;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+}
+
 angular.module('resourcesCde', ['ngResource'])
 .factory('BoardSearch', function($resource) {
     return $resource('/listboards');
@@ -84,53 +148,12 @@ angular.module('resourcesCde', ['ngResource'])
     };
 }])
 .factory("QuickBoard", function($http, OrgHelpers, userResource, localStorageService) {
-    return {
-        restoreFromLocalStorage: function() {
-            var res = localStorageService.get("quickBoard");
-            if (!res) res = [];
-            this.elts = res;
-        },
-        max_elts: 50,
-        elts: [],
-        numberDisplay: function() {
-            if (this.elts.length === 0) return " empty "
-            if (this.elts.length > this.max_elts - 1) return " full ";
-            return " " + this.elts.length + " ";
-        },
-        loading: false,
-        add: function(elt) {
-            var qb = this;
-            if(this.elts.length < this.max_elts) {
-                $http.get("/debytinyid/" + elt.tinyId).then(function(result) {
-                    var de = result.data;
-                    if (de) {
-                        de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
-                        qb.elts.push(de);
-                        localStorageService.add("quickBoard", qb.elts);
-                    }
-                });
-            }
-        },
-        remove: function(index) {
-            this.elts.splice(index, 1);
-            localStorageService.add("quickBoard", this.elts);
-        },
-        empty: function() {
-            this.elts = [];
-            localStorageService.add("quickBoard", this.elts);
-        },
-        canAddElt: function(elt) {
-            if (this.elts.length < this.max_elts &&
-                elt !== undefined) {
-
-                var tinyIds = this.elts.map(function(_elt) {
-                    return _elt.tinyId;
-                });
-                return tinyIds.indexOf(elt.tinyId) === -1;
-            }
-            else {
-                return false;
-            }
-        }
-    }
+    var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService);
+    result.restoreFromLocalStorage();
+    return result;
+})
+.factory("FormQuickBoard", function($http, OrgHelpers, userResource, localStorageService) {
+        var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService);
+        result.restoreFromLocalStorage();
+        return result;
 });

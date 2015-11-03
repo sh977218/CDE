@@ -17,7 +17,6 @@ angular.module('systemModule').controller('MainCtrl',
     });
 
     $scope.quickBoard = QuickBoard;
-    QuickBoard.restoreFromLocalStorage();
     $scope.formEnabled = window.formEnabled;
 
     // Global variables
