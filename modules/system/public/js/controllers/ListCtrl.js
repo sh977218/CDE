@@ -192,6 +192,8 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
+            if (type === "form")
+                $scope.forms = result.cdes;
             $scope.cdes.forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {

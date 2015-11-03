@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route)
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route)
 {
 
 
@@ -17,6 +17,7 @@ angular.module('systemModule').controller('MainCtrl',
     });
 
     $scope.quickBoard = QuickBoard;
+    $scope.formQuickBoard = FormQuickBoard;
     $scope.formEnabled = window.formEnabled;
 
     // Global variables

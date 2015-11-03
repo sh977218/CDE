@@ -141,7 +141,7 @@
                     </li>
                     <li id="menu_qb_link" ng-class="{ active: isPageActive('/quickBoard')}">
                         <a class="navbar-link" href="/#/quickBoard">
-                            Quick Board ({{quickBoard.numberDisplay()}})
+                            Quick Board ({{quickBoard.elts.length + formQuickBoard.elts.length}})
                         </a>
                     </li>
                     <li id="menu_help_link" dropdown ng-class="{ active: isPageActive('/help')}">

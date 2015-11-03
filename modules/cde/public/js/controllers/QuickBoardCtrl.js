@@ -1,9 +1,11 @@
 angular.module('cdeModule').controller('QuickBoardCtrl',
-    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard',
-        function ($scope, CdeList, OrgHelpers, userResource, QuickBoard) {
+    ['$scope', 'CdeList', 'OrgHelpers', 'userResource', 'QuickBoard', 'FormQuickBoard',
+        function ($scope, CdeList, OrgHelpers, userResource, QuickBoard, FormQuickBoard) {
 
             $scope.quickBoard = QuickBoard;
+            $scope.formQuickBoard = FormQuickBoard;
             $scope.cdes = QuickBoard.elts;
+            $scope.forms = FormQuickBoard.elts;
 
             $scope.openCloseAll($scope.cdes, "quickboard");
             $scope.showSideBySideView = false;
