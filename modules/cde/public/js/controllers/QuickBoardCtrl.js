@@ -4,42 +4,42 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
-            $scope.cdes = QuickBoard.elts;
             $scope.forms = FormQuickBoard.elts;
 
-            $scope.openCloseAll($scope.cdes, "quickboard");
             $scope.showSideBySideView = false;
 
             $scope.removeElt = function (index) {
                 QuickBoard.remove(index);
             };
 
-            $scope.emptyQuickBoard = function () {
-                QuickBoard.empty();
-                $scope.cdes = [];
-            };
-
-            $scope.openCloseAll = function (cdes, type) {
-                for (var i = 0; i < cdes.length; i++) {
-                    cdes[i].isOpen = $scope.openCloseAllModel[type];
+            $scope.openCloseAll = function (elts, type) {
+                for (var i = 0; i < elts.length; i++) {
+                    elts[i].isOpen = $scope.openCloseAllModel[type];
                 }
             };
+            $scope.openCloseAll(QuickBoard.elts, "quickboard");
 
-            $scope.exportQuickBoard = function () {
-                var result = exports.exportHeader.cdeHeader;
-                $scope.cdes.forEach(function (ele) {
-                    result += exports.convertToCsv(exports.projectCdeForExport(ele));
-                });
-                if (result) {
-                    var blob = new Blob([result], {
-                        type: "text/csv"
-                    });
-                    saveAs(blob, 'QuickBoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.");
-                    $scope.feedbackClass = ["fa-download"];
-                } else {
-                    $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
-                }
-            }
+        }]);
+
+
+angular.module('cdeModule').controller('CdeQuickBoardCtrl',
+    ['$scope', 'QuickBoard',
+        function ($scope, QuickBoard) {
+
+            $scope.module = 'cde';
+            $scope.quickBoard = QuickBoard;
+            $scope.cdes = QuickBoard.elts;
+
+
+
+        }]);
+
+angular.module('cdeModule').controller('FormQuickBoardCtrl',
+    ['$scope', 'FormQuickBoard',
+        function ($scope, FormQuickBoard) {
+
+            $scope.module = 'form';
+            $scope.quickBoard = FormQuickBoard;
+            $scope.forms = FormQuickBoard.elts;
 
         }]);

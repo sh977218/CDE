@@ -9,8 +9,13 @@
                    role="link" id="eyeLink_{{$index}}"></i></a>
 
             <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(form)"
-               ng-click="accordionIconAction(form,'quickBoard.add',$event)">
+               ng-click="interruptEvent($event); quickBoard.add(form)">
                 <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
+                   role="link"></i></a>
+
+            <a href tabindex="0" class="nonLinkAnchor" ng-if="ejsPage=='quickboard'"
+               ng-click="interruptEvent($event);quickBoard.remove($index)">
+                <i class="glyphicon glyphicon-remove hand-cursor" title="remove" id="remove_{{$index}}"
                    role="link"></i></a>
 
             <small id="nQuestion-{{$index}}" class="pull-right">{{form.numQuestions}} questions</small>

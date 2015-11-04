@@ -192,6 +192,7 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope[type + 's'] = result[type + 's'];
+            $scope.elts = result[type + 's'];
             $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {
