@@ -91,7 +91,7 @@ exports.init = function (app, daoManager) {
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
-            delete exportCde._id;
+            exportCde = exportShared.stripBsonIds(exportCde);
             res.send(js2xml("dataElement", exportCde));
         }
 
@@ -503,6 +503,18 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
+        function removeElasticFiends(cde){
+            delete cde.classificationBoost;
+            delete cde.flatClassifications;
+            delete cde.primaryNameCopy;
+            delete cde.stewardOrgCopy;
+            delete cde.flatProperties;
+            delete cde.valueDomain.nbOfPVs;
+            delete cde.primaryDefinitionCopy;
+            delete cde.flatIds;
+            delete cde.usedByOrgs;
+            return cde;
+        }
         var exporter;
         if (req.query.type==='csv') {
             exporter = {
@@ -515,7 +527,11 @@ exports.init = function (app, daoManager) {
         }
         if (req.query.type==='json') {
             exporter = {
-                transformObject: function(c){return JSON.stringify(c)}
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFiends(cde);
+                    return JSON.stringify(cde)
+                }
                 , header: "["
                 , delimiter: ",\n"
                 , footer: "]"
@@ -525,9 +541,8 @@ exports.init = function (app, daoManager) {
         if (req.query.type==='xml') {
             exporter = {
                 transformObject: function(cde){
-                    delete cde._id;
-                    delete cde.updated;
-                    delete cde.history;
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFiends(cde);
                     return js2xml("dataElement", cde, {declaration: {include: false}});
                 }
                 , header: "<cdeExport>\n"

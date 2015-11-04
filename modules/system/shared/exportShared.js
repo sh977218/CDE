@@ -66,6 +66,13 @@ exports.convertToCsv = function (ele) {
     return row;
 };
 
+exports.stripBsonIds = function(cde){
+    delete cde._id;
+    delete cde.updated;
+    delete cde.history;
+    return cde;
+};
+
 exports.nocacheMiddleware = function(req, res, next) {
     if (req && req.headers['user-agent']) {
         if (req.headers['user-agent'].indexOf("Chrome") < 0  || req.headers['user-agent'].indexOf("Firefox") < 0 ) {
