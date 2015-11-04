@@ -1,5 +1,6 @@
 angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
-    function($scope, OrgHelpers, SearchSettings) {
+    function($scope, OrgHelpers, SearchSettings)
+{
 
     $scope.listViewType = "accordion";
 
@@ -26,12 +27,12 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
     };
 
     $scope.showSideBySideView = function() {
-        if ($scope.cdes.length !== 2) {
-            $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
+        if ($scope.elts.length !== 2) {
+            $scope.addAlert("danger", "You may only compare 2 elements side by side.");
         } else {
             $scope.listViewType = "sideBySide";
         }
     };
 
 
-    }]);
+}]);

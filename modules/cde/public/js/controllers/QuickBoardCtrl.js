@@ -29,8 +29,7 @@ angular.module('cdeModule').controller('CdeQuickBoardCtrl',
             $scope.module = 'cde';
             $scope.quickBoard = QuickBoard;
             $scope.cdes = QuickBoard.elts;
-
-
+            $scope.elts = $scope.cdes;
 
         }]);
 
@@ -41,5 +40,6 @@ angular.module('cdeModule').controller('FormQuickBoardCtrl',
             $scope.module = 'form';
             $scope.quickBoard = FormQuickBoard;
             $scope.forms = FormQuickBoard.elts;
+            $scope.elts = $scope.forms;
 
         }]);
