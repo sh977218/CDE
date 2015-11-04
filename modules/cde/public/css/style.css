@@ -774,10 +774,22 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
-@media (max-width: 1024px) and (min-resolution: 200dpi){
-    body{zoom:  200%;}
-}
+/*@media (max-width: 1024px) and (min-resolution: 200dpi){*/
+    /*body{zoom:  200%;}*/
+/*}*/
 
-@media (max-width: 750px) and (min-resolution: 300dpi){
-    body{zoom: 300%;}
+/*@media (max-width: 750px) and (min-resolution: 300dpi){*/
+    /*body{zoom: 300%;}*/
+/*}*/
+
+@media (max-width: 1024px) {
+    body{
+        font-size: 20px;
+    }
+    .welcomeSearchOrganizationBox {
+        height: 185px;
+    }
+    .panel-title, .btn, .dropdown-menu>li>a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
+        font-size: 20px;
+    }
 }
