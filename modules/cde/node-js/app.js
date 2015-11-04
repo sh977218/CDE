@@ -522,6 +522,20 @@ exports.init = function (app, daoManager) {
                 , type: 'appplication/json'
             };
         }
+        if (req.query.type==='xml') {
+            exporter = {
+                transformObject: function(cde){
+                    delete cde._id;
+                    delete cde.updated;
+                    delete cde.history;
+                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                }
+                , header: "<cdeExport>\n"
+                , delimiter: "\n"
+                , footer: "\n</cdeExport>"
+                , type: 'appplication/xml'
+            };
+        }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         return elastic_system.elasticSearchExport(res, query, 'cde', exporter);
     });
