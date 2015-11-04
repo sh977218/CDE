@@ -12,9 +12,18 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (result) {
+            var exportFiletype;
+            switch(type){
+                case 'csv':
+                    exportFiletype = 'text/csv';
+                case 'json':
+                    exportFiletype = 'application/json';
+                case 'xml':
+                    exportFiletype = 'application/xml';
+            }
             if (result) {
                 var blob = new Blob([result], {
-                    type: type === 'csv' ? 'text/csv' : 'application/json'
+                    type: exportFiletype
                 });
                 saveAs(blob, 'SearchExport' + '.' + type);
                 $scope.addAlert("success", "Export downloaded.");
