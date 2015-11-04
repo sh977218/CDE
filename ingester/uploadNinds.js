@@ -4,9 +4,9 @@ var fs = require('fs'),
     config = require('config'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     mongo_data_system = require('../modules/system/node-js/mongo-data'),
-    async = require('async')
-    , xml2js = require('xml2js')
-    , ninds = require('./convertcsv');
+    async = require('async'),
+    xml2js = require('xml2js'),
+    ninds = require('./convertcsv');
 
 
 var nindsOrg = null;
@@ -112,17 +112,17 @@ parseCde = function (obj, cb) {
     if (dataTypeStr.toLowerCase() === "numeric values") {
         dataType = "Number";
         var dataTypeNum = {};
-        if (obj["Minimum Value"] > 0) {
+        if (obj["Minimum Value"] != null) {
             dataTypeNum.minValue = obj["Minimum Value"];
         }
-        if (obj["Maximum Value"] > 0) {
+        if (obj["Maximum Value"] != null) {
             dataTypeNum.maxValue = obj["Maximum Value"];
         }
         vd.datatypeNumber = dataTypeNum;
     } else if (dataTypeStr.toLowerCase() === "alphanumeric") {
         dataType = "Text";
         var dataTypeText = {};
-        if (obj["Size"] > 0) {
+        if (obj["Size"] != null) {
             dataTypeText.maxLength = obj["Size"];
         }
         vd.datatypeText = dataTypeText;
@@ -130,17 +130,13 @@ parseCde = function (obj, cb) {
         dataType = "Date"
     }
 
+
     var inputType = obj["Input Restrictions"];
-    var listDataType = {};
     if (inputType.toLowerCase().trim() === "single pre-defined value selected") {
-        listDataType.datatype = dataType;
         dataType = "Value List";
     } else if (inputType.toLowerCase().trim() === "multiple pre-defined values selected") {
-        listDataType.datatype = dataType;
         dataType = "Value List";
-        listDataType.multi = true;
     }
-    vd.datatypeValueList = listDataType;
 
     var permValues = [];
     if (dataType === "Value List") {
@@ -198,7 +194,7 @@ parseCde = function (obj, cb) {
                         contextName: "Question Text"
                         , acceptability: "preferred"
                     }
-                }
+                };
                 namings.push(name);
                 exitingName[nameString[1].trim()] = nameString[1].trim();
             }
@@ -302,9 +298,9 @@ parseCde = function (obj, cb) {
     addClassification(cde, "Mitochondrial Disease", obj["Classification.Mitochondrial Disease"]);
 
     addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Classification.Acute Hospitalized"]);
-    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Classification.Concussion/Mild TBI"]);
-    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Classification.Epidemiology"]);
-    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Acute Hospitalized", obj["Classification.Moderate/Severe TBI: Rehabilitation"]);
+    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Concussion/Mild TBI", obj["Classification.Concussion/Mild TBI"]);
+    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Epidemiology", obj["Classification.Epidemiology"]);
+    addSubDiseaseClassification(cde, "Traumatic Brain Injury", "Moderate/Severe TBI: Rehabilitation", obj["Classification.Moderate/Severe TBI: Rehabilitation"]);
 
 
     mongo_cde.create(cde, {username: 'batchloader'}, function (err, newCde) {
@@ -313,8 +309,8 @@ parseCde = function (obj, cb) {
             console.log(err);
             process.exit(1);
         } else {
-            cb();
             console.log("saved");
+            cb();
         }
     });
 };
@@ -333,7 +329,6 @@ setTimeout(function () {
                     process.exit(0);
                 })
             }
-
         });
     }
 }, 2000);
