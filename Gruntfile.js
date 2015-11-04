@@ -541,7 +541,7 @@ module.exports = function(grunt) {
             if (entry.props.type === "Directory")
                 entry.props.mode |= (entry.props.mode >>> 2) & 0111;
             return true;
-        }
+        };
 
         return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
@@ -555,6 +555,7 @@ module.exports = function(grunt) {
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
     grunt.registerTask('bower',['bower-install-simple','bowercopy']);
+    grunt.registerTask('ci', ['bower', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
