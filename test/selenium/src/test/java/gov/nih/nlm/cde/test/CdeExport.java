@@ -18,7 +18,6 @@ public class CdeExport extends NlmCdeBaseTest {
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Spinal column injury number\",\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\""));
         switchTabAndClose(0);
-        hangon(3);
     }
 
     @Test
@@ -32,6 +31,7 @@ public class CdeExport extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("<definition>Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.</definition>"));
         Assert.assertTrue(response.contains("<tinyId>7cDvUXR6SQe</tinyId>"));
         findElement(By.id("xmlExport")).click();
-        hangon(1);
+        switchTab(1);
+        switchTabAndClose(0);
     }
 }
