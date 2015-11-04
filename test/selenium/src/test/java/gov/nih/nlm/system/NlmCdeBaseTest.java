@@ -225,7 +225,7 @@ public class NlmCdeBaseTest {
         try {
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Classification");
+            textPresent("More Like This");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
@@ -233,7 +233,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Classification");
+            textPresent("More Like This");
             textPresent(name);
             textNotPresent("is archived");
         }
