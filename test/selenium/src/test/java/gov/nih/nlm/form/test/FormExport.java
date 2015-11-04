@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test;
 import static com.jayway.restassured.RestAssured.get;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.openqa.selenium.By;
 
 public class FormExport extends BaseFormTest {
     @Test
@@ -138,4 +139,40 @@ public class FormExport extends BaseFormTest {
         Assert.assertTrue(response.replaceAll("\\s+","").contains(expectedResult.replaceAll("\\s+","")));
 
     }
+
+    @Test
+    public void jsonExport() {
+        String form = "Adverse Event Tracking Log";
+        goToFormByName(form);
+
+        findElement(By.id("export")).click();
+        findElement(By.id("nihJson")).click();
+
+        switchTab(1);
+        String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
+        Assert.assertTrue(response.contains("{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}"));
+        Assert.assertTrue(response.contains("{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}"));
+        Assert.assertTrue(response.contains("\"registrationState\":{\"registrationStatus\":\"Qualified\"}"));
+        Assert.assertTrue(response.contains("\"stewardOrg\":{\"name\":\"NINDS\"}"));
+        Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""));
+        switchTabAndClose(0);
+    }
+
+
+    @Test
+    public void xmlExport() {
+        String form = "Parenchymal Imaging";
+        goToFormByName(form);
+
+        findElement(By.id("export")).click();
+        String url = findElement(By.id("nihXml")).getAttribute("href");
+        String response = get(url).asString();
+        Assert.assertTrue(response.replaceAll("\\s+","").contains(("<naming>\n" +
+                "<designation>Parenchymal Imaging</designation>\n" +
+                "<definition>\n" +
+                "Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
+                "</definition>\n" +
+                "</naming>").replaceAll("\\s+", "")));
+    }
+
 }

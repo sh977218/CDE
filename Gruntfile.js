@@ -122,20 +122,6 @@ module.exports = function(grunt) {
                     , json: elastic.createStoredQueryIndexJson
                 }
             }
-            , elasticDeleteStoredQueryRiver: {
-                options: {
-                    uri: config.elasticStoredQueryRiverUri
-                    , method: 'DELETE'
-                    , ignoreErrors: true
-                }
-            }
-            , elasticCreateStoredQueryRiver: {
-                options: {
-                    uri: config.elasticStoredQueryRiverUri + "/_meta"
-                    , method: 'POST'
-                    , json: elastic.createStoredQueryRiverJson
-                }
-            }
         }
         , shell: {
             stop: {
@@ -466,10 +452,8 @@ module.exports = function(grunt) {
         grunt.task.run('http:elasticCreateBoardIndex');
         grunt.task.run('http:elasticCreateBoardRiver');
 
-        grunt.task.run('http:elasticDeleteStoredQueryRiver');
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
-        grunt.task.run('http:elasticCreateStoredQueryRiver');
     });
     
     grunt.registerTask('do-node', function() {
