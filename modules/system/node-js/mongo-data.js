@@ -18,42 +18,36 @@ var schemas = require('./schemas')
     , async = require('async')
     ;
 
-var conn;
 var localConn;
 var Org;
 var User;
 var gfs;
-var connectionEstablisher = connHelper.connectionEstablisher;
 var Message;
 var ClusterStatus;
 var sessionStore;
 var fs_files;
 var classificationAudit;
 
-var iConnectionEstablisherSys = new connectionEstablisher(mongoUri, 'SYS');
-iConnectionEstablisherSys.connect(function(resCon) {
-    exports.mongoose_connection = resCon;
-    conn = resCon;
+var createModels = function(conn) {
     Org = conn.model('Org', schemas.orgSchema);
     User = conn.model('User', schemas.userSchema);
     Message = conn.model('Message', schemas.message);
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
     gfs = Grid(conn.db, mongoose.mongo);
     sessionStore = new MongoStore({ 
-        mongooseConnection: resCon  
+        mongooseConnection: conn
     });
     exports.sessionStore = sessionStore;
     fs_files = conn.model('fs_files', schemas.fs_files);
     classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
-});
+};
 
-var iConnectionEstablisherLocal = new connectionEstablisher(config.database.local.uri, 'LOCAL');
-iConnectionEstablisherLocal.connect(function(resCon) {
-        localConn = resCon;        
-});
+exports.mongoose_connection = connHelper.establihConnection(mongoUri);
+createModels(exports.mongoose_connection);
+
+var localConn = connHelper.establihConnection(config.database.local.uri);
 
 exports.sessionStore = sessionStore;
-
 exports.mongoose_connection = conn;
 
 exports.getClusterHostStatus = function(server, callback) {

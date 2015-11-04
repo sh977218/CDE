@@ -57,7 +57,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#textRegex .fa-check")).click();
 
         findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
-        findElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']")).click();
+        clickElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='textMinLength']//input")).clear();
         findElement(By.xpath("//div[@id='textMaxLength']//input")).clear();
         findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("123");

@@ -74,7 +74,7 @@
   "node": {
     "scripts": {
       "stop": "",
-      "start": "node ../run/node-js/app &"
+      "start": "node --harmony ../run/node-js/app &"
     },
     "buildDir": "../build"
   },
@@ -119,6 +119,7 @@
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
   "maxLogsPerMinute": 1000,
   "maxPin": 500,
+  "userAlertTime": 5000,
   "expressToStdout": false,
   "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,

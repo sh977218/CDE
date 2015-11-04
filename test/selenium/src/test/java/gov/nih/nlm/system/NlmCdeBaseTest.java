@@ -12,11 +12,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System
             .getProperty("timeout"));
+
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
 
@@ -121,10 +120,18 @@ public class NlmCdeBaseTest {
         resizeWindow(1280, 800);
     }
 
+    @AfterMethod
+    public void countTabs(Method method) {
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+    }
+
     @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
     protected void resizeWindow(int width, int height) {
@@ -250,8 +257,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         findElement(By.id("search.submit")).click();
-        hangon(2);
         if (status != null) {
+            hangon(2);
             findElement(By.id("li-blank-" + status)).click();
         }
         textPresent("1 results for");
@@ -342,8 +349,7 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        } catch (Exception e) {
+                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS); } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
@@ -360,16 +366,14 @@ public class NlmCdeBaseTest {
             findElement(By.name("changeNote")).sendKeys(
                     "Change note for change number 1");
         }
-        // assumption is that text is sent before JS can load. So wait 1 sec.
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
         try {
             textPresent("Saved.");
         } catch (Exception e) {
-            findElement(By.id("confirmNewVersion")).click();
-            textPresent("Saved.");
         }
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
     }
@@ -510,8 +514,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username,
-                                               String password, String checkText) {
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -519,14 +522,20 @@ public class NlmCdeBaseTest {
         waitAndClick(By.id("login_button"));
         try {
             textPresent(checkText);
-            // Assumption is that UMLS sometimes throws an error on login. With
-            // a socket hangup. login fails, we retry.
+            // sometimes an issue with csrf, need to reload the whole page.
         } catch (TimeoutException e) {
+            // csrf collision, wait random before re-trying
+            hangon(new Random().nextInt(10));
             System.out.println("Login failed. Re-trying. error: "
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
-            hangon(3);
-            findElement(By.id("login_button")).click();
+            goHome();
+            findElement(By.id("login_link")).click();
+            findElement(By.id("uname")).clear();
+            findElement(By.id("uname")).sendKeys(username);
+            findElement(By.id("passwd")).clear();
+            findElement(By.id("passwd")).sendKeys(password);
+            waitAndClick(By.id("login_button"));
             textPresent(checkText);
         }
     }
@@ -536,6 +545,7 @@ public class NlmCdeBaseTest {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
+        hangon(3);
     }
 
     protected void switchTab(int i) {
@@ -668,16 +678,16 @@ public class NlmCdeBaseTest {
     protected void reorderIconTest(String tabName) {
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 1);
+        findElement(By.xpath(prefix + "moveDown-0" + postfix));
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
 
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 1);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-1" + postfix)).size(), 1);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-1" + postfix)).size(), 1);
+        findElement(By.xpath(prefix + "moveDown-1" + postfix));
+        findElement(By.xpath(prefix + "moveUp-1" + postfix));
+        findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-2" + postfix)).size(), 1);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-2" + postfix)).size(), 1);
+        driver.findElement(By.xpath(prefix + "moveUp-2" + postfix));
+        findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 }
