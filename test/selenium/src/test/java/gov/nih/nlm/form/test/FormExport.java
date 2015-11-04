@@ -140,7 +140,7 @@ public class FormExport extends BaseFormTest {
 
     }
 
-//    @Test
+    @Test
     public void jsonExport() {
         String form = "Parenchymal Imaging";
         goToFormByName(form);
