@@ -15,8 +15,8 @@ public class PinTest extends BoardTest {
         
         gotoMyBoards();
         
-        Assert.assertTrue(textPresent("Collect blood"));
-        Assert.assertTrue(textPresent("Smoking CDEs"));
+        textPresent("Collect blood");
+        textPresent("Smoking CDEs");
 
         pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
         pinTo("Umbilical Cord Blood", "Blood Board");
@@ -25,14 +25,24 @@ public class PinTest extends BoardTest {
         
         goToBoard("Smoking Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
-        Assert.assertTrue(textPresent("Smoking History"));
-        Assert.assertTrue(textPresent("Form Element End Date"));
+        textPresent("Smoking History");
+        textPresent("Form Element End Date");
 
         goToBoard("Blood Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
-        Assert.assertTrue(textPresent("Laboratory Procedure Blood Urea Nitrogen"));
-        Assert.assertTrue(textPresent("Umbilical Cord Blood"));
-        
+        textPresent("Laboratory Procedure Blood Urea Nitrogen");
+        textPresent("Umbilical Cord Blood");
+
+        goToCdeByName("School special accommodation indicator");
+        clickElement(By.id("addToBoard"));
+        findElement(By.linkText("Blood Board")).click();
+        textPresent("Added to Board");
+        modalGone();
+        closeAlert();
+
+        goToBoard("Blood Board");
+        textPresent("School special accommodation indicator");
+
         removeBoard("Blood Board");
         removeBoard("Smoking Board");
 
