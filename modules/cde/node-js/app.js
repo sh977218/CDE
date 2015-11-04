@@ -503,9 +503,27 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        var exporter;
+        if (req.query.type==='csv') {
+            exporter = {
+                transformObject: exportShared.convertToCsv
+                , header: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
+                , delimiter: "\n"
+                , footer: ""
+                , type: 'text/csv'
+            };
+        }
+        if (req.query.type==='json') {
+            exporter = {
+                transformObject: function(c){return JSON.stringify(c)}
+                , header: "["
+                , delimiter: ",\n"
+                , footer: "]"
+                , type: 'appplication/json'
+            };
+        }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
+        return elastic_system.elasticSearchExport(res, query, 'cde', exporter);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
