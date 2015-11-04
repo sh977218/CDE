@@ -1,10 +1,14 @@
 <div tabset>
-    <div tab heading="CDE Quickboard ({{quickBoard.numberDisplay()}})">
+    <div tab heading="CDE Quickboard ({{quickBoard.numberDisplay()}})"
+         select="setDefaultQuickBoard('CDE Quickboard');"
+         active="getDefaultQuickBoard()=== 'CDE Quickboard' ? true : false">
         <div ng-controller="CdeQuickBoardCtrl" class="quickBoardContent">
             <div ng-include="'/cde/public/html/quickBoardContent.html'"></div>
         </div>
     </div>
-    <div tab heading="Form Quickboard ({{formQuickBoard.numberDisplay()}})">
+    <div tab heading="Form Quickboard ({{formQuickBoard.numberDisplay()}})"
+         select="setDefaultQuickBoard('Form Quickboard');"
+         active="getDefaultQuickBoard()=== 'Form Quickboard' ? true : false">
         <div ng-controller="FormQuickBoardCtrl" class="quickBoardContent">
             <div ng-include="'/cde/public/html/quickBoardContent.html'"></div>
         </div>
