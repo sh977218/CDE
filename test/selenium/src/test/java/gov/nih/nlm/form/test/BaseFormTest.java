@@ -16,12 +16,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
-    public void stopAddingQuestions() {
-        scrollToTop();
-        textPresent("Hide Question Search", By.id("startAddingQuestions"));
-        findElement(By.id("startAddingQuestions")).click();
-    }
-
     protected void saveForm() {
         scrollToViewById("openSaveBottom");
         findElement(By.id("openSaveBottom")).click();

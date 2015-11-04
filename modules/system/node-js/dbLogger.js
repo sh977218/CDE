@@ -4,14 +4,16 @@ var mongoose = require('mongoose')
     , logging = require('./logging')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
+    , mongoosastic = require('mongoosastic')
+    , elasticsearch = require('elasticsearch')
     ;
     
 var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
-var LogModel;
-var LogErrorModel;
-var ClientErrorModel;
-var StoredQueryModel;
-var FeedbackModel;
+
+var esClient = new elasticsearch.Client({
+    host: config.elastic.uri
+});
+
 
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
@@ -69,6 +71,12 @@ var storedQuerySchema= new mongoose.Schema(
         , selectedElements2: [String]
     }, { safe: {w: 0}});
 
+storedQuerySchema.plugin(mongoosastic, {
+    esClient: esClient
+    , index: config.elastic.storedQueryIndex.name
+    , type: "storedquery"
+});
+
 var feedbackIssueSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now, index: true }
     , user: {
@@ -85,16 +93,14 @@ var feedbackIssueSchema = new mongoose.Schema({
     , reportedUrl: String
 });
 
-var connectionEstablisher = connHelper.connectionEstablisher;
+var conn = connHelper.establihConnection(mongoLogUri);
+var LogModel = conn.model('DbLogger', logSchema);
+var LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
+var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
+var StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
+var FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 
-var iConnectionEstablisherLog = new connectionEstablisher(mongoLogUri, 'Logs');
-iConnectionEstablisherLog.connect(function(conn) {
-    LogModel = conn.model('DbLogger', logSchema);
-    LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-    ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
-    StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
-    FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
-});
+exports.StoredQueryModel = StoredQueryModel;
 
 exports.storeQuery = function(settings, callback) {
     var storedQuery = {
@@ -112,7 +118,6 @@ exports.storeQuery = function(settings, callback) {
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
-        return;
     } else {
         StoredQueryModel.findOneAndUpdate(
             {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
@@ -124,7 +129,6 @@ exports.storeQuery = function(settings, callback) {
             }
         );
     }
-
 };
 
 exports.log = function(message, callback) {    

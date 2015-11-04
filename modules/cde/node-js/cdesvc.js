@@ -4,7 +4,8 @@ var express = require('express')
   , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
   , adminSvc = require('../../system/node-js/adminItemSvc.js')
   , deepDiff = require('deep-diff')
-  ;
+    , elastic = require('../../cde/node-js/elastic')
+    ;
 
 exports.forks = function(req, res) {
     var cdeId = req.params.id;
@@ -56,14 +57,14 @@ exports.show = function(req, cb) {
 };
 
 exports.save = function (req, res) {
-    adminSvc.save(req, res, mongo_data);
+    adminSvc.save(req, res, mongo_data, function() {
+        elastic.fetchPVCodeSystemList();
+    });
 };
 
 exports.diff = function(newCde, oldCde) {
-  if (newCde.toObject) var newCdeObj = newCde.toObject();
-  else var newCdeObj = newCde;
-  if (oldCde.toObject) var oldCdeObj = oldCde.toObject();
-  else var oldCdeObj = oldCde;
+    var newCdeObj = newCde.toObject?newCde.toObject():newCde;
+    var oldCdeObj = oldCde.toObject?oldCde.toObject():oldCde;
   [newCdeObj, oldCdeObj].forEach(function(cde){
       delete cde._id;
       delete cde.updated;

@@ -48,9 +48,9 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
-        textPresent("NINDS (8");
+        textPresent("NINDS (9");
         searchNestedClassifiedForms();
-        textPresent("NINDS (40)");
+        textPresent("NINDS (44)");
         gotoClassifMgt();
         
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
@@ -60,13 +60,13 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         deleteNestedClassifTree();  
         searchNestedClassifiedCdes();
         hangon(3);
-        Assert.assertTrue(textNotPresent("NINDS (8)"));
+        textNotPresent("NINDS (9)");
         searchNestedClassifiedForms();
         hangon(1);
-        Assert.assertTrue(textNotPresent("NINDS (40)"));
+        textNotPresent("NINDS (44)");
 
         openClassificationAudit("NINDS > Disease > Epilepsy");
-        textPresent("867 elements");
+        textPresent("941 elements");
         textPresent("Delete NINDS > Disease > Epilepsy");
     }
     

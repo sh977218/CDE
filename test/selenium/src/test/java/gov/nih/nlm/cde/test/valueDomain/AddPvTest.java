@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class Pv2Test extends NlmCdeBaseTest {
+public class AddPvTest extends NlmCdeBaseTest {
     private PvValidatorTest pvValidator = new PvValidatorTest();
 
     @Test
