@@ -515,6 +515,23 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
+        findElement(By.id("passwd")).sendKeys(password);
+        waitAndClick(By.id("login_button"));
+        try {
+            textPresent(checkText);
+            // Assumption is that UMLS sometimes throws an error on login. With
+            // a socket hangup. login fails, we retry.
+        } catch (TimeoutException e) {
+            System.out.println("Login failed. Re-trying. error: "
+                    + e.getMessage());
+            System.out.println("*************checkText:" + checkText);
+            hangon(3);
+            findElement(By.id("login_button")).click();
+            textPresent(checkText);
+        }
+    }
+
+    protected void switchTabAndClose(int i) {
         hangon(1);
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
