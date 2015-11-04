@@ -18,6 +18,7 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys(search_input);
         findElement(By.id("search.submit")).click();
         textPresent("results for Winter will be cold");
+        waitForESUpdate();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("Wint");
         String search_string = findElement(By.xpath("//div[@id='searchDiv']//li[contains(@id,'typeahead-')][1]")).getText();
