@@ -775,7 +775,7 @@ div + .questionPlaceholder {
 }
 
 
-@media (min-resolution: 150dpi){
+@media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0){
     body{
         font-size: 20px;
     }
@@ -787,7 +787,7 @@ div + .questionPlaceholder {
     }
 }
 
-@media (min-resolution: 250dpi){
+@media (min-resolution: 250dpi), (-webkit-min-device-pixel-ratio: 3.0){
     body{
         font-size: 25px;
     }
