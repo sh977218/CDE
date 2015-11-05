@@ -75,7 +75,6 @@ body {
 .searchInfo {
     padding-top: 7px;
     padding-bottom: 7px;
-    overflow: hidden;
 }
 
 .searchInfoHr {
@@ -780,3 +779,6 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
+#exportEverything {
+    margin-top: 17px;
+}

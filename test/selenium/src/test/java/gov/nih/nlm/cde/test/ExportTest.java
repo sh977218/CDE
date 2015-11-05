@@ -15,9 +15,18 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void searchExport() {
-        String query = "{\"resultPerPage\":20,\"selectedOrg\":\"CTEP\",\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"], \"searchToken\":\"id8567429b\"}";
+        String query = "{\n" +
+                "\t\"resultPerPage\" : 20,\n" +
+                "\t\"selectedOrg\" : \"AECC\",\n" +
+                "\t\"selectedElements\" : [],\n" +
+                "\t\"selectedElementsAlt\" : [],\n" +
+                "\t\"includeAggregations\" : true,\n" +
+                "\t\"selectedStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
+                "\t\"visibleStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
+                "\t\"searchToken\" : \"id7e19889e\"\n" +
+                "}\n";
 
-        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde").asString();//.then().assertThat().contentType(ContentType.JSON);
+        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
 
         Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
 
@@ -25,10 +34,12 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Parkinson's\"");
-        findElement(By.id("exportSearch")).click();
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
         closeAlert();
-        findElement(By.id("exportSearch")).click();
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
         closeAlert();
         textPresent("server is busy processing");
@@ -83,14 +94,16 @@ public class ExportTest extends NlmCdeBaseTest {
     public void allExport() throws FileNotFoundException {
         String query = "{\"resultPerPage\":20,\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
 
-        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde").asString();//.then().assertThat().contentType(ContentType.JSON);
+        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
         Assert.assertTrue(response.contains("\"Substance Administration Intervention or Procedure Performed Study Activity Negation Occurrence Reason ISO21090.DSET.SC.v1.0\",\"\",\"ISO21090DSETv1.0\",\"\",\"caDSR: 3177152 v1\",\"caBIG\",\"Qualified\",\"\",\"caBIG\""));
         goToCdeSearch();
 
-        findElement(By.id("exportAllBtn")).click();
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
         closeAlert();
-        findElement(By.id("exportAllBtn")).click();
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
         closeAlert();
         textPresent("server is busy processing");
