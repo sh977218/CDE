@@ -55,8 +55,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Genotype Directed Therapy Based on Mutation Testing?");
         textPresent("non-enumerated");
         switchTabAndClose(0);
-
-    } 
+    }
     
     @Test
     public void vdInstruction() {
