@@ -29,16 +29,22 @@
     </div>
 
     <div>
-        <div class="row">
-            <div class="col-xs-10"><h3 class="">Browse by classification</h3></div>
-            <div class="col-xs-2" ng-if="!embedded && module==='cde'">
-                <a ng-controller="ExportCtrl" ng-click="exportSearchResults()">
-                    <button id="exportAllBtn" value="Export All" class="btn btn-default pull-right">
-                        <i class="fa" ng-class="feedbackClass"></i> Export All
+        <div class="">
+            <div class="pull-left"><h3 class="">Browse by classification</h3></div>
+            <div id="exportEverything" class="pull-right" ng-if="!embedded && module==='cde'">
+                <div class="btn-group pull-right" ng-controller="ExportCtrl">
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i>
+                        Export Search <span class="caret"></span>
                     </button>
-                </a>
+                    <ul class="dropdown-menu">
+                        <li><a id="csvExport" ng-click="exportSearchResults('csv')">CSV File</a></li>
+                        <li><a ng-click="exportSearchResults('json')">JSON File</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <div class="clearfix"></div>
         <div class="row">
             <span ng-if="orgs.length === 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="org in orgs | orderBy:'name'">
