@@ -38,7 +38,6 @@ public class FormSearch extends BaseFormTest {
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("Expand All");
         textNotPresent("Pin All");
-        textNotPresent("Export Search");
     }
     
 }
