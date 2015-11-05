@@ -3,16 +3,14 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.Test;
 
 public class NumberDatatypeTest extends NlmCdeBaseTest {
     @Test
     public void numberDatatype() {
         mustBeLoggedInAs(ninds_username, password);
-        String cdeName = "Risk Factor Questionnaire (RFQ) - aspirin pills per week value";
+        String cdeName = "Resource Utilization Group Version IV (RUG IV) - alpha-numeric code";
         goToCdeByName(cdeName);
         findElement(By.linkText("Permissible Values")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));

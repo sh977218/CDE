@@ -53,7 +53,7 @@ public class FormNamingTest extends BaseFormTest {
     @Test
     public void formReorderNamingTest() {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName("form for test cde reorder detail tabs", null);
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
@@ -62,12 +62,11 @@ public class FormNamingTest extends BaseFormTest {
         textPresent("Definition:");
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs"));
+        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("form for test cde reorder detail tabs 2"));
+        textPresent("form for test cde reorder detail tabs 3", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("form for test cde reorder detail tabs"));
-
+        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_0" + postfix));
     }
 
 

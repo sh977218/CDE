@@ -62,7 +62,6 @@ public abstract class PropertyTest extends CommonTest {
     }
 
     public void richText(String eltName, String status) {
-        mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
@@ -70,7 +69,6 @@ public abstract class PropertyTest extends CommonTest {
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
         findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
         textPresent("Hello From Selenium");
-        hangon(1);
     }
 
     public void truncateRichText(String eltName, String status) {
@@ -83,7 +81,6 @@ public abstract class PropertyTest extends CommonTest {
         hangon(1);
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        hangon(1);
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
@@ -103,7 +100,7 @@ public abstract class PropertyTest extends CommonTest {
 
     public void reorderPropertyTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, null);
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
@@ -112,10 +109,10 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Add Property");
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk1"));
+        textPresent("pk1", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        org.testng.Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_1" + postfix)).getText().contains("pk3"));
+        textPresent("pk3", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "dd_name_0" + postfix)).getText().contains("pk1"));
+        textPresent("pk1", By.xpath(prefix + "dd_name_0" + postfix));
     }
 }

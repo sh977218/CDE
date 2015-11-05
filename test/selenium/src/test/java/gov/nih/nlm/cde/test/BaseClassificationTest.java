@@ -17,12 +17,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     private void addClassificationMethodDo(String[] categories){
-
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch(Exception e) {
-
-        }
+        } catch(Exception e) {}
 
         textPresent(categories[1]);
 
@@ -32,9 +29,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
         try {
             closeAlert();
-        } catch(Exception e) {
+        } catch(Exception e) {}
 
-        }
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
         hangon(3);
         String selector = "";

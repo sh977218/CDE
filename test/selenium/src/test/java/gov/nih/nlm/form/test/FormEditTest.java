@@ -42,9 +42,9 @@ public class FormEditTest extends BaseFormTest {
     public void editSectionAndQuestions() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("History of Injury");
-        textPresent("Spinal cord injury type");
+        textPresent("Timeframe of onset of NTSCI");
         findElement(By.linkText("Form Description")).click();
-        textPresent("Main Section");
+        textPresent("N/A");
         editSection();
         editQuestion();
         saveForm();
@@ -83,16 +83,13 @@ public class FormEditTest extends BaseFormTest {
 
     private void editQuestion() {
         findElement(By.xpath("//*[@id='question_2']/div/div/div/div/div/h4/a")).click();
-        textPresent("0 or 1");
+        textPresent("Value List");
         scrollTo(findElement(By.xpath("//*[@id='question_2']")).getLocation().getY());
 
-
-        String newQuestionLabel = "N/A";
         findElement(By.xpath("//*[@id='dd_question_title_2']/i")).click();
         textPresent("Select a question label from a CDE Name");
         findElement(By.xpath("//*[@id='q_select_name_1']/div/button")).click();
-        textPresent(newQuestionLabel, By.xpath("//*[@id='dd_question_title_2']"));
-        hangon(1);
+        textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_2']"));
 
         String newQuestionInstruction = "New Question Instruction";
         findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/span/i")).click();

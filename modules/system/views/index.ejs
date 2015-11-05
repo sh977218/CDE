@@ -69,6 +69,7 @@
             window.formLoincRender = <%= config.modules.forms.loincRender %>;
             window.formLoincRenderUrl = '<%= config.modules.forms.loincRenderUrl %>';
             window.formEnabled = <%= config.modules.forms !== undefined %>;
+            window.userAlertTime = <%= config.userAlertTime || 5000 %>;
         })();
     </script>
 
