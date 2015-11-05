@@ -17,6 +17,7 @@ public class TwoLabelsNoVersion extends NlmCdeBaseTest {
         findElement(By.cssSelector("#q_select_name_1 button")).click();
         modalGone();
         textPresent("Second name for label", By.id("dd_question_title_0"));
+        clickElement(By.id("discardChanges"));
     }
 
 }
