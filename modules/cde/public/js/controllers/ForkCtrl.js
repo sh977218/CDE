@@ -1,11 +1,14 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route',
-    function($scope, $http, $modal, $window, userResource, $route) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
+    function($scope, $http, $modal, $window, userResource, $route, $log) {
         
     var getForks = function() {
+        $log.debug('ForkCtrl.getForks - executing');
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
-           $scope.forks = result.data; 
+            $log.debug('ForkCtrl.$http(/forks/) - returned');
+            $scope.forks = result.data;
         }, function (err) {
             $scope.addAlert("There was an issue retrieving forks for this element. ");
+            $log.error(err);
         });
     };
     
