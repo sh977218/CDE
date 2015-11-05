@@ -100,6 +100,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                   $scope.addAlert("success", res);
                   $scope.orgAdmins = $scope.getOrgAdmins();
                   $scope.myOrgAdmins = $scope.getMyOrgAdmins();
+            }, function (err) {
+                $scope.addAlert("danger", "There was an issue adding this administrator.");
             }
         );
         resetOrgAdminForm();
@@ -161,6 +163,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 $scope.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
                 $scope.newOrg = {};
+            }, function() {
+                $scope.alert("An error occured.");
             }
         );
     };

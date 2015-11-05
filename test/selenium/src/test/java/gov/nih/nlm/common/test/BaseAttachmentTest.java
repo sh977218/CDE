@@ -30,11 +30,10 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     protected void checkAttachmentReviewed(String name){        
         findElement(By.linkText("Attachments")).click();
         findElement(By.linkText(name)).click();
-        hangon(1);
         switchTab(1);
         textNotPresent("File not found");
         textNotPresent("This file has not been approved yet");
-        switchTabAndClose(0);        
+        switchTabAndClose(0);
     }
 
     protected void reviewAttachment(String name) {

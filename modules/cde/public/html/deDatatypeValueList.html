@@ -45,10 +45,10 @@
                  on-ok="stageElt(elt); runDelayedManualValidation();"></div>
         </td>
         <td tabindex="0" headers="validation" ng-show="vsacMappingExists() || compareView">
-                 <span ng-switch="pv.isValid">
-                     <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
-                     <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
-                 </span>
+             <span ng-switch="pv.isValid">
+                 <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
+                 <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
+             </span>
         </td>
         <td tabindex="0" headers="actions" ng-if="canCurate">
             <span ng-if="pv.notValid">

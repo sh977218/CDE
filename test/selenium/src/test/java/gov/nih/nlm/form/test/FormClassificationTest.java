@@ -28,19 +28,19 @@ public class FormClassificationTest extends BaseFormTest {
     public void classifyFormCdes() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
-        goToFormByName("Intraoperative Management");
+        goToFormByName("Deployment Risk and Resiliency Inventory, Version 2 (Combat)");
         findElement(By.linkText("Classification")).click();
         findElement(By.id("classifyAllCdes")).click();
         clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
         clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
-        goToCdeByName("Inadvertent hypocapnia indicator");
+        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Combat patrol frequency scale");
         findElement(By.linkText("Classification")).click();
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
-        goToCdeByName("Foley catheter indicator");
+        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Witness enemy serious injury casuality frequency scale");
         findElement(By.linkText("Classification")).click();
         textPresent("ABTC");
         textPresent("ABTC 0904");

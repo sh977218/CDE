@@ -72,7 +72,7 @@ angular.module('systemModule').controller('MainCtrl',
                     $scope.alerts.splice(i, 1);
                 }
             }
-        }, 5000);
+        }, window.userAlertTime);
     };
     
     $scope.boards = [];
