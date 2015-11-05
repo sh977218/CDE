@@ -32,7 +32,6 @@ var spawnChild = function() {
     spawned = spawn(nodeProcess, ['--harmony', 'app'], opts);
     setTimeout(function() {
         getHosts();
-
     }, 10 * 1000)
 };
 
@@ -48,7 +47,7 @@ var initKibana = function() {
     console.log("Cleaning Kibana");
     // start by removing everything from each kibana index
     kibanaData.hits.hits.forEach(function(hit) {
-        request.del(config.elastic.hosts[0] + "/" + hit._index + "/" + hit._type).on("error", function(err){
+        request.del(config.elastic.hosts[0] + "/" + hit._index + "/" + hit._type).on("error", function(){
             console.log("Unable to empty index");
         });
     });
@@ -62,7 +61,7 @@ var initKibana = function() {
                 , method: "PUT"
                 , json: true
                 , body: hit._source
-            }).on("error", function (err) {
+            }).on("error", function () {
                 console.log("Unable to empty index");
             });
         });
@@ -123,7 +122,7 @@ app.post('/deploy', multer(), function(req, res) {
             var gzPath = config.pm.tempDir + "deploy.tar.gz";
             if (fs.existsSync(gzPath)) fs.unlinkSync(gzPath);
             var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
-            gpg.on('error', function (err) {
+            gpg.on('error', function () {
                 res.status(500).send("Error decrypting file");
             });
             gpg.on('close', function (code) {
