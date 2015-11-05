@@ -17,6 +17,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             };
             $scope.openCloseAll(QuickBoard.elts, "quickboard");
             $scope.setDefaultQuickBoard = function (selectedQuickBoard) {
+                $scope.eltsToCompareMap = {};
                 localStorageService.set("defaultQuickBoard", selectedQuickBoard);
             };
             $scope.tabs = {
@@ -47,7 +48,13 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
             };
+            $scope.eltsToCompareMap = {};
             $scope.checkboxClick = function (elt, $event) {
+                if ($scope.eltsToCompareMap[elt.tinyId])
+                    delete $scope.eltsToCompareMap[elt.tinyId];
+                else {
+                    $scope.eltsToCompareMap[elt.tinyId] = elt;
+                }
                 $event.stopPropagation();
             };
             $scope.includeInAccordion = ["/cde/public/html/accordion/quickBoardAccordionActions.html"];

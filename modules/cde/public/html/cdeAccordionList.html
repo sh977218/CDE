@@ -6,7 +6,8 @@
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
-                <input type="checkbox" ng-checked="elt.checked" ng-click="checkboxClick(elt, $event)"/>
+                <input type="checkbox" ng-checked="elt.checked" ng-click="checkboxClick(elt, $event)"
+                       ng-if="ejsPage=='quickboard'"/>
                 <a href tabindex="0" class="nonLinkAnchor">
                     <span role="link" ng-bind-html="elt.naming[0].designation" id="acc_link_{{$index}}"
                           class="hand-cursor"></span></a>

@@ -20,7 +20,8 @@
             </button>
         </div>
         <div class="btn-group" ng-controller="ExportCtrl">
-            <button id="qb.export" value="Export Quick Board" ng-click="quickBoardExport(quickBoard)" class="btn btn-default">
+            <button id="qb.export" value="Export Quick Board" ng-click="quickBoardExport(quickBoard)"
+                    class="btn btn-default">
                 <i class="fa fa-download"></i> Export Quick Board
             </button>
         </div>
@@ -48,7 +49,7 @@
         </span>
 
         <div ng-if="listViewType === 'sideBySide'">
-            <div ng-include="'/' + module + '/public/html/' + module + 'Compare.html'"></div>
+            <div ng-include="'/system/public/html/eltsCompare.html'"></div>
         </div>
     </div>
 </div>
