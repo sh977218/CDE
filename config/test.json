@@ -52,15 +52,5 @@
     "storedQueryIndex": {"name": "storedquerytest"},
     "storedQueryRiver": {"name": "storedquerytest"}
   }
-  , "elastic": {
-    "index": {"name": "cdetest"},
-    "river": {"name": "cdetest"},
-    "formIndex": {"name": "formtest"},
-    "formRiver": {"name": "formtest"},
-    "boardIndex": {"name": "boardtest"},
-    "boardRiver": {"name": "boardtest"},
-    "storedQueryIndex": {"name": "storedquerytest"},
-    "storedQueryRiver": {"name": "storedquerytest"}
-  }
 }
 
