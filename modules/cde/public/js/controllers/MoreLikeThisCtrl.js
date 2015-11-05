@@ -1,6 +1,8 @@
 angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$location'
-        , function($scope, $http, $location) {
-
+        , function($scope, $http, $location)
+{
+    $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+        "/cde/public/html/accordion/addToQuickBoardActions.html"];
 
     $scope.view = function(cde, event) {
         $scope.interruptEvent(event);

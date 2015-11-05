@@ -49,7 +49,9 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
         } else {
             $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
         }
-    }
+    };
+
+    $scope.includeInAccordion = ["/cde/public/html/accordion/quickBoardAccordionActions.html"];
 }]);
 
 angular.module('cdeModule').controller('CdeQuickBoardCtrl',

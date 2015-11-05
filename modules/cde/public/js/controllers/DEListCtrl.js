@@ -3,6 +3,9 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.module = "cde";
         $scope.quickBoard = QuickBoard;
 
+        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+            "/cde/public/html/accordion/addToQuickBoardActions.html"];
+
         userResource.getPromise().then(function () {
             $scope.search("cde");
         });
