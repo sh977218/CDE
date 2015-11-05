@@ -46,6 +46,7 @@ exports.projectCdeForExport = function (ele) {
 }
 
 exports.convertToCsv = function (ele) {
+    ele = exports.projectCdeForExport(ele);
     var sanitize = function (v) {
         return v.trim().replace(/\"/g, "\"\"");
     };
@@ -62,7 +63,7 @@ exports.convertToCsv = function (ele) {
         }
         row += "\",";
     });
-    return row + "\n";
+    return row;
 };
 
 exports.nocacheMiddleware = function(req, res, next) {
