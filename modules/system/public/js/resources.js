@@ -176,20 +176,20 @@ angular.module('resourcesSystem', ['ngResource'])
         };
 
         this.updateSearchSettings = function (settings) {
-            if (!userResource.user.username) return;
+            if (!userResource.user || !userResource.user.username) return;
             $http.post("/user/update/searchSettings", settings);
         };
         return this;
     })
-    .factory("CsvDownload", function ($window) {
+    .factory("CsvDownload", function () {
         return {
             export: function (elts) {
                 var str = '';
                 for (var i = 0; i < elts.length; i++) {
                     var line = '';
-                    for (var index in elts[i]) {
-                        line += '"' + elts[i][index] + '",';
-                    }
+                    elts.forEach(function (elt) {
+                        line += '"' + elt[index] + '",';
+                    });
                     line.slice(0, line.Length - 1);
                     str += line + '\r\n';
                 }
@@ -200,7 +200,7 @@ angular.module('resourcesSystem', ['ngResource'])
     .factory("AutoCompleteResource", function ($http) {
         return {
             suggest: function (searchTerm) {
-                return $http.get('/cdeCompletion/' + searchTerm, {}).then(function (response) {
+                return $http.get('/cdeCompletion/' + encodeURIComponent(searchTerm), {}).then(function (response) {
                     return response.data;
                 });
             }
@@ -221,3 +221,5 @@ angular.module('resourcesSystem', ['ngResource'])
         result.restoreFromLocalStorage();
         return result;
     });
+;
+

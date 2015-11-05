@@ -45,7 +45,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
             '</span>' +
             '<form name="inlineForm" ng-show="editMode">' +
-            '<input name="inlineInput" type="{{inputType}}" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
+            '<input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
             '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
             '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
             '</form>' +

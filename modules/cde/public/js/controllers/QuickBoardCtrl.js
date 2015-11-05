@@ -30,9 +30,23 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                     heading: "Form Quickboard (" + $scope.quickBoard.numberDisplay() + ")"
                 }
             };
+            $scope.exportQuickBoard = function () {
+                var result = exports.exportHeader.cdeHeader;
+                $scope.cdes.forEach(function (ele) {
+                    result += exports.convertToCsv(ele);
+                });
+                if (result) {
+                    var blob = new Blob([result], {
+                        type: "text/csv"
+                    });
+                    saveAs(blob, 'QuickBoardExport' + '.csv');
+                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.feedbackClass = ["fa-download"];
+                } else {
+                    $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+                }
+            }
         }]);
-
-
 angular.module('cdeModule').controller('CdeQuickBoardCtrl',
     ['$scope', 'QuickBoard',
         function ($scope, QuickBoard) {

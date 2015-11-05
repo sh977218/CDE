@@ -48,7 +48,7 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
             .success(function (response) {
                 var result = exports.exportHeader.cdeHeader;
                 response.cdes.forEach(function (ele) {
-                    result += exports.convertToCsv(exports.projectCdeForExport(ele));
+                    result += exports.convertToCsv(ele);
                 });
                 if (result) {
                     var blob = new Blob([result], {

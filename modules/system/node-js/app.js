@@ -28,15 +28,13 @@ exports.init = function(app) {
     };
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
-    
-    var viewConfig = {modules: config.modules, webtrends: config.webtrends, maxPin: config.maxPin};
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
         app.get(path, function(req, res) {
-            res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+            res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
         });
     });
 
@@ -116,7 +114,7 @@ exports.init = function(app) {
     });
     
     app.get('/', function(req, res) {
-        res.render('index', 'system', {config: viewConfig, loggedIn: req.user?true:false});
+        res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
     });
 
     app.get('/gonowhere', function(req, res) {

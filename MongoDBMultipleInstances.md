@@ -23,14 +23,14 @@ db.createUser( {
     user: "siteRootAdmin",
     pwd: "password",
     roles: [ { role: "root", db: "admin" },
-			{ role: "dbAdmin", db: "test" },			
+			{ role: "dbAdmin", db: "test" },
 			{ role: "dbAdmin", db: "cde-logs-test" } ]
   });
 
 Step 3: restart mongo instances with auth enabled
 mongod --config ../mongo/mongodb1.conf
 mongod --config ../mongo/mongodb2.conf
-  
+
 Step 4: import data
 mongo test deploy/dbInit.js -u siteRootAdmin -p password -authenticationDatabase admin
 mongo test test/data/testForms.js -u siteRootAdmin -p password -authenticationDatabase admin

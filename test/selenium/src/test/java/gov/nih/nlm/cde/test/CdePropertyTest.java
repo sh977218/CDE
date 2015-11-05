@@ -22,6 +22,7 @@ public class CdePropertyTest extends PropertyTest {
 
     @Test
     public void richPropText() {
+        mustBeLoggedInAs(ninds_username, password);
         richText("Imaging diffusion sixth b value", null);
     }
 

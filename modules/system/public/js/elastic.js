@@ -93,9 +93,13 @@ angular.module('ElasticSearchResource', ['ngResource'])
             if (matched  === "flatIds") field = "Identifier";
             cde.highlight.matchedBy = field;
         }
-        , getExport: function(query, type, cb) {
-            $http.post("/elasticSearchExport/" + type, query)
-            .success(function (response) {
+        , getExport: function(query, type, output, cb) {
+            $http({
+                url: "/elasticSearchExport/" + type + '?type=' + output
+                , method: "POST"
+                , data: query
+                , transformResponse: function(a){return a;}
+            }).success(function (response) {
                 cb(response);
             })
             .error(function(data, status, headers, config) {
