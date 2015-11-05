@@ -260,6 +260,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.selectedOrg = $routeParams.selectedOrg;
         $scope.searchSettings.selectedOrgAlt = $routeParams.selectedOrgAlt;
         if ($routeParams.selectedOrgAlt) $scope.altClassificationFilterMode = true;
+        else $scope.altClassificationFilterMode = false;
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
