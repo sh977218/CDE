@@ -10,6 +10,7 @@
                 <dl class="dl-horizontal">
                     <dt>Status: </dt><dd ng-bind="getNodeStatus(status)"></dd>
                     <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
+                    <dt>UpTime: </dt><dd>{{status.startupDate | timeAgo}}</dd>
                     <dt>PM Port: </dt><dd>{{status.pmPort}}</dd>
                 </dl>
                 <a type="button" class="btn btn-danger fa fa-power-off" ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>
