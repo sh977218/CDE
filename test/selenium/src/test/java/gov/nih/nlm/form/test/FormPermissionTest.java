@@ -12,9 +12,9 @@ public class FormPermissionTest extends BaseFormTest {
     @Test
     public void formPermissionTest() {
         mustBeLoggedInAs(ninds_username, password);
-        String formName = "Form Permission Test";
+        String formName = "Fixed Dynamometry";
 
-        goToFormByName(formName, "Recorded");
+        goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();
 
         String sec1 = "test permission section";
@@ -23,7 +23,7 @@ public class FormPermissionTest extends BaseFormTest {
         saveForm();
 
         mustBeLoggedInAs(ctepCurator_username, password);
-        goToFormByName(formName, "Recorded");
+        goToFormByName(formName);
         findElement(By.linkText("Form Description")).click();
         textNotPresent("Delete");
         textNotPresent("Add Section");
