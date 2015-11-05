@@ -73,6 +73,11 @@ public class NlmCdeBaseTest {
     protected static String password = "pass";
 
     @BeforeTest
+    public void countElasticElements(){
+        System.out.println("nb of records: " + get(baseUrl + "/elasticSearch/count").asString());
+    }
+
+    @BeforeTest
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {

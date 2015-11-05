@@ -179,7 +179,10 @@ angular.module('systemModule').controller('ListCtrl',
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
-        if (!userResource.user) return;
+        if (!userResource.user) {
+            $log.debug("no user");
+            return;
+        }
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
