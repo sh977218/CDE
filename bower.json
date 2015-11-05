@@ -22,7 +22,8 @@
     "angularjs-camelCase-human": "*",
     "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
-    "ng-file-upload": "3.3.3"
+    "ng-file-upload": "3.3.3",
+    "deep-diff": "0.3.0"
   },
   "resolutions": {
     "angular": "1.4.3"

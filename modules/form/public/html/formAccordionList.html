@@ -1,7 +1,7 @@
 <div accordion close-others="false">
     <div accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen">
         <div accordion-heading ng-controller="AccordionCtrl">
-            <input type="checkbox" ng-checked="elt.checked" ng-click="checkboxClick(elt, $event)"/>
+            <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
             <a href tabindex="0" class="nonLinkAnchor">
                 <span ng-bind-html="elt.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
             <a ng-href="/formView?tinyId={{elt.tinyId}}" tabindex="0" class="nonLinkAnchor"

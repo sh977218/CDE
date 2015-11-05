@@ -58,6 +58,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 $event.stopPropagation();
             };
             $scope.includeInAccordion = ["/cde/public/html/accordion/quickBoardAccordionActions.html"];
+            $scope.includeInQuickBoard = ["/cde/public/html/accordion/quickBoardCompareCheckbox.html"];
         }]);
 
 angular.module('cdeModule').controller('CdeQuickBoardCtrl',
