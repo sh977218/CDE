@@ -89,13 +89,7 @@ exports.init = function (app, daoManager) {
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
-<<<<<<< HEAD
             exportCde = exportShared.stripBsonIds(exportCde);
-=======
-            delete exportCde._id;
-            delete exportCde.history;
-            delete exportCde.updatedBy.userId;
->>>>>>> 73f319a4ff782de830610269da7f5180837191e5
             res.send(js2xml("dataElement", exportCde));
         }
 
