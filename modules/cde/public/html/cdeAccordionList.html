@@ -1,7 +1,6 @@
 <div accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen">
-            {{acc_index = $index}}
+        <div accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen" ng-init="acc_index = $index">
             <div accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
@@ -25,7 +24,7 @@
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/generalDetails.html'"></div>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12" ng-if="cde.valueDomain.datatype === 'Value List'">
+                <div class="col-md-4 col-sm-6 col-xs-12" ng-if="elt.valueDomain.datatype === 'Value List'">
                     <div ng-include="'/cde/public/html/cdeList/valueDomain.html'"></div>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12">
