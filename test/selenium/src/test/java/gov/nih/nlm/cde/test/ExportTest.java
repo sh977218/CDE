@@ -28,9 +28,6 @@ public class ExportTest extends NlmCdeBaseTest {
 
         String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
 
-        System.out.println("here we go: ");
-        System.out.println(response);
-
         Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
 
         goToCdeSearch();
