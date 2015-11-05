@@ -173,7 +173,7 @@ setInterval(function() {
 
 setInterval(function() {
     var server = {hostname: config.hostname, port: config.port, nodeStatus: "Running",
-        elastic:status.statusReport.elastic, pmPort: config.pm.port};
+        elastic:status.statusReport.elastic, pmPort: config.pm.port, updateTime};
     mongo_data_system.updateClusterHostStatus(server);
 }, config.status.timeouts.clusterStatus * 1000);
 

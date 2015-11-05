@@ -32,6 +32,7 @@ var spawnChild = function() {
     spawned = spawn(nodeProcess, ['--harmony', 'app'], opts);
     setTimeout(function() {
         getHosts();
+
     }, 10 * 1000)
 };
 
