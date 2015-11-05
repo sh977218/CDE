@@ -708,12 +708,6 @@ button#selectDefault {
     height: 140px;
 }
 
-.welcomeSearchOrganizationBox:hover {
-    display: block;
-    height: 140px;
-    content: ".";
-}
-
 .welcomeSearchSearch {
     margin: 65px 0px;
 }
@@ -777,6 +771,34 @@ div + .questionPlaceholder {
     border: 1px solid #bce8f1;
     margin-bottom: 20px;
     border-radius: 5px;
+}
+
+@media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0) {
+    body {
+        font-size: 20px;
+    }
+
+    .welcomeSearchOrganizationBox {
+        height: 185px;
+    }
+
+    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
+        font-size: 20px;
+    }
+}
+
+@media (min-resolution: 250dpi), (-webkit-min-device-pixel-ratio: 3.0) {
+    body {
+        font-size: 25px;
+    }
+
+    .welcomeSearchOrganizationBox {
+        height: 205px;
+    }
+
+    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
+        font-size: 25px;
+    }
 }
 
 .quickBoardContent {
