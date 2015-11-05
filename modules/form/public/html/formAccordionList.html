@@ -1,15 +1,16 @@
 <div accordion close-others="false">
-    <div accordion-group ng-repeat="form in forms track by $index" is-open="form.isOpen">
+    <div accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen">
         <div accordion-heading ng-controller="AccordionCtrl">
+            <input type="checkbox" ng-checked="elt.checked" ng-click="checkboxClick(elt, $event)"/>
             <a href tabindex="0" class="nonLinkAnchor">
-                <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
-            <a ng-href="/formView?tinyId={{form.tinyId}}" tabindex="0" class="nonLinkAnchor"
-               ng-click="view(form,$event)">
+                <span ng-bind-html="elt.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
+            <a ng-href="/formView?tinyId={{elt.tinyId}}" tabindex="0" class="nonLinkAnchor"
+               ng-click="view(elt,$event)">
                 <i class="fa fa-eye hand-cursor" title="View Full Detail"
                    role="link" id="eyeLink_{{$index}}"></i></a>
 
-            <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(form)"
-               ng-click="interruptEvent($event); quickBoard.add(form)">
+            <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"
+               ng-click="interruptEvent($event); quickBoard.add(elt)">
                 <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                    role="link"></i></a>
 
@@ -18,7 +19,7 @@
                 <i class="glyphicon glyphicon-remove hand-cursor" title="remove" id="remove_{{$index}}"
                    role="link"></i></a>
 
-            <small id="nQuestion-{{$index}}" class="pull-right">{{form.numQuestions}} questions</small>
+            <small id="nQuestion-{{$index}}" class="pull-right">{{elt.numQuestions}} questions</small>
         </div>
 
         <div class="row">
@@ -26,38 +27,38 @@
                 <h4 tabindex="0">General Details</h4>
                 <dl class="dl-horizontal">
                     <dt tabindex="0">Name:</dt>
-                    <dd tabindex="0" id="dd_general_name" ng-bind-html="form.naming[0].designation">
+                    <dd tabindex="0" id="dd_general_name" ng-bind-html="elt.naming[0].designation">
                     </dd>
                     <dt tabindex="0">Steward:</dt>
-                    <dd tabindex="0" ng-bind-html="form.stewardOrg.name"></dd>
+                    <dd tabindex="0" ng-bind-html="elt.stewardOrg.name"></dd>
                     <dt tabindex="0">Definition:</dt>
-                    <dd tabindex="0" id="dd_def" ng-bind-html="form.naming[0].definition | placeholdEmpty"></dd>
-                    <dt tabindex="0" ng-show="form.classification.length > 0">Used By:</dt>
-                    <dd tabindex="0" ng-show="form.classification.length > 0" id="dd_usedBy">
-                        <span ng-switch="form.classification.length > 0">
+                    <dd tabindex="0" id="dd_def" ng-bind-html="elt.naming[0].definition | placeholdEmpty"></dd>
+                    <dt tabindex="0" ng-show="elt.classification.length > 0">Used By:</dt>
+                    <dd tabindex="0" ng-show="elt.classification.length > 0" id="dd_usedBy">
+                        <span ng-switch="elt.classification.length > 0">
                             <span ng-switch-when="false">None</span>
                             <span ng-switch-default>
-                                <span ng-repeat="cl in form.classification">{{cl.stewardOrg.name}} </span>
+                                <span ng-repeat="cl in elt.classification">{{cl.stewardOrg.name}} </span>
                             </span>
                         </span>
                     </dd>
                     <dt tabindex="0" id="dt_status">Status:</dt>
-                    <dd tabindex="0" id="dd_status">{{form.registrationState.registrationStatus}}</dd>
+                    <dd tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
                 </dl>
             </div>
             <div class="col-md-2">
-                <img ng-repeat="attachment in form.attachments | filter:{isDefault:true}"
-                     alt="Image attached to the form"
+                <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"
+                     alt="Image attached to the elt"
                      ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
             </div>
         </div>
 
         <div class="row">
-            <a tabindex="0" ng-if="quickBoard.canAddElt(form)" class="btn btn-small btn-default"
-               ng-click="quickBoard.add(form)" id="compare_{{$index}}">
+            <a tabindex="0" ng-if="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
+               ng-click="quickBoard.add(elt)" id="compare_{{$index}}">
                 <i class="fa fa-plus"></i> Add to Quick Board</a>
             <a class='btn btn-small btn-default' id="openEltInCurrentTab_{{$index}}"
-               ng-href="/#/formView?tinyId={{form.tinyId}}" title="Full Detail for {{form.naming[0].designation}}"><i
+               ng-href="/#/formView?tinyId={{elt.tinyId}}" title="Full Detail for {{elt.naming[0].designation}}"><i
                     class="fa fa-eye"></i> View Full Detail</a>
         </div>
     </div>
