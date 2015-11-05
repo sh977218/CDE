@@ -2,7 +2,7 @@
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
 <head>
     <title ng-bind="$root.pageMeta.title">NIH CDE Repository</title>
-    <meta name="site-version" content="<%- include version.ejs %>">
+    <meta name="site-version" ng-include="'/system/public/html/version.html'"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="description" content="{{$root.pageMeta.description}}"/>
     <meta name="keywords" content="{{$root.pageMeta.keywords}}"/>
