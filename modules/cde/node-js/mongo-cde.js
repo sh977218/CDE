@@ -21,18 +21,16 @@ var PinningBoard;
 var User;
 var CdeAudit;
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-var connection = null;
-
-var iConnectionEstablisherCde = new connectionEstablisher(mongoUri, 'CDE');
-iConnectionEstablisherCde.connect(function (conn) {
+var createModels = function(conn) {
     DataElement = conn.model('DataElement', schemas.dataElementSchema);
-    exports.DataElement = DataElement;
     PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
     User = conn.model('User', schemas_system.userSchema);
     CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-    connection = conn;
-});
+    exports.DataElement = DataElement;
+};
+
+var connection = connHelper.establihConnection(mongoUri, createModels);
+createModels(connection);
 
 var mongo_data = this;
 
@@ -43,7 +41,7 @@ exports.exists = function (condition, callback) {
 };
 
 exports.boardsByUserId = function (userId, callback) {
-    PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
+    PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
     });
 };
@@ -272,6 +270,7 @@ exports.newBoard = function (board, callback) {
     });
 };
 
+// TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
     mongooseObject.save(function (err) {
         callback(err, mongooseObject);
@@ -385,7 +384,7 @@ exports.query = function (query, callback) {
 
 exports.transferSteward = function (from, to, callback) {
     DataElement.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
-        callback(err, result);
+        callback(err, result.nModified);
     });
 };
 
@@ -462,8 +461,8 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function (doc, cb) {
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err, de) {
+var correctBoardPinsForCde = function(doc, cb){
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
         if (err) throw err;
         if (cb) cb();
     });

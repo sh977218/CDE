@@ -75,7 +75,6 @@ body {
 .searchInfo {
     padding-top: 7px;
     padding-bottom: 7px;
-    overflow: hidden;
 }
 
 .searchInfoHr {
@@ -774,7 +773,6 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
-
 @media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0){
     body{
         font-size: 20px;
@@ -797,4 +795,7 @@ div + .questionPlaceholder {
     .panel-title, .btn, .dropdown-menu>li>a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
         font-size: 25px;
     }
+}
+#exportEverything {
+    margin-top: 17px;
 }

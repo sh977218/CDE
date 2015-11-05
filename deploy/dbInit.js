@@ -64,7 +64,7 @@ var users = [
     , {username: 'selenium', password: 'pass', orgAdmin: [], orgCurator: ["SeleniumOrg"], quota: 1073741824, viewHistory: []}
     , {username: 'pinAllBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []}
     , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
-
+    , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: []}
 ];
 
 users.forEach(function(u) {
