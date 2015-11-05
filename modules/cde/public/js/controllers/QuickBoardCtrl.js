@@ -22,13 +22,20 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.getDefaultQuickBoard = function () {
                 return localStorageService.get("defaultQuickBoard");
             };
-
+            $scope.tabs = {
+                cdeQuickBoard: {
+                    heading: "CDE Quickboard (" + $scope.quickBoard.numberDisplay() + ")"
+                },
+                formQuickBoard: {
+                    heading: "Form Quickboard (" + $scope.quickBoard.numberDisplay() + ")"
+                }
+            };
         }]);
 
 
 angular.module('cdeModule').controller('CdeQuickBoardCtrl',
-    ['$scope', 'QuickBoard', 'localStorageService',
-        function ($scope, QuickBoard, localStorageService) {
+    ['$scope', 'QuickBoard',
+        function ($scope, QuickBoard) {
             $scope.module = 'cde';
             $scope.quickBoard = QuickBoard;
             $scope.cdes = QuickBoard.elts;
@@ -37,8 +44,8 @@ angular.module('cdeModule').controller('CdeQuickBoardCtrl',
         }]);
 
 angular.module('cdeModule').controller('FormQuickBoardCtrl',
-    ['$scope', 'FormQuickBoard', 'localStorageService',
-        function ($scope, FormQuickBoard, localStorageService) {
+    ['$scope', 'FormQuickBoard',
+        function ($scope, FormQuickBoard) {
             $scope.module = 'form';
             $scope.quickBoard = FormQuickBoard;
             $scope.forms = FormQuickBoard.elts;
