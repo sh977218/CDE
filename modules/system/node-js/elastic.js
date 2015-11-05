@@ -3,11 +3,11 @@ var config = require('./parseConfig')
     , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
-    , exportShared = require('../../system/shared/exportShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
+    , cdesvc = require('../../cde/node-js/cdesvc')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -367,8 +367,10 @@ exports.elasticsearch = function (query, type, cb) {
 
 var lock = false;
 
-exports.elasticSearchExport = function (res, query, type, converter, header) {
+exports.elasticSearchExport = function (res, query, type, exporter) {
     if (lock) return res.status(503).send("Servers busy");
+
+    res.type(exporter.type);
 
     lock = true;
 
@@ -378,8 +380,10 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    res.write(header);
+    if (exporter.header) res.write(exporter.header);
     search.body = query;
+
+    var sentElements = 0;
 
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
@@ -388,20 +392,23 @@ exports.elasticSearchExport = function (res, query, type, converter, header) {
                     lock = false;
                     logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
                         {
-                            origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                            details: "body " + body
+                            origin: "system.elastic.elasticsearch", stack: new Error().stack
                         });
                     res.status(500).send("ES Error");
                 } else {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
+                        if (exporter.footer) res.write(exporter.footer);
                         res.send();
                     }
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(converter(exportShared.projectCdeForExport(thisCde)));
+                            res.write(exporter.transformObject(cdesvc.hideProprietaryPvs(thisCde)));
+                            sentElements++;
+                            var isLast = sentElements === response.hits.total;
+                            if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }
