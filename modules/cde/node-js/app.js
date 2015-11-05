@@ -25,8 +25,6 @@ var cdesvc = require('./cdesvc')
 
 exports.init = function (app, daoManager) {
 
-    var viewConfig = {modules: config.modules};
-
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     daoManager.registerDao(mongo_data);
@@ -91,7 +89,13 @@ exports.init = function (app, daoManager) {
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
+<<<<<<< HEAD
             exportCde = exportShared.stripBsonIds(exportCde);
+=======
+            delete exportCde._id;
+            delete exportCde.history;
+            delete exportCde.updatedBy.userId;
+>>>>>>> 73f319a4ff782de830610269da7f5180837191e5
             res.send(js2xml("dataElement", exportCde));
         }
 
@@ -184,7 +188,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.post('/board', function (req, res, next) {
+    app.post('/board', function (req, res) {
         var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function (user, shareStatus) {
             return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
@@ -197,25 +201,19 @@ exports.init = function (app, daoManager) {
                     userId: req.user._id
                     , username: req.user.username
                 };
-                if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
-                async.parallel([
-                        function (callback) {
-                            mongo_data.newBoard(board, function (err, newBoard) {
-                                callback(err, newBoard);
-                            });
-                        },
-                        function (callback) {
-                            mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
-                                callback(err, nbBoards);
-                            });
-                        }
-                    ],
-                    function (err, results) {
-                        if (results[1] < boardQuota) return res.send(results[0]);
-                        mongo_data.removeBoard(results[0]._id);
+                if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
+                    return res.status(403).send("You don't have permission to make boards public!");
+                }
+                mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                    if (nbBoards < boardQuota) {
+                        mongo_data.newBoard(board, function (err, newBoard) {
+                            if (err) res.status(500).send("An error occurred. ");
+                            res.send();
+                        });
+                    } else {
                         res.status(403).send("You have too many boards!");
-                    });
-
+                    }
+                });
             } else {
                 mongo_data.boardById(board._id, function (err, b) {
                     if (err) {
@@ -230,14 +228,18 @@ exports.init = function (app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
-                    if (checkUnauthorizedPublishing(req.user, b.shareStatus)) return res.status(403).send("You don't have permission to make boards public!");
-                    return mongo_data.save(b, function (err) {
-                        if (err) logging.errorLogger.error("Cannot save board", {
-                            origin: "cde.app.board",
-                            stack: new Error().stack,
-                            request: logging.generateErrorLogRequest(req),
-                            details: "board._id " + board._id
-                        });
+                    if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
+                        return res.status(403).send("You don't have permission to make boards public!");
+                    }
+                    b.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Cannot save board", {
+                                origin: "cde.app.board",
+                                stack: new Error().stack,
+                                request: logging.generateErrorLogRequest(req),
+                                details: "board._id " + board._id
+                            });
+                        }
                         res.send(b);
                     });
                 });
@@ -253,7 +255,7 @@ exports.init = function (app, daoManager) {
                 if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                     res.send("You must own the board that you wish to delete.");
                 }
-                mongo_data.removeBoard(req.params.boardId, function (err) {
+                mongo_data.removeBoard(req.params.boardId, function () {
                     res.send("Board Removed.");
                 });
             });
@@ -385,7 +387,7 @@ exports.init = function (app, daoManager) {
     });
 
     var fetchRemoteData = function () {
-        vsac.getTGT(function (tgt) {
+        vsac.getTGT(function () {
             console.log("Got TGT");
         });
 
@@ -438,7 +440,6 @@ exports.init = function (app, daoManager) {
     app.post("/systemAlert", function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             systemAlert = req.body.alert;
-            console.log("system: " + systemAlert);
             res.send("OK");
         } else {
             res.status(401).send("Not Authorized");
@@ -559,9 +560,11 @@ exports.init = function (app, daoManager) {
         var result = [];
         var term = req.params.term;
         elastic_system.completionSuggest(term, function (resp) {
-            resp.search_suggest[0].options.map(function (item) {
-                result.push(item.text);
-            });
+            if (resp.search_suggest) {
+                resp.search_suggest[0].options.map(function (item) {
+                    result.push(item.text);
+                });
+            }
             res.send(result);
         })
     });

@@ -1,10 +1,12 @@
 angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route',
     function($scope, $http, $modal, $window, userResource, $route) {
-    
+        
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
            $scope.forks = result.data; 
-        }); 
+        }, function (err) {
+            $scope.addAlert("There was an issue retrieving forks for this element. ");
+        });
     };
     
     $scope.$on('loadForks', function() {

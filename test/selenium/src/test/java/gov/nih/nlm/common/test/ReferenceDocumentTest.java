@@ -45,7 +45,7 @@ public abstract class ReferenceDocumentTest extends CommonTest {
 
     public void reorderReferenceDocumentTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, null);
         String tabName = "referrenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

@@ -9,20 +9,20 @@ public class BoardViewTest extends BoardTest {
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        textPresent("Neuritic plaque");
+        textPresent("Ventilator assistance utilization indicator");
         findElement(By.id("gridView")).click();
-        textPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
-        textPresent("EEGInterictEpilpNLocOnsDescTxt");
+        textPresent("VentilatorAssistanceUtilznInd");
+        textPresent("HMQMstFreqHlthProfCareTyp");
         findElement(By.id("accordionView")).click();
-        textPresent("Imaging contrast agent dose");
-        textNotPresent("NeurtcPlaqBrnRegnScoreAnatcSit");
-        textNotPresent("EEGInterictEpilpNLocOnsDescTxt");
+        textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
+        textNotPresent("VentilatorAssistanceUtilznInd");
+        textNotPresent("HMQMstFreqHlthProfCareTyp");
         findElement(By.id("gridView")).click();
         findElement(By.linkText("Next")).click();
-        textNotPresent("Imaging contrast agent dose");
-        textPresent("Risk Factor Questionnaire (RFQ-U) - work rotenone product use 46 55 age indicator");
-        textPresent("RFQWrkRotenoneProdUs4655AgeInd");
-        textPresent("NMSSSeeThngNotThereSevScore");
+        textNotPresent("Ventilator assistance utilization indicator");
+        textPresent("Surgery radiosurgery lobe location text");
+        textPresent("BRCDifficltFallAslpNghtInd");
+        textPresent("PulmFuncSNIPPeakPressrVal");
     }
     
     @Test

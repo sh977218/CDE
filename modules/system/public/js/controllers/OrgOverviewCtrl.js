@@ -12,14 +12,16 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
                 $scope.aggregations.orgs.buckets.forEach(function (org_t) {
                     var found = false;
                     if (!found) {
-                        $scope.orgs.push(
-                            {
-                                name: org_t.key,
-                                longName: OrgHelpers.orgsDetailedInfo[org_t.key].longName,
-                                count: org_t.doc_count,
-                                source: OrgHelpers.orgsDetailedInfo[org_t.key].uri,
-                                extraInfo: OrgHelpers.orgsDetailedInfo[org_t.key].extraInfo
-                            });
+                        if (OrgHelpers.orgsDetailedInfo[org_t.key]) {
+                            $scope.orgs.push(
+                                {
+                                    name: org_t.key,
+                                    longName: OrgHelpers.orgsDetailedInfo[org_t.key].longName,
+                                    count: org_t.doc_count,
+                                    source: OrgHelpers.orgsDetailedInfo[org_t.key].uri,
+                                    extraInfo: OrgHelpers.orgsDetailedInfo[org_t.key].extraInfo
+                                });
+                        }
                     }
                 });
             });
