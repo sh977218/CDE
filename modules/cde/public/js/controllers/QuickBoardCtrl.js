@@ -24,10 +24,12 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             };
             $scope.tabs = {
                 cdeQuickBoard: {
-                    heading: "CDE Quickboard (" + $scope.quickBoard.numberDisplay() + ")"
+                    heading: "CDE Quickboard (" + $scope.quickBoard.numberDisplay() + ")",
+                    active: $scope.getDefaultQuickBoard() === 'CDE Quickboard' ? true : false
                 },
                 formQuickBoard: {
-                    heading: "Form Quickboard (" + $scope.quickBoard.numberDisplay() + ")"
+                    heading: "Form Quickboard (" + $scope.quickBoard.numberDisplay() + ")",
+                    active: $scope.getDefaultQuickBoard() === 'Form Quickboard' ? true : false
                 }
             };
             $scope.exportQuickBoard = function () {
@@ -40,7 +42,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                         type: "text/csv"
                     });
                     saveAs(blob, 'QuickBoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
