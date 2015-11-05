@@ -38,24 +38,24 @@ public class FormScoreTest extends BaseFormTest {
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
         textPresent("The following CDEs are part of a score but are missing from this form:");
-        textPresent("id: ZG0-HmymNVZ");
-        textPresent("id: 1UKGTUmNnKe");
-        textPresent("id: XB9n8SaUX79");
+        textPresent("id: cu-0EyndDn2");
+        textPresent("id: 5h29ApPjjzE");
+        textPresent("id: h7pThcFJv2r");
         textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
 
 
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - upper extremity dress hygiene score", 0);
-        textNotPresent("id: ZG0-HmymNVZ");
-        textPresent("id: 1UKGTUmNnKe");
-        textPresent("id: XB9n8SaUX79");
+        textNotPresent("id: cu-0EyndDn2");
+        textPresent("id: 5h29ApPjjzE");
+        textPresent("id: h7pThcFJv2r");
         textPresent("Score: ALS Severity Score (ALSSS) - total score value (Incomplete Rule)");
 
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
 
-        textNotPresent("id: ZG0-HmymNVZ");
-        textNotPresent("id: 1UKGTUmNnKe");
-        textNotPresent("id: XB9n8SaUX79");
+        textNotPresent("id: cu-0EyndDn2");
+        textNotPresent("id: 5h29ApPjjzE");
+        textNotPresent("id: h7pThcFJv2r");
         textNotPresent("Incomplete Rule");
 
         textPresent("ALS Severity Score (ALSSS) - swallow score (part of score)");
@@ -63,7 +63,7 @@ public class FormScoreTest extends BaseFormTest {
         textPresent("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
         saveForm();
-
+        waitForESUpdate();
         goToFormByName("ALS Score");
 
         findElement(By.linkText("General Details")).click();

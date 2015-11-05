@@ -9,7 +9,7 @@ public class FormSearchShowNumberQuestionsTest extends NlmCdeBaseTest {
 
     @Test
     public void formSearchShowNumberQuestionsTest() {
-        searchElt("Parkinson's Disease Sleep Scale (PDSS)", "form", null);
-        Assert.assertEquals(findElement(By.id("nQuestion-0")).getText(), "15 questions");
+        searchElt("Classification of Seizures", "form", null);
+        Assert.assertEquals(findElement(By.id("nQuestion-0")).getText(), "8 questions");
     }
 }

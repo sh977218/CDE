@@ -12,7 +12,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         // Create working group
         mustBeLoggedInAs(nlm_username, nlm_password);
         String orgWG = "Test Working Group";
-        String orgWGLongName = "Test Working Group Long Name";
+        String orgWGLongName = orgWG + " Long Name";
         String orgWGOf = "ACRIN";
         addOrg(orgWG, orgWGLongName, orgWGOf);
         
@@ -43,7 +43,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         modalGone();
                 
         // Create CDE owned by newly created working group
-        String name = "Test CDE for Test Working Group";
+        String name = "Test CDE for " + orgWG;
         String definition = "Let this test pass please!!!";
         fillOutBasicCreateFields(name, definition, "CTEP", classification, subClassification);
         modalGone();
@@ -58,22 +58,22 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         closeAlert();
 
         findElement(By.linkText("Classification")).click();
-        new ClassificationTest().addClassificationMethod(new String[]{"Test Working Group", classification, subClassification});
+        new ClassificationTest().addClassificationMethod(new String[]{orgWG, classification, subClassification});
         waitForESUpdate();
 
         // Make sure ctepCurator user can see it
         goToCdeSearch();
-        findElement(By.id("browseOrg-Test Working Group"));
+        findElement(By.id("browseOrg-" + orgWG));
 
         // Make sure nlm users can see it
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
-        findElement(By.id("browseOrg-Test Working Group"));
+        findElement(By.id("browseOrg-" + orgWG));
         
         // Make sure cabigAdmin can't
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
-        textNotPresent("Test Working Group");
+        textNotPresent(orgWG);
 
     }
    

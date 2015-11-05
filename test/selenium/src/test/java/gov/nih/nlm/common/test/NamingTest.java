@@ -47,6 +47,7 @@ public abstract class NamingTest extends CommonTest {
         findElement(By.cssSelector("#dd_context_1 .fa-edit")).click();
         findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_context_1 .fa-check")).click();
+        textPresent("Health Changed");
 
         newCdeVersion();
 
@@ -62,7 +63,7 @@ public abstract class NamingTest extends CommonTest {
 
     public void reorderNamingTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, null);
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
