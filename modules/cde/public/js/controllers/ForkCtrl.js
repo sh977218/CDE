@@ -1,18 +1,20 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
+angular.module('cdeModule').controller('ForkCtrl',
+    ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
     function($scope, $http, $modal, $window, userResource, $route, $log) {
-
-        var getForks = function() {
-            $log.debug('ForkCtrl.getForks - executing');
-            $http.get("/forks/" + $scope.elt._id).then(function(result) {
-                $log.debug('ForkCtrl.$http(/forks/) - returned');
-                $scope.forks = result.data;
-            }, function (err) {
-                $scope.addAlert("There was an issue retrieving forks for this element. ");
-                $log.error(err);
-            });
-        };
+        
+    var getForks = function() {
+        $http.get("/forks/" + $scope.elt._id).then(function(result) {
+            $log.debug("forks retrieved " + $scope.elt.tinyId);
+            $log.debug(result);
+           $scope.forks = result.data;
+        }, function (err) {
+            $log.error("unable to retrieve forks. " + $scope.elt.tinyId);
+            $scope.addAlert("There was an issue retrieving forks for this element. ");
+        });
+    };
     
     $scope.$on('loadForks', function() {
+        $log.debug("load fork event " + $scope.elt.tinyId);
         if (!$scope.forks) {
             getForks();
         }
