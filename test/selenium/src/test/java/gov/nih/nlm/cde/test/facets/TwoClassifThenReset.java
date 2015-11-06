@@ -14,7 +14,7 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
         textPresent("Amyotrophic");
         findElement(By.id("altClassificationFilterModeToggle")).click();
         textPresent("CP-WG");
-        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("li-blank-NINDS"));
         findElement(By.id("li-blank-Domain")).click();
         textPresent("Additional Instruments");
         clickElement(By.id("menu_cdes_link"));
