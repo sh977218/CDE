@@ -545,6 +545,7 @@ module.exports = function(grunt) {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
             grunt.task.run('copy');
+            grunt.task.run('buildVersion');
             grunt.task.run('refreplace-concat-minify');
         }
     });
