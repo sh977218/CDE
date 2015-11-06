@@ -303,6 +303,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get('/elasticSearch/count', function (req, res) {
+        return elastic.nbOfElements(function (err, result) {
+            res.send("" + result);
+        });
+    });
+
     app.post('/classification/cde/moveclassif', function (req, res) {
         classificationNode.moveClassifications(req, function (err, cde) {
             if (!err) res.send(cde);
