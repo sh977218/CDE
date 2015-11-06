@@ -75,8 +75,13 @@ public class NlmCdeBaseTest {
     protected static String password = "pass";
 
     @BeforeTest
-    public void countElasticElements(){
-        System.out.println("nb of records: " + get(baseUrl + "/elasticSearch/count").asString());
+    public void countElasticElements() {
+        int nbOfRecords = 0;
+        for (int i = 0; i < 15 && nbOfRecords < 11675; i++) {
+            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
+            System.out.println("nb of records: " + nbOfRecords);
+            hangon(10);
+        }
     }
 
     @BeforeTest
@@ -149,6 +154,19 @@ public class NlmCdeBaseTest {
         return driver.manage().window().getSize();
     }
 
+    private boolean isUsernameMatch(String username) {
+        WebElement unameLink = findElement(By.id("username_link"));
+        String unameStr = unameLink.getText();
+        String usernameStr = username;
+        if (unameStr.length() > 17) {
+            unameStr = unameStr.substring(0, 17) + "...";
+        }
+        if (usernameStr.length() > 17) {
+            usernameStr = username.substring(0, 17) + "...";
+        }
+        return unameStr.equals(usernameStr);
+    }
+
     protected void mustBeLoggedInAs(String username, String password) {
         goHome();
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
@@ -157,16 +175,7 @@ public class NlmCdeBaseTest {
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
-            WebElement unameLink = findElement(By.id("username_link"));
-            String unameStr = unameLink.getText();
-            String usernameStr = username;
-            if (unameStr.length() > 17) {
-                unameStr = unameStr.substring(0, 17) + "...";
-            }
-            if (usernameStr.length() > 17) {
-                usernameStr = username.substring(0, 17) + "...";
-            }
-            if (!unameStr.equals(usernameStr)) {
+            if (!isUsernameMatch(username)) {
                 logout();
                 loginAs(username, password);
             }
@@ -537,12 +546,16 @@ public class NlmCdeBaseTest {
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
             goHome();
-            findElement(By.id("login_link")).click();
-            findElement(By.id("uname")).clear();
-            findElement(By.id("uname")).sendKeys(username);
-            findElement(By.id("passwd")).clear();
-            findElement(By.id("passwd")).sendKeys(password);
-            waitAndClick(By.id("login_button"));
+            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+            WebElement loginLinkList = driver.findElement(By.id("login_link"));
+            if (loginLinkList.isDisplayed()) {
+                findElement(By.id("login_link")).click();
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                waitAndClick(By.id("login_button"));
+            }
             textPresent(checkText);
         }
     }
