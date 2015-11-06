@@ -504,7 +504,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        function removeElasticFiends(cde){
+        function removeElasticFields(cde){
             delete cde.classificationBoost;
             delete cde.flatClassifications;
             delete cde.primaryNameCopy;
@@ -525,12 +525,11 @@ exports.init = function (app, daoManager) {
                 , footer: ""
                 , type: 'text/csv'
             };
-        }
-        if (req.query.type==='json') {
+        } else if (req.query.type==='json') {
             exporter = {
                 transformObject: function(cde){
                     cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFiends(cde);
+                    cde = removeElasticFields(cde);
                     return JSON.stringify(cde)
                 }
                 , header: "["
@@ -538,12 +537,11 @@ exports.init = function (app, daoManager) {
                 , footer: "]"
                 , type: 'appplication/json'
             };
-        }
-        if (req.query.type==='xml') {
+        } else if (req.query.type==='xml') {
             exporter = {
                 transformObject: function(cde){
                     cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFiends(cde);
+                    cde = removeElasticFields(cde);
                     return js2xml("dataElement", cde, {declaration: {include: false}});
                 }
                 , header: "<cdeExport>\n"
