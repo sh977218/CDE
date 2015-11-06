@@ -1,6 +1,8 @@
 angular.module('cdeModule').controller('ForkCtrl',
     ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
     function($scope, $http, $modal, $window, userResource, $route, $log) {
+
+        $log.debug("ForkCtrl open");
         
     var getForks = function() {
         $http.get("/forks/" + $scope.elt._id).then(function(result) {

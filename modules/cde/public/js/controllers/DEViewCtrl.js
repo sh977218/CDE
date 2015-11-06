@@ -1,8 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
-        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard', '$log',
+        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
+        'CdeDiff', '$q', 'QuickBoard', '$log',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
-                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard, $log)
+                 isAllowedModel, OrgHelpers, $rootScope, TourContent,
+                 CdeDiff, $q, QuickBoard, $log)
 {
 
     $scope.module = 'cde';
@@ -21,24 +23,49 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.canCurate = false;
 
     $scope.tabs = {
-        general: {heading: "General Details"},
-        pvs: {heading: "Permissible Values"},
-        naming: {heading: "Naming"},
-        classification: {heading: "Classification"},
-        concepts: {heading: "Concepts"},
-        status: {heading: "Status"},
-        referenceDocument: {heading: "Reference Documents"},
-        properties: {heading: "Properties"},
-        mappingSpecifications: {heading: "Mappings"},
-        ids: {heading: "Identifiers"},
-        forms: {heading: "Linked Forms"},
-        discussions: {heading: "Discussions"},
-        boards: {heading: "Boards"},
-        attachments: {heading: "Attachments"},
-        derivationRules: {heading: "Score / Derivations"},
-        mlt: {heading: "More Like This"},
-        history: {heading: "History"},
-        forks: {heading: "Forks"}
+        general: {
+            heading: "General Details",
+            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html']
+        },
+        pvs: {heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html']},
+        naming: {heading: "Naming", includes: ['/system/public/html/naming.html']},
+        classification: {heading: "Classification", includes: ['/system/public/html/elementClassification.html']},
+        concepts: {heading: "Concepts", includes: ['/cde/public/html/concepts.html']},
+        status: {heading: "Status", includes: ['/system/public/html/status.html']},
+        referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
+        properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
+        ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
+        forms: {heading: "Linked Forms", includes: ['/cde/public/html/forms.html']},
+        mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
+        discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
+        boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
+        attachments: {heading: "Attachments", includes: ['/system/public/html/attachments.html']},
+        derivationRules: {heading: "Score / Derivations",
+            includes: ['/cde/public/html/derivationRules.html'],
+            select: function() {
+                $timeout($broadcast('loadDerivationRules'), 0);
+            }},
+        mlt: {heading: "More Like This",
+            includes: ['/cde/public/html/deMlt.html'],
+            select: function() {
+                $timeout($scope.$broadcast('loadMlt'), 0);
+            }},
+        history: {heading: "History",
+            includes: ['/cde/public/html/cdeHistory.html'],
+            select: function() {
+                $timeout($scope.$broadcast('loadPriorCdes'), 0);
+            }},
+        forks: {
+            heading: "Forks",
+            includes: ['/cde/public/html/forks.html'],
+            if: function () {
+                return !$scope.elt.isForkOf;
+            },
+            select: function () {
+                $log.debug("select on forks");
+                $timeout($scope.$broadcast('loadForks'), 0);
+            }
+        }
     };
     $scope.resolveCdeLoaded = null;
     $scope.cdeLoadedPromise = $q(function(resolve) {

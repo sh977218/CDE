@@ -17,7 +17,6 @@ exports.esClient = esClient;
 
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
-        if (indexName !== 'auto') return;
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
             if (!doesIt) {
                 console.log("creating index: " + indexName);
