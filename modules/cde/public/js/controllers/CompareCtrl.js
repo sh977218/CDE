@@ -49,7 +49,23 @@ angular.module('cdeModule').controller('CompareCtrl',
                 }
             };
 
-            var diff = DeepDiff($scope.eltsToCompare[0], $scope.eltsToCompare[1]);
+            var wipeUseless = function (toWipeCde) {
+                delete toWipeCde._id;
+                delete toWipeCde.history;
+                delete toWipeCde.imported;
+                delete toWipeCde.created;
+                delete toWipeCde.createdBy;
+                delete toWipeCde.updated;
+                delete toWipeCde.comments;
+                delete toWipeCde.registrationState;
+                delete toWipeCde.tinyId;
+            };
+
+            var elt1 = JSON.parse(JSON.stringify($scope.eltsToCompare[0]));
+            var elt2 = JSON.parse(JSON.stringify($scope.eltsToCompare[1]));
+            wipeUseless(elt1);
+            wipeUseless(elt2);
+            var diff = DeepDiff(elt1, elt2);
 
             $scope.cdes = QuickBoard.elts;
             $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);

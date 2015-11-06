@@ -2,6 +2,7 @@
   "name": "Sample Localhost Configuration",
   "hostname": "localhost",
   "publicUrl": "https://cde.nlm.nih.gov",
+  "debugEnabled": false,
   "umls": {
     "licenseCode": "NLM-4110134256"
   },
