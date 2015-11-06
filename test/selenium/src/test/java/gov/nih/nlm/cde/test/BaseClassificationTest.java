@@ -40,7 +40,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 selector += ",";
             }
         }
-        Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + selector + "'] .name")).getText().equals(categories[categories.length - 1]));
+        Assert.assertTrue(findElement(By.cssSelector("[id='classification-" + selector + "'] .name"))
+                .getText().equals(categories[categories.length - 1]));
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
