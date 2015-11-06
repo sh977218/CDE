@@ -1,8 +1,8 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
-        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard',
+        'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent', 'CdeDiff', '$q', 'QuickBoard', '$log',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
-                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard)
+                 isAllowedModel, OrgHelpers, $rootScope, TourContent, CdeDiff, $q, QuickBoard, $log)
 {
 
     $scope.module = 'cde';
@@ -54,7 +54,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     });
 
-
     $scope.reload = function(route) {
         var service;
         var query = {};
@@ -66,7 +65,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             service = DataElement;
             query = {deId: route.cdeId};
         }
+        $log.debug("loading CDE " + query.tinyId);
         service.get(query, function(de) {
+            $log.debug(de);
             $scope.elt = de;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
@@ -82,7 +83,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             $scope.resolveCdeLoaded();
             $scope.$broadcast("elementReloaded");
-        }, function () {
+        }, function (err) {
+            $log.error("Unable to retrieve element.");
+            $log.error(err);
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {

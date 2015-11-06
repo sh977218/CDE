@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller',
+        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller)
+                  SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller, $log)
 {
 
     $scope.autocomplete = AutoCompleteResource;
@@ -174,19 +174,29 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.reload = function (type) {
+        $log.debug("reloading search");
+        $log.debug($scope.searchSettings);
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
-        if (!userResource.user) return;
+        if (!userResource.user) {
+            $log.debug("no user");
+            return;
+        }
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
 
+        $log.debug("running query");
+        $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result) {
+            $log.debug("query complete");
+            $log.debug(result);
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
                 $scope.cdes = [];
+                $log.error(err);
                 return;
             }
             if (timestamp < $scope.lastQueryTimeStamp) return;

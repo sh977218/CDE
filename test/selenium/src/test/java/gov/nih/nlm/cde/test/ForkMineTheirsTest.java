@@ -14,6 +14,7 @@ public class ForkMineTheirsTest extends ForkTest {
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
 
         findElement(By.linkText("Forks")).click();
+        hangon(1);
         addFork("forking a st cde", "CTEP");
 
         findElement(By.id("fork-0")).click();
