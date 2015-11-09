@@ -255,9 +255,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
              }).
              success(function(data) {
                 if (data.error) {
-
-                }
-                 else if (data === "") {
+                } else if (data === "") {
                 } else {
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
