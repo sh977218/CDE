@@ -35,7 +35,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
         referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
         properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
         ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
-        forms: {heading: "Linked Forms", includes: ['/cde/public/html/forms.html']},
+        forms: {
+            heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
+            select: function () {
+                $timeout($scope.$broadcast('loadLinkedForms'), 0);
+            }
+        },
         mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
         discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
         boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
