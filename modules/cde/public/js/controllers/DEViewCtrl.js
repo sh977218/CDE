@@ -392,6 +392,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
               , placement: "bottom"
           }
         , {
+            element: "#derivationRules_tab"
+            , title: "Derivation Rules"
+            , content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score."
+            , placement: "bottom"
+        }
+        , {
               element: "#mlt_tab"
               , title: "More Like This"
               , content: "This section lists CDEs that are most similar to the CDE currently viewed."

@@ -32,6 +32,7 @@ public class TourDeViewTest extends TourTest {
         getNext("registered users are able to post");
         getNext("is used in a public board, the");
         getNext("If a file is attached to a CDE, it can");
+        getNext("Derivation Rules are used to connect CDEs together");
         getNext("This section lists CDEs that are most similar");
         getNext("shows all prior states of the CDE");
         getNext("would like to propose a change to an existing CDE, he may create a fork");
