@@ -33,18 +33,16 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         String class1 = "caSEER";
         String subclass1 = "com.imsweb.caseer";
         fillOutBasicCreateFields(cde1, definition1, org1, class1, subclass1);
-        Assert.assertTrue(textPresent(class1));
-        Assert.assertTrue(textPresent(subclass1));
+        textPresent(class1);
+        textPresent(subclass1);
         findElement(By.id("submit")).click();
         modalGone();
 
         String cde2 = "Transfer Steward Test CDE 2";
         String definition2 = "Definition for Transfer Steward Test CDE 2";
-        String class2 = class1;
-        String subclass2 = subclass1;
-        fillOutBasicCreateFields(cde2, definition2, org1, class2, subclass2);
-        Assert.assertTrue(textPresent(class2));
-        Assert.assertTrue(textPresent(subclass2));
+        fillOutBasicCreateFields(cde2, definition2, org1, class1, subclass1);
+        textPresent(class1);
+        textPresent(subclass1);
         findElement(By.id("submit")).click();
         modalGone();
 
@@ -53,15 +51,15 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         String formDef1 = "Definition for Transfer Steward Test CDE 1";
         String formV1 = "3.0";
         new BaseFormTest().createForm(formName1, formDef1, formV1, org1);
-        Assert.assertTrue(textPresent(formName1));
-        Assert.assertTrue(textPresent(formDef1));
+        textPresent(formName1);
+        textPresent(formDef1);
 
         String formName2 = "Transfer Steward Test Form 2";
         String formDef2 = "Definition for Transfer Steward Test CDE 2";
         String formV2 = "4.0";
         new BaseFormTest().createForm(formName2, formDef2, formV2, org1);
-        Assert.assertTrue(textPresent(formName2));
-        Assert.assertTrue(textPresent(formDef2));
+        textPresent(formName2);
+        textPresent(formDef2);
 
         //
         findElement(By.id("username_link")).click();
