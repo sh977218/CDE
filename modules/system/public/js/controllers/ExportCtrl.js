@@ -20,7 +20,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                 };
             if (result) {
                 var blob = new Blob([result], {
-                    type: exportFiletype.type
+                    type: exportFiletypes[type]
                 });
                 saveAs(blob, 'SearchExport' + '.' + type);
                 $scope.addAlert("success", "Export downloaded.");
