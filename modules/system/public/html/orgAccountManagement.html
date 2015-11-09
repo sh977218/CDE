@@ -4,15 +4,23 @@
             <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
                 Make
                 <div class="form-group">
-                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control" placeholder="enter user name" ng-model="orgAdmin.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
+                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
+                           placeholder="enter user name" ng-model="orgAdmin.username"
+                           typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           typeahead-min-length="3" required>
                 </div>
                 an administrator for
                 <div class="form-group">
-                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control" ng-model="admin.orgName" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
+                            ng-model="admin.orgName"
+                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()" ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">Make Admin</button>
+                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"
+                        ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">
+                    Make Admin
+                </button>
             </form>
             <table class="table table-border table-responsive">
                 <tr>
@@ -25,7 +33,9 @@
                     </td>
                     <td>
                         <div ng-repeat="user in myOrgAdmin.users">
-                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)" id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>
+                            <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)"
+                               id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
                         </div>
                     </td>
                 </tr>
@@ -35,15 +45,23 @@
             <form class="form-inline pt40 pb40" role="form" id="newOrgCuratorForm" name="newOrgCuratorForm" novalidate>
                 Make
                 <div class="form-group">
-                    <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control" placeholder="enter user name" ng-model="orgCurator.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
+                    <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
+                           placeholder="enter user name" ng-model="orgCurator.username"
+                           typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           typeahead-min-length="3" required>
                 </div>
                 a curator for
                 <div class="form-group">
-                    <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control" ng-model="curator.orgName" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
+                            ng-model="curator.orgName"
+                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success" id="newOrgCuratorSubmit" ng-click="addOrgCurator()" ng-disabled="newOrgCuratorForm.newOrgCuratorUsername.$invalid || newOrgCuratorForm.newOrgCuratorOrgName.$invalid">Make Curator</button>
+                <button type="submit" class="btn btn-success" id="newOrgCuratorSubmit" ng-click="addOrgCurator()"
+                        ng-disabled="newOrgCuratorForm.newOrgCuratorUsername.$invalid || newOrgCuratorForm.newOrgCuratorOrgName.$invalid">
+                    Make Curator
+                </button>
             </form>
             <table class="table table-border table-responsive">
                 <tr>
@@ -56,27 +74,38 @@
                     </td>
                     <td>
                         <div ng-repeat="user in orgCurator.users">
-                            <span id="existingOrgCuratorUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgCurator(orgCurator.name, user._id)" id="removeOrgCuratorUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                            <span id="existingOrgCuratorUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>
+                            <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgCurator(orgCurator.name, user._id)"
+                               id="removeOrgCuratorUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
                         </div>
                     </td>
                 </tr>
             </table>
         </tab>
         <tab heading="CDE & Form Management">
-            <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
+            <form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"
+                  novalidate>
                 Transfer CDEs and forms owned by
                 <div class="form-group">
-                    <select id="transferSteward_from" name="transferSteward_from" class="form-control" ng-model="transferStewardObj.from" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="transferSteward_from" name="transferSteward_from" class="form-control"
+                            ng-model="transferStewardObj.from"
+                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                to 
+                to
                 <div class="form-group">
-                    <select id="transferSteward_to" name="transferSteward_to" class="form-control" ng-model="transferStewardObj.to" ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
+                    <select id="transferSteward_to" name="transferSteward_to" class="form-control"
+                            ng-model="transferStewardObj.to"
+                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>
                         <option value="">select organization</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success" id="transferStewardButton" ng-click="transferStewardFunc()" ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">Transfer Now</button>
+                <button type="submit" class="btn btn-success" id="transferStewardButton"
+                        ng-click="transferStewardFunc()"
+                        ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">
+                    Transfer Now
+                </button>
             </form>
         </tab>
     </tabset>

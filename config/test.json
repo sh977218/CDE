@@ -1,9 +1,25 @@
 {
   "port": 3001,
   "logBufferSize": 2,
+  "userAlertTime": 6000,
+  "debugEnabled": true,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
-  "database": {
+  "elastic": {
+    "hosts": ["http://localhost:9200"],
+    "index": {"name": "cdetest"},
+    "river": {"name": "cdetest"},
+    "formIndex": {"name": "formtest"},
+    "formRiver": {"name": "formtest"},
+    "boardIndex": {"name": "boardtest"},
+    "boardRiver": {"name": "boardtest"},
+    "storedQueryIndex": {"name": "storedquerytest"},
+    "storedQueryRiver": {"name": "storedquerytest"},
+    "scripts": {
+      "stop": "sudo /sbin/service elasticsearch stop",
+      "start": "sudo /sbin/service elasticsearch start"
+    }
+  },  "database": {
     "servers": [
       {
         "host": "localhost",
@@ -41,6 +57,16 @@
       "path": "/cas/serviceValidate",
       "port": 4000
     }
+  },
+  "elastic": {
+    "index": {"name": "cdetest"},
+    "river": {"name": "cdetest"},
+    "formIndex": {"name": "formtest"},
+    "formRiver": {"name": "formtest"},
+    "boardIndex": {"name": "boardtest"},
+    "boardRiver": {"name": "boardtest"},
+    "storedQueryIndex": {"name": "storedquerytest"},
+    "storedQueryRiver": {"name": "storedquerytest"}
   }
 }
 

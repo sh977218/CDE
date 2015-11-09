@@ -12,12 +12,8 @@ exports.name = "forms";
 var mongoUri = config.mongoUri;
 var Form;
 
-var connectionEstablisher = connHelper.connectionEstablisher;
-
-var iConnectionEstablisherForm = new connectionEstablisher(mongoUri, 'Forms');
-iConnectionEstablisherForm.connect(function (conn) {
-    Form = conn.model('Form', schemas.formSchema);
-});
+var conn = connHelper.establihConnection(mongoUri);
+Form = conn.model('Form', schemas.formSchema);
 
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
@@ -32,31 +28,23 @@ exports.findForms = function (request, callback) {
             "naming.designation": new RegExp(request.term)
         };
     }
-    Form.find(criteria).where("archived").equals(null).exec(function (err, forms) {
-        callback(err, forms);
-    });
+    Form.find(criteria).where("archived").equals(null).exec(callback);
 };
 
 exports.update = function (form, user, callback) {
-    Form.findOne({_id: form._id}).exec(function(err, oldForm){
-        var origId = form._id;
-        delete form._id;
-
-        form.comments = oldForm.comments;
-        var newForm = new Form(form);
-        if (!newForm.history) newForm.history = [];
-        newWorm.history.push(dataElement._id);
-        newForm.updated = Date.now();
-        newForm.updatedBy = {
-            userId: user._id
-            , username: user.username
-        };
-        newForm.save(function (err) {
-            Form.update({_id: origId}, {archived: true}, function (nbUpdated) {
-                callback(err, newForm);
-            });
+    var origId = form._id;
+    delete form._id;
+    form.comments = oldForm.comments;
+    var newForm = new Form(form);
+    newForm.updated = Date.now();
+    newForm.updatedBy = {
+        userId: user._id
+        , username: user.username
+    };
+    newForm.save(function (err) {
+        Form.update({_id: origId}, {archived: true}, function () {
+            callback(err, newForm);
         });
-
     });
 };
 
@@ -79,9 +67,7 @@ exports.create = function (form, user, callback) {
 };
 
 exports.byId = function (id, callback) {
-    Form.findById(id, function (err, form) {
-        callback(err, form);
-    });
+    Form.findById(id, callback);
 };
 
 exports.userTotalSpace = function (name, callback) {
@@ -89,20 +75,16 @@ exports.userTotalSpace = function (name, callback) {
 };
 
 exports.query = function (query, callback) {
-    Form.find(query).exec(function (err, result) {
-        callback(err, result);
-    });
+    Form.find(query).exec(callback);
 };
 
 exports.allPropertiesKeys = function (callback) {
-    Form.distinct("properties.key").exec(function (err, keys) {
-        callback(err, keys);
-    });
+    Form.distinct("properties.key").exec(callback);
 };
 
 exports.transferSteward = function (from, to, callback) {
     Form.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
-        callback(err, result);
+        callback(err, result.nModified);
     });
 };
 
@@ -114,9 +96,7 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
 
 exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
-    Form.findOne({'tinyId': tinyId, "archived": null}).exec(function (err, elt) {
-        callback(err, elt);
-    });
+    Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {

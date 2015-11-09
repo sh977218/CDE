@@ -5,8 +5,7 @@ angular.module('systemModule').controller('MainCtrl',
                  $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route)
 {
 
-
-    $rootScope.$on("$routeChangeSuccess", function(currentRoute, previousRoute){
+    $rootScope.$on("$routeChangeSuccess", function(){
         $rootScope.pageMeta = {};
         $rootScope.pageMeta.title = 'NIH Common Data Elements (CDE) Repository';
         $rootScope.pageMeta.keywords = 'cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine';
@@ -72,7 +71,7 @@ angular.module('systemModule').controller('MainCtrl',
                     $scope.alerts.splice(i, 1);
                 }
             }
-        }, 5000);
+        }, window.userAlertTime);
     };
     
     $scope.boards = [];
