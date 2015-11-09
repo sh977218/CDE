@@ -305,12 +305,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     TourContent.steps = [
         {
-            element: "a:contains('General Details')"
+            element: "#general_tab"
             , title: "General Details"
             , content: "This section shows an overview of the CDE attributes."
         }
         , {
-              element: "a:contains('Permissible Values')"
+              element: "#pvs_tab"
               , title: "Permissible Values"
               , placement: "bottom"
               , content: "Click here to see what type of value are allowed by this CDE."
@@ -322,59 +322,59 @@ angular.module('cdeModule').controller('DEViewCtrl',
               , content: "If the value type is 'Value List', then this CDE accepts values from a list. Date, free text, integer are other possibilities. "
           }
         , {
-              element: "a:contains('Naming')"
+              element: "#naming_tab"
               , title: "Names"
               , placement: "bottom"
               , content: "Any CDE may have multiple names, often given within a particular context."
           }
         , {
-              element: "#classificationTab"
+              element: "#classification_tab"
               , title: "Classifications"
               , placement: "bottom"
               , content: "Classifications describe the way in which an organization may use a CDE. Any CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it."
           }
         , {
-              element: "a:contains('Concepts')"
+              element: "#concepts_tab"
               , title: "Concepts"
               , placement: "bottom"
               , content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC."
           }
         , {
-              element: "a:contains('Status')"
+              element: "#status_tab"
               , title: "Status"
               , placement: "bottom"
               , content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
         }, {
-              element: "a:contains('Reference Document')"
+              element: "#referenceDocument_tab"
               , title: "Reference Document"
               , placement: "bottom"
               , content: "This section contains reference documents for the CDE."
         }, {
-              element: "a:contains('Properties')"
+              element: "#properties_tab"
               , title: "Properties"
               , placement: "bottom"
               , content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process."
           }
         , {
-              element: "a:contains('Identifiers')"
+              element: "#ids_tab"
               , title: "Identifiers"
               , placement: "bottom"
               , content: "CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here."
           }
         , {
-              element: "a:contains('Linked Forms')"
+              element: "#forms_tab"
               , title: "Forms"
               , placement: "bottom"
               , content: "If a the CDE is used in a Form, it will be displayed here. "
           }
         , {
-              element: "a:contains('Mappings')"
+              element: "#mappingSpecifications_tab"
               , title: "Mappings"
               , content: "This section supports mapping of a CDE to external resources such as C-CDA document templates."
               , placement: "bottom"
           }
         , {
-              element: "a:contains('Discussions')"
+              element: "#discussions_tab"
               , title: "Discussions"
               , content: "In this section, registered users are able to post comments on any given CDEs. "
               , placement: "bottom"
@@ -386,25 +386,25 @@ angular.module('cdeModule').controller('DEViewCtrl',
               , placement: "bottom"
           }
         , {
-              element: "a:contains('Attachments')"
+              element: "#attachments_tab"
               , title: "Attachments"
               , content: "If a file is attached to a CDE, it can be view or downloaded here."
               , placement: "bottom"
           }
         , {
-              element: "a:contains('More Like This')"
+              element: "#mlt_tab"
               , title: "More Like This"
               , content: "This section lists CDEs that are most similar to the CDE currently viewed."
               , placement: "bottom"
           }
         , {
-              element: "a:contains('History')"
+              element: "#history_tab"
               , title: "History"
               , content: "This section shows all prior states of the CDE."
               , placement: "bottom"
           }
         , {
-              element: "a:contains('Forks')"
+              element: "#forks_tab"
               , title: "Forks"
               , content: "When a user other than the steward would like to propose a change to an existing CDE, he may create a fork for the CDE. Forked version notifies CDE steward of proposed change.  If steward accepts change, forked CDE will become new CDE."
               , placement: "bottom"
