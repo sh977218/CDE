@@ -7,7 +7,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
