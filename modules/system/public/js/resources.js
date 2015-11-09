@@ -146,4 +146,15 @@ angular.module('resourcesSystem', ['ngResource'])
    return {
        elts: []
    }
-});
+})
+.factory('LoginRedirect', function(){
+    var lastRoute;
+    return {
+        storeRoute: function(route) {
+            if (route.indexOf('login')===-1) lastRoute = route;
+        }
+        , getPreviousRoute: function(){
+            return lastRoute;
+        }
+    };
+})
