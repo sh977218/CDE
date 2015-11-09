@@ -1,4 +1,8 @@
-angular.module('systemModule').controller('ClassificationManagementCtrl', ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings) {
+angular.module('systemModule').controller('ClassificationManagementCtrl',
+    ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
+        function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log)
+{
+
     $scope.module = "cde";
     $scope.classifSubEltPage = '/system/public/html/classif-elt-mgt.html';
 
@@ -6,23 +10,22 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
         if (userResource.userOrgs.length > 0)  {
             $scope.orgToManage = userResource.userOrgs[0];
             $scope.userOrgs = userResource.userOrgs;
-            $scope.updateOrg();
         }
     });
 
-
-
     $scope.org = {};
 
-    $scope.updateOrg = function() {
-        $timeout(function () {
-            if ($scope.orgToManage !== undefined) {
-                $http.get("/org/" + encodeURIComponent($scope.orgToManage)).then(function(response) {
-                    $scope.org = response.data;
-                });
-            }
-        }, 0);
-    };
+    $scope.$watch('orgToManage', function() {
+        $log.debug("Updating org: " + $scope.orgToManage);
+        if ($scope.orgToManage !== undefined) {
+            $http.get("/org/" + encodeURIComponent($scope.orgToManage)).then(function(response) {
+                $scope.org = response.data;
+            }, function (err) {
+                $log.error("Error retrieving org classifs. ");
+                $log.error(JSON.stringify(err));
+            });
+        }
+    });
 
     $scope.classificationToFilter = function() {
         return $scope.org.classifications;
@@ -159,12 +162,11 @@ angular.module('systemModule').controller('ClassificationManagementCtrl', ['$sco
             $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
         }, 3000);
         $http({method: 'post', url: '/classifyEntireSearch', data: data})
-        .success(function(data, status, headers, config) {
+        .success(function(data, status) {
             $timeout.cancel(timeout);
             if (status===200) $scope.addAlert("success", "Elements classified.");
             else $scope.addAlert("danger", data.error.message);
-
-        }).error(function(data) {
+        }).error(function() {
             $scope.addAlert("danger", "Task not performed completely!");
             $timeout.cancel(timeout);
         });
