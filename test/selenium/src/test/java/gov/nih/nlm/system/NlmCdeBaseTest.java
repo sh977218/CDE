@@ -463,6 +463,7 @@ public class NlmCdeBaseTest {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
         enterUsernamePasswordSubmit(username, password, usernameStr);
+        goToCdeSearch();
     }
 
     private boolean isWindows() {
