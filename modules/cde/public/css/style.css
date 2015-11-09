@@ -808,3 +808,28 @@ div + .questionPlaceholder {
 #exportEverything {
     margin-top: 17px;
 }
+
+.quickBoardCompareDifferent {
+    background-color: #fee8e9;
+    overflow: hidden;
+}
+
+.quickBoardCompareSame {
+    background-color: #dfd;
+    overflow: hidden;
+}
+
+.smallSpace {
+    margin: 0;
+    padding: 0;
+    height: 25px;
+}
+
+.noLeftPadding {
+    padding-left: 0px;
+}
+
+.noLeftRightPadding {
+    padding-left: 0px;
+    padding-right: 0px;
+}

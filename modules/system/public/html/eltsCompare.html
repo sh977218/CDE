@@ -1,54 +1,8 @@
 <div class="container-fluid" ng-controller="CompareCtrl">
     <div ng-show="eltsToCompare.length !== 2" class="container">
         <h3>The side by side compare feature requires two data elements to be selected.</h3>
+
         <p>Note: To add a data element, click on the <i class="fa fa-plus"></i> next to it.</p>
     </div>
-
-    <div class="row">
-        <div ng-repeat="elt in eltsToCompare" class="col-md-6">
-            <center>
-                <a class='btn btn-small btn-default fa fa-eye' ng-href="/#/deview/?tinyId={{elt.tinyId}}" title="Full Detail for {{cde.naming[0].designation}}"> View Full Detail</a>
-                <span ng-controller="MergeRequestCtrl">
-                    <a class='btn btn-small btn-default fa fa-plus-square' ng-show="isMergeRequestPossible(elt, eltsToCompare[($index+1)%2])" ng-click="openMergeModal($index)" title="Merge {{cde.naming[0].designation}}" id="retireMerge-{{$index}}"> Retire & Merge</a>
-                    <span ng-show="elt.registrationState.administrativeStatus === 'Retire Candidate'">
-                        Pending Merge Request
-                    </span>
-                </span>
-            </center>
-        </div>
-    </div>
-    <div class="row">
-        <div ng-repeat="elt in eltsToCompare" class="col-md-6">
-            <div ng-include="'/system/public/html/naming.html'"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div ng-repeat="elt in eltsToCompare" class="col-md-6">
-            <dl class="dl-horizontal">
-                <dt>Steward: </dt><dd>{{elt.stewardOrg.name}}</dd>
-                <dt>Status: </dt><dd id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
-                <dt ng-show="elt.formUsageCounter">Form Usage: </dt><dd>{{elt.formUsageCounter}}</dd>
-                <dt ng-show="elt.views">Views: </dt><dd id="dd_views">{{elt.views}}</dd>
-                <dt>Added to NLM: </dt>
-                <dd >{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                <dt ng-show="elt.updated">Updated in NLM: </dt><dd>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                <dt id="dt_createdBy" ng-show="elt.createdBy">Created By: </dt><dd id="dd_createdBy">{{elt.createdBy.username}}</dd>
-            </dl>
-        </div>
-    </div>
-    <div class="row">
-        <div ng-repeat="elt in eltsToCompare" class="col-md-6">
-            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div ng-repeat="elt in eltsToCompare" class="col-md-6">
-            <div ng-controller="ConceptsCtrl" ng-include="'/cde/public/html/deConcepts.html'"></div>
-        </div>
-    </div>
-    <script type="text/ng-template" id="mergeModal.html">
-        <div ng-include="'/cde/public/html/mergeModal.html'"></div>
-    </script>
-
-
+    <div ng-compare-side-by-side left="eltsToCompare[0]" right="eltsToCompare[1]"></div>
 </div>
