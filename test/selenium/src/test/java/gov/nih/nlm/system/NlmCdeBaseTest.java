@@ -329,7 +329,7 @@ public class NlmCdeBaseTest {
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (int) (long) executor.executeScript("return window.scrollY;");
+            Integer value = (Integer) executor.executeScript("return window.scrollY;");
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -386,10 +386,7 @@ public class NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
-        try {
-            textPresent("Saved.");
-        } catch (Exception e) {
-        }
+        textPresent("Saved.");
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
@@ -563,7 +560,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -571,7 +568,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
