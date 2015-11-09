@@ -1,6 +1,8 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification', '$http', 'userResource', 'CdeList',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource, CdeList)
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification',
+        '$http', 'userResource', 'CdeList', '$log',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
+                  $http, userResource, CdeList, $log)
 {
 
     $scope.module = "form";
@@ -300,10 +302,14 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.reload();
     
     $scope.save = function() {
+        $log.debug("Saving Form.");
         $scope.elt.$save({}, function () {
             $scope.reload();
+            $log.debug("Form saved");
             $scope.addAlert("success", "Saved.");
-        }, function() {
+        }, function(err) {
+            $log.error("Unable to save form. " + $scope.elt.tinyId);
+            $log.error(JSON.stringify(err));
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
     };
