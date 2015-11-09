@@ -1,18 +1,20 @@
- angular.module('formModule').controller('SelectQuestionNameModalCtrl',
-     ['$scope', '$modalInstance', '$http', 'cde', function($scope, $modalInstance, $http, cde) {
-     
-    $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
-        $scope.cde = result.data;
-    });
-     
-    $scope.okSelect = function (naming) {
-      $modalInstance.close(naming.designation);
-    };
+angular.module('formModule').controller('SelectQuestionNameModalCtrl',
+    ['$scope', '$modalInstance', '$http', 'cde', function ($scope, $modalInstance, $http, cde) {
 
-    $scope.cancelCreate = function () {
-      $modalInstance.dismiss('cancel');
-    };
-}
- 
+        var url = "/debytinyid/" + cde.tinyId;
+        if (cde.version) url += "/" + cde.version;
+        $http.get(url).success(function (result) {
+            $scope.cde = result;
+        }).error(function error(err) {
+            $scope.cde = "error";
+        });
 
+        $scope.okSelect = function (naming) {
+            $modalInstance.close(naming.designation);
+        };
+
+        $scope.cancelCreate = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }
 ]);
