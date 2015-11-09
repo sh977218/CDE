@@ -43,7 +43,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
         derivationRules: {heading: "Score / Derivations",
             includes: ['/cde/public/html/derivationRules.html'],
             select: function() {
-                $timeout($broadcast('loadDerivationRules'), 0);
+                $timeout($scope.$broadcast('loadDerivationRules'), 0);
             }},
         mlt: {heading: "More Like This",
             includes: ['/cde/public/html/deMlt.html'],
