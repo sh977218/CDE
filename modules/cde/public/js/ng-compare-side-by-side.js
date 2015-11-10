@@ -110,10 +110,6 @@
                         '           </div>' +
                         '           <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'modified'" + '"' +
                         '           ng-class="{quickBoardCompareDifferent:value===' + "'modified'" + '}">{{elt1[attribute]}}' +
-                        '               <div ng-repeat="(a,v) in elt1[attribute]">' +
-                        '                   <div>{{a}}</div>' +
-                        '                   <div>{{elt1[attribute].a}}' +
-                        '               </div>' +
                         '           </div>' +
                         '           <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'unmodified'" + '"' +
                         '           ng-class="{quickBoardCompareSame:value===' + "'unmodified'" + '}">{{elt1[attribute]}}' +
