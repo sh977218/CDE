@@ -10,9 +10,8 @@ public class UrlSearch extends NlmCdeBaseTest {
     public void urlSearch() {
         setVisibleStatus("minStatus-Qualified");
         goToCdeSearch();
-        findElement(By.id("browseOrg-caBIG"));
         String curUrl = driver.getCurrentUrl();
-        driver.get(curUrl + "&regStatus=Candidate");
+        driver.get(curUrl + "?regStatuses=Candidate&selectedOrg=caBIG");
         textPresent("All Terms | caBIG | Candidate");
     }
 
