@@ -826,10 +826,14 @@ div + .questionPlaceholder {
 }
 
 .noLeftPadding {
-    padding-left: 0px;
+    padding-left: 0 !important;
+}
+
+.noRightPadding {
+    padding-right: 0 !important;
 }
 
 .noLeftRightPadding {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }

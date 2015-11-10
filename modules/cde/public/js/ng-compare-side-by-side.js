@@ -25,19 +25,23 @@
                         Comparsion.wipeUseless(elt2);
 
                         var result1 = {};
+                        var result2 = {};
                         for (var property in elt1) {
                             var diff = DeepDiff(elt1[property], elt2[property]);
                             if (diff && diff.length > 0) {
                                 result1[property] = 'modified';
+                                result2[property] = 'modified';
                                 console.log('diff on ' + property);
                                 console.log(diff);
                             }
                             else {
                                 result1[property] = 'unmodified';
+                                result2[property] = 'unmodified';
                                 console.log('no diff on ' + property);
                             }
                         }
                         $scope.result1 = result1;
+                        $scope.result2 = result2;
                         $scope.elt1 = elt1;
                         $scope.elt2 = elt2;
 
@@ -70,8 +74,7 @@
                 },
                 deepCopy: function (o) {
                     return JSON.parse(JSON.stringify(o));
-                }
-                ,
+                },
                 wipeUseless: function (o) {
                     delete o._id;
                     delete o.__v;
@@ -93,24 +96,50 @@
                     delete o.$$hashKey;
                     delete o.isOpen;
                     delete o.formElements;
+                    o.questions.forEach(function (q) {
+                        delete q._id;
+                    })
                 },
                 applyComparsion: function ($scope, $element) {
-                    var elStr = '<div class="row">' +
-                        ' <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                        '    <div class="col-xs-12 col-md-12" ng-repeat="(attribute, value) in result1">' +
-                        '   <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding"><strong>{{attribute}}</strong>:</div>' +
-                        '<div class="col-lg-12 col-md-12 col-xs-12" ng-if="value===' + "'unmodified'" + '"' +
-                        '   ng-class="{quickBoardCompareDifferent:value===' + "'unmodified'" + '}">{{elt1[attribute]}}' +
-                        '</div>' +
-                        '<div class="col-lg-12 col-md-12 col-xs-12" ng-if="value===' + "'modified'" + '"' +
-                        ' ng-class="{quickBoardCompareSame:value===' + '"modified"' + '}">{{elt1[attribute]}}' +
-                        '</div>' +
-                        '<div class="smallSpace"></div>' +
-                        '</div>' +
-                        '<div class="col-xs-6"></div>' +
-                        '</div>' +
+                    var elStr = '' +
+                        '<div class="row">' +
+                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
+                        '       <div class="col-xs-12 col-md-12" ng-repeat="(attribute, value) in result1">' +
+                        '           <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding">' +
+                        '               <strong>{{attribute}}</strong>:' +
+                        '           </div>' +
+                        '           <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'modified'" + '"' +
+                        '           ng-class="{quickBoardCompareDifferent:value===' + "'modified'" + '}">{{elt1[attribute]}}' +
+                        '               <div ng-repeat="(a,v) in elt1[attribute]">' +
+                        '                   <div>{{a}}</div>' +
+                        '                   <div>{{elt1[attribute].a}}' +
+                        '               </div>' +
+                        '           </div>' +
+                        '           <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'unmodified'" + '"' +
+                        '           ng-class="{quickBoardCompareSame:value===' + "'unmodified'" + '}">{{elt1[attribute]}}' +
+                        '           </div>' +
+                        '           <div class="smallSpace"></div>' +
+                        '       </div>' +
+                        '   </div>' +
+
+                        '   <div class="col-xs-6 col-lg-6 col-md-6 noRightPadding">' +
+                        '       <div class="col-xs-12 col-md-12" ng-repeat="(attribute, value) in result2">' +
+                        '       <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding">' +
+                        '           <strong>{{attribute}}</strong>:' +
+                        '       </div>' +
+                        '       <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'modified'" + '"' +
+                        '       ng-class="{quickBoardCompareDifferent:value===' + "'modified'" + '}">{{elt2[attribute]}}' +
+                        '       </div>' +
+                        '       <div class="col-lg-12 col-md-12 col-xs-12 noLeftRightPadding" ng-if="value===' + "'unmodified'" + '"' +
+                        '       ng-class="{quickBoardCompareSame:value===' + "'unmodified'" + '}">{{elt2[attribute]}}' +
+                        '       </div>' +
+                        '       <div class="smallSpace"></div>' +
+                        '   </div>' +
+
                         '</div>';
-                    return elStr;
+                    var el = angular.element(elStr);
+                    $compile(el)($scope);
+                    $element.append(el);
                 }
             };
         }])
