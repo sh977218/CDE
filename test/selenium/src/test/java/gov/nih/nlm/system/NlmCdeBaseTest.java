@@ -386,10 +386,8 @@ public class NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
-        try {
-            textPresent("Saved.");
-        } catch (Exception e) {
-        }
+        textPresent("Saved.");
+
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
