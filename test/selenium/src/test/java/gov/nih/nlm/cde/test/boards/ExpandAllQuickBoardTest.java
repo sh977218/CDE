@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.boards;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
