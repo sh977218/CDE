@@ -38,6 +38,7 @@
                         $scope.elts = [];
                         $scope.elts.push(elt1);
                         $scope.elts.push(elt2);
+                        $scope.compareView = true;
 
                         Comparison.applyComparison($scope, $element);
                     }
@@ -176,6 +177,13 @@
                     '   </div>' +
                     '</div>' +
                     '<hr class="divider">';
+
+                    elStr = elStr +
+                    '<div class="row">' +
+                    '<div ng-repeat="elt in elts" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
+                    '<div ng-include="\'/cde/public/html/valueDomainSwitch.html\'"></div>' +
+                    '</div>' +
+                    '</div>';
 
                     var el = angular.element(elStr);
                     $compile(el)($scope);
