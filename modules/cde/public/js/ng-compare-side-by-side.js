@@ -39,12 +39,23 @@
                         $scope.elts.push(elt1);
                         $scope.elts.push(elt2);
                         $scope.compareView = true;
+                        $scope.elt1 = elt1;
 
 
+                        var questions1TinyId = elt1.questions.map(function (q) {
+                            return q.question.cde.tinyId;
+                        });
+                        var questions2TinyId = elt2.questions.map(function (q) {
+                            return q.question.cde.tinyId;
+                        });
                         $scope.questionResult1 = [];
-                        for (var q in elt1.questions) {
-                            $scope.questionResult1.push(elt2.questions.indexOf(q));
-                        }
+                        elt1.questions.forEach(function (q) {
+                            $scope.questionResult1.push(questions2TinyId.indexOf(q.question.cde.tinyId));
+                        });
+                        $scope.questionResult2 = [];
+                        elt2.questions.forEach(function (q) {
+                            $scope.questionResult2.push(questions1TinyId.indexOf(q.question.cde.tinyId));
+                        });
 
 
                         Comparison.applyComparison($scope, $element);
@@ -187,11 +198,35 @@
 
                     elStr = elStr +
                     '<div class="row">' +
-                    '<div ng-repeat="elt in elts" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
-                    '<div ng-include="\'/cde/public/html/valueDomainSwitch.html\'"></div>' +
+                    '   <div ng-repeat="elt in elts" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
+                    '       <div ng-include="\'/cde/public/html/valueDomainSwitch.html\'"></div>' +
+                    '   </div>' +
                     '</div>' +
-                    '</div>';
+                    '<hr class="divider">';
 
+                    elStr = elStr +
+                    '<div class="row">' +
+                    '   <div ng-repeat="i in questionResult1 track by $index" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
+                    '       <div class="row">' +
+                    '           <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                    '           <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
+                    '       </div>' +
+                    '       <div class="row">' +
+                    '           <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
+                    '           <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
+                    '       </div>' +
+                    '       <div class="row">' +
+                    '           <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
+                    '           <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
+                    '       </div>' +
+                    '       <div class="row">' +
+                    '           <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
+                    '           <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
+                    '       </div>' +
+                    '   </div>' +
+                    '   <div class="smallSpace"></div>' +
+                    '</div>' +
+                    '<hr class="divider">';
 
                     var el = angular.element(elStr);
                     $compile(el)($scope);
