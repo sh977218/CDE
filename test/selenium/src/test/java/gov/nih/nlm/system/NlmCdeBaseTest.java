@@ -329,7 +329,7 @@ public class NlmCdeBaseTest {
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (int) (long) executor.executeScript("return window.scrollY;");
+            Integer value = ((Long) executor.executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -386,10 +386,8 @@ public class NlmCdeBaseTest {
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
-        try {
-            textPresent("Saved.");
-        } catch (Exception e) {
-        }
+        textPresent("Saved.");
+
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
