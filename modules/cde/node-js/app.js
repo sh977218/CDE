@@ -89,9 +89,7 @@ exports.init = function (app, daoManager) {
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
-            delete exportCde._id;
-            delete exportCde.history;
-            delete exportCde.updatedBy.userId;
+            exportCde = exportShared.stripBsonIds(exportCde);
             res.send(js2xml("dataElement", exportCde));
         }
 
@@ -506,6 +504,18 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
+        function removeElasticFields(cde){
+            delete cde.classificationBoost;
+            delete cde.flatClassifications;
+            delete cde.primaryNameCopy;
+            delete cde.stewardOrgCopy;
+            delete cde.flatProperties;
+            delete cde.valueDomain.nbOfPVs;
+            delete cde.primaryDefinitionCopy;
+            delete cde.flatIds;
+            delete cde.usedByOrgs;
+            return cde;
+        }
         var exporter;
         if (req.query.type==='csv') {
             exporter = {
@@ -515,14 +525,29 @@ exports.init = function (app, daoManager) {
                 , footer: ""
                 , type: 'text/csv'
             };
-        }
-        if (req.query.type==='json') {
+        } else if (req.query.type==='json') {
             exporter = {
-                transformObject: function(c){return JSON.stringify(c)}
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return JSON.stringify(cde)
+                }
                 , header: "["
                 , delimiter: ",\n"
                 , footer: "]"
                 , type: 'appplication/json'
+            };
+        } else if (req.query.type==='xml') {
+            exporter = {
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                }
+                , header: "<cdeExport>\n"
+                , delimiter: "\n"
+                , footer: "\n</cdeExport>"
+                , type: 'appplication/xml'
             };
         }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
