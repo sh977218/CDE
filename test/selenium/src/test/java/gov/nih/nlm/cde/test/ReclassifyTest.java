@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class ReclassifyTest extends BaseClassificationTest {
 
     @Test
-    public void reclassifyOrgAdminForMany() {
+    public void adminOfMultipleOrgsCanSeeDropdown() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         gotoClassifMgt();
         findElement(By.cssSelector(".fa-retweet")).click();

@@ -285,7 +285,17 @@ public class NlmCdeBaseTest {
             hangon(2);
             findElement(By.id("li-blank-" + status)).click();
         }
-        textPresent("1 results for");
+        try {
+            textPresent("1 results for");
+        } catch (Exception e) {
+            findElement(By.id("ftsearch-input")).sendKeys(" ");
+            findElement(By.id("search.submit")).click();
+            if (status != null) {
+                hangon(2);
+                findElement(By.id("li-blank-" + status)).click();
+            }
+            textPresent("1 results for");
+        }
         textPresent(name, By.id("acc_link_0"));
     }
 
