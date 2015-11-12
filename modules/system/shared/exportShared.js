@@ -43,9 +43,10 @@ exports.projectCdeForExport = function (ele) {
         return c.stewardOrg.name
     });
     return cde;
-}
+};
 
 exports.convertToCsv = function (ele) {
+    ele = exports.projectCdeForExport(ele);
     var sanitize = function (v) {
         return v.trim().replace(/\"/g, "\"\"");
     };
@@ -62,7 +63,14 @@ exports.convertToCsv = function (ele) {
         }
         row += "\",";
     });
-    return row + "\n";
+    return row;
+};
+
+exports.stripBsonIds = function(elt){
+    delete elt._id;
+    delete elt.updated;
+    delete elt.history;
+    return elt;
 };
 
 exports.nocacheMiddleware = function(req, res, next) {

@@ -66,28 +66,26 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    //if (config.modules.forms.comments) {
-        app.post('/comments/form/add', function (req, res) {
-            adminItemSvc.addComment(req, res, mongo_data);
-        });
+    app.post('/comments/form/add', function (req, res) {
+        adminItemSvc.addComment(req, res, mongo_data);
+    });
 
-        app.post('/comments/form/remove', function (req, res) {
-            adminItemSvc.removeComment(req, res, mongo_data);
-        });
+    app.post('/comments/form/remove', function (req, res) {
+        adminItemSvc.removeComment(req, res, mongo_data);
+    });
 
-        app.post('/comments/form/approve', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
-                elt.comments[req.body.comment.index].pendingApproval = false;
-                delete elt.comments[req.body.comment.index].pendingApproval;
-            }, "Comment approved!");
-        });
+    app.post('/comments/form/approve', function (req, res) {
+        adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+            elt.comments[req.body.comment.index].pendingApproval = false;
+            delete elt.comments[req.body.comment.index].pendingApproval;
+        }, "Comment approved!");
+    });
 
-        app.post('/comments/form/decline', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
-                elt.comments.splice(req.body.comment.index, 1);
-            }, "Comment declined!");
-        });
-    //}
+    app.post('/comments/form/decline', function (req, res) {
+        adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+            elt.comments.splice(req.body.comment.index, 1);
+        }, "Comment declined!");
+    });
 
     app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_data);

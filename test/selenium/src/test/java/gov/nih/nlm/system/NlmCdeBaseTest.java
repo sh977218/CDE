@@ -12,11 +12,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
+import static com.jayway.restassured.RestAssured.get;
 
+
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ public class NlmCdeBaseTest {
 
     protected static int defaultTimeout = Integer.parseInt(System
             .getProperty("timeout"));
+
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
 
@@ -72,6 +73,16 @@ public class NlmCdeBaseTest {
 
 
     protected static String password = "pass";
+
+    @BeforeTest
+    public void countElasticElements() {
+        int nbOfRecords = 0;
+        for (int i = 0; i < 15 && nbOfRecords < 11675; i++) {
+            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
+            System.out.println("nb of records: " + nbOfRecords);
+            hangon(10);
+        }
+    }
 
     @BeforeTest
     public void setBaseUrl() {
@@ -121,10 +132,18 @@ public class NlmCdeBaseTest {
         resizeWindow(1280, 800);
     }
 
+    @AfterMethod
+    public void countTabs(Method method) {
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+    }
+
     @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
     protected void resizeWindow(int width, int height) {
@@ -135,6 +154,19 @@ public class NlmCdeBaseTest {
         return driver.manage().window().getSize();
     }
 
+    private boolean isUsernameMatch(String username) {
+        WebElement unameLink = findElement(By.id("username_link"));
+        String unameStr = unameLink.getText();
+        String usernameStr = username;
+        if (unameStr.length() > 17) {
+            unameStr = unameStr.substring(0, 17) + "...";
+        }
+        if (usernameStr.length() > 17) {
+            usernameStr = username.substring(0, 17) + "...";
+        }
+        return unameStr.equals(usernameStr);
+    }
+
     protected void mustBeLoggedInAs(String username, String password) {
         goHome();
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
@@ -143,16 +175,7 @@ public class NlmCdeBaseTest {
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
-            WebElement unameLink = findElement(By.id("username_link"));
-            String unameStr = unameLink.getText();
-            String usernameStr = username;
-            if (unameStr.length() > 17) {
-                unameStr = unameStr.substring(0, 17) + "...";
-            }
-            if (usernameStr.length() > 17) {
-                usernameStr = username.substring(0, 17) + "...";
-            }
-            if (!unameStr.equals(usernameStr)) {
+            if (!isUsernameMatch(username)) {
                 logout();
                 loginAs(username, password);
             }
@@ -218,7 +241,7 @@ public class NlmCdeBaseTest {
         try {
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Classification");
+            textPresent("Reference Documents");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
@@ -226,7 +249,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Classification");
+            textPresent("Reference Documents");
             textPresent(name);
             textNotPresent("is archived");
         }
@@ -250,8 +273,8 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         findElement(By.id("search.submit")).click();
-        hangon(2);
         if (status != null) {
+            hangon(2);
             findElement(By.id("li-blank-" + status)).click();
         }
         textPresent("1 results for");
@@ -306,7 +329,7 @@ public class NlmCdeBaseTest {
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = (int) (long) executor.executeScript("return window.scrollY;");
+            Integer value = ((Long) executor.executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -342,8 +365,7 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        } catch (Exception e) {
+                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS); } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
@@ -355,21 +377,18 @@ public class NlmCdeBaseTest {
     protected void newCdeVersion(String changeNote) {
         scrollToEltByCss("#openSave");
         clickElement(By.id("openSave"));
+        hangon(1);
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys(
                     "Change note for change number 1");
         }
-        // assumption is that text is sent before JS can load. So wait 1 sec.
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
-        try {
-            textPresent("Saved.");
-        } catch (Exception e) {
-            findElement(By.id("confirmNewVersion")).click();
-            textPresent("Saved.");
-        }
+        textPresent("Saved.");
+
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
     }
@@ -510,8 +529,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username,
-                                               String password, String checkText) {
+    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -519,13 +537,24 @@ public class NlmCdeBaseTest {
         waitAndClick(By.id("login_button"));
         try {
             textPresent(checkText);
-            // Assumption is that UMLS sometimes throws an error on login. With
-            // a socket hangup. login fails, we retry.
+            // sometimes an issue with csrf, need to reload the whole page.
         } catch (TimeoutException e) {
+            // csrf collision, wait random before re-trying
+            hangon(new Random().nextInt(10));
             System.out.println("Login failed. Re-trying. error: "
                     + e.getMessage());
             System.out.println("*************checkText:" + checkText);
-            findElement(By.id("login_button")).click();
+            goHome();
+            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+            WebElement loginLinkList = driver.findElement(By.id("login_link"));
+            if (loginLinkList.isDisplayed()) {
+                findElement(By.id("login_link")).click();
+                findElement(By.id("uname")).clear();
+                findElement(By.id("uname")).sendKeys(username);
+                findElement(By.id("passwd")).clear();
+                findElement(By.id("passwd")).sendKeys(password);
+                waitAndClick(By.id("login_button"));
+            }
             textPresent(checkText);
         }
     }
@@ -535,6 +564,7 @@ public class NlmCdeBaseTest {
         ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
+        hangon(3);
     }
 
     protected void switchTab(int i) {

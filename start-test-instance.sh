@@ -1,4 +1,4 @@
-:#!/bin/sh
+#!/bin/sh
 
 # Location of node. For dev testing use '.'  for prod testing use 'build'
 NODE_LOC='.'

@@ -32,7 +32,7 @@ exports.exists = function (condition, callback) {
 };
 
 exports.boardsByUserId = function (userId, callback) {
-    PinningBoard.find({"owner.userId": userId}).exec(function (err, result) {
+    PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
     });
 };
@@ -294,6 +294,7 @@ exports.fork = function (elt, user, callback) {
 };
 
 exports.update = function (elt, user, callback, special) {
+    if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, function (err, dataElement) {
         delete elt._id;
         if (!elt.history) elt.history = [];
@@ -447,7 +448,7 @@ exports.findCurrCdesInFormElement = function (allCdes, cb) {
     DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
 };
 
-exports.derivationOutputs = function(inputTinyId, cb) {
+exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
@@ -458,22 +459,22 @@ var correctBoardPinsForCde = function(doc, cb){
     });
 };
 
-schemas.dataElementSchema.post('save', function(doc) {
+schemas.dataElementSchema.post('save', function (doc) {
     if (doc.archived) return;
     correctBoardPinsForCde(doc);
 });
 
 var cj = new CronJob({
     cronTime: '00 00 4 * * *',
-    onTick: function() {
+    onTick: function () {
         console.log("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
         dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-        PinningBoard.find().distinct('pins.deTinyId', function(err, ids){
+        PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
-                DataElement.findOne({tinyId:id, archived: null}).exec(function(err, de){
-                    correctBoardPinsForCde(de, function(){
+                DataElement.findOne({tinyId: id, archived: null}).exec(function (err, de) {
+                    correctBoardPinsForCde(de, function () {
                         cb();
                     });
                 });

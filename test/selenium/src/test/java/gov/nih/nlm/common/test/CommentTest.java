@@ -1,6 +1,5 @@
 package gov.nih.nlm.common.test;
 
-import gov.nih.nlm.common.test.CommonTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 
@@ -181,7 +180,6 @@ public abstract class CommentTest extends CommonTest {
 
         findElement(By.cssSelector(preClass+".declineComment")).click();
         textPresent("Comment declined");
-
 
         logout();
         goToEltByName(eltName, status);

@@ -64,7 +64,7 @@ public class FormNamingTest extends BaseFormTest {
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
         textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        textPresent("form for test cde reorder detail tabs 2", By.xpath(prefix + "dd_name_1" + postfix));
+        textPresent("form for test cde reorder detail tabs 3", By.xpath(prefix + "dd_name_1" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
         textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_0" + postfix));
     }

@@ -27,7 +27,7 @@ public class FormPropertyTest extends PropertyTest {
 
     @Test
     public void richPropText() {
-        mustBeLoggedInAs("testUser", password);
+        mustBeLoggedInAs("testAdmin", password);
         richText("Form Rich Text Property Test", "Recorded");
     }
 

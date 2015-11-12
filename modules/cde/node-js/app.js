@@ -89,7 +89,7 @@ exports.init = function (app, daoManager) {
         function sendNativeXml(cde, res){
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
-            delete exportCde._id;
+            exportCde = exportShared.stripBsonIds(exportCde);
             res.send(js2xml("dataElement", exportCde));
         }
 
@@ -198,26 +198,16 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                async.parallel([
-                        function (callback) {
-                            mongo_data.newBoard(board, function (err, newBoard) {
-                                callback(err, newBoard);
-                            });
-                        },
-                        function (callback) {
-                            mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
-                                callback(err, nbBoards);
-                            });
-                        }
-                    ],
-                    function (err, results) {
-                        if (results[1] < boardQuota) return res.send(results[0]);
-                        else {
-                            mongo_data.removeBoard(results[0]._id);
-                            res.status(403).send("You have too many boards!");
-                        }
-                    });
-
+                mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                    if (nbBoards < boardQuota) {
+                        mongo_data.newBoard(board, function (err, newBoard) {
+                            if (err) res.status(500).send("An error occurred. ");
+                            res.send();
+                        });
+                    } else {
+                        res.status(403).send("You have too many boards!");
+                    }
+                });
             } else {
                 mongo_data.boardById(board._id, function (err, b) {
                     if (err) {
@@ -308,6 +298,12 @@ exports.init = function (app, daoManager) {
             if (err) return res.status(400).send("invalid query");
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
+        });
+    });
+
+    app.get('/elasticSearch/count', function (req, res) {
+        return elastic.nbOfElements(function (err, result) {
+            res.send("" + result);
         });
     });
 
@@ -444,7 +440,6 @@ exports.init = function (app, daoManager) {
     app.post("/systemAlert", function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             systemAlert = req.body.alert;
-            console.log("system: " + systemAlert);
             res.send("OK");
         } else {
             res.status(401).send("Not Authorized");
@@ -509,9 +504,54 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        var cdeHeader = "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        function removeElasticFields(cde){
+            delete cde.classificationBoost;
+            delete cde.flatClassifications;
+            delete cde.primaryNameCopy;
+            delete cde.stewardOrgCopy;
+            delete cde.flatProperties;
+            delete cde.valueDomain.nbOfPVs;
+            delete cde.primaryDefinitionCopy;
+            delete cde.flatIds;
+            delete cde.usedByOrgs;
+            return cde;
+        }
+        var exporter;
+        if (req.query.type==='csv') {
+            exporter = {
+                transformObject: exportShared.convertToCsv
+                , header: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
+                , delimiter: "\n"
+                , footer: ""
+                , type: 'text/csv'
+            };
+        } else if (req.query.type==='json') {
+            exporter = {
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return JSON.stringify(cde)
+                }
+                , header: "["
+                , delimiter: ",\n"
+                , footer: "]"
+                , type: 'appplication/json'
+            };
+        } else if (req.query.type==='xml') {
+            exporter = {
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                }
+                , header: "<cdeExport>\n"
+                , delimiter: "\n"
+                , footer: "\n</cdeExport>"
+                , type: 'appplication/xml'
+            };
+        }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exportShared.convertToCsv, cdeHeader);
+        return elastic_system.elasticSearchExport(res, query, 'cde', exporter);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
