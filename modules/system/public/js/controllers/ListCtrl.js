@@ -199,8 +199,7 @@ angular.module('systemModule').controller('ListCtrl',
                 $log.error(err);
                 return;
             }
-            //if (timestamp < $scope.lastQueryTimeStamp) return;
-            //if (!settings.searchTerm) return;
+            if (timestamp < $scope.lastQueryTimeStamp) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
