@@ -199,7 +199,8 @@ angular.module('systemModule').controller('ListCtrl',
                 $log.error(err);
                 return;
             }
-            if (timestamp < $scope.lastQueryTimeStamp) return;
+            //if (timestamp < $scope.lastQueryTimeStamp) return;
+            //if (!settings.searchTerm) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
             $scope.cdes = result.cdes;
@@ -236,6 +237,7 @@ angular.module('systemModule').controller('ListCtrl',
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+                if ($scope.cdes.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
             }
         });
 
