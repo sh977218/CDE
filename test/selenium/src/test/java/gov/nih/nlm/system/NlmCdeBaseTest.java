@@ -272,14 +272,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
-        try {
-            textPresent(name);
-        } catch(TimeoutException e) {
-            System.out.println("Was not able to input all text: " + name);
-            findElement(By.id("ftsearch-input")).clear();
-            findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-            hangon(0.5);
-        }
+        textPresent(name);
         findElement(By.id("search.submit")).click();
         if (status != null) {
             hangon(2);
