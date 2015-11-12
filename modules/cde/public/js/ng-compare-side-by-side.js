@@ -40,6 +40,13 @@
                         $scope.elts.push(elt2);
                         $scope.compareView = true;
 
+
+                        $scope.questionResult1 = [];
+                        for (var q in elt1.questions) {
+                            $scope.questionResult1.push(elt2.questions.indexOf(q));
+                        }
+
+
                         Comparison.applyComparison($scope, $element);
                     }
                 };
@@ -184,6 +191,7 @@
                     '<div ng-include="\'/cde/public/html/valueDomainSwitch.html\'"></div>' +
                     '</div>' +
                     '</div>';
+
 
                     var el = angular.element(elStr);
                     $compile(el)($scope);

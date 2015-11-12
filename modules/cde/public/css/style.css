@@ -819,6 +819,10 @@ div + .questionPlaceholder {
     overflow: hidden;
 }
 
+.quickBoardContentCompareDifferent {
+    border: dashed red 1px;
+}
+
 .smallSpace {
     margin: 0;
     padding: 0;
