@@ -25,7 +25,7 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
         findElement(By.xpath("//div[@id=\"addClassificationModalBody\"]//button[contains(text(),'Classify')]")).click();
         textPresent("Classification Added");
         findElement(By.id("closeModal")).click();
-
+        modalGone();
     }
 
 }

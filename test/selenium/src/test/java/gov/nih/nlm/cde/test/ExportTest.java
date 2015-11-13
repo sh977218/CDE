@@ -44,7 +44,6 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        wait.withTimeout(10, TimeUnit.SECONDS);
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -54,7 +53,6 @@ public class ExportTest extends NlmCdeBaseTest {
                 System.out.println("No export after : " + 10 * i + "seconds");
             }
         }
-        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
@@ -78,7 +76,6 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Export Quick Board");
 
         findElement(By.id("qb.export")).click();
-        wait.withTimeout(10, TimeUnit.SECONDS);
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -88,7 +85,6 @@ public class ExportTest extends NlmCdeBaseTest {
                 System.out.println("No export after : " + 10 * i + "seconds");
             }
         }
-        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
         findElement(By.id("qb.empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
@@ -112,7 +108,6 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        wait.withTimeout(20, TimeUnit.SECONDS);
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -122,7 +117,6 @@ public class ExportTest extends NlmCdeBaseTest {
                 System.out.println("No export after : " + 10 * i + "seconds");
             }
         }
-        wait.withTimeout(defaultTimeout, TimeUnit.SECONDS);
         closeAlert();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
