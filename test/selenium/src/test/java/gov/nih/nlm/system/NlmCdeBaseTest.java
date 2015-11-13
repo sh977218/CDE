@@ -123,8 +123,7 @@ public class NlmCdeBaseTest {
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 200);
         shortWait = new WebDriverWait(driver, 2);
