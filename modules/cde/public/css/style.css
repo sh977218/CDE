@@ -809,24 +809,21 @@ div + .questionPlaceholder {
     margin-top: 17px;
 }
 
-.quickBoardContentCompareDelete {
+.quickBoardContentCompare {
     overflow: hidden;
     padding: 5px;
     margin: 5px;
+}
+
+.quickBoardContentCompareDelete {
     border: dashed red 1px;
 }
 
 .quickBoardContentCompareAdd {
-    overflow: hidden;
-    padding: 5px;
-    margin: 5px;
     border: dashed green 1px;
 }
 
 .quickBoardContentCompareModified {
-    overflow: hidden;
-    padding: 5px;
-    margin: 5px;
     border: dashed blue 1px;
 }
 

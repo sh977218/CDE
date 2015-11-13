@@ -125,14 +125,14 @@
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
                         '<div class="row" ng-repeat="r in result">' +
-                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-class="{quickBoardCompareDifferent:{{result.naming===\'modified\'}}}">' +
-                        '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row">' +
+                        '   <div class="col-xs-5 col-lg-5 col-md-5 quickBoardContentCompare" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'}">' +
+                        '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-2">{{p}}</div>' +
                         '           <div class="col-xs-10">{{left[r.leftIndex][p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-class="{quickBoardCompareDifferent:{{result.naming===\'modified\'}}}">' +
-                        '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties"  class="row">' +
+                        '   <div class="col-xs-5 col-lg-5 col-md-5 quickBoardContentCompare" ng-class="{quickBoardContentCompareAdd:r.action===\'not found\'}">' +
+                        '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-2">{{p}}</div>' +
                         '           <div class="col-xs-10">{{right[r.rightIndex][p]}}</div>' +
                         '       </div>' +
@@ -142,20 +142,20 @@
 
                     var objectHtml = '' +
                         '<div class="row">' +
-                        '   <div class="col-md-6">' +
+                        '   <div class="col-md-5 quickBoardContentCompare">' +
                         '       <div class="row" ng-repeat="p in properties">' +
                         '           <div class="col-md-3">{{p}}:</div>' +
                         '           <div class="col-md-9">{{left[p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-md-6">' +
+                        '   <div class="col-md-5 quickBoardContentCompare">' +
                         '       <div class="row" ng-repeat="p in properties">' +
                         '           <div class="col-md-3">{{p}}:</div>' +
                         '           <div class="col-md-9">{{right[p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +
-                        '';
+                        '<hr class="divider">';
                     /*
                      elStr = elStr +
                      '<div ng-repeat="i in questionResult1 track by $index" class="row">' +
