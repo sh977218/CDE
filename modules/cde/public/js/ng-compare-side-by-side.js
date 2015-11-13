@@ -49,21 +49,26 @@
                             return q.question.cde.tinyId;
                         });
 
-                        var t1 = [];
+                        var questionResult1 = [];
                         var t2 = [];
                         var elt1Index = 0;
-                        var j = 0;
+                        var beginIndex = 0;
                         elt1.questions.forEach(function (q) {
-                            j = questions2TinyId.slice(j, questions2TinyId.length).indexOf(q.question.cde.tinyId);
-                            if (j === -1) {
-                                t1.push("not found");
+                            var cdeId = q.question.cde.tinyId;
+                            var elt1InElt2Index = questions2TinyId.slice(beginIndex, questions2TinyId.length).indexOf(cdeId);
+                            if (elt1InElt2Index === -1) {
+                                questionResult1.push("not found");
                             } else {
-                                for (var k = 0; k < j; k++)
-                                    t1.push("space");
-                                t1.push("found");
+                                for (var k = 0; k < elt1InElt2Index; k++) {
+                                    questionResult1.push("space");
+                                    beginIndex++;
+                                }
+                                questionResult1.push("found");
+                                beginIndex++;
                             }
                             elt1Index++;
                         });
+                        $scope.questionResult1 = questionResult1;
 
                         Comparison.applyComparison($scope, $element);
                     }
@@ -214,24 +219,26 @@
                     elStr = elStr +
                     '<div class="row">' +
                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                    '       <div ng-repeat="i in questionResult1 track by $index" ng-class="{quickBoardContentCompareDelete:i===-1,quickBoardContentCompareAdd:i<$index,quickBoardContentCompareModified:i>$index}">' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
+                    '       <div ng-repeat="i in questionResult1 track by $index" ng-class="{quickBoardContentCompareDelete:i===\'space\',quickBoardContentCompareAdd:i===\'not found\'}">' +
+                    '           <div ng-if="i!==\'space\'">' +
+                    '               <div class="row">' +
+                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
+                    '               </div>' +
+                    '               <div class="row">' +
+                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
+                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
+                    '               </div>' +
+                    '               <div class="row">' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
+                    '               </div>' +
+                    '               <div class="row">' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
+                    '               </div>' +
+                    '               <div class="smallSpace"></div>' +
                     '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
-                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
-                    '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
-                    '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
-                    '           </div>' +
-                    '           <div class="smallSpace"></div>' +
                     '       </div>' +
                     '   </div>' +
                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
