@@ -48,6 +48,58 @@ angular.module('cdeModule').controller('CompareCtrl',
                     });
                 }
             };
+
+            $scope.namingProperties = ['designation', 'definition', 'context'];
+            $scope.referenceDocumentProperties = ['title', 'uri', 'providerOrg', 'languageCode', 'document'];
+            $scope.propertiesProperties = ['key', 'value'];
+            $scope.dataElementConceptProperties = ['concepts', 'conceptualDomain'];
+            $scope.stewardOrgProperties = ['name'];
+            $scope.registrationStateProperties = ['registrationStatus'];
+            $scope.createdByProperties = ['username'];
+
+            var flatFormQuestions = function (fe, questions) {
+                if (fe.formElements != undefined) {
+                    fe.formElements.forEach(function (e) {
+                        if (e.elementType && e.elementType === 'question') {
+                            delete e.formElements;
+                            questions.push(JSON.parse(JSON.stringify(e)));
+                        }
+                        else flatFormQuestions(e, questions);
+                    })
+                }
+            };
+            var wipeUseless = function (o) {
+                delete o._id;
+                delete o.__v;
+                delete o.history;
+                delete o.imported;
+                delete o.noRenderAllowed;
+                delete o.displayProfiles;
+                delete o.attachments;
+                delete o.version;
+                delete o.comments;
+                delete o.tinyId;
+                delete o.derivationRules;
+                delete o.usedBy;
+                delete o.classification;
+                delete o.$$hashKey;
+                delete o.isOpen;
+                delete o.formElements;
+                o.questions.forEach(function (q) {
+                    delete q._id;
+                })
+            };
+
+            $scope.eltsToCompare[0].questions = [];
+            flatFormQuestions($scope.eltsToCompare[0], $scope.eltsToCompare[0].questions);
+            wipeUseless($scope.eltsToCompare[0]);
+
+            $scope.eltsToCompare[1].questions = [];
+            flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
+            wipeUseless($scope.eltsToCompare[1]);
+
+            $scope.questionProperties = ['elementType', 'label', 'datatype', 'cde'];
+
         }
     ])
 ;

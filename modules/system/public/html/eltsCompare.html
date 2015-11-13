@@ -4,5 +4,23 @@
 
         <p>Note: To add a data element, click on the <i class="fa fa-plus"></i> next to it.</p>
     </div>
-    <div ng-compare-side-by-side left="eltsToCompare[0]" right="eltsToCompare[1]"></div>
+
+    <!--
+        <div ng-compare-side-by-side properties="namingProperties" sort="true"
+             left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
+        <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true"
+             left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
+        <div ng-compare-side-by-side properties="propertiesProperties" sort="true"
+             left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
+        <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true"
+             left="eltsToCompare[0].dataElementConcept" right="eltsToCompare[1].dataElementConcept"></div>
+        <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true"
+             left="eltsToCompare[0].stewardOrg" right="eltsToCompare[1].stewardOrg"></div>
+        <div ng-compare-side-by-side properties="registrationStateProperties" sort="true"
+             left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
+        <div ng-compare-side-by-side properties="createdByProperties" sort="true"
+             left="eltsToCompare[0].createdBy" right="eltsToCompare[1].createdBy"></div>
+    -->
+    <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true"
+         left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"></div>
 </div>

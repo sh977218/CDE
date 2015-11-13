@@ -7,98 +7,99 @@
                     restrict: "AE",
                     scope: {
                         left: '=',
-                        right: '='
+                        right: '=',
+                        sort: '=',
+                        properties: '=',
+                        question: '='
                     },
                     controller: function ($scope, $element) {
                     },
                     link: function ($scope, $element) {
-                        var elt1 = Comparison.deepCopy($scope.left);
-                        elt1.questions = [];
-                        Comparison.flatFormQuestions(elt1, elt1.questions);
-                        Comparison.sortPropertiesByName(elt1);
-                        Comparison.wipeUseless(elt1);
-
-                        var elt2 = Comparison.deepCopy($scope.right);
-                        elt2.questions = [];
-                        Comparison.flatFormQuestions(elt2, elt2.questions);
-                        Comparison.sortPropertiesByName(elt2);
-                        Comparison.wipeUseless(elt2);
-
-                        var result = {};
-                        Comparison.propertiesToBeCompared().forEach(function (property) {
-                            var diff = DeepDiff(elt1[property], elt2[property]);
-                            if (diff && diff.length > 0) {
-                                result[property] = 'modified';
+                        if (!$scope.left || !$scope.right)
+                            return;
+                        var leftObj = Comparison.deepCopy($scope.left);
+                        var rightObj = Comparison.deepCopy($scope.right);
+                        if (Array.isArray($scope.left) && Array.isArray($scope.right)) {
+                            $scope.type = 'array';
+                            if ($scope.sort) {
+                                Comparison.sortPropertiesByName(leftObj);
+                                Comparison.sortPropertiesByName(rightObj);
                             }
-                            else {
-                                result[property] = 'unmodified';
-                            }
-                        });
-                        $scope.result = result;
-                        $scope.elts = [];
-                        $scope.elts.push(elt1);
-                        $scope.elts.push(elt2);
-                        $scope.compareView = true;
-                        $scope.elt1 = elt1;
-                        $scope.elt2 = elt2;
-
-                        var questions1TinyId = elt1.questions.map(function (q) {
-                            return q.question.cde.tinyId;
-                        });
-                        var questions2TinyId = elt2.questions.map(function (q) {
-                            return q.question.cde.tinyId;
-                        });
-
-                        var questionResult1 = [];
-                        var t2 = [];
-                        var elt1Index = 0;
-                        var beginIndex = 0;
-                        elt1.questions.forEach(function (q) {
-                            var cdeId = q.question.cde.tinyId;
-                            var elt1InElt2Index = questions2TinyId.slice(beginIndex, questions2TinyId.length).indexOf(cdeId);
-                            if (elt1InElt2Index === -1) {
-                                questionResult1.push("not found");
-                            } else {
-                                for (var k = 0; k < elt1InElt2Index; k++) {
-                                    questionResult1.push("space");
+                            var leftIds = leftObj.map(function (o) {
+                                Comparison.wipeUseless(o);
+                                if ($scope.question) {
+                                    return o.question.cde.tinyId;
+                                }
+                                else
+                                    return JSON.stringify(o);
+                            });
+                            var rightIds = rightObj.map(function (o) {
+                                Comparison.wipeUseless(o);
+                                if ($scope.question) {
+                                    return o.question.cde.tinyId;
+                                }
+                                else
+                                    return JSON.stringify(o);
+                            });
+                            var result = [];
+                            var leftIndex = 0;
+                            var beginIndex = 0;
+                            leftObj.forEach(function (o) {
+                                var cdeId;
+                                if ($scope.question) {
+                                    cdeId = o.question.cde.tinyId;
+                                }
+                                else
+                                    cdeId = JSON.stringify(o);
+                                var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(cdeId);
+                                if (rightIndex === -1) {
+                                    if (beginIndex === 0) {
+                                        result.push({
+                                            action: "space",
+                                            rightIndex: beginIndex
+                                        });
+                                    }
+                                    result.push({
+                                        action: "not found",
+                                        leftIndex: leftIndex
+                                    });
+                                } else {
+                                    for (var k = 0; k < rightIndex; k++) {
+                                        result.push({
+                                            action: "space",
+                                            rightIndex: beginIndex + rightIndex - 1
+                                        });
+                                        beginIndex++;
+                                    }
+                                    result.push({
+                                        action: "found",
+                                        leftIndex: leftIndex,
+                                        rightIndex: beginIndex + rightIndex - 1
+                                    });
                                     beginIndex++;
                                 }
-                                questionResult1.push("found");
-                                beginIndex++;
+                                leftIndex++;
+                            });
+                            $scope.result = result;
+                        } else if (typeof $scope.left === 'object' && typeof $scope.right === 'object') {
+                            $scope.type = 'object';
+                            var diff = DeepDiff(leftObj, rightObj);
+                            if (diff && diff.length > 0) {
+                                $scope.result = diff;
                             }
-                            elt1Index++;
-                        });
-                        $scope.questionResult1 = questionResult1;
-
+                        }
                         Comparison.applyComparison($scope, $element);
                     }
                 };
             }])
         .factory("Comparison", ["$compile", function ($compile) {
             return {
-                propertiesToBeCompared: function () {
-                    return ['naming', 'properties', 'dataElementConcept', 'referenceDocuments', 'stewardOrg', 'registrationState', 'formUsageCounter', 'views', 'created', 'updated', 'createdBy'];
-                },
                 sortPropertiesByName: function (o) {
                     for (var p in o) {
                         if (p !== 'questions' && Array.isArray(p)) {
                             p.sort();
                         }
                     }
-                },
-                flatFormQuestions: function (fe, questions) {
-                    var f = function (fe, questions) {
-                        if (fe.formElements != undefined) {
-                            fe.formElements.forEach(function (e) {
-                                if (e.elementType && e.elementType === 'question') {
-                                    delete e.formElements;
-                                    questions.push(JSON.parse(JSON.stringify(e)));
-                                }
-                                else f(e, questions);
-                            })
-                        }
-                    };
-                    f(fe, questions);
                 },
                 deepCopy: function (o) {
                     return JSON.parse(JSON.stringify(o));
@@ -120,152 +121,95 @@
                     delete o.$$hashKey;
                     delete o.isOpen;
                     delete o.formElements;
-                    o.questions.forEach(function (q) {
-                        delete q._id;
-                    })
                 },
                 applyComparison: function ($scope, $element) {
-                    var elStr = '' +
-                        '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.naming===\'modified\'}}}">' +
-                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-repeat="elt in elts">' +
-                        '       <div ng-include="\'/system/public/html/naming.html\'"></div>' +
+                    var arrayHtml = '' +
+                        '<div class="row" ng-repeat="r in result">' +
+                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-class="{quickBoardCompareDifferent:{{result.naming===\'modified\'}}}">' +
+                        '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row">' +
+                        '           <div class="col-xs-2">{{p}}</div>' +
+                        '           <div class="col-xs-10">{{left[r.leftIndex][p]}}</div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-class="{quickBoardCompareDifferent:{{result.naming===\'modified\'}}}">' +
+                        '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties"  class="row">' +
+                        '           <div class="col-xs-2">{{p}}</div>' +
+                        '           <div class="col-xs-10">{{right[r.rightIndex][p]}}</div>' +
+                        '       </div>' +
                         '   </div>' +
                         '</div>' +
                         '<hr class="divider">';
 
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.stewardOrg===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2"><strong>Steward:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10">{{elt.stewardOrg.name}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.registrationState===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2"><strong>Status:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10">{{elt.registrationState.registrationStatus}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.formUsageCounter===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2" ng-if="elt.formUsageCounter"><strong>Form Usage:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10" ng-if="elt.formUsageCounter">{{elt.formUsageCounter}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.views===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2" ng-if="elt.views"><strong>Views:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10" ng-if="elt.views">{{elt.views}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.created===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2"><strong>Added to NLM:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10">{{elt.created | date: \'MM/dd/yyyy @ h:mma\'}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.updated===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2" ng-if="elt.updated"><strong>Updated in NLM:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10" ng-if="elt.updated">{{elt.updated | date: \'MM/dd/yyyy @ h:mma\'}}</div>' +
-                    '   </div>' +
-                    '</div>';
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.createdBy===\'modified\'}}}">' +
-                    '   <div ng-repeat="elt in elts" class="col-md-6">' +
-                    '       <div tabindex="0" class="col-lg-2 col-md-2" ng-if="elt.createdBy"><strong>Created By:</strong></div>' +
-                    '       <div tabindex="0" class="col-lg-10 col-md-10" ng-if="elt.createdBy">{{elt.createdBy.username}}</div>' +
-                    '   </div>' +
-                    '</div>';
-
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.dataElementConcept===\'modified\'}}}">' +
-                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-repeat="elt in elts">' +
-                    '       <div ng-controller="ConceptsCtrl" ng-include="\'/cde/public/html/deConcepts.html\'"></div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<hr class="divider">';
-
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.referenceDocuments===\'modified\'}}}">' +
-                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-repeat="elt in elts">' +
-                    '       <div ng-include="\'/system/public/html/referenceDocument.html\'"></div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<hr class="divider">';
-
-                    elStr = elStr +
-                    '<div class="row" ng-class="{quickBoardCompareDifferent:{{result.properties===\'modified\'}}}">' +
-                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding" ng-repeat="elt in elts">' +
-                    '       <div ng-include="\'/system/public/html/properties.html\'"></div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<hr class="divider">';
-
-                    elStr = elStr +
-                    '<div class="row">' +
-                    '   <div ng-repeat="elt in elts" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
-                    '       <div ng-include="\'/cde/public/html/valueDomainSwitch.html\'"></div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<hr class="divider">';
-
-                    elStr = elStr +
-                    '<div ng-repeat="i in questionResult1 track by $index" class="row">' +
-                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                    '       <div ng-class="{quickBoardContentCompareDelete:i===\'space\',quickBoardContentCompareAdd:i===\'not found\'}">' +
-                    //'           <div ng-switch="i">' +
-                    '           <div ng-if="i !==\'space\' ">' +
-                    '               <div class="row" ng-init="leftIndex++;">' +
-                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[leftIndex].elementType}}</div>' +
-                    '               </div>' +
-                    '               <div class="row">' +
-                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label: </strong></div>' +
-                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[leftIndex].label}}</div>' +
-                    '               </div>' +
-                    '               <div class="row">' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype: </strong></div>' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[leftIndex].question.datatype}}</div>' +
-                    '               </div>' +
-                    '               <div class="row">' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId: </strong></div>' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[leftIndex].question.cde.tinyId}}</div>' +
-                    '               </div>' +
-                    '               <div class="smallSpace"></div>' +
-                    '           </div>' +
-                    '       </div>' +
-                    '   </div>' +
-                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                    '       <div ng-repeat="q in elt2.questions">' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{q.elementType}}</div>' +
-                    '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
-                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{q.label}}</div>' +
-                    '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{q.question.datatype}}</div>' +
-                    '           </div>' +
-                    '           <div class="row">' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
-                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{q.question.cde.tinyId}}</div>' +
-                    '           </div>' +
-                    '           <div class="smallSpace"></div>' +
-                    '       </div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<hr class="divider">';
-
-                    var el = angular.element(elStr);
+                    var objectHtml = '' +
+                        '<div class="row">' +
+                        '   <div class="col-md-6">' +
+                        '       <div class="row" ng-repeat="p in properties">' +
+                        '           <div class="col-md-3">{{p}}:</div>' +
+                        '           <div class="col-md-9">{{left[p]}}</div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <div class="col-md-6">' +
+                        '       <div class="row" ng-repeat="p in properties">' +
+                        '           <div class="col-md-3">{{p}}:</div>' +
+                        '           <div class="col-md-9">{{right[p]}}</div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '</div>' +
+                        '';
+                    /*
+                     elStr = elStr +
+                     '<div ng-repeat="i in questionResult1 track by $index" class="row">' +
+                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
+                     '       <div ng-class="{quickBoardContentCompareDelete:i.action===\'space\',quickBoardContentCompareAdd:i.action===\'not found\'}">' +
+                     '           <div ng-if="i.action !==\'space\'">' +
+                     '               <div class="row">' +
+                     '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                     '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i.leftIndex].elementType}}</div>' +
+                     '               </div>' +
+                     '               <div class="row">' +
+                     '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label: </strong></div>' +
+                     '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i.leftIndex].label}}</div>' +
+                     '               </div>' +
+                     '               <div class="row">' +
+                     '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype: </strong></div>' +
+                     '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i.leftIndex].question.datatype}}</div>' +
+                     '               </div>' +
+                     '               <div class="row">' +
+                     '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId: </strong></div>' +
+                     '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i.leftIndex].question.cde.tinyId}}</div>' +
+                     '               </div>' +
+                     '               <div class="smallSpace"></div>' +
+                     '           </div>' +
+                     '       </div>' +
+                     '   </div>' +
+                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
+                     '       <div ng-if="i.action !==\'not found\'">' +
+                     '           <div class="row">' +
+                     '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                     '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt2.questions[i.rightIndex].elementType}}</div>' +
+                     '           </div>' +
+                     '           <div class="row">' +
+                     '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
+                     '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt2.questions[i.rightIndex].label}}</div>' +
+                     '           </div>' +
+                     '           <div class="row">' +
+                     '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
+                     '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt2.questions[i.rightIndex].question.datatype}}</div>' +
+                     '           </div>' +
+                     '           <div class="row">' +
+                     '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
+                     '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt2.questions[i.rightIndex].question.cde.tinyId}}</div>' +
+                     '           </div>' +
+                     '           <div class="smallSpace"></div>' +
+                     '       </div>' +
+                     '   </div>' +
+                     '</div>' +
+                     '<hr class="divider">';*/
+                    var el;
+                    if ($scope.type === 'array')
+                        el = angular.element(arrayHtml);
+                    else if ($scope.type === 'object')
+                        el = angular.element(objectHtml);
                     $compile(el)($scope);
                     $element.append(el);
                 }
