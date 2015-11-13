@@ -280,6 +280,7 @@ public class NlmCdeBaseTest {
         try {
             textPresent("1 results for");
         } catch (Exception e) {
+            System.out.println("Failing to find, trying again: " + name);
             findElement(By.id("ftsearch-input")).sendKeys(" ");
             findElement(By.id("search.submit")).click();
             if (status != null) {
