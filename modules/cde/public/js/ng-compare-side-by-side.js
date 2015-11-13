@@ -40,6 +40,7 @@
                         $scope.elts.push(elt2);
                         $scope.compareView = true;
                         $scope.elt1 = elt1;
+                        $scope.elt2 = elt2;
 
 
                         var questions1TinyId = elt1.questions.map(function (q) {
@@ -49,12 +50,46 @@
                             return q.question.cde.tinyId;
                         });
                         $scope.questionResult1 = [];
-                        elt1.questions.forEach(function (q) {
-                            $scope.questionResult1.push(questions2TinyId.indexOf(q.question.cde.tinyId));
+                        var t1 = [];
+                        var t2 = [];
+                        var i = 0;
+                        elt1.questions.every(function (q) {
+                            var j = questions2TinyId.indexOf(q.question.cde.tinyId);
+                            if (j === -1) {
+                                t1.push(-1);
+                                return true;
+                            } else {
+                                t1.push(j);
+                                return false;
+                            }
                         });
+
+
+
+
+
                         $scope.questionResult2 = [];
                         elt2.questions.forEach(function (q) {
                             $scope.questionResult2.push(questions1TinyId.indexOf(q.question.cde.tinyId));
+                        });
+
+                        $scope.temp1 = [];
+                        $scope.temp2 = [];
+                        $scope.questionResult1.forEach(function (i) {
+                            if (i === -1) {
+                                $scope.temp1.push("delete");
+                            }
+                            else {
+                                var j = $scope.questionResult2.indexOf(i);
+                                if (j === -1) {
+                                    $scope.temp2.push("delete");
+                                } else {
+                                    for (var k = 0; k < j; k++) {
+                                        $scope.temp2.push("add");
+                                    }
+                                }
+
+                            }
                         });
 
 
@@ -206,25 +241,48 @@
 
                     elStr = elStr +
                     '<div class="row">' +
-                    '   <div ng-repeat="i in questionResult1 track by $index" class="col-xs-6 col-lg-6 col-md-6 noLeftPadding"">' +
-                    '       <div class="row">' +
-                    '           <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                    '           <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
-                    '       </div>' +
-                    '       <div class="row">' +
-                    '           <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
-                    '           <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
-                    '       </div>' +
-                    '       <div class="row">' +
-                    '           <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
-                    '           <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
-                    '       </div>' +
-                    '       <div class="row">' +
-                    '           <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
-                    '           <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
+                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
+                    '       <div ng-repeat="i in questionResult1 track by $index" ng-class="{quickBoardContentCompareDelete:i===-1,quickBoardContentCompareAdd:i<$index,quickBoardContentCompareModified:i>$index}">' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
+                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
+                    '           </div>' +
+                    '           <div class="smallSpace"></div>' +
                     '       </div>' +
                     '   </div>' +
-                    '   <div class="smallSpace"></div>' +
+                    '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
+                    '       <div ng-repeat="q in elt2.questions">' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
+                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{q.elementType}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
+                    '               <div class="col-md-10 col-xs-10 col-lg-10">{{q.label}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{q.question.datatype}}</div>' +
+                    '           </div>' +
+                    '           <div class="row">' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
+                    '               <div class="col-md-11 col-lg-11 col-xs-11">{{q.question.cde.tinyId}}</div>' +
+                    '           </div>' +
+                    '           <div class="smallSpace"></div>' +
+                    '       </div>' +
+                    '   </div>' +
                     '</div>' +
                     '<hr class="divider">';
 
