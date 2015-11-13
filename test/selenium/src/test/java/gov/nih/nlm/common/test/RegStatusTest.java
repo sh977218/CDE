@@ -12,7 +12,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName, from);
         textPresent(from);
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Effective Date");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);
@@ -24,7 +24,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
@@ -49,7 +49,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
@@ -76,7 +76,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
@@ -95,7 +95,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");

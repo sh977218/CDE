@@ -507,7 +507,7 @@ module.exports = function(grunt) {
     });     
     
     grunt.registerTask('persistVersion', function() {
-        fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));         
+        fs.writeFileSync("./modules/system/public/html/version.html", grunt.config.get("version"));
     });
     grunt.registerTask('tarCode', function() {
         var done = this.async();
@@ -539,12 +539,13 @@ module.exports = function(grunt) {
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
     grunt.registerTask('bower',['bower-install-simple','bowercopy']);
-    grunt.registerTask('ci', ['bower', 'elastic']);
+    grunt.registerTask('ci', ['buildVersion', 'bower', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
             grunt.task.run('copy');
+            grunt.task.run('buildVersion');
             grunt.task.run('refreplace-concat-minify');
         }
     });
