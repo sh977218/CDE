@@ -58,7 +58,7 @@ public abstract class NamingTest extends CommonTest {
 
         newCdeVersion();
 
-        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf("New Name") < 0);
+        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("New Name"));
     }
 
     public void reorderNamingTest(String eltName) {

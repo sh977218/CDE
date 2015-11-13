@@ -10,9 +10,12 @@
                 <dl class="dl-horizontal">
                     <dt>Status: </dt><dd ng-bind="getNodeStatus(status)"></dd>
                     <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
+                    <dt>UpTime: </dt><dd>{{status.startupDate | timeAgo}}</dd>
                     <dt>PM Port: </dt><dd>{{status.pmPort}}</dd>
+                    <dt>Version Number: </dt><dd><span ng-include="'/system/public/html/version.html'"></span></dd>
                 </dl>
-                <a type="button" class="btn btn-danger fa fa-power-off" ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>
+                <a type="button" class="btn btn-danger fa fa-power-off"
+                   ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>
                 <a type="button" class="btn btn-default fa fa-refresh" ng-click="sendRestart(status)"> Restart</a>
                 <hr/>
                 <h5>ElasticSearch</h5>
@@ -21,9 +24,16 @@
                         <a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'">
                         <i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"/></a>
                     </dd>
-                    <dt>Returns Results: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a></dd>
-                    <dt>Syncing: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a></dd>
-                    <dt>Updating: </dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'"><i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Returns Results:</dt>
+                    <dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'">
+                        <i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a>
+                    </dd>
+                    <dt>Syncing:</dt>
+                    <dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'">
+                        <i class="fa"ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a>
+                    </dd>
+                    <dt>Updating:</dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'">
+                        <i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
                 </dl>
                 <hr/>
                 <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false" ng-accept="'*.gpg'"

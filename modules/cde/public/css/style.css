@@ -799,3 +799,7 @@ div + .questionPlaceholder {
 #exportEverything {
     margin-top: 17px;
 }
+
+#export{
+    margin-left: 10px;
+}
