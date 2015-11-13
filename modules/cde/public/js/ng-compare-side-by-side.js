@@ -42,56 +42,28 @@
                         $scope.elt1 = elt1;
                         $scope.elt2 = elt2;
 
-
                         var questions1TinyId = elt1.questions.map(function (q) {
                             return q.question.cde.tinyId;
                         });
                         var questions2TinyId = elt2.questions.map(function (q) {
                             return q.question.cde.tinyId;
                         });
-                        $scope.questionResult1 = [];
+
                         var t1 = [];
                         var t2 = [];
-                        var i = 0;
-                        elt1.questions.every(function (q) {
-                            var j = questions2TinyId.indexOf(q.question.cde.tinyId);
+                        var elt1Index = 0;
+                        var j = 0;
+                        elt1.questions.forEach(function (q) {
+                            j = questions2TinyId.slice(j, questions2TinyId.length).indexOf(q.question.cde.tinyId);
                             if (j === -1) {
-                                t1.push(-1);
-                                return true;
+                                t1.push("not found");
                             } else {
-                                t1.push(j);
-                                return false;
+                                for (var k = 0; k < j; k++)
+                                    t1.push("space");
+                                t1.push("found");
                             }
+                            elt1Index++;
                         });
-
-
-
-
-
-                        $scope.questionResult2 = [];
-                        elt2.questions.forEach(function (q) {
-                            $scope.questionResult2.push(questions1TinyId.indexOf(q.question.cde.tinyId));
-                        });
-
-                        $scope.temp1 = [];
-                        $scope.temp2 = [];
-                        $scope.questionResult1.forEach(function (i) {
-                            if (i === -1) {
-                                $scope.temp1.push("delete");
-                            }
-                            else {
-                                var j = $scope.questionResult2.indexOf(i);
-                                if (j === -1) {
-                                    $scope.temp2.push("delete");
-                                } else {
-                                    for (var k = 0; k < j; k++) {
-                                        $scope.temp2.push("add");
-                                    }
-                                }
-
-                            }
-                        });
-
 
                         Comparison.applyComparison($scope, $element);
                     }

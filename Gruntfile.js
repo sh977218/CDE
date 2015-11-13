@@ -518,10 +518,6 @@ module.exports = function (grunt) {
     grunt.registerTask('persistVersion', function() {
         fs.writeFileSync("./modules/system/public/html/version.html", grunt.config.get("version"));
     });
-
-    grunt.registerTask('persistVersion', function () {
-        fs.writeFileSync("./modules/system/views/version.ejs", grunt.config.get("version"));
-    });
     grunt.registerTask('tarCode', function () {
         var done = this.async();
         var writeS = fs.createWriteStream('./code.tar.gz');
