@@ -171,9 +171,15 @@ setInterval(function() {
     status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
 }, config.status.timeouts.statusCheck);
 
-setInterval(function() {
-    var server = {hostname: config.hostname, port: config.port, nodeStatus: "Running",
-        elastic:status.statusReport.elastic, pmPort: config.pm.port};
-    mongo_data_system.updateClusterHostStatus(server);
+setInterval(function () {
+    mongo_data_system.updateClusterHostStatus({
+        hostname: config.hostname, port: config.port, nodeStatus: "Running",
+        elastic: status.statusReport.elastic, pmPort: config.pm.port
+    });
 }, config.status.timeouts.clusterStatus * 1000);
 
+mongo_data_system.updateClusterHostStatus({
+    hostname: config.hostname, port: config.port, nodeStatus: "Running",
+    elastic: status.statusReport.elastic, pmPort: config.pm.port,
+    startupDate: new Date()
+});
