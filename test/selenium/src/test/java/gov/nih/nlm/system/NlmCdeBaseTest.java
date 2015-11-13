@@ -397,7 +397,6 @@ public class NlmCdeBaseTest {
         textNotPresent("has already been used");
         waitAndClick(By.id("confirmNewVersion"));
         textPresent("Saved.");
-
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
         modalGone();
@@ -571,7 +570,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -579,7 +578,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
