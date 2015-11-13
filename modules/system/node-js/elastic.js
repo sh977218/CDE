@@ -17,7 +17,6 @@ exports.esClient = esClient;
 
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
-        if (indexName !== 'auto') return;
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
             if (!doesIt) {
                 console.log("creating index: " + indexName);
@@ -33,14 +32,14 @@ exports.initEs = function () {
                             console.log("deleting old river: " + indexName);
                             river.index.name = indexName;
                             request.del(config.elastic.hosts[0] + "/_river/" + indexName,
-                                function (error, response) {
+                                function () {
                                     console.log("re-creating river: " + indexName);
                                     request.post(config.elastic.hosts[0] + "/_river/" + indexName + "/_meta",
                                         {
                                             json: true,
                                             body: river
                                         },
-                                        function (error, response) {
+                                        function (error) {
                                             if (error) console.log("could not create river. " + error);
                                             else {
                                                 console.log("created river");

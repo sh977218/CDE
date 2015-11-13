@@ -14,12 +14,28 @@ var schemas = require('./schemas')
     , adminItemSvc = require('./adminItemSvc')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
-    , clamav = require('clamav.js')
     , async = require('async')
     ;
 
-var conn =  connHelper.establishConnection(config.database.appData);
+var conn = connHelper.establihConnection(mongoUri),
+    Org = conn.model('Org', schemas.orgSchema),
+    User = conn.model('User', schemas.userSchema),
+    Message = conn.model('Message', schemas.message),
+    ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
+    gfs = Grid(conn.db, mongoose.mongo),
+    sessionStore = new MongoStore({
+        mongooseConnection: conn
+    });
+
+exports.sessionStore = sessionStore;
+fs_files = conn.model('fs_files', schemas.fs_files);
+classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
+
 exports.mongoose_connection = conn;
+
+var localConn = connHelper.establihConnection(config.database.local.uri);
+
+exports.sessionStore = sessionStore;
 
 var Org = conn.model('Org', schemas.orgSchema);
 var User = conn.model('User', schemas.userSchema);
@@ -171,9 +187,7 @@ exports.addOrg = function(newOrgArg, res) {
 };
 
 exports.removeOrg = function (id, callback) {
-  Org.findOne({"_id": id}).remove().exec(function (err) {
-      callback();
-  });
+  Org.findOne({"_id": id}).remove().exec(callback);
 };
 
 exports.userTotalSpace = function(Model, name, callback) {

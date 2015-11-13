@@ -15,7 +15,7 @@ public class WorkingGroupTest3 extends BaseClassificationTest {
     public void wgRegStatus() {
         mustBeLoggedInAs(wguser_username, password);
         new CdeCreateTest().createBasicCde("WG Test CDE", "Def", "WG-TEST", "WG Classif", "WG Sub Classif");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();

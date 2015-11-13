@@ -81,6 +81,10 @@
       "username": "cdeuser",
       "password": "password",
       "cappedCollectionSizeMB": 262144000
+    },
+    "local": {
+      "dbname": "local",
+      "uri": "mongodb://localhost/local"
     }
   },
   "node": {

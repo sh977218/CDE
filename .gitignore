@@ -11,6 +11,7 @@ modules/system/views/version.ejs
 config.js
 config/test.js
 views/version.ejs
+modules/system/public/html/version.html
 
 ## Local Files
 seed
