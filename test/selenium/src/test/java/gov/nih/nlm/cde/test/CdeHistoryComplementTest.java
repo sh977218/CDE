@@ -36,7 +36,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         checkInHistory("Naming", "", "Alternative Definition 1");
 
         goToCdeByName(cdeName);
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.xpath("//*[@id='editStatus']")).click();
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
