@@ -317,5 +317,5 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.dragSortableOptions = {
         handle: ".fa.fa-arrows"
     };
-    
+
 }]);

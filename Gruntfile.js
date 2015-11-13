@@ -513,6 +513,10 @@ module.exports = function (grunt) {
 
     grunt.registerTask('clearQueue', function () {
         grunt.task.clearQueue();
+    });     
+    
+    grunt.registerTask('persistVersion', function() {
+        fs.writeFileSync("./modules/system/public/html/version.html", grunt.config.get("version"));
     });
 
     grunt.registerTask('persistVersion', function () {
@@ -544,16 +548,17 @@ module.exports = function (grunt) {
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
-    grunt.registerTask('buildVersion', ['shell:version', 'persistVersion']);
-    grunt.registerTask('ingest', ['prompt:ingest', 'do-ingest']);
-    grunt.registerTask('tests', ['prompt:testsLocation', 'do-test', 'clearQueue']);
-    grunt.registerTask('bower', ['bower-install-simple', 'bowercopy']);
-    grunt.registerTask('ci', ['bower', 'elastic']);
+    grunt.registerTask('buildVersion',['shell:version','persistVersion']);
+    grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
+    grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
+    grunt.registerTask('bower',['bower-install-simple','bowercopy']);
+    grunt.registerTask('ci', ['buildVersion', 'bower', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function () {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
             grunt.task.run('copy');
+            grunt.task.run('buildVersion');
             grunt.task.run('refreplace-concat-minify');
         }
     });
