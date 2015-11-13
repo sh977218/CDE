@@ -77,8 +77,7 @@
         .factory("Comparison", ["$compile", function ($compile) {
             return {
                 propertiesToBeCompared: function () {
-                    var p = ['naming', 'properties', 'dataElementConcept', 'referenceDocuments', 'stewardOrg', 'registrationState', 'formUsageCounter', 'views', 'created', 'updated', 'createdBy'];
-                    return p;
+                    return ['naming', 'properties', 'dataElementConcept', 'referenceDocuments', 'stewardOrg', 'registrationState', 'formUsageCounter', 'views', 'created', 'updated', 'createdBy'];
                 },
                 sortPropertiesByName: function (o) {
                     for (var p in o) {
@@ -217,25 +216,26 @@
                     '<hr class="divider">';
 
                     elStr = elStr +
-                    '<div class="row">' +
+                    '<div ng-repeat="i in questionResult1 track by $index" class="row">' +
                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                    '       <div ng-repeat="i in questionResult1 track by $index" ng-class="{quickBoardContentCompareDelete:i===\'space\',quickBoardContentCompareAdd:i===\'not found\'}">' +
-                    '           <div ng-if="i!==\'space\'">' +
-                    '               <div class="row">' +
+                    '       <div ng-class="{quickBoardContentCompareDelete:i===\'space\',quickBoardContentCompareAdd:i===\'not found\'}">' +
+                    //'           <div ng-switch="i">' +
+                    '           <div ng-if="i !==\'space\' ">' +
+                    '               <div class="row" ng-init="leftIndex++;">' +
                     '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].elementType}}</div>' +
+                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[leftIndex].elementType}}</div>' +
                     '               </div>' +
                     '               <div class="row">' +
-                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
-                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i].label}}</div>' +
+                    '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label: </strong></div>' +
+                    '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[leftIndex].label}}</div>' +
                     '               </div>' +
                     '               <div class="row">' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.datatype}}</div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype: </strong></div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[leftIndex].question.datatype}}</div>' +
                     '               </div>' +
                     '               <div class="row">' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
-                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i].question.cde.tinyId}}</div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId: </strong></div>' +
+                    '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[leftIndex].question.cde.tinyId}}</div>' +
                     '               </div>' +
                     '               <div class="smallSpace"></div>' +
                     '           </div>' +
