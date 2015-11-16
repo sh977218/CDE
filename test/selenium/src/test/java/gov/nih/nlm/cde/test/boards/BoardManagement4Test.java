@@ -49,16 +49,5 @@ public class BoardManagement4Test extends BoardTest {
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");
     }
-    
-    @Test
-    public void iHaveNoBoard() {
-        mustBeLoggedInAs(boarduser2_username, password);
-        String cdeName = "Specimen Array";
-        openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
-        Assert.assertTrue(textPresent("Create a board now"));
-        findElement(By.id("cancelSelect")).click();
-        modalGone();
-    }
-    
+
 }

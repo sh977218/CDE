@@ -2,24 +2,11 @@ package gov.nih.nlm.cde.test.facets;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 public class FacetSearchTest extends NlmCdeBaseTest {
-
-    public void clickIfDisplayed(String id) {
-        List<WebElement> elts = driver.findElements(By.id(id));
-        for (int i = 0; i < elts.size(); i++) {
-            if (elts.get(i).isDisplayed()) {
-                elts.get(i).click();
-                i = elts.size();
-            }
-        }
-    }
 
     @Test
     public void stewardFacets() {
@@ -134,7 +121,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");

@@ -19,7 +19,7 @@ public class ForkMineMineTest extends ForkTest {
         switchTab(1);
         textPresent("You are editing a fork");
         Assert.assertEquals("Incomplete", findElement(By.id("dd_status")).getText());
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
