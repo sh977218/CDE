@@ -236,6 +236,7 @@ angular.module('systemModule').controller('ListCtrl',
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+                if ($scope.cdes.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
             }
         });
 

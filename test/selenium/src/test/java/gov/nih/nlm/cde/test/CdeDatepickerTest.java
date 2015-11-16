@@ -7,7 +7,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +20,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("results for All Terms | NINDS |");
         findElement(By.id("eyeLink_0")).click();
         textPresent("General Details");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         textPresent("Update Registration Status");

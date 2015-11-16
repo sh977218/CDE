@@ -1,16 +1,8 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.jayway.restassured.RestAssured.given;
 
 public class PinAllTest extends BoardTest {
 
@@ -30,7 +22,7 @@ public class PinAllTest extends BoardTest {
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
-        textPresent("Select Board");
+        textPresent("Choose a Board to pin");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();
@@ -61,7 +53,7 @@ public class PinAllTest extends BoardTest {
         Assert.assertTrue(searchResultNum_int > 20);
         scrollToTop();
         findElement(By.id("pinAll")).click();
-        textPresent("Select Board");
+        textPresent("Choose a Board to pin");
         findElement(By.linkText(board_name)).click();
         textPresent("All elements pinned.");
         gotoMyBoards();

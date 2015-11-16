@@ -35,7 +35,7 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         String cdeName = "MltTest";
         mustBeLoggedInAs(ctepCurator_username, password);
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
-        findElement(By.id("statusTab")).click();
+        findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
         findElement(By.id("editStatus")).click();
         new Select(findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");

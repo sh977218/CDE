@@ -5,18 +5,6 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class InfoBarTest extends NlmCdeBaseTest {
-
-    public void infoBarClassification() {
-        goToCdeSearch();
-        findElement(By.id("li-blank-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
-        findElement(By.id("li-blank-Classification"));
-        findElement(By.id("li-blank-Core"));
-        textPresent( "NINDS > Disease > Amyotrophic Lateral Sclerosis > Classification > Core" );
-        findElement(By.id("resetSearch")).click();
-        textPresent( "All Classifications" );
-    }
     
     @Test
     public void infoBarStatus() {

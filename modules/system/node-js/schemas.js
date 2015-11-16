@@ -176,6 +176,7 @@ schemas.clusterStatus = mongoose.Schema({
     , pmPort: Number
     , nodeStatus: {type: String, enum: ["Running", "Stopped"]}
     , lastUpdate: Date
+    , startupDate: Date
     , elastic: {
         up: Boolean
         , results: Boolean
