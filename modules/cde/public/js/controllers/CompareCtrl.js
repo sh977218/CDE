@@ -55,7 +55,6 @@ angular.module('cdeModule').controller('CompareCtrl',
             $scope.dataElementConceptProperties = ['concepts', 'conceptualDomain'];
             $scope.stewardOrgProperties = ['name'];
             $scope.registrationStateProperties = ['registrationStatus'];
-            $scope.createdByProperties = ['username'];
 
             var flatFormQuestions = function (fe, questions) {
                 if (fe.formElements != undefined) {
@@ -97,7 +96,7 @@ angular.module('cdeModule').controller('CompareCtrl',
             flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
             wipeUseless($scope.eltsToCompare[1]);
 
-            $scope.questionProperties = ['elementType', 'label', 'datatype', 'cde'];
+            $scope.questionProperties = ['label', 'datatype', 'cde'];
 
         }
     ])

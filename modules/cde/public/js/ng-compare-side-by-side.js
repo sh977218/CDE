@@ -15,8 +15,8 @@
                     controller: function ($scope, $element) {
                     },
                     link: function ($scope, $element) {
-                        if (!$scope.left || !$scope.right)
-                            return;
+                        if (!$scope.left) $scope.left = [];
+                        if (!$scope.right) $scope.right = [];
                         var leftObj = Comparison.deepCopy($scope.left);
                         var rightObj = Comparison.deepCopy($scope.right);
                         if (Array.isArray($scope.left) && Array.isArray($scope.right)) {
@@ -140,16 +140,16 @@
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
                         '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'||r.action===\'not found\'}">' +
-                        '   <div class="col-xs-6 col-lg-6 col-md-6">' +
+                        '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
-                        '           <div class="col-xs-2">{{p}}</div>' +
-                        '           <div class="col-xs-10">{{left[r.leftIndex][p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p}}: </div>' +
+                        '           <div class="col-xs-9">{{left[r.leftIndex][p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-xs-6 col-lg-6 col-md-6">' +
+                        '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
-                        '           <div class="col-xs-2">{{p}}</div>' +
-                        '           <div class="col-xs-10">{{right[r.rightIndex][p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p}}: </div>' +
+                        '           <div class="col-xs-9">{{right[r.rightIndex][p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +
@@ -157,69 +157,20 @@
 
                     var objectHtml = '' +
                         '<div class="row">' +
-                        '   <div class="col-md-6">' +
+                        '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-md-3">{{p}}:</div>' +
-                        '           <div class="col-md-9">{{left[p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p}}:</div>' +
+                        '           <div class="col-xs-9">{{left[p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-md-6">' +
+                        '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-md-3">{{p}}:</div>' +
-                        '           <div class="col-md-9">{{right[p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p}}:</div>' +
+                        '           <div class="col-xs-9">{{right[p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +
                         '<hr class="divider">';
-                    /*
-                     elStr = elStr +
-                     '<div ng-repeat="i in questionResult1 track by $index" class="row">' +
-                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                     '       <div ng-class="{quickBoardContentCompareDelete:i.action===\'space\',quickBoardContentCompareAdd:i.action===\'not found\'}">' +
-                     '           <div ng-if="i.action !==\'space\'">' +
-                     '               <div class="row">' +
-                     '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                     '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i.leftIndex].elementType}}</div>' +
-                     '               </div>' +
-                     '               <div class="row">' +
-                     '                   <div class="col-md-2 col-xs-2 col-lg-2"><strong>label: </strong></div>' +
-                     '                   <div class="col-md-10 col-xs-10 col-lg-10">{{elt1.questions[i.leftIndex].label}}</div>' +
-                     '               </div>' +
-                     '               <div class="row">' +
-                     '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype: </strong></div>' +
-                     '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i.leftIndex].question.datatype}}</div>' +
-                     '               </div>' +
-                     '               <div class="row">' +
-                     '                   <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId: </strong></div>' +
-                     '                   <div class="col-md-11 col-lg-11 col-xs-11">{{elt1.questions[i.leftIndex].question.cde.tinyId}}</div>' +
-                     '               </div>' +
-                     '               <div class="smallSpace"></div>' +
-                     '           </div>' +
-                     '       </div>' +
-                     '   </div>' +
-                     '   <div class="col-xs-6 col-lg-6 col-md-6 noLeftPadding">' +
-                     '       <div ng-if="i.action !==\'not found\'">' +
-                     '           <div class="row">' +
-                     '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>elementType:</strong></div>' +
-                     '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt2.questions[i.rightIndex].elementType}}</div>' +
-                     '           </div>' +
-                     '           <div class="row">' +
-                     '               <div class="col-md-2 col-xs-2 col-lg-2"><strong>label</strong></div>' +
-                     '               <div class="col-md-10 col-xs-10 col-lg-10">{{elt2.questions[i.rightIndex].label}}</div>' +
-                     '           </div>' +
-                     '           <div class="row">' +
-                     '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>datatype</strong></div>' +
-                     '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt2.questions[i.rightIndex].question.datatype}}</div>' +
-                     '           </div>' +
-                     '           <div class="row">' +
-                     '               <div class="col-md-11 col-lg-11 col-xs-11"><strong>tinyId</strong></div>' +
-                     '               <div class="col-md-11 col-lg-11 col-xs-11">{{elt2.questions[i.rightIndex].question.cde.tinyId}}</div>' +
-                     '           </div>' +
-                     '           <div class="smallSpace"></div>' +
-                     '       </div>' +
-                     '   </div>' +
-                     '</div>' +
-                     '<hr class="divider">';*/
                     var el;
                     if ($scope.type === 'array')
                         el = angular.element(arrayHtml);

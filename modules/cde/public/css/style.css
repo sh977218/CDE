@@ -816,7 +816,9 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareDelete {
-    border: dashed red 1px;
+    border: solid #ad1f89 7px;
+    border-radius: 20px;
+    margin-bottom: 5px;
 }
 
 .quickBoardContentCompareAdd {
@@ -825,6 +827,11 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareModified {
     border: dashed blue 1px;
+}
+
+.compareLabel {
+    font-weight: bold;
+    text-align: right;
 }
 
 .smallSpace {
