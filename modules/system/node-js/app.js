@@ -178,8 +178,9 @@ exports.init = function(app) {
             res.clearCookie('connect.sid');
             res.redirect('/#/login');
         });
-        
     });
+
+    app.get('')
 
     app.post('/logs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
