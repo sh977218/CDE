@@ -811,8 +811,8 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompare {
     overflow: hidden;
-    padding: 5px;
-    margin: 5px;
+    padding: 3px;
+    margin: 3px;
 }
 
 .quickBoardContentCompareDelete {
