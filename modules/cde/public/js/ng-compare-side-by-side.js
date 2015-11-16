@@ -45,22 +45,22 @@
                             var leftIndex = 0;
                             var beginIndex = 0;
                             leftObj.forEach(function (o) {
-                                var id;
+                                var id = JSON.stringify(o);
                                 if ($scope.question) {
                                     id = o.question.cde.tinyId;
                                 }
-                                else
-                                    id = JSON.stringify(o);
                                 var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
                                 // element didn't found in right list.
                                 if (rightIndex === -1) {
                                     // put all right list elements before this element
                                     if (beginIndex === 0) {
-                                        for (var m = 0; m < rightObj.length; m++)
+                                        for (var m = 0; m < rightObj.length; m++) {
                                             result.push({
                                                 action: "space",
                                                 rightIndex: m
                                             });
+                                            beginIndex++;
+                                        }
                                     }
                                     // put this element not found
                                     result.push({
@@ -71,6 +71,7 @@
                                 // element found in right list
                                 else {
                                     // put all right elements before matched element
+                                    var _beginIndex = beginIndex;
                                     for (var k = 0; k < rightIndex; k++) {
                                         result.push({
                                             action: "space",
@@ -82,7 +83,7 @@
                                     result.push({
                                         action: "found",
                                         leftIndex: leftIndex,
-                                        rightIndex: beginIndex + rightIndex
+                                        rightIndex: _beginIndex + rightIndex
                                     });
                                     beginIndex++;
                                 }
