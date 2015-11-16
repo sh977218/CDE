@@ -10,20 +10,42 @@
                         right: '=',
                         sort: '=',
                         properties: '=',
-                        question: '='
+                        question: '=',
+                        type: '='
                     },
                     controller: function ($scope, $element) {
+                        $scope.getProperty = function (o, s) {
+                            s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+                            s = s.replace(/^\./, '');           // strip a leading dot
+                            var a = s.split('.');
+                            for (var i = 0, n = a.length; i < n; ++i) {
+                                var k = a[i];
+                                if (k in o) {
+                                    o = o[k];
+                                } else {
+                                    return;
+                                }
+                            }
+                            return o;
+                        }
                     },
                     link: function ($scope, $element) {
-                        if (!$scope.left) $scope.left = [];
-                        if (!$scope.right) $scope.right = [];
+                        if (!$scope.left)
+                            if ($scope.type === 'object')
+                                $scope.left = {};
+                            else
+                                $scope.left = [];
+                        if (!$scope.right)
+                            if ($scope.type === 'object')
+                                $scope.right = {};
+                            else
+                                $scope.right = [];
                         var leftObj = Comparison.deepCopy($scope.left);
                         var rightObj = Comparison.deepCopy($scope.right);
                         if (Array.isArray($scope.left) && Array.isArray($scope.right)) {
-                            $scope.type = 'array';
                             if ($scope.sort) {
-                                Comparison.sortPropertiesByName(leftObj);
-                                Comparison.sortPropertiesByName(rightObj);
+                                Comparison.sortByName(leftObj);
+                                Comparison.sortByName(rightObj);
                             }
                             var leftIds = leftObj.map(function (o) {
                                 Comparison.wipeUseless(o);
@@ -97,7 +119,6 @@
                                 })
                             $scope.result = result;
                         } else if (typeof $scope.left === 'object' && typeof $scope.right === 'object') {
-                            $scope.type = 'object';
                             var diff = DeepDiff(leftObj, rightObj);
                             if (diff && diff.length > 0) {
                                 $scope.result = diff;
@@ -109,12 +130,9 @@
             }])
         .factory("Comparison", ["$compile", function ($compile) {
             return {
-                sortPropertiesByName: function (o) {
-                    for (var p in o) {
-                        if (p !== 'questions' && Array.isArray(p)) {
-                            p.sort();
-                        }
-                    }
+                sortByName: function (o) {
+                    if (Array.isArray(o))
+                        o.sort();
                 },
                 deepCopy: function (o) {
                     return JSON.parse(JSON.stringify(o));
@@ -142,14 +160,14 @@
                         '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'||r.action===\'not found\'}">' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
-                        '           <div class="col-xs-3 compareLabel">{{p}}: </div>' +
-                        '           <div class="col-xs-9">{{left[r.leftIndex][p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(left[r.leftIndex],p.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
-                        '           <div class="col-xs-3 compareLabel">{{p}}: </div>' +
-                        '           <div class="col-xs-9">{{right[r.rightIndex][p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(right[r.rightIndex],p.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +
@@ -159,14 +177,14 @@
                         '<div class="row">' +
                         '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-xs-3 compareLabel">{{p}}:</div>' +
-                        '           <div class="col-xs-9">{{left[p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p.label}}:</div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(left, p.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-xs-3 compareLabel">{{p}}:</div>' +
-                        '           <div class="col-xs-9">{{right[p]}}</div>' +
+                        '           <div class="col-xs-3 compareLabel">{{p.label}}:</div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(right, p.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +

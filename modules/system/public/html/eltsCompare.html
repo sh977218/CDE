@@ -18,29 +18,34 @@
     </div>
     <h4>General Details</h4>
 
-    <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true"
+    <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true" type="'object'"
          left="eltsToCompare[0].stewardOrg" right="eltsToCompare[1].stewardOrg"></div>
 
-    <div ng-compare-side-by-side properties="registrationStateProperties" sort="true"
+    <div ng-compare-side-by-side properties="registrationStateProperties" sort="true" type="'object'"
          left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
 
     <h4>Naming</h4>
-    <div ng-compare-side-by-side properties="namingProperties" sort="true"
+
+    <div ng-compare-side-by-side properties="namingProperties" sort="true" type="'array'"
          left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
 
     <h4>Reference Documents</h4>
-    <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true"
+
+    <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true" type="'array'"
          left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
 
     <h4>Properties</h4>
-    <div ng-compare-side-by-side properties="propertiesProperties" sort="true"
+
+    <div ng-compare-side-by-side properties="propertiesProperties" sort="true" type="'array'"
          left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
 
     <h4>Concepts</h4>
-    <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true"
+
+    <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true" type="'array'"
          left="eltsToCompare[0].dataElementConcept" right="eltsToCompare[1].dataElementConcept"></div>
 
     <h4>Questions</h4>
-    <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true"
+
+    <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true" type="'array'"
          left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"></div>
 </div>

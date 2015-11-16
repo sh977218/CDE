@@ -49,12 +49,32 @@ angular.module('cdeModule').controller('CompareCtrl',
                 }
             };
 
-            $scope.namingProperties = ['designation', 'definition', 'context'];
-            $scope.referenceDocumentProperties = ['title', 'uri', 'providerOrg', 'languageCode', 'document'];
-            $scope.propertiesProperties = ['key', 'value'];
-            $scope.dataElementConceptProperties = ['concepts', 'conceptualDomain'];
-            $scope.stewardOrgProperties = ['name'];
-            $scope.registrationStateProperties = ['registrationStatus'];
+            $scope.namingProperties = [
+                {label: 'Name', property: 'designation'}, {
+                    label: 'Definition',
+                    property: 'definition'
+                }, {label: 'Context', property: 'context.contextName'}
+            ];
+            $scope.referenceDocumentProperties = [
+                {label: 'Title', property: 'title'},
+                {label: 'URI', property: 'uri'},
+                {
+                    label: 'Provider Org',
+                    property: 'providerOrg'
+                },
+                {label: 'Language Code', property: 'languageCode'},
+                {label: 'Document', property: 'document'}
+            ];
+            $scope.propertiesProperties = [
+                {label: 'Key', property: 'key'},
+                {label: 'Value', property: 'value'}
+            ];
+            $scope.dataElementConceptProperties = [
+                {label: 'Concept', property: 'concepts'},
+                {label: 'Conceptual Domain', property: 'conceptualDomain'}
+            ];
+            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}];
+            $scope.registrationStateProperties = [{label: 'Status', property: 'registrationStatus'}];
 
             var flatFormQuestions = function (fe, questions) {
                 if (fe.formElements != undefined) {
@@ -96,7 +116,9 @@ angular.module('cdeModule').controller('CompareCtrl',
             flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
             wipeUseless($scope.eltsToCompare[1]);
 
-            $scope.questionProperties = ['label', 'datatype', 'cde'];
+            $scope.questionProperties = [{label: 'Label', property: 'label'},
+                {label: 'Data Type', property: 'datatype'},
+                {label: 'Tiny Id', property: 'question.cde.tinyId'}];
 
         }
     ])
