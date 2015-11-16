@@ -45,25 +45,32 @@
                             var leftIndex = 0;
                             var beginIndex = 0;
                             leftObj.forEach(function (o) {
-                                var cdeId;
+                                var id;
                                 if ($scope.question) {
-                                    cdeId = o.question.cde.tinyId;
+                                    id = o.question.cde.tinyId;
                                 }
                                 else
-                                    cdeId = JSON.stringify(o);
-                                var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(cdeId);
+                                    id = JSON.stringify(o);
+                                var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
+                                // element didn't found in right list.
                                 if (rightIndex === -1) {
+                                    // put all right list elements before this element
                                     if (beginIndex === 0) {
-                                        result.push({
-                                            action: "space",
-                                            rightIndex: beginIndex
-                                        });
+                                        for (var m = 0; m < rightObj.length; m++)
+                                            result.push({
+                                                action: "space",
+                                                rightIndex: m
+                                            });
                                     }
+                                    // put this element not found
                                     result.push({
                                         action: "not found",
                                         leftIndex: leftIndex
                                     });
-                                } else {
+                                }
+                                // element found in right list
+                                else {
+                                    // put all right elements before matched element
                                     for (var k = 0; k < rightIndex; k++) {
                                         result.push({
                                             action: "space",
@@ -71,15 +78,22 @@
                                         });
                                         beginIndex++;
                                     }
+                                    // put this element found
                                     result.push({
                                         action: "found",
                                         leftIndex: leftIndex,
-                                        rightIndex: beginIndex + rightIndex - 1
+                                        rightIndex: beginIndex + rightIndex
                                     });
                                     beginIndex++;
                                 }
                                 leftIndex++;
                             });
+                            // if after looping left list, there are element in the right list, put all of them
+                            for (var i = beginIndex; i < rightIds.length; i++)
+                                result.push({
+                                    action: "space",
+                                    rightIndex: i
+                                })
                             $scope.result = result;
                         } else if (typeof $scope.left === 'object' && typeof $scope.right === 'object') {
                             $scope.type = 'object';
@@ -124,14 +138,14 @@
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="row" ng-repeat="r in result">' +
-                        '   <div class="col-xs-5 col-lg-5 col-md-5 quickBoardContentCompare" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'||r.action===\'not found\'}">' +
+                        '   <div class="col-xs-6 col-lg-6 col-md-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-2">{{p}}</div>' +
                         '           <div class="col-xs-10">{{left[r.leftIndex][p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-xs-5 col-lg-5 col-md-5 quickBoardContentCompare" ng-class="{quickBoardContentCompareAdd:r.action===\'not found\'}">' +
+                        '   <div class="col-xs-6 col-lg-6 col-md-6">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-2">{{p}}</div>' +
                         '           <div class="col-xs-10">{{right[r.rightIndex][p]}}</div>' +
@@ -142,14 +156,14 @@
 
                     var objectHtml = '' +
                         '<div class="row">' +
-                        '   <div class="col-md-5 quickBoardContentCompare">' +
-                        '       <div class="row" ng-repeat="p in properties">' +
+                        '   <div class="col-md-6">' +
+                        '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
                         '           <div class="col-md-3">{{p}}:</div>' +
                         '           <div class="col-md-9">{{left[p]}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-md-5 quickBoardContentCompare">' +
-                        '       <div class="row" ng-repeat="p in properties">' +
+                        '   <div class="col-md-6">' +
+                        '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
                         '           <div class="col-md-3">{{p}}:</div>' +
                         '           <div class="col-md-9">{{right[p]}}</div>' +
                         '       </div>' +

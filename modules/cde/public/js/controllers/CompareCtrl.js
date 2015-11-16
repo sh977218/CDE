@@ -78,7 +78,6 @@ angular.module('cdeModule').controller('CompareCtrl',
                 delete o.attachments;
                 delete o.version;
                 delete o.comments;
-                delete o.tinyId;
                 delete o.derivationRules;
                 delete o.usedBy;
                 delete o.classification;

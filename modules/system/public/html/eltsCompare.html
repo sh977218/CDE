@@ -4,29 +4,51 @@
 
         <p>Note: To add a data element, click on the <i class="fa fa-plus"></i> next to it.</p>
     </div>
-
+    <div class="row">
+        <div class="col-xs-6 col-lg-6 col-md-6">
+            <a tabindex="0" class='btn btn-small btn-default'
+               ng-href="/#/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[0].tinyId}}">
+                <i class="fa fa-eye"></i> View Full Detail</a>
+        </div>
+        <div class="col-xs-6 col-lg-6 col-md-6">
+            <a tabindex="0" class='btn btn-small btn-default'
+               ng-href="/#/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[1].tinyId}}">
+                <i class="fa fa-eye"></i> View Full Detail</a>
+        </div>
+    </div>
+<!--
     <h4>General Details</h4>
+
     <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true"
          left="eltsToCompare[0].stewardOrg" right="eltsToCompare[1].stewardOrg"></div>
     <div ng-compare-side-by-side properties="registrationStateProperties" sort="true"
          left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
     <div ng-compare-side-by-side properties="createdByProperties" sort="true"
          left="eltsToCompare[0].createdBy" right="eltsToCompare[1].createdBy"></div>
+
     <h4>Naming</h4>
 
     <div ng-compare-side-by-side properties="namingProperties" sort="true"
          left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
+
     <h4>Reference Documents</h4>
+
     <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true"
          left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
+
     <h4>Properties</h4>
+
     <div ng-compare-side-by-side properties="propertiesProperties" sort="true"
          left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
+
     <h4>Concepts</h4>
+
     <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true"
          left="eltsToCompare[0].dataElementConcept" right="eltsToCompare[1].dataElementConcept"></div>
 
+-->
     <h4>Questions</h4>
+
     <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true"
          left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"></div>
 </div>
