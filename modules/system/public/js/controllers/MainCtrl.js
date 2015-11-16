@@ -5,6 +5,10 @@ angular.module('systemModule').controller('MainCtrl',
                  $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route, LoginRedirect)
 {
 
+    $scope.goToLogin = function(){
+        console.log($location.$$url);
+        LoginRedirect.storeRoute($location.$$url);
+    };
 
     $rootScope.$on("$routeChangeSuccess", function(event, currentRoute, previousRoute){
         $rootScope.pageMeta = {};
@@ -14,7 +18,6 @@ angular.module('systemModule').controller('MainCtrl',
         if ($route.current.title) $rootScope.pageMeta.title +=  " | " + $route.current.title;
         if ($route.current.keywords) $rootScope.pageMeta.keywords = $route.current.keywords;
         if ($route.current.description) $rootScope.pageMeta.description = $route.current.description;
-        LoginRedirect.storeRoute(currentRoute.$$route.originalPath);
     });
 
     $scope.quickBoard = QuickBoard;

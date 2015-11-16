@@ -21,7 +21,8 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
             },
             function(res) {
                 if (res === "OK") {
-                    $window.location.href = LoginRedirect.getPreviousRoute();
+                    if (LoginRedirect.getPreviousRoute()) $window.location.href = LoginRedirect.getPreviousRoute();
+                    else $window.location.href = "/";
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
