@@ -146,11 +146,17 @@
                                 $scope.result = result1.result;
                             } else if (result1.result.length > result2.result.length) {
                                 $scope.result = result2.result;
+                                var temp = $scope.left;
+                                $scope.left = $scope.right;
+                                $scope.right = temp;
                             } else {
                                 if (result1.match < result2.match) {
                                     $scope.result = result1.result;
                                 } else if (result1.match > result2.match) {
                                     $scope.result = result2.result;
+                                    var temp = $scope.left;
+                                    $scope.left = $scope.right;
+                                    $scope.right = temp;
                                 } else $scope.result = result1.result
                             }
                         }
