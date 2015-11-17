@@ -8,6 +8,7 @@ var https = require('https')
     , passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy
     , OAuth2Strategy = require('passport-oauth').OAuth2Strategy
+    , util = require('util')
     ;
 
 var ticketValidationOptions = {
@@ -39,16 +40,6 @@ exports.init = function(app) {
     app.use(passport.initialize());
     app.use(passport.session());
 };
-
-
-function OAuthStrategy(options, verify) {
-    options = options || {};
-    options.authorizationURL = options.authorizationURL || config.oauth.serverBaseURL + '/dialog/authorize';
-    options.tokenURL = options.tokenURL || config.oauth.serverBaseURL + '/oauth/token';
-
-    OAuth2Strategy.call(this, options, verify);
-    this.name = 'appexample';
-}
 
 exports.ticketValidate = function( tkt, cb ) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
@@ -169,8 +160,19 @@ exports.authBeforeVsac = function(req, username, password, done) {
     });
 };
 
+function Strategy(options, verify) {
+    options = options || {};
+    options.authorizationURL = options.authorizationURL || config.oauth.serverBaseURL + '/dialog/authorize';
+    options.tokenURL = options.tokenURL || config.oauth.serverBaseURL + '/oauth/token';
+
+    OAuth2Strategy.call(this, options, verify);
+    this.name = 'nlmauth';
+}
+
+util.inherits(Strategy, OAuth2Strategy);
+
 passport.use(new LocalStrategy({passReqToCallback: true}, this.authBeforeVsac));
-passport.use(new OAuthStrategy({
+passport.use(new Strategy({
         clientID: config.oauth.clientId,
         clientSecret: config.oauth.clientSecret,
         callbackURL: config.oauth.callbackURL
@@ -178,10 +180,12 @@ passport.use(new OAuthStrategy({
     function(accessToken, refreshToken, profile, done) {
         console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
         process.nextTick(function () {
-            users.updateOrCreate(profile, accessToken, refreshToken, function(err, user) {
-                if(err) { throw err; }
-                done(null, user);
-            });
+            console.log("NEXT TICK");
+            done(null, {});
+            //users.updateOrCreate(profile, accessToken, refreshToken, function(err, user) {
+            //    if(err) { throw err; }
+            //    done(null, user);
+            //});
         });
     }
 ));

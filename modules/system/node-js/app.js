@@ -184,10 +184,12 @@ exports.init = function(app) {
 
     });
 
-    app.get('/auth/appexample',
-        passport.authenticate('appexample', { scope: 'personaldata' }),
-        function(req, res){
-            console.log("Authorizating...")
+    app.get('/auth/appexample', function(req, res, next){
+        console.log("Authorizing...");
+        passport.authenticate('nlmauth', { scope: 'personaldata' }, function(err, user, info) {
+            console.log("in auth");
+            res.send("hello");
+        })(req, res, next);
     });
 
     app.post('/logs', function (req, res) {
