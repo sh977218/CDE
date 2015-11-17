@@ -70,23 +70,13 @@ var getFormPlainXml = function(form, req, res){
 };
 
 exports.formById = function (req, res) {
-
-    // @TODO Loinc Widget short term solution
-    // This feature will be depreated, please remove these lines
-    if (req.params.id.length>20) {
-        return mongo_data_form.byId(req.params.id, function(err, form){
-            if (err || !form) return res.status(404).end();
-            getFormJson(form, req, res);
-        });
-    } else {
-        mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-            if (err || !form) return res.status(404).end();
-            if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, req, res);
-            else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
-            else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-            else getFormJson(form, req, res);
-        });
-    }
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        if (err || !form) return res.status(404).end();
+        if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, req, res);
+        else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
+        else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+        else getFormJson(form, req, res);
+    });
 };
 
 var getFormSdc = function(form, req, res){
