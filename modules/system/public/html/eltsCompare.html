@@ -16,6 +16,7 @@
                 <i class="fa fa-eye"></i> View Full Detail</a>
         </div>
     </div>
+<!--
     <h4>General Details</h4>
 
     <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true" type="'object'"
@@ -43,9 +44,15 @@
 
     <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true" type="'array'"
          left="eltsToCompare[0].dataElementConcept.concepts" right="eltsToCompare[1].dataElementConcept.concepts"></div>
+-->
 
     <h4>Questions</h4>
 
     <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true" type="'array'"
          left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"></div>
+    <h4>Permissible Values</h4>
+
+    <div ng-compare-side-by-side properties="pvProperties" sort="false" question="false" type="'array'"
+         left="eltsToCompare[0].valueDomain.permissibleValues"
+         right="eltsToCompare[1].valueDomain.permissibleValues"></div>
 </div>
