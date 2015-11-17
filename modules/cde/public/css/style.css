@@ -817,7 +817,7 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareDelete {
     overflow: hidden;
-    border: solid #ad1f89 7px;
+    border: solid #ad1f89 5px;
     border-radius: 20px;
     margin-bottom: 5px;
 }
@@ -828,7 +828,7 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareModified {
     overflow: hidden;
-    border: solid blue 7px;
+    border: solid blue 5px;
     border-radius: 20px;
     margin-bottom: 5px;
 }
