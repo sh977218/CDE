@@ -21,7 +21,7 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Value used as a Standard Deviation");
 
         findElement(By.id("qb.empty")).click();
-        textPresent("Quick Board ( empty )");
+        textPresent("Quick Board (0)");
     }
 
     @Test

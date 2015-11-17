@@ -486,7 +486,7 @@ public class NlmCdeBaseTest {
 
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
-        textPresent("Quick Board ( empty )");
+        textPresent("Quick Board (0)");
         addToQuickBoard(cdeName1);
         addToQuickBoard(cdeName2);
         findElement(By.linkText("Quick Board ( 2 )")).click();
