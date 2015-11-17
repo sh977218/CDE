@@ -145,7 +145,7 @@
                             if (result1.result.length < result2.result.length) {
                                 $scope.result = result1.result;
                             } else if (result1.result.length > result2.result.length) {
-                                $scope.result = result.result;
+                                $scope.result = result2.result;
                             } else {
                                 if (result1.match < result2.match) {
                                     $scope.result = result1.result;
