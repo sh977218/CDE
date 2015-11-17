@@ -17,6 +17,7 @@
     "xml2js": "0.4.8",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
+    "passport-oauth": "1.0.0",
     "body-parser":"1.11.0",
     "method-override": "2.3.1",
     "connect-flash": "0.1.1",

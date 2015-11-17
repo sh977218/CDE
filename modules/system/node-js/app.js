@@ -180,7 +180,15 @@ exports.init = function(app) {
         });
     });
 
-    app.get('')
+    app.get('/auth/callback', function(req, res) {
+
+    });
+
+    app.get('/auth/appexample',
+        passport.authenticate('appexample', { scope: 'personaldata' }),
+        function(req, res){
+            console.log("Authorizating...")
+    });
 
     app.post('/logs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {

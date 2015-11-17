@@ -138,6 +138,12 @@
   "pmNodeProcess": null,
   "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
   "multer": {"inMemory": true},
+  "oauth": {
+    "clientId": "localhost",
+    "clientSecret": "sshSecret",
+    "callbackURL": "http://localhost:3001/auth/appexample/callback",
+    "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
+  },
   "occsNonPrimaryReplicas": [
     "130.14.164.22:27017",
     "130.14.164.21:27017"

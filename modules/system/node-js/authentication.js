@@ -5,6 +5,9 @@ var https = require('https')
     , config = require('./parseConfig')
     , mongo_data_system = require('./mongo-data')
     , request = require('request')
+    , passport = require('passport')
+    , LocalStrategy = require('passport-local').Strategy
+    , OAuth2Strategy = require('passport-oauth').OAuth2Strategy
     ;
 
 var ticketValidationOptions = {
@@ -21,12 +24,32 @@ var ticketValidationOptions = {
 
 var parser = new xml2js.Parser();
 var auth = this;
-/**
- * Checks the validity of a ticket via a POST API call to validation server.
- * 
- * @param tkt - ticket to valadate
- * @returns 
- */
+
+passport.serializeUser(function(user, done) {
+    done(null, user._id);
+});
+
+passport.deserializeUser(function(id, done) {
+    mongo_data_system.userById(id, function(err, user){
+        done(err, user);
+    });
+});
+
+exports.init = function(app) {
+    app.use(passport.initialize());
+    app.use(passport.session());
+};
+
+
+function OAuthStrategy(options, verify) {
+    options = options || {};
+    options.authorizationURL = options.authorizationURL || config.oauth.serverBaseURL + '/dialog/authorize';
+    options.tokenURL = options.tokenURL || config.oauth.serverBaseURL + '/oauth/token';
+
+    OAuth2Strategy.call(this, options, verify);
+    this.name = 'appexample';
+}
+
 exports.ticketValidate = function( tkt, cb ) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
     var req = https.request(ticketValidationOptions, function(res) {
@@ -107,7 +130,6 @@ exports.umlsAuth = function(user, password, cb) {
 };
 
 exports.authBeforeVsac = function(req, username, password, done) {
-    
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(function () {
         // Find the user by username in local datastore first and perform authentication.
@@ -132,7 +154,7 @@ exports.authBeforeVsac = function(req, username, password, done) {
                     // Initialize the lockCounter if it hasn't been
                     (user.lockCounter>=0? user.lockCounter += 1 : user.lockCounter = 1);
                     
-                    return user.save(function(err, user) {
+                    return user.save(function() {
                         return done(null, false, { message: 'Incorrect username or password' }); 
                     });
                 } else {
@@ -146,12 +168,28 @@ exports.authBeforeVsac = function(req, username, password, done) {
         });  
     });
 };
+
+passport.use(new LocalStrategy({passReqToCallback: true}, this.authBeforeVsac));
+passport.use(new OAuthStrategy({
+        clientID: config.oauth.clientId,
+        clientSecret: config.oauth.clientSecret,
+        callbackURL: config.oauth.callbackURL
+    },
+    function(accessToken, refreshToken, profile, done) {
+        console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
+        process.nextTick(function () {
+            users.updateOrCreate(profile, accessToken, refreshToken, function(err, user) {
+                if(err) { throw err; }
+                done(null, user);
+            });
+        });
+    }
+));
   
 exports.findAddUserLocally = function(username, req, next) {
     mongo_data_system.userByName(username, function(err, user) {
-        if( err ) { // note: findByUsername always returns error=null
+        if(err) { // note: findByUsername always returns error=null
             next(); 
-            return;
         } else if(!user) { // User has been authenticated but user is not in local db, so register him.
             mongo_data_system.addUser({username: username, password: "umls", quota: 1024 * 1024 * 1024}, function(newUser) {
                 auth.updateUserAfterLogin(req, newUser);
@@ -167,13 +205,11 @@ exports.findAddUserLocally = function(username, req, next) {
 };
 
 exports.ticketAuth = function(req, res, next){
-    // Check for presence of url param 'ticket'
     if(!req.query.ticket || req.query.ticket.length<=0) {
         next();
     } else auth.ticketValidate(req.query.ticket, function(err, username) {
         if(err) {
             next(); 
-            return; 
         } else {
             auth.findAddUserLocally(username, req, function(user) {
                 if (user) req.user = user;
