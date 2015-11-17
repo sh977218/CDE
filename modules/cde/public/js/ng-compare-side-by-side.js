@@ -30,98 +30,118 @@
                         }
                     },
                     link: function ($scope, $element) {
-                        if (!$scope.left)
-                            if ($scope.type === 'object')
-                                $scope.left = {};
-                            else
-                                $scope.left = [];
-                        if (!$scope.right)
-                            if ($scope.type === 'object')
-                                $scope.right = {};
-                            else
-                                $scope.right = [];
-                        var leftObj = Comparison.deepCopy($scope.left);
-                        var rightObj = Comparison.deepCopy($scope.right);
-                        if (Array.isArray($scope.left) && Array.isArray($scope.right)) {
-                            if ($scope.sort) {
-                                Comparison.sortByName(leftObj);
-                                Comparison.sortByName(rightObj);
-                            }
-                            var leftIds = leftObj.map(function (o) {
-                                Comparison.wipeUseless(o);
-                                if ($scope.question) {
-                                    return o.question.cde.tinyId;
-                                }
+                        var compareImpl = function (l, r) {
+                            var match = 0;
+                            if (!l)
+                                if ($scope.type === 'object')
+                                    l = {};
                                 else
-                                    return JSON.stringify(o);
-                            });
-                            var rightIds = rightObj.map(function (o) {
-                                Comparison.wipeUseless(o);
-                                if ($scope.question) {
-                                    return o.question.cde.tinyId;
-                                }
+                                    l = [];
+                            if (!r)
+                                if ($scope.type === 'object')
+                                    r = {};
                                 else
-                                    return JSON.stringify(o);
-                            });
-                            var result = [];
-                            var leftIndex = 0;
-                            var beginIndex = 0;
-                            leftObj.forEach(function (o) {
-                                var id = JSON.stringify(o);
-                                if ($scope.question) {
-                                    id = o.question.cde.tinyId;
+                                    r = [];
+                            var leftObj = Comparison.deepCopy(l);
+                            var rightObj = Comparison.deepCopy(r);
+                            if (Array.isArray(l) && Array.isArray(r)) {
+                                if ($scope.sort) {
+                                    Comparison.sortByName(leftObj);
+                                    Comparison.sortByName(rightObj);
                                 }
-                                var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
-                                // element didn't found in right list.
-                                if (rightIndex === -1) {
-                                    // put all right list elements before this element
-                                    if (beginIndex === 0) {
-                                        for (var m = 0; m < rightObj.length; m++) {
+                                var leftIds = leftObj.map(function (o) {
+                                    Comparison.wipeUseless(o);
+                                    if ($scope.question) {
+                                        return o.question.cde.tinyId;
+                                    }
+                                    else
+                                        return JSON.stringify(o);
+                                });
+                                var rightIds = rightObj.map(function (o) {
+                                    Comparison.wipeUseless(o);
+                                    if ($scope.question) {
+                                        return o.question.cde.tinyId;
+                                    }
+                                    else
+                                        return JSON.stringify(o);
+                                });
+                                var result = [];
+                                var leftIndex = 0;
+                                var beginIndex = 0;
+                                leftObj.forEach(function (o) {
+                                    var id = JSON.stringify(o);
+                                    if ($scope.question) {
+                                        id = o.question.cde.tinyId;
+                                    }
+                                    var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
+                                    // element didn't found in right list.
+                                    if (rightIndex === -1) {
+                                        // put all right list elements before this element
+                                        if (beginIndex === 0) {
+                                            for (var m = 0; m < rightObj.length; m++) {
+                                                result.push({
+                                                    action: "space",
+                                                    rightIndex: m
+                                                });
+                                                beginIndex++;
+                                            }
+                                        }
+                                        // put this element not found
+                                        result.push({
+                                            action: "not found",
+                                            leftIndex: leftIndex
+                                        });
+                                    }
+                                    // element found in right list
+                                    else {
+                                        // put all right elements before matched element
+                                        var _beginIndex = beginIndex;
+                                        for (var k = 0; k < rightIndex; k++) {
                                             result.push({
                                                 action: "space",
-                                                rightIndex: m
+                                                rightIndex: beginIndex + rightIndex - 1
                                             });
                                             beginIndex++;
                                         }
-                                    }
-                                    // put this element not found
-                                    result.push({
-                                        action: "not found",
-                                        leftIndex: leftIndex
-                                    });
-                                }
-                                // element found in right list
-                                else {
-                                    // put all right elements before matched element
-                                    var _beginIndex = beginIndex;
-                                    for (var k = 0; k < rightIndex; k++) {
+                                        // put this element found
                                         result.push({
-                                            action: "space",
-                                            rightIndex: beginIndex + rightIndex - 1
+                                            action: "found",
+                                            leftIndex: leftIndex,
+                                            rightIndex: _beginIndex + rightIndex
                                         });
+                                        match++;
                                         beginIndex++;
                                     }
-                                    // put this element found
+                                    leftIndex++;
+                                });
+                                // if after looping left list, there are element in the right list, put all of them
+                                for (var i = beginIndex; i < rightIds.length; i++)
                                     result.push({
-                                        action: "found",
-                                        leftIndex: leftIndex,
-                                        rightIndex: _beginIndex + rightIndex
-                                    });
-                                    beginIndex++;
+                                        action: "space",
+                                        rightIndex: i
+                                    })
+                                return {result: result, match: match};
+                            } else if (typeof l === 'object' && typeof r === 'object') {
+                                var diff = DeepDiff(leftObj, rightObj);
+                                if (diff && diff.length > 0) {
+                                    return diff;
                                 }
-                                leftIndex++;
-                            });
-                            // if after looping left list, there are element in the right list, put all of them
-                            for (var i = beginIndex; i < rightIds.length; i++)
-                                result.push({
-                                    action: "space",
-                                    rightIndex: i
-                                })
-                            $scope.result = result;
-                        } else if (typeof $scope.left === 'object' && typeof $scope.right === 'object') {
-                            var diff = DeepDiff(leftObj, rightObj);
-                            if (diff && diff.length > 0) {
-                                $scope.result = diff;
+                                else return {};
+                            }
+                        };
+                        var result1 = compareImpl($scope.left, $scope.right);
+                        var result2 = compareImpl($scope.right, $scope.left);
+                        if (result1.result && result2.result) {
+                            if (result1.result.length < result2.result.length) {
+                                $scope.result = result1.result;
+                            } else if (result1.result.length > result2.result.length) {
+                                $scope.result = result.result;
+                            } else {
+                                if (result1.match < result2.match) {
+                                    $scope.result = result1.result;
+                                } else if (result1.match > result2.match) {
+                                    $scope.result = result2.result;
+                                } else $scope.result = result1.result
                             }
                         }
                         Comparison.applyComparison($scope, $element);
