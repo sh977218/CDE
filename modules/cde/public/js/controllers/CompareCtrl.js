@@ -70,8 +70,9 @@ angular.module('cdeModule').controller('CompareCtrl',
                 {label: 'Value', property: 'value'}
             ];
             $scope.dataElementConceptProperties = [
-                {label: 'Concept', property: 'concepts'},
-                {label: 'Conceptual Domain', property: 'conceptualDomain'}
+                {label: 'Name', property: 'name'},
+                {label: 'Origin', property: 'origin'},
+                {label: 'OriginId', property: 'originId'}
             ];
             $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}];
             $scope.registrationStateProperties = [{label: 'Status', property: 'registrationStatus'}];

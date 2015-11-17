@@ -122,11 +122,21 @@
                                     })
                                 return {result: result, match: match};
                             } else if (typeof l === 'object' && typeof r === 'object') {
-                                var diff = DeepDiff(leftObj, rightObj);
-                                if (diff && diff.length > 0) {
-                                    return diff;
-                                }
-                                else return {};
+                                var result = [];
+                                $scope.properties.forEach(function (p) {
+                                    if (Comparison.getProperty(leftObj, p.property) === Comparison.getProperty(rightObj, p.property)) {
+                                        result.push({
+                                            property: p,
+                                            match: true
+                                        })
+                                    } else {
+                                        result.push({
+                                            property: p,
+                                            match: false
+                                        })
+                                    }
+                                });
+                                return result;
                             }
                         };
                         var result1 = compareImpl($scope.left, $scope.right);
@@ -144,12 +154,29 @@
                                 } else $scope.result = result1.result
                             }
                         }
+                        else {
+                            $scope.result = result1;
+                        }
                         Comparison.applyComparison($scope, $element);
                     }
                 };
             }])
         .factory("Comparison", ["$compile", function ($compile) {
             return {
+                getProperty: function (o, s) {
+                    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+                    s = s.replace(/^\./, '');           // strip a leading dot
+                    var a = s.split('.');
+                    for (var i = 0, n = a.length; i < n; ++i) {
+                        var k = a[i];
+                        if (k in o) {
+                            o = o[k];
+                        } else {
+                            return;
+                        }
+                    }
+                    return o;
+                },
                 sortByName: function (o) {
                     if (Array.isArray(o))
                         o.sort();
@@ -194,17 +221,17 @@
                         '<hr class="divider">';
 
                     var objectHtml = '' +
-                        '<div class="row">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareModified:r.match===false}">' +
                         '   <div class="col-xs-6">' +
-                        '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-xs-3 compareLabel">{{p.label}}:</div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(left, p.property)}}</div>' +
+                        '       <div class="row quickBoardContentCompare">' +
+                        '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(left, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
-                        '       <div class="row quickBoardContentCompare" ng-repeat="p in properties">' +
-                        '           <div class="col-xs-3 compareLabel">{{p.label}}:</div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(right, p.property)}}</div>' +
+                        '       <div class="row quickBoardContentCompare">' +
+                        '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
+                        '           <div class="col-xs-9">{{this.getProperty(right, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>' +

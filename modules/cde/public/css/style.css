@@ -816,6 +816,7 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareDelete {
+    overflow: hidden;
     border: solid #ad1f89 7px;
     border-radius: 20px;
     margin-bottom: 5px;
@@ -826,7 +827,10 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareModified {
-    border: dashed blue 1px;
+    overflow: hidden;
+    border: solid blue 7px;
+    border-radius: 20px;
+    margin-bottom: 5px;
 }
 
 .compareLabel {
