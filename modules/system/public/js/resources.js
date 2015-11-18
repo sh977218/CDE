@@ -211,6 +211,17 @@ angular.module('resourcesSystem', ['ngResource'])
             elts: []
         }
     })
+    .factory('LoginRedirect', function ($location) {
+        var lastRoute;
+        return {
+            storeRoute: function () {
+                if ($location.$$url.indexOf('login') === -1) lastRoute = $location.$$url;
+            }
+            , getPreviousRoute: function () {
+                return lastRoute;
+            }
+        };
+    })
     .factory("QuickBoard", function ($http, OrgHelpers, userResource, localStorageService) {
         var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService);
         result.restoreFromLocalStorage();
@@ -221,5 +232,4 @@ angular.module('resourcesSystem', ['ngResource'])
         result.restoreFromLocalStorage();
         return result;
     });
-;
 

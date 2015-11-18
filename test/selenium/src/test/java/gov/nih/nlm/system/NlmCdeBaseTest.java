@@ -166,10 +166,8 @@ public class NlmCdeBaseTest {
         return unameStr.equals(usernameStr);
     }
 
-    protected void mustBeLoggedInAs(String username, String password) {
-        goHome();
+    protected void doLogin(String username, String password){
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
@@ -179,6 +177,12 @@ public class NlmCdeBaseTest {
                 loginAs(username, password);
             }
         }
+    }
+
+    protected void mustBeLoggedInAs(String username, String password) {
+        goHome();
+        doLogin(username, password);
+        goToCdeSearch();
     }
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
