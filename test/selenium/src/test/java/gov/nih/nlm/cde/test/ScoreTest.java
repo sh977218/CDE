@@ -41,7 +41,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         qbTest.emptyQuickBoard();
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
         findElement(By.id("compareMe")).click();
-        textPresent("Quick Board ( 1 )");
+        textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();

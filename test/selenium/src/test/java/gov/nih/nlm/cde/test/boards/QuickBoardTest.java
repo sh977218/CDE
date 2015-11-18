@@ -14,21 +14,21 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         findElement(By.partialLinkText("Quick Board (")).click();
         findElement(By.id("qb.empty")).click();
-        findElement(By.linkText("Quick Board ( empty )")).click();
+        findElement(By.linkText("Quick Board (0)")).click();
         hangon(1);
     }
 
     @Test
     public void gotoEmptyQuickBoard() {
         goHome();
-        textPresent("Quick Board ( empty )");
+        textPresent("Quick Board (0)");
         hangon(0.5);
-        findElement(By.linkText("Quick Board ( empty )")).click();
+        findElement(By.linkText("Quick Board (0)")).click();
         try {
             textPresent("The quick board is empty.");
         } catch (Exception e) {
             goHome();
-            findElement(By.linkText("Quick Board ( empty )")).click();
+            findElement(By.linkText("Quick Board (0)")).click();
             textPresent("The quick board is empty.");
         }
     }
@@ -41,10 +41,10 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         addToQuickBoard( "Prior BMSCT Administered Indicator" );
         addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
-        textPresent("Quick Board ( 5 )");
-        findElement(By.linkText("Quick Board ( 5 )")).click();
+        textPresent("Quick Board (5)");
+        findElement(By.linkText("Quick Board (5)")).click();
         findElement(By.id("qb.empty")).click();
-        findElement(By.linkText("Quick Board ( empty )")).click();
+        findElement(By.linkText("Quick Board (0)")).click();
     }
     
     @Test
@@ -55,8 +55,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
         addToQuickBoard("Prior BMSCT Administered Indicator");
         addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("Quick Board ( 5 )");
-        findElement(By.linkText("Quick Board ( 5 )")).click();
+        textPresent("Quick Board (5)");
+        findElement(By.linkText("Quick Board (5)")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
         waitAndClick(By.id("gridView"));
@@ -65,7 +65,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board ( empty )" );
+        textPresent( "Quick Board (0)" );
     }
 
     @Test
@@ -74,12 +74,12 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("Quick Board ( 3 )");
-        findElement(By.linkText("Quick Board ( 3 )")).click();
+        textPresent("Quick Board (3)");
+        findElement(By.linkText("Quick Board (3)")).click();
         findElement(By.id("qb.compare")).click();
         textPresent("You may only compare 2 CDEs side by side." );
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board ( empty )" );
+        textPresent( "Quick Board (0)" );
     }
 
     @Test
@@ -87,8 +87,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         goToCdeSearch();
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
         addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        textPresent("Quick Board ( 2 )");
-        findElement(By.linkText("Quick Board ( 2 )")).click();
+        textPresent("Quick Board (2)");
+        findElement(By.linkText("Quick Board (2)")).click();
         hangon(1);
         findElement(By.id("qb.compare")).click();
         textPresent( "View Full Detail" );
@@ -98,9 +98,9 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent( "Platinum free interval" );
         textPresent( "Permissible Values" );
 
-        findElement(By.linkText("Quick Board ( 2 )")).click();
+        findElement(By.linkText("Quick Board (2)")).click();
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board ( empty )" );
+        textPresent( "Quick Board (0)" );
     }
     
     @Test
@@ -114,7 +114,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         String toRemove = findElement(By.id("acc_link_2")).getText();
         findElement(By.id("addToCompare_3")).click();
         hangon(.5);
-        findElement(By.linkText("Quick Board ( 4 )")).click();
+        findElement(By.linkText("Quick Board (4)")).click();
         hangon(.5);
         textPresent(toRemove);
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));

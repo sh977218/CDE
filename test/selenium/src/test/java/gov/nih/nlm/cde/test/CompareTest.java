@@ -11,7 +11,7 @@ public class CompareTest extends NlmCdeBaseTest {
     public void noElementCompareList() {
         mustBeLoggedOut();
         goToCdeSearch();
-        findElement(By.linkText("Quick Board ( empty )")).click();
+        findElement(By.linkText("Quick Board (0)")).click();
         textPresent("The quick board is empty.");
     }
     
@@ -19,7 +19,7 @@ public class CompareTest extends NlmCdeBaseTest {
     public void emptyList() {
         openCdeInList("Sedation status");
         findElement(By.id("compare_0")).click();
-        textPresent("Quick Board ( 1 )");      
+        textPresent("Quick Board (1)");
     }
     
     @Test
@@ -43,7 +43,7 @@ public class CompareTest extends NlmCdeBaseTest {
         addToQuickBoard(cde1);
         addToQuickBoard(cde2);
         addToQuickBoard(cde3);
-        findElement(By.linkText("Quick Board ( 3 )")).click();
+        findElement(By.linkText("Quick Board (3)")).click();
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);

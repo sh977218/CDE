@@ -118,9 +118,17 @@ angular.module('cdeModule').controller('CompareCtrl',
             wipeUseless($scope.eltsToCompare[1]);
 
             $scope.questionProperties = [{label: 'Label', property: 'label'},
-                {label: 'Data Type', property: 'datatype'},
-                {label: 'Tiny Id', property: 'question.cde.tinyId'}];
+                {label: 'Datatype', property: 'datatype'},
+                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
+                {label: 'Answer', property: 'question.answers'}];
 
+            $scope.pvProperties = [
+                {label: 'permissibleValue', property: 'permissibleValue'},
+                {label: 'valueMeaningName', property: 'valueMeaningName'},
+                {label: 'valueMeaningCode', property: 'valueMeaningCode'},
+                {label: 'valueMeaningDefinition', property: 'valueMeaningDefinition'},
+                {label: 'codeSystemName', property: 'codeSystemName'},
+                {label: 'codeSystemVersion', property: 'codeSystemVersion'}];
         }
     ])
 ;

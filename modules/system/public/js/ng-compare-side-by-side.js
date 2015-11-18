@@ -13,8 +13,8 @@
                         question: '=',
                         type: '='
                     },
-                    controller: function ($scope, $element) {
-                        $scope.getProperty = function (o, s) {
+                    controller: function ($scope) {
+                        $scope.getValueByNestedProperty = function (o, s) {
                             s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
                             s = s.replace(/^\./, '');           // strip a leading dot
                             var a = s.split('.');
@@ -44,28 +44,20 @@
                                     r = [];
                             var leftObj = Comparison.deepCopy(l);
                             var rightObj = Comparison.deepCopy(r);
+                            var result = [];
                             if (Array.isArray(l) && Array.isArray(r)) {
                                 if ($scope.sort) {
                                     Comparison.sortByName(leftObj);
                                     Comparison.sortByName(rightObj);
                                 }
-                                var leftIds = leftObj.map(function (o) {
-                                    Comparison.wipeUseless(o);
-                                    if ($scope.question) {
-                                        return o.question.cde.tinyId;
-                                    }
-                                    else
-                                        return JSON.stringify(o);
-                                });
                                 var rightIds = rightObj.map(function (o) {
                                     Comparison.wipeUseless(o);
-                                    if ($scope.question) {
+                                    if (!$scope.question) {
+                                        return JSON.stringify(o);
+                                    } else {
                                         return o.question.cde.tinyId;
                                     }
-                                    else
-                                        return JSON.stringify(o);
                                 });
-                                var result = [];
                                 var leftIndex = 0;
                                 var beginIndex = 0;
                                 leftObj.forEach(function (o) {
@@ -122,9 +114,8 @@
                                     })
                                 return {result: result, match: match};
                             } else if (typeof l === 'object' && typeof r === 'object') {
-                                var result = [];
                                 $scope.properties.forEach(function (p) {
-                                    if (Comparison.getProperty(leftObj, p.property) === Comparison.getProperty(rightObj, p.property)) {
+                                    if (Comparison.getValueByNestedProperty(leftObj, p.property) === Comparison.getValueByNestedProperty(rightObj, p.property)) {
                                         result.push({
                                             property: p,
                                             match: true
@@ -144,20 +135,27 @@
                         if (result1.result && result2.result) {
                             if (result1.result.length < result2.result.length) {
                                 $scope.result = result1.result;
+                                $scope.switch = false;
                             } else if (result1.result.length > result2.result.length) {
                                 $scope.result = result2.result;
                                 var temp = $scope.left;
                                 $scope.left = $scope.right;
                                 $scope.right = temp;
+                                $scope.switch = true;
                             } else {
                                 if (result1.match < result2.match) {
                                     $scope.result = result1.result;
+                                    $scope.switch = false;
                                 } else if (result1.match > result2.match) {
                                     $scope.result = result2.result;
+                                    $scope.switch = true;
                                     var temp = $scope.left;
                                     $scope.left = $scope.right;
                                     $scope.right = temp;
-                                } else $scope.result = result1.result
+                                } else {
+                                    $scope.result = result1.result;
+                                    $scope.switch = false;
+                                }
                             }
                         }
                         else {
@@ -169,7 +167,7 @@
             }])
         .factory("Comparison", ["$compile", function ($compile) {
             return {
-                getProperty: function (o, s) {
+                getValueByNestedProperty: function (o, s) {
                     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
                     s = s.replace(/^\./, '');           // strip a leading dot
                     var a = s.split('.');
@@ -214,14 +212,30 @@
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(left[r.leftIndex],p.property)}}</div>' +
+                        '           <div class="col-xs-9" ng-if="switch">' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.leftIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.leftIndex],p.property)"></div>' +
+                        '           </div>' +
+                        '           <div class="col-xs-9" ng-if="!switch">' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.leftIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
+                        '           </div>' +
                         '       </div>' +
+                        '   <hr class="divider">' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(right[r.rightIndex],p.property)}}</div>' +
+                        '           <div class="col-xs-9" ng-if="switch">' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.rightIndex],p.property)"></div>' +
+                        '           </div>' +
+                        '           <div class="col-xs-9" ng-if="!switch">' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.rightIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
+                        '           </div>' +
                         '       </div>' +
+                        '   <hr class="divider">' +
                         '   </div>' +
                         '</div>';
 
@@ -230,13 +244,13 @@
                         '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(left, r.property.property)}}</div>' +
+                        '           <div class="col-xs-9">{{this.getValueByNestedProperty(left, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
-                        '           <div class="col-xs-9">{{this.getProperty(right, r.property.property)}}</div>' +
+                        '           <div class="col-xs-9">{{this.getValueByNestedProperty(right, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
                         '</div>';
