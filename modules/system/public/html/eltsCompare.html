@@ -55,7 +55,8 @@
     <h3 class="compareSectionTitle">Questions</h3>
 
     <div ng-compare-side-by-side properties="questionProperties" compareBasedOn="'question.cde.tinyId'"
-         type="'array'" left="eltsToCompare[0].questions" right="eltsToCompare[1].questions">
+         type="'array'" left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"
+         deepCompare="true">
     </div>
 
     <hr class="divider compare-divider">

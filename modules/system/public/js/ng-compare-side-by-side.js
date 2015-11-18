@@ -11,7 +11,8 @@
                         sort: '=',
                         properties: '=',
                         compareBasedOn: '=',
-                        type: '='
+                        type: '=',
+                        deepCompare: '='
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
@@ -212,6 +213,7 @@
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
                         '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
+                        '<div ng-if="!deepCompare">' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
@@ -238,6 +240,8 @@
                         '           </div>' +
                         '       </div>' +
                         '   </div>' +
+                        '</div>' +
+                        '<div ng-if="deepCompare" ng-compare-side-by-side properties="properties" type="\'array\'" left="left[r.leftIndex]" right="right[r.rightIndex]"></div>' +
                         '</div>';
 
                     var objectHtml = '' +
