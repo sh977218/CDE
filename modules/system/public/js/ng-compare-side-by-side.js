@@ -214,27 +214,11 @@
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
                         '           <div class="col-xs-9" ng-if="switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.leftIndex],p.property)}}</a>' +
-                        '               <span ng-if="!p.link && !Array.isArray(this.getValueByNestedProperty(right[r.leftIndex],p.property))">qqqq{{!p.link && !Array.isArray(this.getValueByNestedProperty(right[r.leftIndex],p.property))}}not array{{this.getValueByNestedProperty(right[r.leftIndex],p.property)}}</span>' +
-                        '               <span ng-if="!p.link && Array.isArray(this.getValueByNestedProperty(right[r.leftIndex],p.property))">array' +
-                        '                   <div class="row" ng-repeat="one in this.getValueByNestedProperty(right[r.leftIndex],p.property)">' +
-                        '                       <div class="row" ng-repeat="key in one">' +
-                        '                           <div class="col-xs-3">{{key}}:</div>' +
-                        '                           <div class="col-xs-9">{{one[key]}}</div>' +
-                        '                       </div>' +
-                        '                   </div>' +
-                        '               </span>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.leftIndex],p.property)"></div>' +
                         '           </div>' +
                         '           <div class="col-xs-9" ng-if="!switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.leftIndex],p.property)}}</a>' +
-                        '               <span ng-if="!p.link && !Array.isArray(this.getValueByNestedProperty(left[r.leftIndex],p.property))">aaaa{{!p.link}} {{this.getValueByNestedProperty(left[r.leftIndex],p.property).indexOf(\'permissibleValue\')}}not array{{this.getValueByNestedProperty(left[r.leftIndex],p.property)}}</span>' +
-                        '               <span ng-if="!p.link && Array.isArray(this.getValueByNestedProperty(left[r.leftIndex],p.property))">array' +
-                        '                   <div class="row" ng-repeat="one in this.getValueByNestedProperty(left[r.leftIndex],p.property)">' +
-                        '                       <div class="row" ng-repeat="key in one">' +
-                        '                           <div class="col-xs-3">{{key}}:</div>' +
-                        '                           <div class="col-xs-9">{{one[key]}}</div>' +
-                        '                       </div>' +
-                        '                   </div>' +
-                        '               </span>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
                         '   <hr class="divider">' +
@@ -244,11 +228,11 @@
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
                         '           <div class="col-xs-9" ng-if="switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</a>' +
-                        '               <span ng-if="!p.link">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</span>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.rightIndex],p.property)"></div>' +
                         '           </div>' +
                         '           <div class="col-xs-9" ng-if="!switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.rightIndex],p.property)}}</a>' +
-                        '               <span ng-if="!p.link">{{this.getValueByNestedProperty(right[r.rightIndex],p.property)}}</span>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
                         '   <hr class="divider">' +

@@ -833,6 +833,10 @@ div + .questionPlaceholder {
     margin-bottom: 5px;
 }
 
+.overflowHidden {
+    overflow: hidden;
+}
+
 .compareLabel {
     font-weight: bold;
     text-align: right;
