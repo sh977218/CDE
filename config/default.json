@@ -140,7 +140,7 @@
   "multer": {"inMemory": true},
   "oauth": {
     "clientId": "localhost",
-    "clientSecret": "sshSecret",
+    "clientSecret": "ssh-secret",
     "callbackURL": "http://localhost:3001/auth/appexample/callback",
     "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
   },
