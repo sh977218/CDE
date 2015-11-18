@@ -12,9 +12,9 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
 
-        textPresent("Quick Board ( 2 )");
+        textPresent("Quick Board (2)");
 
-        findElement(By.linkText("Quick Board ( 2 )")).click();
+        findElement(By.linkText("Quick Board (2)")).click();
 
         findElement(By.id("qb.openCloseAll")).click();
         textPresent("AJCC Based:");
@@ -30,9 +30,9 @@ public class ExpandAllQuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
         addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
 
-        textPresent("Quick Board ( 2 )");
+        textPresent("Quick Board (2)");
 
-        findElement(By.linkText("Quick Board ( 2 )")).click();
+        findElement(By.linkText("Quick Board (2)")).click();
         textNotPresent("Loading...");
 
         hangon(1);
