@@ -213,46 +213,45 @@
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
                         '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
-                        '<div ng-if="!deepCompare">' +
-                        '   <div class="col-xs-6">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
                         '           <div class="col-xs-9" ng-if="switch">' +
-                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.leftIndex],p.property)}}</a>' +
-                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.leftIndex],p.property)"></div>' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.leftIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '           </div>' +
                         '           <div class="col-xs-9" ng-if="!switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.leftIndex],p.property)}}</a>' +
                         '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
+                        '   <hr class="divider compare-divider">' +
                         '   </div>' +
-                        '   <div class="col-xs-6">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
                         '           <div class="col-xs-9" ng-if="switch">' +
-                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</a>' +
-                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.rightIndex],p.property)"></div>' +
+                        '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</a>' +
+                        '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
                         '           </div>' +
                         '           <div class="col-xs-9" ng-if="!switch">' +
                         '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(right[r.rightIndex],p.property)}}</a>' +
                         '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
+                        '   <hr class="divider compare-divider">' +
                         '   </div>' +
-                        '</div>' +
-                        '<div ng-if="deepCompare" ng-compare-side-by-side properties="properties" type="\'array\'" left="left[r.leftIndex]" right="right[r.rightIndex]"></div>' +
                         '</div>';
 
                     var objectHtml = '' +
                         '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.match===false}">' +
-                        '   <div class="col-xs-6">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">' +
                         '       <div class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
                         '           <div class="col-xs-9">{{this.getValueByNestedProperty(left, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '   <div class="col-xs-6">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">' +
                         '       <div class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
                         '           <div class="col-xs-9">{{this.getValueByNestedProperty(right, r.property.property)}}</div>' +

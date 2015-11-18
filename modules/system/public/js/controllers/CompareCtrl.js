@@ -118,9 +118,9 @@ angular.module('cdeModule').controller('CompareCtrl',
             wipeUseless($scope.eltsToCompare[1]);
 
             $scope.questionProperties = [{label: 'Label', property: 'label'},
-                {label: 'Datatype', property: 'datatype'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
-                {label: 'Answer', property: 'question.answers'}
+                {label: 'Answer', property: 'question.answers'},
+                {label: 'Unit of Measurement', property: 'question.uoms'}
             ];
         }
     ])

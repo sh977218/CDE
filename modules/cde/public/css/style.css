@@ -817,14 +817,12 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareDelete {
     overflow: hidden;
-    /*border: solid #ad1f89 5px;*/
-    /*border-radius: 20px;*/
     margin-bottom: 5px;
     background-color: rgba(242, 217, 217, 0.49);
 }
 
-.quickBoardContentCompareAdd {
-    border: dashed green 1px;
+.quickBoardContentCompareCol {
+    min-height: 10px;
 }
 
 .quickBoardContentCompareModified {
@@ -866,9 +864,11 @@ div + .questionPlaceholder {
     margin-left: 10px;
 }
 
-.compare-divider{
+.compare-divider {
     margin: 1px
 }
 
-.compareSectionTitle{margin-top: 20px;}
+.compareSectionTitle {
+    margin-top: 20px;
+}
 
