@@ -210,7 +210,7 @@
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareDelete:r.action===\'space\'||r.action===\'not found\'}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'space\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
@@ -223,11 +223,10 @@
                         '           <div class="col-xs-9">{{this.getProperty(right[r.rightIndex],p.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '</div>' +
-                        '<hr class="divider">';
+                        '</div>';
 
                     var objectHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{quickBoardContentCompareModified:r.match===false}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.match===false}">' +
                         '   <div class="col-xs-6">' +
                         '       <div class="row quickBoardContentCompare">' +
                         '           <div class="col-xs-3 compareLabel">{{r.property.label}}:</div>' +
@@ -240,8 +239,7 @@
                         '           <div class="col-xs-9">{{this.getProperty(right, r.property.property)}}</div>' +
                         '       </div>' +
                         '   </div>' +
-                        '</div>' +
-                        '<hr class="divider">';
+                        '</div>';
                     var el;
                     if ($scope.type === 'array')
                         el = angular.element(arrayHtml);
