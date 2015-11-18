@@ -10,7 +10,7 @@
                         right: '=',
                         sort: '=',
                         properties: '=',
-                        question: '=',
+                        compareBasedOn: '=',
                         type: '='
                     },
                     controller: function ($scope) {
@@ -30,6 +30,9 @@
                         }
                     },
                     link: function ($scope, $element) {
+                        if (!$scope.sort) {
+                            $scope.sort = false;
+                        }
                         var compareImpl = function (l, r) {
                             var match = 0;
                             if (!l)
@@ -52,18 +55,18 @@
                                 }
                                 var rightIds = rightObj.map(function (o) {
                                     Comparison.wipeUseless(o);
-                                    if (!$scope.question) {
+                                    if (!$scope.compareBasedOn) {
                                         return JSON.stringify(o);
                                     } else {
-                                        return o.question.cde.tinyId;
+                                        return Comparison.getValueByNestedProperty(o, $scope.compareBasedOn);
                                     }
                                 });
                                 var leftIndex = 0;
                                 var beginIndex = 0;
                                 leftObj.forEach(function (o) {
                                     var id = JSON.stringify(o);
-                                    if ($scope.question) {
-                                        id = o.question.cde.tinyId;
+                                    if ($scope.compareBasedOn) {
+                                        id = Comparison.getValueByNestedProperty(o, $scope.compareBasedOn);
                                     }
                                     var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
                                     // element didn't found in right list.

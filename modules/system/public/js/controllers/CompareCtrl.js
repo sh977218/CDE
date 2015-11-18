@@ -120,16 +120,8 @@ angular.module('cdeModule').controller('CompareCtrl',
             $scope.questionProperties = [{label: 'Label', property: 'label'},
                 {label: 'Datatype', property: 'datatype'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
-                //{label: 'Answer', property: 'question.answers'}
+                {label: 'Answer', property: 'question.answers'}
             ];
-
-            $scope.pvProperties = [
-                {label: 'permissibleValue', property: 'permissibleValue'},
-                {label: 'valueMeaningName', property: 'valueMeaningName'},
-                {label: 'valueMeaningCode', property: 'valueMeaningCode'},
-                {label: 'valueMeaningDefinition', property: 'valueMeaningDefinition'},
-                {label: 'codeSystemName', property: 'codeSystemName'},
-                {label: 'codeSystemVersion', property: 'codeSystemVersion'}];
         }
     ])
 ;

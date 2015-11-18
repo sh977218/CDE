@@ -33,33 +33,35 @@
          left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
 
     <hr class="divider compare-divider">
-    <h3 class="compareSectionTitle" >Reference Documents</h3>
+    <h3 class="compareSectionTitle">Reference Documents</h3>
 
     <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true" type="'array'"
          left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
 
     <hr class="divider compare-divider">
-    <h3 class="compareSectionTitle" >Properties</h3>
+    <h3 class="compareSectionTitle">Properties</h3>
 
     <div ng-compare-side-by-side properties="propertiesProperties" sort="true" type="'array'"
          left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
 
     <hr class="divider compare-divider">
-    <h3 class="compareSectionTitle" >Concepts</h3>
+    <h3 class="compareSectionTitle">Concepts</h3>
 
     <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true" type="'array'"
          left="eltsToCompare[0].dataElementConcept.concepts" right="eltsToCompare[1].dataElementConcept.concepts"></div>
 
 
     <hr class="divider compare-divider">
-    <h3 class="compareSectionTitle" >Questions</h3>
-    <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true" type="'array'"
-         left="eltsToCompare[0].questions" right="eltsToCompare[1].questions">
+    <h3 class="compareSectionTitle">Questions</h3>
+
+    <div ng-compare-side-by-side properties="questionProperties" compareBasedOn="'question.cde.tinyId'"
+         type="'array'" left="eltsToCompare[0].questions" right="eltsToCompare[1].questions">
     </div>
 
     <hr class="divider compare-divider">
-    <h3 class="compareSectionTitle" >Permissible Values</h3>
-    <div ng-compare-side-by-side properties="pvProperties" sort="false" question="false" type="'array'"
-         left="eltsToCompare[0].valueDomain.permissibleValues"
-         right="eltsToCompare[1].valueDomain.permissibleValues"></div>
+    <div class="row">
+        <div ng-repeat="elt in cdes" class="col-md-6">
+            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+        </div>
+    </div>
 </div>
