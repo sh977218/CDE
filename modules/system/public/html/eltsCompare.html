@@ -53,11 +53,12 @@
 
     <hr class="divider compare-divider">
     <h3 class="compareSectionTitle" >Questions</h3>
-
     <div ng-compare-side-by-side properties="questionProperties" sort="false" question="true" type="'array'"
-         left="eltsToCompare[0].questions" right="eltsToCompare[1].questions"></div>
-    <h4>Permissible Values</h4>
+         left="eltsToCompare[0].questions" right="eltsToCompare[1].questions">
+    </div>
 
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle" >Permissible Values</h3>
     <div ng-compare-side-by-side properties="pvProperties" sort="false" question="false" type="'array'"
          left="eltsToCompare[0].valueDomain.permissibleValues"
          right="eltsToCompare[1].valueDomain.permissibleValues"></div>

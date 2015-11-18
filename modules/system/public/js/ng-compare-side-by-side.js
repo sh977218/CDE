@@ -221,7 +221,6 @@
                         '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
-                        '   <hr class="divider">' +
                         '   </div>' +
                         '   <div class="col-xs-6">' +
                         '       <div ng-if="r.action !== \'not found\'" ng-repeat="p in properties" class="row quickBoardContentCompare">' +
@@ -235,7 +234,6 @@
                         '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '           </div>' +
                         '       </div>' +
-                        '   <hr class="divider">' +
                         '   </div>' +
                         '</div>';
 

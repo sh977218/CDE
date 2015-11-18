@@ -37,7 +37,7 @@
                         '   </div>' +
                         '</div>';
                     if ($scope.obj && $scope.obj.length > 0)
-                        arrayHtml = arrayHtml + '<hr class="divider">';
+                        arrayHtml = arrayHtml;
 
                     var objectHtml = '<div>{{obj}}</div>';
 
