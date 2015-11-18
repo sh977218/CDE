@@ -496,3 +496,10 @@ var cj = new CronJob({
     timeZone: "America/New_York"
 });
 cj.start();
+
+exports.upsertStatusCde = function(cde, cb){
+    cde._id = "41224d776a326fb40f000001";
+    DataElement.update({_id: "41224d776a326fb40f000001"}, cde, {upsert: true}, function(err, cde){
+        if (cb) cb(err, cde);
+    });
+};

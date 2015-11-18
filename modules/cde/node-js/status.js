@@ -19,9 +19,7 @@ status.statusReport = {
 };    
 
 exports.everythingOk = function() {
-    return status.statusReport.elastic.up
-        && status.statusReport.elastic.results
-        && status.statusReport.elastic.sync;
+    return status.statusReport.elastic.up;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
@@ -33,7 +31,7 @@ exports.assembleErrorMessage = function(statusReport) {
 
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
-        res.send("ALL SERVICES UP");   
+        res.send("ALL SERVICES UP\n" + exports.assembleErrorMessage(status.statusReport));
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -163,6 +161,58 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                     }                  
                 });
             });            
+        }, config.status.timeouts.dummyElementCheck);
+    });
+};
+
+status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
+    var stamp = Math.round((Math.random() * 100000000)).toString();
+
+    var fakeCde = {
+        stewardOrg: {name: "FAKE"}
+        , naming: [{
+            designation: "NLM_APP_Status_Report"
+            , definition: "NLM_APP_Status_Report"
+        }]
+        , registrationState: {registrationStatus: "Retired"}
+        , version: stamp
+    };
+
+    mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
+        setTimeout(function() {
+            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report", function (error, response, bodyStr) {
+                var errorToLog = {
+                    origin: "cde.status.checkElasticUpdating"
+                    , stack: new Error().stack
+                    , details: {}
+                };
+                if (error || response.statusCode !== 200) {
+                    errorToLog.details = {bodyStr: bodyStr, error: error, nodeName: config.name};
+                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", errorToLog);
+                }
+                var body = JSON.parse(bodyStr);
+                if (body.hits.hits.length <= 0) {
+                    statusReport.elastic.updating = false;
+                    errorToLog.details = {bodyStr: bodyStr, nodeName: config.name};
+                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog);
+                } else {
+                    statusReport.elastic.updating = true;
+                    var elasticCde = body.hits.hits[0]._source;
+                    if (stamp !== elasticCde.version) {
+                        statusReport.elastic.updating = false;
+                        errorToLog.details = {elasticCde: elasticCde,  nodeName: config.name};
+                        logging.errorLogger.error("Error in STATUS: CDE do not match", errorToLog);
+                    } else {
+                        statusReport.elastic.updating = true;
+                    }
+                }
+                mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
+                    if (err) {
+                        errorToLog.details = {tinyId: mongoCde.tinyId, err: err, nodeName: config.name};
+                        logging.errorLogger.error("Cannot delete dataelement", errorToLog);
+                    }
+                });
+            });
         }, config.status.timeouts.dummyElementCheck);
     });
 };

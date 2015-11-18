@@ -106,7 +106,7 @@
   },
   "status": {
     "timeouts": {
-      "statusCheck": 20000,
+      "statusCheck": 120000,
       // How often to update /status/cde page ? (miliseconds),
       "dummyElementCheck": 30000,
       // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds),
