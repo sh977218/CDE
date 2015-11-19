@@ -13,8 +13,12 @@
         <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
                 <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword" target="_blank">
                 <span  class="vsloginLink">password</span></a>?</p>
+
+        <div ng-if="oauthEnabled">
+            <p>Or: </p>
+            <div>
+                <a href="/auth/example" target="_self">Login with Single Sign On</a>
+            </div>
+        </div>
     </form>
-    <div>
-        <a href="/auth/example" target="_self">Login with OAuth</a>
-    </div>
 </div>

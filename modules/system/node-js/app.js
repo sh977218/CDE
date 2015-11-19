@@ -187,6 +187,13 @@ exports.init = function(app) {
             res.redirect('/');
         });
 
+    //app.get('/auth/appexample/callback', function(req, res){
+    //
+    //        passport.authenticate('oauth2', { failureRedirect: '/login' })(req, res);
+    //        //res.redirect('/');
+    //
+    //});
+
 
     app.get('/auth/example',
         passport.authenticate('oauth2', { scope: 'personaldata' }));

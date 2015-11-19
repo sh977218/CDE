@@ -139,6 +139,7 @@
   "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
   "multer": {"inMemory": true},
   "oauth": {
+    "enabled": false,
     "clientId": "localhost",
     "clientSecret": "ssh-secret",
     "callbackURL": "http://localhost:3001/auth/appexample/callback",

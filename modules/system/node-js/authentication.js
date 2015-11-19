@@ -31,7 +31,6 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (id, done) {
-    console.log("Deser user: " + id);
     mongo_data_system.userById(id, function (err, user) {
         done(err, user);
     });
@@ -173,12 +172,12 @@ var oauthStrategy = new OAuth2Strategy({
         callbackURL: config.oauth.callbackURL
     },
     function (accessToken, refreshToken, profile, done) {
-        console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
+        //console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
         process.nextTick(function () {
             auth.findAddUserLocally({
                 username: profile.username,
-                accessToken: profile.accessToken,
-                refreshToken: profile.refreshToken
+                accessToken: accessToken,
+                refreshToken: refreshToken
             }, function (user) {
                 done(null, user);
             });
@@ -193,7 +192,7 @@ oauthStrategy.userProfile = function (accessToken, done) {
 
         try {
             var json = JSON.parse(body);
-            console.log(" * userProfile body[" + body + "]");
+            //console.log(" * userProfile body[" + body + "]");
             var profile = {provider: 'nlmauth'};
 
             profile.name = json.name;
@@ -229,6 +228,8 @@ exports.findAddUserLocally = function (profile, cb) {
                 });
         } else {
             auth.updateUserAfterLogin(user, profile.ip);
+            user.accessToken = profile.accessToken;
+            user.refreshToken = profile.refreshToken;
             return user.save(function (err, user) {
                 cb(user);
             });

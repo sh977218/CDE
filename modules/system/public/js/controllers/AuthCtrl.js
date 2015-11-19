@@ -27,10 +27,13 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
                     $scope.getCsrf();
                 }
               },
-            function(err) {
+            function() {
                 $scope.addAlert("danger", "Failed to log in.");
                 $scope.getCsrf();
             });
     };
+
+   $scope.oauthEnabled = window.oauthEnabled;
+
 }
 ]);
