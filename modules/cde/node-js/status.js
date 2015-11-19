@@ -108,7 +108,7 @@ status.checkElasticSync = function(body, statusReport) {
             }
         , function(error, response) {
                 // +1 to allow elements that gets created for the check. 
-                statusReport.elastic.sync = (response.count + 1) >= deCount;
+                statusReport.elastic.sync = response.count === deCount;
                 if (!statusReport.elastic.sync) {
                     console.log("Setting status sync to false because deCount = " + deCount +
                     "and esCount = " + response.count);
