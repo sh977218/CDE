@@ -137,6 +137,9 @@ angular.module('cdeModule').controller('CompareCtrl',
 
             $scope.left3 = [{name: "john"}, {name: "mike"}, {name: "tony"}];
             $scope.right3 = [{name: "mike"}, {name: "michael"}];
+
+            $scope.left4 = [];
+            $scope.right4 = ["mile"];
         }
     ])
 ;

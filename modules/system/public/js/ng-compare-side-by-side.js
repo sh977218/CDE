@@ -203,6 +203,10 @@
                     var rightObj = this.deepCopy(r);
                     var result = [];
                     if ($scope.type === 'array') {
+                        $scope.stringArray = false;
+                        if ((l && l[0] && typeof l[0] === 'string' ) || (r && r[0] && typeof r[0] === 'string')) {
+                            $scope.stringArray = true;
+                        }
                         if ($scope.sort) {
                             this.sortByProperty(leftObj, $scope.sortby);
                             this.sortByProperty(rightObj, $scope.sortby);
@@ -329,6 +333,12 @@
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right}}</div>' +
                         '</div>';
 
+                    var stringArrayHtml = '' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified panel panel-danger\':r.match===false}">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">{{left[r.leftIndex]}}</div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">{{right[r.rightIndex]}}</div>' +
+                        '</div>';
+
                     var errorHtml = '' +
                         '<div class="row">there is errors</div>';
 
@@ -339,8 +349,10 @@
                         $element.append(el);
                         return;
                     }
-                    if ($scope.type === 'array')
+                    if ($scope.type === 'array' && !$scope.stringArray)
                         el = angular.element(arrayHtml);
+                    else if ($scope.type === 'array' && $scope.stringArray)
+                        el = angular.element(stringArrayHtml);
                     else if ($scope.type === 'object')
                         el = angular.element(objectHtml);
                     else

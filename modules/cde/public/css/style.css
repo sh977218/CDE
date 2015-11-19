@@ -821,19 +821,21 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareModifiedObject {
     overflow: hidden;
-    margin-bottom: 5px;
-    border: dashed 1px orangered;
+    /*margin-bottom: 5px;*/
+    /*border: dashed 1px orangered;*/
+    background-color: rgba(242, 217, 217, 0.2);
 }
 
 .quickBoardContentCompareModifiedArray {
     overflow: hidden;
-    margin-bottom: 5px;
-    border: dashed 1px skyblue;
+    /*margin-bottom: 5px;*/
+    /*border: dashed 1px skyblue;*/
+    background-color: rgba(242, 217, 217, 0.2);
 }
 
 .quickBoardContentCompareModified {
     overflow: hidden;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
     background-color: rgba(242, 217, 217, 0.49);
 }
 
