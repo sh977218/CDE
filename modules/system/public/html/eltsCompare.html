@@ -16,42 +16,41 @@
                 <i class="fa fa-eye"></i> View Full Detail</a>
         </div>
     </div>
-    <!--
 
-        <hr class="divider compare-divider">
-        <h3 class="compareSectionTitle">General Details</h3>
 
-        <div ng-compare-side-by-side properties="stewardOrgProperties" sort="true" type="'object'"
-             left="eltsToCompare[0].stewardOrg" right="eltsToCompare[1].stewardOrg"></div>
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle">General Details</h3>
 
-        <div ng-compare-side-by-side properties="registrationStateProperties" sort="true" type="'object'"
-             left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
+    <div ng-compare-side-by-side properties="stewardOrgProperties" left="eltsToCompare[0].stewardOrg"
+         right="eltsToCompare[1].stewardOrg"></div>
 
-        <hr class="divider compare-divider">
-        <h3 class="compareSectionTitle">Naming</h3>
+    <div ng-compare-side-by-side properties="registrationStateProperties"
+         left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
 
-        <div ng-compare-side-by-side properties="namingProperties" sort="true" type="'array'"
-             left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle">Naming</h3>
 
-        <hr class="divider compare-divider">
-        <h3 class="compareSectionTitle">Reference Documents</h3>
+    <div ng-compare-side-by-side properties="namingProperties"
+         left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
 
-        <div ng-compare-side-by-side properties="referenceDocumentProperties" sort="true" type="'array'"
-             left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle">Reference Documents</h3>
 
-        <hr class="divider compare-divider">
-        <h3 class="compareSectionTitle">Properties</h3>
+    <div ng-compare-side-by-side properties="referenceDocumentProperties"
+         left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
 
-        <div ng-compare-side-by-side properties="propertiesProperties" sort="true" type="'array'"
-             left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle">Properties</h3>
 
-        <hr class="divider compare-divider">
-        <h3 class="compareSectionTitle">Concepts</h3>
+    <div ng-compare-side-by-side properties="propertiesProperties"
+         left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
 
-        <div ng-compare-side-by-side properties="dataElementConceptProperties" sort="true" type="'array'"
-             left="eltsToCompare[0].dataElementConcept.concepts" right="eltsToCompare[1].dataElementConcept.concepts"></div>
+    <hr class="divider compare-divider">
+    <h3 class="compareSectionTitle">Concepts</h3>
 
-    -->
+    <div ng-compare-side-by-side properties="dataElementConceptProperties"
+         left="eltsToCompare[0].dataElementConcept.concepts" right="eltsToCompare[1].dataElementConcept.concepts"></div>
+
 
     <hr class="divider compare-divider">
     <h3 class="compareSectionTitle">Questions</h3>
@@ -59,10 +58,10 @@
     <div ng-compare-side-by-side properties="questionProperties" comparebasedon="'question.cde.tinyId'"
          left="eltsToCompare[0].questions" right="eltsToCompare[1].questions" deepcompare="true">
     </div>
-<!--
-    <div ng-compare-side-by-side left="eltsToCompare[0]" right="eltsToCompare[1]" deepcompare="true">
-    </div>
--->
+    <!--
+        <div ng-compare-side-by-side left="eltsToCompare[0]" right="eltsToCompare[1]" deepcompare="true">
+        </div>
+    -->
 
     <!--
 

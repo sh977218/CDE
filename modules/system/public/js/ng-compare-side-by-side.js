@@ -304,23 +304,23 @@
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedArray panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
+                        '<div class="" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedArray panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
                         '   <div ng-repeat="p in properties" class="overflowHidden">' +
                         '   <div class="row quickBoardContentCompare">' +
                         '       <div class="col-xs-3 array compareLabel"></div>' +
                         '       <div class="col-xs-6 array compareLabel">{{p.label}}</div>' +
                         '   </div>' +
-                        '   <div ng-compare-side-by-side left="getValueByNestedProperty(left[r.leftIndex],p.property)" right="getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
+                        '   <div class="" ng-compare-side-by-side left="getValueByNestedProperty(left[r.leftIndex],p.property)" right="getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '   </div>' +
                         '</div>';
 
                     var objectHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedObject panel panel-danger\':r.match===false}">' +
+                        '<div class="" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedObject panel panel-danger\':r.match===false}">' +
                         '   <div class="row quickBoardContentCompare">' +
                         '       <div class="col-xs-3 object compareLabel"></div>' +
                         '       <div class="col-xs-6 object compareLabel">{{r.label}}</div>' +
                         '   </div>' +
-                        '   <div ng-compare-side-by-side left="getValueByNestedProperty(left, r.property)" right="getValueByNestedProperty(right, r.property)"></div>' +
+                        '   <div class="" ng-compare-side-by-side left="getValueByNestedProperty(left, r.property)" right="getValueByNestedProperty(right, r.property)"></div>' +
                         '</div><hr class="divider compare-divider">';
 
                     var stringHtml = '' +
