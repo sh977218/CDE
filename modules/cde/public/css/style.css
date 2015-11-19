@@ -815,21 +815,26 @@ div + .questionPlaceholder {
     margin: 3px;
 }
 
-.quickBoardContentCompareDelete {
-    overflow: hidden;
-    margin-bottom: 5px;
-    background-color: rgba(242, 217, 217, 0.49);
-}
-
 .quickBoardContentCompareCol {
     min-height: 10px;
 }
 
+.quickBoardContentCompareModifiedObject {
+    overflow: hidden;
+    margin-bottom: 5px;
+    border: dashed 1px orangered;
+}
+
+.quickBoardContentCompareModifiedArray {
+    overflow: hidden;
+    margin-bottom: 5px;
+    border: dashed 1px skyblue;
+}
+
 .quickBoardContentCompareModified {
     overflow: hidden;
-    border: solid blue 5px;
-    border-radius: 20px;
     margin-bottom: 5px;
+    background-color: rgba(242, 217, 217, 0.49);
 }
 
 .overflowHidden {
@@ -838,7 +843,7 @@ div + .questionPlaceholder {
 
 .compareLabel {
     font-weight: bold;
-    text-align: right;
+    text-align: center;
 }
 
 .smallSpace {

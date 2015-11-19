@@ -119,9 +119,24 @@ angular.module('cdeModule').controller('CompareCtrl',
 
             $scope.questionProperties = [{label: 'Label', property: 'label'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
-                {label: 'Answer', property: 'question.answers'},
-                {label: 'Unit of Measurement', property: 'question.uoms'}
+                {label: 'Unit of Measurement', property: 'question.uoms'},
+                {label: 'Answer', property: 'question.answers'}
             ];
+
+            $scope.left1 = {
+                "first name": "john",
+                "age": 29
+            };
+            $scope.right1 = {
+                "first name": "mike",
+                "age": 30,
+                "sex": "male"
+            };
+            $scope.left2 = "";
+            $scope.right2 = "hl;j;lj;l";
+
+            $scope.left3 = [{name: "john"}, {name: "mike"}, {name: "tony"}];
+            $scope.right3 = [{name: "mike"}, {name: "michael"}];
         }
     ])
 ;

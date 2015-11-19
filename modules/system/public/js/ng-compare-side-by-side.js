@@ -18,8 +18,11 @@
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
-                            s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-                            s = s.replace(/^\./, '');           // strip a leading dot
+                            if (!o) return "";
+                            // convert indexes to properties
+                            s = s.replace(/\[(\w+)\]/g, '.$1');
+                            // strip a leading dot
+                            s = s.replace(/^\./, '');
                             var a = s.split('.');
                             for (var i = 0, n = a.length; i < n; ++i) {
                                 var k = a[i];
@@ -41,8 +44,15 @@
                             $scope.err = true;
                             return;
                         }
+                        if (!$scope.propertiestowipe) $scope.propertiestowipe = [];
                         var leftType = Array.isArray($scope.left) === true ? 'array' : typeof $scope.left;
                         var rightType = Array.isArray($scope.right) === true ? 'array' : typeof $scope.right;
+                        if (leftType === 'undefined' && rightType !== 'undefined') {
+                            leftType = rightType;
+                        }
+                        if (rightType === 'undefined' && leftType !== 'undefined') {
+                            rightType = leftType;
+                        }
                         if (leftType !== rightType) {
                             $scope.err = true;
                             return;
@@ -69,14 +79,38 @@
                                 $scope.right = [];
                             }
                         }
+                        if ($scope.type === 'array' && $scope.left.length === 0 && $scope.right.length === 0) {
+                            $scope.err = true;
+                            return;
+                        }
                         if (!$scope.sort) {
                             $scope.sort = false;
                         }
                         if (!$scope.properties) {
-                            var temp = Object.keys($scope.left).forEach(function (currVal, index, arr) {
-                                arr[index] = {label: currVal, property: currVal};
-                                $scope.properties = arr;
-                            })
+                            var leftProperty = [];
+                            var rightProperty = [];
+                            if ($scope.type === 'object') {
+                                {
+                                    if ($scope.left)
+                                        Object.keys($scope.left).forEach(function (o) {
+                                            leftProperty.push({label: o, property: o});
+                                        });
+                                    if ($scope.right)
+                                        Object.keys($scope.right).forEach(function (o) {
+                                            rightProperty.push({label: o, property: o});
+                                        });
+                                }
+                            } else if ($scope.type === 'array') {
+                                if ($scope.left && $scope.left.length > 0)
+                                    Object.keys($scope.left[0]).forEach(function (o) {
+                                        leftProperty.push({label: o, property: o});
+                                    });
+                                if ($scope.right && $scope.right.length > 0)
+                                    Object.keys($scope.right[0]).forEach(function (o) {
+                                        rightProperty.push({label: o, property: o});
+                                    });
+                            }
+                            $scope.properties = leftProperty.length >= rightProperty.length ? leftProperty : rightProperty;
                         }
                         var result1 = Comparison.compareImpl($scope, $scope.left, $scope.right);
                         var result2 = Comparison.compareImpl($scope, $scope.right, $scope.left);
@@ -108,12 +142,12 @@
                                         }
                                     });
                                 } else {
-                                    $scope.result = result1;
+                                    $scope.result = result1.result;
                                 }
                             }
                         }
                         else {
-                            $scope.result = result1;
+                            $scope.result = result1.result;
                         }
                         Comparison.applyComparison($scope, $element);
                     }
@@ -127,6 +161,7 @@
                     r = lCopy;
                 },
                 getValueByNestedProperty: function (o, s) {
+                    if (!o) return "";
                     // convert indexes to properties
                     s = s.replace(/\[(\w+)\]/g, '.$1');
                     // strip a leading dot
@@ -162,6 +197,7 @@
                     })
                 },
                 compareImpl: function ($scope, l, r) {
+                    var _this = this;
                     var match = 0;
                     var leftObj = this.deepCopy(l);
                     var rightObj = this.deepCopy(r);
@@ -172,11 +208,11 @@
                             this.sortByProperty(rightObj, $scope.sortby);
                         }
                         var rightIds = rightObj.map(function (o) {
-                            this.wipeUseless(o, $scope);
+                            _this.wipeUseless(o, $scope);
                             if (!$scope.comparebasedon) {
                                 return JSON.stringify(o);
                             } else {
-                                return this.getValueByNestedProperty(o, $scope.comparebasedon);
+                                return _this.getValueByNestedProperty(o, $scope.comparebasedon);
                             }
                         });
                         var leftIndex = 0;
@@ -184,7 +220,7 @@
                         leftObj.forEach(function (o) {
                             var id = JSON.stringify(o);
                             if ($scope.comparebasedon) {
-                                id = this.getValueByNestedProperty(o, $scope.comparebasedon);
+                                id = _this.getValueByNestedProperty(o, $scope.comparebasedon);
                             }
                             var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
                             // element didn't found in right list.
@@ -235,9 +271,9 @@
                             })
                         return {result: result, match: match};
                     } else if ($scope.type === 'object') {
-                        for (var i = 0; i < $scope.properties.length; i++) {
-                            var p = $scope.properties[i];
-                            if (this.getValueByNestedProperty(leftObj, p.property) === this.getValueByNestedProperty(rightObj, p.property)) {
+                        $scope.properties.forEach(function (p) {
+                            if (_this.getValueByNestedProperty(leftObj, p.property) === _this.getValueByNestedProperty(rightObj, p.property)) {
+                                match++;
                                 result.push({
                                     label: p.label,
                                     property: p.property,
@@ -250,11 +286,11 @@
                                     match: false
                                 })
                             }
-                        }
-                        ;
-                        return result;
+                        });
+                        return {result: result, match: match};
                     } else if ($scope.type === 'string' || $scope.type === 'number') {
                         if (leftObj === rightObj) {
+                            match++;
                             result.push({
                                 match: true
                             })
@@ -263,54 +299,32 @@
                                 match: false
                             })
                         }
-                        return result;
+                        return {result: result, match: match};
                     }
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedArray panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
                         '   <div ng-repeat="p in properties" class="overflowHidden">' +
                         '   <div class="row quickBoardContentCompare">' +
-                        '       <div class="col-xs-6 array">{{p.label}}</div>' +
-                        '       <div class="col-xs-6 array">{{p.label}}</div>' +
+                        '       <div class="col-xs-3 array compareLabel"></div>' +
+                        '       <div class="col-xs-6 array compareLabel">{{p.label}}</div>' +
                         '   </div>' +
-                        '   <div ng-compare-side-by-side left="this.getValueByNestedProperty(left[r.leftIndex],p.property)" right="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
-                            /*
-                             '   <div class="col-xs-6 quickBoardContentCompareCol">' +
-                             '       <div ng-if="r.action !== \'space\'" class="row quickBoardContentCompare">' +
-                             '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
-                             '           <div class="col-xs-9">' +
-                             '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(left[r.leftIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.leftIndex],p.property)}}</a>' +
-                             '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(left[r.leftIndex],p.property)"></div>' +
-                             '           </div>' +
-                             '       </div>' +
-                             '   <hr class="divider compare-divider">' +
-                             '   </div>' +
-                             '   <div class="col-xs-6 quickBoardContentCompareCol">' +
-                             '       <div ng-if="r.action !== \'not found\'" class="row quickBoardContentCompare">' +
-                             '           <div class="col-xs-3 compareLabel">{{p.label}}: </div>' +
-                             '           <div class="col-xs-9">' +
-                             '               <a ng-if="p.link" ng-href="{{p.url+this.getValueByNestedProperty(right[r.rightIndex],p.property)}}">{{this.getValueByNestedProperty(left[r.rightIndex],p.property)}}</a>' +
-                             '               <div ng-if="!p.link" ng-display-object model="this.getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
-                             '           </div>' +
-                             '       </div>' +
-                             '   <hr class="divider compare-divider">' +
-                             '   </div>' +
-                             */
+                        '   <div ng-compare-side-by-side left="getValueByNestedProperty(left[r.leftIndex],p.property)" right="getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
                         '   </div>' +
                         '</div>';
 
                     var objectHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete\':r.match===false}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedObject panel panel-danger\':r.match===false}">' +
                         '   <div class="row quickBoardContentCompare">' +
-                        '       <div class="col-xs-6 object">{{r.label}}</div>' +
-                        '       <div class="col-xs-6 object">{{r.label}}</div>' +
+                        '       <div class="col-xs-3 object compareLabel"></div>' +
+                        '       <div class="col-xs-6 object compareLabel">{{r.label}}</div>' +
                         '   </div>' +
-                        '   <div ng-compare-side-by-side left="this.getValueByNestedProperty(left, r.property)" right="this.getValueByNestedProperty(right, r.property)"></div>' +
-                        '</div>';
+                        '   <div ng-compare-side-by-side left="getValueByNestedProperty(left, r.property)" right="getValueByNestedProperty(right, r.property)"></div>' +
+                        '</div><hr class="divider compare-divider">';
 
                     var stringHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareDelete\':r.match===false}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified panel panel-danger\':r.match===false}">' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{left}}</div>' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right}}</div>' +
                         '</div>';
@@ -329,7 +343,7 @@
                         el = angular.element(arrayHtml);
                     else if ($scope.type === 'object')
                         el = angular.element(objectHtml);
-                    else if ($scope.type === 'string' || $scope.type === 'number')
+                    else
                         el = angular.element(stringHtml);
                     $compile(el)($scope);
                     $element.append(el);
