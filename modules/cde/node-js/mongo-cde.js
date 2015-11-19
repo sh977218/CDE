@@ -497,9 +497,9 @@ var cj = new CronJob({
 });
 cj.start();
 
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report"}, function(){});
 exports.upsertStatusCde = function(cde, cb){
-    cde._id = "41224d776a326fb40f000001";
-    DataElement.update({_id: "41224d776a326fb40f000001"}, cde, {upsert: true}, function(err, cde){
+    DataElement.update({"naming.designation": "NLM_APP_Status_Report"}, cde, {upsert: true}, function(err, cde){
         if (cb) cb(err, cde);
     });
 };
