@@ -142,7 +142,7 @@
     "enabled": false,
     "clientId": "localhost",
     "clientSecret": "ssh-secret",
-    "callbackURL": "http://localhost:3001/auth/appexample/callback",
+    "callbackURL": "http://localhost:3001/nlmoauth/callback",
     "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
   },
   "occsNonPrimaryReplicas": [

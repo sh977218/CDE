@@ -59,8 +59,8 @@
     }
   },
   "oauth": {
-    "enabled": "true",
-    "serverBaseURL": "http://localhost:3005"
+    "enabled": "true"
+//    ,"serverBaseURL": "http://localhost:3005"
   },
   "elastic": {
     "index": {"name": "cdetest"},

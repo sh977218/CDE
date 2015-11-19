@@ -180,22 +180,14 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/auth/appexample/callback',
+    app.get('/nlmoauth/callback',
         passport.authenticate('oauth2', { failureRedirect: '/login' }),
         function(req, res) {
             // Successful authentication, redirect home.
             res.redirect('/');
         });
 
-    //app.get('/auth/appexample/callback', function(req, res){
-    //
-    //        passport.authenticate('oauth2', { failureRedirect: '/login' })(req, res);
-    //        //res.redirect('/');
-    //
-    //});
-
-
-    app.get('/auth/example',
+    app.get('/nlmoauth',
         passport.authenticate('oauth2', { scope: 'personaldata' }));
 
     app.post('/logs', function (req, res) {
