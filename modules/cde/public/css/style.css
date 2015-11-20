@@ -816,27 +816,41 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareCol {
+    word-break: break-all;
     min-height: 10px;
+}
+
+.quickBoardArraySeparate {
+    margin: 5px;
 }
 
 .quickBoardContentCompareModifiedObject {
     overflow: hidden;
-    /*margin-bottom: 5px;*/
-    /*border: dashed 1px orangered;*/
-    background-color: rgba(242, 217, 217, 0.2);
+    background-color: rgba(242, 217, 217, 0.5);
+}
+
+.quickBoardContentCompareSameArray {
+    overflow: hidden;
+    background-color: rgba(242, 255, 217, 0.5);
 }
 
 .quickBoardContentCompareModifiedArray {
     overflow: hidden;
-    /*margin-bottom: 5px;*/
-    /*border: dashed 1px skyblue;*/
-    background-color: rgba(242, 217, 217, 0.2);
+    background-color: rgba(242, 217, 217, 0.5);
+}
+
+.quickBoardContentCompareSameObject {
+    overflow: hidden;
+    background-color: rgba(242, 255, 217, 0.5);
+}
+
+.quickBoardContentCompareDiff {
+    border: dashed lightcoral 1px;
 }
 
 .quickBoardContentCompareModified {
     overflow: hidden;
-    /*margin-bottom: 5px;*/
-    background-color: rgba(242, 217, 217, 0.49);
+    background-color: rgba(242, 217, 217, 0.5);
 }
 
 .overflowHidden {

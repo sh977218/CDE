@@ -257,11 +257,20 @@
                                     beginIndex++;
                                 }
                                 // put this element found
-                                result.push({
+                                var temp = {
                                     action: "found",
                                     leftIndex: leftIndex,
                                     rightIndex: _beginIndex + rightIndex
+                                };
+                                var resultObj = [];
+                                $scope.properties.forEach(function (p) {
+                                    if (_this.getValueByNestedProperty(leftObj[leftIndex], p.property) === _this.getValueByNestedProperty(rightObj[rightIndex], p.property)) {
+                                        p.match = true;
+                                    } else p.match = false;
+                                    resultObj.push(p);
                                 });
+                                temp.result = resultObj;
+                                result.push(temp);
                                 match++;
                                 beginIndex++;
                             }
@@ -278,18 +287,11 @@
                         $scope.properties.forEach(function (p) {
                             if (_this.getValueByNestedProperty(leftObj, p.property) === _this.getValueByNestedProperty(rightObj, p.property)) {
                                 match++;
-                                result.push({
-                                    label: p.label,
-                                    property: p.property,
-                                    match: true
-                                })
+                                p.match = true;
                             } else {
-                                result.push({
-                                    label: p.label,
-                                    property: p.property,
-                                    match: false
-                                })
+                                p.match = false;
                             }
+                            result.push(p);
                         });
                         return {result: result, match: match};
                     } else if ($scope.type === 'string' || $scope.type === 'number') {
@@ -308,33 +310,27 @@
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedArray panel panel-danger\':r.action===\'space\'||r.action===\'not found\'}">' +
-                        '   <div ng-repeat="p in properties" class="overflowHidden">' +
-                        '   <div class="row quickBoardContentCompare">' +
-                        '       <div class="col-xs-3 array compareLabel"></div>' +
-                        '       <div class="col-xs-6 array compareLabel">{{p.label}}</div>' +
-                        '   </div>' +
-                        '   <div class="" ng-compare-side-by-side left="getValueByNestedProperty(left[r.leftIndex],p.property)" right="getValueByNestedProperty(right[r.rightIndex],p.property)"></div>' +
+                        '<div class="overflowHidden quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
+                        '   <div class="overflowHidden" ng-repeat="p in properties">' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p"></div>' +
                         '   </div>' +
                         '</div>';
 
                     var objectHtml = '' +
-                        '<div class="" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModifiedObject panel panel-danger\':r.match===false}">' +
-                        '   <div class="row quickBoardContentCompare">' +
-                        '       <div class="col-xs-3 object compareLabel"></div>' +
-                        '       <div class="col-xs-6 object compareLabel">{{r.label}}</div>' +
-                        '   </div>' +
-                        '   <div class="" ng-compare-side-by-side left="getValueByNestedProperty(left, r.property)" right="getValueByNestedProperty(right, r.property)"></div>' +
-                        '</div><hr class="divider compare-divider">';
+                        '<div class="overflowHidden" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedObject:r.match===false,quickBoardContentCompareSameObject:r.match===true}">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left" properties="r"></div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right" properties="r"></div>' +
+                        '</div>';
 
                     var stringHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified panel panel-danger\':r.match===false}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified\':r.match===false}">' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{left}}</div>' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right}}</div>' +
                         '</div>';
 
                     var stringArrayHtml = '' +
-                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified panel panel-danger\':r.match===false}">' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified\':r.match===false}">' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{left[r.leftIndex]}}</div>' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right[r.rightIndex]}}</div>' +
                         '</div>';

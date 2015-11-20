@@ -74,7 +74,7 @@ angular.module('cdeModule').controller('CompareCtrl',
                 {label: 'Origin', property: 'origin'},
                 {label: 'OriginId', property: 'originId'}
             ];
-            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}];
+            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}, {label: "Test", property: "test"}];
             $scope.registrationStateProperties = [{label: 'Status', property: 'registrationStatus'}];
 
             var flatFormQuestions = function (fe, questions) {

@@ -6,49 +6,63 @@
                 return {
                     restrict: "AE",
                     scope: {
-                        model: '='
+                        obj: '=',
+                        properties: '='
                     },
                     controller: function ($scope) {
+                        $scope.getValueByNestedProperty = function (o, s) {
+                            if (!o) return "";
+                            // convert indexes to properties
+                            s = s.replace(/\[(\w+)\]/g, '.$1');
+                            // strip a leading dot
+                            s = s.replace(/^\./, '');
+                            var a = s.split('.');
+                            for (var i = 0, n = a.length; i < n; ++i) {
+                                var k = a[i];
+                                if (k in o) {
+                                    o = o[k];
+                                } else {
+                                    return;
+                                }
+                            }
+                            return o;
+                        }
                     },
                     link: function ($scope, $element) {
-                        var obj = $scope.model;
-                        if (obj) {
-                            if (Array.isArray(obj)) {
-                                $scope.type = 'array';
-                            }
-                            else {
-                                $scope.type = 'object';
-                            }
-                            $scope.obj = obj;
-                        }
-                        else $scope.type = 'undefined';
+                        if (!$scope.obj) return;
+                        else $scope.type = typeof $scope.obj;
                         Display.applyHtml($scope, $element);
                     }
                 };
             }])
         .factory("Display", ["$compile", function ($compile) {
             return {
+                getValueByNestedProperty: function (o, s) {
+                    if (!o) return "";
+                    // convert indexes to properties
+                    s = s.replace(/\[(\w+)\]/g, '.$1');
+                    // strip a leading dot
+                    s = s.replace(/^\./, '');
+                    var a = s.split('.');
+                    for (var i = 0, n = a.length; i < n; ++i) {
+                        var k = a[i];
+                        if (k in o) {
+                            o = o[k];
+                        } else {
+                            return "";
+                        }
+                    }
+                    return o;
+                },
                 applyHtml: function ($scope, $element) {
-                    var arrayHtml = '' +
-                        '<div class="row" ng-repeat="o in obj">' +
-                        '   <div class="row overflowHidden" ng-repeat="(key, value) in o">' +
-                        '       <div class="col-xs-4">{{key}}:</div>' +
-                        '       <div class="col-xs-8">{{value}}</div>' +
-                        '   </div>' +
+                    var _this = this;
+                    var objectHtml = '' +
+                        '<div class="row" ng-class="{quickBoardContentCompareDiff:properties.match===false}">' +
+                        '   <div class="col-xs-4">{{properties.label}}:</div>' +
+                        '   <div ng-if="properties.link" class="col-xs-8"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
+                        '   <div ng-if="!properties.link"class="col-xs-8">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</div>' +
                         '</div>';
-                    if ($scope.obj && $scope.obj.length > 0)
-                        arrayHtml = arrayHtml;
-
-                    var objectHtml = '<div>{{obj}}</div>';
-
-                    var nullHtml = '<div></div>';
-                    var el;
-                    if ($scope.type === 'array')
-                        el = angular.element(arrayHtml);
-                    else if ($scope.type === 'object')
-                        el = angular.element(objectHtml);
-                    else if ($scope.type === 'undefined')
-                        el = el = angular.element(nullHtml);
+                    var el = angular.element(objectHtml);
                     $compile(el)($scope);
                     $element.append(el);
                 }
