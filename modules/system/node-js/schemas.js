@@ -70,6 +70,8 @@ schemas.userSchema = new mongoose.Schema ({
             }
         }
     }
+    , accessToken: String
+    , refreshToken: String
 });
 
 schemas.orgSchema.set('collection', 'orgs');

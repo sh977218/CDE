@@ -178,8 +178,17 @@ exports.init = function(app) {
             res.clearCookie('connect.sid');
             res.redirect('/#/login');
         });
-        
     });
+
+    app.get('/nlmoauth/callback',
+        passport.authenticate('oauth2', { failureRedirect: '/login' }),
+        function(req, res) {
+            // Successful authentication, redirect home.
+            res.redirect('/');
+        });
+
+    app.get('/nlmoauth',
+        passport.authenticate('oauth2', { scope: 'personaldata' }));
 
     app.post('/logs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {

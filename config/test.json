@@ -58,6 +58,10 @@
       "port": 4000
     }
   },
+  "oauth": {
+    "enabled": "true"
+//    ,"serverBaseURL": "http://localhost:3005"
+  },
   "elastic": {
     "index": {"name": "cdetest"},
     "river": {"name": "cdetest"},
