@@ -23,7 +23,9 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
                         $location.url("deCompare");
                         $scope.addAlert("success", "Merge request sent");
                     });                
-                });            
+                }, function() {
+                   $scope.addAlert("danger", "There was an error creating this merge request.")
+                });
             } else {
                 var gotoNewElement = function(mr) {
                     MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function(cde) {                                        
