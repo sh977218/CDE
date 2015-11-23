@@ -42,6 +42,7 @@ exports.init = function (app) {
 };
 
 exports.ticketValidate = function (tkt, cb) {
+    console.log("^^^ ticket validate");
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
     var req = https.request(ticketValidationOptions, function (res) {
         var output = '';
@@ -54,6 +55,7 @@ exports.ticketValidate = function (tkt, cb) {
         res.on('end', function () {
             // Parse xml result from ticket validation
             parser.parseString(output, function (err, jsonResult) {
+                console.log("JSON res: " + JSON.stringify(jsonResult));
                 if (err) {
                     return cb('ticketValidate: ' + err);
                 } else if (jsonResult['cas:serviceResponse'] &&
@@ -135,7 +137,7 @@ exports.authBeforeVsac = function (req, username, password, done) {
             if (err || !user || (user && user.password === 'umls')) {
                 exports.umlsAuth(username, password, function (result) {
                     if (result.indexOf("true") > 0) {
-                        auth.findAddUserLocally(username, req, function (user) {
+                        auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
                             return done(null, user);
                         });
                     } else {
@@ -172,7 +174,7 @@ var oauthStrategy = new OAuth2Strategy({
         callbackURL: config.oauth.callbackURL
     },
     function (accessToken, refreshToken, profile, done) {
-        //console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
+        console.log("Auth Completed :) | accessToken[" + accessToken + "] refreshToken[" + refreshToken + "] profile[", profile, "]");
         process.nextTick(function () {
             auth.findAddUserLocally({
                 username: profile.username,
@@ -186,10 +188,8 @@ var oauthStrategy = new OAuth2Strategy({
 );
 
 oauthStrategy.userProfile = function (accessToken, done) {
-    this._oauth2.getProtectedResource(config.oauth.serverBaseURL + '/api/userinfo', accessToken, function (err, body, res) {
-
+    this._oauth2.getProtectedResource(config.oauth.serverBaseURL + '/api/userinfo', accessToken, function (err, body) {
         if (err) return done(new InternalOAuthError('failed to fetch user profile', err));
-
         try {
             var json = JSON.parse(body);
             //console.log(" * userProfile body[" + body + "]");
