@@ -56,7 +56,7 @@ angular.module('CdeMerge', [])
                 type: "MergeRequest",
                 typeRequest: dat.mergeRequest
             };
-            Mail.sendMessage(message, success);
+            Mail.sendMessage(message, success, error);
         }
     };
 })   
