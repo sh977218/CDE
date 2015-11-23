@@ -60,7 +60,7 @@
                         '<div class="row" ng-class="{quickBoardContentCompareDiff:properties.match===false}">' +
                         '   <div class="col-xs-4">{{properties.label}}:</div>' +
                         '   <div ng-if="properties.link" class="col-xs-8"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
-                        '   <div ng-if="!properties.link"class="col-xs-8">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</div>' +
+                        '   <div ng-if="!properties.link" class="col-xs-8">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</div>' +
                         '</div>';
                     var el = angular.element(objectHtml);
                     $compile(el)($scope);
