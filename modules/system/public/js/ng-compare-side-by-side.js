@@ -8,7 +8,7 @@
                     scope: {
                         left: '=',
                         right: '=',
-                        sort: '=',
+                        sortIt: '=',
                         sortby: '=',
                         properties: '=',
                         comparebasedon: '=',
@@ -40,7 +40,7 @@
                             $scope.err = true;
                             return;
                         }
-                        if (($scope.sort && !$scope.sortby) || (!$scope.sort && $scope.sortby)) {
+                        if (($scope.sortIt && !$scope.sortby) || (!$scope.sortIt && $scope.sortby)) {
                             $scope.err = true;
                             return;
                         }
@@ -83,8 +83,8 @@
                             $scope.err = true;
                             return;
                         }
-                        if (!$scope.sort) {
-                            $scope.sort = false;
+                        if (!$scope.sortIt) {
+                            $scope.sortIt = false;
                         }
                         if (!$scope.properties) {
                             var leftProperty = [];
@@ -207,7 +207,7 @@
                         if ((l && l[0] && typeof l[0] === 'string' ) || (r && r[0] && typeof r[0] === 'string')) {
                             $scope.stringArray = true;
                         }
-                        if ($scope.sort) {
+                        if ($scope.sortIt) {
                             this.sortByProperty(leftObj, $scope.sortby);
                             this.sortByProperty(rightObj, $scope.sortby);
                         }
@@ -310,10 +310,10 @@
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
-                        '<div class="overflowHidden quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
+                        '<div class="quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
                         '   <div class="overflowHidden" ng-repeat="p in properties">' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p" showWarning="r"></div>' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p" showWarning="r"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
                         '   </div>' +
                         '</div>';
 

@@ -8,7 +8,7 @@
                     scope: {
                         obj: '=',
                         properties: '=',
-                        showWarning: '='
+                        showwarningicon: '='
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
@@ -57,29 +57,25 @@
                 },
                 applyHtml: function ($scope, $element) {
                     var _this = this;
-                    var value = "";
-
-                    console.log($scope.properties.displayAs);
-
-                    if (typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property) === "string") value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
+                    $scope.value = "";
+                    $scope.type = typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
+                    if ($scope.type === "string") $scope.value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
                     if (Array.isArray(_this.getValueByNestedProperty($scope.obj, $scope.properties.property)) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] && typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] === 'string')
-                        value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
+                        $scope.value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
                     if ($scope.properties.displayAs && Array.isArray(_this.getValueByNestedProperty($scope.obj, $scope.properties.property)) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] && typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] === 'object')
-                        value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property).map(function (o) {
-                            return o[$scope.properties.displayAs]
-                        }).join("; ")
+                        $scope.value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property).map(function (o) {
+                            return "<p>" + o[$scope.properties.displayAs] + "</p>";
+                        }).join("");
                     var objectHtml = '' +
                         '<div class="row" ng-class="{quickBoardContentCompareDiff:$scope.showWarning && properties.match===false}">' +
                         '   <div class="col-xs-4">{{properties.label}}:</div>' +
                         '   <div ng-if="properties.link" class="col-xs-7"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
-                        '   <div ng-if="!properties.link" class="col-xs-7">' + value + '</div>';
-                    /*
-                     if ($scope.showWarning)
-                     */
-                    objectHtml = objectHtml +
+                        '   <div ng-if="!properties.link" class="col-xs-7" ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="500"></div>';
+                    if ($scope.showwarningicon)
+                        objectHtml = objectHtml +
                         '   <i ng-if="properties.match===false" class="fa fa-exclamation-triangle"></i>';
                     objectHtml = objectHtml +
-                        '</div>';
+                    '</div>';
                     var el = angular.element(objectHtml);
                     $compile(el)($scope);
                     $element.append(el);

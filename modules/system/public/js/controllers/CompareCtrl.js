@@ -74,7 +74,7 @@ angular.module('cdeModule').controller('CompareCtrl',
                 {label: 'Origin', property: 'origin'},
                 {label: 'OriginId', property: 'originId'}
             ];
-            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}, {label: "Test", property: "test"}];
+            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}];
             $scope.registrationStateProperties = [{label: 'Status', property: 'registrationStatus'}];
 
             var flatFormQuestions = function (fe, questions) {
@@ -122,24 +122,6 @@ angular.module('cdeModule').controller('CompareCtrl',
                 {label: 'Unit of Measurement', property: 'question.uoms'},
                 {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
             ];
-
-            $scope.left1 = {
-                "first name": "john",
-                "age": 29
-            };
-            $scope.right1 = {
-                "first name": "mike",
-                "age": 30,
-                "sex": "male"
-            };
-            $scope.left2 = "";
-            $scope.right2 = "hl;j;lj;l";
-
-            $scope.left3 = [{name: "john"}, {name: "mike"}, {name: "tony"}];
-            $scope.right3 = [{name: "mike"}, {name: "michael"}];
-
-            $scope.left4 = [];
-            $scope.right4 = ["mile"];
         }
     ])
 ;
