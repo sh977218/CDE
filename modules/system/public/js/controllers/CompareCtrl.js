@@ -120,7 +120,7 @@ angular.module('cdeModule').controller('CompareCtrl',
             $scope.questionProperties = [{label: 'Label', property: 'label'},
                 {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
                 {label: 'Unit of Measurement', property: 'question.uoms'},
-                {label: 'Answer', property: 'question.answers'}
+                {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
             ];
 
             $scope.left1 = {
