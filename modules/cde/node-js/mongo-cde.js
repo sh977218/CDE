@@ -496,3 +496,10 @@ var cj = new CronJob({
     timeZone: "America/New_York"
 });
 cj.start();
+
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report"}, function(){});
+exports.upsertStatusCde = function(cde, cb){
+    DataElement.update({"naming.designation": "NLM_APP_Status_Report"}, cde, {upsert: true}, function(err, cde){
+        if (cb) cb(err, cde);
+    });
+};

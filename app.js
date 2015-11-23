@@ -5,8 +5,6 @@ require(path.join(__dirname, './deploy/configTest.js'));
 var express = require('express')
   , http = require('http')
   , flash = require('connect-flash')
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
   , mongo_data_system = require('./modules/system/node-js/mongo-data')
   , config = require('config')
   , session = require('express-session')
@@ -27,17 +25,6 @@ require('./modules/system/node-js/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 
-passport.serializeUser(function(user, done) {
-    done(null, user._id);
-});
-
-passport.deserializeUser(function(id, done) {
-    mongo_data_system.userById(id, function(err, user){
-        done(err, user);
-    });
-});
-
-passport.use(new LocalStrategy({passReqToCallback: true}, auth.authBeforeVsac));
 var app = express();
 
 app.use(auth.ticketAuth);
@@ -134,8 +121,7 @@ app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public
 app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
 
 app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
+auth.init(app);
 
 var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
 
@@ -204,8 +190,6 @@ app.use(function(err, req, res, next){
     }
     next();
 });
-
-
 
 domain.run(function(){
     http.createServer(app).listen(app.get('port'), function(){

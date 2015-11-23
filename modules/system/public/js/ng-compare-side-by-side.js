@@ -312,8 +312,8 @@
                     var arrayHtml = '' +
                         '<div class="overflowHidden quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
                         '   <div class="overflowHidden" ng-repeat="p in properties">' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p"></div>' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p" showWarning="{{r.action===\'found\'}}"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p" showWarning="{{r.action===\'found\'}}"></div>' +
                         '   </div>' +
                         '</div>';
 

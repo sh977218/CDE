@@ -7,7 +7,8 @@
                     restrict: "AE",
                     scope: {
                         obj: '=',
-                        properties: '='
+                        properties: '=',
+                        showWarning: '='
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
@@ -56,12 +57,19 @@
                 },
                 applyHtml: function ($scope, $element) {
                     var _this = this;
+                    var value = typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property) === "string" ? _this.getValueByNestedProperty($scope.obj, $scope.properties.property) : "";
+                    if (Array.isArray(_this.getValueByNestedProperty($scope.obj, $scope.properties.property)) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property) && _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] && typeof _this.getValueByNestedProperty($scope.obj, $scope.properties.property)[0] === 'string')
+                        value = _this.getValueByNestedProperty($scope.obj, $scope.properties.property);
                     var objectHtml = '' +
-                        '<div class="row" ng-class="{quickBoardContentCompareDiff:properties.match===false}">' +
+                        '<div class="row" ng-class="{quickBoardContentCompareDiff:$scope.showWarning && properties.match===false}">' +
                         '   <div class="col-xs-4">{{properties.label}}:</div>' +
-                        '   <div ng-if="properties.link" class="col-xs-8"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
-                        '   <div ng-if="!properties.link" class="col-xs-8">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</div>' +
-                        '</div>';
+                        '   <div ng-if="properties.link" class="col-xs-7"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
+                        '   <div ng-if="!properties.link" class="col-xs-7">' + value + '</div>';
+                    if ($scope.showWarning)
+                        objectHtml = objectHtml +
+                        '   <i ng-if="properties.match===false" class="fa fa-exclamation-triangle"></i>';
+                    objectHtml = objectHtml +
+                    '</div>';
                     var el = angular.element(objectHtml);
                     $compile(el)($scope);
                     $element.append(el);
