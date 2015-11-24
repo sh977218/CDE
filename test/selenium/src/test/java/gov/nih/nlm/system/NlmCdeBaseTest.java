@@ -338,9 +338,8 @@ public class NlmCdeBaseTest {
 
     protected void clickElement(By by) {
         String rand = String.valueOf(Math.random());
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
         System.out.print("Event nr. " + rand + " Before click:" + new Date().getTime());
-        executor.executeAsyncScript("window.setTimeout(arguments[arguments.length - 1], 5000);");
+        ((JavascriptExecutor)driver).executeAsyncScript("window.setTimeout(arguments[arguments.length - 1], 5000);");
         System.out.print("Event nr. " + rand + "After click:" + new Date().getTime());
         try {
             findElement(by).click();
@@ -348,7 +347,7 @@ public class NlmCdeBaseTest {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            Integer value = ((Long) executor.executeScript("return window.scrollY;")).intValue();
+            Integer value = ((Long) ((JavascriptExecutor)driver).executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
                 findElement(by).click();
