@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -336,13 +337,17 @@ public class NlmCdeBaseTest {
     }
 
     protected void clickElement(By by) {
+        String rand = String.valueOf(Math.random());
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        System.out.print("Event nr. " + rand + " Before click:" + new Date().getTime());
+        executor.executeAsyncScript("window.setTimeout(arguments[arguments.length - 1], 5000);");
+        System.out.print("Event nr. " + rand + "After click:" + new Date().getTime());
         try {
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            JavascriptExecutor executor = (JavascriptExecutor) driver;
             Integer value = ((Long) executor.executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
