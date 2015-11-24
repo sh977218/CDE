@@ -30,8 +30,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         addToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         textPresent("Quick Board (2)");
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
         clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
         clickElement(By.id("qb.cde.compare"));
