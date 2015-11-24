@@ -171,7 +171,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("browseOrg-OHSU Knight")).click();
         textPresent("4 results for");
-        findElement(By.id("addToCompare_0")).click();
+        clickElement(By.id("addToCompare_0"));
         findElement(By.id("addToCompare_1")).click();
         findElement(By.id("addToCompare_2")).click();
         String toRemove = findElement(By.id("acc_link_2")).getText();
