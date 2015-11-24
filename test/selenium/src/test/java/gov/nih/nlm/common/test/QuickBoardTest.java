@@ -110,9 +110,10 @@ public class QuickBoardTest extends NlmCdeBaseTest {
 
     public void emptyQuickBoard() {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
-        findElement(By.partialLinkText("Quick Board (")).click();
-        findElement(By.id("qb.cde.empty")).click();
-        findElement(By.linkText("Quick Board (0)")).click();
+        clickElement(By.partialLinkText("Quick Board ("));
+        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        clickElement(By.id("qb.cde.empty"));
+        clickElement(By.linkText("Quick Board (0)"));
         hangon(1);
     }
 

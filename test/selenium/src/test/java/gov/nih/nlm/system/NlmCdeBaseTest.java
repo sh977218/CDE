@@ -13,8 +13,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
-import static com.jayway.restassured.RestAssured.get;
-
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -24,6 +22,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.jayway.restassured.RestAssured.get;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -166,7 +166,7 @@ public class NlmCdeBaseTest {
         return unameStr.equals(usernameStr);
     }
 
-    protected void doLogin(String username, String password){
+    protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
@@ -379,7 +379,8 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS); } catch (Exception e) {
+                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
@@ -493,10 +494,13 @@ public class NlmCdeBaseTest {
         textPresent("Quick Board (0)");
         addToQuickBoard(cdeName1);
         addToQuickBoard(cdeName2);
-        findElement(By.linkText("Quick Board (2)")).click();
+        clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
         textPresent(cdeName1);
         textPresent(cdeName2);
-        findElement(By.id("qb.cde.compare")).click();
+        clickElement(By.id("qb_cde_compare_0"));
+        clickElement(By.id("qb_cde_compare_1"));
+        clickElement(By.id("qb.cde.compare"));
     }
 
     public void scrollToTop() {
