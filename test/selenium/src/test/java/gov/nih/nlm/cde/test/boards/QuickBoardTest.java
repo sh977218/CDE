@@ -13,7 +13,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void emptyQuickBoard() {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         findElement(By.partialLinkText("Quick Board (")).click();
-        findElement(By.id("qb.empty")).click();
+        findElement(By.id("qb.cde.empty")).click();
         findElement(By.linkText("Quick Board (0)")).click();
         hangon(1);
     }
@@ -43,7 +43,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
         findElement(By.linkText("Quick Board (5)")).click();
-        findElement(By.id("qb.empty")).click();
+        findElement(By.id("qb.cde.empty")).click();
         findElement(By.linkText("Quick Board (0)")).click();
     }
 

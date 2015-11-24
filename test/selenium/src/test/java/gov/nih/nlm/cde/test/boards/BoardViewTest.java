@@ -10,7 +10,7 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         textPresent("Ventilator assistance utilization indicator");
-        findElement(By.id("gridView")).click();
+        findElement(By.id("cde.gridView")).click();
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");
         findElement(By.id("accordionView")).click();
@@ -39,7 +39,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        waitAndClick(By.id("gridView"));
+        waitAndClick(By.id("cde.gridView"));
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");
