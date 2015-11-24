@@ -8,16 +8,16 @@ public class FormCdesTest extends BaseFormTest {
     public void formCdes() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Addenbrooke's Cognitive Examination Revised (ACE-R)");
-        findElement(By.cssSelector("[heading=\"CDE List\"]")).click();
+        clickElement(By.cssSelector("[heading=\"CDE List\"]"));
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - fluency sub score");
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score");
-        findElement(By.partialLinkText("- memory sub score")).click();
+        clickElement(By.partialLinkText("- memory sub score"));
         textPresent("Sub-score for memory section as part of Addenbrooke's Cognitive Examination - Revised (ACE-R).");
         textPresent("ACERMemrySubScore");
         clickElement(By.id("addToCompare_1"));
         textPresent("Quick Board (1)");
-        findElement(By.id("pinToBoard_1")).click();
+        clickElement(By.id("pinToBoard_1"));
         textPresent("Choose a Board to pin");
-        findElement(By.id("cancelSelect")).click();
+        clickElement(By.id("cancelSelect"));
     }
 }
