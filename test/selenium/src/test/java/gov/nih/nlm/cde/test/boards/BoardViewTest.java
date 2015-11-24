@@ -17,7 +17,7 @@ public class BoardViewTest extends BoardTest {
         textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");
-        clickElement(By.id("gridView"));
+        clickElement(By.id("cde.gridView"));
         clickElement(By.linkText("Next"));
         textNotPresent("Ventilator assistance utilization indicator");
         textPresent("Surgery radiosurgery lobe location text");
