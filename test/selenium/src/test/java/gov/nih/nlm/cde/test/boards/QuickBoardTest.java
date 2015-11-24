@@ -36,23 +36,23 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     @Test
     public void emptyQuickBoardTest() {
         goToCdeSearch();
-        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
-        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        addToQuickBoard( "Prior BMSCT Administered Indicator" );
-        addToQuickBoard( "Generalized Activities of Daily Living Pain Restricted Scale" );
+        addToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
+        addToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
+        addToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
+        addToQuickBoard("Prior BMSCT Administered Indicator");
+        addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
         findElement(By.linkText("Quick Board (5)")).click();
         findElement(By.id("qb.empty")).click();
         findElement(By.linkText("Quick Board (0)")).click();
     }
-    
+
     @Test
     public void showGridView() {
         goToCdeSearch();
-        addToQuickBoard( "Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage" );
-        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
+        addToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
+        addToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
+        addToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addToQuickBoard("Prior BMSCT Administered Indicator");
         addToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
@@ -65,44 +65,9 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board (0)" );
+        textPresent("Quick Board (0)");
     }
 
-    @Test
-    public void noSideBySideCompare() {
-        goToCdeSearch();
-        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("Quick Board (3)");
-        findElement(By.linkText("Quick Board (3)")).click();
-        findElement(By.id("qb.compare")).click();
-        textPresent("You may only compare 2 CDEs side by side." );
-        findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board (0)" );
-    }
-
-    @Test
-    public void sideBySideCompare() {
-        goToCdeSearch();
-        addToQuickBoard( "Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value" );
-        addToQuickBoard( "Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count" );
-        textPresent("Quick Board (2)");
-        findElement(By.linkText("Quick Board (2)")).click();
-        hangon(1);
-        findElement(By.id("qb.compare")).click();
-        textPresent( "View Full Detail" );
-        textPresent( "Value used as a Standard Deviation in ALK" );
-        textPresent( "Number of months from frontline platinum-based treatment" );
-        textPresent( "ALK Standard Deviation" );
-        textPresent( "Platinum free interval" );
-        textPresent( "Permissible Values" );
-
-        findElement(By.linkText("Quick Board (2)")).click();
-        findElement(By.id("qb.empty")).click();
-        textPresent( "Quick Board (0)" );
-    }
-    
     @Test
     public void removeOne() {
         goToCdeSearch();
