@@ -124,8 +124,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     var fakeCde = {
         stewardOrg: {name: "FAKE"}
         , naming: [{
-            designation: "NLM_APP_Status_Report"
-            , definition: "NLM_APP_Status_Report"
+            designation: "NLM_APP_Status_Report_" + config.hostname
+            , definition: "NLM_APP_Status_Report_" + config.hostname
         }]
         , registrationState: {registrationStatus: "Retired"}
         , version: stamp
@@ -133,7 +133,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
     mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
         setTimeout(function() {
-            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report", function (error, response, bodyStr) {
+            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname, function (error, response, bodyStr) {
                 var errorToLog = {
                     origin: "cde.status.checkElasticUpdating"
                     , stack: new Error().stack
