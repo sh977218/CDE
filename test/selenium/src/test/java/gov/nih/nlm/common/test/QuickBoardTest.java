@@ -108,11 +108,12 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("NCI Thesaurus");
     }
 
-    public void emptyQuickBoard() {
+    public void emptyQuickBoard(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         clickElement(By.partialLinkText("Quick Board ("));
         clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
-        clickElement(By.id("qb.cde.empty"));
+        String emptyBtn = "qb." + module + ".empty";
+        clickElement(By.id(emptyBtn));
         clickElement(By.linkText("Quick Board (0)"));
         hangon(1);
     }
