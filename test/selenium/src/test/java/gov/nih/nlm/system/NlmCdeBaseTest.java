@@ -496,7 +496,7 @@ public class NlmCdeBaseTest {
         findElement(By.linkText("Quick Board (2)")).click();
         textPresent(cdeName1);
         textPresent(cdeName2);
-        findElement(By.id("qb.compare")).click();
+        findElement(By.id("qb.cde.compare")).click();
     }
 
     public void scrollToTop() {

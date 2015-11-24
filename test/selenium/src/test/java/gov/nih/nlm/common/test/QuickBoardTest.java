@@ -22,7 +22,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
         clickElement(By.id("qb_cde_compare_2"));
-        clickElement(By.id("qb.compare"));
+        clickElement(By.id("qb.cde.compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb.cde.empty"));
         textPresent("Quick Board (0)");
