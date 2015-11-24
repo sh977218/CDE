@@ -86,7 +86,7 @@ public class ExportTest extends NlmCdeBaseTest {
             }
         }
         closeAlert();
-        findElement(By.id("qb.empty")).click();
+        findElement(By.id("qb.cde.empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
 
