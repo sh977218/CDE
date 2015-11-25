@@ -98,7 +98,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         textNotPresent("NCI Thesaurus");
 
-        clickElement(By.id("accordionView"));
+        clickElement(By.id("cde.accordionView"));
         textNotPresent("Prostate Cancer pN0 TNM Finding");
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
@@ -111,7 +111,8 @@ public class QuickBoardTest extends NlmCdeBaseTest {
     public void emptyQuickBoard(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         clickElement(By.partialLinkText("Quick Board ("));
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        String tabXPath = "//*[@id=\"qb." + module + ".tab\"]/a";
+        clickElement(By.xpath(tabXPath));
         String emptyBtn = "qb." + module + ".empty";
         clickElement(By.id(emptyBtn));
         clickElement(By.linkText("Quick Board (0)"));
