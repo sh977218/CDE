@@ -135,7 +135,7 @@ exports.authBeforeVsac = function (req, username, password, done) {
             if (err || !user || (user && user.password === 'umls')) {
                 exports.umlsAuth(username, password, function (result) {
                     if (result.indexOf("true") > 0) {
-                        auth.findAddUserLocally(username, req, function (user) {
+                        auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
                             return done(null, user);
                         });
                     } else {
@@ -186,10 +186,8 @@ var oauthStrategy = new OAuth2Strategy({
 );
 
 oauthStrategy.userProfile = function (accessToken, done) {
-    this._oauth2.getProtectedResource(config.oauth.serverBaseURL + '/api/userinfo', accessToken, function (err, body, res) {
-
+    this._oauth2.getProtectedResource(config.oauth.serverBaseURL + '/api/userinfo', accessToken, function (err, body) {
         if (err) return done(new InternalOAuthError('failed to fetch user profile', err));
-
         try {
             var json = JSON.parse(body);
             //console.log(" * userProfile body[" + body + "]");

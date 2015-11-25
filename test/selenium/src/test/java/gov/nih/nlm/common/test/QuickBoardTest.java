@@ -81,7 +81,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
 
-        clickElement(By.id("accordionView"));
+        clickElement(By.id("cde.accordionView"));
         textNotPresent("Prostate Cancer pN0 TNM Finding");
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
@@ -108,11 +108,13 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textPresent("NCI Thesaurus");
     }
 
-    public void emptyQuickBoard() {
+    public void emptyQuickBoard(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
-        findElement(By.partialLinkText("Quick Board (")).click();
-        findElement(By.id("qb.cde.empty")).click();
-        findElement(By.linkText("Quick Board (0)")).click();
+        clickElement(By.partialLinkText("Quick Board ("));
+        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        String emptyBtn = "qb." + module + ".empty";
+        clickElement(By.id(emptyBtn));
+        clickElement(By.linkText("Quick Board (0)"));
         hangon(1);
     }
 
@@ -157,7 +159,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board (5)")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
-        waitAndClick(By.id("gridView"));
+        waitAndClick(By.id("cde.gridView"));
         textPresent("3436564");
         textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");
