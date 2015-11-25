@@ -86,7 +86,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
 
-        clickElement(By.id("cde.gridView"));
+        clickElement(By.id("cde_gridView"));
         textPresent("NX");
         textPresent("pN0");
         textPresent("Pathologic N Stage");
@@ -160,7 +160,7 @@ public class QuickBoardTest extends NlmCdeBaseTest {
         findElement(By.linkText("Quick Board (5)")).click();
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
-        waitAndClick(By.id("cde.gridView"));
+        waitAndClick(By.id("cde_gridView"));
         textPresent("3436564");
         textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");

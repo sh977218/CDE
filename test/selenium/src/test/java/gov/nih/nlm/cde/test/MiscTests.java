@@ -18,7 +18,7 @@ public class MiscTests extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-AECC"));
         hangon(2);
-        clickElement(By.id("cde.gridView"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Pathologic N Stage");
         textPresent("If No, specify reason for ");
         textPresent("AE Ongoing?");

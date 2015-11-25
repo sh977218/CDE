@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 , content: "The plus sign will add a CDE to your Quick Board."
             }
             , {
-                element: "#gridView"
+                element: "#cde_gridView"
                 ,
                 placement: "left"
                 ,
