@@ -40,11 +40,11 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         qbTest.emptyQuickBoard("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
-        findElement(By.id("compareMe")).click();
+        clickElement(By.id("compareMe"));
         textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        clickElement(By.linkText("Score / Derivations"));
+        clickElement(By.id("addNewScore"));
         textPresent("CDE Excisional Biopsy Colorectal Pathology Comment java.lang.String has a datatype other than 'Number' and may not be added to a score");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
         findElement(By.id("cancelCreate")).click();
