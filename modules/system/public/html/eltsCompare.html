@@ -34,31 +34,42 @@
              left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
     </div>
 
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">Reference Documents</h4>
+    <div id="qb_compare_referenceDocuments">
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">Reference Documents</h4>
 
-    <div ng-compare-side-by-side properties="referenceDocumentProperties"
-         left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
-
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">Properties</h4>
-
-    <div ng-compare-side-by-side properties="propertiesProperties"
-         left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
-
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">Concepts</h4>
-
-    <div ng-compare-side-by-side properties="dataElementConceptProperties"
-         left="eltsToCompare[0].dataElementConcept.concepts" right="eltsToCompare[1].dataElementConcept.concepts"></div>
-
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">Questions</h4>
-
-    <div ng-compare-side-by-side properties="questionProperties" comparebasedon="'question.cde.tinyId'"
-         left="eltsToCompare[0].questions" right="eltsToCompare[1].questions" deepcompare="true">
+        <div ng-compare-side-by-side properties="referenceDocumentProperties"
+             left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
     </div>
 
+    <div id="qb_compare_properties">
+
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">Properties</h4>
+
+        <div ng-compare-side-by-side properties="propertiesProperties"
+             left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
+    </div>
+
+    <div id="qb_compare_concepts">
+
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">Concepts</h4>
+
+        <div ng-compare-side-by-side properties="dataElementConceptProperties"
+             left="eltsToCompare[0].dataElementConcept.concepts"
+             right="eltsToCompare[1].dataElementConcept.concepts"></div>
+    </div>
+
+    <div id="qb_compare_questions">
+
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">Questions</h4>
+
+        <div ng-compare-side-by-side properties="questionProperties" comparebasedon="'question.cde.tinyId'"
+             left="eltsToCompare[0].questions" right="eltsToCompare[1].questions" deepcompare="true">
+        </div>
+    </div>
     <hr class="divider compare-divider">
     <div class="row">
         <div ng-repeat="elt in cdes" class="col-md-6">

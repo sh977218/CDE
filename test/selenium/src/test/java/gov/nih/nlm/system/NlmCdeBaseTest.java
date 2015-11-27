@@ -77,7 +77,7 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11675; i++) {
+        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of records: " + nbOfRecords);
             hangon(10);

@@ -47,7 +47,7 @@ mongo test test/createLargeBoard.js -u $db_user -p $db_password -authenticationD
 mongo test test/createManyBoards.js -u $db_user -p $db_password -authenticationDatabase admin
 mongo test test/initOrgs.js -u $db_user -p $db_password -authenticationDatabase admin
 
-target='{"count":11669,"_shards":{"total":2,"successful":2,"failed":0}}'
+target='{"count":11682,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for full
 COUNTER=0
 while [ $COUNTER -lt 80 ]; do
