@@ -40,11 +40,11 @@ public class CompareTest extends NlmCdeBaseTest {
         String cde3 = "Administration Route of Administration java.lang.String";
 
         goToCdeSearch();
-        addToQuickBoard(cde1);
-        addToQuickBoard(cde2);
-        addToQuickBoard(cde3);
+        addCdeToQuickBoard(cde1);
+        addCdeToQuickBoard(cde2);
+        addCdeToQuickBoard(cde3);
         clickElement(By.linkText("Quick Board (3)"));
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);

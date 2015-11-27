@@ -4,33 +4,35 @@
 
         <p>Note: To add a data element, click on the <i class="fa fa-plus"></i> next to it.</p>
     </div>
-    <div class="row">
-        <div class="col-xs-6 col-lg-6 col-md-6">
+    <div class="row" id="qb_compare_viewDetail">
+        <div class="col-xs-6 col-lg-6 col-md-6 leftObj">
             <a tabindex="0" class='btn btn-small btn-default'
                ng-href="/#/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[0].tinyId}}">
                 <i class="fa fa-eye"></i> View Full Detail</a>
         </div>
-        <div class="col-xs-6 col-lg-6 col-md-6">
+        <div class="col-xs-6 col-lg-6 col-md-6 rightObj">
             <a tabindex="0" class='btn btn-small btn-default'
                ng-href="/#/{{module==='cde'?'deview':'formView'}}/?tinyId={{eltsToCompare[1].tinyId}}">
                 <i class="fa fa-eye"></i> View Full Detail</a>
         </div>
     </div>
 
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">General Details</h4>
+    <div id="qb_compare_gd">
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">General Details</h4>
 
-    <div ng-compare-side-by-side properties="stewardOrgProperties" left="eltsToCompare[0].stewardOrg"
-         right="eltsToCompare[1].stewardOrg"></div>
-    <div ng-compare-side-by-side properties="registrationStateProperties"
-         left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
+        <div ng-compare-side-by-side properties="stewardOrgProperties" left="eltsToCompare[0].stewardOrg"
+             right="eltsToCompare[1].stewardOrg"></div>
+        <div ng-compare-side-by-side properties="registrationStateProperties"
+             left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
+    </div>
+    <div id="qb_compare_naming">
+        <hr class="divider compare-divider">
+        <h4 class="compareSectionTitle">Naming</h4>
 
-    <hr class="divider compare-divider">
-    <h4 class="compareSectionTitle">Naming</h4>
-
-    <div ng-compare-side-by-side properties="namingProperties"
-         left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
-
+        <div ng-compare-side-by-side properties="namingProperties"
+             left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
+    </div>
 
     <hr class="divider compare-divider">
     <h4 class="compareSectionTitle">Reference Documents</h4>

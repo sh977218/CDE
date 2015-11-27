@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.common.test.QuickBoardTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class ScoreTest extends NlmCdeBaseTest {
 
-    private QuickBoardTest qbTest = new QuickBoardTest();
+    private CdeQuickBoardTest qbTest = new CdeQuickBoardTest();
 
     @Test
     public void cannotCreateWithZeroCdes() {
@@ -54,9 +53,9 @@ public class ScoreTest extends NlmCdeBaseTest {
     public void validRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         qbTest.emptyQuickBoard("cde");
-        addToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
+        addCdeToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
         hangon(1);
-        addToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
+        addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
         hangon(1);
         goToCdeByName("DRS Total Score");
         findElement(By.linkText("Score / Derivations")).click();

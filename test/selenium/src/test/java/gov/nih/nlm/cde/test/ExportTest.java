@@ -71,7 +71,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
         textPresent("Quick Board (7)");
         goToQuickBoard();
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent("Export Quick Board");
 
         clickElement(By.id("qb.cde.export"));
@@ -85,7 +85,7 @@ public class ExportTest extends NlmCdeBaseTest {
             }
         }
         closeAlert();
-        findElement(By.id("qb.cde.empty")).click();
+        findElement(By.id("qb_cde_empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
 

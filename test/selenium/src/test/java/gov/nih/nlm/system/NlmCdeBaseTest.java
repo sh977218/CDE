@@ -270,6 +270,11 @@ public class NlmCdeBaseTest {
         searchElt(cdeName, "cde", null);
     }
 
+    public void searchForm(String formName) {
+        searchElt(formName, "form", null);
+    }
+
+
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
@@ -489,20 +494,28 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addToQuickBoard(String cdeName) {
+    public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("q")).clear();
     }
 
+    public void addFormToQuickBoard(String formName) {
+        searchForm(formName);
+        findElement(By.id("addToCompare_0")).click();
+        hangon(.5);
+        findElement(By.name("q")).clear();
+    }
+
+
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
         textPresent("Quick Board (0)");
-        addToQuickBoard(cdeName1);
-        addToQuickBoard(cdeName2);
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_cde_compare_0"));

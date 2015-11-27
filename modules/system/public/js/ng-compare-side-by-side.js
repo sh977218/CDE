@@ -312,15 +312,15 @@
                     var arrayHtml = '' +
                         '<div class="quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
                         '   <div class="overflowHidden" ng-repeat="p in properties">' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
                         '   </div>' +
                         '</div>';
 
                     var objectHtml = '' +
                         '<div class="overflowHidden" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedObject:r.match===false,quickBoardContentCompareSameObject:r.match===true}">' +
-                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left" properties="r"></div>' +
-                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right" properties="r"></div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left" properties="r"></div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right" properties="r"></div>' +
                         '</div>';
 
                     var stringHtml = '' +
