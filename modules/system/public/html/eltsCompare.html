@@ -62,7 +62,6 @@
     </div>
 
     <div id="qb_compare_questions">
-
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Questions</h4>
 
@@ -71,9 +70,7 @@
         </div>
     </div>
     <hr class="divider compare-divider">
-    <div class="row">
-        <div ng-repeat="elt in cdes" class="col-md-6">
-            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
-        </div>
+    <div ng-repeat="elt in cdes" class="col-md-6 noLeftRightPadding">
+        <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
     </div>
 </div>
