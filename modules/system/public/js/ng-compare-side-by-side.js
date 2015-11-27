@@ -222,6 +222,7 @@
                         });
                         var leftIndex = 0;
                         var beginIndex = 0;
+                        var lastBeginIndex = 0;
                         leftObj.forEach(function (o) {
                             _this.wipeUseless(o, $scope);
                             var id = JSON.stringify(o);
@@ -233,7 +234,7 @@
                             if (rightIndex === -1) {
                                 // put all right list elements before this element
                                 if (beginIndex === rightIds.length) {
-                                    for (var m = 0; m < rightObj.length; m++) {
+                                    for (var m = beginIndex; m < rightObj.length; m++) {
                                         result.push({
                                             action: "space",
                                             rightIndex: m
@@ -250,20 +251,19 @@
                             // element found in right list
                             else {
                                 // put all right elements before matched element
-                                var _beginIndex = beginIndex;
-                                for (var k = 0; k < rightIndex; k++) {
+                                for (var k = beginIndex; k < rightIndex; k++) {
                                     result.push({
                                         action: "space",
                                         rightIndex: beginIndex + rightIndex - 1
                                     });
-                                    beginIndex++;
                                 }
                                 // put this element found
                                 var temp = {
                                     action: "found",
                                     leftIndex: leftIndex,
-                                    rightIndex: _beginIndex + rightIndex
+                                    rightIndex: beginIndex + rightIndex
                                 };
+                                match++;
                                 var resultObj = [];
                                 $scope.properties.forEach(function (p) {
                                     if (_this.getValueByNestedProperty(leftObj[leftIndex], p.property) === _this.getValueByNestedProperty(rightObj[rightIndex], p.property)) {
@@ -273,8 +273,6 @@
                                 });
                                 temp.result = resultObj;
                                 result.push(temp);
-                                match++;
-                                beginIndex++;
                             }
                             leftIndex++;
                         });
