@@ -192,6 +192,7 @@
                     return JSON.parse(JSON.stringify(o));
                 },
                 wipeUseless: function (o, $scope) {
+                    delete o.$$hashKey;
                     $scope.propertiestowipe.forEach(function (p) {
                         delete o[p];
                     })
@@ -222,6 +223,7 @@
                         var leftIndex = 0;
                         var beginIndex = 0;
                         leftObj.forEach(function (o) {
+                            _this.wipeUseless(o, $scope);
                             var id = JSON.stringify(o);
                             if ($scope.comparebasedon) {
                                 id = _this.getValueByNestedProperty(o, $scope.comparebasedon);
@@ -230,7 +232,7 @@
                             // element didn't found in right list.
                             if (rightIndex === -1) {
                                 // put all right list elements before this element
-                                if (beginIndex === 0) {
+                                if (beginIndex === rightIds.length) {
                                     for (var m = 0; m < rightObj.length; m++) {
                                         result.push({
                                             action: "space",

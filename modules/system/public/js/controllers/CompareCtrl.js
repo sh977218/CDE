@@ -49,10 +49,11 @@ angular.module('cdeModule').controller('CompareCtrl',
                 }
             };
 
-            $scope.cdes = $scope.eltsToCompare;
-            $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
-            $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
-
+            if ($scope.module === 'cde') {
+                $scope.cdes = $scope.eltsToCompare;
+                $scope.comparePvs($scope.cdes[1].valueDomain.permissibleValues, $scope.cdes[0].valueDomain.permissibleValues);
+                $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
+            }
 
             $scope.namingProperties = [
                 {label: 'Name', property: 'designation'}, {
