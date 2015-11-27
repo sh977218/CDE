@@ -135,7 +135,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
     public void emptyQuickBoard(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
         clickElement(By.partialLinkText("Quick Board ("));
-        String tabXPath = "//*[@id=\"qb." + module + ".tab\"]/a";
+        String tabXPath = "//*[@id=\"qb_" + module + "_tab\"]/a";
         clickElement(By.xpath(tabXPath));
         String emptyBtn = "qb." + module + ".empty";
         clickElement(By.id(emptyBtn));
