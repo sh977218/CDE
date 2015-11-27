@@ -52,7 +52,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
         clickElement(By.id("qb.cde.compare"));
-        
+
         textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'leftObj')]/a"));
         textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'rightObj')]/a"));
 
