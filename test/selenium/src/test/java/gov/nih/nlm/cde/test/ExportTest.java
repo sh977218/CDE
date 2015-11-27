@@ -74,7 +74,7 @@ public class ExportTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent("Export Quick Board");
 
-        clickElement(By.id("qb.cde.export"));
+        clickElement(By.id("qb_cde_export"));
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {

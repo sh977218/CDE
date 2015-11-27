@@ -48,13 +48,13 @@ public class CompareTest extends NlmCdeBaseTest {
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);
-        findElement(By.id("qb.cde.compare")).click();
+        findElement(By.id("qb_cde_compare")).click();
         textPresent("You may only compare 2 elements side by side.");
         closeAlert();
         findElement(By.id("remove_2")).click();
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));

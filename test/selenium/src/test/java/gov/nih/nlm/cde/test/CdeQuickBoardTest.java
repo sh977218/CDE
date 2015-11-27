@@ -21,7 +21,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
         clickElement(By.id("qb_cde_compare_2"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
         textPresent("Quick Board (0)");
@@ -36,7 +36,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Quick Board (3)"));
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
         textPresent("Quick Board (0)");
@@ -51,7 +51,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
 
         textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'leftObj')]/a"));
         textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'rightObj')]/a"));
@@ -86,14 +86,13 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void expandAllQuickBoard() {
-        goToCdeSearch();
+    public void cdeExpandAllQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
-        clickElement(By.id("qb.cde.openCloseAll"));
+        clickElement(By.id("qb_cde_openCloseAll"));
         textPresent("AJCC Based:");
         textPresent("Value used as a Standard Deviation");
 
@@ -110,7 +109,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.id("qb_cde_compare_0"));
         clickElement(By.id("qb_cde_compare_1"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
@@ -136,7 +135,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textNotPresent("Prostate Cancer pN0 TNM Finding");
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_cde_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
