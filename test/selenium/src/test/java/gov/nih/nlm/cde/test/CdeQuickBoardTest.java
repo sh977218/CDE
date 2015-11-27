@@ -147,7 +147,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.partialLinkText("Quick Board ("));
         String tabXPath = "//*[@id=\"qb_" + module + "_tab\"]/a";
         clickElement(By.xpath(tabXPath));
-        String emptyBtn = "qb." + module + ".empty";
+        String emptyBtn = "qb_" + module + "_empty";
         clickElement(By.id(emptyBtn));
         clickElement(By.linkText("Quick Board (0)"));
         hangon(1);
