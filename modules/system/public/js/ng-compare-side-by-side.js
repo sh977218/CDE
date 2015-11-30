@@ -267,7 +267,8 @@
                                 };
                                 var resultObj = [];
                                 $scope.properties.forEach(function (p) {
-                                    if (_this.getValueByNestedProperty(leftObj[leftIndex], p.property) === _this.getValueByNestedProperty(rightObj[rightIndex], p.property)) {
+                                    if (JSON.stringify(_this.getValueByNestedProperty(leftObj[leftIndex], p.property))
+                                        === JSON.stringify(_this.getValueByNestedProperty(rightObj[rightIndex], p.property))) {
                                         p.match = true;
                                     } else p.match = false;
                                     resultObj.push(p);
