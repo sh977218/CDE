@@ -28,8 +28,12 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
 
         $scope.showSideBySideView = function () {
             $scope.eltsToCompare = [];
-            for (var key in $scope.eltsToCompareMap)
+            for (var key in $scope.eltsToCompareMap) {
                 $scope.eltsToCompare.push($scope.eltsToCompareMap[key]);
+            }
+            $scope.eltsToCompare.sort(function (a, b) {
+
+            });
             if ($scope.eltsToCompare.length !== 2) {
                 $scope.addAlert("danger", "You may only compare 2 elements side by side.");
             } else {

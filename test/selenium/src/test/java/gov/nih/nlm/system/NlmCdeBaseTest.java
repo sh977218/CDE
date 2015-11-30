@@ -77,7 +77,7 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11675; i++) {
+        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of records: " + nbOfRecords);
             hangon(10);
@@ -269,6 +269,11 @@ public class NlmCdeBaseTest {
     public void searchCde(String cdeName) {
         searchElt(cdeName, "cde", null);
     }
+
+    public void searchForm(String formName) {
+        searchElt(formName, "form", null);
+    }
+
 
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
@@ -487,25 +492,33 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addToQuickBoard(String cdeName) {
+    public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
+        findElement(By.id("addToCompare_0")).click();
+        hangon(2);
+        findElement(By.name("q")).clear();
+    }
+
+    public void addFormToQuickBoard(String formName) {
+        searchForm(formName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("q")).clear();
     }
 
+
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
         textPresent("Quick Board (0)");
-        addToQuickBoard(cdeName1);
-        addToQuickBoard(cdeName2);
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id=\"qb.cde.tab\"]/a"));
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent(cdeName1);
         textPresent(cdeName2);
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
-        clickElement(By.id("qb.cde.compare"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_cde_compare"));
     }
 
     public void scrollToTop() {

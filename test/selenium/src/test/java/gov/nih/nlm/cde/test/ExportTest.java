@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.TimeUnit;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -72,10 +71,10 @@ public class ExportTest extends NlmCdeBaseTest {
 
         textPresent("Quick Board (7)");
         goToQuickBoard();
-
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent("Export Quick Board");
 
-        findElement(By.id("qb.cde.export")).click();
+        clickElement(By.id("qb_cde_export"));
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -86,7 +85,7 @@ public class ExportTest extends NlmCdeBaseTest {
             }
         }
         closeAlert();
-        findElement(By.id("qb.cde.empty")).click();
+        findElement(By.id("qb_cde_empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
 
@@ -122,7 +121,7 @@ public class ExportTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void allXmlExport(){
+    public void allXmlExport() {
         String query = "{\"resultPerPage\":20,\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
         String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=xml").asString();
         Assert.assertTrue(response.replaceAll("\\s+", "").contains(("<dataElement>\n" +

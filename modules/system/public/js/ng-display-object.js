@@ -68,7 +68,7 @@
                         }).join("");
                     var objectHtml = '' +
                         '<div class="row" ng-class="{quickBoardContentCompareDiff:showwarningicon && properties.match===false}">' +
-                        '   <div class="col-xs-4">{{properties.label}}:</div>' +
+                        '   <div class="col-xs-4 {{properties.label}}">{{properties.label}}:</div>' +
                         '   <div ng-if="properties.link" class="col-xs-7"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
                         '   <div ng-if="!properties.link" class="col-xs-7" ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="500"></div>';
                     if ($scope.showwarningicon)

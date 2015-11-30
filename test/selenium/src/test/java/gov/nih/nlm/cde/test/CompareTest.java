@@ -40,19 +40,21 @@ public class CompareTest extends NlmCdeBaseTest {
         String cde3 = "Administration Route of Administration java.lang.String";
 
         goToCdeSearch();
-        addToQuickBoard(cde1);
-        addToQuickBoard(cde2);
-        addToQuickBoard(cde3);
-        findElement(By.linkText("Quick Board (3)")).click();
+        addCdeToQuickBoard(cde1);
+        addCdeToQuickBoard(cde2);
+        addCdeToQuickBoard(cde3);
+        clickElement(By.linkText("Quick Board (3)"));
+        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent(cde1);
         textPresent(cde2);
         textPresent(cde3);
-        findElement(By.id("qb.cde.compare")).click();
+        findElement(By.id("qb_cde_compare")).click();
         textPresent("You may only compare 2 elements side by side.");
         closeAlert();
         findElement(By.id("remove_2")).click();
-
-        findElement(By.id("qb.cde.compare")).click();
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_cde_compare"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-warning")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-6-valid")));

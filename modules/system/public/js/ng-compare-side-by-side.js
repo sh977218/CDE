@@ -192,6 +192,7 @@
                     return JSON.parse(JSON.stringify(o));
                 },
                 wipeUseless: function (o, $scope) {
+                    delete o.$$hashKey;
                     $scope.propertiestowipe.forEach(function (p) {
                         delete o[p];
                     })
@@ -204,7 +205,8 @@
                     var result = [];
                     if ($scope.type === 'array') {
                         $scope.stringArray = false;
-                        if ((l && l[0] && typeof l[0] === 'string' ) || (r && r[0] && typeof r[0] === 'string')) {
+                        if ((leftObj && leftObj[0] && typeof leftObj[0] === 'string' )
+                            || (rightObj && rightObj[0] && typeof rightObj[0] === 'string')) {
                             $scope.stringArray = true;
                         }
                         if ($scope.sortIt) {
@@ -222,6 +224,7 @@
                         var leftIndex = 0;
                         var beginIndex = 0;
                         leftObj.forEach(function (o) {
+                            _this.wipeUseless(o, $scope);
                             var id = JSON.stringify(o);
                             if ($scope.comparebasedon) {
                                 id = _this.getValueByNestedProperty(o, $scope.comparebasedon);
@@ -264,7 +267,8 @@
                                 };
                                 var resultObj = [];
                                 $scope.properties.forEach(function (p) {
-                                    if (_this.getValueByNestedProperty(leftObj[leftIndex], p.property) === _this.getValueByNestedProperty(rightObj[rightIndex], p.property)) {
+                                    if (JSON.stringify(_this.getValueByNestedProperty(leftObj[leftIndex], p.property))
+                                        === JSON.stringify(_this.getValueByNestedProperty(rightObj[rightIndex], p.property))) {
                                         p.match = true;
                                     } else p.match = false;
                                     resultObj.push(p);
@@ -312,15 +316,15 @@
                     var arrayHtml = '' +
                         '<div class="quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
                         '   <div class="overflowHidden" ng-repeat="p in properties">' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
-                        '       <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
+                        '       <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
                         '   </div>' +
                         '</div>';
 
                     var objectHtml = '' +
                         '<div class="overflowHidden" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedObject:r.match===false,quickBoardContentCompareSameObject:r.match===true}">' +
-                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="left" properties="r"></div>' +
-                        '   <div class="col-xs-6 quickBoardContentCompareCol" ng-display-object obj="right" properties="r"></div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left" properties="r"></div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right" properties="r"></div>' +
                         '</div>';
 
                     var stringHtml = '' +
