@@ -497,7 +497,7 @@ public class NlmCdeBaseTest {
     public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
         findElement(By.id("addToCompare_0")).click();
-        hangon(.5);
+        hangon(2);
         findElement(By.name("q")).clear();
     }
 
