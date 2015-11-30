@@ -8,14 +8,7 @@
                     scope: {
                         left: '=',
                         right: '=',
-                        sortIt: '=',
-                        sortby: '=',
-                        properties: '=',
-                        comparebasedon: '=',
-                        type: '=',
-                        deepcompare: '=',
-                        propertiestowipe: '=',
-                        option: '=',
+                        option: '='
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
@@ -41,11 +34,6 @@
                             $scope.err = true;
                             return;
                         }
-                        if (($scope.sortIt && !$scope.sortby) || (!$scope.sortIt && $scope.sortby)) {
-                            $scope.err = true;
-                            return;
-                        }
-                        if (!$scope.propertiestowipe) $scope.propertiestowipe = [];
                         var leftType = Array.isArray($scope.left) === true ? 'array' : typeof $scope.left;
                         var rightType = Array.isArray($scope.right) === true ? 'array' : typeof $scope.right;
                         if (leftType === 'undefined' && rightType !== 'undefined') {
@@ -189,30 +177,21 @@
                         else return 0;
                     })
                 },
-                deepCopy: function (o) {
-                    return JSON.parse(JSON.stringify(o));
-                },
-                wipeUseless: function (o, $scope) {
-                    delete o.$$hashKey;
-                    $scope.propertiestowipe.forEach(function (p) {
-                        delete o[p];
-                    })
-                },
                 compareImpl: function ($scope, l, r) {
                     if ($scope.type === 'array') {
                         return exports.compareSideBySide.arrayCompare($scope.left, $scope.right, $scope.option);
                     } else if ($scope.type === 'object') {
-                        return exports.compareSideBySide.objectCompare($scope.left, $scope.right);
+                        return exports.compareSideBySide.objectCompare($scope.left, $scope.right, $scope.option);
                     } else if ($scope.type === 'string') {
-                        return exports.compareSideBySide.stringCompare($scope.left, $scope.right);
+                        return exports.compareSideBySide.stringCompare($scope.left, $scope.right, $scope.option);
                     } else if ($scope.type === 'number') {
-                        return exports.compareSideBySide.numberCompare($scope.left, $scope.right);
+                        return exports.compareSideBySide.numberCompare($scope.left, $scope.right, $scope.option);
                     }
                 },
                 applyComparison: function ($scope, $element) {
                     var arrayHtml = '' +
                         '<div class="quickBoardArraySeparate" ng-repeat="r in result" ng-class="{quickBoardContentCompareModifiedArray:r.action===\'space\'||r.action===\'not found\',quickBoardContentCompareSameArray:r.action===\'found\'}">' +
-                        '   <div class="overflowHidden" ng-repeat="p in properties">' +
+                        '   <div class="overflowHidden" ng-repeat="p in option.properties">' +
                         '       <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left[r.leftIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
                         '       <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right[r.rightIndex]" properties="p" showwarningicon="r.action ===\'found\'"></div>' +
                         '   </div>' +

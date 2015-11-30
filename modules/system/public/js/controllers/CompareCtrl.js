@@ -55,33 +55,42 @@ angular.module('cdeModule').controller('CompareCtrl',
                 $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
             }
 
-            $scope.namingProperties = [
-                {label: 'Name', property: 'designation'}, {
-                    label: 'Definition',
-                    property: 'definition'
-                }, {label: 'Context', property: 'context.contextName'}
-            ];
-            $scope.referenceDocumentProperties = [
-                {label: 'Title', property: 'title'},
-                {label: 'URI', property: 'uri'},
-                {
-                    label: 'Provider Org',
-                    property: 'providerOrg'
-                },
-                {label: 'Language Code', property: 'languageCode'},
-                {label: 'Document', property: 'document'}
-            ];
-            $scope.propertiesProperties = [
-                {label: 'Key', property: 'key'},
-                {label: 'Value', property: 'value'}
-            ];
-            $scope.dataElementConceptProperties = [
-                {label: 'Name', property: 'name'},
-                {label: 'Origin', property: 'origin'},
-                {label: 'OriginId', property: 'originId'}
-            ];
-            $scope.stewardOrgProperties = [{label: 'Steward', property: 'name'}];
-            $scope.registrationStateProperties = [{label: 'Status', property: 'registrationStatus'}];
+
+            $scope.namingOption = {
+                properties: [
+                    {label: 'Name', property: 'designation'}, {
+                        label: 'Definition',
+                        property: 'definition'
+                    }, {label: 'Context', property: 'context.contextName'}
+                ]
+            };
+            $scope.referenceDocumentOption = {
+                properties: [
+                    {label: 'Title', property: 'title'},
+                    {label: 'URI', property: 'uri'},
+                    {
+                        label: 'Provider Org',
+                        property: 'providerOrg'
+                    },
+                    {label: 'Language Code', property: 'languageCode'},
+                    {label: 'Document', property: 'document'}
+                ]
+            };
+            $scope.propertiesOption = {
+                properties: [
+                    {label: 'Key', property: 'key'},
+                    {label: 'Value', property: 'value'}
+                ]
+            };
+            $scope.dataElementConceptOption = {
+                properties: [
+                    {label: 'Name', property: 'name'},
+                    {label: 'Origin', property: 'origin'},
+                    {label: 'OriginId', property: 'originId'}
+                ]
+            };
+            $scope.stewardOrgOption = {properties: [{label: 'Steward', property: 'name'}]};
+            $scope.registrationStateOption = {properties: [{label: 'Status', property: 'registrationStatus'}]};
 
             var flatFormQuestions = function (fe, questions) {
                 if (fe.formElements != undefined) {
@@ -114,7 +123,7 @@ angular.module('cdeModule').controller('CompareCtrl',
                     delete q._id;
                 })
             };
-            $scope.option = {
+            $scope.questionOption = {
                 equal: function (a, b) {
                     if (a.question.cde.tinyId === b.question.cde.tinyId) return true;
                     else return false;
@@ -132,12 +141,6 @@ angular.module('cdeModule').controller('CompareCtrl',
             $scope.eltsToCompare[1].questions = [];
             flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
             wipeUseless($scope.eltsToCompare[1]);
-
-            $scope.questionProperties = [{label: 'Label', property: 'label'},
-                {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
-                {label: 'Unit of Measurement', property: 'question.uoms'},
-                {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
-            ];
         }
     ])
 ;

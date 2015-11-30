@@ -15,7 +15,6 @@ exports.compareSideBySide = {
             }
         }
         leftArray.forEach(function (o) {
-                exports.wipeUseless(o);
                 var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, option.equal);
                 // element didn't found in right list.
                 if (rightIndex === -1) {
@@ -68,8 +67,7 @@ exports.compareSideBySide = {
                 }
                 leftIndex++;
             }
-        )
-        ;
+        );
         // if after looping left list, there are element in the right list, put all of them
         for (var i = beginIndex; i < rightArray.length; i++)
             result.push({
@@ -80,6 +78,8 @@ exports.compareSideBySide = {
 
     },
     objectCompare: function (leftObj, rightObj, option) {
+        exports.wipeUseless(leftObj);
+        exports.wipeUseless(rightObj);
         var result = [];
         var matchCount = 0;
         if (!option) option = {};
@@ -87,14 +87,13 @@ exports.compareSideBySide = {
             option.properties = exports.getProperties(leftObj, rightObj);
         }
         option.properties.forEach(function (property) {
-            var p = {label: property, property: property};
-            if (exports.getValueByNestedProperty(leftObj, property) === exports.getValueByNestedProperty(rightObj, property)) {
+            if (exports.getValueByNestedProperty(leftObj, property.property) === exports.getValueByNestedProperty(rightObj, property.property)) {
                 matchCount++;
-                p.match = true;
+                property.match = true;
             } else {
-                p.match = false;
+                property.match = false;
             }
-            result.push(p);
+            result.push(property);
         });
         return {result: result, matchCount: matchCount};
     }
