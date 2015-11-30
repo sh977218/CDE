@@ -12,8 +12,8 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board (2)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//*[@id=\"qb_form_tab\"]/a"));
-        clickElement(By.id("qb_form_compare_0"));
-        clickElement(By.id("qb_form_compare_1"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_form_compare"));
     }
 }
