@@ -114,7 +114,17 @@ angular.module('cdeModule').controller('CompareCtrl',
                     delete q._id;
                 })
             };
-
+            $scope.option = {
+                equal: function (a, b) {
+                    if (a.question.cde.tinyId === b.question.cde.tinyId) return true;
+                    else return false;
+                },
+                properties: [{label: 'Label', property: 'label'},
+                    {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
+                    {label: 'Unit of Measurement', property: 'question.uoms'},
+                    {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
+                ]
+            };
             $scope.eltsToCompare[0].questions = [];
             flatFormQuestions($scope.eltsToCompare[0], $scope.eltsToCompare[0].questions);
             wipeUseless($scope.eltsToCompare[0]);

@@ -14,7 +14,8 @@
                         comparebasedon: '=',
                         type: '=',
                         deepcompare: '=',
-                        propertiestowipe: '='
+                        propertiestowipe: '=',
+                        option: '=',
                     },
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
@@ -129,9 +130,9 @@
                                 });
                                 $scope.result = result2.result;
                             } else {
-                                if (result1.match < result2.match) {
+                                if (result1.matchCount < result2.matchCount) {
                                     $scope.result = result1.result;
-                                } else if (result1.match > result2.match) {
+                                } else if (result1.matchCount > result2.matchCount) {
                                     Comparison.swap($scope.left, $scope.right);
                                     result2.result.forEach(function (r) {
                                         var leftIndexCopy = r.leftIndex;
@@ -198,119 +199,14 @@
                     })
                 },
                 compareImpl: function ($scope, l, r) {
-                    var _this = this;
-                    var match = 0;
-                    var leftObj = this.deepCopy(l);
-                    var rightObj = this.deepCopy(r);
-                    var result = [];
                     if ($scope.type === 'array') {
-                        $scope.stringArray = false;
-                        if ((leftObj && leftObj[0] && typeof leftObj[0] === 'string' )
-                            || (rightObj && rightObj[0] && typeof rightObj[0] === 'string')) {
-                            $scope.stringArray = true;
-                        }
-                        if ($scope.sortIt) {
-                            this.sortByProperty(leftObj, $scope.sortby);
-                            this.sortByProperty(rightObj, $scope.sortby);
-                        }
-                        var rightIds = rightObj.map(function (o) {
-                            _this.wipeUseless(o, $scope);
-                            if (!$scope.comparebasedon) {
-                                return JSON.stringify(o);
-                            } else {
-                                return _this.getValueByNestedProperty(o, $scope.comparebasedon);
-                            }
-                        });
-                        var leftIndex = 0;
-                        var beginIndex = 0;
-                        leftObj.forEach(function (o) {
-                            _this.wipeUseless(o, $scope);
-                            var id = JSON.stringify(o);
-                            if ($scope.comparebasedon) {
-                                id = _this.getValueByNestedProperty(o, $scope.comparebasedon);
-                            }
-                            var rightIndex = rightIds.slice(beginIndex, rightIds.length).indexOf(id);
-                            // element didn't found in right list.
-                            if (rightIndex === -1) {
-                                // put all right list elements before this element
-                                if (beginIndex === 0) {
-                                    for (var m = 0; m < rightObj.length; m++) {
-                                        result.push({
-                                            action: "space",
-                                            rightIndex: m
-                                        });
-                                        beginIndex++;
-                                    }
-                                }
-                                // put this element not found
-                                result.push({
-                                    action: "not found",
-                                    leftIndex: leftIndex
-                                });
-                            }
-                            // element found in right list
-                            else {
-                                // put all right elements before matched element
-                                var _beginIndex = beginIndex;
-                                for (var k = 0; k < rightIndex; k++) {
-                                    result.push({
-                                        action: "space",
-                                        rightIndex: beginIndex + rightIndex - 1
-                                    });
-                                    beginIndex++;
-                                }
-                                // put this element found
-                                var temp = {
-                                    action: "found",
-                                    leftIndex: leftIndex,
-                                    rightIndex: _beginIndex + rightIndex
-                                };
-                                var resultObj = [];
-                                $scope.properties.forEach(function (p) {
-                                    if (JSON.stringify(_this.getValueByNestedProperty(leftObj[leftIndex], p.property))
-                                        === JSON.stringify(_this.getValueByNestedProperty(rightObj[rightIndex], p.property))) {
-                                        p.match = true;
-                                    } else p.match = false;
-                                    resultObj.push(p);
-                                });
-                                temp.result = resultObj;
-                                result.push(temp);
-                                match++;
-                                beginIndex++;
-                            }
-                            leftIndex++;
-                        });
-                        // if after looping left list, there are element in the right list, put all of them
-                        for (var i = beginIndex; i < rightIds.length; i++)
-                            result.push({
-                                action: "space",
-                                rightIndex: i
-                            })
-                        return {result: result, match: match};
-
+                        return exports.compareSideBySide.arrayCompare($scope.left, $scope.right, $scope.option);
                     } else if ($scope.type === 'object') {
-                        $scope.properties.forEach(function (p) {
-                            if (_this.getValueByNestedProperty(leftObj, p.property) === _this.getValueByNestedProperty(rightObj, p.property)) {
-                                match++;
-                                p.match = true;
-                            } else {
-                                p.match = false;
-                            }
-                            result.push(p);
-                        });
-                        return {result: result, match: match};
-                    } else if ($scope.type === 'string' || $scope.type === 'number') {
-                        if (leftObj === rightObj) {
-                            match++;
-                            result.push({
-                                match: true
-                            })
-                        } else {
-                            result.push({
-                                match: false
-                            })
-                        }
-                        return {result: result, match: match};
+                        return exports.compareSideBySide.objectCompare($scope.left, $scope.right);
+                    } else if ($scope.type === 'string') {
+                        return exports.compareSideBySide.stringCompare($scope.left, $scope.right);
+                    } else if ($scope.type === 'number') {
+                        return exports.compareSideBySide.numberCompare($scope.left, $scope.right);
                     }
                 },
                 applyComparison: function ($scope, $element) {
