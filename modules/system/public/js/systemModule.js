@@ -1,10 +1,10 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-    'OrgFactories', 'classification', 'ngGrid',
+    'OrgFactories', 'classification', 'ngGrid', 'compareModule',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngDisplayObject', 'ngCompareSideBySide'])
     .config(['$logProvider', function ($logProvider) {
-        $logProvider.debugEnabled(window.debugEnabled);
+         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({enabled: true, requireBase: false});

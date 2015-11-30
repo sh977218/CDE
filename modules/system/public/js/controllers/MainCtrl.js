@@ -1,8 +1,10 @@
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route', 'LoginRedirect',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route',
+        'LoginRedirect',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route, LoginRedirect)
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route,
+                 LoginRedirect)
 {
 
     $scope.goToLogin = function(){
