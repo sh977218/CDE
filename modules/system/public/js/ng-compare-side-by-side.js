@@ -205,7 +205,8 @@
                     var result = [];
                     if ($scope.type === 'array') {
                         $scope.stringArray = false;
-                        if ((l && l[0] && typeof l[0] === 'string' ) || (r && r[0] && typeof r[0] === 'string')) {
+                        if ((leftObj && leftObj[0] && typeof leftObj[0] === 'string' )
+                            || (rightObj && rightObj[0] && typeof rightObj[0] === 'string')) {
                             $scope.stringArray = true;
                         }
                         if ($scope.sortIt) {
