@@ -518,8 +518,8 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent(cdeName1);
         textPresent(cdeName2);
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
     }
 

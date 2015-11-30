@@ -18,9 +18,9 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board (3)");
         clickElement(By.linkText("Quick Board (3)"));
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
-        clickElement(By.id("qb_cde_compare_2"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_elt_compare_2"));
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
@@ -35,7 +35,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board (3)");
         clickElement(By.linkText("Quick Board (3)"));
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
-        clickElement(By.id("qb_cde_compare_0"));
+        clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
@@ -49,8 +49,8 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board (2)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
 
         textPresent("View Full Detail", By.xpath("//*[@id='qb_compare_viewDetail']//*[contains(@class, 'leftObj')]/a"));
@@ -62,23 +62,23 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Incomplete", By.xpath("//*[@id='qb_compare_gd']//*[contains(@class, 'rightObj')]//*[contains(@class, 'Status')]/following-sibling::div[1]"));
 
         textNotPresent("cdeCompare1", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("cdeCompare1", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("cdeCompare2", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
+        textPresent("cdeCompare2", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
+        textPresent("cdeCompare1", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
         textNotPresent("cdeCompare2", By.xpath("//*[@id='qb_compare_naming']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'rightObj')]"));
 
         textNotPresent("reference document title 1", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("reference document title 1", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("reference document title 2", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
+        textPresent("reference document title 2", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
+        textPresent("reference document title 1", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
         textNotPresent("reference document title 2", By.xpath("//*[@id='qb_compare_referenceDocuments']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'rightObj')]"));
 
         textNotPresent("key 1", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("key 1", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("key 2", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
+        textPresent("key 2", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
+        textPresent("key 1", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
         textNotPresent("key 2", By.xpath("//*[@id='qb_compare_properties']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'rightObj')]"));
 
         textNotPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'leftObj')]"));
-        textPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
+        textPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][1]//*[contains(@class, 'rightObj')]"));
+        textPresent("concept name 1", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'leftObj')]"));
         textNotPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareModifiedArray')][2]//*[contains(@class, 'rightObj')]"));
 
         clickElement(By.id("qb_cde_empty"));
@@ -107,8 +107,8 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
         clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");

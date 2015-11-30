@@ -21,8 +21,8 @@ public class Compare2Test extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("qb_cde_compare")));
         // IDK why sometimes the following click doesn't seem to work. Wait above should be enough, but no.
         hangon(1);
-        clickElement(By.id("qb_cde_compare_0"));
-        clickElement(By.id("qb_cde_compare_1"));
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
         textPresent("in CTC category Blood/Bone Marrow");
         textPresent("CTC Adverse Event Platelets Grade");
