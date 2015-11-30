@@ -56,9 +56,33 @@ function doCdes() {
                     key: "CDASH Information for Sponsors",
                     value: cdashRow['Information for Sponsors']
                 }
-            ]
+            ],
+            valueDomain: {}
         };
-        var cls = [cdashRow['Domain']];
+
+        switch (cdashRow['Data Type']) {
+            case 'Char':
+                cde.valueDomain.datatype = 'Text';
+                break;
+            case 'Num':
+                cde.valueDomain.datatype = 'Number';
+                break;
+            case 'Date (dd-MON-yyyy)':
+                cde.valueDomain.datatype = 'Date';
+                cde.valueDomain.datatypeDate = {format: 'dd-MON-yyyy'};
+                break;
+            case 'Time (24 Hour)':
+                cde.valueDomain.datatype = 'Time';
+                cde.valueDomain.datatypeTime = {format: '24 hour'};
+                break;
+            default:
+                cde.valueDomain.datatype = 'Value List';
+        }
+
+
+
+
+                var cls = [cdashRow['Domain']];
         if (cdashRow['Role'].length > 0) {
             cls.push(cdashRow['Role']);
         }
@@ -68,7 +92,6 @@ function doCdes() {
         var cls2 = ["Classification", cdashRow['Core']];
         classificationShared.classifyItem(cde, "CDASH", cls2);
         classificationShared.addCategory({elements: cdashOrg.classifications}, cls2);
-
 
         var question = {
             elementType: "question",
