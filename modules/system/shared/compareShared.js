@@ -53,12 +53,13 @@ exports.compareSideBySide = {
                     };
                     var resultObj = [];
                     if (!option.properties) option.properties = exports.getProperties(leftArray[0], rightArray[0]);
-                    option.properties.forEach(function (p) {
-                        if (JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], p.property))
-                            === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], p.property))) {
-                            p.match = true;
-                        } else p.match = false;
-                        resultObj.push(p);
+                    option.properties.forEach(function (property) {
+                        if (!property.label) property.label = property.property;
+                        if (JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], property.property))
+                            === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property))) {
+                            property.match = true;
+                        } else property.match = false;
+                        resultObj.push(property);
                     });
                     temp.result = resultObj;
                     result.push(temp);
@@ -87,6 +88,7 @@ exports.compareSideBySide = {
             option.properties = exports.getProperties(leftObj, rightObj);
         }
         option.properties.forEach(function (property) {
+            if (!property.label) property.label = property.property;
             if (exports.getValueByNestedProperty(leftObj, property.property) === exports.getValueByNestedProperty(rightObj, property.property)) {
                 matchCount++;
                 property.match = true;
@@ -147,6 +149,26 @@ exports.getValueByNestedProperty = function (obj, propertyString) {
 
 exports.wipeUseless = function (obj) {
     delete obj.$$hashKey;
+    delete obj._id;
+    delete obj.__v;
+    delete obj.history;
+    delete obj.imported;
+    delete obj.noRenderAllowed;
+    delete obj.displayProfiles;
+    delete obj.attachments;
+    delete obj.version;
+    delete obj.comments;
+    delete obj.derivationRules;
+    delete obj.usedBy;
+    delete obj.classification;
+    delete obj.$$hashKey;
+    delete obj.isOpen;
+    delete obj.formElements;
+    if (o.questions) {
+        o.questions.forEach(function (q) {
+            delete q._id;
+        })
+    }
 };
 
 exports.findIndexInArray = function (array, item, equal) {

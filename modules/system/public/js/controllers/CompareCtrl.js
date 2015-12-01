@@ -103,26 +103,6 @@ angular.module('cdeModule').controller('CompareCtrl',
                     })
                 }
             };
-            var wipeUseless = function (o) {
-                delete o._id;
-                delete o.__v;
-                delete o.history;
-                delete o.imported;
-                delete o.noRenderAllowed;
-                delete o.displayProfiles;
-                delete o.attachments;
-                delete o.version;
-                delete o.comments;
-                delete o.derivationRules;
-                delete o.usedBy;
-                delete o.classification;
-                delete o.$$hashKey;
-                delete o.isOpen;
-                delete o.formElements;
-                o.questions.forEach(function (q) {
-                    delete q._id;
-                })
-            };
             $scope.questionOption = {
                 equal: function (a, b) {
                     if (a.question.cde.tinyId === b.question.cde.tinyId) return true;
@@ -136,11 +116,11 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.eltsToCompare[0].questions = [];
             flatFormQuestions($scope.eltsToCompare[0], $scope.eltsToCompare[0].questions);
-            wipeUseless($scope.eltsToCompare[0]);
+            exports.wipeUseless($scope.eltsToCompare[0]);
 
             $scope.eltsToCompare[1].questions = [];
             flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
-            wipeUseless($scope.eltsToCompare[1]);
+            exports.wipeUseless($scope.eltsToCompare[1]);
         }
     ])
 ;
