@@ -157,12 +157,12 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         goHome();
         textPresent("Quick Board (0)");
         hangon(0.5);
-        findElement(By.linkText("Quick Board (0)")).click();
+        clickElement(By.linkText("Quick Board (0)"));
         try {
             textPresent("The quick board is empty.");
         } catch (Exception e) {
             goHome();
-            findElement(By.linkText("Quick Board (0)")).click();
+            clickElement(By.linkText("Quick Board (0)"));
             textPresent("The quick board is empty.");
         }
     }
@@ -176,9 +176,9 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        findElement(By.linkText("Quick Board (5)")).click();
-        findElement(By.id("qb_cde_empty")).click();
-        findElement(By.linkText("Quick Board (0)")).click();
+        clickElement(By.linkText("Quick Board (5)"));
+        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.linkText("Quick Board (0)"));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        findElement(By.linkText("Quick Board (5)")).click();
+        clickElement(By.linkText("Quick Board (5)"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
         waitAndClick(By.id("cde_gridView"));
@@ -198,29 +198,29 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("pN0");
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
-        findElement(By.id("qb_cde_empty")).click();
+        clickElement(By.id("qb_cde_empty"));
         textPresent("Quick Board (0)");
     }
 
     @Test
     public void removeOne() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-OHSU Knight")).click();
+        clickElement(By.id("browseOrg-OHSU Knight"));
         textPresent("4 results for");
         clickElement(By.id("addToCompare_0"));
-        findElement(By.id("addToCompare_1")).click();
-        findElement(By.id("addToCompare_2")).click();
+        clickElement(By.id("addToCompare_1"));
+        clickElement(By.id("addToCompare_2"));
         String toRemove = findElement(By.id("acc_link_2")).getText();
-        findElement(By.id("addToCompare_3")).click();
+        clickElement(By.id("addToCompare_3"));
         hangon(.5);
-        findElement(By.linkText("Quick Board (4)")).click();
+        clickElement(By.linkText("Quick Board (4)"));
         hangon(.5);
         textPresent(toRemove);
         List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
             Assert.assertFalse(plus.isDisplayed());
         }
-        findElement(By.id("remove_2")).click();
+        clickElement(By.id("remove_2"));
         hangon(.5);
         pluses = driver.findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
