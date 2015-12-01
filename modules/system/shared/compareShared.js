@@ -53,7 +53,8 @@ exports.compareSideBySide = {
                         result: []
                     };
                     if (!option.properties) option.properties = exports.getProperties(leftArray[0], rightArray[0]);
-                    option.properties.forEach(function (property) {
+                    option.properties.forEach(function (p) {
+                        var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
                         if (JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], property.property))
                             === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property))) {
@@ -86,7 +87,8 @@ exports.compareSideBySide = {
         if (!option.properties) {
             option.properties = exports.getProperties(leftObj, rightObj);
         }
-        option.properties.forEach(function (property) {
+        option.properties.forEach(function (p) {
+            var property = exports.deepCopy(p);
             if (!property.label) property.label = property.property;
             if (exports.getValueByNestedProperty(leftObj, property.property) === exports.getValueByNestedProperty(rightObj, property.property)) {
                 matchCount++;
@@ -182,4 +184,7 @@ exports.getProperties = function (leftObj, rightObj) {
         return duplicatedProperties.indexOf(item) == pos;
     })
     return properties;
+};
+exports.deepCopy = function (o) {
+    return JSON.parse(JSON.stringify(o));
 };
