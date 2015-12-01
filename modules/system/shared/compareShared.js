@@ -1,5 +1,18 @@
 if (typeof(exports) === "undefined") exports = {};
 
+function getValueByNestedProperty(obj, propertyString) {
+    if (!obj) return "";
+    // convert indexes to properties and strip a leading dot
+    propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
+    var propertyArray = propertyString.split('.');
+    for (var i = 0, n = propertyArray.length; i < n; ++i) {
+        var k = propertyArray[i];
+        if (k in obj)obj = obj[k];
+        else return;
+    }
+    return obj;
+}
+
 exports.compareSideBySide = {
     arrayCompare: function (leftArray, rightArray, option) {
         var matchCount = 0;
@@ -73,7 +86,6 @@ exports.compareSideBySide = {
                 rightIndex: i
             })
         return {result: result, matchCount: matchCount};
-
     },
     objectCompare: function (leftObj, rightObj, option) {
         exports.wipeUseless(leftObj);
@@ -87,7 +99,7 @@ exports.compareSideBySide = {
         option.properties.forEach(function (p) {
             var property = exports.deepCopy(p);
             if (!property.label) property.label = property.property;
-            if (exports.getValueByNestedProperty(leftObj, property.property) === exports.getValueByNestedProperty(rightObj, property.property)) {
+            if (getValueByNestedProperty(leftObj, property.property) === getValueByNestedProperty(rightObj, property.property)) {
                 matchCount++;
                 property.match = true;
             } else {
@@ -96,9 +108,7 @@ exports.compareSideBySide = {
             result.push(property);
         });
         return {result: result, matchCount: matchCount};
-    }
-
-    ,
+    },
     stringCompare: function (leftString, rightString) {
         var matchCount = 0;
         var result = [];
@@ -113,8 +123,7 @@ exports.compareSideBySide = {
             })
         }
         return {result: result, matchCount: matchCount};
-    }
-    ,
+    },
     numberCompare: function (leftString, rightString) {
         var matchCount = 0;
         var result = [];
@@ -130,19 +139,6 @@ exports.compareSideBySide = {
         }
         return {result: result, matchCount: matchCount};
     }
-};
-
-exports.getValueByNestedProperty = function (obj, propertyString) {
-    if (!obj) return "";
-    // convert indexes to properties and strip a leading dot
-    propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
-    var propertyArray = propertyString.split('.');
-    for (var i = 0, n = propertyArray.length; i < n; ++i) {
-        var k = propertyArray[i];
-        if (k in obj)obj = obj[k];
-        else return;
-    }
-    return obj;
 };
 
 exports.wipeUseless = function (obj) {
