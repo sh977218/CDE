@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -520,13 +521,10 @@ public class NlmCdeBaseTest {
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible;
-        try {
-            findElement(By.cssSelector(selector));
-            elementVisible = false;
-        } catch (NoSuchElementException e) {
+        boolean elementVisible = false;
+        List<WebElement> result = driver.findElements(By.cssSelector(selector));
+        if (result.size() > 0)
             elementVisible = true;
-        }
         driver.manage().timeouts()
                 .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         return elementVisible;
