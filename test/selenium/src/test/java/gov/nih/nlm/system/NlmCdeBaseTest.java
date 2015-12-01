@@ -106,9 +106,9 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.chrome();
         }
 
-        LoggingPreferences loggingprefs = new LoggingPreferences();
-        loggingprefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);
+        LoggingPreferences loggingPreferences = new LoggingPreferences();
+        loggingPreferences.enable(LogType.BROWSER, Level.ALL);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
         caps.setBrowserName(browser);
         baseUrl = System.getProperty("testUrl");
@@ -154,21 +154,21 @@ public class NlmCdeBaseTest {
     }
 
     private boolean isUsernameMatch(String username) {
-        WebElement unameLink = findElement(By.id("username_link"));
-        String unameStr = unameLink.getText();
+        WebElement usernameLink = findElement(By.id("username_link"));
+        String usernameLinkText = usernameLink.getText();
         String usernameStr = username;
-        if (unameStr.length() > 17) {
-            unameStr = unameStr.substring(0, 17) + "...";
+        if (usernameLinkText.length() > 17) {
+            usernameLinkText = usernameLinkText.substring(0, 17) + "...";
         }
         if (usernameStr.length() > 17) {
             usernameStr = username.substring(0, 17) + "...";
         }
-        return unameStr.equals(usernameStr);
+        return usernameLinkText.equals(usernameStr);
     }
 
     protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-        WebElement loginLinkList = driver.findElement(By.id("login_link"));
+        WebElement loginLinkList = findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
             loginAs(username, password);
         } else {
@@ -186,9 +186,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
         if (orgLongName != null) {
@@ -196,11 +196,10 @@ public class NlmCdeBaseTest {
         }
 
         if (orgWGOf != null) {
-            new Select(findElement(By.id("newOrgWorkingGroup")))
-                    .selectByVisibleText("ACRIN");
+            new Select(findElement(By.id("newOrgWorkingGroup"))).selectByVisibleText("ACRIN");
         }
 
-        findElement(By.id("addOrg")).click();
+        clickElement(By.id("addOrg"));
         textPresent("Org Added");
         textPresent(orgName);
 
@@ -209,10 +208,10 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void gotoClassifMgt() {
-        findElement(By.id("username_link")).click();
+    protected void gotoClassificationMgt() {
+        clickElement(By.id("username_link"));
         hangon(.5);
-        findElement(By.linkText("Classifications")).click();
+        clickElement(By.linkText("Classifications"));
         textPresent("Manage Classifications");
     }
 
@@ -337,23 +336,17 @@ public class NlmCdeBaseTest {
 
     public void waitAndClick(By by) {
         wait.until(ExpectedConditions.elementToBeClickable(by));
-        findElement(by).click();
+        clickElement(by);
     }
 
     protected void clickElement(By by) {
-/*
-        String rand = String.valueOf(Math.random());
-        System.out.print("Event nr. " + rand + " Before click:" + new Date().getTime());
-        ((JavascriptExecutor)driver).executeAsyncScript("window.setTimeout(arguments[arguments.length - 1], 5000);");
-        System.out.print("Event nr. " + rand + "After click:" + new Date().getTime());
-*/
         try {
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            Integer value = ((Long) ((JavascriptExecutor)driver).executeScript("return window.scrollY;")).intValue();
+            Integer value = ((Long) ((JavascriptExecutor) driver).executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -529,7 +522,7 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         boolean elementVisible;
         try {
-            driver.findElement(By.cssSelector(selector));
+            findElement(By.cssSelector(selector));
             elementVisible = false;
         } catch (NoSuchElementException e) {
             elementVisible = true;
@@ -625,44 +618,33 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        driver.findElement(
-                By.cssSelector("[id='" + classificationId
-                        + "'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']"))
-                .click();
+        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
+        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
         modalGone();
         closeAlert();
     }
 
     protected void deleteMgtClassification(String classificationId,
-                                           String classifName) {
-        driver.findElement(
-                By.cssSelector("[id='" + classificationId
-                        + "'] [title=\"Remove\"]")).click();
-        driver.findElement(By.id("removeClassificationUserTyped")).sendKeys(
-                classifName);
-        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']"))
-                .click();
+                                           String classificationName) {
+        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
+        findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
+        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
         modalGone();
         closeAlert();
     }
 
     protected void gotoInbox() {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Inbox")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Inbox"));
         hangon(0.5);
     }
 
     protected void showHistoryDiff(Integer prev) {
-        findElement(
-                By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1)
-                        + "]//td[4]/a")).click();
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
     }
 
     protected void showHistoryFull(Integer prev) {
-        findElement(
-                By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1)
-                        + "]//td[5]/a")).click();
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
     }
 
     protected void confirmCdeModification(String field, String oldValue,
@@ -687,7 +669,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         scrollToTop();
-        findElement(By.linkText("History")).click();
+        clickElement(By.linkText("History"));
         hangon(1);
         showHistoryDiff(0);
         confirmCdeModification(field, oldValue, newValue);
@@ -695,9 +677,9 @@ public class NlmCdeBaseTest {
 
     protected void openCdeAudit(String cdeName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
-        findElement(By.linkText("CDE Audit Log")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("CDE Audit Log"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
             try {
@@ -705,21 +687,19 @@ public class NlmCdeBaseTest {
                         By.cssSelector("accordion"), cdeName));
                 break;
             } catch (Exception e) {
-                findElement(By.linkText("Next")).click();
+                clickElement(By.linkText("Next"));
             }
 
         }
-        findElement(
-                By.xpath("//accordion//span[contains(text(),'" + cdeName
-                        + "')]")).click();
+        clickElement(By.xpath("//accordion//span[contains(text(),'" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {
         goHome();
-        findElement(By.id("searchSettings")).click();
-        findElement(By.id(id)).click();
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id(id));
         scrollTo(1000);
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
@@ -741,7 +721,7 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
-        driver.findElement(By.xpath(prefix + "moveUp-2" + postfix));
+        findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 }

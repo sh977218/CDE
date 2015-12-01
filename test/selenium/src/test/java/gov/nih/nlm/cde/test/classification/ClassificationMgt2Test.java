@@ -17,7 +17,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         String oldClassification = "OldClassification";
         String newClassification = "NewClassification";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         textPresent("Clinical Trial Mgmt Systems");
         new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
         textPresent("org / or Org", By.id("classMgt"));
@@ -66,7 +66,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("closeModal")).click();
         textNotPresent("by recently added");
 
-        gotoClassifMgt();
+        gotoClassificationMgt();
         findElement(By.id("orgToManage")).click();
         textPresent("org / or Org");
         findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
@@ -96,7 +96,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         mustBeLoggedInAs(ninds_username, password);
 
         // Check icons appear on classification management page
-        gotoClassifMgt();
+        gotoClassificationMgt();
         List<WebElement> icons = driver.findElements(By.xpath("//i[not(contains(@class, 'ng-hide')) and contains(@class, 'fa-retweet')]"));
         Assert.assertTrue(icons.size() > 1);
 

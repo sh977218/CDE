@@ -37,7 +37,7 @@ exports.compareSideBySide = {
                 // element found in right list
                 else {
                     // put all right elements before matched element
-                    var _beginIndex = beginIndex;
+                    var beginIndexCopy = beginIndex;
                     for (var k = 0; k < rightIndex; k++) {
                         result.push({
                             action: "space",
@@ -46,10 +46,10 @@ exports.compareSideBySide = {
                         beginIndex++;
                     }
                     // put this element found
-                    var temp = {
+                    var found = {
                         action: "found",
                         leftIndex: leftIndex,
-                        rightIndex: _beginIndex + rightIndex,
+                        rightIndex: beginIndexCopy + rightIndex,
                         result: []
                     };
                     if (!option.properties) option.properties = exports.getProperties(leftArray[0], rightArray[0]);
@@ -59,9 +59,9 @@ exports.compareSideBySide = {
                             === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property))) {
                             property.match = true;
                         } else property.match = false;
-                        temp.result.push(property);
+                        found.result.push(property);
                     });
-                    result.push(temp);
+                    result.push(found);
                     matchCount++;
                     beginIndex++;
                 }
