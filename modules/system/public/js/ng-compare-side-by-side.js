@@ -11,98 +11,18 @@
                         option: '='
                     },
                     controller: function ($scope) {
-                        $scope.getValueByNestedProperty = function (o, s) {
-                            if (!o) return "";
-                            // convert indexes to properties
-                            s = s.replace(/\[(\w+)\]/g, '.$1');
-                            // strip a leading dot
-                            s = s.replace(/^\./, '');
-                            var a = s.split('.');
-                            for (var i = 0, n = a.length; i < n; ++i) {
-                                var k = a[i];
-                                if (k in o) {
-                                    o = o[k];
-                                } else {
-                                    return;
-                                }
-                            }
-                            return o;
-                        }
                     },
                     link: function ($scope, $element) {
                         if (!$scope.left && !$scope.right) {
-                            $scope.err = true;
+                            $scope.err = {error: true, errorMessage: "left and right are null"};
+                            Comparison.applyComparison($scope, $element);
                             return;
                         }
-                        var leftType = Array.isArray($scope.left) === true ? 'array' : typeof $scope.left;
-                        var rightType = Array.isArray($scope.right) === true ? 'array' : typeof $scope.right;
-                        if (leftType === 'undefined' && rightType !== 'undefined') {
-                            leftType = rightType;
-                        }
-                        if (rightType === 'undefined' && leftType !== 'undefined') {
-                            rightType = leftType;
-                        }
-                        if (leftType !== rightType) {
-                            $scope.err = true;
-                            return;
-                        }
-                        $scope.type = leftType;
-                        if (!$scope.left) {
-                            if (leftType === 'object') {
-                                $scope.left = {};
-                            }
-                            else if (leftType === 'string') {
-                                $scope.left = "";
-                            } else if (leftType === 'array') {
-                                $scope.left = [];
-                            }
-                        }
-                        if (!$scope.right) {
-                            if (rightType === 'object') {
-                                $scope.right = {};
-                            }
-                            else if (rightType === 'string') {
-                                $scope.right = "";
-                            }
-                            else if (rightType === 'array') {
-                                $scope.right = [];
-                            }
-                        }
-                        if ($scope.type === 'array' && $scope.left.length === 0 && $scope.right.length === 0) {
-                            $scope.err = true;
-                            return;
-                        }
-                        if (!$scope.sortIt) {
-                            $scope.sortIt = false;
-                        }
-                        if (!$scope.properties) {
-                            var leftProperty = [];
-                            var rightProperty = [];
-                            if ($scope.type === 'object') {
-                                {
-                                    if ($scope.left)
-                                        Object.keys($scope.left).forEach(function (o) {
-                                            leftProperty.push({label: o, property: o});
-                                        });
-                                    if ($scope.right)
-                                        Object.keys($scope.right).forEach(function (o) {
-                                            rightProperty.push({label: o, property: o});
-                                        });
-                                }
-                            } else if ($scope.type === 'array') {
-                                if ($scope.left && $scope.left.length > 0)
-                                    Object.keys($scope.left[0]).forEach(function (o) {
-                                        leftProperty.push({label: o, property: o});
-                                    });
-                                if ($scope.right && $scope.right.length > 0)
-                                    Object.keys($scope.right[0]).forEach(function (o) {
-                                        rightProperty.push({label: o, property: o});
-                                    });
-                            }
-                            $scope.properties = leftProperty.length >= rightProperty.length ? leftProperty : rightProperty;
-                        }
-                        var result1 = Comparison.compareImpl($scope, $scope.left, $scope.right);
-                        var result2 = Comparison.compareImpl($scope, $scope.right, $scope.left);
+                        $scope.option.type = Comparison.getType($scope.left, $scope.right);
+                        Comparison.checkIfEmpty($scope.left);
+                        Comparison.checkIfEmpty($scope.right);
+                        var result1 = Comparison.compareImpl($scope.left, $scope.right, $scope.option);
+                        var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.option);
                         if (result1.result && result2.result) {
                             if (result1.result.length < result2.result.length) {
                                 $scope.result = result1.result;
@@ -144,48 +64,38 @@
             }])
         .factory("Comparison", ["$compile", function ($compile) {
             return {
+                checkIfEmpty: function (o) {
+                    if (!o) return;
+                    else {
+                        var type = typeof o;
+                        if (type === 'object') o = {};
+                        else if (type === 'string') o = "";
+                        else if (type === 'array') o = [];
+                    }
+                },
+                getType: function (l, r) {
+                    var leftType = Array.isArray(l) === true ? 'array' : typeof l;
+                    var rightType = Array.isArray(r) === true ? 'array' : typeof r;
+                    if (leftType !== rightType) {
+                        return;
+                    }
+                    else if (leftType === 'array' && (typeof l[0] === 'string' || typeof r[0] === 'string')) return 'stringArray';
+                    else return leftType;
+                },
                 swap: function (l, r) {
                     var lCopy = l;
                     l = r;
                     r = lCopy;
                 },
-                getValueByNestedProperty: function (o, s) {
-                    if (!o) return "";
-                    // convert indexes to properties
-                    s = s.replace(/\[(\w+)\]/g, '.$1');
-                    // strip a leading dot
-                    s = s.replace(/^\./, '');
-                    var a = s.split('.');
-                    for (var i = 0, n = a.length; i < n; ++i) {
-                        var k = a[i];
-                        if (k in o) {
-                            o = o[k];
-                        } else {
-                            return;
-                        }
-                    }
-                    return o;
-                },
-                sortByProperty: function (o, sortby) {
-                    o.sort(function (a, b) {
-                        if (this.getValueByNestedProperty(a, sortby) < this.getValueByNestedProperty(b.sortby)) {
-                            return -1;
-                        }
-                        else if (this.getValueByNestedProperty(a, sortby) > this.getValueByNestedProperty(b.sortby)) {
-                            return 1;
-                        }
-                        else return 0;
-                    })
-                },
-                compareImpl: function ($scope, l, r) {
-                    if ($scope.type === 'array') {
-                        return exports.compareSideBySide.arrayCompare($scope.left, $scope.right, $scope.option);
-                    } else if ($scope.type === 'object') {
-                        return exports.compareSideBySide.objectCompare($scope.left, $scope.right, $scope.option);
-                    } else if ($scope.type === 'string') {
-                        return exports.compareSideBySide.stringCompare($scope.left, $scope.right, $scope.option);
-                    } else if ($scope.type === 'number') {
-                        return exports.compareSideBySide.numberCompare($scope.left, $scope.right, $scope.option);
+                compareImpl: function (l, r, option) {
+                    if (option.type === 'array') {
+                        return exports.compareSideBySide.arrayCompare(l, r, option);
+                    } else if (option.type === 'object') {
+                        return exports.compareSideBySide.objectCompare(l, r, option);
+                    } else if (option.type === 'string') {
+                        return exports.compareSideBySide.stringCompare(l, r, option);
+                    } else if (option.type === 'number') {
+                        return exports.compareSideBySide.numberCompare(l, r, option);
                     }
                 },
                 applyComparison: function ($scope, $element) {
@@ -209,30 +119,30 @@
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right}}</div>' +
                         '</div>';
 
+                    var numberHtml = '' +
+                        '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified\':r.match===false}">' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">{{left}}</div>' +
+                        '   <div class="col-xs-6 quickBoardContentCompareCol">{{right}}</div>' +
+                        '</div>';
+
                     var stringArrayHtml = '' +
                         '<div class="row" ng-repeat="r in result" ng-class="{\'quickBoardContentCompareModified\':r.match===false}">' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{left[r.leftIndex]}}</div>' +
                         '   <div class="col-xs-6 quickBoardContentCompareCol">{{right[r.rightIndex]}}</div>' +
                         '</div>';
 
-                    var errorHtml = '' +
-                        '<div class="row">there is errors</div>';
-
                     var el;
-                    if ($scope.err) {
-                        el = angular.element(errorHtml);
-                        $compile(el)($scope);
-                        $element.append(el);
-                        return;
-                    }
-                    if ($scope.type === 'array' && !$scope.stringArray)
+                    if ($scope.err) return;
+                    else if ($scope.option.type === 'array')
                         el = angular.element(arrayHtml);
-                    else if ($scope.type === 'array' && $scope.stringArray)
+                    else if ($scope.option.type === 'stringArray')
                         el = angular.element(stringArrayHtml);
-                    else if ($scope.type === 'object')
+                    else if ($scope.option.type === 'object')
                         el = angular.element(objectHtml);
-                    else
+                    else if ($scope.option.type === 'string')
                         el = angular.element(stringHtml);
+                    else if ($scope.option.type === 'number')
+                        el = angular.element(numberHtml);
                     $compile(el)($scope);
                     $element.append(el);
                 }

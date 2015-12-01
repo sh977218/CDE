@@ -10,8 +10,7 @@ exports.compareSideBySide = {
         if (!option) option = {};
         if (!option.equal) {
             option.equal = function (a, b) {
-                if (JSON.stringify(a) === JSON.stringify(b)) return true;
-                else return false;
+                return JSON.stringify(a) === JSON.stringify(b);
             }
         }
         leftArray.forEach(function (o) {
@@ -56,10 +55,8 @@ exports.compareSideBySide = {
                     option.properties.forEach(function (p) {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
-                        if (JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], property.property))
-                            === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property))) {
-                            property.match = true;
-                        } else property.match = false;
+                        property.match = JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], property.property))
+                        === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property));
                         found.result.push(property);
                     });
                     result.push(found);
@@ -102,7 +99,7 @@ exports.compareSideBySide = {
     }
 
     ,
-    stringCompare: function (leftString, rightString, option) {
+    stringCompare: function (leftString, rightString) {
         var matchCount = 0;
         var result = [];
         if (leftString === rightString) {
@@ -138,7 +135,7 @@ exports.compareSideBySide = {
 exports.getValueByNestedProperty = function (obj, propertyString) {
     if (!obj) return "";
     // convert indexes to properties and strip a leading dot
-    propertyString = propertyString.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '');
+    propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
     var propertyArray = propertyString.split('.');
     for (var i = 0, n = propertyArray.length; i < n; ++i) {
         var k = propertyArray[i];
@@ -179,11 +176,10 @@ exports.findIndexInArray = function (array, item, equal) {
     return -1;
 };
 exports.getProperties = function (leftObj, rightObj) {
-    var duplicatedProperties = Object.getOwnPropertyNames(leftObj).concat(Object.getOwnPropertyNames(rightObj))
-    var properties = duplicatedProperties.filter(function (item, pos) {
+    var duplicatedProperties = Object.getOwnPropertyNames(leftObj).concat(Object.getOwnPropertyNames(rightObj));
+    return duplicatedProperties.filter(function (item, pos) {
         return duplicatedProperties.indexOf(item) == pos;
-    })
-    return properties;
+    });
 };
 exports.deepCopy = function (o) {
     return JSON.parse(JSON.stringify(o));
