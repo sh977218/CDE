@@ -3,7 +3,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
     , 'angular-send-feedback'])
-    .config(['$logProvider', function($logProvider){
+    .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
@@ -98,10 +98,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('sortableArray', function () {
         return {
-            template:
-            '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" tooltip="Up" href=""></span>'
+            template: '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" tooltip="Up" href=""></span>'
             + '<span id="moveDown-{{index}}" class="btn-default fa fa-arrow-down" ng-click="moveDown()" ng-if="index < array.length - 1" title="Down" tooltip="Down" href=""></span>'
-            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop()" ng-if="index !== 0" title="Move to top" tooltip="Move to top" href=""></span>',
+            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop(index)" ng-if="index !== 0" title="Move to top" tooltip="Move to top" href=""></span>',
             controller: function ($scope, $element, $attrs) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
@@ -111,8 +110,16 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
-                $scope.moveTop = function () {
-                    $scope.array.unshift($scope.array.pop());
+                $scope.moveTop = function (index) {
+                    var array = [];
+                    array.push($scope.array[index]);
+                    for (var i = 0; i < index; i++) {
+                        array.push($scope.array[i]);
+                    }
+                    for (var i = index + 1; i < $scope.array.length; i++) {
+                        array.push($scope.array[i]);
+                    }
+                    $scope.array = array;
                     $scope.cb();
                 };
                 $scope.moveBottom = function () {
