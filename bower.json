@@ -1,13 +1,16 @@
 {
   "name": "sample",
   "version": "0.0.0",
-  "devDependencies": {
-    "angularjs": "1.4.3",
+  "directory": "modules/system/public/components",
+  "dependencies": {
+    "angular": "1.4.3",
     "angular-route": "1.4.3",
     "angular-resource": "1.4.3",
     "angular-sanitize": "1.4.3",
     "angular-animate": "1.4.3",
     "angular-ui-bootstrap-bower": "0.12.1",
+    "angular-local-storage": "0.2.3",
+    "angular-timeago": "0.2.4",
     "bootstrap": "3.3.2",
     "fontawesome": "4.3.0",
     "jquery": "~1.10.2",

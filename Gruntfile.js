@@ -322,7 +322,7 @@ module.exports = function(grunt) {
                 	// Whether output is colorized
                     color: true,
                     // Path where bower installed components should be saved
-                    directory: "bower_components"
+                    directory: "modules/system/public/components"
                 },
                 "dev": {
                     options: {
@@ -413,6 +413,15 @@ module.exports = function(grunt) {
                     'modules/cde/public/assets/fonts': 'font-awesome/fonts/*'
                 }
             }
+        },
+        wiredep: {
+            task: {
+                src: [
+                    'modules/system/views/index.ejs'
+                ], options: {
+                    directory: "modules/system/public/components"
+                }
+            }
         }
     });  
     
@@ -427,7 +436,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-useref');
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks('grunt-bowercopy');
-    
+    grunt.loadNpmTasks('grunt-wiredep');
+
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
             grunt.task.run('gitpull');
@@ -538,7 +548,7 @@ module.exports = function(grunt) {
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
-    grunt.registerTask('bower',['bower-install-simple','bowercopy']);
+    grunt.registerTask('bower',['bower-install-simple']);
     grunt.registerTask('ci', ['buildVersion', 'bower', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
