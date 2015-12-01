@@ -49,9 +49,9 @@ exports.compareSideBySide = {
                     var temp = {
                         action: "found",
                         leftIndex: leftIndex,
-                        rightIndex: _beginIndex + rightIndex
+                        rightIndex: _beginIndex + rightIndex,
+                        result: []
                     };
-                    var resultObj = [];
                     if (!option.properties) option.properties = exports.getProperties(leftArray[0], rightArray[0]);
                     option.properties.forEach(function (property) {
                         if (!property.label) property.label = property.property;
@@ -59,9 +59,8 @@ exports.compareSideBySide = {
                             === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property))) {
                             property.match = true;
                         } else property.match = false;
-                        resultObj.push(property);
+                        temp.result.push(property);
                     });
-                    temp.result = resultObj;
                     result.push(temp);
                     matchCount++;
                     beginIndex++;
@@ -164,9 +163,9 @@ exports.wipeUseless = function (obj) {
     delete obj.$$hashKey;
     delete obj.isOpen;
     delete obj.formElements;
-    if (o.questions) {
-        o.questions.forEach(function (q) {
-            delete q._id;
+    if (obj.questions) {
+        obj.questions.forEach(function (question) {
+            delete question._id;
         })
     }
 };

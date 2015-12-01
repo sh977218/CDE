@@ -86,7 +86,7 @@ angular.module('cdeModule').controller('CompareCtrl',
                 properties: [
                     {label: 'Name', property: 'name'},
                     {label: 'Origin', property: 'origin'},
-                    {label: 'OriginId', property: 'originId'}
+                    {label: 'Origin Id', property: 'originId'}
                 ]
             };
             $scope.stewardOrgOption = {properties: [{label: 'Steward', property: 'name'}]};

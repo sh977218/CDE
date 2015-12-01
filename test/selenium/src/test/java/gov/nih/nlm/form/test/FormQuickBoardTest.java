@@ -24,7 +24,7 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 ", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'rightObj')]"));
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][4]//*[contains(@class, 'leftObj')]"));
 
-        clickElement(By.id("qb_cde_empty"));
+        clickElement(By.id("qb_form_empty"));
         textPresent("Quick Board (0)");
     }
 }
