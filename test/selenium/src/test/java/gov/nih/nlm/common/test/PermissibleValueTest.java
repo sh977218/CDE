@@ -18,7 +18,7 @@ public abstract class PermissibleValueTest extends CommonTest {
         Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv1"));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
         Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv3"));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-0" + postfix)).getText().contains("pv1"));
+        findElement(By.xpath(prefix + "moveTop-1" + postfix)).click();
+        Assert.assertTrue(findElement(By.xpath(prefix + "pv-0" + postfix)).getText().contains("pv3"));
     }
 }
