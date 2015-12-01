@@ -7,10 +7,17 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.defaultQuickBoard = 'CDE Quickboard';
             $scope.defaultQuickBoard = localStorageService.get("defaultQuickBoard");
             $scope.showSideBySideView = false;
-
-            $scope.removeElt = function (index) {
+            $scope.interruptEvent = function (event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            };
+            $scope.removeElt = function (index, event) {
+                $scope.interruptEvent(event);
                 QuickBoard.remove(index);
             };
+
             $scope.openCloseAll = function (elts, type) {
                 for (var i = 0; i < elts.length; i++) {
                     elts[i].isOpen = $scope.openCloseAllModel[type];
