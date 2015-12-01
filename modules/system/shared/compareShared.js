@@ -115,7 +115,7 @@ exports.compareSideBySide = {
         return {result: result, matchCount: matchCount};
     }
     ,
-    numberCompare: function (leftString, rightString, option) {
+    numberCompare: function (leftString, rightString) {
         var matchCount = 0;
         var result = [];
         if (leftString === rightString) {
