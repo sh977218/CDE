@@ -8,9 +8,9 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void formMoreElementsNoSideBySideCompare() {
-        addFormToQuickBoard("Family History - SMA");
-        addFormToQuickBoard("Functional Imaging");
-        addFormToQuickBoard("Tinnitus Functional Index (TFI)");
+        addFormToQuickBoard("\"Family History - SMA\"");
+        addFormToQuickBoard("\"Anatomical Functional Imaging\"");
+        addFormToQuickBoard("\"Tinnitus Functional Index (TFI)\"");
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
@@ -24,9 +24,9 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeLessElementsNoSideBySideCompare() {
-        addFormToQuickBoard("Family History - SMA");
-        addFormToQuickBoard("Functional Imaging");
-        addFormToQuickBoard("Tinnitus Functional Index (TFI)");
+        addFormToQuickBoard("\"Family History - SMA\"");
+        addFormToQuickBoard("\"Functional Imaging\"");
+        addFormToQuickBoard("\"Tinnitus Functional Index (TFI)\"");
         textPresent("Quick Board (3)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
@@ -60,8 +60,8 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void formExpandAllQuickBoard() {
-        addFormToQuickBoard("Glasgow Outcome Scale (GOS) and Glasgow Outcome Scale - Extended (GOSE)");
-        addFormToQuickBoard("Center for Epidemiologic Studies-Depression Scale (CES-D)");
+        addFormToQuickBoard("\"Glasgow Outcome Scale (GOS) and Glasgow Outcome Scale - Extended (GOSE)\"");
+        addFormToQuickBoard("\"Center for Epidemiologic Studies-Depression Scale (CES-D)\"");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_openCloseAll"));
