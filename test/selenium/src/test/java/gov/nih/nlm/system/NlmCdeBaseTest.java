@@ -520,20 +520,12 @@ public class NlmCdeBaseTest {
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible = true;
-        List<WebElement> result = driver.findElements(By.cssSelector(selector));
-        if (result.size() > 0)
-            elementVisible = false;
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        return elementVisible;
+        return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
     public void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
-        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y)
-                + ");";
+        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
