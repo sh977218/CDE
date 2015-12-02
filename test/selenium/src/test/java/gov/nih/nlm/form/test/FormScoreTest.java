@@ -16,7 +16,7 @@ public class FormScoreTest extends BaseFormTest {
     @Test
     public void score() {
         mustBeLoggedInAs(ninds_username, password);
-        qbTest.emptyQuickBoard("form");
+        qbTest.emptyQuickBoardByModule("form");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - lower extremity walk score");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");

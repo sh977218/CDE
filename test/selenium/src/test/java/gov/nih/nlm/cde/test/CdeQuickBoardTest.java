@@ -16,8 +16,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         textPresent("Quick Board (3)");
-        clickElement(By.linkText("Quick Board (3)"));
-        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_elt_compare_2"));
@@ -33,8 +32,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         textPresent("Quick Board (3)");
-        clickElement(By.linkText("Quick Board (3)"));
-        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
@@ -47,8 +45,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("cdeCompare1");
         addCdeToQuickBoard("cdeCompare2");
         textPresent("Quick Board (2)");
-        clickElement(By.id("menu_qb_link"));
-        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
@@ -90,8 +87,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
-        clickElement(By.linkText("Quick Board (2)"));
-        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_cde_openCloseAll"));
         textPresent("AJCC Based:");
         textPresent("Value used as a Standard Deviation");
@@ -102,11 +98,10 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
 
     @Test
     public void testQuickBoardButtons() {
-        goToCdeSearch();
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
-        clickElement(By.linkText("Quick Board (2)"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
@@ -141,56 +136,48 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("NCI Thesaurus");
     }
 
-    public void emptyQuickBoard(String module) {
+    public void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
-        clickElement(By.partialLinkText("Quick Board ("));
-        String tabXPath = "//*[@id=\"qb_" + module + "_tab\"]/a";
-        clickElement(By.xpath(tabXPath));
-        String emptyBtn = "qb_" + module + "_empty";
-        clickElement(By.id(emptyBtn));
-        clickElement(By.linkText("Quick Board (0)"));
+        goToQuickBoardByModule("cde");
+        clickElement(By.id("qb_" + module + "_empty"));
+        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard ( empty )");
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         hangon(1);
     }
 
     @Test
-    public void gotoEmptyQuickBoard() {
+    public void goToEmptyQuickBoard() {
         goHome();
         textPresent("Quick Board (0)");
-        hangon(0.5);
-        clickElement(By.linkText("Quick Board (0)"));
-        try {
-            textPresent("The quick board is empty.");
-        } catch (Exception e) {
-            goHome();
-            clickElement(By.linkText("Quick Board (0)"));
-            textPresent("The quick board is empty.");
-        }
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        textPresent("CDE QuickBoard ( empty )");
+        textPresent("Form QuickBoard ( empty )");
+        textPresent("The quick board is empty.");
+
     }
 
     @Test
-    public void emptyQuickBoardTest() {
-        goToCdeSearch();
+    public void emptyCdeQuickBoardTest() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        clickElement(By.linkText("Quick Board (5)"));
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         clickElement(By.id("qb_cde_empty"));
-        clickElement(By.linkText("Quick Board (0)"));
+        clickElement(By.linkText("CDE QuickBoard ( empty )"));
     }
 
     @Test
-    public void showGridView() {
-        goToCdeSearch();
+    public void showGridViewInCdeQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        clickElement(By.linkText("Quick Board (5)"));
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
         waitAndClick(By.id("cde_gridView"));
@@ -199,11 +186,11 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("Quick Board (0)");
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test
-    public void removeOne() {
+    public void removeOneFromCdeQuickBoard() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-OHSU Knight"));
         textPresent("4 results for");
@@ -213,20 +200,19 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         String toRemove = findElement(By.id("acc_link_2")).getText();
         clickElement(By.id("addToCompare_3"));
         hangon(.5);
-        clickElement(By.linkText("Quick Board (4)"));
+        goToQuickBoardByModule("cde");
         hangon(.5);
         textPresent(toRemove);
-        List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
+        List<WebElement> pluses = findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
             Assert.assertFalse(plus.isDisplayed());
         }
         clickElement(By.id("remove_2"));
         hangon(.5);
-        pluses = driver.findElements(By.cssSelector("i.fa-plus"));
+        pluses = findElements(By.cssSelector("i.fa-plus"));
         for (WebElement plus : pluses) {
             Assert.assertFalse(plus.isDisplayed());
         }
         textNotPresent(toRemove);
     }
-
 }

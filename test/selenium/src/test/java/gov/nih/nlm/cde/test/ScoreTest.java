@@ -12,7 +12,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotCreateWithZeroCdes() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard("cde");
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();
@@ -24,7 +24,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddSelfToRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard("cde");
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
         findElement(By.id("compareMe")).click();
         findElement(By.linkText("Score / Derivations")).click();
@@ -37,7 +37,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddDatatypeText() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard("cde");
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
         clickElement(By.id("compareMe"));
         textPresent("Quick Board (1)");
@@ -52,7 +52,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void validRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard("cde");
+        qbTest.emptyQuickBoardByModule("cde");
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
         hangon(1);
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");

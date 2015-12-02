@@ -70,7 +70,7 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("addToCompare_6")).click();
 
         textPresent("Quick Board (7)");
-        goToQuickBoard();
+        goToQuickBoardByModule();
         clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
         textPresent("Export Quick Board");
 

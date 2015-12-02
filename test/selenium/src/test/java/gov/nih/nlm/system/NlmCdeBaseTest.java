@@ -335,6 +335,11 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
+    protected List<WebElement> findElements(By by) {
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+        return driver.findElements(by);
+    }
+
     public void waitAndClick(By by) {
         wait.until(ExpectedConditions.elementToBeClickable(by));
         clickElement(by);
@@ -355,7 +360,6 @@ public class NlmCdeBaseTest {
                 scrollToTop();
                 findElement(by).click();
             }
-
         }
     }
 
@@ -500,6 +504,12 @@ public class NlmCdeBaseTest {
         findElement(By.name("q")).clear();
     }
 
+    public void goToQuickBoardByModule(String module) {
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
+        String quickBoardTabText = (module == "cde" ? "CDE" : "Form") + " QuickBoard (";
+        textPresent(quickBoardTabText);
+    }
 
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
