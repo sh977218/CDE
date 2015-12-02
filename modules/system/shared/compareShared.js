@@ -14,30 +14,30 @@ function getValueByNestedProperty(obj, propertyString) {
 }
 
 exports.compareSideBySide = {
-    arrayCompare: function (leftArray, rightArray, option) {
+    arrayCompare: function (leftArray, rightArray, options) {
         var matchCount = 0;
         var result = [];
         var leftIndex = 0;
         var beginIndex = 0;
 
-        if (!option) option = {};
-        if (!option.equal) {
-            option.equal = function (a, b) {
+        if (!options) options = {};
+        if (!options.equal) {
+            options.equal = function (a, b) {
                 return JSON.stringify(a) === JSON.stringify(b);
             }
         }
         leftArray.forEach(function (o) {
-                if (option.wipeUseless) {
-                    option.wipeUseless(o);
+                if (options.wipeUseless) {
+                    options.wipeUseless(o);
                 }
-                var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, option.equal);
+                var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, options.equal);
                 // element didn't found in right list.
                 if (rightIndex === -1) {
                     // put all right list elements before this element
                     if (beginIndex === 0) {
                         for (var m = 0; m < rightArray.length; m++) {
                             result.push({
-                                action: "space",
+                                found: "right",
                                 rightIndex: m
                             });
                             beginIndex++;
@@ -45,7 +45,7 @@ exports.compareSideBySide = {
                     }
                     // put this element not found
                     result.push({
-                        action: "not found",
+                        found: 'left',
                         leftIndex: leftIndex
                     });
                 }
@@ -55,20 +55,20 @@ exports.compareSideBySide = {
                     var beginIndexCopy = beginIndex;
                     for (var k = 0; k < rightIndex; k++) {
                         result.push({
-                            action: "space",
+                            found: "right",
                             rightIndex: beginIndex + rightIndex - 1
                         });
                         beginIndex++;
                     }
                     // put this element found
                     var found = {
-                        action: "found",
+                        found: "both",
                         leftIndex: leftIndex,
                         rightIndex: beginIndexCopy + rightIndex,
                         result: []
                     };
-                    if (!option.properties) option.properties = exports.getProperties(leftArray[0], rightArray[0]);
-                    option.properties.forEach(function (p) {
+                    if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
+                    options.properties.forEach(function (p) {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
                         property.match = JSON.stringify(getValueByNestedProperty(leftArray[leftIndex], property.property))
@@ -85,23 +85,23 @@ exports.compareSideBySide = {
         // if after looping left list, there are element in the right list, put all of them
         for (var i = beginIndex; i < rightArray.length; i++)
             result.push({
-                action: "space",
+                found: "right",
                 rightIndex: i
             })
         return {result: result, matchCount: matchCount};
     },
-    objectCompare: function (leftObj, rightObj, option) {
-        if (option.wipeUseless) {
-            option.wipeUseless(leftObj);
-            option.wipeUseless(rightObj);
+    objectCompare: function (leftObj, rightObj, options) {
+        if (options.wipeUseless) {
+            options.wipeUseless(leftObj);
+            options.wipeUseless(rightObj);
         }
         var result = [];
         var matchCount = 0;
-        if (!option) option = {};
-        if (!option.properties) {
-            option.properties = exports.getProperties(leftObj, rightObj);
+        if (!options) options = {};
+        if (!options.properties) {
+            options.properties = exports.getProperties(leftObj, rightObj);
         }
-        option.properties.forEach(function (p) {
+        options.properties.forEach(function (p) {
             var property = exports.deepCopy(p);
             if (!property.label) property.label = property.property;
             if (getValueByNestedProperty(leftObj, property.property) === getValueByNestedProperty(rightObj, property.property)) {

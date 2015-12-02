@@ -1,10 +1,11 @@
 <div class="quickBoardArraySeparate quickBoardContentCompareArray" ng-repeat="r in result"
-     ng-class="{quickBoardContentCompareModifiedArray:r.action==='space' || r.action=== 'not found', quickBoardContentCompareSameArray:r.action==='found'}"
-        >
-    <div class="overflowHidden" ng-repeat="p in option.properties">
-        <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left[r.leftIndex]"
-             properties="p" show-warning-icon="r.action ==='found'"></div>
-        <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right[r.rightIndex]"
-             properties="p" show-warning-icon="r.action ==='found'"></div>
+     ng-class="{quickBoardContentCompareModifiedArray:r.found==='right' || r.found=== 'left', quickBoardContentCompareSameArray:r.found==='both'}">
+    <div class="overflowHidden" ng-repeat="p in options.properties">
+        <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object
+             ng-display-object-obj="left[r.leftIndex]"
+             ng-display-object-properties="p" ng-display-object-show-warning-icon="r.found ==='both'"></div>
+        <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object
+             ng-display-object-obj="right[r.rightIndex]"
+             ng-display-object-properties="p" ng-display-object-show-warning-icon="r.found ==='both'"></div>
     </div>
 </div>

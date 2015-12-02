@@ -17,29 +17,33 @@
         </div>
     </div>
 
-  <div id="qb_compare_gd">
+    <div id="qb_compare_gd">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">General Details</h4>
 
-        <div ng-compare-side-by-side option="stewardOrgOption" left="eltsToCompare[0].stewardOrg"
-             right="eltsToCompare[1].stewardOrg"></div>
-        <div ng-compare-side-by-side option="registrationStateOption"
-             left="eltsToCompare[0].registrationState" right="eltsToCompare[1].registrationState"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="stewardOrgOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].stewardOrg"
+             ng-compare-side-by-side-right="eltsToCompare[1].stewardOrg"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="registrationStateOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].registrationState"
+             ng-compare-side-by-side-right="eltsToCompare[1].registrationState"></div>
     </div>
     <div id="qb_compare_naming">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Naming</h4>
 
-        <div ng-compare-side-by-side option="namingOption"
-             left="eltsToCompare[0].naming" right="eltsToCompare[1].naming"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="namingOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].naming"
+             ng-compare-side-by-side-right="eltsToCompare[1].naming"></div>
     </div>
 
     <div id="qb_compare_referenceDocuments">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Reference Documents</h4>
 
-        <div ng-compare-side-by-side option="referenceDocumentOption"
-             left="eltsToCompare[0].referenceDocuments" right="eltsToCompare[1].referenceDocuments"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="referenceDocumentOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].referenceDocuments"
+             ng-compare-side-by-side-right="eltsToCompare[1].referenceDocuments"></div>
     </div>
 
     <div id="qb_compare_properties">
@@ -47,8 +51,9 @@
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Properties</h4>
 
-        <div ng-compare-side-by-side option="propertiesOption"
-             left="eltsToCompare[0].properties" right="eltsToCompare[1].properties"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="propertiesOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].properties"
+             ng-compare-side-by-side-right="eltsToCompare[1].properties"></div>
     </div>
 
     <div id="qb_compare_concepts">
@@ -56,16 +61,17 @@
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Concepts</h4>
 
-        <div ng-compare-side-by-side option="dataElementConceptOption"
-             left="eltsToCompare[0].dataElementConcept.concepts"
-             right="eltsToCompare[1].dataElementConcept.concepts"></div>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options="dataElementConceptOption"
+             ng-compare-side-by-side-left="eltsToCompare[0].dataElementConcept.concepts"
+             ng-compare-side-by-side-right="eltsToCompare[1].dataElementConcept.concepts"></div>
     </div>
     <div id="qb_compare_questions">
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">Questions</h4>
 
-        <div ng-compare-side-by-side option=questionOption
-             left="eltsToCompare[0].questions" right="eltsToCompare[1].questions" d>
+        <div ng-compare-side-by-side ng-compare-side-by-side-options=questionOption
+             ng-compare-side-by-side-left="eltsToCompare[0].questions"
+             ng-compare-side-by-side-right="eltsToCompare[1].questions" d>
         </div>
     </div>
     <hr class="divider compare-divider">

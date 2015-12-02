@@ -6,20 +6,19 @@
                 return {
                     restrict: "AE",
                     scope: {
-                        left: '=',
-                        right: '=',
-                        option: '='
+                        left: '=ngCompareSideBySideLeft',
+                        right: '=ngCompareSideBySideRight',
+                        options: '=ngCompareSideBySideOptions'
                     },
-                    controller: function ($scope) {
-                    },
+                    templateUrl: '/system/public/js/compareTemplate/compareSwitchTemplate.html',
                     link: function ($scope) {
                         if (!$scope.left && !$scope.right) {
                             $scope.err = {error: true, errorMessage: "left and right are null"};
                         } else {
-                            $scope.option.type = Comparison.getType($scope.left, $scope.right);
+                            $scope.options.type = Comparison.getType($scope.left, $scope.right);
                             Comparison.initialize($scope);
-                            var result1 = Comparison.compareImpl($scope.left, $scope.right, $scope.option);
-                            var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.option);
+                            var result1 = Comparison.compareImpl($scope.left, $scope.right, $scope.options);
+                            var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.options);
                             if (result1.result && result2.result) {
                                 if (result1.result.length < result2.result.length) {
                                     $scope.result = result1.result;
@@ -29,8 +28,8 @@
                                         var leftIndexCopy = r.leftIndex;
                                         r["leftIndex"] = r.rightIndex;
                                         r["rightIndex"] = leftIndexCopy;
-                                        if (r.action !== 'found') {
-                                            r.action = r.action === 'space' ? 'not found' : 'space';
+                                        if (r.found !== 'both') {
+                                            r.found = r.found === 'right' ? 'left' : 'right';
                                         }
                                     });
                                     $scope.result = result2.result;
@@ -43,8 +42,8 @@
                                             var leftIndexCopy = r.leftIndex;
                                             r["leftIndex"] = r.rightIndex;
                                             r["rightIndex"] = leftIndexCopy;
-                                            if (r.action !== 'found') {
-                                                r.action = r.action === 'space' ? 'not found' : 'space';
+                                            if (r.found !== 'both') {
+                                                r.found = r.found === 'right' ? 'left' : 'right';
                                             }
                                         });
                                     } else {
@@ -60,9 +59,9 @@
                                 object: '/system/public/js/compareTemplate/compareObject.html',
                                 string: '/system/public/js/compareTemplate/compareString.html',
                                 number: '/system/public/js/compareTemplate/compareNumber.html'
-                            }[$scope.option.type];
+                            }[$scope.options.type];
                         }
-                    }, templateUrl: '/system/public/js/compareTemplate/compareSwitchTemplate.html'
+                    }
                 };
             }])
         .factory("Comparison", ["$compile", function () {
@@ -94,15 +93,15 @@
                     scope.right = scope.left;
                     scope.left = temp;
                 },
-                compareImpl: function (l, r, option) {
-                    if (option.type === 'array') {
-                        return exports.compareSideBySide.arrayCompare(l, r, option);
-                    } else if (option.type === 'object') {
-                        return exports.compareSideBySide.objectCompare(l, r, option);
-                    } else if (option.type === 'string') {
-                        return exports.compareSideBySide.stringCompare(l, r, option);
-                    } else if (option.type === 'number') {
-                        return exports.compareSideBySide.numberCompare(l, r, option);
+                compareImpl: function (l, r, options) {
+                    if (options.type === 'array') {
+                        return exports.compareSideBySide.arrayCompare(l, r, options);
+                    } else if (options.type === 'object') {
+                        return exports.compareSideBySide.objectCompare(l, r, options);
+                    } else if (options.type === 'string') {
+                        return exports.compareSideBySide.stringCompare(l, r, options);
+                    } else if (options.type === 'number') {
+                        return exports.compareSideBySide.numberCompare(l, r, options);
                     }
                 }
             };
