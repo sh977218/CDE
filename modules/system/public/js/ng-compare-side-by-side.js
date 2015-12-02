@@ -12,7 +12,7 @@
                     },
                     controller: function ($scope) {
                     },
-                    link: function ($scope, $element) {
+                    link: function ($scope) {
                         if (!$scope.left && !$scope.right) {
                             $scope.err = {error: true, errorMessage: "left and right are null"};
                         } else {
@@ -54,22 +54,29 @@
                             } else {
                                 $scope.result = result1.result;
                             }
-                            Comparison.applyComparison($scope, $element);
+                            $scope.displayTemplate = {
+                                array: '/system/public/js/compareTemplate/compareArray.html',
+                                stringArray: '/system/public/js/compareTemplate/compareStringArray.html',
+                                object: '/system/public/js/compareTemplate/compareObject.html',
+                                string: '/system/public/js/compareTemplate/compareString.html',
+                                number: '/system/public/js/compareTemplate/compareNumber.html'
+                            }[$scope.option.type];
                         }
-                    }
+                    }, templateUrl: '/system/public/js/compareTemplate/compareSwitchTemplate.html'
                 };
             }])
-        .factory("Comparison", ["$compile", function ($compile) {
+        .factory("Comparison", ["$compile", function () {
             return {
                 initialize: function (scope) {
+                    var type;
                     if (scope.left && !scope.right) {
-                        var type = typeof scope.left;
+                        type = typeof scope.left;
                         if (type === 'object') scope.right = {};
                         else if (type === 'string') scope.right = "";
                         else if (type === 'array') scope.right = [];
                     }
                     if (!scope.left && scope.right) {
-                        var type = typeof scope.right;
+                        type = typeof scope.right;
                         if (type === 'object') scope.left = {};
                         else if (type === 'string') scope.left = "";
                         else if (type === 'array') scope.left = [];
@@ -96,27 +103,6 @@
                         return exports.compareSideBySide.stringCompare(l, r, option);
                     } else if (option.type === 'number') {
                         return exports.compareSideBySide.numberCompare(l, r, option);
-                    }
-                },
-                getTemplateUrl: function ($scope) {
-                    if ($scope.option.type === 'array')
-                        return '/system/public/js/compareTemplate/compareArray.html';
-                    else if ($scope.option.type === 'stringArray')
-                        return '/system/public/js/compareTemplate/compareStringArray.html';
-                    else if ($scope.option.type === 'object')
-                        return '/system/public/js/compareTemplate/compareObject.html';
-                    else if ($scope.option.type === 'string')
-                        return '/system/public/js/compareTemplate/compareString.html';
-                    else if ($scope.option.type === 'number')
-                        return '/system/public/js/compareTemplate/compareNumber.html';
-                },
-                applyComparison: function ($scope, $element) {
-                    var _this = this;
-                    var el;
-                    if (!$scope.err) {
-                        el = '<div ng-include="' + _this.getTemplateUrl($scope) + '"></ng-include>';
-                        $compile(el)($scope);
-                        $element.append(el);
                     }
                 }
             };
