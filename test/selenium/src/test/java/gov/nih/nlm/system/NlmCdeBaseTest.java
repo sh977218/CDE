@@ -521,10 +521,10 @@ public class NlmCdeBaseTest {
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible = false;
+        boolean elementVisible = true;
         List<WebElement> result = driver.findElements(By.cssSelector(selector));
         if (result.size() > 0)
-            elementVisible = true;
+            elementVisible = false;
         driver.manage().timeouts()
                 .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         return elementVisible;
