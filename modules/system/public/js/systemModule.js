@@ -262,46 +262,46 @@ angular.module('systemModule').config(function ($provide) {
     });
 });
 
-angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("template/accordion/accordion-group.html",
-        "<div class=\"panel panel-default\">\n" +
-        "  <div class=\"panel-heading\">\n" +
-        "    <h4 class=\"panel-title\">\n" +
-        "      <a tabindex=\"-1\" class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a>\n" +
-        "    </h4>\n" +
-        "  </div>\n" +
-        "  <div class=\"panel-collapse\" collapse=\"!isOpen\">\n" +
-        "	  <div class=\"panel-body\" ng-transclude></div>\n" +
-        "  </div>\n" +
-        "</div>");
-}]);
-
-angular.module("template/pagination/pager.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("template/pagination/pager.html",
-        "<ul class=\"pager\">\n" +
-        "  <li ng-class=\"{disabled: noPrevious(), previous: align}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
-        "  <li ng-class=\"{disabled: noNext(), next: align}\"><a href ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
-        "</ul>");
-}]);
-
-angular.module("template/pagination/pagination.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("template/pagination/pagination.html",
-        "<ul class=\"pagination\">\n" +
-        "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(1)\">{{getText('first')}}</a></li>\n" +
-        "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
-        "  <li ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page.active}\"><a href tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
-        "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
-        "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(totalPages)\">{{getText('last')}}</a></li>\n" +
-        "</ul>");
-}]);
-
-angular.module("template/tabs/tab.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("template/tabs/tab.html",
-        "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
-        "  <a href ng-click=\"select()\" tabindex=\"0\" tab-heading-transclude>{{heading}}</a>\n" +
-        "</li>\n" +
-        "");
-}]);
+//angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
+//    $templateCache.put("template/accordion/accordion-group.html",
+//        "<div class=\"panel panel-default\">\n" +
+//        "  <div class=\"panel-heading\">\n" +
+//        "    <h4 class=\"panel-title\">\n" +
+//        "      <a tabindex=\"-1\" class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a>\n" +
+//        "    </h4>\n" +
+//        "  </div>\n" +
+//        "  <div class=\"panel-collapse\" collapse=\"!isOpen\">\n" +
+//        "	  <div class=\"panel-body\" ng-transclude></div>\n" +
+//        "  </div>\n" +
+//        "</div>");
+//}]);
+//
+//angular.module("template/pagination/pager.html", []).run(["$templateCache", function ($templateCache) {
+//    $templateCache.put("template/pagination/pager.html",
+//        "<ul class=\"pager\">\n" +
+//        "  <li ng-class=\"{disabled: noPrevious(), previous: align}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+//        "  <li ng-class=\"{disabled: noNext(), next: align}\"><a href ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+//        "</ul>");
+//}]);
+//
+//angular.module("template/pagination/pagination.html", []).run(["$templateCache", function ($templateCache) {
+//    $templateCache.put("template/pagination/pagination.html",
+//        "<ul class=\"pagination\">\n" +
+//        "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(1)\">{{getText('first')}}</a></li>\n" +
+//        "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noPrevious()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+//        "  <li ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page.active}\"><a href tabindex=\"0\" ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+//        "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+//        "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noNext()}\"><a href tabindex=\"0\" ng-click=\"selectPage(totalPages)\">{{getText('last')}}</a></li>\n" +
+//        "</ul>");
+//}]);
+//
+//angular.module("template/tabs/tab.html", []).run(["$templateCache", function ($templateCache) {
+//    $templateCache.put("template/tabs/tab.html",
+//        "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
+//        "  <a href ng-click=\"select()\" tabindex=\"0\" tab-heading-transclude>{{heading}}</a>\n" +
+//        "</li>\n" +
+//        "");
+//}]);
 
 angular.module('systemModule').config(function ($provide) {
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function ($delegate, $injector) {

@@ -68,3 +68,30 @@
         </div>
     </div>
 </div>
+
+<accordion close-others="true">
+    PLain Accord
+    <accordion-group ng-repeat="m in ['a', 'b', 'c']">
+        Accord-group
+        <accordion-heading>
+            Accord-heading
+            <span>{{m}}</span>
+            <span class="pull-right">CREATED</span>
+        </accordion-heading>
+        <p>BODY</p>
+    </accordion-group>
+</accordion>
+
+<uib-accordion close-others="true">
+    Accord
+    <uib-accordion-group ng-repeat="m in ['a', 'b', 'c']">
+        Accord-group
+        <uib-accordion-heading>
+            Accord-heading
+            <span>{{m}}</span>
+            <span class="pull-right">CREATED</span>
+        </uib-accordion-heading>
+        <p>BODY</p>
+    </uib-accordion-group>
+</uib-accordion>
+
