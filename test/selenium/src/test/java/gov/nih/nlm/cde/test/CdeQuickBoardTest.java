@@ -23,7 +23,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("Quick Board (0)");
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test
@@ -37,7 +37,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("Quick Board (0)");
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textNotPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
 
         clickElement(By.id("qb_cde_empty"));
-        textPresent("Quick Board (0)");
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Value used as a Standard Deviation");
 
         clickElement(By.id("qb_cde_empty"));
-        textPresent("Quick Board (0)");
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test
@@ -109,7 +109,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
 
-        clickElement(By.id("cde.accordionView"));
+        clickElement(By.id("cde_accordionView"));
         textNotPresent("Prostate Cancer pN0 TNM Finding");
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
@@ -126,7 +126,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         textNotPresent("NCI Thesaurus");
 
-        clickElement(By.id("cde.accordionView"));
+        clickElement(By.id("cde_accordionView"));
         textNotPresent("Prostate Cancer pN0 TNM Finding");
         textNotPresent("Prostate Tumor Pathologic N Stage");
         textNotPresent("NCI Thesaurus");
@@ -134,15 +134,6 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
-    }
-
-    public void emptyQuickBoardByModule(String module) {
-        if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_" + module + "_empty"));
-        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard ( empty )");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        hangon(1);
     }
 
     @Test
@@ -153,7 +144,6 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("CDE QuickBoard ( empty )");
         textPresent("Form QuickBoard ( empty )");
         textPresent("The quick board is empty.");
-
     }
 
     @Test
@@ -164,9 +154,9 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
         textPresent("Quick Board (5)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_cde_empty"));
-        clickElement(By.linkText("CDE QuickBoard ( empty )"));
+        textPresent("CDE QuickBoard ( empty )");
     }
 
     @Test

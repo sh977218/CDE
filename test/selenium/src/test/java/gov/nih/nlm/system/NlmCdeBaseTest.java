@@ -465,7 +465,7 @@ public class NlmCdeBaseTest {
         textPresent("Cancer Therapy Evaluation Program");
     }
 
-    protected void goToQuickBoard() {
+    protected void goToQuickBoardByModule() {
         driver.get(baseUrl + "/#/quickBoard");
     }
 
@@ -509,6 +509,14 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
         String quickBoardTabText = (module == "cde" ? "CDE" : "Form") + " QuickBoard (";
         textPresent(quickBoardTabText);
+    }
+    public void emptyQuickBoardByModule(String module) {
+        if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
+        goToQuickBoardByModule(module);
+        clickElement(By.id("qb_" + module + "_empty"));
+        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard ( empty )");
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        hangon(1);
     }
 
     public void addToCompare(String cdeName1, String cdeName2) {

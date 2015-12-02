@@ -59,19 +59,18 @@ public class ExportTest extends NlmCdeBaseTest {
     @Test
     public void quickBoardExport() {
         goToSearch("cde");
-        findElement(By.id("browseOrg-caBIG")).click();
+        clickElement(By.id("browseOrg-caBIG"));
         hangon(1);
         clickElement(By.id("addToCompare_0"));
-        findElement(By.id("addToCompare_1")).click();
-        findElement(By.id("addToCompare_2")).click();
-        findElement(By.id("addToCompare_3")).click();
-        findElement(By.id("addToCompare_4")).click();
-        findElement(By.id("addToCompare_5")).click();
-        findElement(By.id("addToCompare_6")).click();
+        clickElement(By.id("addToCompare_1"));
+        clickElement(By.id("addToCompare_2"));
+        clickElement(By.id("addToCompare_3"));
+        clickElement(By.id("addToCompare_4"));
+        clickElement(By.id("addToCompare_5"));
+        clickElement(By.id("addToCompare_6"));
 
         textPresent("Quick Board (7)");
-        goToQuickBoardByModule();
-        clickElement(By.xpath("//*[@id=\"qb_cde_tab\"]/a"));
+        goToQuickBoardByModule("cde");
         textPresent("Export Quick Board");
 
         clickElement(By.id("qb_cde_export"));

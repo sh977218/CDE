@@ -36,7 +36,7 @@ public class MiscTests extends NlmCdeBaseTest {
         textPresent("NHLBI");
         textPresent("SPOREs");
         textPresent("NICHD");
-        clickElement(By.id("cde.accordionView"));
+        clickElement(By.id("cde_accordionView"));
         textNotPresent("Pathologic N Stage");
         textNotPresent("If No, specify reason for ");
         textNotPresent("AE Ongoing?");
