@@ -27,6 +27,9 @@ exports.compareSideBySide = {
             }
         }
         leftArray.forEach(function (o) {
+                if (option.wipeUseless) {
+                    option.wipeUseless(o);
+                }
                 var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, option.equal);
                 // element didn't found in right list.
                 if (rightIndex === -1) {
@@ -68,8 +71,8 @@ exports.compareSideBySide = {
                     option.properties.forEach(function (p) {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
-                        property.match = JSON.stringify(exports.getValueByNestedProperty(leftArray[leftIndex], property.property))
-                        === JSON.stringify(exports.getValueByNestedProperty(rightArray[rightIndex], property.property));
+                        property.match = JSON.stringify(getValueByNestedProperty(leftArray[leftIndex], property.property))
+                        === JSON.stringify(getValueByNestedProperty(rightArray[rightIndex], property.property));
                         found.result.push(property);
                     });
                     result.push(found);
@@ -88,8 +91,10 @@ exports.compareSideBySide = {
         return {result: result, matchCount: matchCount};
     },
     objectCompare: function (leftObj, rightObj, option) {
-        exports.wipeUseless(leftObj);
-        exports.wipeUseless(rightObj);
+        if (option.wipeUseless) {
+            option.wipeUseless(leftObj);
+            option.wipeUseless(rightObj);
+        }
         var result = [];
         var matchCount = 0;
         if (!option) option = {};
@@ -138,30 +143,6 @@ exports.compareSideBySide = {
             })
         }
         return {result: result, matchCount: matchCount};
-    }
-};
-
-exports.wipeUseless = function (obj) {
-    delete obj.$$hashKey;
-    delete obj._id;
-    delete obj.__v;
-    delete obj.history;
-    delete obj.imported;
-    delete obj.noRenderAllowed;
-    delete obj.displayProfiles;
-    delete obj.attachments;
-    delete obj.version;
-    delete obj.comments;
-    delete obj.derivationRules;
-    delete obj.usedBy;
-    delete obj.classification;
-    delete obj.$$hashKey;
-    delete obj.isOpen;
-    delete obj.formElements;
-    if (obj.questions) {
-        obj.questions.forEach(function (question) {
-            delete question._id;
-        })
     }
 };
 

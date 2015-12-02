@@ -1,0 +1,5 @@
+<div class="overflowHidden" ng-repeat="r in result"
+     ng-class="{quickBoardContentCompareModifiedObject:r.match===false,quickBoardContentCompareSameObject:r.match===true}">
+    <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object obj="left" properties="r"></div>
+    <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object obj="right" properties="r"></div>
+</div>';

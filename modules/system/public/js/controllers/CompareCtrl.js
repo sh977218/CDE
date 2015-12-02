@@ -55,6 +55,29 @@ angular.module('cdeModule').controller('CompareCtrl',
                 $scope.comparePvs($scope.cdes[0].valueDomain.permissibleValues, $scope.cdes[1].valueDomain.permissibleValues);
             }
 
+            $scope.wipeUseless = function (obj) {
+                delete obj.$$hashKey;
+                delete obj._id;
+                delete obj.__v;
+                delete obj.history;
+                delete obj.imported;
+                delete obj.noRenderAllowed;
+                delete obj.displayProfiles;
+                delete obj.attachments;
+                delete obj.version;
+                delete obj.comments;
+                delete obj.derivationRules;
+                delete obj.usedBy;
+                delete obj.classification;
+                delete obj.$$hashKey;
+                delete obj.isOpen;
+                delete obj.formElements;
+                if (obj.questions) {
+                    obj.questions.forEach(function (question) {
+                        delete question._id;
+                    })
+                }
+            };
 
             $scope.namingOption = {
                 properties: [
@@ -62,7 +85,8 @@ angular.module('cdeModule').controller('CompareCtrl',
                         label: 'Definition',
                         property: 'definition'
                     }, {label: 'Context', property: 'context.contextName'}
-                ]
+                ],
+                wipeUseless: $scope.wipeUseless
             };
             $scope.referenceDocumentOption = {
                 properties: [
@@ -74,23 +98,30 @@ angular.module('cdeModule').controller('CompareCtrl',
                     },
                     {label: 'Language Code', property: 'languageCode'},
                     {label: 'Document', property: 'document'}
-                ]
+                ],
+                wipeUseless: $scope.wipeUseless
             };
             $scope.propertiesOption = {
                 properties: [
                     {label: 'Key', property: 'key'},
                     {label: 'Value', property: 'value'}
-                ]
+                ],
+                wipeUseless: $scope.wipeUseless
             };
             $scope.dataElementConceptOption = {
                 properties: [
                     {label: 'Name', property: 'name'},
                     {label: 'Origin', property: 'origin'},
                     {label: 'Origin Id', property: 'originId'}
-                ]
+                ],
+                wipeUseless: $scope.wipeUseless
             };
-            $scope.stewardOrgOption = {properties: [{label: 'Steward', property: 'name'}]};
-            $scope.registrationStateOption = {properties: [{label: 'Status', property: 'registrationStatus'}]};
+            $scope.stewardOrgOption = {
+                properties: [{label: 'Steward', property: 'name'}]
+            };
+            $scope.registrationStateOption = {
+                properties: [{label: 'Status', property: 'registrationStatus'}]
+            };
 
             var flatFormQuestions = function (fe, questions) {
                 if (fe.formElements != undefined) {
@@ -112,15 +143,14 @@ angular.module('cdeModule').controller('CompareCtrl',
                     {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
                     {label: 'Unit of Measurement', property: 'question.uoms'},
                     {label: 'Answer', property: 'question.answers', displayAs: 'valueMeaningName'}
-                ]
+                ],
+                wipeUseless: $scope.wipeUseless
             };
             $scope.eltsToCompare[0].questions = [];
             flatFormQuestions($scope.eltsToCompare[0], $scope.eltsToCompare[0].questions);
-            exports.wipeUseless($scope.eltsToCompare[0]);
 
             $scope.eltsToCompare[1].questions = [];
             flatFormQuestions($scope.eltsToCompare[1], $scope.eltsToCompare[1].questions);
-            exports.wipeUseless($scope.eltsToCompare[1]);
         }
     ])
 ;
