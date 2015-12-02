@@ -62,27 +62,27 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         scrollToTop();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//i[@class='fa fa-edit']")).click();
         findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//input")).sendKeys(testOrgRenamed);
-        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[text()=' Confirm']")).click();
+        findElement(By.xpath("//div[@id = 'orgLongName-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
         closeAlert();
 
         clickElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//input")).sendKeys(testOrgMailingAddress);
-        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
+        findElement(By.xpath("//div[@id = 'orgMailAddress-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
         closeAlert();
 
         clickElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//input")).sendKeys(testOrgEmailingAddress);
-        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[text()=' Confirm']")).click();
+        findElement(By.xpath("//div[@id = 'orgEmailAddress-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
         closeAlert();
 
         clickElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//input")).sendKeys(testOrgPhoneNumber);
-        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[text()=' Confirm']")).click();
+        findElement(By.xpath("//div[@id = 'orgPhoneNumber-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
         closeAlert();
 
         clickElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUri);
-        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[text()=' Confirm']")).click();
+        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
         closeAlert();
         
         refreshOrganizationsTabScreen();
