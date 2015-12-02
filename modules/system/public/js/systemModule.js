@@ -111,15 +111,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.cb();
                 };
                 $scope.moveTop = function (index) {
-                    var array = [];
-                    array.push($scope.array[index]);
-                    for (var i = 0; i < index; i++) {
-                        array.push($scope.array[i]);
-                    }
-                    for (var i = index + 1; i < $scope.array.length; i++) {
-                        array.push($scope.array[i]);
-                    }
-                    $scope.array = array;
+                    $scope.array.splice(0, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
                 $scope.moveBottom = function () {
