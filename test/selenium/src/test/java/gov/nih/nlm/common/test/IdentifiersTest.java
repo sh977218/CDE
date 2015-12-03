@@ -9,13 +9,13 @@ import java.util.List;
 public abstract class IdentifiersTest extends CommonTest {
 
     protected void addId(String source, String id, String version) {
-        findElement(By.linkText("Identifiers")).click();
-        findElement(By.id("addId")).click();
+        clickElement(By.linkText("Identifiers"));
+        clickElement(By.id("addId"));
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
-        findElement(By.id("createId")).click();
+        clickElement(By.id("createId"));
         textPresent("Identifier Added");
         closeAlert();
         hangon(1);
