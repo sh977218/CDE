@@ -26,22 +26,21 @@
     <!-- endbuild -->
 
     <link rel='stylesheet' href='/cde/public/assets/css/textAngular.css'>
-    <link href="/cde/public/assets/css/feedback.css" rel='stylesheet'>
-
 
 
     <!-- bower:css -->
-    <link rel="stylesheet" href="../public/components/fontawesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="../public/components/select2/select2.css" />
-    <link rel="stylesheet" href="../public/components/selectize/dist/css/selectize.css" />
-    <link rel="stylesheet" href="../public/components/angular-ui-select/dist/select.css" />
-    <link rel="stylesheet" href="../public/components/bootstrap-css-only/css/bootstrap.css" />
-    <link rel="stylesheet" href="../public/components/textAngular/src/textAngular.css" />
-    <link rel="stylesheet" href="../public/components/bootstrap-tour/build/css/bootstrap-tour.css" />
-    <link rel="stylesheet" href="../public/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css" />
-    <link rel="stylesheet" href="../public/components/ng-grid/ng-grid.css" />
+    <link rel='stylesheet' href='../public/components/fontawesome/css/font-awesome.css' />
+    <link rel='stylesheet' href='../public/components/select2/select2.css' />
+    <link rel='stylesheet' href='../public/components/selectize/dist/css/selectize.css' />
+    <link rel='stylesheet' href='../public/components/angular-ui-select/dist/select.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-css-only/css/bootstrap.css' />
+    <link rel='stylesheet' href='../public/components/textAngular/src/textAngular.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-tour/build/css/bootstrap-tour.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
+    <link rel='stylesheet' href='../public/components/ng-grid/ng-grid.css' />
     <!-- endbower -->
 
+    <link rel='stylesheet' href='../public/components/angular-send-feedback/dist/angular-send-feedback.css' />
 
 
     <script type="text/javascript">
@@ -287,7 +286,6 @@
 <script src="/cde/public/assets/js/match-media.js"></script>
 <script src="/cde/public/assets/js/sortable.js"></script>
 <script src="/cde/public/assets/js/scrollfix.js"></script>
-<script src="/cde/public/assets/js/select.js"></script>
 <script src="/cde/public/assets/js/camelCaseToHuman.js"></script>
 <script src="/cde/public/assets/js/FileSaver.js"></script>
 <script src="/cde/public/js/ng-text-truncate.js"></script>
@@ -298,14 +296,12 @@
 <%- include ../../form/views/includeFrontEndJS.ejs %>
 <%- include webtrends.ejs %>
 
-
 <script src="/article/public/js/articleConfig.js"></script>
 
-<script src="/cde/public/assets/js/feedback.js"></script>
+<span ng-controller="FeedbackBtnCtrl">
+    <angular-feedback options="feedbackOptions"></angular-feedback>
+</span>
 
-        <span ng-controller="FeedbackBtnCtrl">
-            <angular-feedback options="feedbackOptions"></angular-feedback>
-        </span>
 <script type="application/ld+json">
         {
           "@context": "http://schema.org",
