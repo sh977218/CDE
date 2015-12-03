@@ -1,6 +1,6 @@
-<div accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
-    <div accordion-group is-open="">
-        <div accordion-heading>
+<div uib-accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
+    <div uib-accordion-group is-open="">
+        <div uib-accordion-heading>
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-if="question.question.isScore" ><strong>Score: </strong> </span>
             <span ng-bind-html="question.label | placeholdEmpty"

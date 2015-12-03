@@ -1,6 +1,6 @@
-<div accordion close-others="false">
-    <div accordion-group ng-repeat="form in cdes track by $index" is-open="form.isOpen">
-        <div accordion-heading ng-controller="AccordionCtrl">
+<div uib-accordion close-others="false">
+    <div uib-accordion-group ng-repeat="form in cdes track by $index" is-open="form.isOpen">
+        <div uib-accordion-heading ng-controller="AccordionCtrl">
             <a href tabindex="0" class="nonLinkAnchor">
                 <span ng-bind-html="form.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
             <a ng-href="/formView?tinyId={{form.tinyId}}" tabindex="0" class="nonLinkAnchor" ng-click="view(form,$event)">

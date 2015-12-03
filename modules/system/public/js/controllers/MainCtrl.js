@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
+    ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
         '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route', 'LoginRedirect',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
                  $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route, LoginRedirect)

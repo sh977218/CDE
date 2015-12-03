@@ -18,7 +18,7 @@
             <span ng-hide="editDtMode">
                 <i title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit"
                    ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i>
-                <a tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right"
+                <a uib-tooltip-html-unsafe="{{orgDetailsInfoHtml}}" tooltip-popup-delay="500" tooltip-placement="right"
                    tooltip-append-to-body="true">{{elt.stewardOrg.name}}</a></span>
         </dd>
         <dt tabindex="0">Definition:</dt>

@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
+    ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
                   SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller, $log)

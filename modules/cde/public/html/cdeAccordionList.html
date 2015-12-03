@@ -1,7 +1,7 @@
-<div accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
+<div uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="cde in cdes track by cde._id" is-open="cde.isOpen">
-            <div accordion-heading ng-controller="AccordionCtrl">
+        <div uib-accordion-group ng-repeat="cde in cdes track by cde._id" is-open="cde.isOpen">
+            <div uib-accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
