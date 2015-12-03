@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$modal', 'Mail', 'MergeCdes', 'userResource', function($scope, $modal, Mail, MergeCdes, userResource) {
+angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal', 'Mail', 'MergeCdes', 'userResource', function($scope, $modal, Mail, MergeCdes, userResource) {
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'

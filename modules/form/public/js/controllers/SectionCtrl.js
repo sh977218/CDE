@@ -1,4 +1,4 @@
-angular.module('formModule').controller('SectionCtrl', ['$scope', '$modal', '$timeout', '$http', function ($scope, $modal, $timeout, $http) {
+angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http', function ($scope, $modal, $timeout, $http) {
 
     $scope.cardinalityOptions =
     {

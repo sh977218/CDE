@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ClassificationManagementCtrl',
-    ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
+    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
         function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log)
 {
 

@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
+angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$window', function($scope, $modal, $window) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
           templateUrl: 'newIdModalContent.html',

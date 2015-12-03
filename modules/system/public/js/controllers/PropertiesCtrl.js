@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal', '$location', '$timeout',
+angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModal', '$location', '$timeout',
     function($scope, $modal, $location, $timeout)
 {
     $scope.openNewProperty = function () {

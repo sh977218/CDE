@@ -48,7 +48,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
             '</span>' +
             '<form name="inlineForm" ng-show="editMode">' +
-            '<input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
+            '<input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value" uib-typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control uib-typeahead"/>' +
             '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
             '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
             '</form>' +
@@ -77,8 +77,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             '</div>' +
             '<div ng-show="editMode">' +
             '   <div class="btn-group definitionFormatRadio">' +
-            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
-            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
+            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" uib-btn-radio="null">Plain Text</button>' +
+            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" uib-btn-radio="\'html\'">Rich Text</button>' +
             '   </div>' +
             '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
             '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ta-toolbar="[[\'h1\',\'h2\',\'h3\',\'h4\',\'h5\',\'h6\',\'p\'],[\'bold\',\'italics\'],[\'undo\',\'redo\'],[\'ul\',\'ol\'],[\'justifyLeft\',\'justifyCenter\',\'justifyRight\'],[\'indent\',\'outdent\']]"></div>' +
@@ -99,9 +99,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     .directive('sortableArray', function () {
         return {
             template:
-            '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" tooltip="Up" href=""></span>'
-            + '<span id="moveDown-{{index}}" class="btn-default fa fa-arrow-down" ng-click="moveDown()" ng-if="index < array.length - 1" title="Down" tooltip="Down" href=""></span>'
-            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop()" ng-if="index !== 0" title="Move to top" tooltip="Move to top" href=""></span>',
+            '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" uib-tooltip="Up" href=""></span>'
+            + '<span id="moveDown-{{index}}" class="btn-default fa fa-arrow-down" ng-click="moveDown()" ng-if="index < array.length - 1" title="Down" uib-tooltip="Down" href=""></span>'
+            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop()" ng-if="index !== 0" title="Move to top" uib-tooltip="Move to top" href=""></span>',
             controller: function ($scope, $element, $attrs) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);

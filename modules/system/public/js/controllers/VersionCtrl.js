@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('VersionCtrl', ['$scope', '$modal', '$location',
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal', '$location',
     function($scope, $modal, $location)
 {
     $scope.stageElt = function(elt) {

@@ -1,5 +1,5 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification',
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
         '$http', 'userResource', 'CdeList', '$log',
         function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
                   $http, userResource, CdeList, $log)

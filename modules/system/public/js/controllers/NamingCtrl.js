@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('NamingCtrl', ['$scope', '$modal',
+angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal',
     function($scope, $modal)
 {
 

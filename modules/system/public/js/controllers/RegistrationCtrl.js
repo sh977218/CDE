@@ -1,4 +1,4 @@
- angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$modal', '$location',
+ angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$uibModal', '$location',
      function($scope, $modal, $location)
  {
      

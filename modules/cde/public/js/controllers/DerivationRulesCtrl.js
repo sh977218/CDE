@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal', 'QuickBoard', 'CdeList', '$http',
+angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibModal', 'QuickBoard', 'CdeList', '$http',
     function($scope, $modal, quickBoard, CdeList, $http)
 {
 

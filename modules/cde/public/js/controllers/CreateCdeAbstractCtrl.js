@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
-    ['$scope', '$location', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource',
+    ['$scope', '$location', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource',
         function($scope, $location, $timeout, $modal, DataElement, Elastic, userResource) {
             $scope.openCdeInNewTab = true;
             $scope.currentPage = 1;

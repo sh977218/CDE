@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('FeedbackIssueListCtrl', ['$scope', '$controller', '$modal', '$rootScope',function($scope, $controller, $modal, $rootScope) {
+angular.module('systemModule').controller('FeedbackIssueListCtrl', ['$scope', '$controller', '$uibModal', '$rootScope',function($scope, $controller, $modal, $rootScope) {
     $scope.api = "/getFeedbackIssues";
     $scope.errorType = "feedback";
     $scope.fields = ["Date", "User", "Message", "URL", "Screenshot", "Browser", "HTML"];

@@ -59,7 +59,7 @@
                         <dt tabindex="0">Show if:</dt>
                         <dd tabindex="0">
                             <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
-                                   typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
+                                   uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
                                    typeahead-min-length="0" class="form-control skipLogicCondition"/>
                         </dd>
                     </span>

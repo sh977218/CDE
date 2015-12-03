@@ -6,7 +6,7 @@
                 <div class="form-group">
                     <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
                            placeholder="enter user name" ng-model="orgAdmin.username"
-                           typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
                            typeahead-min-length="3" required>
                 </div>
                 an administrator for
@@ -47,7 +47,7 @@
                 <div class="form-group">
                     <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
                            placeholder="enter user name" ng-model="orgCurator.username"
-                           typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
                            typeahead-min-length="3" required>
                 </div>
                 a curator for

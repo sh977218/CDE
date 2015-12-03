@@ -38,9 +38,9 @@
             </div>
         </h1>
 
-        <div tabset>
+        <div uib-tabset>
             <div ng-repeat="(tabName, tab) in tabs"
-                 tab heading="{{tab.heading}}"
+                 uib-tab heading="{{tab.heading}}"
                  active="tab.active"
                  ng-if="tab.if?tab.if():true"
                  id="{{tabName}}_tab"

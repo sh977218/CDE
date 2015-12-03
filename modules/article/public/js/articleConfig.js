@@ -12,7 +12,7 @@ angular.module('articleModule', ['ngRoute']).config(
         controllerAs: 'article'
       });
 })
-.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$modal',
+.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$uibModal',
         function ($routeParams, $http, $scope, $location, $modal) {
 
 

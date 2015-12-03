@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$modal', function($scope, $modal) {
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', function($scope, $modal) {
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;

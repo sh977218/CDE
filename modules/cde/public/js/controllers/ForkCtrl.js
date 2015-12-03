@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModal', '$window', 'userResource', '$route', '$log',
     function($scope, $http, $modal, $window, userResource, $route, $log) {
 
         $log.debug("ForkCtrl open");

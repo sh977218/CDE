@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$modal', '$location', '$timeout',
+angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$uibModal', '$location', '$timeout',
     function ($scope, $modal, $location, $timeout)
 {
     $scope.openNewReferenceDocument = function () {

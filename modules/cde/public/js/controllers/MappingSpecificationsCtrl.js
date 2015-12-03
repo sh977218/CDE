@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$location',
+angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$uibModal', '$location',
     function($scope, $modal, $location)
 {
     $scope.openNewMappingSpecification = function () {

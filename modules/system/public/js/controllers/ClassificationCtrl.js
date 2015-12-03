@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ClassificationCtrl',
-    ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
+    ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
         function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
 {
     $scope.initCache();
