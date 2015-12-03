@@ -82,7 +82,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//input")).sendKeys(testOrgUri);
-        findElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[contains(text(),'Confirm')]")).click();
+        clickElement(By.xpath("//div[@id = 'orgUri-"+testOrg+"']//button[contains(text(),'Confirm')]"));
         closeAlert();
         
         refreshOrganizationsTabScreen();
