@@ -464,7 +464,7 @@ module.exports = function(grunt) {
     grunt.registerTask('buildVersion',['shell:version','persistVersion']);
     grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
     grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
-    grunt.registerTask('bower',['bower-install-simple']);
+    grunt.registerTask('bower',['bower-install-simple', 'wiredep']);
     grunt.registerTask('ci', ['buildVersion', 'bower', 'wiredep', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
