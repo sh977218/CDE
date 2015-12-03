@@ -21,6 +21,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//dd[@id = 'dd_uom']//i[@class = 'fa fa-edit']")).click();
         findElement(By.xpath("//dd[@id = 'dd_uom']//input")).sendKeys("myUom");
         findElement(By.cssSelector("#dd_uom .fa-check")).click();
+        textPresent("myUom");
         newCdeVersion("Change note for change number 1");
         goToCdeByName(cdeName);
         textPresent("[name change number 1]");

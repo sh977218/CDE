@@ -19,9 +19,7 @@ status.statusReport = {
 };    
 
 exports.everythingOk = function() {
-    return status.statusReport.elastic.up
-        && status.statusReport.elastic.results
-        && status.statusReport.elastic.sync;
+    return status.statusReport.elastic.up;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
@@ -29,11 +27,12 @@ exports.assembleErrorMessage = function(statusReport) {
     if (!statusReport.elastic.results) return "ElasticSearch service is not returning any results. Index might be empty.";
     if (!statusReport.elastic.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
     if (!statusReport.elastic.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
+    return "";
 };
 
 exports.status = function(req, res) {    
     if (status.everythingOk()) {
-        res.send("ALL SERVICES UP");   
+        res.send("ALL SERVICES UP\n" + exports.assembleErrorMessage(status.statusReport));
     } else {
         var msg = status.assembleErrorMessage(status.statusReport);
         res.send("ERROR: " + msg);        
@@ -109,7 +108,7 @@ status.checkElasticSync = function(body, statusReport) {
             }
         , function(error, response) {
                 // +1 to allow elements that gets created for the check. 
-                statusReport.elastic.sync = (response.count + 1) >= deCount;
+                statusReport.elastic.sync = response.count  >= deCount - 5 && response.count <= deCount + 5 ;
                 if (!statusReport.elastic.sync) {
                     console.log("Setting status sync to false because deCount = " + deCount +
                     "and esCount = " + response.count);
@@ -118,19 +117,23 @@ status.checkElasticSync = function(body, statusReport) {
         )
     });
 };
+
 status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
+    var stamp = Math.round((Math.random() * 100000000)).toString();
+
     var fakeCde = {
         stewardOrg: {name: "FAKE"}
         , naming: [{
-                designation: "NLM_APP_Status_Report"
-                , definition: "NLM_APP_Status_Report"
+            designation: "NLM_APP_Status_Report_" + config.hostname
+            , definition: "NLM_APP_Status_Report_" + config.hostname
         }]
         , registrationState: {registrationStatus: "Retired"}
+        , version: stamp
     };
 
-    mongoCollection.create(fakeCde, {_id: null, username: ""}, function(err, mongoCde) {
+    mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
         setTimeout(function() {
-            request.get(elasticUrl + "_search?q=" + mongoCde.tinyId, function (error, response, bodyStr) {
+            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname, function (error, response, bodyStr) {
                 var errorToLog = {
                     origin: "cde.status.checkElasticUpdating"
                     , stack: new Error().stack
@@ -138,31 +141,31 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 };
                 if (error || response.statusCode !== 200) {
                     errorToLog.details = {bodyStr: bodyStr, error: error, nodeName: config.name};
-                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", errorToLog); 
+                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", errorToLog);
                 }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.updating = false;    
+                    statusReport.elastic.updating = false;
                     errorToLog.details = {bodyStr: bodyStr, nodeName: config.name};
-                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog); 
+                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog);
                 } else {
-                    statusReport.elastic.updating = true; 
+                    statusReport.elastic.updating = true;
                     var elasticCde = body.hits.hits[0]._source;
-                    if (mongoCde.tinyId !== elasticCde.tinyId) {
-                        statusReport.elastic.updating = false;   
-                        errorToLog.details = {elasticCde: elasticCde, mongoCde: mongoCde, nodeName: config.name};
+                    if (stamp !== elasticCde.version) {
+                        statusReport.elastic.updating = false;
+                        errorToLog.details = {elasticCde: elasticCde,  nodeName: config.name};
                         logging.errorLogger.error("Error in STATUS: CDE do not match", errorToLog);
                     } else {
-                        statusReport.elastic.updating = true;                        
+                        statusReport.elastic.updating = true;
                     }
                 }
                 mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
                     if (err) {
                         errorToLog.details = {tinyId: mongoCde.tinyId, err: err, nodeName: config.name};
-                        logging.errorLogger.error("Cannot delete dataelement", errorToLog);                            
-                    }                  
+                        logging.errorLogger.error("Cannot delete dataelement", errorToLog);
+                    }
                 });
-            });            
+            });
         }, config.status.timeouts.dummyElementCheck);
     });
 };

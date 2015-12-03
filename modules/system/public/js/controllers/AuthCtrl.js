@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http',
-    function($scope, Auth, $window, $http)
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'LoginRedirect',
+    function($scope, Auth, $window, $http, LoginRedirect)
 {
     
     $scope.getCsrf = function() {
@@ -21,16 +21,20 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
             },
             function(res) {
                 if (res === "OK") {
-                    $window.location.href = "/";
+                    if (LoginRedirect.getPreviousRoute()) $window.location.href = LoginRedirect.getPreviousRoute();
+                    else $window.location.href = "/";
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
                 }
               },
-            function(err) {
+            function() {
                 $scope.addAlert("danger", "Failed to log in.");
                 $scope.getCsrf();
             });
     };
+
+   $scope.oauthEnabled = window.oauthEnabled;
+
 }
 ]);

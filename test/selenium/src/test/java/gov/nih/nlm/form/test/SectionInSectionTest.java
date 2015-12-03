@@ -37,7 +37,7 @@ public class SectionInSectionTest extends BaseFormTest {
         Assert.assertEquals("Exactly 1", findElement(By.xpath(cardXPath)).getText().trim());
         findElement(By.xpath(cardXPath + "//i")).click();
         new Select(findElement(By.xpath(cardXPath + "//select"))).selectByVisibleText("1 or more");
-        findElement(By.xpath(cardXPath + "//button[text() = ' Confirm']")).click();
+        findElement(By.xpath(cardXPath + "//button[contains(text(),'Confirm')]")).click();
         
         saveForm();        
         goToFormByName(formName, "Incomplete");
