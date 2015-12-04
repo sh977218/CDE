@@ -79,10 +79,7 @@ function doCdes() {
                 cde.valueDomain.datatype = 'Value List';
         }
 
-
-
-
-                var cls = [cdashRow['Domain']];
+        var cls = [cdashRow['Domain']];
         if (cdashRow['Role'].length > 0) {
             cls.push(cdashRow['Role']);
         }
@@ -103,7 +100,6 @@ function doCdes() {
         }
 
         newForm.formElements.push(question);
-
 
     });
     toSave.async(
