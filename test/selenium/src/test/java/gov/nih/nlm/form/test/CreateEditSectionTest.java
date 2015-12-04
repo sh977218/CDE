@@ -43,7 +43,7 @@ public class CreateEditSectionTest extends BaseFormTest {
         
         findElement(By.xpath("//div[@id='section_title_0']//i")).click();
         findElement(By.xpath("//div[@id='section_title_0']//input")).sendKeys(" - New");
-        findElement(By.xpath("//div[@id='section_title_0']//button[text() = ' Confirm']")).click();
+        findElement(By.xpath("//div[@id='section_title_0']//button[contains(text(),'Confirm')]")).click();
         
         findElement(By.xpath("//dd[@id='dd_card_1']//i")).click();
         new Select(findElement(By.xpath("//dd[@id='dd_card_1']//select"))).selectByVisibleText("0 or 1");

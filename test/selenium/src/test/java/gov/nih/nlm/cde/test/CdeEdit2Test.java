@@ -12,21 +12,21 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
 
         String cdeName = "INSS";
         goToCdeByName(cdeName);
-        findElement(By.cssSelector("#dd_def .fa-edit")).click();
+        clickElement(By.cssSelector("#dd_def .fa-edit"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change: adding html characters][<b>bold</b>]");
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
+        clickElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']"));
         newCdeVersion();
 
         textPresent("<b>bold</b>");
-        findElement(By.cssSelector("#dd_def .fa-edit")).click();
-        findElement(By.xpath("//dd[@id='dd_def']//button[text() = 'Rich Text']")).click();
+        clickElement(By.cssSelector("#dd_def .fa-edit"));
+        clickElement(By.xpath("//dd[@id='dd_def']//button[contains(text(),'Rich Text')]"));
         hangon(2);
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
+        clickElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']"));
         newCdeVersion();
-        textNotPresent("<b>bold</b>");        
-    }    
+        textNotPresent("<b>bold</b>");
+    }
 
-    
+
     @Test
     public void editCdeByTinyId() {
         mustBeLoggedInAs(ctepCurator_username, password);
@@ -38,7 +38,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
         driver.get(baseUrl + "/#/deview?tinyId=xNugcDxoqKW");
         textPresent("General Details");
         textPresent("[name change number 1]");
-              
-    }    
+
+    }
 
 }

@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UserTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void wrongLogin() {
         mustBeLoggedOut();
@@ -16,14 +16,14 @@ public class UserTest extends NlmCdeBaseTest {
             findElement(By.linkText("Log In")).click();
         } catch (TimeoutException e) {
             logout();
-            findElement(By.linkText("Log In")).click();            
+            findElement(By.linkText("Log In")).click();
         }
-        
+
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
         enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
-    
+
     }
-    
+
     @Test
     public void curatorProfile() {
         mustBeLoggedInAs(cabigAdmin_username, password);
@@ -41,21 +41,21 @@ public class UserTest extends NlmCdeBaseTest {
         findElement(By.id("username_link"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("Create")));
     }
-    
+
     @Test
     public void userEmail() {
-		mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, test_password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         Assert.assertEquals("test@example.com", findElement(By.id("user_email")).getText());
         findElement(By.xpath("//div[@id='emailEdit']//i")).click();
         findElement(By.xpath("//div[@id='emailEdit']//input")).clear();
-        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");        
-        Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
-        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me.com");        
-        Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).isEnabled());
-        findElement(By.xpath("//div[@id='emailEdit']//button[text()=' Confirm']")).click();
-        textPresent("Saved");                
+        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");
+        Assert.assertFalse(findElement(By.xpath("//div[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me.com");
+        Assert.assertTrue(findElement(By.xpath("//div[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());
+        findElement(By.xpath("//div[@id='emailEdit']//button[contains(text(),'Confirm')]")).click();
+        textPresent("Saved");
     }
 
     @Test
