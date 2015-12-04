@@ -4,8 +4,9 @@
 	<title ng-bind="$root.pageMeta.title">NIH CDE Repository</title>
 	<meta name="site-version" content="<% include ../public/html/version.html %>"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-	<meta name="description" content="{{$root.pageMeta.description}}"/>
-	<meta name="keywords" content="{{$root.pageMeta.keywords}}"/>
+	<meta name="description" content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
+	<meta name="keywords"
+		  content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
 
 	<!--[if IE 9]>
 	<script type="text/javascript">
@@ -93,6 +94,7 @@
 <%- include webtrends.ejs %>
 <script src="/article/public/js/articleConfig.js"></script>
 <script src="/cde/public/assets/js/feedback.js"></script>
+
 <script type="application/ld+json">
         {
           "@context": "http://schema.org",
@@ -111,6 +113,7 @@
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
 </script>
+
 <script type="application/ld+json">
         {
           "@context" : "http://schema.org",
@@ -120,5 +123,6 @@
           "url" : "https://cde.nlm.nih.gov"
         }
 </script>
+
 </body>
 </html>
