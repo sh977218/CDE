@@ -680,7 +680,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("accordion"), cdeName));
+                        By.cssSelector("uib-accordion"), cdeName));
                 break;
             } catch (Exception e) {
                 findElement(By.linkText("Next")).click();
@@ -688,7 +688,7 @@ public class NlmCdeBaseTest {
 
         }
         findElement(
-                By.xpath("//accordion//span[contains(text(),'" + cdeName
+                By.xpath("//uib-accordion//span[contains(text(),'" + cdeName
                         + "')]")).click();
     }
 
