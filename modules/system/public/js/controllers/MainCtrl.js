@@ -12,16 +12,6 @@ angular.module('systemModule').controller('MainCtrl',
         LoginRedirect.storeRoute($location.$$url);
     };
 
-    $rootScope.$on("$routeChangeSuccess", function(event, currentRoute, previousRoute){
-        $rootScope.pageMeta = {};
-        $rootScope.pageMeta.title = 'NIH Common Data Elements (CDE) Repository';
-        $rootScope.pageMeta.keywords = 'cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine';
-        $rootScope.pageMeta.description = 'Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.';
-        if ($route.current.title) $rootScope.pageMeta.title +=  " | " + $route.current.title;
-        if ($route.current.keywords) $rootScope.pageMeta.keywords = $route.current.keywords;
-        if ($route.current.description) $rootScope.pageMeta.description = $route.current.description;
-    });
-
     $scope.quickBoard = QuickBoard;
     $scope.formQuickBoard = FormQuickBoard;
     $scope.formEnabled = window.formEnabled;
