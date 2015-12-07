@@ -41,7 +41,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
 
     $scope.relatedCdes = function (concept) {
         $http({method: "POST", url: "/desByConcept", data: concept})
-            .success(function (data, status) {
+            .success(function (data) {
                 $scope.cdes = data;
                 for (var i=0; i < $scope.cdes.length; i++) {
                     if ($scope.cdes[i].tinyId === $scope.elt.tinyId) {

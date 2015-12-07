@@ -62,7 +62,8 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModa
 
 }]);
 
-angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$modalInstance', '$http','module', 'elt', function($scope, $modalInstance, $http, module, elt) {
+angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$uibModalInstance', '$http','module', 'elt',
+    function($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newProperty = {};
     $scope.autocompleteList = [];

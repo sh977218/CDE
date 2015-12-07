@@ -46,7 +46,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
 
 }]);
 
-angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt',
+angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$uibModalInstance', '$http', 'elt',
     function($scope, $modalInstance, $http, elt)
 {
     $scope.elt = elt;

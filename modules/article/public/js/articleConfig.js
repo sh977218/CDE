@@ -71,7 +71,7 @@ angular.module('articleModule', ['ngRoute']).config(
     };
 }])
 
-.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
+.controller('NewArticleModalCtrl', ['$scope', '$uibModalInstance', '$http', function($scope, $modalInstance, $http) {
     $scope.elt = {};
     $scope.ok = function() {
         $http.post("/article/key/" + $scope.elt.key, {}).

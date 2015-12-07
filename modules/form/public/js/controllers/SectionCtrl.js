@@ -1,4 +1,5 @@
-angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http', function ($scope, $modal, $timeout, $http) {
+angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http',
+    function ($scope, $modal, $timeout, $http) {
 
     $scope.cardinalityOptions =
     {
@@ -31,7 +32,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             $('.dragQuestions').css('border', '2px dashed grey');
             ui.placeholder.height("20px");
         }
-        , stop: function (event, ui) {
+        , stop: function () {
             $('.dragQuestions').css('border', '');
         }
         , receive: function (e, ui) {
@@ -56,7 +57,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             $('.dragQuestions').css('border', '2px dashed grey');
             ui.placeholder.height("20px");
         }
-        , stop: function (event, ui) {
+        , stop: function () {
             $('.dragQuestions').css('border', '');
         }
         , helper: function () {
@@ -104,7 +105,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }
             $scope.stageElt();
         }
-        , update: function (e, ui) {
+        , update: function () {
             $scope.stageElt();
         }
     };

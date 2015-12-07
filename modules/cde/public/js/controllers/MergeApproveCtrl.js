@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal', 'Mail', 'MergeCdes', 'userResource', function($scope, $modal, Mail, MergeCdes, userResource) {
+angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal', 'Mail', 'MergeCdes', 'userResource',
+    function($scope, $modal, Mail, MergeCdes, userResource) {
     $scope.showMergeApproveDialog = function(message) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/saveModal.html'
@@ -23,7 +24,8 @@ angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal
     }; 
 }]);
 
-angular.module('systemModule').controller('MergeApproveModalCtrl', ['$scope', '$modalInstance', 'elt', 'user', function($scope, $modalInstance, elt, user) {
+angular.module('systemModule').controller('MergeApproveModalCtrl', ['$scope', '$uibModalInstance', 'elt', 'user',
+    function($scope, $modalInstance, elt, user) {
     $scope.elt = elt;
     $scope.user = user;
     $scope.stewardRegStatuses = ['Incomplete', 'Candidate', 'Recorded', 'Qualified', 'Retired'];

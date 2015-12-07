@@ -47,7 +47,9 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
 
 }]);
 
-angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$uibModalInstance',
+    function ($scope, $modalInstance) {
+
     $scope.ok = function () {
         $modalInstance.close();
     };

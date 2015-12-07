@@ -64,7 +64,8 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
 
 }]);
 
-angular.module('systemModule').controller('NewReferenceDocumentModalCtrl', ['$scope', '$modalInstance', '$http', 'module', 'elt', function ($scope, $modalInstance, $http, module, elt) {
+angular.module('systemModule').controller('NewReferenceDocumentModalCtrl',
+    ['$scope', '$uibModalInstance', '$http', 'module', 'elt', function ($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newReferenceDocument = {};
 

@@ -36,7 +36,9 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$w
     };
 }]);
 
-angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
+angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$uibModalInstance', 'elt',
+    function($scope, $modalInstance, elt) {
+
     $scope.elt = elt;
     $scope.newId = {};
 

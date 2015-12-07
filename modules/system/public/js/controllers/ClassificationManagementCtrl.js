@@ -173,9 +173,12 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
     };
 }]);
 
-angular.module('systemModule').controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
+angular.module('systemModule').controller('RenameClassificationModalCtrl',
+    ['$scope', '$uibModalInstance', 'classifName', function($scope, $modalInstance, classifName) {
+
     $scope.classifName = classifName;
     $scope.close = function(newname) {
         $modalInstance.close(newname);
     };
+
 }]);

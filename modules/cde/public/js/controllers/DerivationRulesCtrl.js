@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
 }
 ]);
 
-angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$modalInstance', 'QuickBoard', 'elt',
+angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$uibModalInstance', 'QuickBoard', 'elt',
     function($scope, $modalInstance, quickBoard, elt)
 {
 

@@ -21,7 +21,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal',
 }
 ]);
 
-angular.module('systemModule').controller('SaveModalCtrl', ['$scope', '$modalInstance', 'elt',
+angular.module('systemModule').controller('SaveModalCtrl', ['$scope', '$uibModalInstance', 'elt',
     function($scope, $modalInstance, elt)
     {
         $scope.elt = elt;
