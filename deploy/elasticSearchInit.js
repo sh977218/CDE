@@ -119,9 +119,9 @@ exports.createRiverJson = {
     "mongodb": {
         "servers": config.database.servers,
         "credentials": [
-            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ],
-        "db": config.database.dbname,
+        "db": config.database.appData.db,
         "collection": "dataelements",
         "script": riverFunction
     },
@@ -167,9 +167,9 @@ exports.createFormRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": config.database.dbname
+        , "db": config.database.appData.db
         , "collection": "forms"
         , "script": riverFunction
     }
@@ -192,9 +192,9 @@ exports.createBoardRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": config.database.dbname
+        , "db": config.database.appData.db
         , "collection": "pinningBoards"
     }
     , "index": {
@@ -233,9 +233,9 @@ exports.createStoredQueryRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": config.database.dbUser, "password": config.database.dbPassword}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": config.database.log.dbname
+        , "db": config.database.log.db
         , "collection": "storedqueries"
         , "script": storedQueryRiverFunction
     }
