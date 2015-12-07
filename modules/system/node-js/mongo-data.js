@@ -332,7 +332,7 @@ exports.updateOrg = function(org, res) {
 };
 
 exports.rsStatus = function (cb) {
-    var db = conn.db;
+    var db = localConn.db;
     db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
         cb(err, doc);        
     });
