@@ -3,14 +3,14 @@ var config = require('config')
     , esInit = require('../../../deploy/elasticSearchInit')
     ;
 
-config.database.log.uri = "mongodb://" + config.database.log.dbUser + ":" + config.database.log.dbPassword + "@" +
+config.database.log.uri = "mongodb://" + config.database.log.username + ":" + config.database.log.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.log.dbname;
-config.database.local.uri = "mongodb://" + config.database.admin.dbUser + ":" + config.database.admin.dbPassword + "@" +
+}).join(",") + "/" + config.database.log.db;
+config.database.local.uri = "mongodb://" + config.database.admin.username + ":" + config.database.admin.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.local.dbname;
+}).join(",") + "/" + config.database.local.db;
 
 var shortHash = function (content) {
     return hash.createHash('md5')
@@ -42,7 +42,7 @@ config.elasticBoardRiverUri = config.elastic.hosts[0] + "/_river/" + config.elas
 config.elasticStoredQueryUri = config.elastic.hosts[0] + "/" + config.elastic.storedQueryIndex.name + "/";
 config.elasticStoredQueryRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.storedQueryIndex.name;
 
-config.mongoMigrationUri = "mongodb://" + config.database.nlmcde.dbUser + ":" + config.database.nlmcde.dbPassword + "@" +
+config.mongoMigrationUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
 
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
