@@ -7,7 +7,7 @@ config.database.log.uri = "mongodb://" + config.database.log.username + ":" + co
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + config.database.log.db;
-config.database.local.uri = "mongodb://" + config.database.admin.username + ":" + config.database.admin.password + "@" +
+config.database.local.uri = "mongodb://" + config.database.local.username + ":" + config.database.local.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + config.database.local.db;
