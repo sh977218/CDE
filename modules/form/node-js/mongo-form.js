@@ -12,6 +12,8 @@ exports.name = "forms";
 var conn = connHelper.establishConnection(config.database.appData);
 var Form = conn.model('Form', schemas.formSchema);
 
+exports.Form = Form;
+
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
         callback(result === 0);

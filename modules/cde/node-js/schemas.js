@@ -73,6 +73,9 @@ var deJsonSchema = {
         , datatypeDate: {
             format: String
         }
+        , datatypeTime: {
+            format: String
+        }
         , datatypeExternallyDefined: {
             link: String
             , description: String

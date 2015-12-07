@@ -24,6 +24,7 @@ var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
 
 var mongo_data = this;
+exports.DataElement = DataElement;
 
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
