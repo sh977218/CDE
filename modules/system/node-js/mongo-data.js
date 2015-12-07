@@ -1,7 +1,6 @@
 var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('./parseConfig')
-    , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , connHelper = require('./connections')
@@ -17,7 +16,7 @@ var schemas = require('./schemas')
     , async = require('async')
     ;
 
-var conn = connHelper.establihConnection(mongoUri),
+var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
@@ -33,7 +32,7 @@ classificationAudit = conn.model('classificationAudit', schemas.classificationAu
 
 exports.mongoose_connection = conn;
 
-var localConn = connHelper.establihConnection(config.database.local.uri);
+var localConn = connHelper.establishConnection(config.database.local);
 
 exports.sessionStore = sessionStore;
 
