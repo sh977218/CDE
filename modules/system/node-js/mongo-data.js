@@ -27,23 +27,10 @@ var conn = connHelper.establishConnection(config.database.appData),
     });
 
 exports.sessionStore = sessionStore;
-fs_files = conn.model('fs_files', schemas.fs_files);
-classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 exports.mongoose_connection = conn;
-
-var localConn = connHelper.establishConnection(config.database.local);
-
 exports.sessionStore = sessionStore;
 
-var Org = conn.model('Org', schemas.orgSchema);
-var User = conn.model('User', schemas.userSchema);
-var Message = conn.model('Message', schemas.message);
-var ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus);
-var gfs = Grid(conn.db, mongoose.mongo);
-exports.sessionStore = new MongoStore({
-    mongooseConnection: conn
-});
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 var localConn = connHelper.establishConnection(config.database.local);
@@ -51,12 +38,6 @@ var localConn = connHelper.establishConnection(config.database.local);
 exports.getClusterHostStatus = function(server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
        callback(err, result);
-    });
-};
-
-exports.getClusterHostStatuses = function(callback) {
-    ClusterStatus.find().exec(function(err, statuses) {
-        callback(err, statuses);
     });
 };
 
