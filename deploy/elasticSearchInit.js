@@ -12,9 +12,9 @@ exports.createIndexJson = {
                 , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
                 , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
                 , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source" : { "type" : "string", "index" : "not_analyzed" }
-                , "origin" : { "type" : "string", "index" : "not_analyzed" }
-                , "valueDomain.permissibleValues.codeSystemName": { "type" : "string", "index" : "not_analyzed" }
+                , "source": {"type": "string", "index": "not_analyzed"}
+                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "valueDomain.permissibleValues.codeSystemName": {"type": "string", "index": "not_analyzed"}
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,
@@ -119,9 +119,9 @@ exports.createRiverJson = {
     "mongodb": {
         "servers": config.database.servers,
         "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ],
-        "db": "test-ci",
+        "db": config.database.appData.db,
         "collection": "dataelements",
         "script": riverFunction
     },
@@ -167,9 +167,9 @@ exports.createFormRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": "test-ci"
+        , "db": config.database.appData.db
         , "collection": "forms"
         , "script": riverFunction
     }
@@ -181,9 +181,7 @@ exports.createFormRiverJson = {
 
 exports.createBoardIndexJson = {
     "mappings": {
-        "board": {
-
-        }
+        "board": {}
     }
 };
 
@@ -192,9 +190,9 @@ exports.createBoardRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": "test-ci"
+        , "db": config.database.appData.db
         , "collection": "pinningBoards"
     }
     , "index": {
@@ -218,10 +216,11 @@ exports.createStoredQueryIndexJson = {
                 , "classifLevel3": {"type": "string", "index": "not_analyzed"}
                 , "classifLevel4": {"type": "string", "index": "not_analyzed"}
                 , "searchTerm": {"type": "string", "analyzer": "stop"}
-                , "search_suggest": { "type" : "completion",
-                    "index_analyzer" : "simple",
-                    "search_analyzer" : "simple",
-                    "payloads" : true
+                , "search_suggest": {
+                    "type": "completion",
+                    "index_analyzer": "simple",
+                    "search_analyzer": "simple",
+                    "payloads": true
                 }
             }
         }
@@ -233,9 +232,9 @@ exports.createStoredQueryRiverJson = {
     , "mongodb": {
         "servers": config.database.servers
         , "credentials": [
-            {"db": "admin", "user": "siteRootAdmin", "password": "password"}
+            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
         ]
-        , "db": "cde-logs-test-ci"
+        , "db": config.database.log.db
         , "collection": "storedqueries"
         , "script": storedQueryRiverFunction
     }
