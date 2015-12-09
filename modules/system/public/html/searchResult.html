@@ -43,8 +43,9 @@
         | {{getSelectedStatuses()}}
     </span>
 
-    <div class="btn-group pull-right" ng-controller="ExportCtrl">
-        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="btn-group pull-right" ng-controller="ExportCtrl" ng-if="module === 'cde'">
+        <button id="export" type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-download"></i>
             Export Search <span class="caret"></span>
         </button>

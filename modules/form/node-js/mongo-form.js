@@ -15,6 +15,8 @@ var Form;
 var conn = connHelper.establihConnection(mongoUri);
 Form = conn.model('Form', schemas.formSchema);
 
+exports.Form = Form;
+
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
         callback(result === 0);

@@ -157,21 +157,36 @@ exports.managedOrgs = function(callback) {
     });
 };
 
+exports.findOrCreateOrg = function(newOrg, cb) {
+    Org.findOne({"name": newOrg.name}).exec(function(err, found) {
+        if (err) {
+            cb(err);
+            logging.errorLogger.error("Cannot add org.",
+                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
+        } else if (found) {
+            cb(null, found);
+        } else {
+            newOrg = new Org(newOrg);
+            newOrg.save(cb);
+        }
+    });
+};
+
 exports.addOrg = function(newOrgArg, res) {
-  Org.findOne({"name": newOrgArg.name}).exec(function(err, found) {
-      if (err) {
-          res.send(500);
-          logging.errorLogger.error("Cannot add org.",
-              {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
-      } else if (found) {
-          res.send("Org Already Exists");
-      } else {
-          var newOrg = new Org(newOrgArg);
-          newOrg.save(function() {
-              res.send("Org Added");
-          });
-      }
-  });  
+    Org.findOne({"name": newOrgArg.name}).exec(function(err, found) {
+        if (err) {
+            res.send(500);
+            logging.errorLogger.error("Cannot add org.",
+                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
+        } else if (found) {
+            res.send("Org Already Exists");
+        } else {
+            var newOrg = new Org(newOrgArg);
+            newOrg.save(function() {
+                res.send("Org Added");
+            });
+        }
+    });
 };
 
 exports.removeOrg = function (id, callback) {
