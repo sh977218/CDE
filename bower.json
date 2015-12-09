@@ -25,7 +25,12 @@
     "angularjs-camelCase-human": "*",
     "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
-    "ng-file-upload": "3.3.3"
+    "ng-file-upload": "3.3.3",
+    "lforms": "3.0.4",
+    "lforms-converter": "1.0.1",
+    "oboe": "^2.1.2",
+    "traverse": "^0.6.6",
+    "lodash": "^3.10.0"
   },
   "resolutions": {
     "angular": "1.4.7"

@@ -15,6 +15,8 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
+    var converter = new LFormsConverter();
+
     $scope.tabs = {
         general: {heading: "General Details"},
         description: {heading: "Form Description"},
@@ -62,6 +64,13 @@ angular.module('formModule').controller('FormViewCtrl',
             isAllowedModel.setDisplayStatusWarning($scope);
             formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
             areDerivationRulesSatisfied();
+            converter.convert('form/' + $scope.elt.tinyId, function(lfData) {
+                    $scope.lfData = new LFormsData(lfData);
+                    $scope.$apply($scope.lfData);
+                },
+                function(err) {
+                    $scope.error = err;
+                });
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });

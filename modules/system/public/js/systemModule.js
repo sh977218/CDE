@@ -2,7 +2,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'OrgFactories', 'classification', 'ngGrid',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-    , 'angular-send-feedback', 'ngAnimate'])
+    , 'angular-send-feedback', 'ngAnimate', 'lformsWidget'])
     .config(['$logProvider', function($logProvider){
         $logProvider.debugEnabled(window.debugEnabled);
     }])

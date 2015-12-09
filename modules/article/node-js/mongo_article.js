@@ -6,9 +6,7 @@ var mongoose = require('mongoose')
 
 exports.name = "Help";
         
-var mongoUri = config.mongoUri;
-
-var connection = connHelper.establihConnection(mongoUri);
+var connection = connHelper.establishConnection(config.database.appData);
 
 var Article = connection.model('Article', schemas.articleSchema);
 

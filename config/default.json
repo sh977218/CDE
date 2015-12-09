@@ -63,14 +63,24 @@
         "port": 27017
       }
     ],
-    "dbname": "test",
-    "log": {
-      "dbname": "cde-logs-test",
-      "cappedCollectionSizeMB": 262144000
-    },
     "local": {
-      "dbname": "local",
-      "uri": "mongodb://localhost/local"
+      "db": "local",
+      "username": "siteRootAdmin",
+      "password": "password",
+      "options": {
+        "auth": {"authdb": "admin"}
+      }
+    },
+    "appData": {
+      "db": "test",
+      "username": "cdeuser",
+      "password": "password"
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "cdeuser",
+      "password": "password",
+      "cappedCollectionSizeMB": 262144000
     }
   },
   "node": {
@@ -106,9 +116,11 @@
   },
   "status": {
     "timeouts": {
-      "statusCheck": 60000,//120000,
+      "statusCheck": 60000,
+      //120000,
       // How often to update /status/cde page ? (miliseconds),
-      "dummyElementCheck": 20000,// //30000,
+      "dummyElementCheck": 20000,
+      // //30000,
       // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds),
       "emailSendPeriod": 14400000,
       // How long should we wait after an email with a negative status report before we send another one? (miliseconds),

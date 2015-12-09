@@ -51,7 +51,10 @@
                     <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
                 </div>
                 <div class="col-xs-12 col-md-7" ng-if="!elt.noRenderAllowed">
-                    <div ng-include="'/form/public/html/formRender.html'"></div>
+                    <div>
+                        <lforms-panel-h></lforms-panel-h>
+                    </div>
+                    <!--<div ng-include="'/form/public/html/formRender.html'"></div>-->
                 </div>
             </div>
         </div>
