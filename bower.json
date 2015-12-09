@@ -34,5 +34,13 @@
   },
   "resolutions": {
     "angular": "1.4.7"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    }
   }
 }
