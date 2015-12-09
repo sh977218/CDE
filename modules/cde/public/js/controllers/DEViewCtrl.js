@@ -27,34 +27,34 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "General Details",
             includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html']
         },
-        pvs: {heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html']},
-        naming: {heading: "Naming", includes: ['/system/public/html/naming.html']},
-        classification: {heading: "Classification", includes: ['/system/public/html/elementClassification.html']},
-        concepts: {heading: "Concepts", includes: ['/cde/public/html/concepts.html']},
-        status: {heading: "Status", includes: ['/system/public/html/status.html']},
-        referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
-        properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
-        ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
-        forms: {
-            heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
-            select: function () {
-                $timeout($scope.$broadcast('loadLinkedForms'), 0);
-            }
-        },
-        mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
-        discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
-        boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
-        attachments: {heading: "Attachments", includes: ['/system/public/html/attachments.html']},
-        derivationRules: {heading: "Score / Derivations",
-            includes: ['/cde/public/html/derivationRules.html'],
-            select: function() {
-                $timeout($scope.$broadcast('loadDerivationRules'), 0);
-            }},
-        mlt: {heading: "More Like This",
-            includes: ['/cde/public/html/deMlt.html'],
-            select: function() {
-                $timeout($scope.$broadcast('loadMlt'), 0);
-            }},
+        //pvs: {heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html']},
+        //naming: {heading: "Naming", includes: ['/system/public/html/naming.html']},
+        //classification: {heading: "Classification", includes: ['/system/public/html/elementClassification.html']},
+        //concepts: {heading: "Concepts", includes: ['/cde/public/html/concepts.html']},
+        //status: {heading: "Status", includes: ['/system/public/html/status.html']},
+        //referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
+        //properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
+        //ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
+        //forms: {
+        //    heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
+        //    select: function () {
+        //        $timeout($scope.$broadcast('loadLinkedForms'), 0);
+        //    }
+        //},
+        //mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
+        //discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
+        //boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
+        //attachments: {heading: "Attachments", includes: ['/system/public/html/attachments.html']},
+        //derivationRules: {heading: "Score / Derivations",
+        //    includes: ['/cde/public/html/derivationRules.html'],
+        //    select: function() {
+        //        $timeout($scope.$broadcast('loadDerivationRules'), 0);
+        //    }},
+        //mlt: {heading: "More Like This",
+        //    includes: ['/cde/public/html/deMlt.html'],
+        //    select: function() {
+        //        $timeout($scope.$broadcast('loadMlt'), 0);
+        //    }},
         history: {heading: "History",
             includes: ['/cde/public/html/cdeHistory.html'],
             select: function() {
