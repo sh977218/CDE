@@ -50,9 +50,7 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
     }
 
 
-/*
     @Test
-*/
     public void formSideBySideCompare1() {
         addFormToQuickBoard("compareForm1");
         addFormToQuickBoard("compareForm2");
@@ -64,7 +62,7 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
 
 
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
-        textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
+        textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
         textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
         textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 ", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'leftObj')]"));
         textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 ", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'rightObj')]"));
@@ -75,12 +73,10 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
     }
 
 
-/*
     @Test
-*/
     public void formSideBySideCompare2() {
-        addFormToQuickBoard("compareForm3");
-        addFormToQuickBoard("compareForm4");
+        addFormToQuickBoard("compareForm1");
+        addFormToQuickBoard("emptyForm");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
@@ -96,12 +92,11 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
     }
 
 
-/*
-    @Test
-*/
+    /*@Test
+    */
     public void formSideBySideCompare3() {
-        addFormToQuickBoard("compareForm1");
-        addFormToQuickBoard("compareForm2");
+        addFormToQuickBoard("compareForm3");
+        addFormToQuickBoard("compareForm4");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_elt_compare_0"));
