@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
-    @Test
+//    @Test
     public void AutoCompletionWelcome() {
         goToSearch("cde");
         String search_input = "Winter will be cold";
