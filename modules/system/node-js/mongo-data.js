@@ -1,7 +1,6 @@
 var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('./parseConfig')
-    , mongoUri = config.mongoUri
     , Grid = require('gridfs-stream')
     , fs = require('fs')
     , connHelper = require('./connections')
@@ -17,7 +16,7 @@ var schemas = require('./schemas')
     , async = require('async')
     ;
 
-var conn = connHelper.establihConnection(mongoUri),
+var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
@@ -28,24 +27,17 @@ var conn = connHelper.establihConnection(mongoUri),
     });
 
 exports.sessionStore = sessionStore;
-fs_files = conn.model('fs_files', schemas.fs_files);
-classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 exports.mongoose_connection = conn;
-
-var localConn = connHelper.establihConnection(config.database.local.uri);
-
 exports.sessionStore = sessionStore;
+
+var fs_files = conn.model('fs_files', schemas.fs_files);
+var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
+var localConn = connHelper.establishConnection(config.database.local);
 
 exports.getClusterHostStatus = function(server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
        callback(err, result);
-    });
-};
-
-exports.getClusterHostStatuses = function(callback) {
-    ClusterStatus.find().exec(function(err, statuses) {
-        callback(err, statuses);
     });
 };
 
@@ -321,7 +313,7 @@ exports.updateOrg = function(org, res) {
 };
 
 exports.rsStatus = function (cb) {
-    var db = conn.db;
+    var db = localConn.db;
     db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
         cb(err, doc);        
     });

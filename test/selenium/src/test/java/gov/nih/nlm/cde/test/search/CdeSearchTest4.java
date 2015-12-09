@@ -30,7 +30,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         }
         int nbOfViews = Integer.valueOf(findElement(By.id("dd_views")).getText());
         textPresent("Views");
-        Assert.assertEquals(nbOfViews, 10);
+        Assert.assertEquals(nbOfViews, 9);
     }
 
     @Test
