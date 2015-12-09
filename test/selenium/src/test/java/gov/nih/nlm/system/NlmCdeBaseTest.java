@@ -511,10 +511,10 @@ public class NlmCdeBaseTest {
         textPresent(quickBoardTabText);
     }
     public void emptyQuickBoardByModule(String module) {
-        if (findElement(By.id("menu_qb_link")).getText().contains("( empty )")) return;
+        if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
-        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard ( empty )");
+        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard (0)");
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         hangon(1);
     }
