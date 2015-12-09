@@ -1,12 +1,17 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    config = require('config');
 
 var establishedConns = {};
 
-exports.establihConnection = function(uri) {
-    var opts = {auth: {authdb: "admin"}};
+exports.establishConnection = function(dbConfig) {
+    var uri = "mongodb://" + dbConfig.username + ":" + dbConfig.password + "@" +
+        config.database.servers.map(function (srv) {
+            return srv.host + ":" + srv.port;
+        }).join(",") + "/" + dbConfig.db;
+
     if (establishedConns[uri]) return establishedConns[uri];
 
-    establishedConns[uri] = conn = mongoose.createConnection(uri, opts);
+    establishedConns[uri] = conn = mongoose.createConnection(uri, dbConfig.options);
 
     var dbName = /[^/]*$/.exec(uri)[0];
 

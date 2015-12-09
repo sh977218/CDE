@@ -1,22 +1,22 @@
 var config = require('config')
     , hash = require("crypto")
     , esInit = require('../../../deploy/elasticSearchInit')
-;
+    ;
 
-config.database.log.uri = "mongodb://" + config.database.dbUser + ":" + config.database.dbPassword + "@" +
-    config.database.servers.map(function (srv) {
-        return srv.host + ":" + srv.port;
-    }).join(",") + "/" + config.database.log.dbname;
-config.database.local.uri = "mongodb://" + config.database.dbUser + ":" + config.database.dbPassword + "@" +
-    config.database.servers.map(function (srv) {
-        return srv.host + ":" + srv.port;
-    }).join(",") + "/" + config.database.local.dbname;
-config.mongoUri = "mongodb://" + config.database.dbUser + ":" + config.database.dbPassword + "@" +
-    config.database.servers.map(function (srv) {
-        return srv.host + ":" + srv.port;
-    }).join(",") + "/" + config.database.dbname;
+config.database.log.uri = "mongodb://" + config.database.log.username + ":" + config.database.log.password + "@" +
+config.database.servers.map(function (srv) {
+    return srv.host + ":" + srv.port;
+}).join(",") + "/" + config.database.log.db;
+config.database.local.uri = "mongodb://" + config.database.local.username + ":" + config.database.local.password + "@" +
+config.database.servers.map(function (srv) {
+    return srv.host + ":" + srv.port;
+}).join(",") + "/" + config.database.local.db;
+config.mongoUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
+config.database.servers.map(function (srv) {
+    return srv.host + ":" + srv.port;
+}).join(",") + "/" + config.database.appData.db;
 
-var shortHash = function(content) {
+var shortHash = function (content) {
     return hash.createHash('md5')
         .update(JSON.stringify(content)).digest("hex")
         .substr(0, 5).toLowerCase();
@@ -46,8 +46,9 @@ config.elasticBoardRiverUri = config.elastic.hosts[0] + "/_river/" + config.elas
 config.elasticStoredQueryUri = config.elastic.hosts[0] + "/" + config.elastic.storedQueryIndex.name + "/";
 config.elasticStoredQueryRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.storedQueryIndex.name;
 
-config.mongoMigrationUri = "mongodb://" + config.database.dbUser + ":" + config.database.dbPassword + "@" +
-    config.database.servers.map(function (srv) {
+config.mongoMigrationUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
+
+config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + "migration";
 Object.keys(config).forEach(function (key) {

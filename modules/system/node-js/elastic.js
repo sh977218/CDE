@@ -369,6 +369,8 @@ var lock = false;
 exports.elasticSearchExport = function (res, query, type, exporter) {
     if (lock) return res.status(503).send("Servers busy");
 
+    if (!exporter) return res.status(500).send("Unable to process exporter.");
+
     res.type(exporter.type);
 
     lock = true;

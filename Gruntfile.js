@@ -143,21 +143,21 @@ module.exports = function (grunt) {
             , ingestTest: {
                 command: function () {
                     return [
-                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
-                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/logInit.js"
-                        , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " test"
-                        , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                        , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " test/createLargeBoard.js"
+                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " deploy/dbInit.js"
+                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.log.db + " deploy/logInit.js"
+                        , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.appData.db + " test"
+                        , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.appData.db + " --testMode"
+                        , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.appData.db
+                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " test/createLargeBoard.js"
                     ].join("&&")
                 }
             }
             , ingestProd: {
                 command: function () {
                     return [
-                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
+                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " deploy/dbInit.js"
                         , "mongo cde-logs-test deploy/logInit.js"
-                        , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
+                        , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.appData.db + " \;"
                         //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname
                         //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
                     ].join("&&")
@@ -513,9 +513,9 @@ module.exports = function (grunt) {
 
     grunt.registerTask('clearQueue', function () {
         grunt.task.clearQueue();
-    });     
-    
-    grunt.registerTask('persistVersion', function() {
+    });
+
+    grunt.registerTask('persistVersion', function () {
         fs.writeFileSync("./modules/system/public/html/version.html", grunt.config.get("version"));
     });
     grunt.registerTask('tarCode', function () {
@@ -544,10 +544,10 @@ module.exports = function (grunt) {
     grunt.registerTask('git', 'Pull and merge the latest source-code from the Master branch.', ['prompt:git', 'do-git']);
     grunt.registerTask('elastic', 'Delete and re-create ElasticSearch index and its river.', ['do-elastic']);
     grunt.registerTask('node', 'Restart NodeJS server.', ['prompt:node', 'do-node']);
-    grunt.registerTask('buildVersion',['shell:version','persistVersion']);
-    grunt.registerTask('ingest',['prompt:ingest','do-ingest']);
-    grunt.registerTask('tests',['prompt:testsLocation','do-test','clearQueue']);
-    grunt.registerTask('bower',['bower-install-simple','bowercopy']);
+    grunt.registerTask('buildVersion', ['shell:version', 'persistVersion']);
+    grunt.registerTask('ingest', ['prompt:ingest', 'do-ingest']);
+    grunt.registerTask('tests', ['prompt:testsLocation', 'do-test', 'clearQueue']);
+    grunt.registerTask('bower', ['bower-install-simple', 'bowercopy']);
     grunt.registerTask('ci', ['buildVersion', 'bower', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
     grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function () {
