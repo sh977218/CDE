@@ -2,6 +2,7 @@
 .modal-body {
     overflow-y: inherit;
 }
+
 .hand-cursor {
     cursor: pointer;
 }
@@ -898,5 +899,9 @@ div + .questionPlaceholder {
 
 .compareSectionTitle {
     margin-top: 20px;
+}
+
+.black {
+    color: black;
 }
 

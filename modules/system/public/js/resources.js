@@ -21,16 +21,14 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
         loading: false,
         add: function (elt) {
             var qb = this;
-            if (this.elts.length < this.max_elts) {
-                $http.get(param.url + elt.tinyId).then(function (result) {
-                    var de = result.data;
-                    if (de) {
-                        de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
-                        qb.elts.push(de);
-                        localStorageService.add(param.localStorage, qb.elts);
-                    }
-                });
-            }
+            $http.get(param.url + elt.tinyId).then(function (result) {
+                var de = result.data;
+                if (de) {
+                    de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
+                    qb.elts.push(de);
+                    localStorageService.add(param.localStorage, qb.elts);
+                }
+            });
         },
         remove: function (index) {
             this.elts.splice(index, 1);
