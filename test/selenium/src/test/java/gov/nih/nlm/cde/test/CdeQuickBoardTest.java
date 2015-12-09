@@ -23,7 +23,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
@@ -37,7 +37,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("qb_cde_compare"));
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textNotPresent("concept name 2", By.xpath("//*[@id='qb_compare_concepts']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
 
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Value used as a Standard Deviation");
 
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
@@ -141,8 +141,8 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         goHome();
         textPresent("Quick Board (0)");
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        textPresent("CDE QuickBoard ( empty )");
-        textPresent("Form QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
+        textPresent("Form QuickBoard (0)");
         textPresent("The quick board is empty.");
     }
 
@@ -156,7 +156,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Quick Board (5)");
         goToQuickBoardByModule("cde");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("Prior BMSCT Administered Indicator");
         textPresent("2320242");
         clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard ( empty )");
+        textPresent("CDE QuickBoard (0)");
     }
 
     @Test
