@@ -64,13 +64,13 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
 
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj')]"));
         textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj')]"));
-        Assert.assertEquals(true, driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj Label')]//*[contains(@class,'unmatchedIcon')]")).size() > 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj Label')]//*[contains(@class,'unmatchedIcon')]")).size() > 0, true);
         textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj')]"));
-        Assert.assertEquals(true, driver.findElements(By.xpath("//*//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj Label')]//*[contains(@class,'unmatchedIcon')]")).size() > 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//*//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj Label')]//*[contains(@class,'unmatchedIcon')]")).size() > 0, true);
         textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 ", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'leftObj')]"));
-        Assert.assertEquals(true, driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj Answer')]//*[contains(@class,'unmatchedIcon')]")).size() > 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj Answer')]//*[contains(@class,'unmatchedIcon')]")).size() > 0, true);
         textPresent("Visible Tumor Anterior-Posterior Orientation Size 3 ", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'rightObj')]"));
-        Assert.assertEquals(true, driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj Answer')]//*[contains(@class,'unmatchedIcon')]")).size() > 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj Answer')]//*[contains(@class,'unmatchedIcon')]")).size() > 0, true);
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][4]//*[contains(@class, 'leftObj')]"));
 
         clickElement(By.id("qb_form_empty"));

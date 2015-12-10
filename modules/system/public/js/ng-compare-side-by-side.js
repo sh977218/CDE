@@ -25,9 +25,14 @@
                                 } else if (result1.result.length > result2.result.length) {
                                     Comparison.swapLeftRight($scope);
                                     result2.result.forEach(function (r) {
-                                        var leftIndexCopy = r.leftIndex;
-                                        r["leftIndex"] = r.rightIndex;
-                                        r["rightIndex"] = leftIndexCopy;
+                                        var leftIndexCopy = exports.deepCopy(r.leftIndex);
+                                        var rightIndexCopy = exports.deepCopy(r.rightIndex);
+                                        delete r.leftIndex;
+                                        delete r.rightIndex;
+                                        if (rightIndexCopy)
+                                            r["leftIndex"] = rightIndexCopy;
+                                        if (leftIndexCopy)
+                                            r["rightIndex"] = leftIndexCopy;
                                         if (r.found !== 'both') {
                                             r.found = r.found === 'right' ? 'left' : 'right';
                                         }
