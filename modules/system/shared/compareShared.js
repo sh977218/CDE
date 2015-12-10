@@ -26,6 +26,7 @@ exports.compareSideBySide = {
                 return JSON.stringify(a) === JSON.stringify(b);
             }
         }
+        if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
         leftArray.forEach(function (o) {
                 if (options.wipeUseless) {
                     options.wipeUseless(o);
@@ -38,7 +39,8 @@ exports.compareSideBySide = {
                         for (var m = 0; m < rightArray.length; m++) {
                             result.push({
                                 found: "right",
-                                rightIndex: m
+                                rightIndex: m,
+                                result: exports.copyProperties(options.properties)
                             });
                             beginIndex++;
                         }
@@ -46,7 +48,8 @@ exports.compareSideBySide = {
                     // put this element not found
                     result.push({
                         found: 'left',
-                        leftIndex: leftIndex
+                        leftIndex: leftIndex,
+                        result: exports.copyProperties(options.properties)
                     });
                 }
                 // element found in right list
@@ -56,7 +59,8 @@ exports.compareSideBySide = {
                     for (var k = 0; k < rightIndex; k++) {
                         result.push({
                             found: "right",
-                            rightIndex: beginIndex + rightIndex - 1
+                            rightIndex: beginIndex + rightIndex - 1,
+                            result: exports.copyProperties(options.properties)
                         });
                         beginIndex++;
                     }
@@ -67,7 +71,6 @@ exports.compareSideBySide = {
                         rightIndex: beginIndexCopy + rightIndex,
                         result: []
                     };
-                    if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
                     options.properties.forEach(function (p) {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
@@ -86,7 +89,8 @@ exports.compareSideBySide = {
         for (var i = beginIndex; i < rightArray.length; i++)
             result.push({
                 found: "right",
-                rightIndex: i
+                rightIndex: i,
+                result: exports.copyProperties(options.properties)
             })
         return {result: result, matchCount: matchCount};
     },
@@ -160,4 +164,14 @@ exports.getProperties = function (leftObj, rightObj) {
 };
 exports.deepCopy = function (o) {
     return JSON.parse(JSON.stringify(o));
+};
+exports.copyProperties = function (properties) {
+    var result = [];
+    properties.forEach(function (p) {
+        var property = exports.deepCopy(p);
+        if (!property.label) property.label = property.property;
+        property.match = false;
+        result.push(property);
+    });
+    return result;
 };

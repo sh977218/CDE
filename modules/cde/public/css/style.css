@@ -905,3 +905,6 @@ div + .questionPlaceholder {
     color: black;
 }
 
+.answerListSelect2Container {
+    padding: 3px !important;
+}
