@@ -8,7 +8,7 @@ public class FormQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
     public void formExpandAllQuickBoard() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("Glasgow Outcome Scale (GOS) and Glasgow Outcome Scale - Extended (GOSE)");
         addFormToQuickBoard("Center for Epidemiologic Studies-Depression Scale (CES-D)");
         textPresent("Quick Board (2)");
@@ -22,7 +22,7 @@ public class FormQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
     public void formSideBySideCompare2() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm1");
         addFormToQuickBoard("emptyForm");
         textPresent("Quick Board (2)");
@@ -42,7 +42,7 @@ public class FormQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
     public void formSideBySideCompare3() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm3");
         addFormToQuickBoard("compareForm4");
         textPresent("Quick Board (2)");

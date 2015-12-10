@@ -71,6 +71,7 @@ public class NlmCdeBaseTest {
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
     protected static String exportBoardUser_username = "exportBoardUser";
+    protected static String testAdmin_username = "testAdmin";
 
 
     protected static String password = "pass";

@@ -53,7 +53,7 @@ public class FormNamingTest extends BaseFormTest {
     @Test
     public void formReorderNamingTest() {
         setLowStatusesVisible();
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName("form for test cde reorder detail tabs", null);
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

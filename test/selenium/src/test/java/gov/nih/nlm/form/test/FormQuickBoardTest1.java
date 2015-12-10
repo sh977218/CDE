@@ -39,7 +39,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void formSideBySideCompare1() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm1");
         addFormToQuickBoard("compareForm2");
         textPresent("Quick Board (2)");
