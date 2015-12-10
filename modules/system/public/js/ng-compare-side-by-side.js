@@ -23,34 +23,13 @@
                                 if (result1.result.length < result2.result.length) {
                                     $scope.result = result1.result;
                                 } else if (result1.result.length > result2.result.length) {
-                                    Comparison.swapLeftRight($scope);
-                                    result2.result.forEach(function (r) {
-                                        var leftIndexCopy = exports.deepCopy(r.leftIndex);
-                                        var rightIndexCopy = exports.deepCopy(r.rightIndex);
-                                        delete r.leftIndex;
-                                        delete r.rightIndex;
-                                        if (rightIndexCopy)
-                                            r["leftIndex"] = rightIndexCopy;
-                                        if (leftIndexCopy)
-                                            r["rightIndex"] = leftIndexCopy;
-                                        if (r.found !== 'both') {
-                                            r.found = r.found === 'right' ? 'left' : 'right';
-                                        }
-                                    });
+                                    Comparison.swapIndex(result2);
                                     $scope.result = result2.result;
                                 } else {
                                     if (result1.matchCount < result2.matchCount) {
                                         $scope.result = result1.result;
                                     } else if (result1.matchCount > result2.matchCount) {
-                                        Comparison.swapLeftRight($scope);
-                                        result2.result.forEach(function (r) {
-                                            var leftIndexCopy = r.leftIndex;
-                                            r["leftIndex"] = r.rightIndex;
-                                            r["rightIndex"] = leftIndexCopy;
-                                            if (r.found !== 'both') {
-                                                r.found = r.found === 'right' ? 'left' : 'right';
-                                            }
-                                        });
+                                        Comparison.swapIndex(result2);
                                     } else {
                                         $scope.result = result1.result;
                                     }
@@ -93,10 +72,26 @@
                     } else if (leftType === 'array' && (typeof l[0] === 'string' || typeof r[0] === 'string')) return 'stringArray';
                     else return leftType;
                 },
-                swapLeftRight: function (scope) {
-                    var temp = scope.right;
-                    scope.right = scope.left;
-                    scope.left = temp;
+                swapIndex: function (result2) {
+                    result2.result.forEach(function (r) {
+                        var leftIndexCopy;
+                        var rightIndexCopy;
+                        if (r.leftIndex != undefined) {
+                            leftIndexCopy = exports.deepCopy(r.leftIndex);
+                        }
+                        if (r.rightIndex != undefined) {
+                            rightIndexCopy = exports.deepCopy(r.rightIndex);
+                        }
+                        delete r.leftIndex;
+                        delete r.rightIndex;
+                        if (rightIndexCopy != undefined)
+                            r.leftIndex = rightIndexCopy;
+                        if (leftIndexCopy != undefined)
+                            r.rightIndex = leftIndexCopy;
+                        if (r.found !== 'both') {
+                            r.found = r.found === 'right' ? 'left' : 'right';
+                        }
+                    });
                 },
                 compareImpl: function (l, r, options) {
                     if (options.type === 'array') {
