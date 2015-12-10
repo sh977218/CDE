@@ -97,8 +97,7 @@ public class FormQuickBoardTest extends NlmCdeBaseTest {
     }
 
 
-    /*@Test
-    */
+    @Test
     public void formSideBySideCompare3() {
         addFormToQuickBoard("compareForm3");
         addFormToQuickBoard("compareForm4");
