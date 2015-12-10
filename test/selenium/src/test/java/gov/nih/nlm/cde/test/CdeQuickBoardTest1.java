@@ -42,6 +42,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void cdeSideBySideCompare() {
+        mustBeLoggedInAs(test_username,password);
         addCdeToQuickBoard("cdeCompare1");
         addCdeToQuickBoard("cdeCompare2");
         textPresent("Quick Board (2)");

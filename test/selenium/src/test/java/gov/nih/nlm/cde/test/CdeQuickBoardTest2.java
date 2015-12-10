@@ -72,6 +72,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
     public void goToEmptyQuickBoard() {
+
         goHome();
         textPresent("Quick Board (0)");
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
