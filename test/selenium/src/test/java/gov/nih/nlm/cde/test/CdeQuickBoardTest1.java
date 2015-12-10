@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class CdeQuickBoardTest extends NlmCdeBaseTest {
+public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void cdeMoreElementsNoSideBySideCompare() {
@@ -136,73 +136,4 @@ public class CdeQuickBoardTest extends NlmCdeBaseTest {
         textPresent("NCI Thesaurus");
     }
 
-    @Test
-    public void goToEmptyQuickBoard() {
-        goHome();
-        textPresent("Quick Board (0)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        textPresent("CDE QuickBoard (0)");
-        textPresent("Form QuickBoard (0)");
-        textPresent("The quick board is empty.");
-    }
-
-    @Test
-    public void emptyCdeQuickBoardTest() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("Quick Board (5)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
-    public void showGridViewInCdeQuickBoard() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("Quick Board (5)");
-        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
-        textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
-        hangon(1);
-        waitAndClick(By.id("cde_gridView"));
-        textPresent("3436564");
-        textPresent("pN0");
-        textPresent("Prior BMSCT Administered Indicator");
-        textPresent("2320242");
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
-    public void removeOneFromCdeQuickBoard() {
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-OHSU Knight"));
-        textPresent("4 results for");
-        clickElement(By.id("addToCompare_0"));
-        clickElement(By.id("addToCompare_1"));
-        clickElement(By.id("addToCompare_2"));
-        String toRemove = findElement(By.id("acc_link_2")).getText();
-        clickElement(By.id("addToCompare_3"));
-        hangon(.5);
-        goToQuickBoardByModule("cde");
-        hangon(.5);
-        textPresent(toRemove);
-        List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
-        for (WebElement plus : pluses) {
-            Assert.assertFalse(plus.isDisplayed());
-        }
-        clickElement(By.id("remove_2"));
-        hangon(.5);
-        pluses = driver.findElements(By.cssSelector("i.fa-plus"));
-        for (WebElement plus : pluses) {
-            Assert.assertFalse(plus.isDisplayed());
-        }
-        textNotPresent(toRemove);
-    }
 }

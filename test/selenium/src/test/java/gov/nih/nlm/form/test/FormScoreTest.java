@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.CdeQuickBoardTest;
+import gov.nih.nlm.cde.test.CdeQuickBoardTest1;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FormScoreTest extends BaseFormTest {
 
-    private CdeQuickBoardTest qbTest = new CdeQuickBoardTest();
+    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
     private QuestionTest questionTest = new QuestionTest();
 
     @Test

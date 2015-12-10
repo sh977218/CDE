@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class ScoreTest extends NlmCdeBaseTest {
 
-    private CdeQuickBoardTest qbTest = new CdeQuickBoardTest();
+    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
 
     @Test
     public void cannotCreateWithZeroCdes() {
