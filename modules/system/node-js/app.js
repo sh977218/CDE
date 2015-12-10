@@ -539,14 +539,14 @@ exports.init = function(app) {
 
     app.get('/rsStatus', function(req, res) {
         mongo_data_system.rsStatus(function(err, st) {
-            if (err) res.status(500).end(err);
+            if (err) res.status(500).send(err);
             else res.send(st);
         });
     });
 
     app.get('/rsConf', function(req, res) {
         mongo_data_system.rsConf(function(err, doc) {
-            if (err) res.status(500).end(err);
+            if (err) res.status(500).send(err);
             else res.send(doc);
         });
     });
@@ -555,7 +555,7 @@ exports.init = function(app) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             var force = req.body.force === true;
             mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function(err, doc) {
-                if (err) res.status(500).end(err);
+                if (err) res.status(500).send(err);
                 else res.send(doc);
             });
         } else {
@@ -566,7 +566,7 @@ exports.init = function(app) {
     app.post('/occsPrimary', function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function(err, doc) {
-                if (err) res.status(500).end(err);
+                if (err) res.status(500).send(err);
                 else res.send(doc);
             });
         } else {

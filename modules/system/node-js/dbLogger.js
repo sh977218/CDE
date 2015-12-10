@@ -93,7 +93,8 @@ var feedbackIssueSchema = new mongoose.Schema({
     , reportedUrl: String
 });
 
-var conn = connHelper.establihConnection(mongoLogUri);
+var conn = connHelper.establishConnection(config.database.log);
+
 var LogModel = conn.model('DbLogger', logSchema);
 var LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
 var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);

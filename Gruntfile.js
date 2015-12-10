@@ -8,14 +8,14 @@ var config = require('./modules/system/node-js/parseConfig')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
     , fstream = require('fstream')
-;
-    
+    ;
+
 var welcomeMessage = fs.readFileSync("./deploy/doc/welcome.txt");
 var helpMessage = fs.readFileSync("./deploy/doc/help.txt");
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json')               
+        pkg: grunt.file.readJSON('package.json')
         , gitpull: {
             origin: {
                 options: {
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
                     , method: 'DELETE'
                     , ignoreErrors: true
                 }
-            }               
+            }
             , elasticCreateIndex: {
                 options: {
                     uri: config.elasticUri
@@ -133,40 +133,41 @@ module.exports = function(grunt) {
             , version: {
                 command: 'git rev-parse HEAD'
                 , options: {
-                    callback: function(err, stdout, stderr, cb){
-                        grunt.config('version',stdout);
+                    callback: function (err, stdout, stderr, cb) {
+                        grunt.config('version', stdout);
                         cb();
-                        return;
                     }
-                }               
-            } 
+                }
+            }
             , ingestTest: {
                 command: function () {
-                            return [
-                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
-                                , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/logInit.js"
-                                , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.dbname + " test"
-                                , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.dbname + " --testMode"
-                                , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                                , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " test/createLargeBoard.js"
-                            ].join("&&")
+                    return [
+                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " deploy/dbInit.js"
+                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.log.db + " deploy/logInit.js"
+                        , "groovy -cp ./groovy/ groovy/UploadCadsr test/data/cadsrTestSeed.xml " + config.database.servers[0].host + " " + config.database.appData.db + " test"
+                        , "groovy -cp ./groovy/ groovy/uploadNindsXls test/data/ninds-test.xlsx " + config.database.servers[0].host + " " + config.database.appData.db + " --testMode"
+                        , "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.appData.db
+                        , "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " test/createLargeBoard.js"
+                    ].join("&&")
                 }
             }
             , ingestProd: {
                 command: function () {
-                            return [
-                                "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.dbname + " deploy/dbInit.js"
-                                , "mongo cde-logs-test deploy/logInit.js"
-                                , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.dbname + " \;"
-                                //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname 
-                                //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
-                            ].join("&&")
+                    return [
+                        "mongo " + config.database.servers[0].host + ":" + config.database.servers[0].port + "/" + config.database.appData.db + " deploy/dbInit.js"
+                        , "mongo cde-logs-test deploy/logInit.js"
+                        , "find ../nlm-seed/ExternalCDEs/caDSR/*.xml -exec groovy -cp ./groovy/ groovy/UploadCadsr {} " + config.database.servers[0].host + " " + config.database.appData.db + " \;"
+                        //, "groovy -cp ./groovy/ groovy/uploadNindsXls \"../nlm-seed/ExternalCDEs/ninds/Data Element Import_20140523.xlsx\" " + config.database.servers[0].host + " " + config.database.dbname
+                        //, "groovy -cp ./groovy/ groovy/Grdr test/data/grdr.xlsx " + config.database.servers[0].host + " " + config.database.dbname
+                    ].join("&&")
                 }
-            }  
-            , runTests: {
-                command: function() { return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -Pbrowser=" + config.test.browser + " -Ptimeout=" + config.test.timeout + " -PforkNb=" + config.test.forkNb + " clean test " + config.test.testsToRun + " &";}
             }
-        }    
+            , runTests: {
+                command: function () {
+                    return "gradle -b test/selenium/build.gradle -PtestUrl=" + grunt.config('testUrl') + " -Pbrowser=" + config.test.browser + " -Ptimeout=" + config.test.timeout + " -PforkNb=" + config.test.forkNb + " clean test " + config.test.testsToRun + " &";
+                }
+            }
+        }
         , copy: {
             main: {
                 files: [
@@ -174,37 +175,41 @@ module.exports = function(grunt) {
                         expand: true
                         , cwd: '.'
                         , src: [
-                            'modules/**'
-                            , 'config/**'
-                            , 'deploy/**'
-                            , 'Gruntfile.js'
-                            , 'node_modules/**'
-                            , "deploy/kibana.js"
-                            , 'app.js'
-                            , 'package.json'
-                        ]
+                        'modules/**'
+                        , 'config/**'
+                        , 'deploy/**'
+                        , 'Gruntfile.js'
+                        , 'node_modules/**'
+                        , "deploy/kibana.js"
+                        , 'app.js'
+                        , 'package.json'
+                    ]
                         , dest: config.node.buildDir
                     }
                 ]
             }
-        }        
+        }
         , prompt: {
             node: {
                 options: {
                     questions: [
                         {
                             config: 'node.scripts.stop'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'stop'.red  + ' NodeJS?' + ' Command: (see config.js): \'' + config.node.scripts.stop + '\''
+                            ,
+                            type: 'confirm'
+                            ,
+                            message: 'Do you want to ' + 'stop'.red + ' NodeJS?' + ' Command: (see config.js): \'' + config.node.scripts.stop + '\''
                         }
                         , {
                             config: 'node.scripts.start'
-                            , type: 'confirm'
-                            , message: 'Do you want to ' + 'start'.green  + ' NodeJS?'  + ' Command (see config.js): \'' + config.node.scripts.start + '\''
-                        }                          
+                            ,
+                            type: 'confirm'
+                            ,
+                            message: 'Do you want to ' + 'start'.green + ' NodeJS?' + ' Command (see config.js): \'' + config.node.scripts.start + '\''
+                        }
                     ]
                 }
-            }            
+            }
             , help: {
                 options: {
                     questions: [
@@ -214,9 +219,9 @@ module.exports = function(grunt) {
                             , message: 'Please select ...'
                             , default: "run"
                             , choices: [{
-                                value: "run"
-                                , name: 'Run Deployment'
-                            }
+                            value: "run"
+                            , name: 'Run Deployment'
+                        }
                             , {
                                 value: "help"
                                 , name: 'Show Help Screen'
@@ -237,23 +242,25 @@ module.exports = function(grunt) {
                         {
                             config: 'ingest'
                             , type: 'list'
-                            , message: 'Do you want to '+ 'empty database'.red + ' and re-ingest data?'
+                            , message: 'Do you want to ' + 'empty database'.red + ' and re-ingest data?'
                             , default: false
                             , choices: [{
-                                value: false
-                                , name: 'Keep Existing Data.'.green
-                            }
+                            value: false
+                            , name: 'Keep Existing Data.'.green
+                        }
                             , {
                                 value: "test"
-                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'small'.yellow + ' collection!'
+                                ,
+                                name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'small'.yellow + ' collection!'
                             }
                             , {
                                 value: "production"
-                                , name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'large'.yellow + ' collection!'
+                                ,
+                                name: 'Delete'.red + ' \'' + config.name + '\' & Reingest ' + 'large'.yellow + ' collection!'
                             }]
                         }
                     ]
-                  }
+                }
             }
             , testsLocation: {
                 options: {
@@ -264,25 +271,25 @@ module.exports = function(grunt) {
                             , message: 'What is the test ' + 'destination'.green + '?'
                             , default: "localhost:3001"
                             , choices: [{
-                                value: "localhost:3001"
-                                , name: 'Localhost '+'localhost:3001'.green
-                            }
+                            value: "localhost:3001"
+                            , name: 'Localhost ' + 'localhost:3001'.green
+                        }
                             , {
                                 value: "http://cde-dev.nlm.nih.gov:3001"
-                                , name: 'Dev '+'cde-dev.nlm.nih.gov:3001'.red
+                                , name: 'Dev ' + 'cde-dev.nlm.nih.gov:3001'.red
                             }
                             , {
                                 value: "https://cde-qa.nlm.nih.gov:3001"
-                                , name: 'QA '+'cde-qa.nlm.nih.gov:3001'.red
+                                , name: 'QA ' + 'cde-qa.nlm.nih.gov:3001'.red
                             }]
                         }
-                    ]                    
+                    ]
                 }
             }
-            
+
         }
         , useref: {
-            html: [ config.node.buildDir + '/modules/system/views/index.ejs', config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
+            html: [config.node.buildDir + '/modules/system/views/index.ejs', config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
             , temp: config.node.buildDir + '/modules'
         }
         , uglify: {
@@ -296,40 +303,42 @@ module.exports = function(grunt) {
                 options: {
                     filter: 'include',
                     tasks: ['git', 'elastic', 'build', 'node']
-                }                
+                }
             }
-        }  
+        }
         , attention: {
             welcome: {
                 options: {
                     message: chalk.yellow(welcomeMessage)
                     , border: 'double'
-                    , borderColor: 'bgGreen'      
+                    , borderColor: 'bgGreen'
                 }
             }
             , help: {
                 options: {
                     message: chalk.yellow(helpMessage)
                     , border: 'double'
-                    , borderColor: 'bgGreen'      
+                    , borderColor: 'bgGreen'
                 }
-            }            
+            }
         },
         // https://www.npmjs.org/package/grunt-bower-install-simple
         // Grunt Task for Installing Bower Dependencies
         "bower-install-simple": {
+            options: {
+                // Whether output is colorized
+                color: true,
+                // Path where bower installed components should be saved
+                directory: "bower_components"
+            },
+            "dev": {
                 options: {
                 	// Whether output is colorized
                     color: true,
                     // Path where bower installed components should be saved
                     directory: "modules/system/public/components"
-                },
-                "dev": {
-                    options: {
-                    	// Do not install project devDependencies. The equivalent of bower install --production.
-                        production: false
-                    }
                 }
+            }
         },
         wiredep: {
             task: {
@@ -340,8 +349,8 @@ module.exports = function(grunt) {
                 }
             }
         }
-    });  
-    
+    });
+
     grunt.loadNpmTasks('grunt-git');
     grunt.loadNpmTasks('grunt-http');
     grunt.loadNpmTasks('grunt-shell');
@@ -358,10 +367,10 @@ module.exports = function(grunt) {
         if (grunt.config('git.pull')) {
             grunt.task.run('gitpull');
             grunt.task.run('buildVersion');
-        }     
-    });     
-    
-    grunt.registerTask('do-elastic', function() {
+        }
+    });
+
+    grunt.registerTask('do-elastic', function () {
         grunt.log.writeln('\n\nRe-creating ElasticSearch Indexes!');
         grunt.task.run('http:elasticDeleteRiver');
         grunt.task.run('http:elasticDeleteIndex');
@@ -381,44 +390,44 @@ module.exports = function(grunt) {
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
     });
-    
-    grunt.registerTask('do-node', function() {
+
+    grunt.registerTask('do-node', function () {
         if (grunt.config('node.scripts.stop')) {
             grunt.task.run('shell:stop');
         }
         if (grunt.config('node.scripts.start')) {
             grunt.task.run('shell:start');
-        }      
-    });  
-    
-    grunt.registerTask('do-ingest', function() {
-        if (grunt.config('ingest')==="test") {
+        }
+    });
+
+    grunt.registerTask('do-ingest', function () {
+        if (grunt.config('ingest') === "test") {
             grunt.task.run('shell:ingestTest');
         }
-        if (grunt.config('ingest')==="production") {
+        if (grunt.config('ingest') === "production") {
             grunt.task.run('shell:ingestProd');
-        }   
+        }
         grunt.task.run('clearQueue');
-    });  
-        
-    grunt.registerTask('divider', function() {
+    });
+
+    grunt.registerTask('divider', function () {
         console.log('\n------------------------------------------------------------');
-    });     
-    
-    grunt.registerTask('do-help', function() {
-        if (grunt.config('showHelp')=="help") {
+    });
+
+    grunt.registerTask('do-help', function () {
+        if (grunt.config('showHelp') == "help") {
             grunt.task.run('attention:help');
-        }   
-        if (grunt.config('showHelp')=="ingest") {
+        }
+        if (grunt.config('showHelp') == "ingest") {
             grunt.task.run('ingest');
-        }  
-        if (grunt.config('showHelp')=="tests") {
+        }
+        if (grunt.config('showHelp') == "tests") {
             grunt.task.run('tests');
-        }         
-    }); 
-    
-    grunt.registerTask('do-test', function() {
-        if (grunt.config('testUrl')==="localhost:3001") {
+        }
+    });
+
+    grunt.registerTask('do-test', function () {
+        if (grunt.config('testUrl') === "localhost:3001") {
             grunt.task.run('shell:ingestTest');
             grunt.util.spawn({
                 cmd: 'node'
@@ -427,33 +436,33 @@ module.exports = function(grunt) {
         }
         grunt.task.run('shell:runTests');
     });
-    
-    grunt.registerTask('clearQueue', function() {
+
+    grunt.registerTask('clearQueue', function () {
         grunt.task.clearQueue();
-    });     
-    
-    grunt.registerTask('persistVersion', function() {
+    });
+
+    grunt.registerTask('persistVersion', function () {
         fs.writeFileSync("./modules/system/public/html/version.html", grunt.config.get("version"));
     });
-    grunt.registerTask('tarCode', function() {
+    grunt.registerTask('tarCode', function () {
         var done = this.async();
         var writeS = fs.createWriteStream('./code.tar.gz');
-        writeS.on('close', function() {
+        writeS.on('close', function () {
             // tar done, now sign with gpg
             var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
-            gpg.on('close', function(code){
+            gpg.on('close', function (code) {
                 fs.unlinkSync("./code.tar.gz");
                 done();
             });
         });
-        var fixupDirs = function(entry) {
+        var fixupDirs = function (entry) {
             // Make sure readable directories have execute permission
             if (entry.props.type === "Directory")
                 entry.props.mode |= (entry.props.mode >>> 2) & 0111;
             return true;
         };
 
-        return fstream.Reader({ path: config.node.buildDir, type: 'Directory', filter: fixupDirs }).pipe(
+        return fstream.Reader({path: config.node.buildDir, type: 'Directory', filter: fixupDirs}).pipe(
             tar.Pack()).pipe(zlib.createGzip()).pipe(writeS);
     });
 
@@ -467,7 +476,7 @@ module.exports = function(grunt) {
     grunt.registerTask('bower',['bower-install-simple', 'wiredep']);
     grunt.registerTask('ci', ['buildVersion', 'bower', 'wiredep', 'elastic']);
     grunt.registerTask('refreplace-concat-minify', 'Run reference replacement, concatenation, minification build directory', ['useref', 'concat', 'cssmin']);
-    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function() {
+    grunt.registerTask('build', 'Download dependencies and copy application to its build directory.', function () {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
             grunt.task.run('copy');
