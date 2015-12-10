@@ -470,9 +470,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void logout() {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Log Out")).click();
-        findElement(By.linkText("Log In"));
+        clickElement(By.id("username_link"));
+        clickElement(By.id("user_logout"));
+        clickElement(By.id("login_link"));
         textPresent("Please Log In");
     }
 
@@ -510,6 +510,7 @@ public class NlmCdeBaseTest {
         String quickBoardTabText = (module == "cde" ? "CDE" : "Form") + " QuickBoard (";
         textPresent(quickBoardTabText);
     }
+
     public void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
