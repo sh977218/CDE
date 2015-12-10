@@ -406,7 +406,7 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(exporter.transformObject(cdesvc.hideProprietaryPvs(thisCde)));
+                            res.write(exporter.transformObject(thisCde));
                             sentElements++;
                             var isLast = sentElements === response.hits.total;
                             if (exporter.delimiter && !isLast) res.write(exporter.delimiter);

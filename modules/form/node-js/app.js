@@ -92,9 +92,38 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', function (req, res) {
-        var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
+        var exporters = {
+            csv: exporter = {
+                transformObject:function(form) {return exportShared.convertToCsv(exportShared.projectFormForExport(form))}
+                , header: "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
+                , delimiter: "\n"
+                , footer: ""
+                , type: 'text/csv'
+            }, json: {
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return JSON.stringify(cde)
+                }
+                , header: "["
+                , delimiter: ",\n"
+                , footer: "]"
+                , type: 'appplication/json'
+            }, xml: {
+                transformObject: function(cde){
+                    cde = exportShared.stripBsonIds(cde);
+                    cde = removeElasticFields(cde);
+                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                }
+                , header: "<cdeExport>\n"
+                , delimiter: "\n"
+                , footer: "\n</cdeExport>"
+                , type: 'appplication/xml'
+            }
+        };
+
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
+        return elastic_system.elasticSearchExport(res, query, 'form', exporters[req.query.type]);
     });
 
     app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {

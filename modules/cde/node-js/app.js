@@ -516,17 +516,15 @@ exports.init = function (app, daoManager) {
             delete cde.usedByOrgs;
             return cde;
         }
-        var exporter;
-        if (req.query.type==='csv') {
-            exporter = {
-                transformObject: exportShared.convertToCsv
+        var exporters = {
+            csv: exporter = {
+                transformObject: function(cde) {
+                    return exportShared.convertToCsv(exportShared.projectCdeForExport(cdesvc.hideProprietaryPvs(cde)))}
                 , header: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
                 , delimiter: "\n"
                 , footer: ""
                 , type: 'text/csv'
-            };
-        } else if (req.query.type==='json') {
-            exporter = {
+            }, json: {
                 transformObject: function(cde){
                     cde = exportShared.stripBsonIds(cde);
                     cde = removeElasticFields(cde);
@@ -536,9 +534,7 @@ exports.init = function (app, daoManager) {
                 , delimiter: ",\n"
                 , footer: "]"
                 , type: 'appplication/json'
-            };
-        } else if (req.query.type==='xml') {
-            exporter = {
+            }, xml: {
                 transformObject: function(cde){
                     cde = exportShared.stripBsonIds(cde);
                     cde = removeElasticFields(cde);
@@ -548,10 +544,10 @@ exports.init = function (app, daoManager) {
                 , delimiter: "\n"
                 , footer: "\n</cdeExport>"
                 , type: 'appplication/xml'
-            };
-        }
+            }
+        };
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exporter);
+        return elastic_system.elasticSearchExport(res, query, 'cde', exporters[req.query.type]);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
