@@ -349,7 +349,7 @@ public class NlmCdeBaseTest {
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
         ((JavascriptExecutor) driver).executeAsyncScript(
-                "angular.element(body).injector().get('$timeout')(arguments[arguments.length - 1]);"
+                "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
                 , ""
         );
         try {
