@@ -13,17 +13,18 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
-import static com.jayway.restassured.RestAssured.get;
-
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.jayway.restassured.RestAssured.get;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -70,6 +71,7 @@ public class NlmCdeBaseTest {
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
     protected static String exportBoardUser_username = "exportBoardUser";
+    protected static String testAdmin_username = "testAdmin";
 
 
     protected static String password = "pass";
@@ -77,7 +79,7 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11675; i++) {
+        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of records: " + nbOfRecords);
             hangon(10);
@@ -106,9 +108,9 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.chrome();
         }
 
-        LoggingPreferences loggingprefs = new LoggingPreferences();
-        loggingprefs.enable(LogType.BROWSER, Level.ALL);
-        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);
+        LoggingPreferences loggingPreferences = new LoggingPreferences();
+        loggingPreferences.enable(LogType.BROWSER, Level.ALL);
+        caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
         caps.setBrowserName(browser);
         baseUrl = System.getProperty("testUrl");
@@ -154,19 +156,19 @@ public class NlmCdeBaseTest {
     }
 
     private boolean isUsernameMatch(String username) {
-        WebElement unameLink = findElement(By.id("username_link"));
-        String unameStr = unameLink.getText();
+        WebElement usernameLink = findElement(By.id("username_link"));
+        String usernameLinkText = usernameLink.getText();
         String usernameStr = username;
-        if (unameStr.length() > 17) {
-            unameStr = unameStr.substring(0, 17) + "...";
+        if (usernameLinkText.length() > 17) {
+            usernameLinkText = usernameLinkText.substring(0, 17) + "...";
         }
         if (usernameStr.length() > 17) {
             usernameStr = username.substring(0, 17) + "...";
         }
-        return unameStr.equals(usernameStr);
+        return usernameLinkText.equals(usernameStr);
     }
 
-    protected void doLogin(String username, String password){
+    protected void doLogin(String username, String password) {
         findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
         WebElement loginLinkList = driver.findElement(By.id("login_link"));
         if (loginLinkList.isDisplayed()) {
@@ -186,9 +188,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Organizations")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
         if (orgLongName != null) {
@@ -196,11 +198,10 @@ public class NlmCdeBaseTest {
         }
 
         if (orgWGOf != null) {
-            new Select(findElement(By.id("newOrgWorkingGroup")))
-                    .selectByVisibleText("ACRIN");
+            new Select(findElement(By.id("newOrgWorkingGroup"))).selectByVisibleText("ACRIN");
         }
 
-        findElement(By.id("addOrg")).click();
+        clickElement(By.id("addOrg"));
         textPresent("Org Added");
         textPresent(orgName);
 
@@ -209,10 +210,10 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void gotoClassifMgt() {
-        findElement(By.id("username_link")).click();
+    protected void gotoClassificationMgt() {
+        clickElement(By.id("username_link"));
         hangon(.5);
-        findElement(By.linkText("Classifications")).click();
+        clickElement(By.linkText("Classifications"));
         textPresent("Manage Classifications");
     }
 
@@ -270,25 +271,30 @@ public class NlmCdeBaseTest {
         searchElt(cdeName, "cde", null);
     }
 
+    public void searchForm(String formName) {
+        searchElt(formName, "form", null);
+    }
+
+
     public void searchElt(String name, String type, String status) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         if (status != null) {
             hangon(2);
-            findElement(By.id("li-blank-" + status)).click();
+            clickElement(By.id("li-blank-" + status));
         }
         try {
             textPresent("1 results for");
         } catch (Exception e) {
             System.out.println("Failing to find, trying again: " + name);
             findElement(By.id("ftsearch-input")).sendKeys(" ");
-            findElement(By.id("search.submit")).click();
+            clickElement(By.id("search.submit"));
             if (status != null) {
                 hangon(2);
-                findElement(By.id("li-blank-" + status)).click();
+                clickElement(By.id("li-blank-" + status));
             }
             textPresent("1 results for");
         }
@@ -330,9 +336,14 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
+    protected List<WebElement> findElements(By by) {
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+        return driver.findElements(by);
+    }
+
     public void waitAndClick(By by) {
         wait.until(ExpectedConditions.elementToBeClickable(by));
-        findElement(by).click();
+        clickElement(by);
     }
 
     protected void clickElement(By by) {
@@ -347,8 +358,7 @@ public class NlmCdeBaseTest {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            JavascriptExecutor executor = (JavascriptExecutor) driver;
-            Integer value = ((Long) executor.executeScript("return window.scrollY;")).intValue();
+            Integer value = ((Long) ((JavascriptExecutor) driver).executeScript("return window.scrollY;")).intValue();
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -356,7 +366,6 @@ public class NlmCdeBaseTest {
                 scrollToTop();
                 findElement(by).click();
             }
-
         }
     }
 
@@ -384,7 +393,8 @@ public class NlmCdeBaseTest {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS); } catch (Exception e) {
+                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
@@ -461,14 +471,14 @@ public class NlmCdeBaseTest {
         textPresent("Cancer Therapy Evaluation Program");
     }
 
-    protected void goToQuickBoard() {
+    protected void goToQuickBoardByModule() {
         driver.get(baseUrl + "/#/quickBoard");
     }
 
     protected void logout() {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Log Out")).click();
-        findElement(By.linkText("Log In"));
+        clickElement(By.id("username_link"));
+        clickElement(By.id("user_logout"));
+        clickElement(By.id("login_link"));
         textPresent("Please Log In");
     }
 
@@ -486,22 +496,48 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addToQuickBoard(String cdeName) {
+    public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
+        findElement(By.id("addToCompare_0")).click();
+        hangon(2);
+        findElement(By.name("q")).clear();
+    }
+
+    public void addFormToQuickBoard(String formName) {
+        searchForm(formName);
         findElement(By.id("addToCompare_0")).click();
         hangon(.5);
         findElement(By.name("q")).clear();
     }
 
+    public void goToQuickBoardByModule(String module) {
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
+        String quickBoardTabText = (module == "cde" ? "CDE" : "Form") + " QuickBoard (";
+        textPresent(quickBoardTabText);
+    }
+
+    public void emptyQuickBoardByModule(String module) {
+        if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
+        goToQuickBoardByModule(module);
+        clickElement(By.id("qb_" + module + "_empty"));
+        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard (0)");
+        clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
+        hangon(1);
+    }
+
     public void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
-        textPresent("Quick Board ( empty )");
-        addToQuickBoard(cdeName1);
-        addToQuickBoard(cdeName2);
-        findElement(By.linkText("Quick Board ( 2 )")).click();
+        textPresent("Quick Board (0)");
+        addCdeToQuickBoard(cdeName1);
+        addCdeToQuickBoard(cdeName2);
+        clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
         textPresent(cdeName1);
         textPresent(cdeName2);
-        findElement(By.id("qb.compare")).click();
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_cde_compare"));
     }
 
     public void scrollToTop() {
@@ -509,23 +545,12 @@ public class NlmCdeBaseTest {
     }
 
     protected boolean checkElementDoesNotExistByCSS(String selector) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-        boolean elementVisible;
-        try {
-            driver.findElement(By.cssSelector(selector));
-            elementVisible = false;
-        } catch (NoSuchElementException e) {
-            elementVisible = true;
-        }
-        driver.manage().timeouts()
-                .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        return elementVisible;
+        return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
     public void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
-        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y)
-                + ");";
+        String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
@@ -608,44 +633,33 @@ public class NlmCdeBaseTest {
     }
 
     protected void deleteClassification(String classificationId) {
-        driver.findElement(
-                By.cssSelector("[id='" + classificationId
-                        + "'] [title=\"Remove\"]")).click();
-        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']"))
-                .click();
+        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
+        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
         modalGone();
         closeAlert();
     }
 
     protected void deleteMgtClassification(String classificationId,
-                                           String classifName) {
-        driver.findElement(
-                By.cssSelector("[id='" + classificationId
-                        + "'] [title=\"Remove\"]")).click();
-        driver.findElement(By.id("removeClassificationUserTyped")).sendKeys(
-                classifName);
-        driver.findElement(By.cssSelector("[id='okRemoveClassificationModal']"))
-                .click();
+                                           String classificationName) {
+        clickElement(By.cssSelector("[id='" + classificationId + "'] [title=\"Remove\"]"));
+        findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
+        clickElement(By.cssSelector("[id='okRemoveClassificationModal']"));
         modalGone();
         closeAlert();
     }
 
     protected void gotoInbox() {
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Inbox")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Inbox"));
         hangon(0.5);
     }
 
     protected void showHistoryDiff(Integer prev) {
-        findElement(
-                By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1)
-                        + "]//td[4]/a")).click();
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
     }
 
     protected void showHistoryFull(Integer prev) {
-        findElement(
-                By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1)
-                        + "]//td[5]/a")).click();
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
     }
 
     protected void confirmCdeModification(String field, String oldValue,
@@ -670,7 +684,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         scrollToTop();
-        findElement(By.linkText("History")).click();
+        clickElement(By.linkText("History"));
         hangon(1);
         showHistoryDiff(0);
         confirmCdeModification(field, oldValue, newValue);
@@ -678,9 +692,9 @@ public class NlmCdeBaseTest {
 
     protected void openCdeAudit(String cdeName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
-        findElement(By.linkText("CDE Audit Log")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("CDE Audit Log"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
             try {
@@ -688,21 +702,19 @@ public class NlmCdeBaseTest {
                         By.cssSelector("uib-accordion"), cdeName));
                 break;
             } catch (Exception e) {
-                findElement(By.linkText("Next")).click();
+                clickElement(By.linkText("Next"));
             }
 
         }
-        findElement(
-                By.xpath("//uib-accordion//span[contains(text(),'" + cdeName
-                        + "')]")).click();
+        clickElement(By.xpath("//uib-accordion//span[contains(text(),'" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {
         goHome();
-        findElement(By.id("searchSettings")).click();
-        findElement(By.id(id)).click();
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id(id));
         scrollTo(1000);
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
         goToSearch("cde");
@@ -724,7 +736,7 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
-        driver.findElement(By.xpath(prefix + "moveUp-2" + postfix));
+        findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 }

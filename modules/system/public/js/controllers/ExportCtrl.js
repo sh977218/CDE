@@ -13,11 +13,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (result) {
             var exportFiletypes =
-                {
-                    'csv': 'text/csv',
-                    'json': 'application/json',
-                    'xml': 'application/xml'
-                };
+            {
+                'csv': 'text/csv',
+                'json': 'application/json',
+                'xml': 'application/xml'
+            };
             if (result) {
                 var blob = new Blob([result], {
                     type: exportFiletypes[type]
@@ -30,6 +30,23 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             }
         });
     };
+
+    $scope.quickBoardExport = function (quickBoard) {
+        var result = exports.exportHeader.cdeHeader;
+        quickBoard.elts.forEach(function (ele) {
+            result += exports.convertToCsv(ele);
+        });
+        if (result) {
+            var blob = new Blob([result], {
+                type: "text/csv"
+            });
+            saveAs(blob, 'QuickBoardExport' + '.csv');
+            $scope.addAlert("success", "Export downloaded.");
+            $scope.feedbackClass = ["fa-download"];
+        } else {
+            $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+        }
+    }
 
 }])
 ;
