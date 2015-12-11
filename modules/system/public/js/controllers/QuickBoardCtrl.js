@@ -44,6 +44,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 var result = exports.exportHeader.cdeHeader;
                 $scope.cdes.forEach(function (ele) {
                     result += exports.convertToCsv(ele);
+                    result += "\n";
                 });
                 if (result) {
                     var blob = new Blob([result], {
