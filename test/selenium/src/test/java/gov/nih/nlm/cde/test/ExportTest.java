@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.TimeUnit;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -60,22 +59,21 @@ public class ExportTest extends NlmCdeBaseTest {
     @Test
     public void quickBoardExport() {
         goToSearch("cde");
-        findElement(By.id("browseOrg-caBIG")).click();
+        clickElement(By.id("browseOrg-caBIG"));
         hangon(1);
-        findElement(By.id("addToCompare_0")).click();
-        findElement(By.id("addToCompare_1")).click();
-        findElement(By.id("addToCompare_2")).click();
-        findElement(By.id("addToCompare_3")).click();
-        findElement(By.id("addToCompare_4")).click();
-        findElement(By.id("addToCompare_5")).click();
-        findElement(By.id("addToCompare_6")).click();
+        clickElement(By.id("addToCompare_0"));
+        clickElement(By.id("addToCompare_1"));
+        clickElement(By.id("addToCompare_2"));
+        clickElement(By.id("addToCompare_3"));
+        clickElement(By.id("addToCompare_4"));
+        clickElement(By.id("addToCompare_5"));
+        clickElement(By.id("addToCompare_6"));
 
-        textPresent("Quick Board ( 7 )");
-        goToQuickBoard();
-
+        textPresent("Quick Board (7)");
+        goToQuickBoardByModule("cde");
         textPresent("Export Quick Board");
 
-        findElement(By.id("qb.export")).click();
+        clickElement(By.id("qb_cde_export"));
         boolean done = false;
         for (int i = 0; !done && i < 15; i++) {
             try {
@@ -86,7 +84,7 @@ public class ExportTest extends NlmCdeBaseTest {
             }
         }
         closeAlert();
-        findElement(By.id("qb.empty")).click();
+        findElement(By.id("qb_cde_empty")).click();
         if (!done) throw new TimeoutException("Export was too slow.");
     }
 
@@ -122,7 +120,7 @@ public class ExportTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void allXmlExport(){
+    public void allXmlExport() {
         String query = "{\"resultPerPage\":20,\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
         String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=xml").asString();
         Assert.assertTrue(response.replaceAll("\\s+", "").contains(("<dataElement>\n" +

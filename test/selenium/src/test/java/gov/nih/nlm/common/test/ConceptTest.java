@@ -6,7 +6,7 @@ import org.testng.Assert;
 public abstract class ConceptTest extends CommonTest {
 
     public void reorderConceptTest(String eltName) {
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
         String tabName = "conceptsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

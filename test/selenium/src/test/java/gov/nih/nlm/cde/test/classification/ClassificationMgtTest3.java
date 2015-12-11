@@ -15,7 +15,7 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
     public void addDeleteClassificationMgt() {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         createClassificationName(org, new String[]{"_a"});        
         createClassificationName(org, new String[]{"_a"});
         List<WebElement> linkList = driver.findElements(By.xpath("//span[text()=\"_a\"]"));
@@ -35,7 +35,7 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
     @Test
     public void renameClassification() {
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         driver.findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injury']/div/div/span/a[1]")).click();
         findElement(By.id("renameClassifInput")).clear();
         textPresent("Name is required");

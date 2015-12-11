@@ -57,7 +57,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("3279225");
     }
     
-    @Test
+    /*@Test*/
     public void mergeMineMineEverything() {
         mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
@@ -77,7 +77,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("2005490");        
     }    
     
-    @Test
+    /*@Test*/
     public void mergeMineTheirsClassificationsOnly() {
         mustBeLoggedInAs(cabigAdmin_username, password);
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
@@ -92,7 +92,7 @@ public class MergeTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));
     }
   
-    @Test
+    /*@Test*/
     public void mergeMineTheirsEverything() {
         createMergeRequest();
         acceptMergeRequest();

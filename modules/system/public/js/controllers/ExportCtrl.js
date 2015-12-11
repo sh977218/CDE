@@ -14,11 +14,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
             var exportFiletypes =
-                {
-                    'csv': 'text/csv',
-                    'json': 'application/json',
-                    'xml': 'application/xml'
-                };
+            {
+                'csv': 'text/csv',
+                'json': 'application/json',
+                'xml': 'application/xml'
+            };
             if (result) {
                 var blob = new Blob([result], {
                     type: exportFiletypes[type]
@@ -29,6 +29,23 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             }
         });
     };
+
+    $scope.quickBoardExport = function (quickBoard) {
+        var result = exports.exportHeader.cdeHeader;
+        quickBoard.elts.forEach(function (ele) {
+            result += exports.convertToCsv(ele);
+        });
+        if (result) {
+            var blob = new Blob([result], {
+                type: "text/csv"
+            });
+            saveAs(blob, 'QuickBoardExport' + '.csv');
+            $scope.addAlert("success", "Export downloaded.");
+            $scope.feedbackClass = ["fa-download"];
+        } else {
+            $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+        }
+    }
 
 }])
 ;

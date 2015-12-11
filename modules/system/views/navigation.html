@@ -46,7 +46,8 @@
                     </ul>
                 </li>
                 <li id="menu_qb_link" ng-class="{ active: isPageActive('/quickBoard')}">
-                    <a class="navbar-link" href="/#/quickBoard" ng-bind="'Quick Board (' + quickBoard.numberDisplay() + ' )'">
+                    <a class="navbar-link" href="/#/quickBoard"
+                       ng-bind="'Quick Board (' + (quickBoard.elts.length + formQuickBoard.elts.length) + ')'">
                     </a>
                 </li>
                 <li id="menu_help_link" dropdown ng-class="{ active: isPageActive('/help')}">
@@ -77,25 +78,25 @@
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="username_link">
                         <li ng-show='user._id'>
-                            <a href="/#/profile">Profile</a>
+                            <a href="/#/profile" id="user_profile">Profile</a>
                         </li>
                         <li ng-show='inboxVisible()'>
-                            <a href="/#/inbox">Inbox</a>
+                            <a href="/#/inbox" id="user_inbox">Inbox</a>
                         </li>
                         <li ng-show="isOrgCurator()">
-                            <a href="/#/classificationmanagement">Classifications</a>
+                            <a href="/#/classificationmanagement" id="user_classifications">Classifications</a>
                         </li>
                         <li ng-show="isOrgAdmin() && !user.siteAdmin">
-                            <a href="/#/orgaccountmanagement">Account Management</a>
+                            <a href="/#/orgaccountmanagement" id="user_account_management">Account Management</a>
                         </li>
                         <li ng-show='user._id && user.siteAdmin'>
-                            <a href="/#/siteaccountmanagement">Site Management</a>
+                            <a href="/#/siteaccountmanagement" id="user_site_management">Site Management</a>
                         </li>
                         <li ng-show='user._id && user.siteAdmin'>
-                            <a href="/#/siteAudit">Audit</a>
+                            <a href="/#/siteAudit" id="user_audit">Audit</a>
                         </li>
                         <li ng-show='user._id'>
-                            <a href="/logout" target="_self">Log Out</a>
+                            <a href="/logout" target="_self" id="user_logout">Log Out</a>
                         </li>
                     </ul>
                 </li>

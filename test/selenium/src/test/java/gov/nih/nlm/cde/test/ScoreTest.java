@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.boards.QuickBoardTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,12 +7,12 @@ import org.testng.annotations.Test;
 
 public class ScoreTest extends NlmCdeBaseTest {
 
-    private QuickBoardTest qbTest = new QuickBoardTest();
+    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
 
     @Test
     public void cannotCreateWithZeroCdes() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard();
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         findElement(By.linkText("Score / Derivations")).click();
         findElement(By.id("addNewScore")).click();
@@ -25,7 +24,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddSelfToRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard();
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
         findElement(By.id("compareMe")).click();
         findElement(By.linkText("Score / Derivations")).click();
@@ -38,13 +37,13 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddDatatypeText() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard();
+        qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
-        findElement(By.id("compareMe")).click();
-        textPresent("Quick Board ( 1 )");
+        clickElement(By.id("compareMe"));
+        textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        clickElement(By.linkText("Score / Derivations"));
+        clickElement(By.id("addNewScore"));
         textPresent("CDE Excisional Biopsy Colorectal Pathology Comment java.lang.String has a datatype other than 'Number' and may not be added to a score");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
         findElement(By.id("cancelCreate")).click();
@@ -53,10 +52,10 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void validRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoard();
-        addToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
+        qbTest.emptyQuickBoardByModule("cde");
+        addCdeToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
         hangon(1);
-        addToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
+        addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
         hangon(1);
         goToCdeByName("DRS Total Score");
         findElement(By.linkText("Score / Derivations")).click();
