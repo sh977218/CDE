@@ -11,6 +11,7 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
+    , js2xml = require('js2xmlparser')
     ;
 
 exports.init = function (app, daoManager) {
@@ -100,20 +101,18 @@ exports.init = function (app, daoManager) {
                 , footer: ""
                 , type: 'text/csv'
             }, json: {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return JSON.stringify(cde)
+                transformObject: function(form){
+                    cde = exportShared.stripBsonIds(form);
+                    return JSON.stringify(form)
                 }
                 , header: "["
                 , delimiter: ",\n"
                 , footer: "]"
                 , type: 'appplication/json'
             }, xml: {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                transformObject: function(form){
+                    cde = exportShared.stripBsonIds(form);
+                    return js2xml("dataElement", form, {declaration: {include: false}});
                 }
                 , header: "<cdeExport>\n"
                 , delimiter: "\n"
@@ -126,7 +125,7 @@ exports.init = function (app, daoManager) {
         return elastic_system.elasticSearchExport(res, query, 'form', exporters[req.query.type]);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
         return [];
     });
 

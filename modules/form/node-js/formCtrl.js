@@ -72,7 +72,13 @@ var getFormPlainXml = function(form, req, res){
 exports.formById = function (req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, req, res);
+        if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, function(err, xmlForm) {
+            if (err) res.status(err).send(xmlForm);
+            else {
+                res.set('Content-Type', 'text/xml');
+                res.send(xmlForm);
+            }
+        });
         else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
         else getFormJson(form, req, res);
@@ -84,7 +90,8 @@ var getFormSdc = function(form, req, res){
     res.send(sdc.formToSDC(form));
 };
 
-var getFormOdm = function(form, req, res){
+//var getFormOdm = function(form, req, res){
+var getFormOdm = function(form, cb) {
     function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {
             "Value List": "text",
@@ -124,7 +131,8 @@ var getFormOdm = function(form, req, res){
     for (var i = 0; i < form.formElements.length; i++) {
         var sec = form.formElements[i];
         for (var j = 0; j < sec.formElements.length; j++) {
-            if (sec.formElements[j].elementType === 'section') return res.status(202).send("Forms with nested sections cannot be exported to ODM.");
+            if (sec.formElements[j].elementType === 'section')
+                return cb(202, "Forms with nested sections cannot be exported to ODM.");
         }
     }
 
@@ -286,6 +294,7 @@ var getFormOdm = function(form, req, res){
     questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
     codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
     var xmlForm = js2xml("ODM", odmJsonForm);
-    res.set('Content-Type', 'text/xml');
-    res.send(xmlForm);
+    cb(null, xmlForm);
+    //res.set('Content-Type', 'text/xml');
+    //res.send(xmlForm);
 };

@@ -200,7 +200,7 @@ exports.init = function (app, daoManager) {
                 }
                 mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_data.newBoard(board, function (err, newBoard) {
+                        mongo_data.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             res.send();
                         });
