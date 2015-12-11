@@ -1,12 +1,12 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'QuickBoard', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
+        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, QuickBoard, AutoCompleteResource, $location, $route, $controller, $log)
+                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log)
+
 {
 
     $scope.autocomplete = AutoCompleteResource;
-    $scope.quickBoard = QuickBoard;
     $scope.filterMode = true;
 
     if ($route.current.subCtrl) {
@@ -195,22 +195,22 @@ angular.module('systemModule').controller('ListCtrl',
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
-                $scope.cdes = [];
-                $log.error(err);
+                $scope[type + 's'] = [];
                 return;
             }
             if (timestamp < $scope.lastQueryTimeStamp) return;
             $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
             $scope.totalItems = result.totalNumber;
-            $scope.cdes = result.cdes;
-            $scope.cdes.forEach(function (elt) {
+            $scope[type + 's'] = result[type + 's'];
+            $scope.elts = result[type + 's'];
+            $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {
                     $scope.localEltTransform(elt);
                 }
             });
             $scope.accordionListStyle = "";
-            $scope.openCloseAll($scope.cdes, "list");
+            $scope.openCloseAll($scope[type + 's'], "list");
             $scope.aggregations = result.aggregations;
 
             if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
@@ -236,7 +236,7 @@ angular.module('systemModule').controller('ListCtrl',
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
-                if ($scope.cdes.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
+                if ($scope.elts.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
             }
         });
 

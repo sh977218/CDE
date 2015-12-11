@@ -1,8 +1,10 @@
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', '$rootScope', '$route', 'LoginRedirect',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route',
+        'LoginRedirect',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, $rootScope, $route, LoginRedirect)
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route,
+                 LoginRedirect)
 {
 
     $scope.goToLogin = function(){
@@ -11,7 +13,7 @@ angular.module('systemModule').controller('MainCtrl',
     };
 
     $scope.quickBoard = QuickBoard;
-    QuickBoard.restoreFromLocalStorage();
+    $scope.formQuickBoard = FormQuickBoard;
     $scope.formEnabled = window.formEnabled;
 
     // Global variables
@@ -26,12 +28,12 @@ angular.module('systemModule').controller('MainCtrl',
         $scope.myOrgs = userResource.userOrgs;
         $scope.checkMail();
     });
-    
+
     $scope.loadMyBoards = function () {
         $http.get("/boards/" + userResource.user._id).then(function (response) {
             $scope.boards = response.data;
-        });         
-    };    
+        });
+    };
 
     $scope.canCreateForms = function() {
         return $scope.isOrgCurator() && window.formEnabled && (window.formEditable || $scope.isSiteAdmin());
@@ -42,7 +44,7 @@ angular.module('systemModule').controller('MainCtrl',
            if (response.data.length > 0) {
                 var id = (new Date()).getTime();
                 if ($scope.broadcast !== response.data) {
-                    $scope.broadcast = response.data;                
+                    $scope.broadcast = response.data;
                     $scope.alerts.push({type: "warning", msg: $scope.broadcast, id: id});
                 }
            }
@@ -52,7 +54,7 @@ angular.module('systemModule').controller('MainCtrl',
         });
     };
     $scope.checkSystemAlert();
-    
+
     $scope.alerts = [];
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
@@ -68,22 +70,22 @@ angular.module('systemModule').controller('MainCtrl',
             }
         }, window.userAlertTime);
     };
-    
+
     $scope.boards = [];
 
-   
+
     userResource.getPromise().then(function() {
         $scope.loadMyBoards();
-    });        
+    });
 
-    $scope.isOrgCurator = function() {        
-        return exports.isOrgCurator(userResource.user);  
+    $scope.isOrgCurator = function() {
+        return exports.isOrgCurator(userResource.user);
     };
-    
+
     $scope.isOrgAdmin = function() {
-        return exports.isOrgAdmin(userResource.user);  
+        return exports.isOrgAdmin(userResource.user);
     };
-    
+
     $scope.isSiteAdmin = function() {
         return userResource.user !== undefined && userResource.user.siteAdmin;
     };
@@ -91,7 +93,7 @@ angular.module('systemModule').controller('MainCtrl',
     $scope.isDocumentationEditor = function() {
         return exports.hasRole(userResource.user, "DocumentationEditor");
     };
-           
+
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
           templateUrl: '/cde/public/html/selectBoardModal.html',
@@ -117,7 +119,7 @@ angular.module('systemModule').controller('MainCtrl',
         });
     };
 
-    $scope.isPageActive = function (viewLocation) { 
+    $scope.isPageActive = function (viewLocation) {
         return viewLocation === $location.path();
     };
 
@@ -159,7 +161,7 @@ angular.module('systemModule').controller('MainCtrl',
         $location.url('/'+type+'/search?selectedOrg=' + encodeURIComponent(orgName)
             + "&classification=" + encodeURIComponent(elts.join(";")));
     };
-    
+
     // Gets screen size and also updates it in the callboack on screen resize
     $scope.isScreenSizeXsSm = screenSize.on('xs, sm', function(isScreenSize){
         $scope.isScreenSizeXsSm = isScreenSize;
@@ -170,17 +172,17 @@ angular.module('systemModule').controller('MainCtrl',
     $interval(function() {
         OrgHelpers.getOrgsDetailedInfoAPI();
     }, GLOBALS.getOrgsInterval);
-    
+
    $scope.inboxVisible = function() {
        return $scope.isOrgCurator()||$scope.isOrgAdmin()||exports.hasRole($scope.user, "CommentReviewer")||exports.hasRole($scope.user, "AttachmentReviewer");
    };
-    
+
     $scope.checkMail = function(){
         if (!$scope.inboxVisible()) return false;
         $http.get('/mailStatus').success(function(data){
             if (data.count>0) $scope.userHasMail = true;
         });
-        
+
     };
 
 }

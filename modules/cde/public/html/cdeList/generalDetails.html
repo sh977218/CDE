@@ -2,46 +2,46 @@
     <caption tabindex="0">General Details</caption>
     <tr>
         <th tabindex="0" class="text-right">Name:</th>
-        <td tabindex="0" id="dd_general_name" ng-bind-html="cde.naming[0].designation"></td>
+        <td tabindex="0" id="dd_general_name" ng-bind-html="elt.naming[0].designation"></td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Steward:</th>
-        <td tabindex="0" ng-bind-html="cde.stewardOrg.name"></td>
+        <td tabindex="0" ng-bind-html="elt.stewardOrg.name"></td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Definition:</th>
-        <td tabindex="0" id="dd_def" ng-bind-html="cde.naming[0].definition | placeholdEmpty"></td>
+        <td tabindex="0" id="dd_def" ng-bind-html="elt.naming[0].definition | placeholdEmpty"></td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Used By:</th>
         <td tabindex="0" id="dd_usedBy">
-            <span ng-switch="cde.classification.length > 0">
+            <span ng-switch="elt.classification.length > 0">
                 <span ng-switch-when="false">None</span>
                 <span ng-switch-default>
-                    <span ng-repeat="ub in cde.usedBy">{{ub}} </span>
+                    <span ng-repeat="ub in elt.usedBy">{{ub}} </span>
                 </span>
             </span>
         </td>
     </tr>
-    <tr ng-if="cde.valueDomain.uom">
+    <tr ng-if="elt.valueDomain.uom">
         <th tabindex="0" class="text-right">Unit of Measure:</th>
-        <td tabindex="0" id="dd_uom">{{cde.valueDomain.uom | placeholdEmpty}}</td>
+        <td tabindex="0" id="dd_uom">{{elt.valueDomain.uom | placeholdEmpty}}</td>
     </tr>
-    <tr ng-if="cde.origin">
+    <tr ng-if="elt.origin">
         <th tabindex="0" class="text-right">Origin:</th>
-        <td tabindex="0">{{cde.origin}}</td>
+        <td tabindex="0">{{elt.origin}}</td>
     </tr>
-    <tr ng-if="cde.source">
+    <tr ng-if="elt.source">
         <th tabindex="0" class="text-right">Source:</th>
-        <td tabindex="0">{{cde.source}}</td>
+        <td tabindex="0">{{elt.source}}</td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right" id="dt_status">Status:</th>
-        <td tabindex="0" id="dd_status">{{cde.registrationState.registrationStatus}}</td>
+        <td tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</td>
     </tr>
-    <tr ng-if="cde.views">
+    <tr ng-if="elt.views">
         <th tabindex="0" class="text-right">Views:</th>
-        <td tabindex="0" id="dd_views">{{cde.views}}</td>
+        <td tabindex="0" id="dd_views">{{elt.views}}</td>
     </tr>
 </table>
 

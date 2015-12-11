@@ -1,6 +1,10 @@
-angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout',
-    function ($scope, $controller, TourContent, userResource, $timeout) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout', 'QuickBoard',
+    function ($scope, $controller, TourContent, userResource, $timeout, QuickBoard) {
         $scope.module = "cde";
+        $scope.quickBoard = QuickBoard;
+
+        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+            "/cde/public/html/accordion/addToQuickBoardActions.html"];
 
         userResource.getPromise().then(function () {
             $scope.search("cde");
@@ -73,7 +77,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 , content: "The plus sign will add a CDE to your Quick Board."
             }
             , {
-                element: "#gridView"
+                element: "#cde_gridView"
                 ,
                 placement: "left"
                 ,
