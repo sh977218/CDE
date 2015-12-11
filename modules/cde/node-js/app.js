@@ -516,6 +516,7 @@ exports.init = function (app, daoManager) {
             delete cde.usedByOrgs;
             return cde;
         }
+        var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         var exporters = {
             csv: exporter = {
                 export: function(res) {
@@ -569,8 +570,9 @@ exports.init = function (app, daoManager) {
                 }
             }
         };
-        var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde');
+        var exporter =  exporters[req.query.type];
+        if (!exporter) return res.status(500).send("Unable to process exporter.");
+        exporter.export(res);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
