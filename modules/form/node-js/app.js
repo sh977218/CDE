@@ -93,13 +93,24 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', function (req, res) {
+        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+
         var exporters = {
             csv: exporter = {
                 transformObject:function(form) {return exportShared.convertToCsv(exportShared.projectFormForExport(form))}
-                , header: "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
-                , delimiter: "\n"
-                , footer: ""
-                , type: 'text/csv'
+                , export: function(res) {
+                    res.type('text/csv');
+                    res.write("Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(elt)))
+                            res.write("\n");
+                        } else {
+                            res.send();
+                        }
+                    }, query, 'form', exporters[req.query.type]);
+                }
             }, json: {
                 transformObject: function(form){
                     cde = exportShared.stripBsonIds(form);
@@ -121,8 +132,9 @@ exports.init = function (app, daoManager) {
             }
         };
 
-        var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exporters[req.query.type]);
+        var exporter =  exporters[req.query.type];
+        if (!exporter) return res.status(500).send("Unable to process exporter.");
+        exporter.export(res);
     });
 
     app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {

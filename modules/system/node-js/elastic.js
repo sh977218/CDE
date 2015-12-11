@@ -366,12 +366,12 @@ exports.elasticsearch = function (query, type, cb) {
 
 var lock = false;
 
-exports.elasticSearchExport = function (res, query, type, exporter) {
+exports.elasticSearchExport = function (dataCb, query, type) {
     if (lock) return res.status(503).send("Servers busy");
 
-    if (!exporter) return res.status(500).send("Unable to process exporter.");
+    //if (!exporter) return res.status(500).send("Unable to process exporter.");
 
-    res.type(exporter.type);
+    //res.type(exporter.type);
 
     lock = true;
 
@@ -381,7 +381,7 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    if (exporter.header) res.write(exporter.header);
+    //if (exporter.header) res.write(exporter.header);
     search.body = query;
 
     var sentElements = 0;
@@ -395,21 +395,21 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                         {
                             origin: "system.elastic.elasticsearch", stack: new Error().stack
                         });
-                    res.status(500).send("ES Error");
+                    dataCb("ES Error");
                 } else {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
-                        if (exporter.footer) res.write(exporter.footer);
-                        res.send();
+                        //if (exporter.footer) res.write(exporter.footer);
+                        dataCb();
                     }
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(exporter.transformObject(thisCde));
+                            dataCb(null, thisCde);
                             sentElements++;
                             var isLast = sentElements === response.hits.total;
-                            if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
+                            //if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }

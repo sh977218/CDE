@@ -90,7 +90,6 @@ var getFormSdc = function(form, req, res){
     res.send(sdc.formToSDC(form));
 };
 
-//var getFormOdm = function(form, req, res){
 var getFormOdm = function(form, cb) {
     function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {
