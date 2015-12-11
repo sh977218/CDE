@@ -367,11 +367,7 @@ exports.elasticsearch = function (query, type, cb) {
 var lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return res.status(503).send("Servers busy");
-
-    //if (!exporter) return res.status(500).send("Unable to process exporter.");
-
-    //res.type(exporter.type);
+    if (lock) return dataCb(503, "Servers busy");
 
     lock = true;
 
@@ -381,7 +377,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    //if (exporter.header) res.write(exporter.header);
     search.body = query;
 
     var sentElements = 0;
@@ -400,7 +395,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
-                        //if (exporter.footer) res.write(exporter.footer);
                         dataCb();
                     }
                     else {
@@ -409,7 +403,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                             dataCb(null, thisCde);
                             sentElements++;
                             var isLast = sentElements === response.hits.total;
-                            //if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }
@@ -425,7 +418,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            res.status(500).send("ES Error");
+            dataCb(500, "ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }

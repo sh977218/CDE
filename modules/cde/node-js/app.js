@@ -518,36 +518,59 @@ exports.init = function (app, daoManager) {
         }
         var exporters = {
             csv: exporter = {
-                transformObject: function(cde) {
-                    return exportShared.convertToCsv(exportShared.projectCdeForExport(cdesvc.hideProprietaryPvs(cde)))}
-                , header: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
-                , delimiter: "\n"
-                , footer: ""
-                , type: 'text/csv'
+                export: function(res) {
+                    res.type('text/csv');
+                    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(cdesvc.hideProprietaryPvs(elt))))
+                            res.write("\n");
+                        } else {
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
             }, json: {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return JSON.stringify(cde)
+                export: function(res) {
+                    var firstElt = true;
+                    res.type('application/json');
+                    res.write("[");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            if (!firstElt) res.write(',');
+                            elt = exportShared.stripBsonIds(elt);
+                            elt = removeElasticFields(elt);
+                            res.write(JSON.stringify(elt));
+                            firstElt = false;
+                        } else {
+                            res.write("]");
+                            res.send();
+                        }
+                    }, query, 'form');
                 }
-                , header: "["
-                , delimiter: ",\n"
-                , footer: "]"
-                , type: 'appplication/json'
             }, xml: {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return js2xml("dataElement", cde, {declaration: {include: false}});
+                export: function(res) {
+                    res.type('application/xml');
+                    res.write("<cdeExport>\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            elt = exportShared.stripBsonIds(elt);
+                            elt = removeElasticFields(elt);
+                            res.write(js2xml("dataElement", elt, {declaration: {include: false}}));
+                            res.write('\n');
+                        } else {
+                            res.write("\n</cdeExport>");
+                            res.send();
+                        }
+                    }, query, 'form');
                 }
-                , header: "<cdeExport>\n"
-                , delimiter: "\n"
-                , footer: "\n</cdeExport>"
-                , type: 'appplication/xml'
             }
         };
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exporters[req.query.type]);
+        return elastic_system.elasticSearchExport(res, query, 'cde');
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
