@@ -17,15 +17,25 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             {
                 'csv': 'text/csv',
                 'json': 'application/json',
-                'xml': 'application/xml'
+                'xml': 'application/xml',
+                'odm': 'application/zip'
             };
             if (result) {
-                var blob = new Blob([result], {
-                    type: exportFiletypes[type]
-                });
-                saveAs(blob, 'SearchExport' + '.' + type);
-                $scope.addAlert("success", "Export downloaded.");
-                $scope.feedbackClass = ["fa-download"];
+                if (type === 'odm') {
+                    var zip = new JSZip();
+                    JSON.parse(result).forEach(function(omdObj) {
+                        zip.file(Object.keys(omdObj)[0] + ".xml", omdObj[Object.keys(omdObj)[0]])
+                    });
+                    var content = zip.generate({type:"blob"});
+                    saveAs(content, "example.zip");
+                } else {
+                    var blob = new Blob([result], {
+                        type: exportFiletypes[type]
+                    });
+                    saveAs(blob, 'SearchExport' + '.' + type);
+                    $scope.addAlert("success", "Export downloaded.");
+                    $scope.feedbackClass = ["fa-download"];
+                }
             }
         });
     };

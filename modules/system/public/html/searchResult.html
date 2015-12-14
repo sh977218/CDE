@@ -50,7 +50,8 @@
             Export Search <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li ng-repeat="(key, value) in exporters"><a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a></li>
+            <li ng-repeat="(key, value) in exporters">
+                <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a></li>
         </ul>
     </div>
 

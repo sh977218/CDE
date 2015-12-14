@@ -132,6 +132,7 @@ exports.init = function (app, daoManager) {
             }, xml: {
                 export: function(res) {
                     res.type('application/xml');
+                    res.on('end', function() {console.log("RES ENDED")})
                     res.write("<cdeExport>\n");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
                         if (err) return res.status(500).send(err);
@@ -164,25 +165,65 @@ exports.init = function (app, daoManager) {
                     //        res.send();
                     //    }
                     //}, query, 'form');
-                    res.type("application/zip");
-                    archive = archiver.create('zip');
-                    //archive.on('end', function() {
-                    //    res.send();
-                    //});
-                    archive.pipe(res);
+
+                    res.type('application/json');
+                    res.write("[");
+                    var firstElt = true;
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
                         if (err) return res.status(500).send(err);
                         else if (elt) {
                             formCtrl.getFormOdm(elt, function(err, odmElt) {
                                 if (err) {
-                                    odmElt = "<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>";
+                                    //if (!firstElt) res.write(',');
+                                    //res.write("{'" + elt.tinyId +
+                                    //    "': \"<Error>" + odmElt + "</Error>\"}");
                                 }
-                                archive.append(odmElt, {name: 'CDE_' + elt.tinyId + '.xml'});
+                                else {
+                                    if (!firstElt) res.write('\n,');
+                                    var obj={};
+                                    obj[elt.tinyId] = odmElt;
+                                    res.write(JSON.stringify(obj));
+                                    firstElt = false;
+                                }
                             });
                         } else {
-                            archive.finalize();
+                            res.write("]");
+                            res.send();
                         }
                     }, query, 'form');
+
+
+
+                    //res.on('end', function() {
+                    //    console.log("Archived closed");
+                    //});
+                    ////res.type("application/zip");
+                    //archive = archiver('zip');
+                    ////archive.on('end', function() {
+                    ////    res.send();
+                    ////});
+                    //res.writeHead(200, {
+                    //    'Content-Type': 'application/zip',
+                    //    'Content-disposition': 'attachment; filename=ODMExport.zip'
+                    //});
+                    //archive.on('end', function() {
+                    //    console.log('Archive wrote %d bytes', archive.pointer());
+                    //});
+                    //archive.pipe(res);
+                    //elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                    //    if (err) return res.status(500).send(err);
+                    //    else if (elt) {
+                    //        formCtrl.getFormOdm(elt, function(err, odmElt) {
+                    //            if (err) {
+                    //                odmElt = "<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>";
+                    //            }
+                    //            archive.append(odmElt, {name: 'CDE_' + elt.tinyId + '.xml'});
+                    //        });
+                    //    } else {
+                    //        setTimeout(function() {archive.finalize()}, 500);
+                    //        //();
+                    //    }
+                    //}, query, 'form');
                 }
             }
         };
