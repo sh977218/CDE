@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.boards.QuickBoardTest;
+import gov.nih.nlm.cde.test.CdeQuickBoardTest1;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -10,16 +10,16 @@ import java.util.List;
 
 public class FormScoreTest extends BaseFormTest {
 
-    private QuickBoardTest qbTest = new QuickBoardTest();
+    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
     private QuestionTest questionTest = new QuestionTest();
 
     @Test
     public void score() {
         mustBeLoggedInAs(ninds_username, password);
-        qbTest.emptyQuickBoard();
-        addToQuickBoard("ALS Severity Score (ALSSS) - lower extremity walk score");
-        addToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
-        addToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
+        qbTest.emptyQuickBoardByModule("form");
+        addCdeToQuickBoard("ALS Severity Score (ALSSS) - lower extremity walk score");
+        addCdeToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
+        addCdeToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
         findElement(By.linkText("Score / Derivations")).click();

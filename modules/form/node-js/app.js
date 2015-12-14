@@ -11,6 +11,8 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
+    , js2xml = require('js2xmlparser')
+    , archiver = require('archiver')
     ;
 
 exports.init = function (app, daoManager) {
@@ -92,12 +94,105 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', function (req, res) {
-        var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
+
+        var exporters = {
+            csv: exporter = {
+                export: function(res) {
+                    res.type('text/csv');
+                    res.write("Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(elt)))
+                            res.write("\n");
+                        } else {
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
+            }, json: {
+                export: function(res) {
+                    var firstElt = true;
+                    res.type('application/json');
+                    res.write("[");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            if (!firstElt) res.write(',');
+                            elt = exportShared.stripBsonIds(elt);
+                            res.write(JSON.stringify(elt));
+                            firstElt = false;
+                        } else {
+                            res.write("]");
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
+            }, xml: {
+                export: function(res) {
+                    res.type('application/xml');
+                    res.write("<cdeExport>\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            elt = exportShared.stripBsonIds(elt);
+                            res.write(js2xml("dataElement", elt, {declaration: {include: false}}));
+                            res.write('\n');
+                        } else {
+                            res.write("\n</cdeExport>");
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
+            }, odm: {
+                export: function(res) {
+                    //res.type('application/xml');
+                    //res.write("<ODM_Export>\n");
+                    //elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                    //    if (err) return res.status(500).send(err);
+                    //    else if (elt) {
+                    //        formCtrl.getFormOdm(elt, function(err, odmElt) {
+                    //            if (err) res.write("<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>");
+                    //            else {
+                    //                res.write(odmElt);
+                    //                res.write('\n');
+                    //            }
+                    //        });
+                    //    } else {
+                    //        res.write("\n</ODM_Export>");
+                    //        res.send();
+                    //    }
+                    //}, query, 'form');
+                    res.type("application/zip");
+                    archive = archiver.create('zip');
+                    //archive.on('end', function() {
+                    //    res.send();
+                    //});
+                    archive.pipe(res);
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            formCtrl.getFormOdm(elt, function(err, odmElt) {
+                                if (err) {
+                                    odmElt = "<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>";
+                                }
+                                archive.append(odmElt, {name: 'CDE_' + elt.tinyId + '.xml'});
+                            });
+                        } else {
+                            archive.finalize();
+                        }
+                    }, query, 'form');
+                }
+            }
+        };
+
+        var exporter =  exporters[req.query.type];
+        if (!exporter) return res.status(500).send("Unable to process exporter.");
+        exporter.export(res);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
         return [];
     });
 

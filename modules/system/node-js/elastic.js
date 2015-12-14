@@ -344,9 +344,9 @@ exports.elasticsearch = function (query, type, cb) {
             }
         } else {
             var result = {
-                cdes: []
-                , totalNumber: response.hits.total
+                totalNumber: response.hits.total
             };
+            result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {
                 var thisCde = response.hits.hits[i]._source;
                 thisCde.score = response.hits.hits[i]._score;
@@ -356,7 +356,7 @@ exports.elasticsearch = function (query, type, cb) {
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = response.hits.hits[i].highlight;
-                result.cdes.push(thisCde);
+                result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
             cb(null, result);
@@ -366,12 +366,8 @@ exports.elasticsearch = function (query, type, cb) {
 
 var lock = false;
 
-exports.elasticSearchExport = function (res, query, type, exporter) {
-    if (lock) return res.status(503).send("Servers busy");
-
-    if (!exporter) return res.status(500).send("Unable to process exporter.");
-
-    res.type(exporter.type);
+exports.elasticSearchExport = function (dataCb, query, type) {
+    if (lock) return dataCb(503, "Servers busy");
 
     lock = true;
 
@@ -381,7 +377,6 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    if (exporter.header) res.write(exporter.header);
     search.body = query;
 
     var sentElements = 0;
@@ -395,21 +390,19 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                         {
                             origin: "system.elastic.elasticsearch", stack: new Error().stack
                         });
-                    res.status(500).send("ES Error");
+                    dataCb("ES Error");
                 } else {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
-                        if (exporter.footer) res.write(exporter.footer);
-                        res.send();
+                        dataCb();
                     }
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(exporter.transformObject(cdesvc.hideProprietaryPvs(thisCde)));
+                            dataCb(null, thisCde);
                             sentElements++;
                             var isLast = sentElements === response.hits.total;
-                            if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
                         }
                         scrollThrough(newScrollId);
                     }
@@ -425,7 +418,7 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            res.status(500).send("ES Error");
+            dataCb(500, "ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }

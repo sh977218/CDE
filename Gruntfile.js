@@ -374,7 +374,8 @@ module.exports = function (grunt) {
                     'js/ng-grid.js': 'ng-grid/build/ng-grid.js',
                     'js/feedback.js': 'angular-send-feedback/dist/angular-send-feedback.js',
                     'js/html2canvas.js': 'html2canvas/build/html2canvas.js',
-                    'js/select.js': 'angular-ui-select/dist/select.js'
+                    'js/select.js': 'angular-ui-select/dist/select.js',
+                    'js/deep-diff.js': 'deep-diff/releases/deep-diff-0.3.0.min.js'
                 }
             },
             map: {

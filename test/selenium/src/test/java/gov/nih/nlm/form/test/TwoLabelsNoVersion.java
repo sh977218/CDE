@@ -8,7 +8,7 @@ public class TwoLabelsNoVersion extends NlmCdeBaseTest {
 
     @Test
     public void twoLabelsNoVersion() {
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("NoVersionCdeFormTest");
         findElement(By.linkText("Form Description")).click();
         findElement(By.id("question_accordion_0_0")).click();

@@ -37,7 +37,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             var elastic = this; 
             $http.post("/elasticSearch/" + type, settings)
                     .success(function (response) {
-                        elastic.highlightResults(response.cdes);
+                        elastic.highlightResults(response[type + 's']);
                         cb(null, response);
                     })
                     .error(function(response) {
@@ -100,10 +100,11 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , data: query
                 , transformResponse: function(a){return a;}
             }).success(function (response) {
-                cb(response);
+                cb(null, response);
             })
             .error(function(data, status, headers, config) {
-                cb();
+                if (status === 503) cb("The server is busy processing similar request, please try again in a minute.");
+                else cb("An error occured. This issue has been reported.");
             });
         }
     };
