@@ -12,10 +12,10 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void stewardFacets() {
         mustBeLoggedOut();
         goToCdeSearch();
-        findElement(By.id("browseOrg-caBIG")).click();
+        clickElement(By.id("browseOrg-caBIG"));
         int numOfElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-All Candidates")).getText());
 
-        findElement(By.id("li-blank-All Candidates")).click();
+        clickElement(By.id("li-blank-All Candidates"));
 
         textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Statuses");
     }
@@ -24,28 +24,29 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void statusFacets() {
         goToCdeSearch();
         int numOfCipElts = Integer.valueOf(findElement(By.id("nbOfElts-CIP")).getText());
-        findElement(By.id("browseOrg-CIP")).click();
+        clickElement(By.id("browseOrg-CIP"));
         textPresent("Qualified (" + numOfCipElts + ")");
         int numOfLidcElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-LIDC")).getText());
-        findElement(By.id("li-blank-LIDC")).click();
+        clickElement(By.id("li-blank-LIDC"));
         textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
     @Test
     public void deepFacets() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Traumatic Brain Injury")).click();
-        findElement(By.id("li-blank-Acute Hospitalized")).click();
-        findElement(By.id("li-blank-Classification")).click();
-        findElement(By.id("li-blank-Basic")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("li-blank-Disease"));
+        clickElement(By.id("li-blank-Traumatic Brain Injury"));
+        clickElement(By.id("li-blank-Acute Hospitalized"));
+        clickElement(By.id("li-blank-Classification"));
+        clickElement(By.id("li-blank-Basic"));
         textPresent("251 results for");
-        findElement(By.id("li-checked-Acute Hospitalized")).click();
+        clickElement(By.id("li-checked-Acute Hospitalized"));
         textPresent("Domain (19");
-        findElement(By.id("li-blank-Domain")).click();
+        clickElement(By.id("li-blank-Domain"));
         textPresent("Outcomes and End Points (12");
-        findElement(By.id("li-checked-Disease")).click();
+        scrollToTop();
+        clickElement(By.id("li-checked-Disease"));
         textPresent("Population (111");
     }
 
@@ -53,8 +54,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void regStatusFacets() {
         mustBeLoggedOut();
         setLowStatusesVisible();
-        findElement(By.id("browseOrg-caBIG")).click();
-        findElement(By.id("li-blank-ASCO")).click();
+        clickElement(By.id("browseOrg-caBIG"));
+        clickElement(By.id("li-blank-ASCO"));
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
         textPresent("Heart MUGA Test Date");
@@ -64,7 +65,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Person Birth Date");
         textPresent("Patient Ethnic Group Category");
 
-        findElement(By.id("li-blank-Standard")).click();
+        clickElement(By.id("li-blank-Standard"));
         textNotPresent("Agent Physical Appearance Type");
         textNotPresent("First Follow-up Visit Date");
         textNotPresent("Heart MUGA Test Date");
@@ -73,9 +74,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textNotPresent("Patient Ethnic Group Category");
 
         scrollToTop();
-        findElement(By.id("li-checked-Standard")).click();
+        clickElement(By.id("li-checked-Standard"));
         hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
+        clickElement(By.id("li-blank-Qualified"));
         textNotPresent("Agent Physical Appearance Type");
         textNotPresent("First Follow-up Visit Date");
         textPresent("Heart MUGA Test Date");
@@ -85,9 +86,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Patient Ethnic Group Category");
 
         scrollToTop();
-        findElement(By.id("li-checked-Qualified")).click();
+        clickElement(By.id("li-checked-Qualified"));
         hangon(1);
-        findElement(By.id("li-blank-Candidate")).click();
+        clickElement(By.id("li-blank-Candidate"));
         textPresent("Agent Physical Appearance Type");
         textPresent("First Follow-up Visit Date");
         textNotPresent("Heart MUGA Test Date");
@@ -101,11 +102,11 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     @Test
     public void facetPagination() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-CTEP")).click();
+        clickElement(By.id("browseOrg-CTEP"));
 
         int numOfDiseaseElts = Integer.valueOf(findElement(By.id("nbOfClassifElts-DISEASE")).getText());
 
-        findElement(By.id("li-blank-DISEASE")).click();
+        clickElement(By.id("li-blank-DISEASE"));
 
         textPresent(numOfDiseaseElts + " results for");
 
@@ -121,18 +122,18 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
-        findElement(By.id("status_tab")).click();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.id("editStatus")).click();
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         waitForESUpdate();
         goToCdeSearch();
-        findElement(By.id("browseOrg-DCP")).click();
+        clickElement(By.id("browseOrg-DCP"));
         textNotPresent("Noncompliant Reason Text");
         textPresent("Preferred Standard (");
-        findElement(By.id("li-blank-Standard")).click();
+        clickElement(By.id("li-blank-Standard"));
         textNotPresent("Noncompliant Reason Text");
     }
 
