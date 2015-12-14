@@ -352,6 +352,12 @@ public class NlmCdeBaseTest {
                 "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
                 , ""
         );
+//
+//        ((JavascriptExecutor) driver).executeAsyncScript(
+//                "jQuery('document').ready(function(){angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);});"
+//                , ""
+//        );
+
         try {
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
@@ -478,7 +484,7 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
-        clickElement(By.id("login_link"));
+        findElement(By.id("login_link"));
         textPresent("Please Log In");
     }
 
