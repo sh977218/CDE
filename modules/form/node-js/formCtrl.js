@@ -72,7 +72,7 @@ var getFormPlainXml = function(form, req, res){
 exports.formById = function (req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, function(err, xmlForm) {
+        if (req.query.type === 'xml' && req.query.subtype === 'odm') exports.getFormOdm(form, function(err, xmlForm) {
             if (err) res.status(err).send(xmlForm);
             else {
                 res.set('Content-Type', 'text/xml');
@@ -92,7 +92,11 @@ var getFormSdc = function(form, req, res){
 
 exports.getFormOdm = function(form, cb) {
 
-    if (!form) cb(null, "");
+    if (!form) return cb(null, "");
+    if (!form.formElements) {
+        form.formElements = [];
+    }
+
 
     function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {

@@ -12,6 +12,7 @@ var express = require('express')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
     , js2xml = require('js2xmlparser')
+    , archiver = require('archiver')
     ;
 
 exports.init = function (app, daoManager) {
@@ -146,21 +147,40 @@ exports.init = function (app, daoManager) {
                 }
             }, odm: {
                 export: function(res) {
-                    res.type('application/xml');
-                    res.write("<ODM_Export>\n");
+                    //res.type('application/xml');
+                    //res.write("<ODM_Export>\n");
+                    //elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                    //    if (err) return res.status(500).send(err);
+                    //    else if (elt) {
+                    //        formCtrl.getFormOdm(elt, function(err, odmElt) {
+                    //            if (err) res.write("<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>");
+                    //            else {
+                    //                res.write(odmElt);
+                    //                res.write('\n');
+                    //            }
+                    //        });
+                    //    } else {
+                    //        res.write("\n</ODM_Export>");
+                    //        res.send();
+                    //    }
+                    //}, query, 'form');
+                    res.type("application/zip");
+                    archive = archiver.create('zip');
+                    //archive.on('end', function() {
+                    //    res.send();
+                    //});
+                    archive.pipe(res);
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
                         if (err) return res.status(500).send(err);
                         else if (elt) {
                             formCtrl.getFormOdm(elt, function(err, odmElt) {
-                                if (err) res.send();
-                                else {
-                                    res.write(odmElt);
-                                    res.write('\n');
+                                if (err) {
+                                    odmElt = "<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>";
                                 }
+                                archive.append(odmElt, {name: 'CDE_' + elt.tinyId + '.xml'});
                             });
                         } else {
-                            res.write("\n</ODM_Export>");
-                            res.send();
+                            archive.finalize();
                         }
                     }, query, 'form');
                 }
