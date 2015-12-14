@@ -144,6 +144,26 @@ exports.init = function (app, daoManager) {
                         }
                     }, query, 'form');
                 }
+            }, odm: {
+                export: function(res) {
+                    res.type('application/xml');
+                    res.write("<ODM_Export>\n");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            formCtrl.getFormOdm(elt, function(err, odmElt) {
+                                if (err) res.send();
+                                else {
+                                    res.write(odmElt);
+                                    res.write('\n');
+                                }
+                            });
+                        } else {
+                            res.write("\n</ODM_Export>");
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
             }
         };
 

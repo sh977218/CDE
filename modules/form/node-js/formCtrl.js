@@ -90,7 +90,10 @@ var getFormSdc = function(form, req, res){
     res.send(sdc.formToSDC(form));
 };
 
-var getFormOdm = function(form, cb) {
+exports.getFormOdm = function(form, cb) {
+
+    if (!form) cb(null, "");
+
     function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {
             "Value List": "text",

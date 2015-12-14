@@ -530,7 +530,7 @@ exports.init = function (app, daoManager) {
                         } else {
                             res.send();
                         }
-                    }, query, 'form');
+                    }, query, 'cde');
                 }
             }, json: {
                 export: function(res) {
@@ -549,7 +549,7 @@ exports.init = function (app, daoManager) {
                             res.write("]");
                             res.send();
                         }
-                    }, query, 'form');
+                    }, query, 'cde');
                 }
             }, xml: {
                 export: function(res) {
@@ -566,7 +566,7 @@ exports.init = function (app, daoManager) {
                             res.write("\n</cdeExport>");
                             res.send();
                         }
-                    }, query, 'form');
+                    }, query, 'cde');
                 }
             }
         };
