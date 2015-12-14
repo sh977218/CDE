@@ -352,13 +352,8 @@ public class NlmCdeBaseTest {
                 "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
                 , ""
         );
-//
-//        ((JavascriptExecutor) driver).executeAsyncScript(
-//                "jQuery('document').ready(function(){angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);});"
-//                , ""
-//        );
-
         try {
+            wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
             hangon(2);

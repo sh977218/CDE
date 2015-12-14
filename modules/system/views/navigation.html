@@ -62,7 +62,7 @@
                     </ul>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
+            <ul ng-controller="AuthCtrl" class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
                 <a ng-cloak ng-if="userHasMail" title="New messages" href="/#/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id">
@@ -92,7 +92,7 @@
                             <a href="/#/siteAudit" id="user_audit">Audit</a>
                         </li>
                         <li ng-show='user._id'>
-                            <a href="/logout" target="_self" id="user_logout">Log Out</a>
+                            <a href="" ng-click="logout()" target="_self" id="user_logout">Log Out</a>
                         </li>
                     </ul>
                 </li>

@@ -1,16 +1,9 @@
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route',
-        'LoginRedirect',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route,
-                 LoginRedirect)
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard)
 {
-
-    $scope.goToLogin = function(){
-        console.log($location.$$url);
-        LoginRedirect.storeRoute($location.$$url);
-    };
 
     $scope.quickBoard = QuickBoard;
     $scope.formQuickBoard = FormQuickBoard;

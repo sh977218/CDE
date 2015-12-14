@@ -47,8 +47,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     public void checkRecentlyUsedClassifications(String[] categories) {
         findElement(By.id("addClassification")).click();
         findElement(By.id("addClass.byRecentlyAdded")).click();
-        for (int i = 0; i < categories.length; i++) {
-            textPresent(categories[i], By.id("addClassificationModalBody"));
+        for (String category : categories) {
+            textPresent(category, By.id("addClassificationModalBody"));
         }
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
         modalGone();
@@ -57,8 +57,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
         findElement(By.id("addClassification-createCde")).click();
         findElement(By.id("addClass.byRecentlyAdded")).click();
-        for (int i = 0; i < categories.length; i++) {
-            textPresent(categories[i], By.id("addClassificationModalBody"));
+        for (String category : categories) {
+            textPresent(category, By.id("addClassificationModalBody"));
         }        
         findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
         modalGone();   
@@ -92,6 +92,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']"));
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
+        textPresent(categories[categories.length - 1]);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + compareSelector + "'] .name")).getText().equals(categories[categories.length - 1]));
