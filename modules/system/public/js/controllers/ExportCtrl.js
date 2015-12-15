@@ -13,6 +13,14 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+            var zipExporter = function() {
+                    var zip = new JSZip();
+                    JSON.parse(result).forEach(function(omdObj) {
+                        zip.file(Object.keys(omdObj)[0] + ".xml", omdObj[Object.keys(omdObj)[0]])
+                    });
+                    var content = zip.generate({type:"blob"});
+                    saveAs(content, "example.zip");
+            };
             var exportFiletypes =
             {
                 'csv': 'text/csv',
@@ -22,12 +30,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             };
             if (result) {
                 if (type === 'odm') {
-                    var zip = new JSZip();
-                    JSON.parse(result).forEach(function(omdObj) {
-                        zip.file(Object.keys(omdObj)[0] + ".xml", omdObj[Object.keys(omdObj)[0]])
-                    });
-                    var content = zip.generate({type:"blob"});
-                    saveAs(content, "example.zip");
+
                 } else {
                     var blob = new Blob([result], {
                         type: exportFiletypes[type]
