@@ -28,7 +28,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("Today");
         textPresent("Clear");
         textPresent("Close");
-        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > ul > li.ng-scope > span > button.btn.btn-sm.btn-info.ng-binding\").click();");
+        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-info.ng-binding\").click();");
         Date today = new Date();
         today.setHours(0);
         today.setMinutes(0);
