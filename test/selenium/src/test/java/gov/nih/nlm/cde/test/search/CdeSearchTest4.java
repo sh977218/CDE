@@ -39,7 +39,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         findElement(By.linkText("Concepts")).click();
         findElement(By.linkText("Change")).click();
         textPresent("Specimen Inflammation Change Type");
-        textNotPresent("Patient Visual Change Chief Complaint Indicator", By.cssSelector("accordion"));
+        textNotPresent("Patient Visual Change Chief Complaint Indicator", By.cssSelector("uib-accordion"));
     }
 
     @Test
