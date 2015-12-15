@@ -65,6 +65,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.openSelectDefaultClassificationModal = function () {
                 var modalInstance = $modal.open({
+                    animation: false,
                     templateUrl: '/system/public/html/classifyElt.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
@@ -102,6 +103,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.showRemoveClassificationModal = function(orgName, pathArray) {
                 var modalInstance = $modal.open({
+                    animation: false,
                     templateUrl: '/system/public/html/removeClassificationModal.html',
                     controller: 'RemoveClassificationModalCtrl',
                     resolve: {

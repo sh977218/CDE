@@ -23,6 +23,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     
     $scope.openAuthorizeUserModal = function(message){
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/messages/approveUser.html'
             , controller: 'ApproveUserModalCtrl'
         });

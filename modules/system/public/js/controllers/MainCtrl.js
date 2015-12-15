@@ -89,6 +89,7 @@ angular.module('systemModule').controller('MainCtrl',
 
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: 'SelectBoardModalCtrl',
           resolve: {

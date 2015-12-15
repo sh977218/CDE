@@ -4,6 +4,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'mergeModal.html',
             controller: 'MergeModalCtrl',
             resolve: {
@@ -54,6 +55,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     
     $scope.showVersioning = function(mergeRequest, callback) {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/saveModal.html'
             , controller: 'MergeApproveModalCtrl'
             , resolve: {

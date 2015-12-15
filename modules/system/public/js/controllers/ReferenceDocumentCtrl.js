@@ -3,6 +3,7 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
 {
     $scope.openNewReferenceDocument = function () {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'newReferenceDocumentModalContent.html',
             controller: 'NewReferenceDocumentModalCtrl',
             resolve: {

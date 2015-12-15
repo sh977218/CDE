@@ -2,9 +2,10 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
 {
     $scope.openNewConcept = function () {
         $modal.open({
-          templateUrl: 'newConceptModalContent.html',
-          controller: 'NewConceptModalCtrl',
-          resolve: {
+            animation: false,
+            templateUrl: 'newConceptModalContent.html',
+            controller: 'NewConceptModalCtrl',
+            resolve: {
               cde: function() {
                   return $scope.elt;
               }

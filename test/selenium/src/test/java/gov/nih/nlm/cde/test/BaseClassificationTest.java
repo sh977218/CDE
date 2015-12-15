@@ -92,7 +92,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']"));
         }
         findElement(By.id("addNewCatName")).sendKeys(categories[categories.length - 1]);
-        textPresent(categories[categories.length - 1]);
+        hangon(1);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + compareSelector + "'] .name")).getText().equals(categories[categories.length - 1]));

@@ -331,6 +331,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: 'SelectBoardModalCtrl',
           resolve: {

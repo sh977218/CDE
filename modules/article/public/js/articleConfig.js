@@ -55,6 +55,7 @@ angular.module('articleModule', ['ngRoute']).config(
 
     $scope.openNewArticleModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/article/public/html/newArticleModal.html',
             controller: 'NewArticleModalCtrl',
             resolve: {

@@ -3,6 +3,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
 {
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newMappingSpecificationModalContent.html',
           controller: 'NewMappingSpecificationModalCtrl',
           resolve: {

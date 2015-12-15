@@ -34,6 +34,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         
     $scope.openNewBoard = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newBoardModalContent.html',
           controller: 'NewBoardModalCtrl',
           resolve: {
