@@ -1,16 +1,9 @@
 angular.module('systemModule').controller('MainCtrl',
-    ['$scope', '$modal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$rootScope', '$route',
-        'LoginRedirect',
+    ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
         function($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $rootScope, $route,
-                 LoginRedirect)
+                 $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard)
 {
-
-    $scope.goToLogin = function(){
-        console.log($location.$$url);
-        LoginRedirect.storeRoute($location.$$url);
-    };
 
     $scope.quickBoard = QuickBoard;
     $scope.formQuickBoard = FormQuickBoard;
@@ -96,6 +89,7 @@ angular.module('systemModule').controller('MainCtrl',
 
     $scope.openPinModal = function (cde) {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: 'SelectBoardModalCtrl',
           resolve: {

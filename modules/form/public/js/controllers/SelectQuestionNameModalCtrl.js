@@ -1,11 +1,11 @@
 angular.module('formModule').controller('SelectQuestionNameModalCtrl',
-    ['$scope', '$modalInstance', '$http', 'cde', function ($scope, $modalInstance, $http, cde) {
+    ['$scope', '$uibModalInstance', '$http', 'cde', function ($scope, $modalInstance, $http, cde) {
 
         var url = "/debytinyid/" + cde.tinyId;
         if (cde.version) url += "/" + cde.version;
         $http.get(url).success(function (result) {
             $scope.cde = result;
-        }).error(function error(err) {
+        }).error(function error() {
             $scope.cde = "error";
         });
 

@@ -1,7 +1,9 @@
 <div ng-controller="UsersMgtCtrl">
     
     <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-        <input name="searchUsers" type="text" class="form-control" placeholder="enter user name" ng-model="search.username" typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100" typeahead-min-length="3" required>
+        <input name="searchUsers" type="text" class="form-control" placeholder="enter user name"
+               ng-model="search.username" uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+               typeahead-min-length="3" required>
         <button type="submit" class="btn btn-success" id="searchUsersSubmit" ng-click="searchUsers()" ng-disabled="">Search</button>
     </form>
     

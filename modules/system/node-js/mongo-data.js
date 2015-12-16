@@ -41,6 +41,12 @@ exports.getClusterHostStatus = function(server, callback) {
     });
 };
 
+exports.getClusterHostStatuses = function(callback) {
+    ClusterStatus.find().exec(function(err, statuses) {
+        callback(err, statuses);
+    });
+};
+
 exports.updateClusterHostStatus = function(status, callback) {
     status.lastUpdate = new Date();
     ClusterStatus.update({port: status.port, hostname: status.hostname}, status, {upsert: true}, function(err) {

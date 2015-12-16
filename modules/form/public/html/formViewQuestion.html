@@ -1,6 +1,6 @@
-<div accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
-    <div accordion-group is-open="">
-        <div accordion-heading>
+<div uib-accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
+    <div uib-accordion-group is-open="">
+        <div uib-accordion-heading>
             <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
             <span ng-if="question.question.isScore" ><strong>Score: </strong> </span>
             <span ng-bind-html="question.label | placeholdEmpty"
@@ -59,7 +59,7 @@
                         <dt tabindex="0">Show if:</dt>
                         <dd tabindex="0">
                             <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
-                                   typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
+                                   uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
                                    typeahead-min-length="0" class="form-control skipLogicCondition"/>
                         </dd>
                     </span>

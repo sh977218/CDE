@@ -1,8 +1,9 @@
-angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal', '$location', '$timeout',
+angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModal', '$location', '$timeout',
     function($scope, $modal, $location, $timeout)
 {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newPropertyModalContent.html',
           controller: 'NewPropertyModalCtrl',
           resolve: {
@@ -62,7 +63,8 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$modal',
 
 }]);
 
-angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$modalInstance', '$http','module', 'elt', function($scope, $modalInstance, $http, module, elt) {
+angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$uibModalInstance', '$http','module', 'elt',
+    function($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newProperty = {};
     $scope.autocompleteList = [];

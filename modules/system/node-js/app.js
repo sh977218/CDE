@@ -169,7 +169,7 @@ exports.init = function(app) {
         });
     });
     
-    app.get('/logout', function(req, res) {
+    app.post('/logout', function(req, res) {
         if (!req.session) {
             return res.status(403).end();
         } 

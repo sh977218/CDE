@@ -12,7 +12,7 @@
                         ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
                 </select>
 
-                <input ng-switch-when="Date" class="form-control" datepicker-popup="dd-MMMM-yyyy" type="text" required
+                <input ng-switch-when="Date" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy" type="text" required
                        ng-model="question.question.answer"/>
                 <span ng-switch-default class="form-group">
                   <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>

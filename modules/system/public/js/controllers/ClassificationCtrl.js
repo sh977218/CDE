@@ -1,11 +1,12 @@
 angular.module('systemModule').controller('ClassificationCtrl',
-    ['$scope', '$modal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
+    ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
         function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
 {
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/system/public/html/classifyElt.html',
           controller: 'AddClassificationModalCtrl',
           resolve: {
