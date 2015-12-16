@@ -13,7 +13,7 @@
         </div>
 
         <div id="effectiveDateDiv" ng-controller="DatepickerCtrl">
-            <label for="effectiveDate">Effective Date</label>
+            <label for="effectiveDate">Effective Date</em></pre></label>
             <div class="input-group">
                 <input id="effectiveDate" name="effectiveDate" type="text" class="form-control pickdaterInput"
                        uib-datepicker-popup="{{format}}" ng-model="elt.registrationState.effectiveDate"
@@ -25,10 +25,10 @@
             </div>
         </div>
         <div id="untilDateDiv" ng-controller="DatepickerCtrl">
-            <label for="untilDate">Until Date</label>
+            <label for="untilDate">Until Date</em></pre></label>
             <div class="input-group">
                 <input id="untilDate" name="untilDate" type="text" class="form-control"
-                       uib-datepicker-popup="{{format}}" ng-model="elt.registrationState.untilDate"
+                       uib-datepicker-popup ng-model="elt.registrationState.untilDate"
                        is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
                 <span class="input-group-btn">
                     <button type="button" id="untilDateDatepicker" class="btn btn-default" ng-click="open($event)">
