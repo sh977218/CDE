@@ -1,9 +1,10 @@
-angular.module('systemModule').controller('NamingCtrl', ['$scope', '$modal',
+angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal',
     function($scope, $modal)
 {
 
     $scope.openNewNamePair = function () {
         $modal.open({
+            animation: false,
             templateUrl: 'newNamePairModalContent.html',
             controller: 'NewNamePairModalCtrl',
             resolve: {

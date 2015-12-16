@@ -1,86 +1,59 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
 <head>
-	<title>NIH Common Data Elements (CDE) Repository</title>
-	<meta name="site-version" content="<% include ../public/html/version.html %>"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-	<meta name="description"
-	      content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
-	<meta name="keywords"
-	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
+    <title>NIH Common Data Elements (CDE) Repository</title>
+    <meta name="site-version" content="<% include ../public/html/version.html %>"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="description"
+          content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
+    <meta name="keywords"
+          content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
 
-	<!--[if IE 9]>
-	<script type="text/javascript">
-		window.location = "/supportedBrowsers";
-		document.createElement("inline-edit");
-		document.createElement("inline-area-edit");
-	</script>
-	<![end if]-->
 
-	<link href="/cde/public/assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/cde/public/assets/css/font-awesome.min.css" rel="stylesheet">
-	<link href="/cde/public/assets/css/ng-grid.min.css" rel="stylesheet" type="text/css"/>
-	<link href="/cde/public/assets/css/bootstrap-tour.min.css" rel="stylesheet" type="text/css"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        window.location = "/supportedBrowsers";
+        document.createElement("inline-edit");
+        document.createElement("inline-area-edit");
+    </script>
+    <![endif]-->
 
-	<link href="/cde/public/assets/css/select2.css" rel="stylesheet">
-	<link href="/cde/public/assets/css/selectize.default.css" rel="stylesheet">
+    <!-- build:css /cde/public/css/style.concat.min.css -->
+    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <!-- endbuild -->
 
-	<!-- build:css /cde/public/css/style.concat.min.css -->
-	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-	<!-- endbuild -->
+    <!-- bower:css -->
+    <link rel='stylesheet' href='../public/components/fontawesome/css/font-awesome.css' />
+    <link rel='stylesheet' href='../public/components/select2/select2.css' />
+    <link rel='stylesheet' href='../public/components/selectize/dist/css/selectize.css' />
+    <link rel='stylesheet' href='../public/components/angular-ui-select/dist/select.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-css-only/css/bootstrap.css' />
+    <link rel='stylesheet' href='../public/components/textAngular/src/textAngular.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-tour/build/css/bootstrap-tour.css' />
+    <link rel='stylesheet' href='../public/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
+    <link rel='stylesheet' href='../public/components/ng-grid/ng-grid.css' />
+    <!-- endbower -->
 
-	<link rel="stylesheet" href="/cde/public/assets/css/textAngular.css">
-	<link href="/cde/public/assets/css/feedback.css" rel="stylesheet">
+    <link rel='stylesheet' href='../public/components/angular-send-feedback/dist/angular-send-feedback.css' />
 
-	<!-- build:js /cde/public/assets/js/resource.concat.min.js -->
-	<script src="/cde/public/assets/js/jquery.min.js"></script>
-	<script src="/cde/public/assets/js/jquery-ui.min.js"></script>
-	<script src="/cde/public/assets/js/angular.min.js"></script>
-	<script src="/cde/public/assets/js/angular-route.min.js"></script>
-	<script src="/cde/public/assets/js/angular-resource.min.js"></script>
-	<script src="/cde/public/assets/js/angular-sanitize.min.js"></script>
-	<script src="/cde/public/assets/js/angular-animate.min.js"></script>
-	<script src="/cde/public/assets/js/angular-file-upload.min.js"></script>
 
-	<script src="/cde/public/assets/js/bootstrap.js"></script>
+    <!-- include config -->
+    <%- include config.html %>
 
-	<script src="/cde/public/assets/js/textAngular-rangy.min.js"></script>
-	<script src="/cde/public/assets/js/textAngular-sanitize.min.js"></script>
-	<script src="/cde/public/assets/js/textAngular.min.js"></script>
-
-	<script src="/cde/public/assets/js/angular-local-storage.js"></script>
-	<script src="/cde/public/assets/js/ui-bootstrap-tpls.js"></script>
-	<script src="/cde/public/assets/js/diff_match_patch.js"></script>
-	<script src="/cde/public/assets/js/match-media.js"></script>
-	<script src="/cde/public/assets/js/sortable.js"></script>
-	<script src="/cde/public/assets/js/scrollfix.js"></script>
-	<script src="/cde/public/assets/js/select.js"></script>
-	<script src="/cde/public/assets/js/bootstrap-tour.js"></script>
-	<script src="/cde/public/assets/js/ng-grid.js"></script>
-	<script src="/cde/public/assets/js/timeAgo.js"></script>
-	<script src="/cde/public/assets/js/camelCaseToHuman.js"></script>
-	<script src="/cde/public/assets/js/FileSaver.js"></script>
-
-	<script src="/system/public/js/ng-display-object.js"></script>
-	<script src="/system/public/js/ng-compare-side-by-side.js"></script>
-	<script src="/system/public/js/ng-text-truncate.js"></script>
-	<script src="/cde/public/assets/js/jszip.js"></script>
-	<!-- endbuild -->
-
-	<!-- include config -->
-	<%- include config.html %>
-
-	<!-- include google analytics -->
-	<%- include googleAnalytics.html %>
+    <!-- include google analytics -->
+    <%- include googleAnalytics.html %>
 </head>
+
 <body role="application" id="top">
 <div ng-controller="MainCtrl" itemscope>
 
 	<!-- Navigation bar -->
 	<%- include navigation.html %>
 
+
 	<!-- Main content area -->
 	<div ng-view></div>
+
 
 	<!-- Alerts area -->
 	<%- include alert.html %>
@@ -92,12 +65,58 @@
 		<angular-feedback options="feedbackOptions"></angular-feedback>
 	</div>
 </div>
+
+<!-- bower:js -->
+<script src="../public/components/jquery/jquery.js"></script>
+<script src="../public/components/angular/angular.js"></script>
+<script src="../public/components/angular-route/angular-route.js"></script>
+<script src="../public/components/angular-resource/angular-resource.js"></script>
+<script src="../public/components/angular-sanitize/angular-sanitize.js"></script>
+<script src="../public/components/angular-animate/angular-animate.js"></script>
+<script src="../public/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="../public/components/angular-local-storage/dist/angular-local-storage.js"></script>
+<script src="../public/components/angular-timeago/src/timeAgo.js"></script>
+<script src="../public/components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../public/components/jquery-ui/jquery-ui.js"></script>
+<script src="../public/components/select2/select2.js"></script>
+<script src="../public/components/sifter/sifter.js"></script>
+<script src="../public/components/microplugin/src/microplugin.js"></script>
+<script src="../public/components/selectize/dist/js/selectize.js"></script>
+<script src="../public/components/angular-ui-select/dist/select.js"></script>
+<script src="../public/components/rangy/rangy-core.js"></script>
+<script src="../public/components/rangy/rangy-classapplier.js"></script>
+<script src="../public/components/rangy/rangy-highlighter.js"></script>
+<script src="../public/components/rangy/rangy-selectionsaverestore.js"></script>
+<script src="../public/components/rangy/rangy-serializer.js"></script>
+<script src="../public/components/rangy/rangy-textrange.js"></script>
+<script src="../public/components/textAngular/src/textAngular.js"></script>
+<script src="../public/components/textAngular/src/textAngular-sanitize.js"></script>
+<script src="../public/components/textAngular/src/textAngularSetup.js"></script>
+<script src="../public/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
+<script src="../public/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
+<script src="../public/components/ng-grid/build/ng-grid.js"></script>
+<script src="../public/components/angularjs-camelCase-human/camelCaseToHuman.js"></script>
+<script src="../public/components/html2canvas/build/html2canvas.js"></script>
+<script src="../public/components/angular-send-feedback/dist/angular-send-feedback.min.js"></script>
+<script src="../public/components/ng-file-upload/angular-file-upload.js"></script>
+<!-- endbower -->
+
+<!-- build:js /cde/public/assets/js/resource.concat.min.js -->
+<script src="/cde/public/assets/js/diff_match_patch.js"></script>
+<script src="/cde/public/assets/js/match-media.js"></script>
+<script src="/cde/public/assets/js/sortable.js"></script>
+<script src="/cde/public/assets/js/scrollfix.js"></script>
+<script src="/cde/public/assets/js/FileSaver.js"></script>
+<script src="/system/public/js/ng-display-object.js"></script>
+<script src="/system/public/js/ng-compare-side-by-side.js"></script>
+<script src="/system/public/js/ng-text-truncate.js"></script><!-- endbuild -->
+
 <%- include includeFrontEndJS.ejs %>
 <%- include ../../cde/views/includeFrontEndJS.ejs %>
 <%- include ../../form/views/includeFrontEndJS.ejs %>
 <%- include webtrends.ejs %>
+
 <script src="/article/public/js/articleConfig.js"></script>
-<script src="/cde/public/assets/js/feedback.js"></script>
 
 <script type="application/ld+json">
         {

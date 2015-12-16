@@ -1,8 +1,9 @@
-angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$modal', '$location', '$timeout',
+angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$uibModal', '$location', '$timeout',
     function ($scope, $modal, $location, $timeout)
 {
     $scope.openNewReferenceDocument = function () {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'newReferenceDocumentModalContent.html',
             controller: 'NewReferenceDocumentModalCtrl',
             resolve: {
@@ -64,7 +65,8 @@ angular.module('systemModule').controller('ReferenceDocumentCtrl', ['$scope', '$
 
 }]);
 
-angular.module('systemModule').controller('NewReferenceDocumentModalCtrl', ['$scope', '$modalInstance', '$http', 'module', 'elt', function ($scope, $modalInstance, $http, module, elt) {
+angular.module('systemModule').controller('NewReferenceDocumentModalCtrl',
+    ['$scope', '$uibModalInstance', '$http', 'module', 'elt', function ($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newReferenceDocument = {};
 

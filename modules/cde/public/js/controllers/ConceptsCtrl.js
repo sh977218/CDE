@@ -1,10 +1,11 @@
-angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$http', function($scope, $modal, $http)
+angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '$http', function($scope, $modal, $http)
 {
     $scope.openNewConcept = function () {
         $modal.open({
-          templateUrl: 'newConceptModalContent.html',
-          controller: 'NewConceptModalCtrl',
-          resolve: {
+            animation: false,
+            templateUrl: 'newConceptModalContent.html',
+            controller: 'NewConceptModalCtrl',
+            resolve: {
               cde: function() {
                   return $scope.elt;
               }
@@ -41,7 +42,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$modal', '$ht
 
     $scope.relatedCdes = function (concept) {
         $http({method: "POST", url: "/desByConcept", data: concept})
-            .success(function (data, status) {
+            .success(function (data) {
                 $scope.cdes = data;
                 for (var i=0; i < $scope.cdes.length; i++) {
                     if ($scope.cdes[i].tinyId === $scope.elt.tinyId) {

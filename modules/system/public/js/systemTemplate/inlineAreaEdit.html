@@ -9,10 +9,10 @@
     </div>
     <div ng-show="editMode">
         <div class="btn-group definitionFormatRadio">
-            <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text
+            <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" uib-btn-radio="null">Plain Text
             </button>
 
-            <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="'html'">Rich Text
+            <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" uib-btn-radio="'html'">Rich Text
             </button>
         </div>
         <textarea ng-show="defFormat!='html'" ng-model="value" class="form-control"></textarea>

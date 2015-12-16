@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ListCtrl',
-    ['$scope', '$routeParams', '$window', '$modal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
+    ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
                   SearchSettings, AutoCompleteResource, $location, $route, $controller, $log)
@@ -276,8 +276,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.page = $routeParams.page;
         $scope.searchSettings.selectedOrg = $routeParams.selectedOrg;
         $scope.searchSettings.selectedOrgAlt = $routeParams.selectedOrgAlt;
-        if ($routeParams.selectedOrgAlt) $scope.altClassificationFilterMode = true;
-        else $scope.altClassificationFilterMode = false;
+        $scope.altClassificationFilterMode = !!$routeParams.selectedOrgAlt;
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
@@ -338,6 +337,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.showPinAllModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/cde/public/html/selectBoardModal.html',
           controller: 'SelectBoardModalCtrl',
           resolve: {

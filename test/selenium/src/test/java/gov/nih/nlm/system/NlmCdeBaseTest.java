@@ -347,7 +347,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void clickElement(By by) {
+        // Wait for angular digest cycle.
+        ((JavascriptExecutor) driver).executeAsyncScript(
+                "angular.element('body').injector().get('$timeout')(arguments[arguments.length - 1]);"
+                , ""
+        );
         try {
+            wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
             hangon(2);
@@ -473,7 +479,7 @@ public class NlmCdeBaseTest {
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
-        clickElement(By.id("login_link"));
+        findElement(By.id("login_link"));
         textPresent("Please Log In");
     }
 
@@ -694,14 +700,14 @@ public class NlmCdeBaseTest {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("accordion"), cdeName));
+                        By.cssSelector("uib-accordion"), cdeName));
                 break;
             } catch (Exception e) {
                 clickElement(By.linkText("Next"));
             }
 
         }
-        clickElement(By.xpath("//accordion//span[contains(text(),'" + cdeName + "')]"));
+        clickElement(By.xpath("//uib-accordion//span[contains(text(),'" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {

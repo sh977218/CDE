@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$modal', function($scope, $http, Mail, $modal) {
+angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal', function($scope, $http, Mail, $modal) {
     $scope.approveComment = function(msg) {
         $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/approve', msg.typeCommentApproval).
             success(function(data, status, headers, config) {
@@ -23,6 +23,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     
     $scope.openAuthorizeUserModal = function(message){
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/messages/approveUser.html'
             , controller: 'ApproveUserModalCtrl'
         });
@@ -47,7 +48,9 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
 
 }]);
 
-angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$uibModalInstance',
+    function ($scope, $modalInstance) {
+
     $scope.ok = function () {
         $modalInstance.close();
     };

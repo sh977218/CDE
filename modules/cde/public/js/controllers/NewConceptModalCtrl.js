@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('NewConceptModalCtrl', ['$scope', '$modalInstance', 'cde', function($scope, $modalInstance, cde) {
+angular.module('cdeModule').controller('NewConceptModalCtrl', ['$scope', '$uibModalInstance', 'cde',
+    function($scope, $modalInstance, cde) {
+
     $scope.newConcept = {origin: "LOINC", type: "dec"};
     $scope.elt = cde;
     

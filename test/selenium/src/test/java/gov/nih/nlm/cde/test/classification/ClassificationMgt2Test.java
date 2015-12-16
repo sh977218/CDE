@@ -24,15 +24,12 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("addClassification")).click();
         textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(oldClassification);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("addNewCatButton")));
-        findElement(By.id("addNewCatButton")).click();
+        clickElement(By.id("addNewCatButton"));
         closeAlert();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("addClassification")));
-        findElement(By.id("addClassification")).click();
+        clickElement(By.id("addClassification"));
         textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("addNewCatButton")));
-        findElement(By.id("addNewCatButton")).click();
+        clickElement(By.id("addNewCatButton"));
         closeAlert();
 
 

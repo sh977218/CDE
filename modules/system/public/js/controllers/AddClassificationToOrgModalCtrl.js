@@ -1,4 +1,7 @@
-angular.module('systemModule').controller('AddClassificationToOrgModalCtrl', ['$scope', '$modalInstance', 'ClassificationPathBuilder', 'org', 'pathArray', function($scope, $modalInstance, ClassificationPathBuilder, org, pathArray) {
+angular.module('systemModule').controller('AddClassificationToOrgModalCtrl',
+    ['$scope', '$uibModalInstance', 'ClassificationPathBuilder', 'org', 'pathArray',
+        function($scope, $modalInstance, ClassificationPathBuilder, org, pathArray) {
+
     $scope.path = ClassificationPathBuilder.constructPath(org, pathArray);
     
     $scope.newClassification = {orgName: org, categories: (pathArray ? pathArray : [])};

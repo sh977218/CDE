@@ -47,7 +47,7 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
-        String tabName = "referrenceDocumentsDiv";
+        String tabName = "referenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
         findElement(By.linkText("Reference Documents")).click();
