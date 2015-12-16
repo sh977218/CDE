@@ -78,8 +78,8 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, null);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Rich Text']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
         hangon(1);
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
@@ -91,8 +91,8 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, null);
         findElement(By.linkText("Properties")).click();
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Plain Text']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[text()='Confirm']")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]")).click();
+        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
         hangon(1);
         findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
         textPresent("516-543, DOI:10.1002/jmri.22259");
@@ -102,7 +102,7 @@ public abstract class PropertyTest extends CommonTest {
 
     public void reorderPropertyTest(String eltName) {
         setLowStatusesVisible();
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

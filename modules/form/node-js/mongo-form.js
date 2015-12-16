@@ -9,11 +9,10 @@ var mongoose = require('mongoose')
 exports.type = "form";
 exports.name = "forms";
 
-var mongoUri = config.mongoUri;
-var Form;
+var conn = connHelper.establishConnection(config.database.appData);
+var Form = conn.model('Form', schemas.formSchema);
 
-var conn = connHelper.establihConnection(mongoUri);
-Form = conn.model('Form', schemas.formSchema);
+exports.Form = Form;
 
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {

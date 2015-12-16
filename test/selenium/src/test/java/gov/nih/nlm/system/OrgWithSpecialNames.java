@@ -10,7 +10,7 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
     @Test
     public void orgWithSpecialName() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
 
         new Select(findElement(By.cssSelector("select"))).selectByValue("org / or Org");
 

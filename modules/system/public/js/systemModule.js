@@ -1,9 +1,9 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
     'OrgFactories', 'classification', 'ngGrid',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-    , 'angular-send-feedback'])
-    .config(['$logProvider', function($logProvider){
+    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'angular-send-feedback', 'ngDisplayObject', 'ngCompareSideBySide'])
+    .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
@@ -43,17 +43,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('inlineEdit', function () {
         return {
-            template: '<span>' +
-            '<span ng-hide="editMode">' +
-            '<i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}' +
-            '</span>' +
-            '<form name="inlineForm" ng-show="editMode">' +
-            '<input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value" typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8" class="form-control typeahead"/>' +
-            '<button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();" ng-disabled="!inlineForm.inlineInput.$valid"> Confirm</button>' +
-            '<button class="btn btn-default btn-sm fa fa-times" ng-click="editMode = false"> Discard</button>' +
-            '</form>' +
-            '</span>'
-            ,
             restrict: 'AE',
             scope: {
                 model: '='
@@ -62,6 +51,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , onOk: '&'
                 , typeaheadSource: '='
             },
+            templateUrl: '/system/public/js/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
             }
@@ -69,23 +59,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     })
     .directive('inlineAreaEdit', function () {
         return {
-            template: '<div>' +
-            '<div ng-hide="editMode" ng-switch="defFormat">' +
-            '   <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit" ng-click="value=model; editMode=true"></i>' +
-            '   <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
-            '   <span ng-switch-when="html"><span ng-bind-html="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>' +
-            '</div>' +
-            '<div ng-show="editMode">' +
-            '   <div class="btn-group definitionFormatRadio">' +
-            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="null">Plain Text</button>' +
-            '       <button type="button" class="btn btn-default btn-xs" ng-model="defFormat" btn-radio="\'html\'">Rich Text</button>' +
-            '   </div>' +
-            '   <textarea ng-show="defFormat!=\'html\'" ng-model="value" class="form-control"></textarea>' +
-            '   <div text-angular ng-show="defFormat==\'html\'" ng-model="value" ta-toolbar-group-class="btn-group btn-group-sm" ta-toolbar="[[\'h1\',\'h2\',\'h3\',\'h4\',\'h5\',\'h6\',\'p\'],[\'bold\',\'italics\'],[\'undo\',\'redo\'],[\'ul\',\'ol\'],[\'justifyLeft\',\'justifyCenter\',\'justifyRight\'],[\'indent\',\'outdent\']]"></div>' +
-            '   <button class="fa fa-check" ng-click="model = value;editMode = false; onOk();">Confirm</button>' +
-            '   <button class="fa fa-times" ng-click="editMode = false">Cancel</button>' +
-            '</div>       ' +
-            '</div>',
             restrict: 'AE',
             scope: {
                 model: '='
@@ -93,15 +66,19 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , onOk: '&'
                 , defFormat: '='
                 , inlineAreaVisibility: '='
-            }
+            },
+            templateUrl: '/system/public/js/systemTemplate/inlineAreaEdit.html'
         };
     })
     .directive('sortableArray', function () {
         return {
-            template:
-            '<span id="moveUp-{{index}}" class="btn-default fa fa-arrow-up" ng-click="moveUp()" ng-if="index !== 0" title="Up" tooltip="Up" href=""></span>'
-            + '<span id="moveDown-{{index}}" class="btn-default fa fa-arrow-down" ng-click="moveDown()" ng-if="index < array.length - 1" title="Down" tooltip="Down" href=""></span>'
-            + '<span id="moveTop-{{index}}" class="btn-default fa fa-lg fa-angle-double-up" ng-click="moveTop()" ng-if="index !== 0" title="Move to top" tooltip="Move to top" href=""></span>',
+            restrict: 'AE',
+            scope: {
+                array: "=sortableArray"
+                , index: '=index'
+                , cb: '&'
+            },
+            templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
             controller: function ($scope, $element, $attrs) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
@@ -111,8 +88,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
-                $scope.moveTop = function () {
-                    $scope.array.unshift($scope.array.pop());
+                $scope.moveTop = function (index) {
+                    $scope.array.splice(0, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
                 $scope.moveBottom = function () {
@@ -120,17 +97,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.cb();
                 }
             }
-
-            ,
-            restrict: 'AE',
-            scope: {
-                array: "=sortableArray"
-                , index: '=index'
-                , cb: '&'
-            }
         };
-    })
-;
+    });
 
 angular.module('systemModule').filter('placeholdEmpty', function () {
     return function (input) {

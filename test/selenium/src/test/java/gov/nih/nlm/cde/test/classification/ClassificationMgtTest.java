@@ -6,8 +6,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.TimeUnit;
-
 public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {
         goToCdeSearch();
@@ -51,7 +49,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textPresent("NINDS (9");
         searchNestedClassifiedForms();
         textPresent("NINDS (44)");
-        gotoClassifMgt();
+        gotoClassificationMgt();
         
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification'] .name")).getText().equals("Classification"));
@@ -74,7 +72,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     public void addNestedClassification() {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         Assert.assertTrue(textPresent("Headache"));
         createClassificationName(org, new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI"});
         modalGone();
@@ -85,7 +83,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     @Test
     public void link() {
         mustBeLoggedInAs(ninds_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         Assert.assertTrue(textPresent("Headache"));
 
     }

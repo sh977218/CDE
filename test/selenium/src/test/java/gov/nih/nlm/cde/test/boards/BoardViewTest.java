@@ -10,21 +10,21 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         textPresent("Ventilator assistance utilization indicator");
-        findElement(By.id("gridView")).click();
+        clickElement(By.id("cde_gridView"));
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");
-        findElement(By.id("accordionView")).click();
+        clickElement(By.id("cde_accordionView"));
         textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");
-        findElement(By.id("gridView")).click();
-        findElement(By.linkText("Next")).click();
+        clickElement(By.id("cde_gridView"));
+        clickElement(By.linkText("Next"));
         textNotPresent("Ventilator assistance utilization indicator");
         textPresent("Surgery radiosurgery lobe location text");
         textPresent("BRCDifficltFallAslpNghtInd");
         textPresent("PulmFuncSNIPPeakPressrVal");
     }
-    
+
     @Test
     public void showGridView() {
         mustBeLoggedInAs(boardUser, password);
@@ -39,7 +39,7 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
-        waitAndClick(By.id("gridView"));
+        waitAndClick(By.id("cde_gridView"));
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");

@@ -12,14 +12,14 @@ public class OriginEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Person Gender Text Type");
         String origin = "this is new origin.";
-        findElement(By.xpath("//*[@id=\"origin\"]/span/span/i")).click();
+        clickElement(By.xpath("//*[@id='origin']/span/span/i"));
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id=\"origin\"]/span/form/input")).clear();
-        findElement(By.xpath("//*[@id=\"origin\"]/span/form/input")).sendKeys(origin);
-        findElement(By.xpath("//*[@id=\"origin\"]/span/form/button[1]")).click();
-        findElement(By.id("openSave")).click();
+        findElement(By.xpath("//*[@id='origin']/span/form/input")).clear();
+        findElement(By.xpath("//*[@id='origin']/span/form/input")).sendKeys(origin);
+        clickElement(By.xpath("//*[@id='origin']/span/form/button[1]"));
+        clickElement(By.id("openSave"));
 
-        findElement(By.xpath("//*[@id=\"ng-app\"]/body/div[4]/div/div/form/div[1]/div[2]/input")).sendKeys(".1");
+        findElement(By.xpath("//*[@id='version']")).sendKeys(".1");
         hangon(1);
         findElement(By.id("confirmNewVersion")).click();
         textPresent("Saved.");

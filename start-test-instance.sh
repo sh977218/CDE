@@ -3,14 +3,14 @@
 # Location of node. For dev testing use '.'  for prod testing use 'build'
 NODE_LOC='.'
 
-db_user='siteRootAdmin'
+db_user='cdeuser'
 db_password='password'
 
 target='{"count":0,"_shards":{"total":2,"successful":2,"failed":0}}'
 
 gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any clean compileTest &
 
-mongo test deploy/dbInit.js -u $db_user -p $db_password -authenticationDatabase admin
+mongo test deploy/dbInit.js -u $db_user -p $db_password
 
 #wait for empty
 
@@ -36,18 +36,18 @@ else
 fi
 
 
-mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password -authenticationDatabase admin
+mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password 
 
-mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password -authenticationDatabase admin
-mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u $db_user -p $db_password -authenticationDatabase admin
-mongorestore -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password -authenticationDatabase admin
-mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password -authenticationDatabase admin
+mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password
+mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u $db_user -p $db_password
+mongorestore -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password
+mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password
 
-mongo test test/createLargeBoard.js -u $db_user -p $db_password -authenticationDatabase admin
-mongo test test/createManyBoards.js -u $db_user -p $db_password -authenticationDatabase admin
-mongo test test/initOrgs.js -u $db_user -p $db_password -authenticationDatabase admin
+mongo test test/createLargeBoard.js -u $db_user -p $db_password 
+mongo test test/createManyBoards.js -u $db_user -p $db_password 
+mongo test test/initOrgs.js -u $db_user -p $db_password 
 
-target='{"count":11669,"_shards":{"total":2,"successful":2,"failed":0}}'
+target='{"count":11671,"_shards":{"total":2,"successful":2,"failed":0}}'
 #wait for full
 COUNTER=0
 while [ $COUNTER -lt 80 ]; do

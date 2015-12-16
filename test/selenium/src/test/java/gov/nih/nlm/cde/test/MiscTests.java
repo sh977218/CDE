@@ -9,16 +9,16 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static com.jayway.restassured.RestAssured.*;
+import static com.jayway.restassured.RestAssured.get;
 
 public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void gridView() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-AECC")).click();
+        clickElement(By.id("browseOrg-AECC"));
         hangon(2);
-        findElement(By.id("gridView")).click();
+        clickElement(By.id("cde_gridView"));
         textPresent("Pathologic N Stage");
         textPresent("If No, specify reason for ");
         textPresent("AE Ongoing?");
@@ -36,7 +36,7 @@ public class MiscTests extends NlmCdeBaseTest {
         textPresent("NHLBI");
         textPresent("SPOREs");
         textPresent("NICHD");
-        findElement(By.id("accordionView")).click();
+        clickElement(By.id("cde_accordionView"));
         textNotPresent("Pathologic N Stage");
         textNotPresent("If No, specify reason for ");
         textNotPresent("AE Ongoing?");
@@ -55,64 +55,64 @@ public class MiscTests extends NlmCdeBaseTest {
         textNotPresent("SPOREs");
         textNotPresent("NICHD");
     }
-    
-    
+
+
     @Test
     public void checkTicketValid() {
-        
+
         // Test to make sure user isn't logged in
-        String response = get(baseUrl+"/user/me").asString();
-        Assert.assertEquals( "Not logged in.", response );
+        String response = get(baseUrl + "/user/me").asString();
+        Assert.assertEquals("Not logged in.", response);
 
         // Provide fake ticket and make sure user info is retrieved
-        response = get(baseUrl+"/user/me?ticket=valid").asString();
-        get(baseUrl+"/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue( response.contains("_id") );
-        Assert.assertTrue( response.contains("ninds") );
+        response = get(baseUrl + "/user/me?ticket=valid").asString();
+        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
+        Assert.assertTrue(response.contains("_id"));
+        Assert.assertTrue(response.contains("ninds"));
     }
 
     @Test
     public void checkTicketInvalid() {
-        
+
         // Test to make sure user isn't logged in
-        String response = get(baseUrl+"/user/me").asString();
-        Assert.assertEquals( "Not logged in.", response );
+        String response = get(baseUrl + "/user/me").asString();
+        Assert.assertEquals("Not logged in.", response);
 
         // Provide fake invalid ticket and make sure user info is NOT retrieved
-        response = get(baseUrl+"/user/me?ticket=invalid").asString();
-        Assert.assertEquals( "Not logged in.", response );
+        response = get(baseUrl + "/user/me?ticket=invalid").asString();
+        Assert.assertEquals("Not logged in.", response);
     }
 
     @Test
     public void checkConnectionTimeout() {
-        
+
         // Make sure ticket validation times out
-        String response = get(baseUrl+"/user/me?ticket=timeout4").asString();
-        Assert.assertEquals( "Not logged in.", response );
-        
+        String response = get(baseUrl + "/user/me?ticket=timeout4").asString();
+        Assert.assertEquals("Not logged in.", response);
+
         // Make sure ticket validation doesn't times out
-        response = get(baseUrl+"/user/me?ticket=timeout1").asString();
-        get(baseUrl+"/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue( response.contains("_id") );
-        Assert.assertTrue( response.contains("ninds") );
+        response = get(baseUrl + "/user/me?ticket=timeout1").asString();
+        get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
+        Assert.assertTrue(response.contains("_id"));
+        Assert.assertTrue(response.contains("ninds"));
     }
 
-    
+
     @Test
     public void leavePageWarning() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
-        findElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']")).click();
+        clickElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']")).click();
-        
-        findElement(By.linkText("CDEs")).click();
+        clickElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']"));
+
+        clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
         alert.dismiss();
-        
-        findElement(By.linkText("CDEs")).click();
+
+        clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
         Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));

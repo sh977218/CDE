@@ -15,24 +15,16 @@ var mongoose = require('mongoose')
 exports.type = "cde";
 exports.name = "CDEs";
 
-var mongoUri = config.mongoUri;
-var DataElement;
-var PinningBoard;
-var User;
-var CdeAudit;
+var conn = connHelper.establishConnection(config.database.appData);
 
-var createModels = function(conn) {
-    DataElement = conn.model('DataElement', schemas.dataElementSchema);
-    PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
-    User = conn.model('User', schemas_system.userSchema);
-    CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-    exports.DataElement = DataElement;
-};
-
-var connection = connHelper.establihConnection(mongoUri, createModels);
-createModels(connection);
+var DataElement = conn.model('DataElement', schemas.dataElementSchema);
+var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
+var User = conn.model('User', schemas_system.userSchema);
+var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+exports.DataElement = DataElement;
 
 var mongo_data = this;
+exports.DataElement = DataElement;
 
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {

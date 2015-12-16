@@ -344,9 +344,9 @@ exports.elasticsearch = function (query, type, cb) {
             }
         } else {
             var result = {
-                cdes: []
-                , totalNumber: response.hits.total
+                totalNumber: response.hits.total
             };
+            result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {
                 var thisCde = response.hits.hits[i]._source;
                 thisCde.score = response.hits.hits[i]._score;
@@ -356,7 +356,7 @@ exports.elasticsearch = function (query, type, cb) {
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = response.hits.hits[i].highlight;
-                result.cdes.push(thisCde);
+                result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
             cb(null, result);
@@ -368,6 +368,8 @@ var lock = false;
 
 exports.elasticSearchExport = function (res, query, type, exporter) {
     if (lock) return res.status(503).send("Servers busy");
+
+    if (!exporter) return res.status(500).send("Unable to process exporter.");
 
     res.type(exporter.type);
 

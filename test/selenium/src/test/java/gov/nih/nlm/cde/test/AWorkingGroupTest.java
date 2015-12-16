@@ -29,7 +29,7 @@ public class AWorkingGroupTest extends BaseClassificationTest {
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
         mustBeLoggedInAs(ctepCurator_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
         
         // Verify that Acrin Tree was duplicated

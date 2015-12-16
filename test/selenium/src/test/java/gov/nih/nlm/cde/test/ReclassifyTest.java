@@ -9,7 +9,7 @@ public class ReclassifyTest extends BaseClassificationTest {
     @Test
     public void adminOfMultipleOrgsCanSeeDropdown() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
-        gotoClassifMgt();
+        gotoClassificationMgt();
         findElement(By.cssSelector(".fa-retweet")).click();
         new Select(driver.findElement(By.id("selectClassificationOrg"))).selectByVisibleText("caBIG");
         textPresent("caNanoLab");

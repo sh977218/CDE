@@ -1,3 +1,12 @@
+/*fixes an issue in bootstrap #1078 */
+.modal-body {
+    overflow-y: inherit;
+}
+
+.hand-cursor {
+    cursor: pointer;
+}
+
 body {
     padding-top: 50px;
     padding-bottom: 20px;
@@ -746,11 +755,11 @@ input:required:invalid, input:focus:invalid {
     color: red;
 }
 
-.placeholderForDrop{
+.placeholderForDrop {
     border: 1px solid #ddd;
     padding: 10px;
-    width: 100px!important;
-    height: 40px!important;
+    width: 100px !important;
+    height: 40px !important;
     background-color: #f5f5f5;
     border-radius: 5px;
     margin: 10px;
@@ -764,8 +773,8 @@ div + .questionPlaceholder {
     margin-top: 10px;
 }
 
-.questionPlaceholder{
-    height: 40px!important;
+.questionPlaceholder {
+    height: 40px !important;
     color: #31708f;
     background-color: #d9edf7;
     border: 1px solid #bce8f1;
@@ -773,33 +782,129 @@ div + .questionPlaceholder {
     border-radius: 5px;
 }
 
-@media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0){
-    body{
+@media (min-resolution: 150dpi), (-webkit-min-device-pixel-ratio: 2.0) {
+    body {
         font-size: 20px;
     }
+
     .welcomeSearchOrganizationBox {
         height: 185px;
     }
-    .panel-title, .btn, .dropdown-menu>li>a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
+
+    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
         font-size: 20px;
     }
 }
 
-@media (min-resolution: 250dpi), (-webkit-min-device-pixel-ratio: 3.0){
-    body{
+@media (min-resolution: 250dpi), (-webkit-min-device-pixel-ratio: 3.0) {
+    body {
         font-size: 25px;
     }
+
     .welcomeSearchOrganizationBox {
         height: 205px;
     }
-    .panel-title, .btn, .dropdown-menu>li>a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
+
+    .panel-title, .btn, .dropdown-menu > li > a, #repeatCs ul, i.fa, .name, #repeatCs h4 {
         font-size: 25px;
     }
 }
+
+.quickBoardContent {
+    margin-top: 30px;
+}
+
 #exportEverything {
     margin-top: 17px;
 }
 
-#export{
+.quickBoardContentCompare {
+    overflow: hidden;
+    padding: 3px;
+    margin: 3px;
+}
+
+.quickBoardContentCompareCol {
+    word-break: break-all;
+    min-height: 10px;
+}
+
+.quickBoardArraySeparate {
+    margin: 5px;
+}
+
+.quickBoardContentCompareModifiedObject {
+    overflow: hidden;
+    background-color: rgba(242, 217, 217, 0.5);
+}
+
+.quickBoardContentCompareSameArray {
+    overflow: hidden;
+    background-color: rgba(223, 240, 216, 0.79);
+}
+
+.quickBoardContentCompareModifiedArray {
+    overflow: hidden;
+    background-color: rgba(242, 217, 217, 0.5);
+}
+
+.quickBoardContentCompareSameObject {
+    overflow: hidden;
+    background-color: rgba(223, 240, 216, 0.79);
+}
+
+.quickBoardContentCompareDiff {
+}
+
+.quickBoardContentCompareModified {
+    overflow: hidden;
+    background-color: rgba(242, 217, 217, 0.5);
+}
+
+.overflowHidden {
+    overflow: hidden;
+}
+
+.compareLabel {
+    font-weight: bold;
+    text-align: center;
+}
+
+.smallSpace {
+    margin: 0;
+    padding: 0;
+    height: 25px;
+}
+
+.noLeftPadding {
+    padding-left: 0 !important;
+}
+
+.noRightPadding {
+    padding-right: 0 !important;
+}
+
+.noLeftRightPadding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+#export {
     margin-left: 10px;
+}
+
+.compare-divider {
+    margin: 1px
+}
+
+.compareSectionTitle {
+    margin-top: 20px;
+}
+
+.black {
+    color: black;
+}
+
+.answerListSelect2Container {
+    padding: 3px !important;
 }

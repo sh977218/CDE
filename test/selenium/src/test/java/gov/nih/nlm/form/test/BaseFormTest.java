@@ -18,17 +18,17 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void saveForm() {
         scrollToViewById("openSaveBottom");
-        findElement(By.id("openSaveBottom")).click();
+        clickElement(By.id("openSaveBottom"));
         findElement(By.name("version")).sendKeys("1");
         hangon(1);
-        findElement(By.id("confirmNewVersion")).click();
+        clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
         hangon(1);
         scrollToTop();
     }
 
-    protected void searchForm(String query) {
+    public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
         findElement(By.id("search.submit")).click();
@@ -66,7 +66,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.xpath(section_title_path + "//i")).click();
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[text()=' Confirm']")).click();
+        findElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]")).click();
 
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
