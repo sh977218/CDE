@@ -10,7 +10,6 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.filterMode = true;
 
     $scope.exporters = {
-        csv: {id: "csvExport", display: "CSV Export"},
         json: {id: "jsonExport", display: "JSON Export"},
         xml: {id: "xmlExport", display: "XML Export"}
     };

@@ -504,18 +504,6 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        function removeElasticFields(cde){
-            delete cde.classificationBoost;
-            delete cde.flatClassifications;
-            delete cde.primaryNameCopy;
-            delete cde.stewardOrgCopy;
-            delete cde.flatProperties;
-            delete cde.valueDomain.nbOfPVs;
-            delete cde.primaryDefinitionCopy;
-            delete cde.flatIds;
-            delete cde.usedByOrgs;
-            return cde;
-        }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         var exporters = {
             csv: exporter = {
@@ -559,7 +547,7 @@ exports.init = function (app, daoManager) {
                         if (err) return res.status(500).send(err);
                         else if (elt) {
                             elt = exportShared.stripBsonIds(elt);
-                            elt = removeElasticFields(elt);
+                            elt = elastic_system.removeElasticFields(elt);
                             res.write(js2xml("dataElement", elt, {declaration: {include: false}}));
                             res.write('\n');
                         } else {

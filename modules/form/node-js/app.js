@@ -133,15 +133,22 @@ exports.init = function (app, daoManager) {
                 export: function(res) {
                     res.type('application/xml');
                     res.on('end', function() {console.log("RES ENDED")});
-                    res.write("<cdeExport>\n");
+                    res.write("[");
+                    var firstElt = true;
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
-                        else if (elt) {
+                        if (err) {
+                          // @TODO
+                        } else if (elt) {
+                            if (!firstElt) res.write('\n,');
+                            firstElt = false;
                             elt = exportShared.stripBsonIds(elt);
-                            res.write(js2xml("dataElement", elt, {declaration: {include: false}}));
+                            elt = elastic_system.removeElasticFields(elt);
+                            var obj={};
+                            obj[elt.tinyId] = js2xml("dataElement", elt, {declaration: {include: false}});
+                            res.write(JSON.stringify(obj));
                             res.write('\n');
                         } else {
-                            res.write("\n</cdeExport>");
+                            res.write("]");
                             res.send();
                         }
                     }, query, 'form');
@@ -156,6 +163,7 @@ exports.init = function (app, daoManager) {
                         else if (elt) {
                             formCtrl.getFormOdm(elt, function(err, odmElt) {
                                 if (err) {
+                                    // @TODO
                                     //if (!firstElt) res.write(',');
                                     //res.write("{'" + elt.tinyId +
                                     //    "': \"<Error>" + odmElt + "</Error>\"}");

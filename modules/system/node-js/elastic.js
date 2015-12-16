@@ -15,6 +15,19 @@ var esClient = new elasticsearch.Client({
 });
 exports.esClient = esClient;
 
+exports.removeElasticFields = function(elt) {
+    delete elt.classificationBoost;
+    delete elt.flatClassifications;
+    delete elt.primaryNameCopy;
+    delete elt.stewardOrgCopy;
+    delete elt.flatProperties;
+    delete elt.valueDomain.nbOfPVs;
+    delete elt.primaryDefinitionCopy;
+    delete elt.flatIds;
+    delete elt.usedByOrgs;
+    return elt;
+};
+
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
