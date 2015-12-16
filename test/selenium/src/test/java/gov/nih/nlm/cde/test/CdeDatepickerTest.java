@@ -54,7 +54,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("Close");
         ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-danger.ng-binding\").click();");
         effectiveDate_string = js.executeScript(js_code).toString();
-        Assert.assertEquals(effectiveDate_string, ""));
+        Assert.assertEquals(effectiveDate_string, "");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
     }
