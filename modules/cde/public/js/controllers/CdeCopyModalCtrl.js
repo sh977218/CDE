@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('CdeCopyModalCtrl', ['$scope', 'elt', 'userResource', '$controller', '$modalInstance', function($scope, elt, userResource, $controller, $modalInstance) {
+angular.module('cdeModule').controller('CdeCopyModalCtrl',
+    ['$scope', 'elt', 'userResource', '$controller', '$uibModalInstance',
+        function($scope, elt, userResource, $controller, $modalInstance) {
     elt.classification = [];
     delete elt.tinyId;
     delete elt._id;

@@ -11,8 +11,8 @@
         </div>
         <div class="col-md-7" ng-show="cdes">
             <h4 tabindex="0">Sharing Concept</h4>
-            <accordion>
-                <accordion-group ng-repeat="elt in cdes" heading="{{elt.naming[0].designation}}">
+            <uib-accordion>
+                <uib-accordion-group ng-repeat="elt in cdes" heading="{{elt.naming[0].designation}}">
                     <div class="row">
                         <div ng-include="'/cde/public/html/cdegeneraldetails.html'"></div>
                     </div>
@@ -20,8 +20,8 @@
                         <a class='btn btn-default' ng-href="/#/deview?tinyId={{elt.tinyId}}">
                             <i class="fa fa-eye"></i>View Full Detail</a>
                     </div>
-                </accordion-group>
-            </accordion>
+                </uib-accordion-group>
+            </uib-accordion>
         </div>
     </div>
 

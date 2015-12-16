@@ -158,7 +158,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         findElement(By.linkText("Site Management")).click();
         findElement(By.linkText("Org Admins")).click();
 
-        findElement(By.xpath("//span[text() = '" + test_username + "' ]/..//i[@title=\"Remove\"]")).click();
+        findElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//i[@title=\"Remove\"]")).click();
         textNotPresent(test_username);
 
     }

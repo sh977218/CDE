@@ -22,9 +22,9 @@
                     <a id="menu_forms_link" href="/#/form/search">Forms</a></li>
                 <% } %>
 
-                <li dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}"
+                <li uib-dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}"
                     ng-show='user._id'>
-                    <a dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards"
+                    <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards"
                        aria-label="Boards">Boards<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu" aria-expanded="true">
                         <li><a href="/#/boardList" id="publicBoardsLink">Public Boards</a></li>
@@ -35,10 +35,9 @@
                 <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>
                     <a href="/#/boardList">Boards</a>
                 </li>
-
-                <li dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
-                    ng-if='isOrgCurator()'>
-                    <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu2" title="Create"
+                <li uib-dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
+                    ng-show='isOrgCurator()'>
+                    <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu2" title="Create"
                        aria-label="Create">Create<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2">
                         <li><a href="/#/createCde">CDE</a></li>
@@ -50,8 +49,8 @@
                        ng-bind="'Quick Board (' + (quickBoard.elts.length + formQuickBoard.elts.length) + ')'">
                     </a>
                 </li>
-                <li id="menu_help_link" dropdown ng-class="{ active: isPageActive('/help')}">
-                    <a dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
+                <li id="menu_help_link" uib-dropdown ng-class="{ active: isPageActive('/help')}">
+                    <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu_help" title="Help"
                        aria-label="Help">Help<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu_help">
                         <li><a href="/#/home">About</a></li>
@@ -63,19 +62,16 @@
                     </ul>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
+            <ul ng-controller="AuthCtrl" class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
                 <a ng-cloak ng-if="userHasMail" title="New messages" href="/#/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id">
-                    <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in"
-                       ng-bind="'Log In'"></a>
+                    <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a>
                 </li>
-                <li dropdown class="login" ng-show="user._id">
-                    <a dropdown-toggle class="dropdown-toggle" href="#" id="username_link"
+                <li uib-dropdown class="login" ng-show="user._id">
+                    <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="username_link"
                        title="{{user.username}}" aria-label="{{user.username}}">
-                        <span ng-bind="user.username | truncateLongUserName"></span>
-                        <span class="caret"></span>
-                    </a>
+                        <span ng-bind="user.username | truncateLongUserName"></span><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="username_link">
                         <li ng-show='user._id'>
                             <a href="/#/profile" id="user_profile">Profile</a>
@@ -96,16 +92,13 @@
                             <a href="/#/siteAudit" id="user_audit">Audit</a>
                         </li>
                         <li ng-show='user._id'>
-                            <a href="/logout" target="_self" id="user_logout">Log Out</a>
+                            <a href="" ng-click="logout()" target="_self" id="user_logout">Log Out</a>
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="/#/searchSettings">
-                        <i id="searchSettings" ng-click="openSearchSettingsModal()" id="searchSettings"
-                           class="fa fa-cog navbar-inverse text-muted userIcon"></i>
-                    </a>
-                </li>
+                <li><a href="/#/searchSettings">
+                    <i id="searchSettings" ng-click="openSearchSettingsModal()" id="searchSettings"
+                       class="fa fa-cog navbar-inverse text-muted userIcon"></i></a></li>
             </ul>
         </div>
     </div>

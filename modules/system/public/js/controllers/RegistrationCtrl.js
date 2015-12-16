@@ -1,9 +1,10 @@
- angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$modal', '$location',
+ angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$uibModal', '$location',
      function($scope, $modal, $location)
  {
      
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/system/public/html/regStatusUpdateModal.html',
           controller: 'RegistrationModalCtrl',
           resolve: {

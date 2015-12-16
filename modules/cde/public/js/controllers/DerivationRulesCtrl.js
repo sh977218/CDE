@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal', 'QuickBoard', 'CdeList', '$http',
+angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibModal', 'QuickBoard', 'CdeList', '$http',
     function($scope, $modal, quickBoard, CdeList, $http)
 {
 
@@ -43,6 +43,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
 
     $scope.openNewScore = function () {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'newScoreModalContent.html',
             controller: 'NewScoreModalCtrl',
             resolve: {
@@ -77,7 +78,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$modal
 }
 ]);
 
-angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$modalInstance', 'QuickBoard', 'elt',
+angular.module('systemModule').controller('NewScoreModalCtrl', ['$scope', '$uibModalInstance', 'QuickBoard', 'elt',
     function($scope, $modalInstance, quickBoard, elt)
 {
 

@@ -21,7 +21,7 @@
 
                         <dd tabindex="0" ng-show="parent">
                             <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
-                                   typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
+                                   uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
                                    typeahead-min-length="0" class="form-control skipLogicCondition"/>
                         </dd>
                     </span>
