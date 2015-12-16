@@ -12,7 +12,6 @@ var express = require('express')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
     , js2xml = require('js2xmlparser')
-    , archiver = require('archiver')
     ;
 
 exports.init = function (app, daoManager) {
@@ -104,14 +103,15 @@ exports.init = function (app, daoManager) {
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
                         if (err) return res.status(500).send(err);
                         else if (elt) {
-                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(elt)))
+                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(elt)));
                             res.write("\n");
                         } else {
                             res.send();
                         }
                     }, query, 'form');
                 }
-            }, json: {
+            },
+            json: {
                 export: function(res) {
                     var firstElt = true;
                     res.type('application/json');
@@ -132,7 +132,7 @@ exports.init = function (app, daoManager) {
             }, xml: {
                 export: function(res) {
                     res.type('application/xml');
-                    res.on('end', function() {console.log("RES ENDED")})
+                    res.on('end', function() {console.log("RES ENDED")});
                     res.write("<cdeExport>\n");
                     elastic_system.elasticSearchExport(function dataCb(err, elt) {
                         if (err) return res.status(500).send(err);
@@ -148,24 +148,6 @@ exports.init = function (app, daoManager) {
                 }
             }, odm: {
                 export: function(res) {
-                    //res.type('application/xml');
-                    //res.write("<ODM_Export>\n");
-                    //elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                    //    if (err) return res.status(500).send(err);
-                    //    else if (elt) {
-                    //        formCtrl.getFormOdm(elt, function(err, odmElt) {
-                    //            if (err) res.write("<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>");
-                    //            else {
-                    //                res.write(odmElt);
-                    //                res.write('\n');
-                    //            }
-                    //        });
-                    //    } else {
-                    //        res.write("\n</ODM_Export>");
-                    //        res.send();
-                    //    }
-                    //}, query, 'form');
-
                     res.type('application/json');
                     res.write("[");
                     var firstElt = true;
@@ -191,39 +173,6 @@ exports.init = function (app, daoManager) {
                             res.send();
                         }
                     }, query, 'form');
-
-
-
-                    //res.on('end', function() {
-                    //    console.log("Archived closed");
-                    //});
-                    ////res.type("application/zip");
-                    //archive = archiver('zip');
-                    ////archive.on('end', function() {
-                    ////    res.send();
-                    ////});
-                    //res.writeHead(200, {
-                    //    'Content-Type': 'application/zip',
-                    //    'Content-disposition': 'attachment; filename=ODMExport.zip'
-                    //});
-                    //archive.on('end', function() {
-                    //    console.log('Archive wrote %d bytes', archive.pointer());
-                    //});
-                    //archive.pipe(res);
-                    //elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                    //    if (err) return res.status(500).send(err);
-                    //    else if (elt) {
-                    //        formCtrl.getFormOdm(elt, function(err, odmElt) {
-                    //            if (err) {
-                    //                odmElt = "<Error formId='" + elt.tinyId + "'>" + odmElt + "</Error>";
-                    //            }
-                    //            archive.append(odmElt, {name: 'CDE_' + elt.tinyId + '.xml'});
-                    //        });
-                    //    } else {
-                    //        setTimeout(function() {archive.finalize()}, 500);
-                    //        //();
-                    //    }
-                    //}, query, 'form');
                 }
             }
         };

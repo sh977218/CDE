@@ -5,7 +5,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
 
     $scope.exportSearchResults = function (type) {
         try {
-            var isFileSaverSupported = !!new Blob;
+            !!new Blob;
         } catch (e) {
             return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
         }
@@ -13,32 +13,39 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-            var zipExporter = function() {
-                    var zip = new JSZip();
-                    JSON.parse(result).forEach(function(omdObj) {
-                        zip.file(Object.keys(omdObj)[0] + ".xml", omdObj[Object.keys(omdObj)[0]])
-                    });
-                    var content = zip.generate({type:"blob"});
-                    saveAs(content, "example.zip");
+            var zipExporter = function(result, filename) {
+                var zip = new JSZip();
+                JSON.parse(result).forEach(function(srcObj) {
+                    zip.file(Object.keys(srcObj)[0] + ".xml", srcObj[Object.keys(srcObj)[0]])
+                });
+                var content = zip.generate({type:"blob"});
+                $scope.addAlert("success", "Export downloaded.");
+                saveAs(content, filename);
             };
-            var exportFiletypes =
+            var bulkExporter = function(result, filename, mimeType) {
+                var blob = new Blob([result], {
+                    type: mimeType
+                });
+                saveAs(blob, filename);
+                $scope.addAlert("success", "Export downloaded.");
+                $scope.feedbackClass = ["fa-download"];
+            };
+            var exporters =
             {
-                'csv': 'text/csv',
-                'json': 'application/json',
-                'xml': 'application/xml',
-                'odm': 'application/zip'
+                'csv': {type: 'text/csv', exporter: bulkExporter, filename: "SearchExport.csv"},
+                'json': {type: 'application/json', exporter: bulkExporter, filename: "SearchExport.json"},
+                'xml': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_XML.zip"},
+                'odm': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_ODM.zip"}
             };
             if (result) {
-                if (type === 'odm') {
-
+                var exporter = exporters[type];
+                if (!exporter) {
+                    $scope.addAlert("danger", "This export format is not supported.")
                 } else {
-                    var blob = new Blob([result], {
-                        type: exportFiletypes[type]
-                    });
-                    saveAs(blob, 'SearchExport' + '.' + type);
-                    $scope.addAlert("success", "Export downloaded.");
-                    $scope.feedbackClass = ["fa-download"];
+                    exporter.exporter(result, exporter.filename, exporter.type);
                 }
+            } else {
+                $scope.addAlert("danger", "There was no data to export.");
             }
         });
     };
