@@ -28,7 +28,7 @@
             <label for="untilDate">Until Date</em></pre></label>
             <div class="input-group">
                 <input id="untilDate" name="untilDate" type="text" class="form-control"
-                       uib-datepicker-popup ng-model="elt.registrationState.untilDate"
+                       uib-datepicker-popup="{{format}}" ng-model="elt.registrationState.untilDate"
                        is-open="opened" min-date="minDate" datepicker-options="dateOptions" close-text="Close"/>
                 <span class="input-group-btn">
                     <button type="button" id="untilDateDatepicker" class="btn btn-default" ng-click="open($event)">
