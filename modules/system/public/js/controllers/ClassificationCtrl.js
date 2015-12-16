@@ -6,6 +6,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
 
     $scope.openAddClassificationModal = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/system/public/html/classifyElt.html',
           controller: 'AddClassificationModalCtrl',
           resolve: {

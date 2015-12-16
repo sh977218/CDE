@@ -1,20 +1,25 @@
 <div class="container-fluid" ng-controller="VersionCtrl" ng-cloak>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived"><i class="fa fa-exclamation-triangle"></i>
         <strong>Warning:</strong> this data element is archived. You can
-        <a href="/#/deview?tinyId={{elt.tinyId}}">view the current version here</a>.</div>
+        <a href="/#/deview?tinyId={{elt.tinyId}}">view the current version here</a>.
+    </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is retired.
         <span ng-show="elt.registrationState.replacedBy">
             <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a></span></div>
-    <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'">
+    <div class="alert alert-warning mt20" role="alert"
+         ng-show="elt.registrationState.administrativeStatus=='Retire Candidate'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this data element is about to be retired.
         <span ng-show="elt.registrationState.replacedBy">
             <a href="/#/deview?tinyId={{elt.registrationState.replacedBy.tinyId}}">Possible Replacement</a></span></div>
-    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i class="fa fa-exclamation-triangle"></i>
-        <strong>Note:</strong> You may not edit this CDE because it is standard.</div>
+    <div class="alert alert-info mt20" role="alert" ng-show="displayStatusWarning"><i
+            class="fa fa-exclamation-triangle"></i>
+        <strong>Note:</strong> You may not edit this CDE because it is standard.
+    </div>
     <div class="alert alert-info mt20" role="alert" ng-show="elt.forkOf"><i class="fa fa-exclamation-triangle"></i>
         You are editing a fork. <a tabindex="0" href="/#/deview?cdeId={{rootFork._id}}"> <i class="fa fa-eye">
-        </i> View Original</a>. To remove a fork, Retire it.</div>
+        </i> View Original</a>. To remove a fork, Retire it.
+    </div>
 
     <div ng-if="!elt"><h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
 
@@ -22,9 +27,11 @@
         <h1 class="page-header">
             {{elt.naming[0].designation}}
             <a class="btn btn-small btn-default" ng-show="quickBoard.canAddElt(elt)" role="button" tabindex="0"
-               ng-click="quickBoard.add(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add to Quick Board</a>
-            <a class="btn btn-small btn-default"  ng-if="user._id" role="button" tabindex="0"
+               ng-click="quickBoard.add(elt)" title="Add to Compare List" id="compareMe"><i class="fa fa-plus"></i> Add
+                to Quick Board</a>
+            <a class="btn btn-small btn-default" ng-if="user._id" role="button" tabindex="0"
                ng-click="openPinModal(elt)" title="Add to Board" id="addToBoard"><i class="fa fa-plus"></i> Add to Board</a>
+
             <div class="btn-group">
                 <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -32,31 +39,30 @@
                     Export <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a id='jsonExport' ng-href="debytinyid/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
-                    <li><a id='xmlExport' ng-href="debytinyid/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
+                    <li><a id='jsonExport' ng-href="debytinyid/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE
+                        Schema</a></li>
+                    <li><a id='xmlExport' ng-href="debytinyid/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE
+                        Schema</a></li>
                 </ul>
             </div>
         </h1>
 
         <div uib-tabset>
-            <div ng-repeat="(tabName, tab) in tabs"
-                 uib-tab heading="{{tab.heading}}"
-                 active="tab.active"
-                 ng-if="tab.if?tab.if():true"
-                 id="{{tabName}}_tab"
-                    select="tab.select()"
-                    >
+            <div ng-repeat="(tabName, tab) in tabs" uib-tab heading="{{tab.heading}}"
+                 active="tab.active" ng-if="tab.if?tab.if():true"
+                 id="{{tabName}}_tab" select="tab.select()">
                 <div ng-repeat="incl in tab.includes" ng-include="incl"/>
             </div>
         </div>
 
         <div ng-show="elt.unsaved && allValid" class="mt20">
             <button class="btn cancel" ng-click="revert(elt)" id="discardChanges">Discard Changes</button>
-            <button class="btn btn-primary" ng-click="openSave(elt, 'deview?tinyId=')" id="openSave">Save Changes</button>
+            <button class="btn btn-primary" ng-click="openSave(elt, 'deview?tinyId=')" id="openSave">Save Changes
+            </button>
         </div>
-        <div ng-if="!allValid"  class="alert alert-warning mt20" role="alert">
-            There are validation errors.
+        <div ng-if="!allValid" class="alert alert-danger mt20" role="alert">
+            There are validation errors. {{pvNotValidMsg }}
         </div>
     </div>
-</div>
 
+</div>

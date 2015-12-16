@@ -43,6 +43,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
 
     $scope.openNewScore = function () {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'newScoreModalContent.html',
             controller: 'NewScoreModalCtrl',
             resolve: {

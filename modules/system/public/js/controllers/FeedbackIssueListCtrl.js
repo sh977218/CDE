@@ -8,7 +8,8 @@ angular.module('systemModule').controller('FeedbackIssueListCtrl',
     $controller('AuditErrorListCtrl', {$scope: $scope});
 
     $scope.showScreenshot = function(content){
-        var modalInstance = $modal.open({
+        $modal.open({
+            animation: false,
             template: '<a target="_blank" href='+content+'><img src="'+content+'"  style="max-width: 898px;"></a>'
             , size: "lg"
         });
@@ -16,7 +17,8 @@ angular.module('systemModule').controller('FeedbackIssueListCtrl',
 
     $scope.showRawHtml = function(content){
         $rootScope.html = content;
-        var modalInstance = $modal.open({
+        $modal.open({
+            animation: false,
             template: '<span ng-bind="html"></span>'
             , size: "lg"
             , scope: $rootScope

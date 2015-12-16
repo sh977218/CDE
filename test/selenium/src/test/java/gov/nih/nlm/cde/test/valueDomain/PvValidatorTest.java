@@ -33,9 +33,9 @@ public class PvValidatorTest extends BaseClassificationTest {
     }
 
     public void changeField(String which, String to) {
-        findElement(By.xpath("//td[@id='" + which +"']//i")).click();
-        findElement(By.xpath("//td[@id='" + which +"']//input")).clear();
-        findElement(By.xpath("//td[@id='" + which +"']//input")).sendKeys(to);
+        findElement(By.xpath("//td[@id='" + which + "']//i")).click();
+        findElement(By.xpath("//td[@id='" + which + "']//input")).clear();
+        findElement(By.xpath("//td[@id='" + which + "']//input")).sendKeys(to);
         findElement(By.cssSelector("#" + which + " .fa-check")).click();
     }
 
@@ -44,9 +44,9 @@ public class PvValidatorTest extends BaseClassificationTest {
         mustBeLoggedInAs("selenium", password);
         createBasicCde("PvValidatorCde", "Def for PV Validator", "SeleniumOrg", "Test Classif", "Sub Classif");
 
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.linkText("Permissible Values"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
-        findElement(By.id("editDatatype")).click();
+        clickElement(By.id("editDatatype"));
         new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Value List");
 
         addPv(0, "pv1", "name1", "code1");

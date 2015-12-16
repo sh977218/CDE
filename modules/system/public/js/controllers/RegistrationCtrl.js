@@ -4,6 +4,7 @@
      
     $scope.openRegStatusUpdate = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: '/system/public/html/regStatusUpdateModal.html',
           controller: 'RegistrationModalCtrl',
           resolve: {

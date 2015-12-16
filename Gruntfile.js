@@ -136,7 +136,6 @@ module.exports = function (grunt) {
                     callback: function (err, stdout, stderr, cb) {
                         grunt.config('version', stdout);
                         cb();
-                        return;
                     }
                 }
             }

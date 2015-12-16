@@ -112,6 +112,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
 
     $scope.openNameSelect = function (question) {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/form/public/html/selectQuestionName.html',
             controller: 'SelectQuestionNameModalCtrl',
             resolve: {

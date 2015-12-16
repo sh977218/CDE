@@ -6,7 +6,7 @@ import org.testng.Assert;
 public abstract class PermissibleValueTest extends CommonTest {
 
     public void reorderPermissibleValueTest(String eltName) {
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testAdmin_username, password);
         goToEltByName(eltName, null);
         String tabName = "permissibleValueDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";

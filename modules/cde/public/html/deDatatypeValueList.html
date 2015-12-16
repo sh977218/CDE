@@ -6,8 +6,6 @@
     </dd>
 </dl>
 <hr/>
-<h4 tabindex="0">Permissible Values</h4>
-<div ng-if="!allValid" class="alert alert-danger mt20" role="alert">There are validation errors. {{ pvNotValidMsg }}
 </div>
 <div>
     <button ng-show="showValidateButton" ng-click="runManualValidation()">Validate</button>
@@ -54,7 +52,7 @@
             <span ng-if="pv.notValid">
                 <span class="btn-default fa fa-warning text-danger" id="pv-{{$index}}-notValid"> </span></span>
             <span id="pvRemove-{{$index}}" class="btn-default fa fa-trash-o" ng-click="removePv($index)" title="Remove"
-                  uib-tooltip="Remove" href=""></span>
+                  href=""></span>
 
             <div sortable-array="elt.valueDomain.permissibleValues" index="$index" cb="stageElt(elt)"></div>
         </td>

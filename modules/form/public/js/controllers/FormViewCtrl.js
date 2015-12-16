@@ -112,6 +112,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.openAddCdeClassificationModal = function () {
         $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/classifyElt.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
@@ -284,6 +285,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/selectBoardModal.html',
             controller: 'SelectBoardModalCtrl',
             resolve: {

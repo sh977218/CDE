@@ -3,6 +3,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModa
 {
     $scope.openNewProperty = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newPropertyModalContent.html',
           controller: 'NewPropertyModalCtrl',
           resolve: {

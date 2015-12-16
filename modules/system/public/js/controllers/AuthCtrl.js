@@ -1,25 +1,25 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'LoginRedirect',
-    function($scope, Auth, $window, $http, LoginRedirect)
+angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location',
+    function($scope, Auth, $window, $http, LoginRedirect, $location)
 {
-    
-    $scope.getCsrf = function() {
+
+    $scope.getCsrf = function () {
         delete $scope.csrf;
-        
-        $http.get('/csrf').then(function(res) {
+
+        $http.get('/csrf').then(function (res) {
             $scope.csrf = res.data;
         });
 
     };
-    
+
     $scope.getCsrf();
-    
-    $scope.login = function() {
+
+    $scope.login = function () {
         Auth.login({
                 username: $scope.username,
                 password: $scope.password,
                 _csrf: $scope.csrf
             },
-            function(res) {
+            function (res) {
                 if (res === "OK") {
                     if (LoginRedirect.getPreviousRoute()) $window.location.href = LoginRedirect.getPreviousRoute();
                     else $window.location.href = "/";
@@ -27,14 +27,24 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
                 }
-              },
-            function() {
+            },
+            function () {
                 $scope.addAlert("danger", "Failed to log in.");
                 $scope.getCsrf();
             });
     };
 
-   $scope.oauthEnabled = window.oauthEnabled;
+    $scope.oauthEnabled = window.oauthEnabled;
+
+    $scope.goToLogin = function () {
+        LoginRedirect.storeRoute($location.$$url);
+    };
+
+    $scope.logout = function () {
+        $http.post("/logout", {}).then(function() {
+            $window.location.href = "/login";
+        });
+    }
 
 }
 ]);

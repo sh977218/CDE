@@ -13,7 +13,7 @@ import java.util.Date;
 public class CdeDatepickerTest extends NlmCdeBaseTest {
 
     @Test
-    public void CdeDatepicker() {
+    public void cdeDatepicker() {
         mustBeLoggedInAs(ninds_username, password);
         goToSearch("cde");
         findElement(By.id("browseOrg-NINDS")).click();
@@ -28,7 +28,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("Today");
         textPresent("Clear");
         textPresent("Close");
-        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > ul > li.ng-scope > span > button.btn.btn-sm.btn-info.ng-binding\").click();");
+        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-info.ng-binding\").click();");
         Date today = new Date();
         today.setHours(0);
         today.setMinutes(0);
@@ -52,9 +52,9 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         textPresent("Today");
         textPresent("Clear");
         textPresent("Close");
-        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > ul > li.ng-scope > span > button.btn.btn-sm.btn-danger.ng-binding\").click();");
+        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-danger.ng-binding\").click();");
         effectiveDate_string = js.executeScript(js_code).toString();
-        Assert.assertTrue(effectiveDate_string.equals(""));
+        Assert.assertEquals(effectiveDate_string, "");
         findElement(By.id("cancelRegStatus")).click();
         modalGone();
     }

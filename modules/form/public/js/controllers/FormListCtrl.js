@@ -1,7 +1,8 @@
-angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource'
-        , function($scope, $controller, userResource)
+angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource', 'FormQuickBoard'
+        , function($scope, $controller, userResource, QuickBoard)
 {
 
+    $scope.quickBoard = QuickBoard;
     $scope.module = "form";
 
     userResource.getPromise().then(function(){

@@ -1,37 +1,45 @@
 angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
-    function($scope, OrgHelpers, SearchSettings) {
+    function ($scope, OrgHelpers, SearchSettings) {
 
-    $scope.listViewType = "accordion";
+        $scope.listViewType = "accordion";
 
-    $scope.maxLines = 5;
-    $scope.lineLength = 50;
+        $scope.maxLines = 5;
+        $scope.lineLength = 50;
 
-    var listViewCacheName = $scope.module + "listViewType";
-    if ($scope.cache.get(listViewCacheName)) $scope.listViewType = $scope.cache.get(listViewCacheName);
-    else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
+        var listViewCacheName = $scope.module + "listViewType";
+        if ($scope.cache.get(listViewCacheName)) $scope.listViewType = $scope.cache.get(listViewCacheName);
+        else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
 
-    $scope.getUsedBy = OrgHelpers.getUsedBy;
+        $scope.getUsedBy = OrgHelpers.getUsedBy;
 
-    $scope.switchToTableView = function() {
-        switchGridAccordionView("table");
-    };
+        $scope.switchToTableView = function () {
+            switchGridAccordionView("table");
+        };
 
-    $scope.switchToAccordionView = function() {
-        switchGridAccordionView("accordion");
-    };
+        $scope.switchToAccordionView = function () {
+            switchGridAccordionView("accordion");
+        };
 
-    var switchGridAccordionView = function(viewType) {
-        $scope.listViewType = viewType;
-        $scope.cache.put(listViewCacheName, $scope.listViewType);
-    };
+        var switchGridAccordionView = function (viewType) {
+            $scope.eltsToCompare = [];
+            $scope.listViewType = viewType;
+            $scope.cache.put(listViewCacheName, $scope.listViewType);
+        };
 
-    $scope.showSideBySideView = function() {
-        if ($scope.cdes.length !== 2) {
-            $scope.addAlert("danger", "You may only compare 2 CDEs side by side.");
-        } else {
-            $scope.listViewType = "sideBySide";
-        }
-    };
+        $scope.showSideBySideView = function () {
+            $scope.eltsToCompare = [];
+            for (var key in $scope.eltsToCompareMap) {
+                $scope.eltsToCompare.push($scope.eltsToCompareMap[key]);
+            }
+            $scope.eltsToCompare.sort(function (a, b) {
+
+            });
+            if ($scope.eltsToCompare.length !== 2) {
+                $scope.addAlert("danger", "You may only compare 2 elements side by side.");
+            } else {
+                $scope.listViewType = "sideBySide";
+            }
+        };
 
 
     }]);

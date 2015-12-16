@@ -1,6 +1,9 @@
 angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', function ($scope, $routeParams, $http, OrgHelpers, userResource) {
     $scope.cdes = [];
 
+    $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
+        "/cde/public/html/accordion/addToQuickBoardActions.html" ];
+
     $scope.setPage = function (p) {
         $scope.currentPage = p;
         $scope.reload();

@@ -28,7 +28,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         scrollToTop();
     }
 
-    protected void searchForm(String query) {
+    public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
         findElement(By.id("search.submit")).click();
