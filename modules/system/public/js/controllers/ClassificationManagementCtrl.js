@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('ClassificationManagementCtrl',
-    ['$scope', '$http', '$modal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
+    ['$scope', '$http', '$uibModal', 'OrgClassification', '$timeout', 'Elastic', 'userResource', 'SearchSettings', '$log',
         function($scope, $http, $modal, OrgClassification, $timeout, Elastic, userResource, SearchSettings, $log)
 {
 
@@ -43,6 +43,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.openAddClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/addClassification.html',
             controller: 'AddClassificationToOrgModalCtrl',
             resolve: {
@@ -73,6 +74,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: 'renameClassificationModal.html',
             controller: 'RenameClassificationModalCtrl',
             resolve: {
@@ -93,6 +95,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/removeClassificationMgtModal.html',
             controller: 'RemoveClassificationModalCtrl',
             resolve: {
@@ -110,6 +113,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.showClassifyEntireSearchModal = function (orgName, pathArray) {
         $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/classifyElt.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
@@ -173,9 +177,12 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
     };
 }]);
 
-angular.module('systemModule').controller('RenameClassificationModalCtrl', ['$scope', '$modalInstance', 'classifName', function($scope, $modalInstance, classifName) {
+angular.module('systemModule').controller('RenameClassificationModalCtrl',
+    ['$scope', '$uibModalInstance', 'classifName', function($scope, $modalInstance, classifName) {
+
     $scope.classifName = classifName;
     $scope.close = function(newname) {
         $modalInstance.close(newname);
     };
+
 }]);

@@ -5,7 +5,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
 
     $scope.exportSearchResults = function (type) {
         try {
-            var isFileSaverSupported = !!new Blob;
+            !!new Blob;
         } catch (e) {
             return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
         }

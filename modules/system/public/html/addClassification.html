@@ -5,6 +5,7 @@
 <div class="modal-body" id="addClassificationModalBody">
     <form role="form" name="newClassifForm" class="form-inline pt20" novalidate>
         <div class="form-group">
+            <label for="addNewCatName"></label>
             <input ng-model="parentScope.newClassifName" id="addNewCatName" name="cName" class="form-control" required ng-pattern="/^[^;]+$/">
         </div>
         <button type="submit" class="btn btn-success" id="addNewCatButton" ng-click="addClassification()" ng-disabled="newClassifForm.cName.$error.pattern || newClassifForm.cName.$invalid">Add</button>

@@ -1,4 +1,5 @@
-angular.module('cdeModule').controller('AddForkModalCtrl', ['$scope', '$modalInstance', 'userResource', function($scope, $modalInstance, userResource) {
+angular.module('cdeModule').controller('AddForkModalCtrl', ['$scope', '$uibModalInstance', 'userResource',
+    function($scope, $modalInstance, userResource) {
     $scope.selection = {}; 
     $scope.myOrgs = userResource.userOrgs;
     

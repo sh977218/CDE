@@ -1,14 +1,17 @@
 {
   "name": "sample",
   "version": "0.0.0",
-  "devDependencies": {
-    "angularjs": "1.4.3",
-    "angular-route": "1.4.3",
-    "angular-resource": "1.4.3",
-    "angular-sanitize": "1.4.3",
-    "angular-animate": "1.4.3",
-    "angular-ui-bootstrap-bower": "0.12.1",
-    "bootstrap": "3.3.2",
+  "directory": "modules/system/public/components",
+  "dependencies": {
+    "angular": "1.4.7",
+    "angular-route": "1.4.7",
+    "angular-resource": "1.4.7",
+    "angular-sanitize": "1.4.7",
+    "angular-animate": "1.4.7",
+    "angular-bootstrap": "0.14.3",
+    "angular-local-storage": "0.2.3",
+    "angular-timeago": "0.2.4",
+    "bootstrap": "3.3.5",
     "fontawesome": "4.3.0",
     "jquery": "~1.10.2",
     "jquery-ui": "1.11.3",
@@ -25,6 +28,6 @@
     "ng-file-upload": "3.3.3"
   },
   "resolutions": {
-    "angular": "1.4.3"
+    "angular": "1.4.7"
   }
 }

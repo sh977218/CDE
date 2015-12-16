@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModal', '$window', 'userResource', '$route', '$log',
     function($scope, $http, $modal, $window, userResource, $route, $log) {
 
         $log.debug("ForkCtrl open");
@@ -37,6 +37,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
 
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/addFork.html',
             controller: 'AddForkModalCtrl',
             resolve: {
@@ -53,6 +54,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
 
     $scope.openCdeCopyModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/cdeCopyModal.html',
             controller: 'CdeCopyModalCtrl',
             resolve: {

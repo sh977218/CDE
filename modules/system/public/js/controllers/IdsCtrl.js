@@ -1,6 +1,7 @@
-angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$window', function($scope, $modal, $window) {
+angular.module('systemModule').controller('IdsCtrl', ['$scope', '$uibModal', '$window', function($scope, $modal) {
     $scope.openNewId = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newIdModalContent.html',
           controller: 'NewIdModalCtrl',
           resolve: {
@@ -36,7 +37,9 @@ angular.module('systemModule').controller('IdsCtrl', ['$scope', '$modal', '$wind
     };
 }]);
 
-angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$modalInstance', 'elt', function($scope, $modalInstance, elt) {
+angular.module('systemModule').controller('NewIdModalCtrl', ['$scope', '$uibModalInstance', 'elt',
+    function($scope, $modalInstance, elt) {
+
     $scope.elt = elt;
     $scope.newId = {};
 
