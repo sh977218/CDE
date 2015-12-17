@@ -82,7 +82,6 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        hangon(2);
         addComment(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);        
@@ -93,8 +92,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent(censoredText);      
         
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
-        hangon(2);
-        findElement(By.id("incomingMessage")).click();        
+        findElement(By.id("incomingMessage")).click();
 
         textPresent("Comment Approval");
         findElement(By.cssSelector(".accordion-toggle")).click();        
@@ -103,7 +101,7 @@ public abstract class CommentTest extends CommonTest {
         try {
             textPresent(eltName);
         } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
+            preClass = "uib-accordion:nth-child(2) ";
             findElement(By.cssSelector(preClass+".accordion-toggle")).click();
             textPresent(commentText);
         }
