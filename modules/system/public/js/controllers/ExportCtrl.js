@@ -35,9 +35,13 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                 'csv': {type: 'text/csv', exporter: bulkExporter, filename: "SearchExport.csv"},
                 'json': {type: 'application/json', exporter: bulkExporter, filename: "SearchExport.json"},
                 'xml': {type: 'application/zip', exporter: function(result) {
-                    result.forEach(function(oneElt) {
-
+                    var zip = new JSZip();
+                    JSON.parse(result).forEach(function(oneElt) {
+                        zip.file(oneElt.tinyId + ".xml", JXON.jsToString({dataElement: oneElt}))
                     });
+                    var content = zip.generate({type:"blob"});
+                    $scope.addAlert("success", "Export downloaded.");
+                    saveAs(content, "SearchExport_XML.zip");
                 }, filename: "SearchExport_XML.zip"},
                 'odm': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_ODM.zip"}
             };

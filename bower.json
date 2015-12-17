@@ -26,7 +26,8 @@
     "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
     "ng-file-upload": "3.3.3",
-    "jszip": "2.5.0"
+    "jszip": "2.5.0",
+    "jxon": "1.5.5"
   },
   "resolutions": {
     "angular": "1.4.7"

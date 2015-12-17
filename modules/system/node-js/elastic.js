@@ -21,7 +21,7 @@ exports.removeElasticFields = function(elt) {
     delete elt.primaryNameCopy;
     delete elt.stewardOrgCopy;
     delete elt.flatProperties;
-    delete elt.valueDomain.nbOfPVs;
+    if (elt.valueDomain) delete elt.valueDomain.nbOfPVs;
     delete elt.primaryDefinitionCopy;
     delete elt.flatIds;
     delete elt.usedByOrgs;
