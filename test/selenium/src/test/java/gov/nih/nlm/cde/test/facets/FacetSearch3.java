@@ -33,9 +33,6 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         try {
             textPresent("Albert Einstein Cancer Center");
         } catch (TimeoutException e) {
-            goToCdeSearch();
-            textPresent("Albert Einstein Cancer Center");
-            findElement(By.id("browseOrg-AECC")).click();
             hoverOverElement(findElement(By.linkText("CDEs")));
             hangon(1);
             hoverOverElement(findElement(By.id("classifications-text-AECC")));
