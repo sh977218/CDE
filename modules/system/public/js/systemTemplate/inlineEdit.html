@@ -5,7 +5,7 @@
     </span>
     <form name="inlineForm" ng-show="editMode">
         <input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value"
-               typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8"
+               uib-typeahead="name for name in [].concat(typeaheadSource) | filter:$viewValue | limitTo:8"
                class="form-control typeahead"/>
         <button class="btn btn-default btn-sm fa fa-check" ng-click="model = value;editMode = false; onOk();"
                 ng-disabled="!inlineForm.inlineInput.$valid">Confirm

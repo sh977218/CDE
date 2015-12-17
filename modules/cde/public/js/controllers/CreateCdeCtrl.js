@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('CreateCdeCtrl',
-    ['$scope', '$window', '$timeout', '$modal', 'DataElement', 'Elastic', 'userResource', '$controller'
+    ['$scope', '$window', '$timeout', '$uibModal', 'DataElement', 'Elastic', 'userResource', '$controller'
         , function($scope, $window, $timeout, $modal, DataElement, Elastic, userResource, $controller)
 {
 

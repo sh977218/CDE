@@ -1,5 +1,5 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification',
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
         '$http', 'userResource', 'CdeList', '$log',
         function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
                   $http, userResource, CdeList, $log)
@@ -103,6 +103,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.openAddCdeClassificationModal = function () {
         $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/classifyElt.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
@@ -275,6 +276,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/selectBoardModal.html',
             controller: 'SelectBoardModalCtrl',
             resolve: {

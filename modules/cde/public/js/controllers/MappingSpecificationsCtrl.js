@@ -1,8 +1,9 @@
-angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$modal', '$location',
+angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '$uibModal', '$location',
     function($scope, $modal, $location)
 {
     $scope.openNewMappingSpecification = function () {
         var modalInstance = $modal.open({
+            animation: false,
           templateUrl: 'newMappingSpecificationModalContent.html',
           controller: 'NewMappingSpecificationModalCtrl',
           resolve: {
@@ -46,7 +47,7 @@ angular.module('cdeModule').controller('MappingSpecificationsCtrl', ['$scope', '
 
 }]);
 
-angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$modalInstance', '$http', 'elt',
+angular.module('systemModule').controller('NewMappingSpecificationModalCtrl', ['$scope', '$uibModalInstance', '$http', 'elt',
     function($scope, $modalInstance, $http, elt)
 {
     $scope.elt = elt;
