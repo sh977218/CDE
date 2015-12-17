@@ -22,9 +22,9 @@
     </div>
 
     <h3>{{elt.naming[0].designation}}
-        <a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"
-           ng-if="formLoincRender && !elt.noRenderAllowed"
-           ng-href="{{formLoincRenderUrl}}/{{elt.tinyId}}"><i class="fa fa-cogs"></i> Loinc Preview</a>
+        <!--<a class="btn btn-small btn-default" target="_blank" title="Preview" id="formPreview"-->
+           <!--ng-if="formLoincRender && !elt.noRenderAllowed"-->
+           <!--ng-href="{{formLoincRenderUrl}}/{{elt.tinyId}}"><i class="fa fa-cogs"></i> Loinc Preview</a>-->
 
         <div class="btn-group">
             <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,14 +47,19 @@
     <div uib-tabset>
         <div uib-tab heading="{{tabs['general'].heading}}">
             <div class="row">
-                <div class="col-xs-12 col-md-5">
+                <div class="col-md-12 col-lg-5">
                     <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
                 </div>
-                <div class="col-xs-12 col-md-7" ng-if="!elt.noRenderAllowed">
-                    <div>
-                        <lforms-panel-h></lforms-panel-h>
+                <div class="col-md-12 col-lg-7" ng-if="!elt.noRenderAllowed" ng-switch="renderWith">
+                    <div ng-switch-default>
+                        <div>Rendering done via <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.</div>
+                        <lforms lf-data="lfData"></lforms>
+                        <small>You may also preview this form in <a href="" ng-click="setRenderFormat('native')">native</a> format.</small>
                     </div>
-                    <!--<div ng-include="'/form/public/html/formRender.html'"></div>-->
+                    <div ng-switch-when="native">
+                        <div ng-include="'/form/public/html/formRender.html'"></div>
+                        <small>You may also preview this form with <a href="" ng-click="setRenderFormat('lforms')">LForms</a>.</small>
+                    </div>
                 </div>
             </div>
         </div>
