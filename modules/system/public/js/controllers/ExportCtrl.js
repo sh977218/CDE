@@ -43,7 +43,22 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                     $scope.addAlert("success", "Export downloaded.");
                     saveAs(content, "SearchExport_XML.zip");
                 }, filename: "SearchExport_XML.zip"},
-                'odm': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_ODM.zip"}
+                'odm': {type: 'application/zip', exporter: function(result) {
+                    var zip = new JSZip();
+                    JSON.parse(result).forEach(function(oneElt) {
+                        getFormOdm(oneElt, function(err, odmElt) {
+                            if (err) {
+                                // @TODO
+                            }
+                            else {
+                                zip.file(oneElt.tinyId + ".xml", getFormOdm());
+                            }
+                        });
+                    });
+                    var content = zip.generate({type:"blob"});
+                    $scope.addAlert("success", "Export downloaded.");
+                    saveAs(content, "SearchExport_XML.zip");
+                }, filename: "SearchExport_ODM.zip"}
             };
             if (result) {
                 var exporter = exporters[type];
