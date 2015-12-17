@@ -11,7 +11,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         }
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
-        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, type, function (err, result) {
+        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, "json", function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
             var zipExporter = function(result, filename) {
                 var zip = new JSZip();
@@ -34,7 +34,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             {
                 'csv': {type: 'text/csv', exporter: bulkExporter, filename: "SearchExport.csv"},
                 'json': {type: 'application/json', exporter: bulkExporter, filename: "SearchExport.json"},
-                'xml': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_XML.zip"},
+                'xml': {type: 'application/zip', exporter: function(result) {
+                    result.forEach(function(oneElt) {
+
+                    });
+                }, filename: "SearchExport_XML.zip"},
                 'odm': {type: 'application/zip', exporter: zipExporter, filename: "SearchExport_ODM.zip"}
             };
             if (result) {

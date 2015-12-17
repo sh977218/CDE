@@ -530,7 +530,7 @@ exports.init = function (app, daoManager) {
                         else if (elt) {
                             if (!firstElt) res.write(',');
                             elt = exportShared.stripBsonIds(elt);
-                            elt = removeElasticFields(elt);
+                            elt = elastic_system.removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
                             firstElt = false;
                         } else {
