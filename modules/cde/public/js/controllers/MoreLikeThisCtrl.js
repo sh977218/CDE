@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$location'
-        , function($scope, $http, $location)
+angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$location', '$log'
+        , function($scope, $http, $location, $log)
 {
     $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
         "/cde/public/html/accordion/addToQuickBoardActions.html"];
@@ -9,14 +9,13 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
         $location.url("deview?tinyId=" + cde.tinyId);
     };   
 
-    $scope.cdes = [];
-
     var loadMlt = function() {
         $http({method: "GET", url: "/moreLikeCde/" + $scope.elt._id}).
-             error(function(data, status) {
+             error(function() {
+                $log.error("Unable to retrieve MLT");
              }).
-             success(function(data, status) {
-                 $scope.cdes = data.cdes;
+             success(function(data) {
+                $scope.cdes = data.cdes;
              })
         ;
     };
