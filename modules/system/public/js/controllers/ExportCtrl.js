@@ -13,15 +13,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         $scope.addAlert("warning", "Your export is being generated, please wait.");
         Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, "json", function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-            var zipExporter = function(result, filename) {
-                var zip = new JSZip();
-                JSON.parse(result).forEach(function(srcObj) {
-                    zip.file(Object.keys(srcObj)[0] + ".xml", srcObj[Object.keys(srcObj)[0]])
-                });
-                var content = zip.generate({type:"blob"});
-                $scope.addAlert("success", "Export downloaded.");
-                saveAs(content, filename);
-            };
             var bulkExporter = function(result, filename, mimeType) {
                 var blob = new Blob([result], {
                     type: mimeType
@@ -42,23 +33,26 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                     var content = zip.generate({type:"blob"});
                     $scope.addAlert("success", "Export downloaded.");
                     saveAs(content, "SearchExport_XML.zip");
-                }, filename: "SearchExport_XML.zip"},
-                'odm': {type: 'application/zip', exporter: function(result) {
-                    var zip = new JSZip();
-                    JSON.parse(result).forEach(function(oneElt) {
-                        getFormOdm(oneElt, function(err, odmElt) {
-                            if (err) {
-                                // @TODO
-                            }
-                            else {
-                                zip.file(oneElt.tinyId + ".xml", getFormOdm());
-                            }
+                }},
+                'odm': {
+                    type: 'application/zip',
+                    exporter: function(result) {
+                        var zip = new JSZip();
+                        JSON.parse(result).forEach(function(oneElt) {
+                            exports.getFormOdm(oneElt, function(err, odmElt) {
+                                if (err) {
+                                    // @TODO
+                                }
+                                else {
+                                    zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
+                                }
+                            });
                         });
-                    });
-                    var content = zip.generate({type:"blob"});
-                    $scope.addAlert("success", "Export downloaded.");
-                    saveAs(content, "SearchExport_XML.zip");
-                }, filename: "SearchExport_ODM.zip"}
+                        var content = zip.generate({type:"blob"});
+                        $scope.addAlert("success", "Export downloaded.");
+                        saveAs(content, "SearchExport_ODM.zip");
+                    }
+                }
             };
             if (result) {
                 var exporter = exporters[type];

@@ -1,4 +1,14 @@
-if (typeof(exports) === "undefined") exports = {};
+if (typeof(exports) === "undefined") {exports = {};}
+
+
+var _crypto;
+if (typeof(window) === "undefined") {
+    // This will be executed in NodeJS
+    _crypto = require('crypto');
+} else {
+    // This will be executed in Chrome
+    _crypto = jscrypto;
+}
 
 exports.getFormQuestions = function(form){
     var getQuestions = function(fe){
@@ -69,18 +79,16 @@ exports.getFormOdm = function(form, cb) {
     }
 
     var odmJsonForm = {
-        '@': {
-            'CreationDateTime': new Date().toISOString()
-            , 'FileOID': form.tinyId
-            , 'FileType': 'Snapshot'
-            , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
-            , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-            , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
-            , 'Granularity': 'Metadata'
-            , 'ODMVersion': '1.3'
-        }
+        '@CreationDateTime': new Date().toISOString()
+        , '@FileOID': form.tinyId
+        , '@FileType': 'Snapshot'
+        , '@xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
+        , '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+        , '@xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
+        , '@Granularity': 'Metadata'
+        , '@ODMVersion': '1.3'
         , Study: {
-            '@': {OID: form.tinyId}
+            '@OID': form.tinyId
             , GlobalVariables: {
                 StudyName: escapeHTML(form.naming[0].designation)
                 , StudyDescription: escapeHTML(form.naming[0].definition)
@@ -88,25 +96,29 @@ exports.getFormOdm = function(form, cb) {
             }
             , BasicDefinitions: {}
             , MetaDataVersion: {
-                '@': {
-                    'Name': escapeHTML(form.naming[0].designation)
-                    , 'OID': 'MDV_' + form.tinyId
-                }
+                '@Name': escapeHTML(form.naming[0].designation)
+                , '@OID': 'MDV_' + form.tinyId
                 , Protocol: {
                     StudyEventRef: {
-                        '@': {Mandatory: 'Yes', OrderNumber: '1', StudyEventOID: 'SE_' + form.tinyId}
+                        '@Mandatory': 'Yes',
+                        '@OrderNumber': '1',
+                        '@StudyEventOID': 'SE_' + form.tinyId
                     }
                 }
                 , StudyEventDef: {
-                    '@': {Name: 'SE', OID: 'SE_' + form.tinyId, Repeating: 'No', Type: 'Unscheduled'}
-                    , FormRef: {'@': {FormOID: form.tinyId, Mandatory: 'Yes', OrderNumber: '1'}}
+                    '@Name': 'SE',
+                    '@OID': 'SE_' + form.tinyId,
+                    '@Repeating': 'No',
+                    '@Type': 'Unscheduled'
+                    , FormRef: {
+                        '@FormOID': form.tinyId,
+                        '@Mandatory': 'Yes',
+                        '@OrderNumber': '1'}
                 }
                 , FormDef: {
-                    '@': {
-                        'Name': escapeHTML(form.naming[0].designation)
-                        , 'OID': form.tinyId
-                        , 'Repeating': 'No'
-                    }
+                    '@Name': escapeHTML(form.naming[0].designation)
+                    , '@OID': form.tinyId
+                    , '@Repeating': 'No'
                     , 'ItemGroupRef': []
                 }
                 , ItemGroupDef: []
@@ -126,65 +138,51 @@ exports.getFormOdm = function(form, cb) {
             var odmQuestion = {
                 Question: {
                     TranslatedText: {
-                        '@': {
-                            'xml:lang': 'en'
-                        }
-                        , '#': escapeHTML(q1.label)
+                        '@xml:lang': 'en'
+                        , 'keyValue': escapeHTML(q1.label)
                     }
-                }
-                , '@': {
-                    'DataType': cdeToOdmDatatype(q1.question.datatype)
-                    , 'Name': escapeHTML(q1.label)
-                    , 'OID': oid
-                }
+                },
+                '@DataType': cdeToOdmDatatype(q1.question.datatype)
+                , '@Name': escapeHTML(q1.label)
+                , '@OID': oid
             };
             if (q1.question.answers) {
                 var codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
                     var codeListInHouse = cl.CodeListItem.map(function (i) {
-                        return i.Decode.TranslatedText['#']
+                        return i.Decode.TranslatedText.keyValue
                     }).sort();
                     var codeListToAdd = q1.question.answers.map(function (a) {
                         return a.valueMeaningName;
                     }).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {'@': {CodeListOID: cl['@'].OID}};
+                        odmQuestion.CodeListRef = {'@CodeListOID': cl['@OID']};
                         questions.push(odmQuestion);
                         codeListAlreadyPresent = true;
                     }
                 });
 
                 if (!codeListAlreadyPresent){
-                    odmQuestion.CodeListRef = {'@': {CodeListOID: 'CL_' + oid}};
+                    odmQuestion.CodeListRef = {'@CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
                     var codeList = {
-                        '@': {
-                            'DataType': cdeToOdmDatatype(q1.question.datatype)
-                            , OID: 'CL_' + oid
-                            , Name: q1.label
-                        }
+                        '@DataType': cdeToOdmDatatype(q1.question.datatype)
+                        , '@OID': 'CL_' + oid
+                        , '@Name': q1.label
                     };
                     codeList.CodeListItem = q1.question.answers.map(function (pv) {
                         var cl = {
-                            '@': {
-                                CodedValue: pv.permissibleValue
-                            }
-                            ,
+                            '@CodedValue': pv.permissibleValue,
                             Decode: {
                                 TranslatedText: {
-                                    '@': {
-                                        'xml:lang': 'en'
-                                    }
-                                    ,
-                                    '#': pv.valueMeaningName
+                                    '@xml:lang': 'en'
+                                    , 'keyValue': pv.valueMeaningName
                                 }
                             }
                         };
                         if (pv.valueMeaningCode) cl.Alias = {
-                            '@': {
-                                Context: pv.codeSystemName,
-                                Name: pv.valueMeaningCode
-                            }
+                            '@Context': pv.codeSystemName,
+                            '@Name': pv.valueMeaningCode
                         };
                         return cl;
                     });
@@ -192,32 +190,27 @@ exports.getFormOdm = function(form, cb) {
                 }
             }
         });
-        var crypto = require('crypto');
-        var oid = crypto.createHash('md5').update(s1.label).digest('hex');
+        var oid = _crypto.createHash('md5').update(s1.label).digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
-            '@': {
-                'ItemGroupOID': oid
-                , 'Mandatory': 'Yes'
-                , 'OrderNumber': 1
-            }
+            '@ItemGroupOID': oid
+            , '@Mandatory': 'Yes'
+            , '@OrderNumber': 1
         });
 
         sections.push({
-            '@': {
-                'Name': s1.label
-                , 'OID': oid
-                , 'Repeating': 'No'
-            }
+            '@Name': s1.label
+            , '@OID': oid
+            , '@Repeating': 'No'
             , Description: {
-                TranslatedText:{'@':{ 'xml:lang':'en'}, '#': s1.label}
+                TranslatedText: {
+                    '@xml:lang':'en',
+                    'keyValue': s1.label}
             }
             , ItemRef: childrenOids.map(function (oid, i) {
                 return {
-                    '@': {
-                        'ItemOID': oid
-                        , 'Mandatory': 'Yes'
-                        , 'OrderNumber': i
-                    }
+                    '@ItemOID': oid
+                    , '@Mandatory': 'Yes'
+                    , '@OrderNumber': i
                 };
             })
         });
@@ -225,6 +218,5 @@ exports.getFormOdm = function(form, cb) {
     sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
     questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
     codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
-    var xmlForm = js2xml("ODM", odmJsonForm);
-    cb(null, xmlForm);
+    cb(null, odmJsonForm);
 };

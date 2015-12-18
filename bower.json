@@ -27,7 +27,8 @@
     "html2canvas": "*",
     "ng-file-upload": "3.3.3",
     "jszip": "2.5.0",
-    "jxon": "1.5.5"
+    "jxon": "1.5.5",
+    "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5"
   },
   "resolutions": {
     "angular": "1.4.7"
