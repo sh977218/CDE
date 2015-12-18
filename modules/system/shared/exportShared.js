@@ -29,7 +29,7 @@ exports.projectCdeForExport = function (ele) {
             return n;
         })
         , valueDomainType: ele.valueDomain.datatype
-        , permissibleValues: ele.valueDomain.permissibleValues.slice(0,50).map(function (pv) {
+        , permissibleValues: ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
             return pv.permissibleValue;
         })
         , ids: ele.ids.map(function (id) {
@@ -63,19 +63,19 @@ exports.convertToCsv = function (ele) {
         }
         row += "\",";
     });
-    return row;
+    return row + "\n";
 };
 
-exports.stripBsonIds = function(elt){
+exports.stripBsonIds = function (elt) {
     delete elt._id;
     delete elt.updated;
     delete elt.history;
     return elt;
 };
 
-exports.nocacheMiddleware = function(req, res, next) {
+exports.nocacheMiddleware = function (req, res, next) {
     if (req && req.headers['user-agent']) {
-        if (req.headers['user-agent'].indexOf("Chrome") < 0  || req.headers['user-agent'].indexOf("Firefox") < 0 ) {
+        if (req.headers['user-agent'].indexOf("Chrome") < 0 || req.headers['user-agent'].indexOf("Firefox") < 0) {
             res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
             res.header('Expires', '-1');
             res.header('Pragma', 'no-cache');
