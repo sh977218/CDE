@@ -19,7 +19,7 @@
             <i class="fa fa-trash-o"></i> Empty Quick Board
         </button>
     </div>
-    <div class="btn-group" ng-controller="ExportCtrl">
+    <div ng-if="module==='cde'" class="btn-group" ng-controller="ExportCtrl">
         <button id="qb_{{module}}_export" value="Export Quick Board" ng-click="quickBoardExport(quickBoard)"
                 class="btn btn-default">
             <i class="fa fa-download"></i> Export Quick Board
