@@ -28,7 +28,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
                 'xml': {type: 'application/zip', exporter: function(result) {
                     var zip = new JSZip();
                     JSON.parse(result).forEach(function(oneElt) {
-                        zip.file(oneElt.tinyId + ".xml", JXON.jsToString({dataElement: oneElt}))
+                        zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}))
                     });
                     var content = zip.generate({type:"blob"});
                     $scope.addAlert("success", "Export downloaded.");

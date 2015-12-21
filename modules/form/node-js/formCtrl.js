@@ -2,7 +2,8 @@ var mongo_data_form = require('./mongo-form')
     , mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , formShared = require('../shared/formShared')
-    , js2xml = require('js2xmlparser')
+    //, js2xml = require('js2xmlparser')
+    , JXON = require('jxon')
     , logging = require('../../system/node-js/logging')
     , sdc = require('./sdcForm')
     ;
@@ -65,20 +66,22 @@ var getFormPlainXml = function(form, req, res){
         exportForm.formElements.forEach(function(s){
             s.formElements.forEach(function(q){delete q._id;});
         });
-        res.send(js2xml("Form", exportForm));
+        res.send(JXON.jsToString({element: exportForm}));
     });
 };
 
 exports.formById = function (req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') exports.getFormOdm(form, function(err, xmlForm) {
-            if (err) res.status(err).send(xmlForm);
-            else {
-                res.set('Content-Type', 'text/xml');
-                res.send(xmlForm);
-            }
-        });
+        if (req.query.type === 'xml' && req.query.subtype === 'odm') {
+            formShared.getFormOdm(form, function(err, xmlForm) {
+                if (err) res.status(err).send(xmlForm);
+                else {
+                    res.set('Content-Type', 'text/xml');
+                    res.send(JXON.jsToString({element: xmlForm}));
+                }
+            });
+        }
         else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
         else getFormJson(form, req, res);
