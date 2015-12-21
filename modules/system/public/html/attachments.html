@@ -1,66 +1,96 @@
 <h4>Attachments</h4>
-<div ng-controller="AttachmentsCtrl">    
+<div ng-controller="AttachmentsCtrl">
     <div ng-repeat="attachment in elt.attachments">
-        <dl class="dl-horizontal">
-            <dt>Filename: </dt>
-            <dd>
-                <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank" ng-if="!attachment.pendingApproval">{{attachment.filename}}</a>
-                <span ng-if="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be dowloaded because it is pending approval.</span>
-            </dd>
-            
-            <dt ng-if="!attachment.pendingApproval">Default Image: </dt>
-            <dd ng-if="!attachment.pendingApproval">
-            <span ng-switch="attachment.filesize > 512*1024">
-                <span ng-switch-when="true">
-                    Attachments smaller than 500k can be marked as default 
-                </span>
-                <span ng-switch-when="false">
-                    <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault" ng-change="setDefault($index)" ng-disabled="!canCurate" />
-                    <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search results?</label>
-                </span>
-            </span>
-            </dd>
-            <dt ng-if="canCurate">Actions: </dt>
-            <dd ng-if="canCurate">
-                <span ng-show="showDelete">
-                    Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)" id="confirmRemove-{{$index}}"></i>
-                    <i class="fa fa-times" ng-click="showDelete = false"></i>
-                </span>
-                <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeAttachment-{{$index}}"></i></dd>
-            <dt>Size: </dt>
-            <dd id="dd_attach_size_{{$index}}">
-                <span ng-switch="attachment.filesize > 1024*1024">
-                    <span ng-switch-when="true">{{attachment.filesize / 1024 / 1024 | number:2}} MB</span>
-                    <span ng-switch-default>{{attachment.filesize / 1024 | number:2}} kB</span>
-                </span> 
-            </dd>
-            <dt>Uploaded date: </dt><dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-            <dt>Uploaded by: </dt><dd>{{attachment.uploadedBy.username}}</dd>            
-        </dl>
-    </div>
-
-    <hr/>
-    
-    <div ng-if="canCurate">
-        <div>{{message}}</div>
-        <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
-        <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
-
-        <div ng-show="files.length">
-            <div ng-repeat="file in files.slice(0)">
-                <span>{{file.webkitRelativePath || file.name}}</span>
-                (<span ng-switch="file.size > 1024*1024">
-                    <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
-                    <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
-                </span>)
+        <div class="row">
+            <div class="row" ng-if="!attachment.pendingApproval">
+                <div class="col-xs-2 text-right text_label">Filename:</div>
+                <div class="col-xs-10">
+                    <div ng-if="!attachment.pendingApproval">
+                        <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a>
+                        <a ng-click="copyUrl(attachment)">copy url</a>
+                    </div>
+                    <div ng-if="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be
+                        dowloaded because it is pending approval.
+                    </div>
+                </div>
             </div>
-            <input type="button" ng-click="uploadFiles()" id="doUploadButton" value="Upload" />
-            <div ng-show="progressVisible">
-                <div class="percent">{{progress}}%</div>
-                <div class="progress-bar">
-                    <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+            <div class="row" ng-if="!attachment.pendingApproval">
+                <div class="col-xs-2 text-right text_label">Default Image:</div>
+                <div class="col-xs-10">
+                    <div ng-switch="attachment.filesize > 512*1024">
+                        <div ng-switch-when="true">
+                            Attachments smaller than 500k can be marked as default
+                        </div>
+                        <div ng-switch-when="false">
+                            <input type="checkbox" id="defaultCb" ng-model="attachment.isDefault"
+                                   ng-change="setDefault($index)" ng-disabled="!canCurate"/>
+                            <label for="defaultCb" id="defaultCbLabel">Should this image be displayed in search
+                                results?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-if="canCurate">
+                <div class="col-xs-2 text-right text_label">Actions:</div>
+                <div class="col-xs-10">
+                    <div ng-show="showDelete">
+                        Confirm Delete
+                        <i class="fa fa-check" ng-click="showDelete = false; removeAttachment($index)"
+                           id="confirmRemove-{{$index}}"></i>
+                        <i class="fa fa-times" ng-click="showDelete = false"></i>
+                    </div>
+                    <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeAttachment-{{$index}}"></i></dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 text-right text_label">Size:</div>
+                <div class="col-xs-2" id="dd_attach_size_{{$index}}">
+                    <div ng-switch="attachment.filesize > 1024*1024">
+                        <div ng-switch-when="true">{{attachment.filesize / 1024 / 1024 | number:2}} MB</div>
+                        <div ng-switch-default>{{attachment.filesize / 1024 | number:2}} kB</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 text-right text_label">Uploaded date:</div>
+                <div class="col-xs-10">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 text-right text_label">Uploaded by:</div>
+                <div class="col-xs-10">{{attachment.uploadedBy.username}}
                 </div>
             </div>
         </div>
-    </div>    
+
+        <hr/>
+
+        <div ng-if="canCurate">
+            <div>{{message}}</div>
+            <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
+            <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload"
+                   onchange="angular.element(this).scope().setFiles(this)"/>
+
+            <div ng-show="files.length">
+                <div ng-repeat="file in files.slice(0)">
+                    <div>{{file.webkitRelativePath || file.name}}</div>
+                    (
+                    <div ng-switch="file.size > 1024*1024">
+                        <div ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</div>
+                        <div ng-switch-default>{{file.size / 1024 | number:2}} kB</div>
+                    </div>
+                    )
+                </div>
+                <input type="button" ng-click="uploadFiles()" id="doUploadButton" value="Upload"/>
+
+                <div ng-show="progressVisible">
+                    <div class="percent">{{progress}}%</div>
+                    <div class="progress-bar">
+                        <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

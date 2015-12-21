@@ -3,7 +3,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
     , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide'])
-    .config(['$logProvider', function($logProvider){
+    .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
@@ -61,18 +61,27 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         return {
             restrict: 'AE',
             scope: {
-                model: '='
-                , isAllowed: '&'
-                , onOk: '&'
-                , defFormat: '='
-                , inlineAreaVisibility: '='
+                model: '=',
+                isAllowed: '&',
+                onOk: '&',
+                defFormat: '=',
+                inlineAreaVisibility: '='
             },
-            controller: function($scope) {
-                $scope.confirm = function() {
+            controller: function ($scope) {
+                $scope.clickEdit = function () {
+                    $scope.inScope = {
+                        value: $scope.model
+                    };
+                    $scope.editMode = true;
+                };
+                $scope.confirm = function () {
                     $scope.model = $scope.inScope.value;
                     $scope.editMode = false;
                     $scope.onOk();
-                }
+                };
+                $scope.cancel = function () {
+                    $scope.editMode = false;
+                };
             },
             templateUrl: '/system/public/js/systemTemplate/inlineAreaEdit.html'
         };

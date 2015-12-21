@@ -908,3 +908,7 @@ div + .questionPlaceholder {
 .answerListSelect2Container {
     padding: 3px !important;
 }
+
+.text_label {
+    font-weight: bold;
+}
