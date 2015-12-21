@@ -67,6 +67,13 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , defFormat: '='
                 , inlineAreaVisibility: '='
             },
+            controller: function($scope) {
+                $scope.confirm = function() {
+                    $scope.model = $scope.inScope.value;
+                    $scope.editMode = false;
+                    $scope.onOk();
+                }
+            },
             templateUrl: '/system/public/js/systemTemplate/inlineAreaEdit.html'
         };
     })
@@ -79,7 +86,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , cb: '&'
             },
             templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
-            controller: function ($scope, $element, $attrs) {
+            controller: function ($scope, $element) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
