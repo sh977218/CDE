@@ -324,7 +324,6 @@ public class NlmCdeBaseTest {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
-            goToCdeSearch();
             hoverOverElement(findElement(By.id("searchSettings")));
             hoverOverElement(findElement(by));
             textPresent(text);

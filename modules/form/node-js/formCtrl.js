@@ -71,6 +71,8 @@ var getFormPlainXml = function(form, req, res){
 };
 
 exports.formById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
         if (req.query.type === 'xml' && req.query.subtype === 'odm') {
