@@ -11,7 +11,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
         }
         $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
         $scope.addAlert("warning", "Your export is being generated, please wait.");
-        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, "json", function (err, result) {
+        Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, function (err, result) {
             if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
             var bulkExporter = function(result, filename, mimeType) {
                 var blob = new Blob([result], {

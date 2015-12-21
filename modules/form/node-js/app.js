@@ -94,23 +94,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearchExport/form', function (req, res) {
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-
         var exporters = {
-            //csv: exporter = {
-            //    export: function(res) {
-            //        res.type('text/csv');
-            //        res.write("Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
-            //        elastic_system.elasticSearchExport(function dataCb(err, elt) {
-            //            if (err) return res.status(500).send(err);
-            //            else if (elt) {
-            //                res.write(exportShared.convertToCsv(exportShared.projectFormForExport(elt)));
-            //                res.write("\n");
-            //            } else {
-            //                res.send();
-            //            }
-            //        }, query, 'form');
-            //    }
-            //},
             json: {
                 export: function(res) {
                     var firstElt = true;
@@ -130,67 +114,9 @@ exports.init = function (app, daoManager) {
                         }
                     }, query, 'form');
                 }
-            },
-            //xml: {
-            //    export: function(res) {
-            //        res.type('application/xml');
-            //        res.on('end', function() {console.log("RES ENDED")});
-            //        res.write("[");
-            //        var firstElt = true;
-            //        elastic_system.elasticSearchExport(function dataCb(err, elt) {
-            //            if (err) {
-            //              // @TODO
-            //            } else if (elt) {
-            //                if (!firstElt) res.write('\n,');
-            //                firstElt = false;
-            //                elt = exportShared.stripBsonIds(elt);
-            //                elt = elastic_system.removeElasticFields(elt);
-            //                var obj={};
-            //                obj[elt.tinyId] = js2xml("dataElement", elt, {declaration: {include: false}});
-            //                res.write(JSON.stringify(obj));
-            //                res.write('\n');
-            //            } else {
-            //                res.write("]");
-            //                res.send();
-            //            }
-            //        }, query, 'form');
-            //    }
-            //},
-            odm: {
-                export: function(res) {
-                    res.type('application/json');
-                    res.write("[");
-                    var firstElt = true;
-                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
-                        else if (elt) {
-                            formCtrl.getFormOdm(elt, function(err, odmElt) {
-                                if (err) {
-                                    // @TODO
-                                    //if (!firstElt) res.write(',');
-                                    //res.write("{'" + elt.tinyId +
-                                    //    "': \"<Error>" + odmElt + "</Error>\"}");
-                                }
-                                else {
-                                    if (!firstElt) res.write('\n,');
-                                    var obj={};
-                                    obj[elt.tinyId] = odmElt;
-                                    res.write(JSON.stringify(obj));
-                                    firstElt = false;
-                                }
-                            });
-                        } else {
-                            res.write("]");
-                            res.send();
-                        }
-                    }, query, 'form');
-                }
             }
         };
-
-        var exporter =  exporters[req.query.type];
-        if (!exporter) return res.status(500).send("Unable to process exporter.");
-        exporter.export(res);
+        exporters.json.export(res);
     });
 
     app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
