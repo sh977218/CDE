@@ -66,10 +66,10 @@ public abstract class PropertyTest extends CommonTest {
     public void richText(String eltName, String status) {
         goToEltByName(eltName, status);
         findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]")).click();
         findElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]")).click();
         findElement(By.xpath("//*[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
+        findElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]")).click();
         textPresent("Hello From Selenium");
     }
 
@@ -77,7 +77,7 @@ public abstract class PropertyTest extends CommonTest {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]")).click();
         findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]")).click();
         hangon(1);
         findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
@@ -91,7 +91,7 @@ public abstract class PropertyTest extends CommonTest {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
+        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]")).click();
         findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]")).click();
         findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
         hangon(1);
