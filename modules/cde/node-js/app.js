@@ -482,6 +482,7 @@ exports.init = function (app, daoManager) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(types);
+                res.send(types);
             }
         });
     });
@@ -508,21 +509,7 @@ exports.init = function (app, daoManager) {
     app.post('/elasticSearchExport/cde', function (req, res) {
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         var exporters = {
-            csv: exporter = {
-                export: function(res) {
-                    res.type('text/csv');
-                    res.write("Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n");
-                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
-                        else if (elt) {
-                            res.write(exportShared.convertToCsv(exportShared.projectFormForExport(cdesvc.hideProprietaryPvs(elt))))
-                            res.write("\n");
-                        } else {
-                            res.send();
-                        }
-                    }, query, 'cde');
-                }
-            }, json: {
+            json: {
                 export: function(res) {
                     var firstElt = true;
                     res.type('application/json');
@@ -541,28 +528,9 @@ exports.init = function (app, daoManager) {
                         }
                     }, query, 'cde');
                 }
-            }, xml: {
-                export: function(res) {
-                    res.type('application/xml');
-                    res.write("<cdeExport>\n");
-                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
-                        if (err) return res.status(500).send(err);
-                        else if (elt) {
-                            elt = exportShared.stripBsonIds(elt);
-                            elt = elastic_system.removeElasticFields(elt);
-                            res.write(js2xml("dataElement", elt, {declaration: {include: false}}));
-                            res.write('\n');
-                        } else {
-                            res.write("\n</cdeExport>");
-                            res.send();
-                        }
-                    }, query, 'cde');
-                }
             }
         };
-        var exporter =  exporters[req.query.type];
-        if (!exporter) return res.status(500).send("Unable to process exporter.");
-        exporter.export(res);
+        exporters.json.export(res);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
