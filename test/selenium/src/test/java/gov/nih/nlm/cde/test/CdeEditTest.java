@@ -15,12 +15,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("i.fa-edit")).click();
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
-        findElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]")).click();
+        clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
-        findElement(By.xpath("//*[@id='dd_def']//button[@class='fa fa-check']")).click();
-        findElement(By.xpath("//*[@id = 'dd_uom']//i[@class = 'fa fa-edit']")).click();
+        clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'dd_uom']//input")).sendKeys("myUom");
-        findElement(By.cssSelector("#dd_uom .fa-check")).click();
+        clickElement(By.cssSelector("#dd_uom .fa-check"));
         textPresent("myUom");
         newCdeVersion("Change note for change number 1");
         goToCdeByName(cdeName);
@@ -30,11 +30,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         // test that label and its value are aligned. 
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
-        findElement(By.linkText("Identifiers")).click();
+        clickElement(By.linkText("Identifiers"));
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 
         // Test history
-        findElement(By.linkText("History")).click();
+        clickElement(By.linkText("History"));
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         hangon(1);
@@ -47,12 +47,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
 
         // View Prior Version
-        findElement(By.linkText("History")).click();
+        clickElement(By.linkText("History"));
         showHistoryFull(1);
         textPresent("1");
         textPresent("Warning: this data element is archived.");
 
-        findElement(By.linkText("view the current version here")).click();
+        clickElement(By.linkText("view the current version here"));
         textPresent("[name change number 1]");
         textPresent("[def change number 1]");
         textPresent("myUom");
