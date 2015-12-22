@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', function ($scope, $rootScope, $http, $timeout) {
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$location', function ($scope, $rootScope, $http, $timeout, $location) {
     $scope.setFiles = function (element) {
         $scope.$apply(function ($scope) {
             // Turn the FileList object into an Array
@@ -93,7 +93,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     };
 
     $scope.copyUrl = function (attachment) {
-        var url = "/data/" + attachment.fileid;
+        var url = $location.$$protocol + "://" + $location.$$host + ":" + $location.$$port + "/data/" + attachment.fileid;
         var copyElement = document.createElement('input');
         copyElement.setAttribute('type', 'text');
         copyElement.setAttribute('value', url);

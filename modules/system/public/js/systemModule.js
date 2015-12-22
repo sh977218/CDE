@@ -75,7 +75,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.editMode = true;
                 };
                 $scope.isInvalidHtml = function (html) {
-                    return html.match(/<img[^>]+src[^>]*=[\b]*"[^/data/][^>]*"[^>]+>/ig) !== null;
+                    return html.match(/<img[^>]+src[^>]*=[\b]*"[^>]*[^/data/][^>]*"[^>]+>/ig) !== null;
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
