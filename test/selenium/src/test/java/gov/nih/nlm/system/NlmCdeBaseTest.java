@@ -340,11 +340,6 @@ public class NlmCdeBaseTest {
         return driver.findElements(by);
     }
 
-    public void waitAndClick(By by) {
-        wait.until(ExpectedConditions.elementToBeClickable(by));
-        clickElement(by);
-    }
-
     protected void clickElement(By by) {
         // Wait for angular digest cycle.
         ((JavascriptExecutor) driver).executeAsyncScript(
@@ -414,7 +409,7 @@ public class NlmCdeBaseTest {
         }
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
-        waitAndClick(By.id("confirmNewVersion"));
+        clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
@@ -471,10 +466,6 @@ public class NlmCdeBaseTest {
         textPresent("Cancer Therapy Evaluation Program");
     }
 
-    protected void goToQuickBoardByModule() {
-        driver.get(baseUrl + "/#/quickBoard");
-    }
-
     protected void logout() {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_logout"));
@@ -513,7 +504,7 @@ public class NlmCdeBaseTest {
     public void goToQuickBoardByModule(String module) {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         clickElement(By.xpath("//*[@id='qb_" + module + "_tab']/a"));
-        String quickBoardTabText = (module == "cde" ? "CDE" : "Form") + " QuickBoard (";
+        String quickBoardTabText = ("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (";
         textPresent(quickBoardTabText);
     }
 
@@ -521,7 +512,7 @@ public class NlmCdeBaseTest {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
-        textPresent((module == "cde" ? "CDE" : "Form") + " QuickBoard (0)");
+        textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         hangon(1);
     }
@@ -577,7 +568,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
-        waitAndClick(By.id("login_button"));
+        clickElement(By.id("login_button"));
         try {
             textPresent(checkText);
             // sometimes an issue with csrf, need to reload the whole page.
@@ -596,7 +587,7 @@ public class NlmCdeBaseTest {
                 findElement(By.id("uname")).sendKeys(username);
                 findElement(By.id("passwd")).clear();
                 findElement(By.id("passwd")).sendKeys(password);
-                waitAndClick(By.id("login_button"));
+                clickElement(By.id("login_button"));
             }
             textPresent(checkText);
         }
