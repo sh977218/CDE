@@ -489,9 +489,9 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname}, function(){});
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
 exports.upsertStatusCde = function(cde, cb){
-    DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname}, cde, {upsert: true}, function(err, cde){
+    DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, cde, {upsert: true}, function(err, cde){
         if (cb) cb(err, cde);
     });
 };
