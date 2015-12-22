@@ -74,7 +74,14 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     };
                     $scope.editMode = true;
                 };
+                $scope.validateHtml = function (html) {
+                    return html.match(/<img[^>]+src[^>]*=[\b]*"[^/data/][^>]*"[^>]+>/ig);
+                };
                 $scope.confirm = function () {
+                    if ($scope.validateHtml($scope.inScope.value)) {
+                        alert('only attachment src allow');
+                        return;
+                    }
                     $scope.model = $scope.inScope.value;
                     $scope.editMode = false;
                     $scope.onOk();
