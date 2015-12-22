@@ -74,17 +74,17 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     };
                     $scope.editMode = true;
                 };
-                $scope.validateHtml = function (html) {
-                    return html.match(/<img[^>]+src[^>]*=[\b]*"[^/data/][^>]*"[^>]+>/ig);
+                $scope.isInvalidHtml = function (html) {
+                    return html.match(/<img[^>]+src[^>]*=[\b]*"[^/data/][^>]*"[^>]+>/ig) !== null;
                 };
                 $scope.confirm = function () {
-                    if ($scope.validateHtml($scope.inScope.value)) {
-                        alert('only attachment src allow');
-                        return;
+                    if ($scope.isInvalidHtml($scope.inScope.value)) {
+                        alert('Error. Img src may only be a relative url starting with /data');
+                    } else {
+                        $scope.model = $scope.inScope.value;
+                        $scope.editMode = false;
+                        $scope.onOk();
                     }
-                    $scope.model = $scope.inScope.value;
-                    $scope.editMode = false;
-                    $scope.onOk();
                 };
                 $scope.cancel = function () {
                     $scope.editMode = false;
@@ -102,7 +102,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , cb: '&'
             },
             templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
-            controller: function ($scope, $element) {
+            controller: function ($scope) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
@@ -111,7 +111,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
-                $scope.moveTop = function (index) {
+                $scope.moveTop = function () {
                     $scope.array.splice(0, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
