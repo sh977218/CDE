@@ -63,32 +63,32 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <hr/>
+    <hr/>
 
-        <div ng-if="canCurate">
-            <div>{{message}}</div>
-            <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
-            <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload"
-                   onchange="angular.element(this).scope().setFiles(this)"/>
+    <div ng-if="canCurate">
+        <div>{{message}}</div>
+        <label for="fileToUpload"><i class="fa fa-upload"></i> Upload more files</label>
+        <input type="file" style="display: none" ng-model="currentFile" id="fileToUpload"
+               onchange="angular.element(this).scope().setFiles(this)"/>
 
-            <div ng-show="files.length">
-                <div ng-repeat="file in files.slice(0)">
-                    <div>{{file.webkitRelativePath || file.name}}</div>
-                    (
-                    <div ng-switch="file.size > 1024*1024">
-                        <div ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</div>
-                        <div ng-switch-default>{{file.size / 1024 | number:2}} kB</div>
-                    </div>
-                    )
+        <div ng-show="files.length">
+            <div ng-repeat="file in files.slice(0)">
+                <div>{{file.webkitRelativePath || file.name}}</div>
+                (
+                <div ng-switch="file.size > 1024*1024">
+                    <div ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</div>
+                    <div ng-switch-default>{{file.size / 1024 | number:2}} kB</div>
                 </div>
-                <input type="button" ng-click="uploadFiles()" id="doUploadButton" value="Upload"/>
+                )
+            </div>
+            <input type="button" ng-click="uploadFiles()" id="doUploadButton" value="Upload"/>
 
-                <div ng-show="progressVisible">
-                    <div class="percent">{{progress}}%</div>
-                    <div class="progress-bar">
-                        <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
-                    </div>
+            <div ng-show="progressVisible">
+                <div class="percent">{{progress}}%</div>
+                <div class="progress-bar">
+                    <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
                 </div>
             </div>
         </div>
