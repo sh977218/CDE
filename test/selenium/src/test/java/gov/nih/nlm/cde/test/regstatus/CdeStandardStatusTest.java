@@ -49,7 +49,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
         Assert.assertFalse(driver.findElements(By.xpath("//td[@id='pv-1']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
-        Assert.assertEquals(driver.findElements(By.id("addPv")).size(), 0);
+        Assert.assertFalse(driver.findElements(By.id("addPv")).get(0).isDisplayed());
         Assert.assertEquals(driver.findElements(By.id("updateOID")).size(), 0);
 
         // Can't edit naming
