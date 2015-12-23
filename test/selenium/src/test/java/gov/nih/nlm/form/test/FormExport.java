@@ -133,8 +133,8 @@ public class FormExport extends BaseFormTest {
                 "</CodeListItem>",
                 "</CodeList>",
                 "</MetaDataVersion>",
-                "</Study>",
-                "</ODM>"};
+                "</Study>"
+                };
 
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult);
