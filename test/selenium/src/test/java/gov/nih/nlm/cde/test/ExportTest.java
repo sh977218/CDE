@@ -14,20 +14,20 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void searchExport() {
-        String query = "{\n" +
-                "\t\"resultPerPage\" : 20,\n" +
-                "\t\"selectedOrg\" : \"AECC\",\n" +
-                "\t\"selectedElements\" : [],\n" +
-                "\t\"selectedElementsAlt\" : [],\n" +
-                "\t\"includeAggregations\" : true,\n" +
-                "\t\"selectedStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
-                "\t\"visibleStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
-                "\t\"searchToken\" : \"id7e19889e\"\n" +
-                "}\n";
-
-        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
-
-        Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
+//        String query = "{\n" +
+//                "\t\"resultPerPage\" : 20,\n" +
+//                "\t\"selectedOrg\" : \"AECC\",\n" +
+//                "\t\"selectedElements\" : [],\n" +
+//                "\t\"selectedElementsAlt\" : [],\n" +
+//                "\t\"includeAggregations\" : true,\n" +
+//                "\t\"selectedStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
+//                "\t\"visibleStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
+//                "\t\"searchToken\" : \"id7e19889e\"\n" +
+//                "}\n";
+//
+//        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
+//
+//        Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
 
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
@@ -43,17 +43,8 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        boolean done = false;
-        for (int i = 0; !done && i < 15; i++) {
-            try {
-                textPresent("Export downloaded.");
-                done = true;
-            } catch (TimeoutException e) {
-                System.out.println("No export after : " + 10 * i + "seconds");
-            }
-        }
+        textPresent("Export downloaded.");
         closeAlert();
-        if (!done) throw new TimeoutException("Export was too slow.");
     }
 
     @Test
@@ -74,18 +65,9 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Export Quick Board");
 
         clickElement(By.id("qb_cde_export"));
-        boolean done = false;
-        for (int i = 0; !done && i < 15; i++) {
-            try {
-                textPresent("Export downloaded.");
-                done = true;
-            } catch (TimeoutException e) {
-                System.out.println("No export after : " + 10 * i + "seconds");
-            }
-        }
+        textPresent("Export downloaded.");
         closeAlert();
         findElement(By.id("qb_cde_empty")).click();
-        if (!done) throw new TimeoutException("Export was too slow.");
     }
 
 //    @Test
