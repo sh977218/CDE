@@ -118,7 +118,6 @@ app.post('/deploy', multer(), function(req, res) {
     req.body.requester = {host: req.body.requester_host, port: req.body.requester_port};
     verifyToken(req, function(valid) {
         if (valid) {
-
             var gzPath = config.pm.tempDir + "deploy.tar.gz";
             if (fs.existsSync(gzPath)) fs.unlinkSync(gzPath);
             var gpg = spawn('gpg', ["-o", gzPath, "-d", req.files.deployFile.path], {stdio: 'inherit'});
@@ -137,6 +136,7 @@ app.post('/deploy', multer(), function(req, res) {
                         fs.chmodSync(config.node.buildDir, '700');
                         spawned.kill();
                         spawnChild();
+                        fs.unlink(req.files.deployFile.path);
                     });
                 }
             })
