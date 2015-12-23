@@ -6,28 +6,28 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
-    protected void removeAttachment(String name) {        
+    protected void removeAttachment(String name) {
         findElement(By.linkText("Attachments")).click();
         findElement(By.id("removeAttachment-0")).click();
-        findElement(By.id("confirmRemove-0")).click();        
+        findElement(By.id("confirmRemove-0")).click();
         textNotPresent(name);
     }
 
     protected void addAttachment(String name) {
-        findElement(By.linkText("Attachments")).click();
+        findElement(By.id("attachments_tab")).click();
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
-        findElement(By.id("fileToUpload")).sendKeys("S:\\CDE\\data\\"+name);
+        findElement(By.id("fileToUpload")).sendKeys("S:\\CDE\\data\\" + name);
         findElement(By.id("doUploadButton")).click();
 
-        textPresent(name);             
-    }
-    
-    protected void checkAttachmentNotReviewed() {     
-        textPresent("cannot be dowloaded");                     
+        textPresent(name);
     }
 
-    protected void checkAttachmentReviewed(String name){        
+    protected void checkAttachmentNotReviewed() {
+        textPresent("cannot be dowloaded");
+    }
+
+    protected void checkAttachmentReviewed(String name) {
         findElement(By.linkText("Attachments")).click();
         findElement(By.linkText(name)).click();
         switchTab(1);
@@ -37,7 +37,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void reviewAttachment(String name) {
-        mustBeLoggedInAs(attachmentReviewer_username, password);       
+        mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
         textPresent("Attachment Approval");
@@ -48,11 +48,11 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         findElement(By.id("approve-" + name)).click();
         textPresent("Attachment approved");
         closeAlert();
-              
-    } 
+
+    }
 
     protected void declineAttachment(String name) {
-        mustBeLoggedInAs(attachmentReviewer_username, password);       
+        mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
 

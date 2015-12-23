@@ -93,7 +93,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     };
 
     $scope.copyUrl = function (attachment) {
-        var url = $location.$$protocol + "://" + $location.$$host + ":" + $location.$$port + "/data/" + attachment.fileid;
+        var url = window.publicUrl + "/data/" + attachment.fileid;
         var copyElement = document.createElement('input');
         copyElement.setAttribute('type', 'text');
         copyElement.setAttribute('value', url);

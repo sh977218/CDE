@@ -7,7 +7,7 @@
                 <div ng-if="!attachment.pendingApproval">
                     <a class="viewAttachmentLink" href="/data/{{attachment.fileid}}" target="_blank">{{attachment.filename}}</a>
                     <button class="btn btn-default btn-xs" ng-click="copyUrl(attachment)"><i
-                            class="fa fa-clipboard"></i> Copy URL
+                            class="fa fa-clipboard" id="copyUrl_{{$index}}"></i> Copy URL
                     </button>
                 </div>
                 <div ng-if="attachment.pendingApproval">{{attachment.filename}} - This attachment cannot be
