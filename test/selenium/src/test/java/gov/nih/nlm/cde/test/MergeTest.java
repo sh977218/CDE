@@ -67,7 +67,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.id("sendMergeRequest")).click();
         hangon(2);
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        waitAndClick(By.id("confirmNewVersion"));
+        clickElement(By.id("confirmNewVersion"));
         hangon(5);
         findElement(By.linkText("Naming")).click();
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
