@@ -66,7 +66,7 @@ public class FormScoreTest extends BaseFormTest {
         waitForESUpdate();
         goToFormByName("ALS Score");
 
-        findElement(By.linkText("General Details")).click();
+        clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
 
         WebElement scoreSection = findElement(By.id("formRenderSection_Score Section"));
