@@ -675,7 +675,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         scrollToTop();
-        clickElement(By.linkText("History"));
+        clickElement(By.id("history_tab"));
         hangon(1);
         showHistoryDiff(0);
         confirmCdeModification(field, oldValue, newValue);
