@@ -43,7 +43,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't edit Value Type or add / remove pv
         String prefix = "//div[@id='permissibleValueDiv']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         Assert.assertFalse(driver.findElements(By.xpath("//i[@id='editDatatype']")).get(0).isDisplayed());
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-0" + postfix)).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-1" + postfix)).size(), 0);
@@ -53,22 +53,22 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         Assert.assertFalse(driver.findElements(By.id("updateOID")).get(0).isDisplayed());
 
         // Can't edit naming
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.id("naming_tab"));
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_name_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_def_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
         Assert.assertFalse(driver.findElements(By.xpath("//div[@id='dd_context_0']//i[contains(@class, 'fa-edit')]")).get(0).isDisplayed());
 
         // Can edit classifications
-        clickElement(By.linkText("Classification"));
+        clickElement(By.id("classification_tab"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
 
         // Can't edit Concepts
-        clickElement(By.linkText("Concepts"));
+        clickElement(By.id("concepts_tab"));
         Assert.assertEquals(driver.findElements(By.id("removeobjectClass-0")).size(), 0);
         Assert.assertEquals(driver.findElements(By.id("removeproperty-0")).size(), 0);
 
         // Can't add Attachments
-        clickElement(By.linkText("Attachments"));
+        clickElement(By.id("attachments_tab"));
         Assert.assertEquals(driver.findElements(By.cssSelector("i.fa-upload")).size(), 0);
     }
 
