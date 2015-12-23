@@ -114,7 +114,7 @@ app.post('/restart', function(req, res) {
     });
 });
 
-app.post('/deploy', multer({inMemory: true}), function(req, res) {
+app.post('/deploy', multer(), function(req, res) {
     req.body.requester = {host: req.body.requester_host, port: req.body.requester_port};
     verifyToken(req, function(valid) {
         if (valid) {
@@ -136,6 +136,7 @@ app.post('/deploy', multer({inMemory: true}), function(req, res) {
                         fs.chmodSync(config.node.buildDir, '700');
                         spawned.kill();
                         spawnChild();
+                        fs.unlink(req.files.deployFile.path);
                     });
                 }
             })

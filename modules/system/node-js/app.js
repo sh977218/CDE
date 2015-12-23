@@ -43,7 +43,7 @@ exports.init = function(app) {
         token = mongo_data_system.generateTinyId();
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
-    app.post('/deploy', multer({inMemory: true}), function(req, res) {
+    app.post('/deploy', multer(), function(req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             if (!token) {
                 return res.status(500).send("No valid token");
@@ -58,6 +58,7 @@ exports.init = function(app) {
                 }
             }).on('response', function (response) {
                 res.status(response.statusCode).send();
+                fs.unlink(req.files.deployFile.path);
             });
         } else {
             res.status(401).send();
@@ -92,7 +93,7 @@ exports.init = function(app) {
                             port: req.body.port,
                             requester: {host: config.hostname, port: config.port
                             }}},
-                    function (err, response, body) {
+                    function (err, response) {
                         if (err) {
                             console.log("err: " + err);
                             logging.errorLogger.error(JSON.stringify({msg: 'Unable to ' + req.body.action + ' server'}));
@@ -142,7 +143,7 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/loginText', csrf(), function(req, res, next) {
+    app.get('/loginText', csrf(), function(req, res) {
         var token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
@@ -154,8 +155,8 @@ exports.init = function(app) {
 
     app.post('/login', csrf(), function(req, res, next) {
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function(err) {  
-            passport.authenticate('local', function(err, user, info) {
+        req.session.regenerate(function() {
+            passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) { 
                     return res.status(403).send();
@@ -173,7 +174,7 @@ exports.init = function(app) {
         if (!req.session) {
             return res.status(403).end();
         } 
-        req.session.destroy(function (err) {
+        req.session.destroy(function () {
             req.logout();
             res.clearCookie('connect.sid');
             res.redirect('/#/login');
@@ -281,7 +282,7 @@ exports.init = function(app) {
             } else {
                 mongo_data_system.userById(req.user._id, function(err, user) {
                     user.email = req.body.email;
-                    user.save(function(err, u) {
+                    user.save(function(err) {
                         if (err) res.status(500).send("Unable to save");
                         res.send("OK");
                     });
@@ -515,7 +516,7 @@ exports.init = function(app) {
             };          
             classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
         };        
-        adminItemSvc.bulkAction(req.body.elements, action, function(err) {
+        adminItemSvc.bulkAction(req.body.elements, action, function() {
             var elts = req.body.elements.map(function(e){ 
                 return e.id;
             });
@@ -625,7 +626,7 @@ exports.init = function(app) {
     });   
     
     app.get('/triggerServerErrorMongoose', function(req, res) {
-        mongo_data_system.orgByName("none", function (result) {
+        mongo_data_system.orgByName("none", function () {
             res.send("received");
             trigger.error();
         });
@@ -670,7 +671,7 @@ exports.init = function(app) {
     
     app.post('/addUserRole', function(req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_data_system.addUserRole(req.body, function(err, u) {
+            mongo_data_system.addUserRole(req.body, function(err) {
                 if (err) res.status(404).send(err);
                 else res.send("Role added.");
             });
@@ -687,7 +688,7 @@ exports.init = function(app) {
     // @TODO this should be POST
     app.get('/attachment/approve/:id', function(req, res){
         if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
-        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err, result){
+        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err){
             if (err) res.status(500).send("Unable to approve attachment");
             else res.send("Attachment approved.");
         });
