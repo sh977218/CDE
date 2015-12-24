@@ -64,6 +64,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 model: '=',
                 isAllowed: '&',
                 onOk: '&',
+                onError: '&',
                 defFormat: '=',
                 inlineAreaVisibility: '='
             },
@@ -94,7 +95,14 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        alert('Error. Img src may only be a relative url starting with /data');
+                        if ($scope.onError) {
+                            $scope.onError({
+                                error: true,
+                                message: 'Error. Img src may only be a relative url starting with /data'
+                            });
+                        } else {
+                            alert('Error. Img src may only be a relative url starting with /data');
+                        }
                     } else {
                         $scope.model = $scope.inScope.value;
                         $scope.editMode = false;
