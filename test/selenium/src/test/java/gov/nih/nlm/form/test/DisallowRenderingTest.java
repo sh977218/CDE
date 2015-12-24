@@ -15,7 +15,6 @@ public class DisallowRenderingTest extends BaseFormTest {
         textPresent("In general, would you say");
         saveForm();
         textPresent("In general, would you say");
-        saveForm();
         goToFormByName("Short Form 36-Item Health Survey (SF-36)");
         textPresent("In general, would you say");
     }
