@@ -145,7 +145,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.updating = false;
+                    statusReport.elastic.sync = false;
                     errorToLog.details = {bodyStr: bodyStr, nodeName: config.name};
                     logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog);
                 } else {
@@ -159,12 +159,6 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                         statusReport.elastic.updating = true;
                     }
                 }
-                mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
-                    if (err) {
-                        errorToLog.details = {tinyId: mongoCde.tinyId, err: err, nodeName: config.name};
-                        logging.errorLogger.error("Cannot delete dataelement", errorToLog);
-                    }
-                });
             });
         }, config.status.timeouts.dummyElementCheck);
     });
