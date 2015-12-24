@@ -64,11 +64,11 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 model: '=',
                 isAllowed: '&',
                 onOk: '&',
-                onError: '&',
+                onErr: '&',
                 defFormat: '=',
                 inlineAreaVisibility: '='
             },
-            controller: function ($scope) {
+            controller: function ($scope, $element, $attrs) {
                 $scope.clickEdit = function () {
                     $scope.inScope = {
                         value: $scope.model
@@ -83,8 +83,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                             var urls = src.match(/\s*["'](.+?)["']/ig);
                             if (urls) {
                                 for (var j = 0; j < urls.length; j++) {
-                                    var url = urls[j].replace(/["']/g, "");
-                                    if (url.indexOf("/data/") !== 0 || url.indexOf(window.publicUrl + "/data/") !== 0) {
+                                    var url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
+                                    if (url.indexOf("/data/") !== 0 && url.indexOf(window.publicUrl + "/data/") !== 0) {
                                         return true;
                                     }
                                 }
@@ -95,8 +95,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 };
                 $scope.confirm = function () {
                     if ($scope.isInvalidHtml($scope.inScope.value)) {
-                        if ($scope.onError) {
-                            $scope.onError({
+                        if ($attrs.onErr) {
+                            $scope.onErr({
                                 error: true,
                                 message: 'Error. Img src may only be a relative url starting with /data'
                             });
