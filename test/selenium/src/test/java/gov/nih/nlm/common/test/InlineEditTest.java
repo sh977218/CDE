@@ -10,7 +10,7 @@ public class InlineEditTest extends BaseAttachmentTest {
 
     @Test
     public void CdeInlineEditTest() {
-        String cdeName = "ImgTagTest  ";
+        String cdeName = "ImgTagTest";
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         String attachmentName = "nih-logo-color.png";
