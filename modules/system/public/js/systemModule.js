@@ -2,8 +2,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'OrgFactories', 'classification', 'ngGrid',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-    , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide'])
-    .config(['$logProvider', function ($logProvider) {
+    , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget'])
+    .config(['$logProvider', function($logProvider){
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
@@ -306,7 +306,7 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
         .setPrefix('nlmcde')
 });
 
-angular.module('systemModule').run(function ($rootScope, $location) {
+angular.module('systemModule').run(function ($rootScope) {
     var timeout;
     $rootScope.$on("$routeChangeSuccess", function (event, next, current) {
         if (!submitWebtrends) return;

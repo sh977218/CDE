@@ -362,7 +362,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-useref');
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks('grunt-wiredep');
-
     grunt.registerTask('do-git', 'Restart NodeJS server.', function() {
         if (grunt.config('git.pull')) {
             grunt.task.run('gitpull');
@@ -486,6 +485,6 @@ module.exports = function (grunt) {
     });
     grunt.registerTask('guihelp', ['prompt:help', 'do-help']);
     grunt.registerTask('default', 'The entire deployment process.', ['attention:welcome','buildVersion','divider','guihelp','divider','elastic','divider','bower-install-simple', 'wiredep', 'divider','divider','build']);
-    grunt.registerTask('help', ['availabletasks']);    
+    grunt.registerTask('help', ['availabletasks']);
     grunt.registerTask('form-elastic', ['http:elasticDeleteFormRiver', 'http:elasticDeleteFormIndex', 'http:elasticCreateFormIndex', 'http:elasticCreateFormRiver']);
 };

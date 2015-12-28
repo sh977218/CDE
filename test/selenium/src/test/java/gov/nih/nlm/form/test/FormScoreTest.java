@@ -21,7 +21,8 @@ public class FormScoreTest extends BaseFormTest {
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
-        textPresent("Quick Board (3)"); goToCdeByName("ALS Severity Score (ALSSS) - total score value");
+        textPresent("Quick Board (3)");
+        goToCdeByName("ALS Severity Score (ALSSS) - total score value");
         clickElement(By.linkText("Score / Derivations"));
         clickElement(By.id("addNewScore"));
         textPresent("All 3 CDEs in your quickboard.");
@@ -66,7 +67,7 @@ public class FormScoreTest extends BaseFormTest {
         waitForESUpdate();
         goToFormByName("ALS Score");
 
-        clickElement(By.linkText("General Details"));
+        clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
 
         WebElement scoreSection = findElement(By.id("formRenderSection_Score Section"));

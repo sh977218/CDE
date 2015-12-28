@@ -912,3 +912,6 @@ div + .questionPlaceholder {
 .text_label {
     font-weight: bold;
 }
+.empty-question.section-header  {
+    display: none;
+}
