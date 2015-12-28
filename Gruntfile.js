@@ -345,7 +345,14 @@ module.exports = function (grunt) {
                 src: [
                     'modules/system/views/index.ejs'
                 ], options: {
-                    directory: "modules/system/public/components"
+                    directory: "modules/system/public/components",
+                    fileTypes: {
+                        html: {
+                            replace: {
+                                js: '<script async src="{{filePath}}"></script>'
+                            }
+                        }
+                    }
                 }
             }
         }
