@@ -34,6 +34,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         alert.sendKeys("www.google.com");
+        alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert errorAlert = driver.switchTo().alert();
