@@ -32,6 +32,7 @@ public class SkipLogicTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
+        clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
         new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select")))
                 .selectByVisibleText("Female Gender");

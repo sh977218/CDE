@@ -2,7 +2,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'OrgFactories', 'classification', 'ngGrid',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-    , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide'])
+    , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget'])
     .config(['$logProvider', function($logProvider){
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -79,7 +79,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , cb: '&'
             },
             templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
-            controller: function ($scope, $element, $attrs) {
+            controller: function ($scope) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
@@ -88,7 +88,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.array.splice($scope.index + 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
-                $scope.moveTop = function (index) {
+                $scope.moveTop = function () {
                     $scope.array.splice(0, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
                 };
@@ -260,7 +260,7 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
         .setPrefix('nlmcde')
 });
 
-angular.module('systemModule').run(function ($rootScope, $location) {
+angular.module('systemModule').run(function ($rootScope) {
     var timeout;
     $rootScope.$on("$routeChangeSuccess", function (event, next, current) {
         if (!submitWebtrends) return;

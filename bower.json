@@ -25,9 +25,19 @@
     "angularjs-camelCase-human": "*",
     "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
-    "ng-file-upload": "3.3.3"
+    "ng-file-upload": "3.3.3",
+    "lforms": "4.2.1",
+    "lforms-converter": "1.1.0"
   },
   "resolutions": {
     "angular": "1.4.7"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    }
   }
 }
