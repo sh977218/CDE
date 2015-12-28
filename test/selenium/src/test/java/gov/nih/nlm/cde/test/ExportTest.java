@@ -6,6 +6,7 @@ import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -45,6 +46,12 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("Export downloaded.");
         closeAlert();
+
+        File folder = new File("/usr/nlm/selenium/cde/downloads/");
+        File[] listOfFiles = folder.listFiles();
+
+
+
     }
 
     @Test
