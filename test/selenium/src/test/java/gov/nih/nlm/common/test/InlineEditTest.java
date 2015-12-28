@@ -36,11 +36,12 @@ public class InlineEditTest extends BaseAttachmentTest {
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
         findElement(By.xpath("//*[contains(@id,'taTextElement')]")).clear();
+        textPresent("Characters: 0");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']/div/div/div[2]/div[2]/div[1]/div[4]/button[2]"));
         alert = driver.switchTo().alert();
         alert.sendKeys(Keys.LEFT_CONTROL + "c");
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-
+        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img/@src")).getText().contains("cde"));
     }
 }
