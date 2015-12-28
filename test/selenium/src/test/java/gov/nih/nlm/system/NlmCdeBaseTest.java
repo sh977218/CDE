@@ -2,6 +2,7 @@ package gov.nih.nlm.system;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -17,9 +18,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,6 +101,12 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
             caps = DesiredCapabilities.chrome();
+            ChromeOptions options = new ChromeOptions();
+            Map<String, Object> prefs = new HashMap<String, Object>();
+            prefs.put("download.default_directory", "T:\\CDE\\downloads");
+            options.setExperimentalOption("prefs", prefs);
+            caps = DesiredCapabilities.chrome();
+            caps.setCapability(ChromeOptions.CAPABILITY, options);
         } else if ("ie".equals(browser)) {
             caps = DesiredCapabilities.internetExplorer();
         } else {
