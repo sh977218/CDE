@@ -289,7 +289,11 @@ module.exports = function (grunt) {
 
         }
         , useref: {
-            html: [config.node.buildDir + '/modules/system/views/index.ejs', config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
+            html: [
+                config.node.buildDir + '/modules/system/views/index.ejs',
+                config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs',
+                config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs',
+                config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
             , temp: config.node.buildDir + '/modules'
         }
         , uglify: {
@@ -349,7 +353,7 @@ module.exports = function (grunt) {
                     fileTypes: {
                         html: {
                             replace: {
-                                js: '<script async src="{{filePath}}"></script>'
+                                js: '<script src="{{filePath}}"></script>'
                             }
                         }
                     }
@@ -486,6 +490,7 @@ module.exports = function (grunt) {
         grunt.task.run('npm-install');
         if (config.node.buildDir) {
             grunt.task.run('copy');
+            grunt.task.run('bower');
             grunt.task.run('buildVersion');
             grunt.task.run('refreplace-concat-minify');
         }

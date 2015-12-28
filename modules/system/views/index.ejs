@@ -22,6 +22,7 @@
     <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
+    <!-- build:css /cde/public/css/vendor.min.css -->
     <!-- bower:css -->
     <link rel='stylesheet' href='../public/components/fontawesome/css/font-awesome.css' />
     <link rel='stylesheet' href='../public/components/jquery-ui/themes/start/jquery-ui.min.css' />
@@ -36,6 +37,8 @@
     <link rel='stylesheet' href='../public/components/autocomplete-lhc/source/auto_completion.css' />
     <link rel='stylesheet' href='../public/components/lforms/app/styles/lforms.css' />
     <!-- endbower -->
+    <!-- endbuild -->
+
 
     <link rel='stylesheet' href='../public/components/angular-send-feedback/dist/angular-send-feedback.css' />
 
@@ -69,82 +72,85 @@
 	</div>
 </div>
 
+
+<!-- build:js /cde/public/assets/js/vendor.js -->
 <!-- bower:js -->
-<script async src="../public/components/jquery/jquery.js"></script>
-<script async src="../public/components/angular/angular.js"></script>
-<script async src="../public/components/angular-route/angular-route.js"></script>
-<script async src="../public/components/angular-resource/angular-resource.js"></script>
-<script async src="../public/components/angular-sanitize/angular-sanitize.js"></script>
-<script async src="../public/components/angular-animate/angular-animate.js"></script>
-<script async src="../public/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script async src="../public/components/angular-local-storage/dist/angular-local-storage.js"></script>
-<script async src="../public/components/angular-timeago/src/timeAgo.js"></script>
-<script async src="../public/components/bootstrap/dist/js/bootstrap.js"></script>
-<script async src="../public/components/jquery-ui/jquery-ui.js"></script>
-<script async src="../public/components/select2/select2.js"></script>
-<script async src="../public/components/sifter/sifter.js"></script>
-<script async src="../public/components/microplugin/src/microplugin.js"></script>
-<script async src="../public/components/selectize/dist/js/selectize.js"></script>
-<script async src="../public/components/angular-ui-select/dist/select.js"></script>
-<script async src="../public/components/rangy/rangy-core.js"></script>
-<script async src="../public/components/rangy/rangy-classapplier.js"></script>
-<script async src="../public/components/rangy/rangy-highlighter.js"></script>
-<script async src="../public/components/rangy/rangy-selectionsaverestore.js"></script>
-<script async src="../public/components/rangy/rangy-serializer.js"></script>
-<script async src="../public/components/rangy/rangy-textrange.js"></script>
-<script async src="../public/components/textAngular/src/textAngular.js"></script>
-<script async src="../public/components/textAngular/src/textAngular-sanitize.js"></script>
-<script async src="../public/components/textAngular/src/textAngularSetup.js"></script>
-<script async src="../public/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
-<script async src="../public/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
-<script async src="../public/components/ng-grid/build/ng-grid.js"></script>
-<script async src="../public/components/angularjs-camelCase-human/camelCaseToHuman.js"></script>
-<script async src="../public/components/html2canvas/build/html2canvas.js"></script>
-<script async src="../public/components/angular-send-feedback/dist/angular-send-feedback.min.js"></script>
-<script async src="../public/components/ng-file-upload/angular-file-upload.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/prototype_api.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/effects.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/effectScroll.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/event.simulate.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/observable.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/screenReaderLog.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/recordDataRequester.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/fieldAlarms.js"></script>
-<script async src="../public/components/autocomplete-lhc/soundmanager/bonk.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/dialog.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/autoCompBase.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/suggestionDialog.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/autoCompPrefetch.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/autoCompSearch.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/autoCompEvents.js"></script>
-<script async src="../public/components/autocomplete-lhc/source/autocomplete-lhc.js"></script>
-<script async src="../public/components/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
-<script async src="../public/components/lforms/app/lforms.js"></script>
-<script async src="../public/components/lforms/app/scripts/lforms-constants.js"></script>
-<script async src="../public/components/lforms/app/scripts/controllers/lforms-controller.js"></script>
-<script async src="../public/components/lforms/app/scripts/directives/lf-date.js"></script>
-<script async src="../public/components/lforms/app/scripts/lib/date.js"></script>
-<script async src="../public/components/lforms/app/scripts/lib/js-class.js"></script>
-<script async src="../public/components/lforms/app/scripts/lib/cross_browser.js"></script>
-<script async src="../public/components/lforms/app/scripts/lib/util.js"></script>
-<script async src="../public/components/lforms/app/scripts/lib/lforms-data.js"></script>
-<script async src="../public/components/lforms/app/lforms.tpl.js"></script>
-<script async src="../public/components/oboe/dist/oboe-browser.js"></script>
-<script async src="../public/components/traverse/traverse.js"></script>
-<script async src="../public/components/lodash/lodash.js"></script>
+<script src="../public/components/jquery/jquery.js"></script>
+<script src="../public/components/angular/angular.js"></script>
+<script src="../public/components/angular-route/angular-route.js"></script>
+<script src="../public/components/angular-resource/angular-resource.js"></script>
+<script src="../public/components/angular-sanitize/angular-sanitize.js"></script>
+<script src="../public/components/angular-animate/angular-animate.js"></script>
+<script src="../public/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="../public/components/angular-local-storage/dist/angular-local-storage.js"></script>
+<script src="../public/components/angular-timeago/src/timeAgo.js"></script>
+<script src="../public/components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../public/components/jquery-ui/jquery-ui.js"></script>
+<script src="../public/components/select2/select2.js"></script>
+<script src="../public/components/sifter/sifter.js"></script>
+<script src="../public/components/microplugin/src/microplugin.js"></script>
+<script src="../public/components/selectize/dist/js/selectize.js"></script>
+<script src="../public/components/angular-ui-select/dist/select.js"></script>
+<script src="../public/components/rangy/rangy-core.js"></script>
+<script src="../public/components/rangy/rangy-classapplier.js"></script>
+<script src="../public/components/rangy/rangy-highlighter.js"></script>
+<script src="../public/components/rangy/rangy-selectionsaverestore.js"></script>
+<script src="../public/components/rangy/rangy-serializer.js"></script>
+<script src="../public/components/rangy/rangy-textrange.js"></script>
+<script src="../public/components/textAngular/src/textAngular.js"></script>
+<script src="../public/components/textAngular/src/textAngular-sanitize.js"></script>
+<script src="../public/components/textAngular/src/textAngularSetup.js"></script>
+<script src="../public/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
+<script src="../public/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
+<script src="../public/components/ng-grid/build/ng-grid.js"></script>
+<script src="../public/components/angularjs-camelCase-human/camelCaseToHuman.js"></script>
+<script src="../public/components/html2canvas/build/html2canvas.js"></script>
+<script src="../public/components/angular-send-feedback/dist/angular-send-feedback.min.js"></script>
+<script src="../public/components/ng-file-upload/angular-file-upload.js"></script>
+<script src="../public/components/autocomplete-lhc/source/prototype_api.js"></script>
+<script src="../public/components/autocomplete-lhc/source/effects.js"></script>
+<script src="../public/components/autocomplete-lhc/source/effectScroll.js"></script>
+<script src="../public/components/autocomplete-lhc/source/event.simulate.js"></script>
+<script src="../public/components/autocomplete-lhc/source/observable.js"></script>
+<script src="../public/components/autocomplete-lhc/source/screenReaderLog.js"></script>
+<script src="../public/components/autocomplete-lhc/source/recordDataRequester.js"></script>
+<script src="../public/components/autocomplete-lhc/source/fieldAlarms.js"></script>
+<script src="../public/components/autocomplete-lhc/soundmanager/bonk.js"></script>
+<script src="../public/components/autocomplete-lhc/source/dialog.js"></script>
+<script src="../public/components/autocomplete-lhc/source/autoCompBase.js"></script>
+<script src="../public/components/autocomplete-lhc/source/suggestionDialog.js"></script>
+<script src="../public/components/autocomplete-lhc/source/autoCompPrefetch.js"></script>
+<script src="../public/components/autocomplete-lhc/source/autoCompSearch.js"></script>
+<script src="../public/components/autocomplete-lhc/source/autoCompEvents.js"></script>
+<script src="../public/components/autocomplete-lhc/source/autocomplete-lhc.js"></script>
+<script src="../public/components/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
+<script src="../public/components/lforms/app/lforms.js"></script>
+<script src="../public/components/lforms/app/scripts/lforms-constants.js"></script>
+<script src="../public/components/lforms/app/scripts/controllers/lforms-controller.js"></script>
+<script src="../public/components/lforms/app/scripts/directives/lf-date.js"></script>
+<script src="../public/components/lforms/app/scripts/lib/date.js"></script>
+<script src="../public/components/lforms/app/scripts/lib/js-class.js"></script>
+<script src="../public/components/lforms/app/scripts/lib/cross_browser.js"></script>
+<script src="../public/components/lforms/app/scripts/lib/util.js"></script>
+<script src="../public/components/lforms/app/scripts/lib/lforms-data.js"></script>
+<script src="../public/components/lforms/app/lforms.tpl.js"></script>
+<script src="../public/components/oboe/dist/oboe-browser.js"></script>
+<script src="../public/components/traverse/traverse.js"></script>
+<script src="../public/components/lodash/lodash.js"></script>
 <!-- endbower -->
+<!-- endbuild -->
 
 <script aysnc src="../public/components/lforms-converter/lforms-converter.js"></script>
 
 <!-- build:js /cde/public/assets/js/resource.concat.min.js -->
 <script src="/cde/public/assets/js/diff_match_patch.js"></script>
-<script src="/cde/public/assets/js/match-media.js"></script>
-<script src="/cde/public/assets/js/sortable.js"></script>
-<script src="/cde/public/assets/js/scrollfix.js"></script>
-<script src="/cde/public/assets/js/FileSaver.js"></script>
-<script src="/system/public/js/ng-display-object.js"></script>
-<script src="/system/public/js/ng-compare-side-by-side.js"></script>
-<script src="/system/public/js/ng-text-truncate.js"></script>
+<script src="/cde/public/assets/js/match-media.js" ></script>
+<script src="/cde/public/assets/js/sortable.js" ></script>
+<script src="/cde/public/assets/js/scrollfix.js" ></script>
+<script src="/cde/public/assets/js/FileSaver.js" ></script>
+<script src="/system/public/js/ng-display-object.js" ></script>
+<script src="/system/public/js/ng-compare-side-by-side.js" ></script>
+<script src="/system/public/js/ng-text-truncate.js" ></script>
 <!-- endbuild -->
 
 <%- include includeFrontEndJS.ejs %>
