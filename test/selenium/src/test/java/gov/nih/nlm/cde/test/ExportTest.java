@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -15,21 +18,6 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void searchExport() {
-//        String query = "{\n" +
-//                "\t\"resultPerPage\" : 20,\n" +
-//                "\t\"selectedOrg\" : \"AECC\",\n" +
-//                "\t\"selectedElements\" : [],\n" +
-//                "\t\"selectedElementsAlt\" : [],\n" +
-//                "\t\"includeAggregations\" : true,\n" +
-//                "\t\"selectedStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
-//                "\t\"visibleStatuses\" : [\"Preferred Standard\", \"Standard\", \"Qualified\", \"Recorded\", \"Candidate\", \"Incomplete\"],\n" +
-//                "\t\"searchToken\" : \"id7e19889e\"\n" +
-//                "}\n";
-//
-//        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
-//
-//        Assert.assertTrue(response.contains("\"Ethnic Group Category Text\",\"Ethnicity; Patient Ethnicity; Ethnicity; Newborn's Ethnicity\",\"Value List\",\"Not Hispanic or Latino; Hispanic or Latino; Unknown; Not reported\",\"caDSR: 2192217 v2\",\"caBIG\",\"Standard\",\"\",\"NIDCR; caBIG; CCR; CTEP; NICHD; AECC; LCC; USC/NCCC; NHC-NCI; PBTC; CITN; OHSU Knight; DCP; DCI; Training\","));
-
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("All Statuses");
@@ -47,10 +35,20 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Export downloaded.");
         closeAlert();
 
-        File folder = new File("/usr/nlm/selenium/cde/downloads/");
-        File[] listOfFiles = folder.listFiles();
+        String[] expectedContent = {
+                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n\"",
+                "\"Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator\",\"In the past month, have you had to pass urine at night?\",\"Value List\",\"Never; Sometimes; Regularly; Often; use catheter\",\"NINDS: C10354 v3; NINDS Variable Name: SCOPAAUTUrinateNightInd\",\"NINDS\",\"Qualified\",\"\",\"NINDS\"",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - anxious mood score\",\"ANXIOUS MOOD\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS: C09962 v3; NINDS Variable Name: MDSUPDRSAnxsMoodScore\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n\""
+        };
 
-
+        try {
+            String exportContent = new String(Files.readAllBytes(Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv")));
+            for (String s : expectedContent) {
+                Assert.assertTrue(exportContent.contains(s), "missing line in export : " + s);
+            }
+        } catch (IOException e) {
+            Assert.fail("Exception reading SearchExport.csv");
+        }
 
     }
 
