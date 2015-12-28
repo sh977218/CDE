@@ -110,7 +110,6 @@ public class NlmCdeBaseTest {
         LoggingPreferences loggingPreferences = new LoggingPreferences();
         loggingPreferences.enable(LogType.BROWSER, Level.ALL);
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
-        caps.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
 
         caps.setBrowserName(browser);
         baseUrl = System.getProperty("testUrl");
