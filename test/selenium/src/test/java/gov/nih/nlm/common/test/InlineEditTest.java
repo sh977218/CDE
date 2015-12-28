@@ -24,8 +24,8 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Rich Text')]"));
-        textPresent("Characters: 14");
         clickElement(By.xpath("//*[contains(@id,'taTextElement')]"));
+        textPresent("Characters: 14");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']/div/div/div[2]/div[2]/div[1]/div[4]/button[2]"));
         textPresent("Please enter an image URL to insert");
         Alert alert = driver.switchTo().alert();
