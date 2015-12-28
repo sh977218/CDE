@@ -32,6 +32,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
+        clickElement(By.linkText("native"));
         textPresent("In the past 7 days");
         textPresent("Display Profile:");
 
