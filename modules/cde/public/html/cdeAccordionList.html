@@ -13,11 +13,10 @@
                    ng-click="view(elt, $event)">
                     <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link"
                        id="eyeLink_{{$index}}"></i></a>
-                <small tabindex="0" class="matched-by" ng-if="elt.highlight.matchedBy">Matched by: <strong>
+                <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                     <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
 
                 <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
-
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
