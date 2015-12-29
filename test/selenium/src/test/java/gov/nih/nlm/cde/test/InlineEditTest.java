@@ -26,9 +26,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Rich Text')]"));
-        hangon(1);
+        hangon(2);
         clickElement(By.xpath("//div[contains(@id,'taTextElement')]"));
-        hangon(1);
+        hangon(2);
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
@@ -40,13 +40,15 @@ public class InlineEditTest extends BaseAttachmentTest {
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
         findElement(By.xpath("//*[contains(@id,'taTextElement')]")).clear();
-        hangon(1);
+        hangon(2);
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
         alert.sendKeys(Keys.LEFT_CONTROL + "v");
+        hangon(2);
         alert.accept();
+        hangon(2);
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//div[contains(@id,'taTextElement')]//img/@src")).getText().contains("cde"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img/@src")).getText().contains("cde"));
     }
 }
