@@ -144,9 +144,6 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
-        if (downloadFolder == null) downloadFolder = "/usr/nlm/selenium/cde/downloads/";
-        if (tempFolder == null) tempFolder = "/tmp/";
-
     }
 
     @AfterMethod
