@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.nio.file.StandardCopyOption.*;
 
@@ -45,6 +48,10 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                         Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv"),
                         Paths.get("/tmp/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                    Set perms = new HashSet();
+                    perms.add(PosixFilePermission.OTHERS_READ);
+                    perms.add(PosixFilePermission.OTHERS_WRITE);
+                    Files.setPosixFilePermissions(Paths.get("/tmp/ExportTest-searchExport.csv"), perms);
                 }
                 Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
