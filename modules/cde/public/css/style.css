@@ -911,4 +911,9 @@ div + .questionPlaceholder {
     font-size: 18px;
 }
 
+.questionSectionLabel {
+    font-weight: bold;
+    min-width: 150px;
+}
+
 

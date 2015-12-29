@@ -14,22 +14,22 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
-                    <div class="col-sm-4 text-right">Instructions:</div>
-                    <div class="col-sm-8" id="dd_section_instructions_{{$index}}">
+                    <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
+                    <div class="col-sm-7" id="dd_section_instructions_{{$index}}">
                         <div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
                     </div>
                 </div>
                 <div class="row" ng-if="parent">
-                    <div class="col-sm-4 text-right">Show if:</div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+                    <div class="col-sm-7">
                         <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
                                typeahead-min-length="0" class="form-control skipLogicCondition"/>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-4 text-right">Cardinality:</div>
-                    <div class="col-sm-8" id="dd_card_{{$index}}">
+                    <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
+                    <div class="col-sm-7" id="dd_card_{{$index}}">
                         <div ng-show="editCardMode">
                             <select ng-model="section.cardinality"
                                     ng-options="key as value for (key, value) in cardinalityOptions"
@@ -50,8 +50,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-4 text-right">Move:</div>
-                    <div class="col-sm-8" ng-hide="$first && $last">
+                    <div class="col-sm-2 questionSectionLabel text-right">Move:</div>
+                    <div class="col-sm-7" ng-hide="$first && $last">
                         <div ng-show="canCurate">
                             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}"
                                ng-hide="$first"></i>
@@ -59,10 +59,10 @@
                                ng-hide="$last"></i>
                         </div>
                     </div>
-                </div>
+                </div>  
                 <div class="row" ng-show="canCurate">
-                    <div class="col-sm-4 text-right">Delete:</div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-2 questionSectionLabel text-right">Delete:</div>
+                    <div class="col-sm-7">
                         <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
                            id="removeElt-{{$index}}"></i>
                     </div>
