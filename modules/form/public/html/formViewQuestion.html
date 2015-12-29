@@ -5,7 +5,7 @@
                 <div class="col-sm-1 section-question-icon-div">
                     <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
                 </div>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <div ng-if="question.question.isScore"><strong>Score: </strong></div>
                     <div ng-bind-html="question.label | placeholdEmpty"
                          id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></div>
@@ -15,7 +15,7 @@
                     <div ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</div>
                     <div ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</div>
                 </div>
-                <div class="col-sm-1 pull-right section-icon-div">
+                <div class="col-sm-1 pull-right section-question-icon-div">
                     <i class="glyphicon glyphicon-remove hand-cursor pull-right"
                        ng-click="removeQuestion(parent, $index)"
                        title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>

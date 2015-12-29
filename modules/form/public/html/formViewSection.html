@@ -4,9 +4,9 @@
             <div class="col-sm-1 section-question-icon-div">
                 <i ng-if="canCurate" class="fa fa-arrows fa-lg"></i>
             </div>
-            <div class="col-sm-10 questionSectionTitle" id="section_title_{{$index}}" inline-edit model="section.label"
+            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit model="section.label"
                  is-allowed="canCurate" on-ok="stageElt()"></div>
-            <div class="col-sm-1 pull-right section-icon-div">
+            <div class="col-sm-1 pull-right section-question-icon-div">
                 <i class="glyphicon glyphicon-remove hand-cursor" ng-click="removeElt(parent, $index)"
                    title="Remove Section" ng-if="canCurate" id="removeElt-{{$index}}"></i>
             </div>
