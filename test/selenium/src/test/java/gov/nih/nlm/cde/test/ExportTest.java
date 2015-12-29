@@ -2,17 +2,14 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.jayway.restassured.RestAssured.given;
+import static java.nio.file.StandardCopyOption.*;
 
 public class ExportTest extends NlmCdeBaseTest {
 
@@ -35,16 +32,21 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Export downloaded.");
         closeAlert();
 
-        String[] expectedContent = {
+        String[] expected = {
                 "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n\"",
                 "\"Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator\",\"In the past month, have you had to pass urine at night?\",\"Value List\",\"Never; Sometimes; Regularly; Often; use catheter\",\"NINDS: C10354 v3; NINDS Variable Name: SCOPAAUTUrinateNightInd\",\"NINDS\",\"Qualified\",\"\",\"NINDS\"",
                 "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - anxious mood score\",\"ANXIOUS MOOD\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS: C09962 v3; NINDS Variable Name: MDSUPDRSAnxsMoodScore\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n\""
         };
 
         try {
-            String exportContent = new String(Files.readAllBytes(Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv")));
-            for (String s : expectedContent) {
-                Assert.assertTrue(exportContent.contains(s), "missing line in export : " + s);
+            String actual = new String(Files.readAllBytes(Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv")));
+            for (String s : expected) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                        Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv"),
+                        Paths.get("/tmp/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                }
+                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.csv");
