@@ -32,15 +32,7 @@
 
 <div class="container-fluid searchInfo ">
 
-    <div class="collapse navbar-collapse">
-
-        <button type="button" class="navbar-toggle collapsed">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-
+    <div class="navbar-header">
         <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
             <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
             <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
@@ -54,6 +46,16 @@
             </span>
             | {{getSelectedStatuses()}}
         </span>
+
+        <button type="button" class="navbar-toggle collapsed"  data-toggle="collapse" data-target="#searchResult-buttons">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="searchResult-buttons">
 
         <div class="btn-group pull-right" ng-controller="ExportCtrl" ng-if="module === 'cde'">
             <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
