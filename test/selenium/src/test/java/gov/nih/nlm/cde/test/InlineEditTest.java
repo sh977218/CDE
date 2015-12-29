@@ -26,9 +26,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Rich Text')]"));
-        textPresent("Characters: 0");
-        clickElement(By.xpath("//*[contains(@id,'taTextElement')]"));
-        textPresent("Characters: 14");
+        hangon(1);
+        clickElement(By.xpath("//*[contains(@id,'taTexztElement')]"));
+        hangon(1);
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
