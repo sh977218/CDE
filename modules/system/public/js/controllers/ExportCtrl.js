@@ -69,7 +69,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
     $scope.quickBoardExport = function (quickBoard) {
         var result = exports.exportHeader.cdeHeader;
         quickBoard.elts.forEach(function (ele) {
-            result += exports.convertToCsv(ele);
+            result += exports.convertToCsv(exports.projectCdeForExport(ele));
         });
         if (result) {
             var blob = new Blob([result], {

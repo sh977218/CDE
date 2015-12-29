@@ -1,16 +1,15 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import net.lingala.zip4j.core.ZipFile;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
-import java.util.Set;
 
 import static java.nio.file.StandardCopyOption.*;
 
@@ -37,21 +36,18 @@ public class ExportTest extends NlmCdeBaseTest {
 
         String[] expected = {
                 "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n\"",
-                "\"Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator\",\"In the past month, have you had to pass urine at night?\",\"Value List\",\"Never; Sometimes; Regularly; Often; use catheter\",\"NINDS: C10354 v3; NINDS Variable Name: SCOPAAUTUrinateNightInd\",\"NINDS\",\"Qualified\",\"\",\"NINDS\"",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - anxious mood score\",\"ANXIOUS MOOD\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS: C09962 v3; NINDS Variable Name: MDSUPDRSAnxsMoodScore\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n\""
+                "\"Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator\",\"In the past month, have you had to pass urine at night?\",\"Value List\",\"Never; Sometimes; Regularly; Often; use catheter\",\"NINDS: C10354 v3; NINDS Variable Name: SCOPAAUTUrinateNightInd\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - anxious mood score\",\"ANXIOUS MOOD\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS: C09962 v3; NINDS Variable Name: MDSUPDRSAnxsMoodScore\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n"
         };
 
         try {
-            String actual = new String(Files.readAllBytes(Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv")));
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport.csv")));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(
-                        Paths.get("/usr/nlm/selenium/cde/downloads/SearchExport.csv"),
-                        Paths.get("/tmp/ExportTest-searchExport.csv"), REPLACE_EXISTING);
-                    Set perms = new HashSet();
-                    perms.add(PosixFilePermission.OTHERS_READ);
-                    perms.add(PosixFilePermission.OTHERS_WRITE);
-                    Files.setPosixFilePermissions(Paths.get("/tmp/ExportTest-searchExport.csv"), perms);
+                            Paths.get(downloadFolder + "/SearchExport.csv"),
+                            Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), filePerms);
                 }
                 Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
@@ -61,20 +57,102 @@ public class ExportTest extends NlmCdeBaseTest {
 
     }
 
+    @Test (dependsOnMethods = {"searchExport"})
+    public void allExport() throws TimeoutException {
+        goToCdeSearch();
+
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
+        textPresent("export is being generated");
+        closeAlert();
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
+        textPresent("export is being generated");
+        closeAlert();
+        textPresent("server is busy processing");
+        closeAlert();
+        boolean done = false;
+        for (int i = 0; !done && i < 15; i++) {
+            try {
+                textPresent("Export downloaded.");
+                done = true;
+            } catch (TimeoutException e) {
+                System.out.println("No export after : " + 10 * i + "seconds");
+            }
+        }
+        closeAlert();
+        if (!done) throw new TimeoutException("Export was too slow.");
+
+        String[] expected = {
+                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
+                "\"Excisional Biopsy Colorectal Pathology Comment java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2784102 v1\",\"caBIG\",\"Qualified\",\"\",\"",
+                "\"Risk Factor Questionnaire (RFQ) - metal dust or fume 1 worked around text\",\"If Yes, specify other solvent-based adhesives used.\",\"Text\"",
+                "\"Identifier Primary Flag java.lang.Boolean\",\"\",\"java.lang.Boolean\",\"\",\"caDSR: 2735267 v1\",\"caBIG\",\"Qualified\",\"\",\"caBIG\","
+        };
+
+        try {
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport (1).csv")));
+            for (String s : expected) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/SearchExport (1).csv"),
+                            Paths.get(tempFolder + "/ExportTest-allExport.csv"), REPLACE_EXISTING);
+                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-allExport.csv"), filePerms);
+                }
+                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
+            }
+        } catch (IOException e) {
+            Assert.fail("Exception reading SearchExport.csv");
+        }
+    }
+
+    @Test
+    public void searchXmlExport() {
+        goToCdeSearch();
+        findElement(By.id("browseOrg-CTEP")).click();
+        textPresent("All Statuses");
+        findElement(By.id("export")).click();
+        findElement(By.id("xmlExport")).click();
+        textPresent("export is being generated");
+        closeAlert();
+        textPresent("Export downloaded.");
+        closeAlert();
+
+        String[] expected = {
+            "</definition><languageCode>EN-US</languageCode><context><contextName>Health",
+            "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name><datatype>Value List</datatype>",
+            "<registrationStatus>Qualified</registrationStatus></registrationState></element>"
+        };
+
+        try {
+            ZipFile zipFile = new ZipFile(downloadFolder + "/SearchExport_XML.zip");
+            zipFile.extractFile("1dVwh5_NWd9.xml", downloadFolder + "/1dVwh5_NWd9.xml");
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/1dVwh5_NWd9.xml")));
+            for (String s : expected) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/SearchExport_XML.zip"),
+                            Paths.get(tempFolder + "/SearchExport_XML.zip"), REPLACE_EXISTING);
+                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/SearchExport_XML.zip"), filePerms);
+                }
+                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
+            }
+        } catch (Exception e) {
+            Assert.fail("Error reading SearchExport_XML.zip");
+        }
+    }
+
+
     @Test
     public void quickBoardExport() {
         goToSearch("cde");
         clickElement(By.id("browseOrg-caBIG"));
         hangon(1);
-        clickElement(By.id("addToCompare_0"));
-        clickElement(By.id("addToCompare_1"));
-        clickElement(By.id("addToCompare_2"));
-        clickElement(By.id("addToCompare_3"));
-        clickElement(By.id("addToCompare_4"));
-        clickElement(By.id("addToCompare_5"));
-        clickElement(By.id("addToCompare_6"));
+        addCdeToQuickBoard("Intravesical Protocol Agent Administered Specify");
+        addCdeToQuickBoard("Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale");
+        addCdeToQuickBoard("User Login Name java.lang.String");
 
-        textPresent("Quick Board (7)");
+        textPresent("Quick Board (3)");
         goToQuickBoardByModule("cde");
         textPresent("Export Quick Board");
 
@@ -82,155 +160,35 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Export downloaded.");
         closeAlert();
         findElement(By.id("qb_cde_empty")).click();
+
+        String[] expected = {
+                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
+                "\"Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing  scale\",\"Like voices commenting, voices conversing are cons",
+                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1\",\"CTEP\",\"Qualified\",\"\",\"CTEP\",",
+                "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2223533 v3\",\"caCORE\",\"Qualified\",\"\",\"caBIG; caCORE\","
+        };
+
+        try {
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/QuickBoardExport.csv")));
+            for (String s : expected) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/QuickBoardExport.csv"),
+                            Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), REPLACE_EXISTING);
+                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), filePerms);
+                }
+                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
+            }
+        } catch (IOException e) {
+            Assert.fail("Exception reading QuickBoardExport.csv");
+        }
+
     }
 
-//    @Test
-//    public void allExport() throws FileNotFoundException {
-//        String query = "{\"resultPerPage\":20,\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
-//
-//        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=csv").asString();//.then().assertThat().contentType(ContentType.JSON);
-//        Assert.assertTrue(response.contains("\"Substance Administration Intervention or Procedure Performed Study Activity Negation Occurrence Reason ISO21090.DSET.SC.v1.0\",\"\",\"ISO21090DSETv1.0\",\"\",\"caDSR: 3177152 v1\",\"caBIG\",\"Qualified\",\"\",\"caBIG\""));
-//        goToCdeSearch();
-//
-//        findElement(By.id("export")).click();
-//        findElement(By.id("csvExport")).click();
-//        textPresent("export is being generated");
-//        closeAlert();
-//        findElement(By.id("export")).click();
-//        findElement(By.id("csvExport")).click();
-//        textPresent("export is being generated");
-//        closeAlert();
-//        textPresent("server is busy processing");
-//        closeAlert();
-//        boolean done = false;
-//        for (int i = 0; !done && i < 15; i++) {
-//            try {
-//                textPresent("Export downloaded.");
-//                done = true;
-//            } catch (TimeoutException e) {
-//                System.out.println("No export after : " + 10 * i + "seconds");
-//            }
-//        }
-//        closeAlert();
-//        if (!done) throw new TimeoutException("Export was too slow.");
-//    }
-//
-//    @Test
-//    public void allXmlExport() {
-//        String query = "{\"resultPerPage\":20,\"selectedElements\":[],\"selectedElementsAlt\":[],\"includeAggregations\":true,\"selectedStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"],\"visibleStatuses\":[\"Preferred Standard\",\"Standard\",\"Qualified\",\"Recorded\",\"Candidate\",\"Incomplete\"]}";
-//        String response = given().contentType("application/json; charset=UTF-16").body(query).when().post(baseUrl + "/elasticSearchExport/cde?type=xml").asString();
-//        Assert.assertTrue(response.replaceAll("\\s+", "").contains(("<dataElement>\n" +
-//                "    \t<naming>\n" +
-//                "    \t\t<designation>Visible Light Exposure Created By java.lang.String</designation>\n" +
-//                "    \t\t<definition>Electromagnetic radiation in the portion of the spectrum from about 380 nm (violet) to 800 nm (red).:The act of subjecting someone or something to an influencing experience._Indicates the person or authoritative body who brought the item into existence._Generic value domain for a java datatype that is a class that represents character strings.</definition>\n" +
-//                "    \t\t<languageCode>EN-US</languageCode>\n" +
-//                "    \t\t<context>\n" +
-//                "    \t\t\t<contextName>Health</contextName>\n" +
-//                "    \t\t\t<acceptability>preferred</acceptability>\n" +
-//                "    \t\t</context>\n" +
-//                "    \t</naming>\n" +
-//                "    \t<steward>caBIG</steward>\n" +
-//                "    \t<tinyId>53ONNvVKNt3</tinyId>\n" +
-//                "    \t<ids>\n" +
-//                "    \t\t<source>caDSR</source>\n" +
-//                "    \t\t<id>3101967</id>\n" +
-//                "    \t\t<version>1</version>\n" +
-//                "    \t</ids>\n" +
-//                "    \t<property>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Created By</name>\n" +
-//                "    \t\t\t<origin>NCI Thesaurus</origin>\n" +
-//                "    \t\t\t<originId>C42628</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t</property>\n" +
-//                "    \t<objectClass>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Visible Light</name>\n" +
-//                "    \t\t\t<origin>NCI Thesaurus</origin>\n" +
-//                "    \t\t\t<originId>C17732</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Exposure</name>\n" +
-//                "    \t\t\t<origin>NCI Thesaurus</origin>\n" +
-//                "    \t\t\t<originId>C17941</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t</objectClass>\n" +
-//                "    \t<imported>2014-12-10T20:59:15.793Z</imported>\n" +
-//                "    \t<version>1</version>\n" +
-//                "    \t<dataElementConcept>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Visible Light Exposure Created By</name>\n" +
-//                "    \t\t\t<origin>NCI caDSR</origin>\n" +
-//                "    \t\t\t<originId>3100727v1</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t</dataElementConcept>\n" +
-//                "    \t<source>caDSR</source>\n" +
-//                "    \t<valueDomain>\n" +
-//                "    \t\t<name>java.lang.String</name>\n" +
-//                "    \t\t<datatype>java.lang.String</datatype>\n" +
-//                "    \t</valueDomain>\n" +
-//                "    \t<classification>\n" +
-//                "    \t\t<stewardOrg>\n" +
-//                "    \t\t\t<name>caBIG</name>\n" +
-//                "    \t\t</stewardOrg>\n" +
-//                "    \t\t<elements>\n" +
-//                "    \t\t\t<name>caLIMS2</name>\n" +
-//                "    \t\t\t<elements>\n" +
-//                "    \t\t\t\t<name>gov.nih.nci.calims2.domain.common.environmentalcondition</name>\n" +
-//                "    \t\t\t</elements>\n" +
-//                "    \t\t</elements>\n" +
-//                "    \t</classification>\n" +
-//                "    \t<stewardOrg>\n" +
-//                "    \t\t<name>caBIG</name>\n" +
-//                "    \t</stewardOrg>\n" +
-//                "    \t<registrationState>\n" +
-//                "    \t\t<registrationStatusSortOrder>2</registrationStatusSortOrder>\n" +
-//                "    \t\t<registrationStatus>Qualified</registrationStatus>\n" +
-//                "    \t</registrationState>\n" +
-//                "    </dataElement>\n" +
-//                "    <dataElement>\n" +
-//                "    \t<naming>\n" +
-//                "    \t\t<designation>Retreatment Patient Request Type</designation>\n" +
-//                "    \t\t<definition>the type as related the patient&apos;s request for repeated act of the dispensing, applying, or tendering of something to another after an initial treatment.</definition>\n" +
-//                "    \t\t<languageCode>EN-US</languageCode>\n" +
-//                "    \t\t<context>\n" +
-//                "    \t\t\t<contextName>Health</contextName>\n" +
-//                "    \t\t\t<acceptability>preferred</acceptability>\n" +
-//                "    \t\t</context>\n" +
-//                "    \t</naming>\n" +
-//                "    \t<naming>\n" +
-//                "    \t\t<designation>Which rescue treatment did th</designation>\n" +
-//                "    \t\t<definition>Which rescue treatment did the patient choose</definition>\n" +
-//                "    \t\t<languageCode>EN-US</languageCode>\n" +
-//                "    \t\t<context>\n" +
-//                "    \t\t\t<contextName>Preferred Question Text</contextName>\n" +
-//                "    \t\t\t<acceptability>preferred</acceptability>\n" +
-//                "    \t\t\t<context>\n" +
-//                "    \t\t\t\t<contextName>Health</contextName>\n" +
-//                "    \t\t\t\t<acceptability>preferred</acceptability>\n" +
-//                "    \t\t\t</context>\n" +
-//                "    \t\t</context>\n" +
-//                "    \t</naming>\n" +
-//                "    \t<steward>NIDCR</steward>\n" +
-//                "    \t<tinyId>G8kQ2BoBFNM</tinyId>\n" +
-//                "    \t<ids>\n" +
-//                "    \t\t<source>caDSR</source>\n" +
-//                "    \t\t<id>2743854</id>\n" +
-//                "    \t\t<version>1</version>\n" +
-//                "    \t</ids>\n" +
-//                "    \t<origin>PEARL CRF:Practitioners Engaged in Applied Research and Learning Network Case Report Form</origin>\n" +
-//                "    \t<property>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Patient</name>\n" +
-//                "    \t\t\t<origin>NCI Thesaurus</origin>\n" +
-//                "    \t\t\t<originId>C16960</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t\t<concepts>\n" +
-//                "    \t\t\t<name>Request</name>\n" +
-//                "    \t\t\t<origin>NCI Thesaurus</origin>\n" +
-//                "    \t\t\t<originId>C48312</originId>\n" +
-//                "    \t\t</concepts>\n" +
-//                "    \t</property>").replaceAll("\\s+", "")));
-//
-//    }
+    @Test
+    public void allXmlExport() {
+
+
+
+    }
 }

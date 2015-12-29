@@ -18,6 +18,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -34,8 +35,9 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -72,8 +74,9 @@ public class NlmCdeBaseTest {
     protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
 
-
     protected static String password = "pass";
+
+    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
 
     @BeforeTest
     public void countElasticElements() {
@@ -100,7 +103,6 @@ public class NlmCdeBaseTest {
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
-            caps = DesiredCapabilities.chrome();
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", "T:\\CDE\\downloads");
@@ -136,6 +138,15 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1280, 800);
+
+        filePerms.add(PosixFilePermission.OWNER_READ);
+        filePerms.add(PosixFilePermission.OWNER_WRITE);
+        filePerms.add(PosixFilePermission.OTHERS_READ);
+        filePerms.add(PosixFilePermission.OTHERS_WRITE);
+
+        if (downloadFolder == null) downloadFolder = "/usr/nlm/selenium/cde/downloads/";
+        if (tempFolder == null) tempFolder = "/tmp/";
+
     }
 
     @AfterMethod
