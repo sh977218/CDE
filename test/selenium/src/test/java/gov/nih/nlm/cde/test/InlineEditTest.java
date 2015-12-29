@@ -40,7 +40,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
         findElement(By.xpath("//*[contains(@id,'taTextElement')]")).clear();
-        textPresent("Characters: 0");
+        hangon(1);
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
