@@ -30,7 +30,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[contains(@id,'taTextElement')]"));
         textPresent("Characters: 14");
         clickElement(By.cssSelector(".fa-picture-o"));
-        textPresent("Please enter an image URL to insert");
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         alert.sendKeys("www.google.com");
