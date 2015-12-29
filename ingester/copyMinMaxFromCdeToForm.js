@@ -27,8 +27,9 @@ async.series([
                 {'valueDomain.datatypeNumber.maxValue': {$exists: true}}
             ],
             "archived": null
-        }).limit(10).exec(function (err, cdes) {
+        }).exec(function (err, cdes) {
             async.eachSeries(cdes, function (cde, doneOneCde) {
+                console.log('cde id: ' + cde.get('tinyId'));
                 var cdeObj = cde.toObject();
                 var min = cdeObj.valueDomain.datatypeNumber.minValue;
                 var max = cdeObj.valueDomain.datatypeNumber.maxValue;
@@ -36,10 +37,24 @@ async.series([
                 Form.find({
                     'formElements.formElements.question.cde.tinyId': tinyId,
                     "archived": null
-                }).limit(10).exec(function (err, forms) {
+                }).exec(function (err, forms) {
                     async.eachSeries(forms, function (form, doneOneForm) {
-                        var formObj = form.toObject();
-                        doneOneForm();
+                        var formElements = form.get('formElements');
+                        formElements[0].formElements.forEach(function (q) {
+                            if (q.question.cde.tinyId === tinyId) {
+                                q.question.datatypeNumber = {
+                                    minValue: min,
+                                    maxValue: max
+                                }
+                            }
+                        });
+                        form.markModified('formElements');
+                        form.save(function (err) {
+                            if (!err) {
+                                console.log('form id: ' + form.get('tinyId'));
+                                doneOneForm();
+                            }
+                        })
                     }, function doneAllForms() {
                         doneOneCde();
                     })
