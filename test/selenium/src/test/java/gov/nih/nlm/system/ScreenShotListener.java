@@ -26,13 +26,18 @@ public class ScreenShotListener extends TestListenerAdapter {
         if (!itr.isSuccess()) {
             try {
                 File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                FileUtils.copyFile(scrFile, new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
+                FileUtils.copyFile(scrFile,
+                        new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         saveLogs(methodName);
-        driver.get(NlmCdeBaseTest.baseUrl);
+        try {
+            driver.get(NlmCdeBaseTest.baseUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public void onTestSuccess(ITestResult itr) {
@@ -54,7 +59,8 @@ public class ScreenShotListener extends TestListenerAdapter {
         }
         if (sb.length() > 0) {
             try {
-                FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
+                FileUtils.writeStringToFile(
+                        new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
