@@ -50,7 +50,9 @@
 
 <script type="text/ng-template" id="selectOrg.html">
     <div class="btn-group" id="classifyCdeSelectOrg">
-        <label ng-click="classTree.wipeRest(newClassification, 0)" ng-repeat="o in myOrgs" class="btn btn-default btn-sm" ng-model="newClassification.orgName" btn-radio="o" id="classifySlectOrg-{{o}}">{{o}}</label>
+        <label ng-click="classTree.wipeRest(newClassification, 0)" ng-repeat="o in myOrgs"
+               class="btn btn-default btn-sm" ng-model="newClassification.orgName"
+               uib-btn-radio="o" id="classifySlectOrg-{{o}}">{{o}}</label>
     </div>
 </script>
 

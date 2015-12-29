@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('RegistrationModalCtrl',
-    ['$scope', '$modalInstance', '$http', 'elt', 'siteAdmin',
+    ['$scope', '$uibModalInstance', '$http', 'elt', 'siteAdmin',
         function ($scope, $modalInstance, $http, elt, siteAdmin)
 {
     $scope.elt = elt;

@@ -1,7 +1,7 @@
-<div accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
+<div uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen" ng-init="acc_index = $index">
-            <div accordion-heading ng-controller="AccordionCtrl">
+        <div uib-accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen" ng-init="acc_index = $index">
+            <div uib-accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
@@ -58,3 +58,4 @@
         </div>
     </div>
 </div>
+

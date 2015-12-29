@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('AddClassificationModalCtrl',
-    ['$scope', '$timeout', '$modalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
+    ['$scope', '$timeout', '$uibModalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
         'module', 'myOrgs', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
         function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
                  myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {

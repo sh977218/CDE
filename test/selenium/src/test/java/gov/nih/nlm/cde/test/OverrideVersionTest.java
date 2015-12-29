@@ -18,7 +18,7 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         findElement(By.id("openSave")).click();
         textPresent("has already been used");
         findElement(By.id("overrideVersion")).click();
-        waitAndClick(By.id("confirmNewVersion"));
+        clickElement(By.id("confirmNewVersion"));
 
         textPresent("Saved.");
         closeAlert();

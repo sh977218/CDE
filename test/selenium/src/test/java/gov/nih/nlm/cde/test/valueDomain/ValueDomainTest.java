@@ -40,9 +40,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']")).click();
         findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("789");
         findElement(By.xpath("//div[@id='textMaxLength']//input")).sendKeys("987");
-        findElement(By.cssSelector("#textMinLength .fa-check")).click();
-        findElement(By.cssSelector("#textMaxLength .fa-check")).click();
-        newCdeVersion();    
+        clickElement(By.cssSelector("#textMinLength .fa-check"));
+        clickElement(By.cssSelector("#textMaxLength .fa-check"));
+        newCdeVersion();
         
         checkInHistory("Permissible Values - Text", "", "789");
         checkInHistory("Permissible Values - Text", "", "987");
@@ -53,8 +53,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='textRule']//i[@title='Edit']")).click();
         findElement(By.xpath("//div[@id='textRule']//input")).sendKeys("newre");
         findElement(By.xpath("//div[@id='textRegex']//input")).sendKeys("newrule");
-        findElement(By.cssSelector("#textRule .fa-check")).click();
-        findElement(By.cssSelector("#textRegex .fa-check")).click();
+        clickElement(By.cssSelector("#textRule .fa-check"));
+        clickElement(By.cssSelector("#textRegex .fa-check"));
 
         findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
         clickElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']"));
@@ -62,8 +62,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='textMaxLength']//input")).clear();
         findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("123");
         findElement(By.xpath("//div[@id='textMaxLength']//input")).sendKeys("321");
-        findElement(By.cssSelector("#textMinLength .fa-check")).click();
-        findElement(By.cssSelector("#textMaxLength .fa-check")).click();
+        clickElement(By.cssSelector("#textMinLength .fa-check"));
+        clickElement(By.cssSelector("#textMaxLength .fa-check"));
 
         newCdeVersion();
         

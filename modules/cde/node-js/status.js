@@ -124,8 +124,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
     var fakeCde = {
         stewardOrg: {name: "FAKE"}
         , naming: [{
-            designation: "NLM_APP_Status_Report_" + config.hostname
-            , definition: "NLM_APP_Status_Report_" + config.hostname
+            designation: "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g,"")
+            , definition: "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g,"")
         }]
         , registrationState: {registrationStatus: "Retired"}
         , version: stamp
@@ -133,7 +133,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
     mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
         setTimeout(function() {
-            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname, function (error, response, bodyStr) {
+            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,""), function (error, response, bodyStr) {
                 var errorToLog = {
                     origin: "cde.status.checkElasticUpdating"
                     , stack: new Error().stack
@@ -145,7 +145,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                 }
                 var body = JSON.parse(bodyStr);
                 if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.updating = false;
+                    statusReport.elastic.sync = false;
                     errorToLog.details = {bodyStr: bodyStr, nodeName: config.name};
                     logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog);
                 } else {
@@ -159,12 +159,6 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
                         statusReport.elastic.updating = true;
                     }
                 }
-                mongoCollection.DataElement.remove({"tinyId": mongoCde.tinyId}).exec(function(err){
-                    if (err) {
-                        errorToLog.details = {tinyId: mongoCde.tinyId, err: err, nodeName: config.name};
-                        logging.errorLogger.error("Cannot delete dataelement", errorToLog);
-                    }
-                });
             });
         }, config.status.timeouts.dummyElementCheck);
     });

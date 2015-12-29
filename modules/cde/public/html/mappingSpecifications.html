@@ -42,13 +42,13 @@
                 <div class="form-group">
                     <label tabindex="0" for="newMappingSpecification.content">Content: </label>
                     <input tabindex="0" class="form-control" ng-model="newMappingSpecification.content"
-                           typeahead="k for k in contentAutocompleteList | filter:$viewValue | limitTo:8"
+                           uib-typeahead="k for k in contentAutocompleteList | filter:$viewValue | limitTo:8"
                            id="newMappingSpecification.content" Placeholder="Content" required/>
                 </div>
                 <div class="form-group">
                     <label tabindex="0" for="newMappingSpecification.type">Type: </label>
                     <input tabindex="0" class="form-control" ng-model="newMappingSpecification.spec_type"
-                           typeahead="k for k in typeAutocompleteList | filter:$viewValue | limitTo:8"
+                           uib-typeahead="k for k in typeAutocompleteList | filter:$viewValue | limitTo:8"
                            id="newMappingSpecification.type" Placeholder="Type" required/>
                 </div>
                 <div class="form-group">

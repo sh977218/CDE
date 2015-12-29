@@ -19,6 +19,7 @@ var express = require('express')
   , methodOverride = require('method-override')
   , morganLogger = require('morgan')
     , async = require('async')
+    , compress = require('compression')
 ;
 
 require('./modules/system/node-js/elastic').initEs();
@@ -28,6 +29,7 @@ require('log-buffer')(config.logBufferSize || 4096);
 var app = express();
 
 app.use(auth.ticketAuth);
+app.use(compress());
 
 var request = require('request');
 app.use('/kibana/', function(req, res) {
@@ -114,6 +116,7 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
+app.use("/public/components", express.static(path.join(__dirname,'/modules/system/public/components')));
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
 

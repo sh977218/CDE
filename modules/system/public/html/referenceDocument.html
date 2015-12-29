@@ -1,4 +1,4 @@
-<div ng-controller="ReferenceDocumentCtrl" id="referrenceDocumentsDiv">
+<div ng-controller="ReferenceDocumentCtrl" id="referenceDocumentsDiv">
     <h4 tabindex="0">Reference Document</h4>
 
     <div tabindex="0" ng-if="elt.referenceDocuments.length === 0">There are no reference documents.</div>
@@ -14,7 +14,7 @@
                               href=""></span>
                     </span>
                     <span ng-click="showDelete = true" ng-hide="showDelete" class="btn-default fa fa-trash-o"
-                          id="removeReferenceDocument-{{$index}}" title="Remove" tooltip="Remove" href=""></span>
+                          id="removeReferenceDocument-{{$index}}" title="Remove" href=""></span>
 
                     <div sortable-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></div>
                 </div>

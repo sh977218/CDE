@@ -1,5 +1,5 @@
 angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$modal', 'BulkClassification',
+    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
         '$http', 'userResource', 'CdeList', '$log',
         function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
                   $http, userResource, CdeList, $log)
@@ -14,6 +14,12 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
+
+    var converter = new LFormsConverter();
+
+    $scope.setRenderFormat = function(format) {
+        $scope.renderWith = format;
+    };
 
     $scope.tabs = {
         general: {heading: "General Details"},
@@ -62,6 +68,14 @@ angular.module('formModule').controller('FormViewCtrl',
             isAllowedModel.setDisplayStatusWarning($scope);
             formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
             areDerivationRulesSatisfied();
+            converter.convert('form/' + $scope.elt.tinyId, function(lfData) {
+                    $scope.lfData = new LFormsData(lfData);
+                    lfData.setTemplateOptions({hideHeader: true});
+                    $scope.$apply($scope.lfData);
+                },
+                function(err) {
+                    $scope.error = err;
+                });
         }, function() {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -103,6 +117,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.openAddCdeClassificationModal = function () {
         $modal.open({
+            animation: false,
             templateUrl: '/system/public/html/classifyElt.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
@@ -275,6 +290,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.pinAllCdesModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/selectBoardModal.html',
             controller: 'SelectBoardModalCtrl',
             resolve: {

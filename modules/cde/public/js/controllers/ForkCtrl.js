@@ -1,13 +1,13 @@
-angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal', '$window', 'userResource', '$route', '$log',
-    function($scope, $http, $modal, $window, userResource, $route, $log) {
+angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModal', '$window', 'userResource', '$route', '$log',
+    function($scope, $http, $modal, $window, userResource, $route, $log)
+{
 
-        $log.debug("ForkCtrl open");
+    $log.debug("ForkCtrl open");
         
     var getForks = function() {
         $log.debug('ForkCtrl.getForks - executing');
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
             $log.debug("forks retrieved " + $scope.elt.tinyId);
-            $log.debug(result);
            $scope.forks = result.data;
 
         }, function (err) {
@@ -37,6 +37,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
 
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/addFork.html',
             controller: 'AddForkModalCtrl',
             resolve: {
@@ -53,6 +54,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$modal',
 
     $scope.openCdeCopyModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/cde/public/html/cdeCopyModal.html',
             controller: 'CdeCopyModalCtrl',
             resolve: {

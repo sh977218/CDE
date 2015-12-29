@@ -12,7 +12,7 @@ angular.module('articleModule', ['ngRoute']).config(
         controllerAs: 'article'
       });
 })
-.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$modal',
+.controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$uibModal',
         function ($routeParams, $http, $scope, $location, $modal) {
 
 
@@ -55,6 +55,7 @@ angular.module('articleModule', ['ngRoute']).config(
 
     $scope.openNewArticleModal = function() {
         var modalInstance = $modal.open({
+            animation: false,
             templateUrl: '/article/public/html/newArticleModal.html',
             controller: 'NewArticleModalCtrl',
             resolve: {
@@ -71,7 +72,7 @@ angular.module('articleModule', ['ngRoute']).config(
     };
 }])
 
-.controller('NewArticleModalCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http) {
+.controller('NewArticleModalCtrl', ['$scope', '$uibModalInstance', '$http', function($scope, $modalInstance, $http) {
     $scope.elt = {};
     $scope.ok = function() {
         $http.post("/article/key/" + $scope.elt.key, {}).

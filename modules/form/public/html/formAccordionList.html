@@ -1,6 +1,6 @@
-<div accordion close-others="false">
-    <div accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen" ng-init="acc_index = $index">
-        <div accordion-heading ng-controller="AccordionCtrl">
+<div uib-accordion close-others="false">
+    <div uib-accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen" ng-init="acc_index = $index">
+        <div uib-accordion-heading ng-controller="AccordionCtrl">
             <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
             <a href tabindex="0" class="nonLinkAnchor">
                 <span ng-bind-html="elt.naming[0].designation" id="acc_link_{{$index}}" class="hand-cursor"></span></a>
