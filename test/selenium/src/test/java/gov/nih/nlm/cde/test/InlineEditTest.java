@@ -47,6 +47,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         alert.sendKeys(Keys.LEFT_CONTROL + "v");
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img/@src")).getText().contains("cde"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//div[contains(@id,'taTextElement')]//img/@src")).getText().contains("cde"));
     }
 }
