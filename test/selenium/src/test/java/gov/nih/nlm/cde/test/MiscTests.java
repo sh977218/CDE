@@ -93,8 +93,8 @@ public class MiscTests extends NlmCdeBaseTest {
         // Make sure ticket validation doesn't times out
         response = get(baseUrl + "/user/me?ticket=timeout1").asString();
         get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"));
-        Assert.assertTrue(response.contains("ninds"));
+        Assert.assertTrue(response.contains("_id"), "Does not contain _id. Actual response: " + response);
+        Assert.assertTrue(response.contains("ninds"), "Does not contain ninds. Actual Response: " + response);
     }
 
 
