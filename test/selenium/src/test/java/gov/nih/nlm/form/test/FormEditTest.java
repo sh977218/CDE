@@ -72,13 +72,13 @@ public class FormEditTest extends BaseFormTest {
         String newCardinality = "Exactly 1";
         clickElement(By.xpath("//*[@id='dd_card_0']//i"));
         textPresent("Confirm");
-        clickElement(By.xpath("//*[@id='dd_card_0']/span/select"));
+        clickElement(By.xpath("//*[@id='dd_card_0']//select"));
         textPresent("0 or 1");
-        clickElement(By.xpath("//*[@id='dd_card_0']/span/select/option[1]"));
+        clickElement(By.xpath("//*[@id='dd_card_0']//select/option[1]"));
         textPresent(newCardinality);
-        clickElement(By.xpath("//*[@id='dd_card_0']/span/button[1]"));
+        clickElement(By.xpath("//*[@id='dd_card_0']//button[1]"));
         textNotPresent("Confirm");
-        textPresent(newCardinality, By.xpath("//*[@id='dd_card_0']/span[2]"));
+        textPresent(newCardinality, By.xpath("//*[@id='dd_card_0']/div[2]"));
     }
 
     private void editQuestion() {

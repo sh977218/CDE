@@ -67,7 +67,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent(cdeName, By.id("acc_link_0"));
 
         WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div/h4/strong/i"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div//i"));
         Assert.assertTrue(sourceElt.isDisplayed());
 
         String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +
