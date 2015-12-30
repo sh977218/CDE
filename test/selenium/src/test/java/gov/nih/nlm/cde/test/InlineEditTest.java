@@ -16,11 +16,12 @@ public class InlineEditTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         String attachmentName = "nih-logo-color.png";
         addAttachment(attachmentName);
+
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("attachments_tab"));
-        clickElement(By.id("copyUrl_0"));
+        String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
@@ -44,7 +45,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
-        alert.sendKeys("https://cde.nlm.nih.gov/data/5684033021ee952976de3738");
+        alert.sendKeys(url);
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
