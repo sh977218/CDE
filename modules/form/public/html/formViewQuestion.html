@@ -6,14 +6,14 @@
                     <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
                 </div>
                 <div class="col-sm-9">
-                    <div ng-if="question.question.isScore"><strong>Score: </strong></div>
-                    <div ng-bind-html="question.label | placeholdEmpty"
-                         id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></div>
-                    <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
+                    <span ng-if="question.question.isScore"><strong>Score: </strong></span>
+                    <span ng-bind-html="question.label | placeholdEmpty"
+                          id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
+                    <span ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
                         <small>(part of score)</small>
-                    </div>
-                    <div ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</div>
-                    <div ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</div>
+                    </span>
+                    <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
+                    <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
                 </div>
                 <div class="col-sm-1 pull-right section-question-icon-div">
                     <i class="glyphicon glyphicon-remove hand-cursor pull-right"
@@ -75,7 +75,7 @@
                 </div>
                 <div class="row" ng-if="parent">
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-                    <div class="col-sm-7">
+                    <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">
                         <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
                                typeahead-min-length="0" class="form-control skipLogicCondition"/>
