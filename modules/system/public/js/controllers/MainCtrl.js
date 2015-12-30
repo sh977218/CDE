@@ -75,6 +75,11 @@ angular.module('systemModule').controller('MainCtrl',
         return exports.isOrgCurator(userResource.user);
     };
 
+    $scope.isOrgAuthority = function() {
+        return exports.hasRole(userResource.user, "OrgAuthority");
+    };
+
+
     $scope.isOrgAdmin = function() {
         return exports.isOrgAdmin(userResource.user);
     };
