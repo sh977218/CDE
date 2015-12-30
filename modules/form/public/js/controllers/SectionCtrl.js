@@ -82,10 +82,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         }
                     };
                     if (cde.valueDomain.datatype === 'Number') {
-                        question.question.datatypeNumber = {
-                            minValue: cde.valueDomain.datatypeNumber.minValue,
-                            maxValue: cde.valueDomain.datatypeNumber.maxValue
-                        }
+                        question.question.datatypeNumber = cde.valueDomain.datatypeNumber;
                     }
                     if (cde.valueDomain.uom) {
                         question.question.uoms.push(cde.valueDomain.uom);

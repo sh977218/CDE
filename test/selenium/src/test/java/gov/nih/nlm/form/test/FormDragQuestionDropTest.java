@@ -19,7 +19,9 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         sectionTest.addSection("Second Section Name", "1 or more");
         sectionTest.addSection("Third Section Name", "1 or more");
         startAddingQuestions();
-        questionTest.addQuestionToSection("Physical exam condition SNOMED CT code", 0);
+        questionTest.addQuestionToSection("Test of Memory Malingering (TOMM) - Retention trial total correct score", 0);
+        clickElement(By.id("question_accordion_0_0"));
+        textPresent("50", By.id("dd_maximal_0"));
         questionTest.addSectionToSection(2, 1);
         questionTest.addQuestionToRootSection("Smoking History Ind", 2);
     }

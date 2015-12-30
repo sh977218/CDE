@@ -87,19 +87,20 @@
                         {{question.question.datatype | placeholdEmpty }}
                     </div>
                 </div>
-                <div class="row" ng-if="question.question.datatype ==='Number'">
-                    <div class="col-sm-2 questionSectionLabel text-right">Minimal Value:</div>
-                    <div class="col-sm-7" id="dd_minimal_{{$index}}">
-                        {{question.question.datatypeNumber.minValue | placeholdEmpty }}
+                <div ng-if="question.question.datatype ==='Number'">
+                    <div class="row">
+                        <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
+                        <div class="col-sm-7" id="dd_minimal_{{$index}}">
+                            {{question.question.datatypeNumber.minValue | placeholdEmpty }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
+                        <div class="col-sm-7" id="dd_maximal_{{$index}}">
+                            {{question.question.datatypeNumber.maxValue | placeholdEmpty }}
+                        </div>
                     </div>
                 </div>
-                <div class="row" ng-if="question.question.datatype ==='Number'">
-                    <div class="col-sm-2 questionSectionLabel text-right">Maximal Value:</div>
-                    <div class="col-sm-7" id="dd_maximal_{{$index}}">
-                        {{question.question.datatypeNumber.maxValue | placeholdEmpty }}
-                    </div>
-                </div>
-
                 <div class="row" ng-show="question.question.datatype === 'Value List'">
                     <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
                     <div class="col-sm-7" id="dd_question_multi_{{$index}}">
