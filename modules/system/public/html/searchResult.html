@@ -28,7 +28,7 @@
 
 
 <hr class="searchInfoHr"/>
-<nav class="navbar navbar-default">
+<nav id="searchInfo" class="navbar navbar-default">
 
 <div class="container-fluid searchInfo ">
 
@@ -55,9 +55,9 @@
         </button>
     </div>
 
-    <div class="collapse navbar-collapse" id="searchResult-buttons">
+    <div class="collapse navbar-collapse pull-right" id="searchResult-buttons">
 
-        <div class="btn-group pull-right" ng-controller="ExportCtrl" ng-if="module === 'cde'">
+        <div class="btn-group" ng-controller="ExportCtrl" ng-if="module === 'cde'">
             <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
@@ -73,18 +73,18 @@
         <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
 
         <button ng-if="listViewType === 'accordion'" ng-show="totalItems>0" ng-click="openCloseAllSwitch(elts, 'list');"
-                class="btn btn-default btn-checkbox pull-right navbar-btn" id="openAllCb">
+                class="btn btn-default btn-checkbox navbar-btn" id="openAllCb">
             <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
             <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
         </button>
 
-        <button ng-click="hideShowFilter()" class="btn btn-default btn-checkbox pull-right navbar-btn" id="showHideFilters">
+        <button ng-click="hideShowFilter()" class="btn btn-default btn-checkbox navbar-btn" id="showHideFilters">
             <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
             <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
         </button>
 
         <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems > 0 && user._id" ng-hide="module === 'form'"
-                class="btn btn-default btn-checkbox pull-right navbar-btn">
+                class="btn btn-default btn-checkbox navbar-btn">
             <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
         </button>
 
