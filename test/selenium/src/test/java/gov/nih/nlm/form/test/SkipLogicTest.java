@@ -25,7 +25,7 @@ public class SkipLogicTest extends BaseFormTest {
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         questionTest.addQuestionToSection("Person Birth Date", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
-        findElement(By.id("dd_s_skipLogic_1")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
+        findElement(By.xpath("//*[@id='dd_s_skipLogic_1']/input")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
 
         questionTest.addSectionToSection(1, 0);
         saveForm();
@@ -33,7 +33,7 @@ public class SkipLogicTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
-        new Select(findElement(By.xpath("//div[label[text()=\"Patient Gender Category\"]]/following-sibling::div//select")))
+        new Select(findElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//select")))
                 .selectByVisibleText("Female Gender");
         textPresent("Female Patient Screening");
     }
