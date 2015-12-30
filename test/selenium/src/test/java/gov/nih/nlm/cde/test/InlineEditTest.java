@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -40,15 +39,14 @@ public class InlineEditTest extends BaseAttachmentTest {
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
         findElement(By.xpath("//*[contains(@id,'taTextElement')]")).clear();
-        hangon(2);
+        findElement(By.xpath("//*[contains(@id,'taTextElement')]")).sendKeys("validate image url");
+        textPresent("validate image url");
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
-        alert.sendKeys(Keys.LEFT_CONTROL + "v");
-        hangon(2);
+        alert.sendKeys("https://cde.nlm.nih.gov/data/5684033021ee952976de3738");
         alert.accept();
-        hangon(2);
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img/@src")).getText().contains("cde"));
+        Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
     }
 }
