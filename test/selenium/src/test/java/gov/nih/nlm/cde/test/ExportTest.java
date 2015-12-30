@@ -138,7 +138,7 @@ public class ExportTest extends NlmCdeBaseTest {
                 Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (Exception e) {
-            Assert.fail("Error reading SearchExport_XML.zip");
+            Assert.fail("Error reading SearchExport_XML.zip " + e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ExportTest extends NlmCdeBaseTest {
                 Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading QuickBoardExport.csv");
+            Assert.fail("Exception reading QuickBoardExport.csv " + e);
         }
 
     }
