@@ -916,4 +916,10 @@ div + .questionPlaceholder {
     min-width: 150px;
 }
 
+.text_label {
+    font-weight: bold;
+}
 
+.empty-question.section-header {
+    display: none;
+}

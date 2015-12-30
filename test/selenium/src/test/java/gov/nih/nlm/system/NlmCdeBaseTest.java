@@ -72,7 +72,6 @@ public class NlmCdeBaseTest {
     protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
 
-
     protected static String password = "pass";
 
     @BeforeTest
@@ -684,7 +683,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         scrollToTop();
-        clickElement(By.linkText("History"));
+        clickElement(By.id("history_tab"));
         hangon(1);
         showHistoryDiff(0);
         confirmCdeModification(field, oldValue, newValue);
