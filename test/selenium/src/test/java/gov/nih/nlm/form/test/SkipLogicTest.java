@@ -12,7 +12,7 @@ public class SkipLogicTest extends BaseFormTest {
     @Test
     public void singlePermissibleValue() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        resizeWindow(1524, 1150);
+        maxWindow();
         String formName = "Cancer Screening Test";
         String formDef = "General Cancer Screening Test!";
         String formV = "0.1";
