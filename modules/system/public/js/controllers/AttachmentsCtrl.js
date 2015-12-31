@@ -1,26 +1,26 @@
-angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', function($scope, $rootScope, $http, $timeout) {
-    $scope.setFiles = function(element) {
-        $scope.$apply(function($scope) {
-          // Turn the FileList object into an Array
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$location', function ($scope, $rootScope, $http, $timeout, $location) {
+    $scope.setFiles = function (element) {
+        $scope.$apply(function ($scope) {
+            // Turn the FileList object into an Array
             $scope.files = [];
             for (var i = 0; i < element.files.length; i++) {
-                if (element.files[i].size > (5 * 1024 * 1024) ) {
-                    $scope.message = "Size is limited to 5Mb per attachment"; 
+                if (element.files[i].size > (5 * 1024 * 1024)) {
+                    $scope.message = "Size is limited to 5Mb per attachment";
                 } else {
                     $scope.files.push(element.files[i]);
                 }
             }
-          $scope.progressVisible = false;
+            $scope.progressVisible = false;
         });
     };
 
-    $scope.uploadFiles = function() {
+    $scope.uploadFiles = function () {
         for (var i in $scope.files) {
             $scope.uploadFile($scope.files[i]);
         }
     };
 
-    $scope.uploadFile = function(file) {
+    $scope.uploadFile = function (file) {
         var fd = new FormData();
         fd.append("id", $scope.elt._id);
         fd.append("uploadedFiles", file);
@@ -35,7 +35,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     };
 
     function uploadProgress(evt) {
-        $scope.$apply(function(){
+        $scope.$apply(function () {
             if (evt.lengthComputable) {
                 $scope.progress = Math.round(evt.loaded * 100 / evt.total);
             } else {
@@ -45,7 +45,7 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     }
 
     function uploadComplete(evt) {
-        $rootScope.$apply(function() {
+        $rootScope.$apply(function () {
             if (evt.target.status !== 200) return $scope.addAlert("danger", evt.target.responseText);
             var resp = JSON.parse(evt.target.responseText);
             if (!resp.message) {
@@ -63,32 +63,52 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     }
 
     function uploadCanceled(evt) {
-        $scope.$apply(function(){
+        $scope.$apply(function () {
             $scope.progressVisible = false;
         });
     }
-    
-    $scope.removeAttachment = function(index) {      
+
+    $scope.removeAttachment = function (index) {
         $http.post("/attachments/" + $scope.module + "/remove", {
             index: index
-            , id: $scope.elt._id 
+            , id: $scope.elt._id
         }).then(function (res) {
-            $scope.elt = res.data;  
+            $scope.elt = res.data;
         });
     };
-    
-    $scope.setDefault = function(index) {
+
+    $scope.setDefault = function (index) {
         if (!$scope.canCurate) return;
         $timeout(function () {
-            $http.post("/attachments/" + $scope.module + "/setDefault", 
-            {
-                index: index
-                , state: $scope.elt.attachments[index].isDefault
-                , id: $scope.elt._id 
-            }).then(function (res) {
-                $scope.elt = res.data;
-                $scope.addAlert("success", "Saved");
-            });
+            $http.post("/attachments/" + $scope.module + "/setDefault",
+                {
+                    index: index
+                    , state: $scope.elt.attachments[index].isDefault
+                    , id: $scope.elt._id
+                }).then(function (res) {
+                    $scope.elt = res.data;
+                    $scope.addAlert("success", "Saved");
+                });
         }, 0);
     };
+
+    $scope.copyUrl = function (attachment) {
+        var url = window.publicUrl + "/data/" + attachment.fileid;
+        var copyElement = document.createElement('input');
+        copyElement.setAttribute('type', 'text');
+        copyElement.setAttribute('value', url);
+        copyElement = document.body.appendChild(copyElement);
+        copyElement.select();
+        try {
+            if (!document.execCommand('copy')) throw 'Not allowed.';
+        } catch (e) {
+            copyElement.remove();
+            console.log("document.execCommand('copy'); is not supported");
+            prompt('Copy the text below. (ctrl c, enter)', url);
+        } finally {
+            if (typeof e == 'undefined') {
+                copyElement.remove();
+            }
+        }
+    }
 }]);

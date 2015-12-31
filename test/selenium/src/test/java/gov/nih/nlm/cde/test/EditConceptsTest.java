@@ -14,31 +14,31 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         String cdeName = "Patient Photograph Malignant";
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Concepts")).click();
+        clickElement(By.linkText("Concepts"));
 
-        findElement(By.id("addConcept")).click();
+        clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
-        findElement(By.id("createConcept")).click();
+        clickElement(By.id("createConcept"));
         hangon(2);
         clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("OC1");
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
-        findElement(By.id("createConcept")).click();
+        clickElement(By.id("createConcept"));
         hangon(2);
 
-        findElement(By.id("addConcept")).click();
+        clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("Prop1");
         findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
-        findElement(By.id("createConcept")).click();
+        clickElement(By.id("createConcept"));
         hangon(2);
 
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Concepts")).click();
+        clickElement(By.linkText("Concepts"));
         textPresent("DEC_CODE_111");
         textPresent("OC_CODE_111");
         textPresent("Prop_CODE_111");
@@ -47,11 +47,11 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         checkInHistory("Concepts", "", "OC_CODE_111");
         checkInHistory("Concepts", "", "Prop_CODE_111");
 
-        findElement(By.linkText("Concepts")).click();
+        clickElement(By.linkText("Concepts"));
 
-        findElement(By.id("removedataElementConcept-0")).click();
-        findElement(By.id("removeobjectClass-1")).click();
-        findElement(By.id("removeproperty-3")).click();
+        clickElement(By.id("removedataElementConcept-0"));
+        clickElement(By.id("removeobjectClass-1"));
+        clickElement(By.id("removeproperty-3"));
 
         newCdeVersion();
 
