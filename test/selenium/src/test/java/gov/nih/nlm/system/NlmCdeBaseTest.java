@@ -193,7 +193,7 @@ public class NlmCdeBaseTest {
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
