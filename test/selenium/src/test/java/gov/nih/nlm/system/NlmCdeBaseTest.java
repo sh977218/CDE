@@ -219,7 +219,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         hangon(.5);
         clickElement(By.linkText("Classifications"));
-        textPresent("Manage Classifications");
+        textPresent("Classifications");
     }
 
     protected void mustBeLoggedOut() {
