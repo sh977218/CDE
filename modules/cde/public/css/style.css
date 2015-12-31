@@ -909,7 +909,9 @@ div + .questionPlaceholder {
     padding: 3px !important;
 }
 
+.text_label {
+    font-weight: bold;
+}
 .empty-question.section-header  {
     display: none;
 }
-
