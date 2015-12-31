@@ -57,7 +57,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
     }
 
-    @Test (dependsOnMethods = {"searchExport"})
+//    @Test (dependsOnMethods = {"searchExport"})
     public void allExport() throws TimeoutException {
         goToCdeSearch();
 
@@ -138,6 +138,7 @@ public class ExportTest extends NlmCdeBaseTest {
                 Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail("Error reading SearchExport_XML.zip " + e);
         }
     }
