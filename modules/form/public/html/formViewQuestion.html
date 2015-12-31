@@ -2,8 +2,8 @@
     <div uib-accordion-group is-open="">
         <div uib-accordion-heading>
             <div class="row">
-                <div class="col-sm-1 section-question-icon-div">
-                    <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
+                <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
+                    <i class="fa fa-arrows question-move-handle"></i>
                 </div>
                 <div class="col-sm-9">
                     <span ng-if="question.question.isScore"><strong>Score: </strong></span>
@@ -15,10 +15,10 @@
                     <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
                     <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
                 </div>
-                <div class="col-sm-1 pull-right section-question-icon-div">
+                <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
                     <i class="glyphicon glyphicon-remove hand-cursor pull-right"
                        ng-click="removeQuestion(parent, $index)"
-                       title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
+                       title="Remove question" id="remove_q_{{$index}}"></i>
                 </div>
             </div>
         </div>

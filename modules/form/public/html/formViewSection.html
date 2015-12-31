@@ -1,11 +1,11 @@
 <div class="panel panel-default section_view" id="section_view_{{$index}}">
     <div class="panel-heading">
         <div class="row">
-            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div">
+            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
                 <i class="fa fa-arrows fa-lg"></i>
             </div>
-            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit model="section.label"
-                 is-allowed="canCurate" on-ok="stageElt()"></div>
+            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit
+                 model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div>
             <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
                 <i class="glyphicon glyphicon-remove hand-cursor" ng-click="removeElt(parent, $index)"
                    title="Remove Section" id="removeElt-{{$index}}"></i>
