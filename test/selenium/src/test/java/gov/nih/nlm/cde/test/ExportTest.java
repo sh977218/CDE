@@ -127,7 +127,7 @@ public class ExportTest extends NlmCdeBaseTest {
         try {
             ZipFile zipFile = new ZipFile(downloadFolder + "/SearchExport_XML.zip");
             zipFile.extractFile("1dVwh5_NWd9.xml", downloadFolder + "/1dVwh5_NWd9.xml");
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/1dVwh5_NWd9.xml")));
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/1dVwh5_NWd9.xml/1dVwh5_NWd9.xml")));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(
