@@ -49,7 +49,7 @@
                 <div class="col-md-12 col-lg-7" ng-if="!elt.noRenderAllowed" ng-switch="renderWith">
                     <div ng-switch-default>
                         <div>Rendering done via <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.</div>
-                        <lforms lf-data="lfData"></lforms>
+                        <lforms lf-data="lfData" lf-options="lfOptions"></lforms>
                         <small>You may also preview this form in <a href="" ng-click="setRenderFormat('native')">native</a> format.</small>
                     </div>
                     <div ng-switch-when="native">
