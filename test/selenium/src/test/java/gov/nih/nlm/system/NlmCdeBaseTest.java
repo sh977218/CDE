@@ -294,7 +294,8 @@ public class NlmCdeBaseTest {
             textPresent("1 results for");
         } catch (Exception e) {
             System.out.println("Failing to find, trying again: " + name);
-            findElement(By.id("ftsearch-input")).sendKeys(" ");
+            findElement(By.id("ftsearch-input")).clear();
+            findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
             clickElement(By.id("search.submit"));
             if (status != null) {
                 hangon(2);
