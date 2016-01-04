@@ -17,6 +17,8 @@ angular.module('formModule').controller('FormViewCtrl',
 
     var converter = new LFormsConverter();
 
+    $scope.lfOptions = {showCodingInstruction: true};
+
     $scope.setRenderFormat = function(format) {
         $scope.renderWith = format;
     };
@@ -70,7 +72,6 @@ angular.module('formModule').controller('FormViewCtrl',
             areDerivationRulesSatisfied();
             converter.convert('form/' + $scope.elt.tinyId, function(lfData) {
                     $scope.lfData = new LFormsData(lfData);
-                    lfData.setTemplateOptions({hideHeader: true});
                     $scope.$apply($scope.lfData);
                 },
                 function(err) {
