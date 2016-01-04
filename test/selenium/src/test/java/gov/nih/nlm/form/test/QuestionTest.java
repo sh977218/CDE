@@ -40,13 +40,12 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
-        WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4/strong/i"));
-        String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div/h4")).getText();
+        WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//i[contains(@class,'fa fa-arrows')]"));
+        String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//div[contains(@id,'section_title')]")).getText();
 
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumTo));
 
         Assert.assertTrue(sourceElt.isDisplayed());
-
         String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumTo + "\").position().top;\n" +
                 "$(window).scrollTop(y);";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
@@ -68,7 +67,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent(cdeName, By.id("acc_link_0"));
 
         WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div/h4/strong/i"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div//i"));
         Assert.assertTrue(sourceElt.isDisplayed());
 
         String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +
