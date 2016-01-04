@@ -40,7 +40,7 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         findElement(By.linkText("Attachments")).click();
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
-        findElement(By.id("fileToUpload")).sendKeys("S:\\CDE\\data\\fakeVirus.txt");
+        findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\fakeVirus.txt");
         findElement(By.id("doUploadButton")).click();
         textPresent("The file probably contains a virus");
         textNotPresent("Filename");
