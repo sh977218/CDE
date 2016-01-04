@@ -14,6 +14,8 @@
 
                 <input ng-switch-when="Date" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy" type="text" required
                        ng-model="question.question.answer"/>
+                <input ng-switch-when="Number" name="{{question.question.cde.tinyId}}" class="form-control" type="number" required ng-model="question.question.answer"
+                        min="{{question.question.datatypeNumber.minValue}}" max="{{question.question.datatypeNumber.maxValue}}"/>
                 <span ng-switch-default class="form-group">
                   <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>
                   <select class="form-control" ng-if="question.question.uoms.length > 0"
@@ -22,6 +24,10 @@
                       <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
                   </select>
                 </span>
+                <div>
+                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.min">Value is below min.</span>
+                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.max">Value is above max.</span>
+                </div>
             </div>
         </div>
     </div>

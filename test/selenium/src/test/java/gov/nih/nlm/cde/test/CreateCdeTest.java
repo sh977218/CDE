@@ -30,8 +30,7 @@ public class CreateCdeTest extends BaseClassificationTest {
 
         checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
         
-        findElement(By.id("submit")).click();
-        hangon(1);
+        clickElement(By.id("submit"));
 
         textPresent(definition);
 
