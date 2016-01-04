@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class OverrideVersionTest extends NlmCdeBaseTest {
 
     @Test
-    public void editCde() {
+    public void overrideVersion() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         goToCdeByName(cdeName);
@@ -15,9 +15,9 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
 
-        findElement(By.id("openSave")).click();
+        clickElement(By.id("openSave"));
         textPresent("has already been used");
-        findElement(By.id("overrideVersion")).click();
+        clickElement(By.id("overrideVersion"));
         clickElement(By.id("confirmNewVersion"));
 
         textPresent("Saved.");
