@@ -1,4 +1,3 @@
-<!-- jumbotron -->
 <div class="jumbotron">
     <div class="container">
     	<h1>
@@ -7,32 +6,18 @@
         </h1>
 
         <div class="pt20 text-center" id='searchDiv'>
-            <form name="quickSearchForm" id="quickSearchForm" novalidate>
-                <div class="input-group input-group-lg">
-                    <label class="sr-only" for="searchTerms">Search Terms</label>
-                    <input name="searchTerms" id="searchTerms" type="text" class="form-control" ng-model="searchSettings.q"
-                           ng-maxlength="500" placeholder="Search Common Data Elements" autocomplete="off"
-                           typeahead-wait-ms="500" typeahead-min-length="3"
-                           uib-typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8"
-                           typeahead-focus-first="false" typeahead-on-select="gotoSearch()">
-
-                    <div class="input-group-btn">
-                        <button name="quickSearchButton" id="quickSearchButton" class="btn btn-danger btn-lg" type="submit"
-                                ng-click="submitForm( quickSearchForm.$valid )" ng-disabled="quickSearchForm.$invalid">
-                            <i class="fa fa-search"></i><span class="hidden-xs"> Search</span></button>
-                    </div>
-                </div>
-
-                <!-- Error display area -->
-                <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine"><p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
-            </form>
+            <a href="/cde/search" id="browseCdes" class="btn btn-lg btn-default"
+               style="margin-right: 75px"><i class="fa fa-search"></i> Browse CDEs</a>
+            <a href="/form/search" id="browseForms" class="btn btn-lg btn-default"
+               style=""><i class="fa fa-search"></i> Browse Forms</a>
         </div>
 
-        <div class="pt40 hidden-xs">
+        <div class="pt40">
             The NIH Common Data Elements (CDE) Repository has been designed to provide access to structured human and machine-readable
             definitions of data elements that have been recommended or required by NIH Institutes and Centers and other organizations
-            for use in research and for other purposes. Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE Resource Portal</a> for contextual information
-            about the repository.
+            for use in research and for other purposes.
+            Visit the <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank">NIH CDE Resource Portal</a>
+            for contextual information about the repository.
             <br/><br/>
             The Repository is a platform for identifying related data elements in use across
             diverse areas, for harmonizing data elements,
@@ -43,16 +28,18 @@
     </div>
 </div>
 
-<div class="container hidden-xs">
+<div class="container">
     <div class="row">
       <div class="col-md-4">
         <h3>Search</h3>
-        <p>Search for individual data elements, by definition, users or sources. Search for sets of data elements ("boards") identified by a particular group for a particular use (e.g particular research solicitation).</p>
+        <p>Search for individual data elements, by definition, users or sources.
+            Search for sets of data elements ("boards") identified by a particular group for a
+            particular use (e.g particular research solicitation).</p>
       </div>
       <div class="col-md-4">
         <h3>Compare / Harmonize</h3>
-        <p>
-        Analyze and resolve differences between data elements. Assure that your forms are using variables that will be usable by certified EHRs.
+        <p>Analyze and resolve differences between data elements.
+            Assure that your forms are using variables that will be usable by certified EHRs.
         </p>
       </div>
       <div class="col-md-4">

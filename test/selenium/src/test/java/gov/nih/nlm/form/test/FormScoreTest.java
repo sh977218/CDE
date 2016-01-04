@@ -21,17 +21,18 @@ public class FormScoreTest extends BaseFormTest {
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - upper extremity dress hygiene score");
 
+        textPresent("Quick Board (3)");
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        clickElement(By.linkText("Score / Derivations"));
+        clickElement(By.id("addNewScore"));
         textPresent("All 3 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("ALSSS Score");
-        findElement(By.id("createDerivationRule")).click();
+        clickElement(By.id("createDerivationRule"));
         newCdeVersion();
 
         createForm("ALS Score", "ALS Score Form", null, "NINDS");
 
-        findElement(By.linkText("Form Description")).click();
+        clickElement(By.linkText("Form Description"));
         addSection("Score Section", "0 or more");
 
         startAddingQuestions();
@@ -75,7 +76,7 @@ public class FormScoreTest extends BaseFormTest {
         new Select(selects.get(1)).selectByValue("string:4");
         new Select(selects.get(2)).selectByValue("string:7");
         textPresent("Score: 13");
-        
+
     }
 
 }

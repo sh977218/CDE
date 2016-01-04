@@ -93,8 +93,8 @@ public class MiscTests extends NlmCdeBaseTest {
         // Make sure ticket validation doesn't times out
         response = get(baseUrl + "/user/me?ticket=timeout1").asString();
         get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"));
-        Assert.assertTrue(response.contains("ninds"));
+        Assert.assertTrue(response.contains("_id"), "Does not contain _id. Actual response: " + response);
+        Assert.assertTrue(response.contains("ninds"), "Does not contain ninds. Actual Response: " + response);
     }
 
 
@@ -102,9 +102,9 @@ public class MiscTests extends NlmCdeBaseTest {
     public void leavePageWarning() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
-        clickElement(By.xpath("//dd[@id = 'dd_def']//i[@class='fa fa-edit']"));
+        clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
-        clickElement(By.xpath("//dd[@id='dd_def']//button[@class='fa fa-check']"));
+        clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
 
         clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());
