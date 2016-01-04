@@ -151,6 +151,10 @@ public class NlmCdeBaseTest {
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
+    protected void maxWindow() {
+        driver.manage().window().maximize();
+    }
+
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
