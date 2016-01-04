@@ -56,55 +56,6 @@ public class ExportTest extends NlmCdeBaseTest {
 
     }
 
-    @Test (dependsOnMethods = {"searchExport"})
-    public void allExport() throws TimeoutException {
-        goToCdeSearch();
-
-        findElement(By.id("export")).click();
-        findElement(By.id("csvExport")).click();
-        textPresent("export is being generated");
-        closeAlert();
-        findElement(By.id("export")).click();
-        findElement(By.id("csvExport")).click();
-        textPresent("export is being generated");
-        closeAlert();
-        textPresent("server is busy processing");
-        closeAlert();
-        boolean done = false;
-        for (int i = 0; !done && i < 15; i++) {
-            try {
-                textPresent("Export downloaded.");
-                done = true;
-            } catch (TimeoutException e) {
-                System.out.println("No export after : " + 10 * i + "seconds");
-            }
-        }
-        closeAlert();
-        if (!done) throw new TimeoutException("Export was too slow.");
-
-        String[] expected = {
-                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
-                "\"Excisional Biopsy Colorectal Pathology Comment java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2784102 v1\",\"caBIG\",\"Qualified\",\"\",\"",
-                "\"Risk Factor Questionnaire (RFQ) - metal dust or fume 1 worked around text\",\"If Yes, specify other solvent-based adhesives used.\",\"Text\"",
-                "\"Identifier Primary Flag java.lang.Boolean\",\"\",\"java.lang.Boolean\",\"\",\"caDSR: 2735267 v1\",\"caBIG\",\"Qualified\",\"\",\"caBIG\","
-        };
-
-        try {
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport (1).csv")));
-            for (String s : expected) {
-                if (!actual.contains(s)) {
-                    Files.copy(
-                            Paths.get(downloadFolder + "/SearchExport (1).csv"),
-                            Paths.get(tempFolder + "/ExportTest-allExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail("Exception reading SearchExport.csv");
-        }
-    }
-
     @Test
     public void searchXmlExport() {
         goToCdeSearch();
