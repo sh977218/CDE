@@ -4,13 +4,18 @@ var mongoose = require('mongoose')
     , config = require("config")
     ;
 
-var questionSchema =  {
+var questionSchema = {
     cde: {
         tinyId: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
     , datatype: String
+    , datatypeNumber: {
+        minValue: Number
+        , maxValue: Number
+        , precision: Number
+    }
     , uoms: [String]
     , required: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
@@ -18,8 +23,7 @@ var questionSchema =  {
     , answers: [sharedSchemas.permissibleValueSchema]
 };
 
-var sectionSchema = {    
-};
+var sectionSchema = {};
 
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
@@ -67,7 +71,7 @@ exports.formSchema = new Schema({
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String
-    }    
+    }
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [
@@ -75,7 +79,7 @@ exports.formSchema = new Schema({
     ]
     , ids: [
         {source: String, id: String, version: String, _id: false}
-    ] 
+    ]
     , isCopyrighted: {type: Boolean}
     , noRenderAllowed: {type: Boolean}
     , copyright: {
