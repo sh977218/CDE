@@ -15,6 +15,8 @@ public class Compare2Test extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
         findElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
+        // accordion expands
+        hangon(1);
         findElement(By.id("compare_0")).click();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         findElement(By.linkText("Quick Board (2)")).click();
