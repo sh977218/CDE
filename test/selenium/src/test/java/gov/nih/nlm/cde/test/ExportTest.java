@@ -47,9 +47,8 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
-//                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-searchExport.csv"), filePerms);
+                    Assert.fail("missing line in export : " + s);
                 }
-                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.csv");
@@ -97,11 +96,11 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport (1).csv"),
                             Paths.get(tempFolder + "/ExportTest-allExport.csv"), REPLACE_EXISTING);
-//                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-allExport.csv"), filePerms);
+                    Assert.fail("missing line in export : " + s);
                 }
-                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             Assert.fail("Exception reading SearchExport.csv");
         }
     }
@@ -133,9 +132,8 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport_XML.zip"),
                             Paths.get(tempFolder + "/SearchExport_XML.zip"), REPLACE_EXISTING);
-//                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/SearchExport_XML.zip"), filePerms);
+                    Assert.fail("missing line in export : " + s);
                 }
-                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,11 +174,11 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/QuickBoardExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), REPLACE_EXISTING);
-//                    Files.setPosixFilePermissions(Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), filePerms);
+                    Assert.fail("missing line in export : " + s);
                 }
-                Assert.assertTrue(actual.contains(s), "missing line in export : " + s);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             Assert.fail("Exception reading QuickBoardExport.csv " + e);
         }
 
