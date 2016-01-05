@@ -99,7 +99,6 @@ public class NlmCdeBaseTest {
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
-            caps = DesiredCapabilities.chrome();
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", "T:\\CDE\\downloads");
