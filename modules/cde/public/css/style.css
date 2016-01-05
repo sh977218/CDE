@@ -431,15 +431,8 @@ dd.formViewDetails {
     overflow-x: hidden;
 }
 
-.section-move-handle {
-    float: left;
-    top: 10px;
-    margin-right: 10px;
-}
-
-.question-move-handle {
-    float: left;
-    margin: 2px 9px 2px -4px;
+.section-question-icon-div {
+    width: auto !important;
 }
 
 .form-inline .form-group.long-field input {
@@ -909,10 +902,25 @@ div + .questionPlaceholder {
     padding: 3px !important;
 }
 
+.empty-question.section-header {
+    display: none;
+}
+
+.questionSectionTitle {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.questionSectionLabel {
+    font-weight: bold;
+    min-width: 150px;
+}
+
 .text_label {
     font-weight: bold;
 }
-.empty-question.section-header  {
+
+.empty-question.section-header {
     display: none;
 }
 
