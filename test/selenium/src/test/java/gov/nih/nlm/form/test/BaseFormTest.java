@@ -71,7 +71,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (card != null) {
             findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
             new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
-            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
+            findElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
         }
     }
 

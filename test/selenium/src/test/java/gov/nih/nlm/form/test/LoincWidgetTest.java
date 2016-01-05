@@ -34,6 +34,11 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         findElement(By.id("ac1"));
         // End Test UOM
 
+        // Test instructions
+        findElement(By.xpath("//label[contains(text(), 'Show Help')]")).click();
+        textPresent("Instructions for section 1");
+        textPresent("Instructions for Priod BMSCT");
+
     }
 
 }

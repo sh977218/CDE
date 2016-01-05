@@ -9,6 +9,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void formMoreElementsNoSideBySideCompare() {
+        mustBeLoggedOut();
         addFormToQuickBoard("Family History - SMA");
         textPresent("Quick Board (1)");
         addFormToQuickBoard("Anatomical Functional Imaging");
@@ -27,6 +28,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void cdeLessElementsNoSideBySideCompare() {
+        mustBeLoggedOut();
         addFormToQuickBoard("Family History - SMA");
         textPresent("Quick Board (1)");
         addFormToQuickBoard("Anatomical Functional Imaging");
@@ -52,7 +54,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_form_compare"));
-        
+
         textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj Label')]"));
         textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj Label')]"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj Label')]//*[contains(@class,'unmatchedIcon')]")).size() > 0);

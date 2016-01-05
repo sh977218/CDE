@@ -1,34 +1,36 @@
 <div class="panel panel-default section_view" id="section_view_{{$index}}">
     <div class="panel-heading">
-        <h4>
-            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeElt(parent, $index)"
-               title="Remove Section" ng-if="canCurate" id="removeElt-{{$index}}"></i>
-            <strong><i ng-if="canCurate" class="fa fa-arrows section-move-handle"></i>
-
-                <div id="section_title_{{$index}}" inline-edit model="section.label" is-allowed="canCurate"
-                     on-ok="stageElt()"></div>
-            </strong>
-        </h4>
+        <div class="row">
+            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
+                <i class="fa fa-arrows fa-lg"></i>
+            </div>
+            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit
+                 model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div>
+            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
+                <i class="glyphicon glyphicon-remove hand-cursor" ng-click="removeElt(parent, $index)"
+                   title="Remove Section" id="removeElt-{{$index}}"></i>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12">
-                <dl class="dl-horizontal">
-                    <dt tabindex="0">Instructions:</dt>
-                    <dd tabindex="0" id="dd_section_instructions_{{$index}}">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
+                    <div class="col-sm-7" id="dd_section_instructions_{{$index}}">
                         <div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
-                    </dd>
-                    <span ng-if="parent">
-                        <dt tabindex="0">Show if:</dt>
-
-                        <dd tabindex="0" ng-show="parent">
-                            <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
-                                   uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
-                                   typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                        </dd>
-                    </span>
-
-                    <dt tabindex="0">Cardinality:</dt>
-                    <dd tabindex="0" id="dd_card_{{$index}}">
-                        <span ng-show="editCardMode">
+                    </div>
+                </div>
+                <div class="row" ng-if="parent">
+                    <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+                    <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}">
+                        <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
+                               typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
+                    <div class="col-sm-7" id="dd_card_{{$index}}">
+                        <div ng-show="editCardMode">
                             <select ng-model="section.cardinality"
                                     ng-options="key as value for (key, value) in cardinalityOptions"
                                     id="select_section_card_{{$index}}"></select>
@@ -39,38 +41,38 @@
                             <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig">
                                 Discard
                             </button>
-                        </span>
-                        <span ng-hide="editCardMode">
+                        </div>
+                        <div ng-hide="editCardMode">
                             <i ng-show="canCurate" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = section.cardinality"
                                id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
-                        </span>
-                    </dd>
-                    <dt tabindex="0" ng-hide="$first && $last">Move:</dt>
-                    <dd tabindex="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Move:</div>
+                    <div class="col-sm-7" ng-hide="$first && $last">
                         <div ng-show="canCurate">
                             <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}"
                                ng-hide="$first"></i>
                             <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}"
                                ng-hide="$last"></i>
                         </div>
-                    </dd>
-                    <span ng-show="canCurate">
-                        <dt tabindex="0">Delete:</dt>
-                        <dd tabindex="0">
-                            <div>
-                                <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
-                                   id="removeElt-{{$index}}"></i>
-                            </div>
-                        </dd>
-                    </span>
-                </dl>
+                    </div>
+                </div>
+                <div class="row" ng-show="canCurate">
+                    <div class="col-sm-2 questionSectionLabel text-right">Delete:</div>
+                    <div class="col-sm-7">
+                        <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
+                           id="removeElt-{{$index}}"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="panel-body">
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions"
-             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}" >
+             id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'"
                      ng-include="'/form/public/html/formViewQuestion.html'"
