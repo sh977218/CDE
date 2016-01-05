@@ -26,8 +26,8 @@
     "angular-send-feedback": "1.0.2",
     "html2canvas": "*",
     "ng-file-upload": "3.3.3",
-    "lforms": "4.2.1",
-    "lforms-converter": "1.1.0"
+    "lforms": "4.2.4",
+    "lforms-converter": "1.1.1"
   },
   "resolutions": {
     "angular": "1.4.7"
