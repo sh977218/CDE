@@ -481,6 +481,9 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
+        if ("form".equals(type)) {
+            textPresent("PROMIS / Neuro-QOL");
+        }
         textPresent("Cancer Therapy Evaluation Program");
     }
 
