@@ -20,7 +20,7 @@ Form.find({
     }
     async.eachSeries(forms, function (form, doneOneForm) {
         var questionCount = 0;
-        var areYouDone = function() {
+        var areYouDone = function () {
             console.log(questionCount);
             if (questionCount === 0) {
                 form.save(function (err) {
@@ -47,8 +47,10 @@ Form.find({
                             process.exit(0);
                         }
                         console.log('finished cde id: ' + cdeTinyId + ' version: ' + version);
-                        if (cde) fe.question.cdeName = cde.naming[0].designation;
-                        else {console.log("no CDE with id: " + cdeTinyId)}
+                        if (cde) fe.question.cde.name = cde.naming[0].designation;
+                        else {
+                            console.log("no CDE with id: " + cdeTinyId)
+                        }
                         areYouDone();
                     });
                 }

@@ -7,10 +7,10 @@ var mongoose = require('mongoose')
 var questionSchema = {
     cde: {
         tinyId: String
+        , name: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
-    , cdeName: String
     , datatype: String
     , datatypeNumber: {
         minValue: Number

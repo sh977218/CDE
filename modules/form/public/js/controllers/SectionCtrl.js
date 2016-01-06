@@ -88,7 +88,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         question.question.uoms.push(cde.valueDomain.uom);
                     }
                     if (cde.naming && cde.naming.length > 0) {
-                        question.question.cdeName = cde.naming[0].designation;
+                        question.question.cde.name = cde.naming[0].designation;
                     }
                     question.question.answers = [];
                     question.question.cde.permissibleValues = [];
