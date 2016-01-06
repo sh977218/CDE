@@ -24,6 +24,8 @@ angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller'
         elt.numQuestions = findFormQuestionNr(elt);
     };
 
+    $scope.exporters.odm = {id: "odmExport", display: "ODM Export"};
+
 }]);
 
 angular.module('formModule').controller('FormDEListCtrl', ['$scope'
