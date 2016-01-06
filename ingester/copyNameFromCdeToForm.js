@@ -11,47 +11,18 @@ var conn = mongoose.createConnection(mongoUrl);
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var Form = conn.model('Form', form_schemas.formSchema);
 
-async.series([
-    function (doneConnectionEstablished) {
-        conn.on('error', function (err) {
-            throw err;
-        });
-        conn.once('open', function callback() {
-            console.log("connected to " + mongoUrl);
-            doneConnectionEstablished();
-        });
-    }, function (cb) {
-        Form.find({
-            archived: null
-        }).limit(10).exec(function (err, forms) {
-            if (err) {
-                console.log(err);
-                process.exit(0);
-            }
-            async.eachSeries(forms, function (form, doneOneForm) {
-                var formObj = form.toObject();
-                var formElements = form.get('formElements');
-                var getQuestions = function (formElements) {
-                    formElements.forEach(function (fe) {
-                        if (fe.elementType === 'question') {
-                            var cdeTinyId = fe.question.cde.tinyId;
-                            var version = fe.question.cde.version;
-                            DataElement.findOne({tinyId: cdeTinyId, version: version}).exec(function (err, cde) {
-                                if (err) {
-                                    console.log(err);
-                                    process.exit(0);
-                                }
-                                console.log('finished cde id: ' + cdeTinyId + ' version: ' + version);
-                                fe.question.cdeName = (cde.get('naming'))[0].designation;
-                            });
-                        }
-                        else {
-                            getQuestions(fe.formElements);
-                        }
-                    });
-                };
-                getQuestions(formElements);
-                form.markModified('formElements');
+Form.find({
+    archived: null
+}).limit(10).exec(function (err, forms) {
+    if (err) {
+        console.log(err);
+        process.exit(0);
+    }
+    async.eachSeries(forms, function (form, doneOneForm) {
+        var questionCount = 0;
+        var areYouDone = function() {
+            console.log(questionCount);
+            if (questionCount === 0) {
                 form.save(function (err) {
                     if (err)
                         process.exit(1);
@@ -59,13 +30,38 @@ async.series([
                         console.log('finished form id: ' + form.get('tinyId'));
                         doneOneForm();
                     }
-                })
-            }, function doneAllForms() {
-                cb();
+                });
+            }
+        };
+        var formElements = form.formElements;
+        var getQuestions = function (formElements) {
+            formElements.forEach(function (fe) {
+                if (fe.elementType === 'question') {
+                    questionCount++;
+                    var cdeTinyId = fe.question.cde.tinyId;
+                    var version = fe.question.cde.version;
+                    DataElement.findOne({tinyId: cdeTinyId, version: version}).exec(function (err, cde) {
+                        questionCount--;
+                        if (err) {
+                            console.log(err);
+                            process.exit(0);
+                        }
+                        console.log('finished cde id: ' + cdeTinyId + ' version: ' + version);
+                        if (cde) fe.question.cdeName = cde.naming[0].designation;
+                        else {console.log("no CDE with id: " + cdeTinyId)}
+                        areYouDone();
+                    });
+                }
+                else {
+                    getQuestions(fe.formElements);
+                }
             });
-        });
-    }, function () {
+        };
+        getQuestions(formElements);
+        areYouDone();
+        form.markModified('formElements');
+    }, function doneAllForms() {
         process.exit(0);
-    }
-]);
+    });
+});
 
