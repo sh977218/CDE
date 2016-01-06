@@ -16,7 +16,8 @@
                 <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_section_instructions_{{$index}}">
-                        <div inline-edit model="section.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
+                        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
+                             model="section.instructions" is-allowed="canCurate()" on-ok="stageElt()"></div>
                     </div>
                 </div>
                 <div class="row" ng-if="parent">
