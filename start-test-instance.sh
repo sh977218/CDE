@@ -8,7 +8,7 @@ db_password='password'
 
 target='{"count":0,"_shards":{"total":2,"successful":2,"failed":0}}'
 
-gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any clean compileTest &
+gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ clean compileTest &
 
 mongo test deploy/dbInit.js -u $db_user -p $db_password
 
@@ -63,7 +63,7 @@ done
 
 if [ "$curl_res" == "$target" ] 
 then
-    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome test &
+    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ test &
     #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *Board* &
     export NODE_ENV=test
     node $NODE_LOC/app > test-console.out
