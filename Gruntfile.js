@@ -336,16 +336,18 @@ module.exports = function (grunt) {
                 	// Whether output is colorized
                     color: true,
                     // Path where bower installed components should be saved
-                    directory: "modules/system/public/components"
+                    directory: "modules/components"
                 }
             }
         },
         wiredep: {
             task: {
                 src: [
-                    'modules/system/views/index.ejs'
+                    "modules/system/views/index.ejs"
                 ], options: {
                     directory: "modules/system/public/components"
+                    //, cwd: config.node.buildDir + '/modules'
+                    //, bowerJson: "../bower.json"
                 }
             }
         }
