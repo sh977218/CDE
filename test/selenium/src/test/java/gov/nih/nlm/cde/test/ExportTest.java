@@ -114,7 +114,7 @@ public class ExportTest extends NlmCdeBaseTest {
         String[] expected = {
                 "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
                 "\"Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing  scale\",\"Like voices commenting, voices conversing are cons",
-                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1\"",
+                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1;",
                 "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2223533 v3\",\"caCORE\",\"Qualified\",\"\",\"caBIG; caCORE\","
         };
 
