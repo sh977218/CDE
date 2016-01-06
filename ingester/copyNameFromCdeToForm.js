@@ -13,7 +13,7 @@ var Form = conn.model('Form', form_schemas.formSchema);
 
 Form.find({
     archived: null
-}).limit(10).exec(function (err, forms) {
+}).exec(function (err, forms) {
     if (err) {
         console.log(err);
         process.exit(0);
@@ -63,6 +63,7 @@ Form.find({
         areYouDone();
         form.markModified('formElements');
     }, function doneAllForms() {
+        console.log('finished all forms');
         process.exit(0);
     });
 });
