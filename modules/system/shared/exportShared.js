@@ -46,9 +46,8 @@ exports.projectCdeForExport = function (ele) {
 };
 
 exports.convertToCsv = function (ele) {
-    ele = exports.projectCdeForExport(ele);
     var sanitize = function (v) {
-        return v.trim().replace(/\"/g, "\"\"");
+        return v.trim?v.trim().replace(/\"/g, "\"\""):v;
     };
     var row = "";
     Object.keys(ele).forEach(function (key) {
