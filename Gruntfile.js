@@ -345,9 +345,8 @@ module.exports = function (grunt) {
                 src: [
                     "modules/system/views/index.ejs"
                 ], options: {
-                    directory: "modules/system/public/components"
-                    //, cwd: config.node.buildDir + '/modules'
-                    //, bowerJson: "../bower.json"
+                    directory: "modules/components"
+                    , ignorePath: "../.."
                 }
             }
         }
