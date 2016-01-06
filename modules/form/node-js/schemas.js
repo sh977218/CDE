@@ -10,6 +10,7 @@ var questionSchema = {
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
+    , cdeName: String
     , datatype: String
     , datatypeNumber: {
         minValue: Number

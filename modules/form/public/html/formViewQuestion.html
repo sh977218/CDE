@@ -33,6 +33,14 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">CDE Name:</div>
+                    <div class="col-sm-7" id="dd_question_cdeName_{{$index}}">
+                        <div inline-edit model="question.question.cdeName" is-allowed="canCurate"
+                             on-ok="stageElt()"></div>
+                    </div>
+                    aaa:{{question.question.cdeName}}
+                </div>
+                <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
                         <div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
