@@ -202,7 +202,7 @@ exports.init = function (app, daoManager) {
                 }
                 mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_data.newBoard(board, function (err, newBoard) {
+                        mongo_data.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             res.send();
                         });
@@ -482,6 +482,7 @@ exports.init = function (app, daoManager) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(types);
+                res.send(types);
             }
         });
     });
@@ -506,54 +507,30 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/cde', function (req, res) {
-        function removeElasticFields(cde){
-            delete cde.classificationBoost;
-            delete cde.flatClassifications;
-            delete cde.primaryNameCopy;
-            delete cde.stewardOrgCopy;
-            delete cde.flatProperties;
-            delete cde.valueDomain.nbOfPVs;
-            delete cde.primaryDefinitionCopy;
-            delete cde.flatIds;
-            delete cde.usedByOrgs;
-            return cde;
-        }
-        var exporter;
-        if (req.query.type==='csv') {
-            exporter = {
-                transformObject: exportShared.convertToCsv
-                , header: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
-                , delimiter: "\n"
-                , footer: ""
-                , type: 'text/csv'
-            };
-        } else if (req.query.type==='json') {
-            exporter = {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return JSON.stringify(cde)
-                }
-                , header: "["
-                , delimiter: ",\n"
-                , footer: "]"
-                , type: 'appplication/json'
-            };
-        } else if (req.query.type==='xml') {
-            exporter = {
-                transformObject: function(cde){
-                    cde = exportShared.stripBsonIds(cde);
-                    cde = removeElasticFields(cde);
-                    return js2xml("dataElement", cde, {declaration: {include: false}});
-                }
-                , header: "<cdeExport>\n"
-                , delimiter: "\n"
-                , footer: "\n</cdeExport>"
-                , type: 'appplication/xml'
-            };
-        }
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'cde', exporter);
+        var exporters = {
+            json: {
+                export: function(res) {
+                    var firstElt = true;
+                    res.type('application/json');
+                    res.write("[");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            if (!firstElt) res.write(',');
+                            elt = exportShared.stripBsonIds(elt);
+                            elt = elastic_system.removeElasticFields(elt);
+                            res.write(JSON.stringify(elt));
+                            firstElt = false;
+                        } else {
+                            res.write("]");
+                            res.send();
+                        }
+                    }, query, 'cde');
+                }
+            }
+        };
+        exporters.json.export(res);
     });
 
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {

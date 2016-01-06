@@ -11,6 +11,7 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
+    , js2xml = require('js2xmlparser')
     ;
 
 exports.init = function (app, daoManager) {
@@ -92,12 +93,33 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', function (req, res) {
-        var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
+        var exporters = {
+            json: {
+                export: function(res) {
+                    var firstElt = true;
+                    res.type('application/json');
+                    res.write("[");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            if (!firstElt) res.write(',');
+                            elt = exportShared.stripBsonIds(elt);
+                            elt = elastic_system.removeElasticFields(elt);
+                            res.write(JSON.stringify(elt));
+                            firstElt = false;
+                        } else {
+                            res.write("]");
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
+            }
+        };
+        exporters.json.export(res);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
         return [];
     });
 
