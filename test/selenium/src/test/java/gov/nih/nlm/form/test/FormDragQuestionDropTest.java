@@ -21,6 +21,7 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         startAddingQuestions();
         questionTest.addQuestionToSection("Resource Utilization Group Version IV (RUG IV) - alpha-numeric code", 0);
         clickElement(By.id("question_accordion_0_0"));
+        textPresent("Resource Utilization Group Version IV (RUG IV) - alpha-numeric code", By.id("dd_question_cde_name_0"));
         textPresent("789", By.id("dd_minimal_0"));
         textPresent("987", By.id("dd_maximal_0"));
 
