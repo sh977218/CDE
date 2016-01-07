@@ -294,7 +294,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
-        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search();
+        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search($scope.module);
     });
 
     $scope.termSearch = function() {
