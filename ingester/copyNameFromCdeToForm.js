@@ -11,6 +11,8 @@ var conn = mongoose.createConnection(mongoUrl);
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var Form = conn.model('Form', form_schemas.formSchema);
 
+var formCounter = 0;
+
 Form.find({
     archived: null
 }).exec(function (err, forms) {
@@ -27,7 +29,8 @@ Form.find({
                     if (err)
                         process.exit(1);
                     else {
-                        console.log('finished form id: ' + form.get('tinyId'));
+                        console.log('saved form id: ' + form.get('tinyId'));
+                        formCounter++;
                         doneOneForm();
                     }
                 });
@@ -46,7 +49,7 @@ Form.find({
                             console.log(err);
                             process.exit(0);
                         }
-                        console.log('finished cde id: ' + cdeTinyId + ' version: ' + version);
+                        console.log('found cde id: ' + cdeTinyId + ' version: ' + version);
                         if (cde) fe.question.cde.name = cde.naming[0].designation;
                         else {
                             console.log("no CDE with id: " + cdeTinyId)
@@ -63,7 +66,7 @@ Form.find({
         areYouDone();
         form.markModified('formElements');
     }, function doneAllForms() {
-        console.log('finished all forms');
+        console.log('finished all forms, # form: ' + formCounter);
         process.exit(0);
     });
 });

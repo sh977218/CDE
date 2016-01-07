@@ -33,13 +33,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">CDE Name:</div>
-                    <div class="col-sm-7" id="dd_question_cde_name_{{$index}}">
-                        <div inline-edit model="question.question.cde.name" is-allowed="canCurate"
-                             on-ok="stageElt()"></div>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
                         <div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
@@ -134,7 +127,9 @@
                     <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
                     <div class="col-sm-7" id="dd_d_cde_{{$index}}">
                         <a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}"
-                           target="_blank"><i class="fa fa-eye"></i> View</a>
+                           target="_blank"><i class="fa fa-eye"></i>
+                            <span id="dd_question_cde_name_{{$index}}">{{question.question.cde.name}}</span>
+                        </a>
                     </div>
                 </div>
             </div>
