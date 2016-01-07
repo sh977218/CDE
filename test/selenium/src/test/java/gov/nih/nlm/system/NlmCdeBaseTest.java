@@ -18,6 +18,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -34,8 +35,9 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -74,6 +76,8 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
+    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
+
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
@@ -99,7 +103,6 @@ public class NlmCdeBaseTest {
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
-            caps = DesiredCapabilities.chrome();
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", "T:\\CDE\\downloads");
@@ -135,6 +138,12 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1280, 800);
+
+        filePerms.add(PosixFilePermission.OWNER_READ);
+        filePerms.add(PosixFilePermission.OWNER_WRITE);
+        filePerms.add(PosixFilePermission.OTHERS_READ);
+        filePerms.add(PosixFilePermission.OTHERS_WRITE);
+
     }
 
     @AfterMethod
@@ -472,6 +481,9 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl + "/#/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
+        if ("form".equals(type)) {
+            textPresent("PROMIS / Neuro-QOL");
+        }
         textPresent("Cancer Therapy Evaluation Program");
     }
 
@@ -530,6 +542,7 @@ public class NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));

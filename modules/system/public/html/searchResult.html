@@ -26,7 +26,6 @@
     </form>
 </div>
 
-
 <hr class="searchInfoHr"/>
 <div class="container-fluid searchInfo">
     <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
@@ -43,16 +42,15 @@
         | {{getSelectedStatuses()}}
     </span>
 
-    <div class="btn-group pull-right" ng-controller="ExportCtrl" ng-if="module === 'cde'">
+    <div class="btn-group pull-right" ng-controller="ExportCtrl">
         <button id="export" type="button" class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-download"></i>
             Export Search <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a id="csvExport" ng-click="exportSearchResults('csv')">CSV File</a></li>
-            <li><a id="jsonExport" ng-click="exportSearchResults('json')">JSON File</a></li>
-            <li><a id="xmlExport" ng-click="exportSearchResults('xml')">XML File</a></li>
+            <li ng-repeat="(key, value) in exporters">
+                <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a></li>
         </ul>
     </div>
 

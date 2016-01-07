@@ -24,7 +24,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         findElement(By.id("status_tab")).click();
         textPresent("Unresolved Issue");
-        findElement(By.id("editStatus")).click();
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
         findElement(By.id("saveRegStatus")).click();
         closeAlert();
