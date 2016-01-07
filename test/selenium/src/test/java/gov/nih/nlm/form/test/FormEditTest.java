@@ -94,7 +94,7 @@ public class FormEditTest extends BaseFormTest {
         textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_2']"));
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/span/i"));
+        clickElement(By.xpath("//*[@id='dd_question_instructions_2']//i"));
         textPresent("Confirm");
         findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/form/input")).clear();
         findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/form/input")).sendKeys(newQuestionInstruction);
