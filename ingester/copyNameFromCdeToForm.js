@@ -29,7 +29,7 @@ Form.find({
                     if (err)
                         process.exit(1);
                     else {
-                        console.log('saved form id: ' + form.get('tinyId'));
+                        console.log('saved form id: ' + form.tinyId);
                         formCounter++;
                         doneOneForm();
                     }
@@ -52,6 +52,9 @@ Form.find({
                         console.log('found cde id: ' + cdeTinyId + ' version: ' + version);
                         if (cde) fe.question.cde.name = cde.naming[0].designation;
                         else {
+                            if (cdeTinyId === 'zZoPTQYOGoX') {
+                                console.log('stop');
+                            }
                             console.log("no CDE with id: " + cdeTinyId)
                         }
                         areYouDone();
