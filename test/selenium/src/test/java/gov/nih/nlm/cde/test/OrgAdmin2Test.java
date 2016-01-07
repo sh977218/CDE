@@ -91,7 +91,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
     public void noTabIfSingleOrg() {
         mustBeLoggedInAs(cabigAdmin_username, password);
 
-        findElement(By.id("username_link")).click();
+        clickElement(By.id("username_link"));
         findElement(By.linkText("Account Management")).click();
 
         textPresent("Organizations Admins");
