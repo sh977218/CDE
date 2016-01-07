@@ -126,7 +126,8 @@ app.use("/article/public", express.static(path.join(__dirname,'/modules/article/
 app.use(flash());
 auth.init(app);
 
-var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
+    date: ":date", referrer: ":referrer", responseTime: ":response-time"};
 
 morganLogger.token('real-remote-addr', function(req) {
     return getRealIp(req);
