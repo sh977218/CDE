@@ -116,7 +116,7 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use("/public/components", express.static(path.join(__dirname,'/modules/system/public/components')));
+app.use("/components", express.static(path.join(__dirname,'/modules/components')));
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
 
