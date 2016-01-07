@@ -95,12 +95,14 @@ public class FormEditTest extends BaseFormTest {
 
         String newQuestionInstruction = "New Question Instruction";
         clickElement(By.xpath("//*[@id='dd_question_instructions_2']//i"));
+        textPresent("Plain Text");
+        textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/form/input")).clear();
-        findElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/form/input")).sendKeys(newQuestionInstruction);
-        clickElement(By.xpath("//*[@id='dd_question_instructions_2']/div/span/form/button[1]"));
+        findElement(By.xpath("//*[@id='dd_question_instructions_2']//textarea")).clear();
+        findElement(By.xpath("//*[@id='dd_question_instructions_2']//textarea")).sendKeys(newQuestionInstruction);
+        clickElement(By.xpath("//*[@id='dd_question_instructions_2']//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newQuestionInstruction, By.xpath("//*[@id='dd_question_instructions_2']/div/span/span"));
+        textPresent(newQuestionInstruction, By.xpath("//*[@id='dd_question_instructions_2']/div/div/div/span/span"));
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
         clickElement(By.xpath("//*[@id='dd_q_uoms_2']/button"));
