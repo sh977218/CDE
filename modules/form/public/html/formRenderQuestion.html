@@ -1,5 +1,5 @@
 <span ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)">
-    <div class="row">
+    <div ng-if="displayInstruction" class="row">
         <div class="col-md-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
                 <span ng-bind="question.instructions.value"></span></span>

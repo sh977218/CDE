@@ -16,13 +16,14 @@
         </div>
     </div>
     <div class="panel-body">
-        <div tabindex="0" ng-switch="section.instructions.valueFormat">
-            <span ng-switch-default>
-                <span ng-bind="section.instructions.value"></span>
-            </span>
+        <div ng-if="displayInstruction" class="row">
+            <div class="col-md-12" ng-switch="section.instructions.valueFormat">
+            <span ng-switch-default class="text-muted">
+                <span ng-bind="section.instructions.value"></span></span>
             <span ng-switch-when="html">
                 <span ng-bind-html="section.instructions.value"></span>
             </span>
+            </div>
         </div>
         <hr/>
         <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">

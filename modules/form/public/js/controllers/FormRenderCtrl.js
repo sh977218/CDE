@@ -4,6 +4,8 @@ angular.module('formModule')
     function ($scope, $http, $routeParams, $window)
 {
 
+    $scope.displayInstruction = false;
+
     $scope.selection = {};
     var setSelectedProfile = function() {
         if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
