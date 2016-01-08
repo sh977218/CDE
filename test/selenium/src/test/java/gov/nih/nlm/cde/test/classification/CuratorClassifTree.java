@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.classification;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -11,6 +12,7 @@ public class CuratorClassifTree extends NlmCdeBaseTest {
     public void curatorCantEditClassifTree() {
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassificationMgt();
+        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText("CTEP");
 
         textPresent("CRF_TTU");
 
