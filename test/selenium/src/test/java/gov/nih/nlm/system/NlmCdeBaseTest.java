@@ -18,6 +18,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -34,8 +35,9 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -73,6 +75,8 @@ public class NlmCdeBaseTest {
     protected static String testAdmin_username = "testAdmin";
 
     protected static String password = "pass";
+
+    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
 
     @BeforeTest
     public void countElasticElements() {
@@ -134,6 +138,12 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1280, 800);
+
+        filePerms.add(PosixFilePermission.OWNER_READ);
+        filePerms.add(PosixFilePermission.OWNER_WRITE);
+        filePerms.add(PosixFilePermission.OTHERS_READ);
+        filePerms.add(PosixFilePermission.OTHERS_WRITE);
+
     }
 
     @AfterMethod
@@ -196,7 +206,7 @@ public class NlmCdeBaseTest {
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
@@ -532,6 +542,7 @@ public class NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));

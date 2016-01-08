@@ -9,6 +9,11 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.autocomplete = AutoCompleteResource;
     $scope.filterMode = true;
 
+    $scope.exporters = {
+        json: {id: "jsonExport", display: "JSON Export"},
+        xml: {id: "xmlExport", display: "XML Export"}
+    };
+
     if ($route.current.subCtrl) {
         $controller($route.current.subCtrl, {$scope: $scope});
     }
@@ -289,7 +294,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
-        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search();
+        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search($scope.module);
     });
 
     $scope.termSearch = function() {
