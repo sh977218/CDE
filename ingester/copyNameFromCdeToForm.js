@@ -21,6 +21,7 @@ Form.find({
         process.exit(0);
     }
     async.eachSeries(forms, function (form, doneOneForm) {
+        console.log("begin form id: " + form.tinyId);
         var questionCount = 0;
         var areYouDone = function () {
             console.log(questionCount);
@@ -41,6 +42,8 @@ Form.find({
             formElements.forEach(function (fe) {
                 if (fe.elementType === 'question') {
                     questionCount++;
+                    if (fe._Id)
+                        delete fe._id;
                     var cdeTinyId = fe.question.cde.tinyId;
                     var version = fe.question.cde.version;
                     DataElement.findOne({tinyId: cdeTinyId, version: version}).exec(function (err, cde) {
