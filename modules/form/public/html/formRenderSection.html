@@ -4,8 +4,6 @@
         <div class="row">
             <div class="col-md-9">
                 <h4 tabindex="0">{{section.label}}</h4>
-
-
             </div>
             <div class="col-md-3" ng-if="canRepeat(section)">
                 <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)">
@@ -18,19 +16,15 @@
         </div>
     </div>
     <div class="panel-body">
-
-        <p tabindex="0" ng-switch="section.instructions.valueFormat">
-                    <span ng-switch-default><span ng-bind="section.instructions.value"
-                                                  ng-text-truncate="section.instructions.value"
-                                                  ng-tt-threshold="500"></span></span>
-                    <span ng-switch-when="html">
-                        <span ng-bind-html="section.instructions.value"
-                              ng-tt-threshold="1500"></span>
-                    </span>
-        </p>
-
+        <div tabindex="0" ng-switch="section.instructions.valueFormat">
+            <span ng-switch-default>
+                <span ng-bind="section.instructions.value"></span>
+            </span>
+            <span ng-switch-when="html">
+                <span ng-bind-html="section.instructions.value"></span>
+            </span>
+        </div>
         <hr/>
-
         <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">
             <div ng-switch-when="true">
                 <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>

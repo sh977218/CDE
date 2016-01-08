@@ -1,4 +1,13 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Display Instruction
+                </label>
+            </div>
+        </div>
+    </div>
     <h2>{{elt.naming[0].designation}}</h2>
 
     <div ng-if="elt.displayProfiles.length > 0">
