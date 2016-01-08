@@ -78,6 +78,10 @@ angular.module('systemModule').controller('MainCtrl',
                 return exports.isOrgAdmin(userResource.user);
             };
 
+            $scope.isOrgAuthority = function() {
+                return exports.hasRole(userResource.user, "OrgAuthority");
+            };
+
             $scope.isSiteAdmin = function () {
                 return userResource.user !== undefined && userResource.user.siteAdmin;
             };
