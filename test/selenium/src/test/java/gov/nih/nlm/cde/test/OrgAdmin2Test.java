@@ -86,4 +86,17 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         textPresent("2 forms transferred.");
         resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
+
+    @Test
+    public void noTabIfSingleOrg() {
+        mustBeLoggedInAs(cabigAdmin_username, password);
+
+        clickElement(By.id("username_link"));
+        findElement(By.linkText("Account Management")).click();
+
+        textPresent("Organizations Admins");
+        textNotPresent("CDE & Form Management");
+
+    }
+
 }
