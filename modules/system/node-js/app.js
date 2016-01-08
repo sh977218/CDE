@@ -32,7 +32,7 @@ exports.init = function(app) {
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login"].forEach(function(path) {
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function(path) {
         app.get(path, function(req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
         });
@@ -248,7 +248,7 @@ exports.init = function(app) {
     });
 
     app.post('/addOrg', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             orgsvc.addOrg(req, res);
         } else {
             res.status(401).send();
@@ -256,7 +256,7 @@ exports.init = function(app) {
     });
 
     app.post('/updateOrg', function(req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             orgsvc.updateOrg(req, res);
         } else {
             res.status(401).send();
@@ -321,30 +321,17 @@ exports.init = function(app) {
     });
 
     app.post('/addOrgAdmin', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        if (req.isAuthenticated() &&
+            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgAdmin(req, res);
         } else {
             res.status(401).send();
         }
     });
 
-    app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
-    };
-
-    app.get('/searchUsers/:username?', function(req, res) {
-        if (app.isLocalIp(getRealIp(req))
-                && req.user && req.user.siteAdmin) {
-            mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
-                res.send({users: users});
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
-
     app.post('/removeOrgAdmin', function(req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {        
+        if (req.isAuthenticated() &&
+            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
             usersrvc.removeOrgAdmin(req, res);
         } else {
             res.status(401).send();
@@ -365,7 +352,22 @@ exports.init = function(app) {
         } else {
             res.status(401).send();
         }
-    });    
+    });
+
+    app.isLocalIp = function (ip) {
+        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
+    };
+
+    app.get('/searchUsers/:username?', function(req, res) {
+        if (app.isLocalIp(getRealIp(req))
+                && req.user && req.user.siteAdmin) {
+            mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
+                res.send({users: users});
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
 
     app.post('/updateUserRoles', function(req, res) {  
         if (req.isAuthenticated() && req.user.siteAdmin) {

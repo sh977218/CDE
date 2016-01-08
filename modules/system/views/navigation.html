@@ -74,22 +74,25 @@
                         <span ng-bind="user.username | truncateLongUserName"></span><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="username_link">
                         <li ng-show='user._id'>
-                            <a href="/#/profile" id="user_profile">Profile</a>
+                            <a href="/profile" id="user_profile">Profile</a>
                         </li>
                         <li ng-show='inboxVisible()'>
-                            <a href="/#/inbox" id="user_inbox">Inbox</a>
+                            <a href="/inbox" id="user_inbox">Inbox</a>
                         </li>
                         <li ng-show="isOrgCurator()">
-                            <a href="/#/classificationmanagement" id="user_classifications">Classifications</a>
+                            <a href="/classificationmanagement" id="user_classifications">Classifications</a>
+                        </li>
+                        <li ng-show="isOrgAuthority()">
+                            <a href="/orgauthority" id="user_org_authority">Org Management</a>
                         </li>
                         <li ng-show="isOrgAdmin() && !user.siteAdmin">
-                            <a href="/#/orgaccountmanagement" id="user_account_management">Account Management</a>
+                            <a href="/orgaccountmanagement" id="user_account_management">Account Management</a>
                         </li>
                         <li ng-show='user._id && user.siteAdmin'>
-                            <a href="/#/siteaccountmanagement" id="user_site_management">Site Management</a>
+                            <a href="/siteaccountmanagement" id="user_site_management">Site Management</a>
                         </li>
                         <li ng-show='user._id && user.siteAdmin'>
-                            <a href="/#/siteAudit" id="user_audit">Audit</a>
+                            <a href="/siteAudit" id="user_audit">Audit</a>
                         </li>
                         <li ng-show='user._id'>
                             <a href="" ng-click="logout()" target="_self" id="user_logout">Log Out</a>
