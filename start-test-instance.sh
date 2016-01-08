@@ -6,7 +6,7 @@ NODE_LOC='.'
 db_user='cdeuser'
 db_password='password'
 
-target='{"count":0,"_shards":{"total":2,"successful":2,"failed":0}}'
+target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
 
 gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ clean compileTest &
 
@@ -47,7 +47,7 @@ mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password 
 mongo test test/initOrgs.js -u $db_user -p $db_password 
 
-target='{"count":11671,"_shards":{"total":2,"successful":2,"failed":0}}'
+target='{"count":11671,"_shards":{"total":1,"successful":1,"failed":0}}'
 #wait for full
 COUNTER=0
 while [ $COUNTER -lt 80 ]; do
