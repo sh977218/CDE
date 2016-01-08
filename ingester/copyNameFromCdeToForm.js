@@ -14,7 +14,6 @@ var Form = conn.model('Form', form_schemas.formSchema);
 var formCounter = 0;
 
 Form.find({
-    tinyId: "-1EuCaaUS",
     archived: null
 }).exec(function (err, forms) {
     if (err) {
@@ -43,8 +42,6 @@ Form.find({
             formElements.forEach(function (fe) {
                 if (fe.elementType === 'question') {
                     questionCount++;
-                    if (fe._Id)
-                        delete fe._id;
                     var cdeTinyId = fe.question.cde.tinyId;
                     var version = fe.question.cde.version;
                     DataElement.findOne({tinyId: cdeTinyId, version: version}).exec(function (err, cde) {
@@ -56,9 +53,6 @@ Form.find({
                         console.log('found cde id: ' + cdeTinyId + ' version: ' + version);
                         if (cde) fe.question.cde.name = cde.naming[0].designation;
                         else {
-                            if (cdeTinyId === 'zZoPTQYOGoX') {
-                                console.log('stop');
-                            }
                             console.log("no CDE with id: " + cdeTinyId)
                         }
                         areYouDone();
