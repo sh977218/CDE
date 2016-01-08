@@ -1,7 +1,14 @@
 <span ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)">
     <div class="row">
-        <div class="col-md-3">Instruction:</div>
-        <div class="col-md-9" ng-bind-html="question.instructions.value">
+        <div class="col-md-12" ng-switch="question.instructions.valueFormat">
+            <span ng-switch-default class="text-muted"><span ng-bind="question.instructions.value"
+                                          ng-text-truncate="question.instructions.value"
+                                          ng-tt-threshold="500"></span></span>
+            <span ng-switch-when="html">
+                <span ng-bind-html="question.instructions.value"
+                      ng-text-truncate="question.instructions.value"
+                      ng-tt-threshold="1500"></span>
+            </span>
         </div>
     </div>
     <div class="row">
