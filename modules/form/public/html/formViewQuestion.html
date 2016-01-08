@@ -36,7 +36,10 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
                         <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-                             model="question.instructions" is-allowed="canCurate()" on-ok="stageElt()"></div>
+                             model="question.instructions.value"
+                             def-format="question.instructions.valueFormat"
+                             is-allowed="canCurate" on-ok="stageElt()">
+                        </div>
                     </div>
                 </div>
                 <div class="row">

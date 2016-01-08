@@ -26,7 +26,7 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-schemas.orgSchema = new mongoose.Schema ({
+schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
     , mailAddress: String
@@ -38,7 +38,7 @@ schemas.orgSchema = new mongoose.Schema ({
     , extraInfo: String
 });
 
-schemas.userSchema = new mongoose.Schema ({
+schemas.userSchema = new mongoose.Schema({
     username: String
     , email: String
     , password: String
@@ -50,9 +50,9 @@ schemas.userSchema = new mongoose.Schema ({
     , quota: Number
     , viewHistory: [String]
     , knownIPs: [String]
-    , roles: [{ type: String, enum: authorizationShared.rolesEnum }]
+    , roles: [{type: String, enum: authorizationShared.rolesEnum}]
     , searchSettings: {
-        defaultSearchView: { type: String, enum: ["accordion", "table"]}
+        defaultSearchView: {type: String, enum: ["accordion", "table"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
             cde: {
@@ -116,6 +116,10 @@ schemas.registrationStateSchema = {
     , replacedBy: {tinyId: String}
 };
 
+schemas.instructionSchema = new mongoose.Schema({
+    value: String, valueFormat: String
+}, {_id: false});
+
 schemas.commentSchema = new mongoose.Schema({
     text: String
     , user: String
@@ -152,7 +156,7 @@ var commentApprovalSchema = {
     , comment: {index: Number, text: String}
 };
 
-schemas.message = new mongoose.Schema ({
+schemas.message = new mongoose.Schema({
     recipient: {
         recipientType: {type: String, enum: ["user", "stewardOrg", "role"]}
         , name: String
@@ -188,17 +192,17 @@ schemas.clusterStatus = mongoose.Schema({
 });
 
 schemas.fs_files = new mongoose.Schema({
-    "_id" : mongoose.Schema.Types.ObjectId
-    , "filename" : String
-    , "contentType" : String
-    , "length" : Number
-    , "chunkSize" : Number
-    , "uploadDate" : Date
-    , "aliases" : String
-    , "metadata" : {
-        "status" : String
+    "_id": mongoose.Schema.Types.ObjectId
+    , "filename": String
+    , "contentType": String
+    , "length": Number
+    , "chunkSize": Number
+    , "uploadDate": Date
+    , "aliases": String
+    , "metadata": {
+        "status": String
     }
-    , "md5" : String
+    , "md5": String
 });
 
 schemas.referenceDocumentSchema = {
@@ -214,7 +218,7 @@ schemas.referenceDocumentSchema = {
 };
 
 schemas.classificationAudit = new mongoose.Schema({
-    date: { type: Date, default: Date.now, index: true }
+    date: {type: Date, default: Date.now, index: true}
     , user: {
         username: String
     }
@@ -227,7 +231,7 @@ schemas.classificationAudit = new mongoose.Schema({
         , eltType: {type: String, enum: ["cde", "form"]}
     }]
     , newname: String
-    , action: {type: String, enum: ["add","delete","rename", "reclassify"]}
+    , action: {type: String, enum: ["add", "delete", "rename", "reclassify"]}
     , path: [String]
 });
 
