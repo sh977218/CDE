@@ -1,0 +1,110 @@
+<div class="container">
+    <uib-tabset class="pt40 pb40">
+        <div uib-tab heading="Organizations">
+            <form class="form-inline pt40 pb40" role="form" id="addOrgForm" name="addOrgForm" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="newOrgName" name="newOrgName"
+                           placeholder="Organization Name" ng-model="newOrg.name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="newOrgLongName" name="newOrgLongName"
+                           placeholder="Organization Long Name" ng-model="newOrg.longName">
+                </div>
+                <div class="form-group">
+                    <select id="newOrgWorkingGroup" class="form-control" ng-model="newOrg.workingGroupOf"
+                            ng-options="myOrg for myOrg in myOrgs">
+                        <option value="">Working Group Of</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="addOrg" ng-click="addOrg()"
+                        ng-disabled="addOrgForm.newOrgName.$invalid">Add Organization</button>
+            </form>
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Organization Long Name:</th>
+                    <th>Mailing Address:</th>
+                    <th>E-mail Address:</th>
+                    <th>Phone Number:</th>
+                    <th>Website:</th>
+                    <th>Extra Info:</th>
+                    <th>Working Group Of:</th>
+                </tr>
+                <tr ng-repeat="c in orgs | orderBy:'name'">
+                    <td id="orgName-{{c.name}}">
+                        {{c.name}}
+                    </td>
+                    <td>
+                        <div inline-edit id="orgLongName-{{c.name}}" model="c.longName"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgMailAddress-{{c.name}}" model="c.mailAddress"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgEmailAddress-{{c.name}}" model="c.emailAddress"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgPhoneNumber-{{c.name}}" model="c.phoneNumber"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgUri-{{c.name}}" model="c.uri" is-allowed="true"
+                             on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgExtra-{{c.name}}" model="c.extraInfo" is-allowed="true"
+                             on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgWg-{{c.name}}" typeahead-source="orgNames"
+                             model="c.workingGroupOf"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div uib-tab heading="Org Admins">
+            <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
+                Make
+                <div class="form-group">
+                    <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
+                           placeholder="enter user name" ng-model="orgAdmin.username"
+                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           typeahead-min-length="3" required>
+                </div>
+                an administrator for
+                <div class="form-group">
+                    <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
+                            ng-model="admin.orgName"
+                            ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in orgs" required>
+                        <option value="">select organization</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"
+                        ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid"
+                        >Make Admin</button>
+            </form>
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Admins for this Organization:</th>
+                </tr>
+                <tr ng-repeat="orgAdmin in orgAdmins | orderBy:'name'">
+                    <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
+                        {{orgAdmin.name}}
+                    </td>
+                    <td>
+                        <div ng-repeat="user in orgAdmin.users">
+                                    <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}
+                                    </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(orgAdmin.name, user._id)"
+                                               id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </uib-tabset>
+</div>
