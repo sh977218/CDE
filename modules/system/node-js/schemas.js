@@ -116,9 +116,9 @@ schemas.registrationStateSchema = {
     , replacedBy: {tinyId: String}
 };
 
-schemas.instructionSchema = new mongoose.Schema({
+schemas.instructionSchema = {
     value: String, valueFormat: String
-}, {_id: false});
+};
 
 schemas.commentSchema = new mongoose.Schema({
     text: String
