@@ -1,13 +1,22 @@
 angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http',
     function ($scope, $modal, $timeout, $http) {
 
+        //$scope.cardinalityOptions =
+        //{
+        //    "1": "Exactly 1"
+        //    , "+": "1 or more"
+        //    , "*": "0 or more"
+        //    , "0.1": "0 or 1"
+        //};
+
         $scope.cardinalityOptions =
         {
-            "1": "Exactly 1"
-            , "+": "1 or more"
-            , "*": "0 or more"
-            , "0.1": "0 or 1"
+            "1": {label: "Exactly 1", value: {min: 1, max: 1}}
+            , "+": {label: "1 or more", value: {min: 1, max: -1}}
+            //, "0 or more": {min: 0, max: -1}
+            //, "0 or 1": {min: 0, max: 1}
         };
+
 
         $scope.addSection = function () {
             if (!$scope.elt.formElements) {

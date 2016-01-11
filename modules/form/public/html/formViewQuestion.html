@@ -55,10 +55,17 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_q_card_{{$index}}">
                         <div ng-show="editCardMode">
+                            <!--<select ng-model="question.cardinality"-->
+                                    <!--ng-options="key as value for (key, value) in cardinalityOptions"-->
+                                    <!--id="question.cardinality"></select>-->
+                            <!--<br/>-->
                             <select ng-model="question.cardinality"
-                                    ng-options="key as value for (key, value) in cardinalityOptions"
-                                    id="question.cardinality"></select>
-                            <br/>
+                                    ng-options="item.value as item.label for item in cardinalityOptions"
+                                    >
+                                <!--<option ng-repeat="(key, value) in cardinalityOptions" value="{{value}}">-->
+                                    <!--{{key}}-->
+                                </option>
+                            </select>
                             <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
                                 Confirm
                             </button>
