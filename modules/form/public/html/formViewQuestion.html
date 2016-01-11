@@ -55,15 +55,8 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_q_card_{{$index}}">
                         <div ng-show="editCardMode">
-                            <!--<select ng-model="question.cardinality"-->
-                                    <!--ng-options="key as value for (key, value) in cardinalityOptions"-->
-                                    <!--id="question.cardinality"></select>-->
-                            <!--<br/>-->
-                            <select ng-model="question.cardinality"
-                                    ng-options="item.value as item.label for item in cardinalityOptions">
-                                <!--<option ng-repeat="(key, value) in cardinalityOptions" value="{{value}}">-->
-                                    <!--{{key}}-->
-                                </option>
+                            <select ng-model="cardinality" ng-change="saveCardinality(question,cardinality)"
+                                    ng-options="item.label for item in cardinalityOptions">
                             </select>
                             <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
                                 Confirm
@@ -75,7 +68,7 @@
                         <div ng-hide="editCardMode">
                             <i ng-show="canCurate" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = question.cardinality"
-                               id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
+                               id="editQuestion"></i><span ng-bind="getCardinalityLabel(question.cardinality)"></span>
                         </div>
                     </div>
                 </div>

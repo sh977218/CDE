@@ -25,8 +25,8 @@ var questionSchema = {
 
 var sectionSchema = {};
 var cardinalitySchema = {
-    min: String,
-    max: String
+    min: Number,
+    max: Number
 };
 
 var formElementTreeRoot = {
