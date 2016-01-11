@@ -67,6 +67,6 @@
     "streamifier": "0.1.1",
     "mongoosastic": "3.3.2",
     "js2xmlparser": "1.0.0",
-    "jxon": "1.5.6"
+    "jxon": "https://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484"
   }
 }
