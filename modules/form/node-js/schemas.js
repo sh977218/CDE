@@ -106,6 +106,7 @@ exports.formSchema = new Schema({
         , sectionsAsMatrix: {type: Boolean}
         , displayValues: {type: Boolean}
         , context: {contextName: String}
+        , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
