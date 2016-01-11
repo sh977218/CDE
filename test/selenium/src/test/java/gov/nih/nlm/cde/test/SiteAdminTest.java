@@ -33,7 +33,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void addOrg() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs("theOrgAuth", password);
         String testOrg = "New Test Org";
         addOrg(testOrg, null, null);
 
@@ -44,7 +44,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void renameOrg() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs("theOrgAuth", password);
         String testOrg = "New Test Org 3";
         String testOrgRenamed = "New Test Org 3 Renamed";
         String testOrgNotRenamed = "New Test Org 3 Not Renamed";
@@ -133,13 +133,13 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void promoteOrgAdmin() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs("theOrgAuth", password);
         String testOrg = "Promote Org Test";
 
         addOrg(testOrg, null, null);
 
         findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Org Management")).click();
         findElement(By.linkText("Org Admins")).click();
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         findElement(By.id("newOrgAdminUsername")).sendKeys(test_username);
@@ -155,7 +155,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
 
         findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
+        findElement(By.linkText("Org Management")).click();
         findElement(By.linkText("Org Admins")).click();
 
         findElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//i[@title=\"Remove\"]")).click();

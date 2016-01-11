@@ -26,6 +26,7 @@ var logSchema = new mongoose.Schema(
     , httpStatus: String
     , date: {type: Date, index: true}
     , referrer: String
+    , responseTime: Number
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var logErrorSchema = new mongoose.Schema(
@@ -132,7 +133,8 @@ exports.storeQuery = function(settings, callback) {
     }
 };
 
-exports.log = function(message, callback) {    
+exports.log = function(message, callback) {
+    if (!isNaN(message.reponseTime)) delete message.reponseTime;
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function(err) {

@@ -5,6 +5,7 @@ angular.module('formModule', ['resourcesForm', 'ngRoute']).config(function($rout
             controller: 'ListCtrl',
             subCtrl: 'FormListCtrl',
             templateUrl: '/system/public/html/list.html',
+            reloadOnSearch: false,
             title: "Find protocol forms",
             keywords: 'form, protocol, protocol form, crf, case report form, repository',
             description: 'Repository of Protocol Forms and Common Data Elements. Search Forms and CDEs.'
