@@ -250,12 +250,14 @@ angular.module('formModule').controller('FormViewCtrl',
                     if (questions.length <= 0) return [];
                     var question = questions[0];
                     if (question.question.datatype === 'Number') {
-                        return '"' + question.question.datatype.min + '"';
+                        return [];
                     }
-                    var answers = question.question.answers;
-                    return answers.map(function (a) {
-                        return '"' + a.permissibleValue + '"';
-                    });
+                    else if (question.question.datatype === 'Value List') {
+                        var answers = question.question.answers;
+                        return answers.map(function (a) {
+                            return '"' + a.permissibleValue + '"';
+                        });
+                    } else return [];
                 }
                 if (languageMode == 'conjuction') return ["AND", "OR"];
                 return [];
