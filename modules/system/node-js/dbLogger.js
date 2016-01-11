@@ -152,15 +152,22 @@ exports.logError = function(message, callback) {
     });
 };
 
+var logsInQueue = [];
+
 exports.logClientError = function(req, callback) {
     var exc = req.body;
+    if (logsInQueue.indexOf(exc.stack) !== -1) return callback();
+    logsInQueue.push(exc.stack);
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     var logEvent = new ClientErrorModel(exc);
-    logEvent.save(function(err) {
-        if (err) console.log ("ERROR: " + err);
-        callback(err); 
-    });
+    setTimeout(function() {
+        logEvent.save(function(err) {
+            if (err) console.log ("ERROR: " + err);
+            logsInQueue.splice(logsInQueue.indexOf(exc.stack), 1);
+            callback(err);
+        });
+    }, 5000);
 };
 
 exports.getLogs = function(inQuery, callback) {
