@@ -10,19 +10,16 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 {label: "0 or 1", value: {min: 0, max: 1}}
             ];
         $scope.getCardinalityLabel = function (cardinality) {
-            if (JSON.stringify(cardinality) === JSON.stringify({min: 1, max: 1}))
-                return "Exactly 1";
-            else if (JSON.stringify(cardinality) === JSON.stringify({min: 1, max: -1}))
-                return "1 or more";
-            else if (JSON.stringify(cardinality) === JSON.stringify({min: 0, max: -1}))
-                return "0 or more";
-            else if (JSON.stringify(cardinality) === JSON.stringify({min: 0, max: 1}))
-                return "0 or 1";
-            else return "";
-        };
-
-        $scope.saveCardinality = function (o, cardinality) {
-            o.cardinality = cardinality.value;
+            return {
+                "0": {
+                    "1": "0 or 1"
+                    , "-1": "0 or more"
+                },
+                "1": {
+                    "1": "Exactly 1"
+                    , "-1": "1 or more"
+                }
+            }[cardinality.min][cardinality.max];
         };
 
         $scope.addSection = function () {

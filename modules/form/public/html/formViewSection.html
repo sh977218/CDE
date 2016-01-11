@@ -31,8 +31,8 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_card_{{$index}}">
                         <div ng-show="editCardMode">
-                            <select ng-model="cardinality" ng-change="saveCardinality(section,cardinality)"
-                                    ng-options="item.label for item in cardinalityOptions">
+                            <select ng-model="section.cardinality"
+                                    ng-options="item.value as item.label for item in cardinalityOptions">
                             </select>
                             <br/>
                             <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
