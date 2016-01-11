@@ -68,7 +68,7 @@
                         <div ng-hide="editCardMode">
                             <i ng-show="canCurate" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = question.cardinality"
-                               id="editQuestion"></i><span ng-bind="getCardinalityLabel(question.cardinality)"></span>
+                               id="editQuestion"></i>{{getCardinalityLabel(question.cardinality)}}
                         </div>
                     </div>
                 </div>
