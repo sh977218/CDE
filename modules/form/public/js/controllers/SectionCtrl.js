@@ -10,6 +10,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 {label: "0 or 1", value: {min: 0, max: 1}}
             ];
         $scope.getCardinalityLabel = function (cardinality) {
+            if (!cardinality)
+                return "";
             return {
                 "0": {
                     "1": "0 or 1"
