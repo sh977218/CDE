@@ -45,5 +45,6 @@ Form.find({}).exec(function (err, forms) {
         });
     }, function doneAllForms() {
         console.log('finished all forms: ' + counter);
+        process.exit(0);
     });
 });
