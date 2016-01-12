@@ -1,8 +1,6 @@
-angular.module('formModule')
-    .controller('FormRenderCtrl',
+angular.module('formModule').controller('FormRenderCtrl',
     ['$scope', '$http', '$routeParams', '$window',
         function ($scope, $http, $routeParams, $window) {
-
             $scope.selection = {};
             var setSelectedProfile = function () {
                 if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
@@ -137,24 +135,37 @@ angular.module('formModule')
                 if (rule.indexOf("AND") > -1) {
                     var firstRule = /.+AND/.exec(rule)[0].slice(0, -4);
                     var secondRule = /AND.+/.exec(rule)[0].substr(4, 100);
-                    return $scope.evaluateSkipLogic(firstRule, formElements) && $scope.evaluateSkipLogic(secondRule, formElements);
+                    var firstResult = $scope.evaluateSkipLogic(firstRule, formElements);
+                    var secondResult = $scope.evaluateSkipLogic(secondRule, formElements);
+                    if (firstResult && secondResult)
+                        return true;
+                    else return false;
                 }
                 if (rule.indexOf("OR") > -1) {
                     var firstRule = /.+OR/.exec(rule)[0].slice(0, -3);
                     var secondRule = /OR.+/.exec(rule)[0].substr(3, 100);
-                    return $scope.evaluateSkipLogic(firstRule, formElements) || $scope.evaluateSkipLogic(secondRule, formElements);
+                    var firstResult = $scope.evaluateSkipLogic(firstRule, formElements);
+                    var secondResult = $scope.evaluateSkipLogic(secondRule, formElements);
+                    if (firstResult || secondResult)
+                        return true;
+                    else return false;
                 }
-                var question = /^"[^""]+"/.exec(rule)[0].substr(1, 100).slice(0, -1);
-                var operator = /=|<|>/.exec(rule)[0];
-                var expectedAnswer = /"[^""]+"$/.exec(rule)[0].substr(1, 100).slice(0, -1);
-                var realAnswer = formElements.filter(function (element) {
-                    if (element.elementType !== 'question') return;
-                    if (element.label !== question) return;
-                    return true;
-                })[0].question.answer;
-                if (operator === '=') return realAnswer === expectedAnswer;
-                if (operator === '<') return parseInt(realAnswer) < parseInt(expectedAnswer);
-                if (operator === '>') return parseInt(realAnswer) > parseInt(expectedAnswer);
+                var ruleArr = rule.split(/[>|<|=]/);
+                var question = ruleArr[0].replace(/"/g, "").trim();
+                var operator = /=|<|>|>=|<=/.exec(rule)[0];
+                var expectedAnswer = ruleArr[1].trim();
+                var realAnswerArr = formElements.filter(function (element) {
+                    if (element.elementType != 'question') return false;
+                    else if (element.label != question) return false;
+                    else return true;
+                });
+                var realAnswerObj = realAnswerArr[0];
+                var realAnswer = realAnswerObj.question.answer;
+                if (realAnswer) {
+                    if (operator === '=') return realAnswer === expectedAnswer;
+                    if (operator === '<') return realAnswer < parseInt(expectedAnswer);
+                    if (operator === '>') return realAnswer > parseInt(expectedAnswer);
+                } else return true;
             };
 
             $scope.canBeDisplayedAsMatrix = function (section) {
