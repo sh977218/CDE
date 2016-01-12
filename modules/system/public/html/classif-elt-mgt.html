@@ -4,7 +4,7 @@
     </span>
 </a>
 
-<span >
+<span ng-if="isOrgAdmin()">
     <a title="Edit"
        class="hand-cursor"
        ng-click="showRenameDialog(orgName, pathArray)"><i class="fa fa-pencil"></i></a>
