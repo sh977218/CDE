@@ -1,14 +1,12 @@
 var mongoose = require('mongoose'),
     config = require('../modules/system/node-js/parseConfig'),
     form_schemas = require('../modules/form/node-js/schemas'),
-    form_mongo = require('../modules/form/node-js/mongo-form'),
     async = require('async');
 
 var mongoUrl = config.mongoUri;
 var conn = mongoose.createConnection(mongoUrl);
 var Form = conn.model('Form', form_schemas.formSchema);
 var counter = 0;
-var user = {username: "peter"};
 
 function loopFormElements(fe) {
     fe.formElements.forEach(function (e) {
