@@ -36,9 +36,10 @@ function loopFormElements(fe) {
 Form.find({}).exec(function (err, forms) {
     if (err) throw err;
     async.eachSeries(forms, function (form, doneOneForm) {
+        var id = form.get('_id');
         var formObj = form.toObject();
         loopFormElements(formObj);
-        form_mongo.update(formObj, user, function () {
+        Form.update({_id: id}, {$set: {formElements: formObj.formElements}}, function () {
             counter++;
             console.log('form' + counter + ' form id: ' + form.tinyId);
             doneOneForm();
