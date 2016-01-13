@@ -138,22 +138,12 @@ angular.module('formModule')
         if (!rule) return true;
         rule = rule.trim();
         if (rule.indexOf("AND") > -1) {
-            var firstRule = /.+AND/.exec(rule)[0].slice(0, -4);
-            var secondRule = /AND.+/.exec(rule)[0].substr(4, 100);
-            var firstResult = $scope.evaluateSkipLogic(firstRule, formElements);
-            var secondResult = $scope.evaluateSkipLogic(secondRule, formElements);
-            if (firstResult && secondResult)
-                return true;
-            else return false;
+            return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements) &&
+                $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4, 100), formElements);
         }
         if (rule.indexOf("OR") > -1) {
-            var firstRule = /.+OR/.exec(rule)[0].slice(0, -3);
-            var secondRule = /OR.+/.exec(rule)[0].substr(3, 100);
-            var firstResult = $scope.evaluateSkipLogic(firstRule, formElements);
-            var secondResult = $scope.evaluateSkipLogic(secondRule, formElements);
-            if (firstResult || secondResult)
-                return true;
-            else return false;
+            return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements) ||
+                $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3, 100), formElements))
         }
         var ruleArr = rule.split(/[>|<|=]/);
         var question = ruleArr[0].replace(/"/g, "").trim();
@@ -161,8 +151,7 @@ angular.module('formModule')
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
         var realAnswerArr = formElements.filter(function (element) {
             if (element.elementType != 'question') return false;
-            else if (element.label != question) return false;
-            else return true;
+            else return element.label == question;
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj.question.answer;
