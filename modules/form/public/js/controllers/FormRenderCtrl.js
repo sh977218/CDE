@@ -149,7 +149,7 @@ angular.module('formModule')
         var question = ruleArr[0].replace(/"/g, "").trim();
         var operatorArr = /=|<|>|>=|<=/.exec(rule);
         if (!operatorArr) {
-            $scope.skipLogicError = "SkipLogic is incorrect.";
+            $scope.skipLogicError = "SkipLogic is incorrect. " + rule;
             return true;
         }
         var operator = operatorArr[0];
