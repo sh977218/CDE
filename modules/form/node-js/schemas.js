@@ -32,7 +32,7 @@ var cardinalitySchema = {
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
     , label: String
-    , instructions: String
+    , instructions: sharedSchemas.instructionSchema
     , cardinality: cardinalitySchema
     , repeatsFor: String
     , showIfExpression: String
@@ -49,7 +49,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
     currentLevel.push({
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
-        , instructions: String
+        , instructions: sharedSchemas.instructionSchema
         , cardinality: cardinalitySchema
         , repeatsFor: String
         , showIfExpression: String
