@@ -11,7 +11,7 @@ public class ForkMineMineTest extends ForkTest {
     public void forkMineMine() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Other Group Patient Identifier Number");
-        findElement(By.linkText("Forks")).click();
+        clickElement(By.linkText("Forks"));
         textPresent("This element has no forks");
         addFork("Fork will be retired", "CTEP");
 
@@ -30,7 +30,7 @@ public class ForkMineMineTest extends ForkTest {
         textPresent("Unable to accept. This fork may have been updated. Refresh page and try again.");
         closeAlert();
         driver.get(driver.getCurrentUrl());
-        findElement(By.linkText("Forks")).click();
+        clickElement(By.linkText("Forks"));
         textPresent("This element has no forks");
 
         addFork("fork will be merged", "CTEP");

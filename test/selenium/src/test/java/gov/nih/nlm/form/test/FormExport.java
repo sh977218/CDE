@@ -157,12 +157,22 @@ public class FormExport extends BaseFormTest {
         findElement(By.id("nihJson")).click();
 
         switchTab(1);
+
+        String[] toCompare = {
+            "{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}",
+            "{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}",
+                "{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}",
+                "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
+                "\"stewardOrg\":{\"name\":\"NINDS\"}",
+                "\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""
+        };
+
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
-        Assert.assertTrue(response.contains("{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}"));
-        Assert.assertTrue(response.contains("{\"permissibleValue\":\"Yes\",\"valueMeaningName\":\"Yes\"}"));
-        Assert.assertTrue(response.contains("\"registrationState\":{\"registrationStatus\":\"Qualified\"}"));
-        Assert.assertTrue(response.contains("\"stewardOrg\":{\"name\":\"NINDS\"}"));
-        Assert.assertTrue(response.contains("\"naming\":[{\"designation\":\"Adverse Event Tracking Log\""));
+
+        for (String s : toCompare) {
+            Assert.assertTrue(response.contains(s), "Export actually contains: " + response);
+        }
+
         switchTabAndClose(0);
     }
 
