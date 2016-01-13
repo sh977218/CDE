@@ -1,20 +1,19 @@
 angular.module('formModule')
     .controller('FormRenderCtrl',
     ['$scope', '$http', '$routeParams', '$window',
-        function ($scope, $http, $routeParams, $window)
-        {
+        function ($scope, $http, $routeParams, $window) {
 
             $scope.displayInstruction = false;
 
             $scope.selection = {};
-            var setSelectedProfile = function() {
+            var setSelectedProfile = function () {
                 if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
                     $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
                 }
             };
 
-            var reload = function(id) {
-                $http.get('/form/' + id).then(function(result) {
+            var reload = function (id) {
+                $http.get('/form/' + id).then(function (result) {
                     $scope.elt = result.data;
                     delete $scope.elt.attachments;
                     delete $scope.elt.classification;
@@ -34,32 +33,34 @@ angular.module('formModule')
             }
             setSelectedProfile();
 
-            var removeAnswers = function(formElt) {
+            var removeAnswers = function (formElt) {
                 if (formElt.question) delete formElt.question.answer;
-                formElt.formElements.forEach(function(fe) {removeAnswers(fe);});
+                formElt.formElements.forEach(function (fe) {
+                    removeAnswers(fe);
+                });
             };
 
-            $scope.addSection = function(section, formElements, index) {
-                var newElt =  JSON.parse(JSON.stringify(section));
+            $scope.addSection = function (section, formElements, index) {
+                var newElt = JSON.parse(JSON.stringify(section));
                 newElt.isCopy = true;
                 removeAnswers(newElt);
                 formElements.splice(index + 1, 0, newElt);
             };
 
-            $scope.removeSection = function(index) {
+            $scope.removeSection = function (index) {
                 $scope.elt.formElements.splice(index, 1);
             };
 
-            $scope.canRepeat = function(formElt) {
+            $scope.canRepeat = function (formElt) {
                 return formElt.cardinality === '*' || formElt.cardinality === '+';
             };
 
-            var findQuestionByTinyId = function(tinyId) {
+            var findQuestionByTinyId = function (tinyId) {
                 var result = null;
-                var doFormElement = function(formElt) {
+                var doFormElement = function (formElt) {
                     if (formElt.elementType === 'question') {
                         if (formElt.question.cde.tinyId === tinyId) {
-                            result =   formElt;
+                            result = formElt;
                         }
                     } else if (formElt.elementType === 'section') {
                         formElt.formElements.forEach(doFormElement);
@@ -69,12 +70,12 @@ angular.module('formModule')
                 return result;
             };
 
-            $scope.score = function(question) {
+            $scope.score = function (question) {
                 if (!question.question.isScore) return;
                 var result = 0;
-                question.question.cde.derivationRules.forEach(function(derRule) {
+                question.question.cde.derivationRules.forEach(function (derRule) {
                     if (derRule.ruleType === 'score' && derRule.formula === "sumAll") {
-                        derRule.inputs.forEach(function(cdeTinyId) {
+                        derRule.inputs.forEach(function (cdeTinyId) {
                             var q = findQuestionByTinyId(cdeTinyId);
                             if (isNaN(result)) return;
                             if (q) {
@@ -89,12 +90,12 @@ angular.module('formModule')
                 return result;
             };
 
-            $scope.isIe = function() {
+            $scope.isIe = function () {
                 var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
                 return browsers['ie'].test($window.navigator.userAgent);
             };
 
-            var stripFieldsOut = function(elt) {
+            var stripFieldsOut = function (elt) {
                 delete elt.cardinality;
                 delete elt.$$hashKey;
                 if (elt.elementType === 'section') {
@@ -117,7 +118,7 @@ angular.module('formModule')
             };
 
 
-            $scope.exportStr = function() {
+            $scope.exportStr = function () {
                 if (!$scope.isIe()) {
                     var formData = JSON.parse(JSON.stringify($scope.elt));
                     if (formData.formElements) {
@@ -156,7 +157,7 @@ angular.module('formModule')
                 var ruleArr = rule.split(/[>|<|=]/);
                 var question = ruleArr[0].replace(/"/g, "").trim();
                 var operator = /=|<|>|>=|<=/.exec(rule)[0];
-                var expectedAnswer = ruleArr[1].trim();
+                var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
                 var realAnswerArr = formElements.filter(function (element) {
                     if (element.elementType != 'question') return false;
                     else if (element.label != question) return false;
@@ -171,10 +172,10 @@ angular.module('formModule')
                 } else return true;
             };
 
-            $scope.canBeDisplayedAsMatrix = function(section) {
+            $scope.canBeDisplayedAsMatrix = function (section) {
                 var result = true;
                 var answerHash;
-                section.formElements.forEach(function(formElem) {
+                section.formElements.forEach(function (formElem) {
                     if (formElem.elementType !== 'question') {
                         return result = false;
                     } else {
@@ -184,9 +185,13 @@ angular.module('formModule')
                         if (formElem.question.answers.length === 0 || !formElem.question.answers[0].valueMeaningName)
                             return result = false;
                         if (!answerHash) {
-                            answerHash = angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}));
+                            answerHash = angular.toJson(formElem.question.answers.map(function (a) {
+                                return a.valueMeaningName
+                            }));
                         }
-                        if (answerHash !== angular.toJson(formElem.question.answers.map(function(a) {return a.valueMeaningName}))) {
+                        if (answerHash !== angular.toJson(formElem.question.answers.map(function (a) {
+                                return a.valueMeaningName
+                            }))) {
                             return result = false;
                         }
                     }
