@@ -1,7 +1,5 @@
 var path = require('path');
 
-require(path.join(__dirname, './deploy/configTest.js'));
-
 var express = require('express')
   , http = require('http')
   , flash = require('connect-flash')

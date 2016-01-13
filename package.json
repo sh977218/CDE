@@ -47,6 +47,19 @@
     "config": "*",
     "cron": "1.0.9",
     "elasticsearch": "8.1.0",
+    "log-buffer": "0.0.3",
+    "chalk": "*",
+    "xmlbuilder": "2.6.2",
+    "tar-fs": "0.5.2",
+    "tar": "2.1.0",
+    "fstream": "1.0.4",
+    "streamifier": "0.1.1",
+    "mongoosastic": "3.3.2",
+    "js2xmlparser": "1.0.0",
+    "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484"
+  },
+  "devDependencies": {
+
     "grunt": "*",
     "grunt-git": "*",
     "grunt-http": "*",
@@ -58,15 +71,14 @@
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
     "grunt-wiredep": "*",
-    "log-buffer": "0.0.3",
-    "chalk": "*",
-    "xmlbuilder": "2.6.2",
-    "tar-fs": "0.5.2",
-    "tar": "2.1.0",
-    "fstream": "1.0.4",
-    "streamifier": "0.1.1",
-    "mongoosastic": "3.3.2",
-    "js2xmlparser": "1.0.0",
-    "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484"
-  }
+
+    "gulp": "3.9.0",
+    "gulp-concat": "2.6.0",
+    "gulp-uglify": "1.5.1",
+    "gulp-usemin": "0.3.16",
+    "gulp-npm-files": "0.1.3",
+    "gulp-usemin": "0.3.16",
+    "gulp-minify-css": "1.2.3",
+    "gulp-rev": "6.0.1"
+   }
 }
