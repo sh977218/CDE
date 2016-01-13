@@ -147,7 +147,12 @@ angular.module('formModule')
         }
         var ruleArr = rule.split(/[>|<|=|<=|>=]/);
         var question = ruleArr[0].replace(/"/g, "").trim();
-        var operator = /=|<|>|>=|<=/.exec(rule)[0];
+        var operatorArr = /=|<|>|>=|<=/.exec(rule);
+        if (!operatorArr) {
+            $scope.skipLogicError = "SkipLogic is incorrect.";
+            return true;
+        }
+        var operator = operatorArr[0];
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
         var realAnswerArr = formElements.filter(function (element) {
             if (element.elementType != 'question') return false;
