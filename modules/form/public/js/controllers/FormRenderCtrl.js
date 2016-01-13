@@ -145,7 +145,7 @@ angular.module('formModule')
             return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements) ||
                 $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3, 100), formElements))
         }
-        var ruleArr = rule.split(/[>|<|=]/);
+        var ruleArr = rule.split(/[>|<|=|<=|>=]/);
         var question = ruleArr[0].replace(/"/g, "").trim();
         var operator = /=|<|>|>=|<=/.exec(rule)[0];
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
@@ -163,6 +163,8 @@ angular.module('formModule')
             }
             if (operator === '<') return realAnswer < parseInt(expectedAnswer);
             if (operator === '>') return realAnswer > parseInt(expectedAnswer);
+            if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
+            if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
         } else return false;
     };
 
