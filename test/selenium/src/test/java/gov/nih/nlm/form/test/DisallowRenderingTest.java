@@ -14,6 +14,7 @@ public class DisallowRenderingTest extends BaseFormTest {
         clickElement(By.linkText("native"));
         // needs extra time to render this.
         hangon(10);
+        scrollTo(1000);
         textPresent("In general, would you say");
         saveForm();
         textPresent("In general, would you say");

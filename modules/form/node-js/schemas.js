@@ -29,7 +29,7 @@ var sectionSchema = {};
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
     , label: String
-    , instructions: String
+    , instructions: sharedSchemas.instructionSchema
     , cardinality: String
     , repeatsFor: String
     , showIfExpression: String
@@ -47,7 +47,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
     currentLevel.push({
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
-        , instructions: String
+        , instructions: sharedSchemas.instructionSchema
         , cardinality: {
             min: String,
             max: String
@@ -108,6 +108,7 @@ exports.formSchema = new Schema({
         , sectionsAsMatrix: {type: Boolean}
         , displayValues: {type: Boolean}
         , context: {contextName: String}
+        , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 });
