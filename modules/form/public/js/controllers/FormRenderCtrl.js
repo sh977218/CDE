@@ -166,10 +166,14 @@ angular.module('formModule')
                 var realAnswerObj = realAnswerArr[0];
                 var realAnswer = realAnswerObj.question.answer;
                 if (realAnswer) {
-                    if (operator === '=') return realAnswer === expectedAnswer;
+                    if (operator === '=') {
+                        if (typeof realAnswer === 'number')
+                            return realAnswer === parseInt(expectedAnswer);
+                        else return realAnswer === expectedAnswer;
+                    }
                     if (operator === '<') return realAnswer < parseInt(expectedAnswer);
                     if (operator === '>') return realAnswer > parseInt(expectedAnswer);
-                } else return true;
+                } else return false;
             };
 
             $scope.canBeDisplayedAsMatrix = function (section) {
