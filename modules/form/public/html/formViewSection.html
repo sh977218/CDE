@@ -33,7 +33,7 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_card_{{$index}}">
                         <div ng-show="editCardMode">
-                            <select ng-model="section.cardinality"
+                            <select ng-model="section.cardinality" id="select_section_card_{{$index}}"
                                     ng-options="item.value as item.label for item in cardinalityOptions">
                             </select>
                             <br/>
