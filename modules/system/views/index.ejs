@@ -18,10 +18,11 @@
     </script>
     <![endif]-->
 
-    <!-- build:css /cde/public/css/style.concat.min.css -->
+    <!-- build:css ../public/css/style.concat.min.css -->
     <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
+    <!-- build:css ../public/assets/css/vendor.css -->
     <!-- bower:css -->
     <link rel='stylesheet' href='/components/fontawesome/css/font-awesome.css' />
     <link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
@@ -36,6 +37,7 @@
     <link rel='stylesheet' href='/components/autocomplete-lhc/source/auto_completion.css' />
     <link rel='stylesheet' href='/components/lforms/app/styles/lforms.css' />
     <!-- endbower -->
+    <!-- endbuild -->
 
     <link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css' />
 
@@ -68,7 +70,7 @@
 	</div>
 </div>
 
-<!-- build:js /system/public/assets/js/vendor.js -->
+<!-- build:js ../public/assets/js/vendor.js -->
 <!-- bower:js -->
 <script src="/components/jquery/jquery.js"></script>
 <script src="/components/angular/angular.js"></script>
@@ -100,7 +102,7 @@
 <script src="/components/ng-grid/build/ng-grid.js"></script>
 <script src="/components/angularjs-camelCase-human/camelCaseToHuman.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
-<script src="/components/angular-send-feedback/dist/angular-send-feedback.min.js"></script>
+<script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
 <script src="/components/ng-file-upload/angular-file-upload.js"></script>
 <script src="/components/jszip/dist/jszip.js"></script>
 <script src="/components/jxon/index.js"></script>
@@ -141,7 +143,7 @@
 <!-- endbuild -->
 
 
-<!-- build:js /cde/public/assets/js/resource.concat.min.js -->
+<!-- build:js ../public/assets/js/resource.concat.min.js -->
 <script src="/cde/public/assets/js/diff_match_patch.js"></script>
 <script src="/cde/public/assets/js/match-media.js"></script>
 <script src="/cde/public/assets/js/sortable.js"></script>
