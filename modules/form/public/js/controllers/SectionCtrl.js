@@ -1,12 +1,27 @@
 angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http',
     function ($scope, $modal, $timeout, $http) {
 
+
         $scope.cardinalityOptions =
-        {
-            "1": "Exactly 1"
-            , "+": "1 or more"
-            , "*": "0 or more"
-            , "0.1": "0 or 1"
+            [
+                {label: "Exactly 1", value: {min: 1, max: 1}},
+                {label: "1 or more", value: {min: 1, max: -1}},
+                {label: "0 or more", value: {min: 0, max: -1}},
+                {label: "0 or 1", value: {min: 0, max: 1}}
+            ];
+        $scope.getCardinalityLabel = function (cardinality) {
+            if (cardinality === undefined || cardinality.min === undefined || cardinality.max === undefined)
+                return "";
+            return {
+                "0": {
+                    "1": "0 or 1"
+                    , "-1": "0 or more"
+                },
+                "1": {
+                    "1": "Exactly 1"
+                    , "-1": "1 or more"
+                }
+            }[cardinality.min][cardinality.max];
         };
 
         $scope.addSection = function () {
@@ -15,7 +30,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }
             $scope.elt.formElements.push({
                 label: "New Section",
-                cardinality: "1",
+                cardinality: {min: 1, max: 1},
                 section: {},
                 formElements: [],
                 elementType: "section"
@@ -69,7 +84,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     var question = {
                         elementType: "question"
                         , label: cde.naming[0].designation
-                        , cardinality: "1"
+                        , cardinality: {min: 1, max: 1}
                         , question: {
                             cde: {
                                 tinyId: cde.tinyId

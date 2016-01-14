@@ -25,12 +25,16 @@ var questionSchema = {
 };
 
 var sectionSchema = {};
+var cardinalitySchema = {
+    min: Number,
+    max: Number
+};
 
 var formElementTreeRoot = {
     elementType: {type: String, enum: ['section', 'question']}
     , label: String
     , instructions: sharedSchemas.instructionSchema
-    , cardinality: String
+    , cardinality: cardinalitySchema
     , repeatsFor: String
     , showIfExpression: String
     , section: sectionSchema
@@ -48,10 +52,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
         , instructions: sharedSchemas.instructionSchema
-        , cardinality: {
-            min: String,
-            max: String
-        }
+        , cardinality: cardinalitySchema
         , repeatsFor: String
         , showIfExpression: String
         , section: sectionSchema
