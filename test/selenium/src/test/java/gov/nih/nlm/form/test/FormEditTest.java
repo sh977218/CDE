@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class FormEditTest extends BaseFormTest {
@@ -74,10 +75,7 @@ public class FormEditTest extends BaseFormTest {
         String newCardinality = "Exactly 1";
         clickElement(By.xpath("//*[@id='dd_card_0']//i"));
         textPresent("Confirm");
-        clickElement(By.xpath("//*[@id='dd_card_0']//select"));
-        textPresent("0 or 1");
-        clickElement(By.xpath("//*[@id='dd_card_0']//select/option[1]"));
-//        new Select(findElement(By.xpath("//select[@id='dd_card_0']"))).selectByVisibleText(newCardinality);
+        new Select(findElement(By.xpath("//select[@id='dd_card_0']"))).selectByVisibleText(newCardinality);
         textPresent(newCardinality);
         clickElement(By.xpath("//*[@id='dd_card_0']//button[1]"));
         textNotPresent("Confirm");
