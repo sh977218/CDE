@@ -75,7 +75,7 @@ public class FormEditTest extends BaseFormTest {
         String newCardinality = "Exactly 1";
         clickElement(By.xpath("//*[@id='dd_card_0']//i"));
         textPresent("Confirm");
-        new Select(findElement(By.xpath("//select[@id='dd_card_0']"))).selectByVisibleText(newCardinality);
+        new Select(findElement(By.xpath("//select[@id='select_section_card_0']"))).selectByVisibleText(newCardinality);
         textPresent(newCardinality);
         clickElement(By.xpath("//*[@id='dd_card_0']//button[1]"));
         textNotPresent("Confirm");
