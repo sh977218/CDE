@@ -77,6 +77,7 @@ public class FormEditTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='dd_card_0']//select"));
         textPresent("0 or 1");
         clickElement(By.xpath("//*[@id='dd_card_0']//select/option[1]"));
+//        new Select(findElement(By.xpath("//select[@id='dd_card_0']"))).selectByVisibleText(newCardinality);
         textPresent(newCardinality);
         clickElement(By.xpath("//*[@id='dd_card_0']//button[1]"));
         textNotPresent("Confirm");
