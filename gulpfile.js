@@ -30,10 +30,23 @@ gulp.task('wiredep', function() {
 
 gulp.task('copyCode', function() {
     ['article', 'cde', 'form', 'processManager', 'system'].forEach(function(module) {
-        gulp.src('./modules/' + module + '/**/*')
+        gulp.src('./modules/' + module + '/node-js/**/*')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
+        gulp.src('./modules/' + module + '/shared/**/*')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
+        gulp.src('./modules/' + module + '/views/**/*.ejs')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
+        gulp.src('./modules/' + module + '/**/*.html')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
     });
 
+    gulp.src('./modules/**/*.png')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/"));
+    gulp.src('./modules/**/*.ico')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/"));
+    gulp.src('./modules/system/public/robots.txt')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
+    
     gulp.src('./config/*.json')
         .pipe(gulp.dest(config.node.buildDir + "/config/"));
 
@@ -61,5 +74,6 @@ gulp.task('usemin', function() {
         });
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
+
+gulp.task('default', ['copyNpmDeps', 'bower', 'wiredep', 'copyCode', 'usemin']);
 
