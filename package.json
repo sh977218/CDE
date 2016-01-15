@@ -42,8 +42,6 @@
     "deep-copy": "1.0.0",
     "md5-file": "1.1.10",
     "clamav.js": "0.11.0",
-    "grunt-bower-install-simple": "1.0.3",
-    "grunt-bowercopy": "1.1.0",   
     "config": "*",
     "cron": "1.0.9",
     "elasticsearch": "8.1.0",
@@ -51,7 +49,6 @@
     "chalk": "*",
     "xmlbuilder": "2.6.2",
     "tar-fs": "0.5.2",
-    "tar": "2.1.0",
     "fstream": "1.0.4",
     "streamifier": "0.1.1",
     "mongoosastic": "3.3.2",
@@ -59,6 +56,8 @@
     "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484"
   },
   "devDependencies": {
+
+    "tar": "2.1.0",
 
     "grunt": "*",
     "grunt-git": "*",
@@ -71,6 +70,8 @@
     "grunt-available-tasks": "*",
     "grunt-useref": "*",
     "grunt-wiredep": "*",
+    "grunt-bower-install-simple": "1.0.3",
+    "grunt-bowercopy": "1.1.0",
 
     "gulp": "3.9.0",
     "gulp-concat": "2.6.0",
