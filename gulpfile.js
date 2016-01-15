@@ -7,7 +7,8 @@ var gulp = require('gulp'),
     rev = require('gulp-rev'),
     minifyCss = require('gulp-minify-css'),
     bower = require('gulp-bower'),
-    wiredep = require('gulp-wiredep')
+    wiredep = require('gulp-wiredep');
+    cssnano = require('gulp-cssnano')
 ;
 
 gulp.task('copyNpmDeps', function() {
@@ -34,16 +35,21 @@ gulp.task('copyCode', function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
-        gulp.src('./modules/' + module + '/views/**/*.ejs')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
         gulp.src('./modules/' + module + '/**/*.html')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        gulp.src('./modules/' + module + '/**/*.png')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        gulp.src('./modules/' + module + '/**/*.ico')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        gulp.src('./modules/' + module + '/**/*.gif')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
     });
 
-    gulp.src('./modules/**/*.png')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/"));
-    gulp.src('./modules/**/*.ico')
-        .pipe(gulp.dest(config.node.buildDir + "/modules/"));
+    ['supportedBrowsers.ejs', 'loginText.ejs', 'webtrends.ejs'].forEach(function(file) {
+        gulp.src('./modules/system/views/' + file)
+            .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/"));
+    });
+
     gulp.src('./modules/system/public/robots.txt')
         .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
     
@@ -56,24 +62,34 @@ gulp.task('copyCode', function() {
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
 
+    //gulp.src('./modules/components/*/fonts/*')
+    //    .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/assets/fonts/"));
+    //gulp.src('./modules/components/bootstrap/fonts/*')
+    //    .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/assets/fonts/"));
+
 });
 
 gulp.task('usemin', function() {
-    [{src: "./modules/system/views/includeFrontEndJS.ejs", dest: "system/views/"},
-        {src: "./modules/form/views/includeFrontEndJS.ejs", dest: "form/views"},
-        {src: "./modules/cde/views/includeFrontEndJS.ejs", dest: "cde/views"},
-        {src: "./modules/system/views/index.ejs", dest: "system/views"}
-    ].forEach(function (path) {
-            return gulp.src(path.src)
+    [
+        {folder: "./modules/system/views/", filename: "index.ejs"},
+        {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
+        {folder: "./modules/cde/views/", filename: "includeCdeFrontEndJS.ejs"},
+        {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"},
+    ].forEach(function (item) {
+            return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    css: [ rev ],
-                    js: [ uglify(), 'concat' ]
+                    css: [minifyCss({root: "./"/*, relativeTo: "/bogus"*/, rebase: true}), 'concat'],
+                    js: [ uglify({mangle: false}), 'concat' ]
                 }))
-                .pipe(gulp.dest(config.node.buildDir + '/modules/' + path.dest));
+                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
+                .on('end', function() {
+                    gulp.src(config.node.buildDir + '/modules/' + item.filename)
+                        .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
+                });
         });
 });
 
 
-gulp.task('default', ['copyNpmDeps', 'bower', 'wiredep', 'copyCode', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
 
