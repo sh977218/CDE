@@ -235,7 +235,7 @@ angular.module('formModule').controller('FormViewCtrl',
             //Will assemble a list of questions
             if (i == index) return false; //Exclude myself
             if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (!q.question.answers || q.question.answers.length === 0) return false; //This question has no permissible answers, ignore
+            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
             return true;
         }).map(function (q) {
             return '"' + q.label + '" ';
@@ -248,10 +248,15 @@ angular.module('formModule').controller('FormViewCtrl',
             });
             if (questions.length <= 0) return [];
             var question = questions[0];
-            var answers = question.question.answers;
-            return answers.map(function (a) {
-                return '"' + a.permissibleValue + '"';
-            });
+            if (question.question.datatype === 'Number') {
+                return [];
+            }
+            else if (question.question.datatype === 'Value List') {
+                var answers = question.question.answers;
+                return answers.map(function (a) {
+                    return '"' + a.permissibleValue + '"';
+                });
+            } else return [];
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];

@@ -329,13 +329,13 @@ public class NlmCdeBaseTest {
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        findElement(By.linkText("Forms")).click();
+        clickElement(By.linkText("Forms"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();
+        clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
         textPresent(name, By.id("accordionList"));
-        findElement(By.id("acc_link_0")).click();
+        clickElement(By.id("acc_link_0"));
     }
 
     public void checkTooltipText(By by, String text) {
@@ -404,7 +404,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector("button.close")).click();
+            clickElement(By.cssSelector("button.close"));
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -510,14 +510,14 @@ public class NlmCdeBaseTest {
 
     public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
-        findElement(By.id("addToCompare_0")).click();
+        clickElement(By.id("addToCompare_0"));
         hangon(2);
         findElement(By.name("q")).clear();
     }
 
     public void addFormToQuickBoard(String formName) {
         searchForm(formName);
-        findElement(By.id("addToCompare_0")).click();
+        clickElement(By.id("addToCompare_0"));
         hangon(.5);
         findElement(By.name("q")).clear();
     }
@@ -641,7 +641,7 @@ public class NlmCdeBaseTest {
         if ("Show Filters".equals(showHideFilterButton.getText())) {
             wait.until(ExpectedConditions.elementToBeClickable(By
                     .id("gridView")));
-            findElement(By.id("showHideFilters")).click();
+            clickElement(By.id("showHideFilters"));
         }
     }
 
