@@ -79,7 +79,7 @@ gulp.task('usemin', function() {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    css: [minifyCss({root: "./"/*, relativeTo: "/bogus"*/, rebase: true}), 'concat'],
+                    css: [minifyCss({root: "./", relativeTo: "/", rebase: true}), 'concat'],
                     js: [ uglify({mangle: false}), 'concat' ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
