@@ -6,12 +6,23 @@ var gulp = require('gulp'),
     usemin = require('gulp-usemin'),
     minifyCss = require('gulp-minify-css'),
     bower = require('gulp-bower'),
+    install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
     request = require('request'),
-    elastic = require('./deploy/elasticSearchInit.js')
+    elastic = require('./deploy/elasticSearchInit.js'),
+    tar = require('tar'),
+    zlib = require('zlib'),
+    fs = require('fs'),
+    fstream = require('fstream'),
+    spawn = require('child_process').spawn
 ;
 
-gulp.task('copyNpmDeps', function() {
+gulp.task('npm', function() {
+    gulp.src(['./package.json'])
+        .pipe(install());
+});
+
+gulp.task('copyNpmDeps', ['npm'], function() {
     gulp.src(gnf(), {base:'./'}).pipe(gulp.dest(config.node.buildDir));
 });
 
@@ -64,7 +75,6 @@ gulp.task('copyCode', function() {
 
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
-
 });
 
 gulp.task('usemin', function() {
@@ -105,8 +115,32 @@ gulp.task('es', function() {
     ].forEach(function(item) {
         request.post(item.uri, {json: true, body: item.data});
     });
+});
 
+gulp.task('tarCode', function () {
+    //var done = this.async();
+    var writeS = fs.createWriteStream('./code.tar.gz');
+    writeS.on('close', function () {
+        // tar done, now sign with gpg
+        var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
+        gpg.on('close', function (code) {
+            fs.unlinkSync("./code.tar.gz");
+            //done();
+        });
+    });
+    var fixupDirs = function (entry) {
+        // Make sure readable directories have execute permission
+        if (entry.props.type === "Directory")
+            entry.props.mode |= (entry.props.mode >>> 2) & 0111;
+        return true;
+    };
+
+    return fstream.Reader({path: config.node.buildDir, type: 'Directory', filter: fixupDirs})
+        .pipe(tar.Pack())
+        .pipe(zlib.createGzip())
+        .pipe(writeS);
 });
 
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
+
 
