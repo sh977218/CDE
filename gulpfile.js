@@ -2,13 +2,13 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     gnf = require('gulp-npm-files'),
-    config = require('config'),
+    config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
-    rev = require('gulp-rev'),
     minifyCss = require('gulp-minify-css'),
     bower = require('gulp-bower'),
-    wiredep = require('gulp-wiredep');
-    cssnano = require('gulp-cssnano')
+    wiredep = require('gulp-wiredep'),
+    request = require('request'),
+    elastic = require('./deploy/elasticSearchInit.js')
 ;
 
 gulp.task('copyNpmDeps', function() {
@@ -50,6 +50,9 @@ gulp.task('copyCode', function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/"));
     });
 
+    gulp.src('./modules/components/**/*')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/components/"));
+
     gulp.src('./modules/system/public/robots.txt')
         .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
     
@@ -62,11 +65,6 @@ gulp.task('copyCode', function() {
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
 
-    //gulp.src('./modules/components/*/fonts/*')
-    //    .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/assets/fonts/"));
-    //gulp.src('./modules/components/bootstrap/fonts/*')
-    //    .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/assets/fonts/"));
-
 });
 
 gulp.task('usemin', function() {
@@ -74,12 +72,12 @@ gulp.task('usemin', function() {
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
         {folder: "./modules/cde/views/", filename: "includeCdeFrontEndJS.ejs"},
-        {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"},
+        {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"}
     ].forEach(function (item) {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    css: [minifyCss({root: "./", relativeTo: "/", rebase: true}), 'concat'],
+                    css: [minifyCss({root: "./", relativeTo: "./", rebase: true}), 'concat'],
                     js: [ uglify({mangle: false}), 'concat' ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
@@ -90,6 +88,25 @@ gulp.task('usemin', function() {
         });
 });
 
+gulp.task('es', function() {
+    [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
+        config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function(uri) {
+            request.del(uri);
+        });
+
+    [
+        {uri: config.elasticUri, data: elastic.createIndexJson},
+        {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
+        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
+        {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
+        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
+        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
+        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
+    ].forEach(function(item) {
+        request.post(item.uri, {json: true, body: item.data});
+    });
+
+});
 
 gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
 
