@@ -17,7 +17,7 @@ public class SkipLogicTest extends BaseFormTest {
         String formDef = "General Cancer Screening Test!";
         String formV = "0.1";
         createForm(formName, formDef, formV, "CTEP");
-        findElement(By.linkText("Form Description")).click();
+        clickElement(By.linkText("Form Description"));
         sectionTest.addSection("Patient Demographics", "0 or more");
         sectionTest.addSection("Female Patient Screening", "0 or more");
         startAddingQuestions();

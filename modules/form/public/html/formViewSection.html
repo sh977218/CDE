@@ -33,9 +33,9 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_card_{{$index}}">
                         <div ng-show="editCardMode">
-                            <select ng-model="section.cardinality"
-                                    ng-options="key as value for (key, value) in cardinalityOptions"
-                                    id="select_section_card_{{$index}}"></select>
+                            <select ng-model="section.cardinality" id="select_section_card_{{$index}}"
+                                    ng-options="item.value as item.label for item in cardinalityOptions">
+                            </select>
                             <br/>
                             <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
                                 Confirm
@@ -47,7 +47,7 @@
                         <div ng-hide="editCardMode">
                             <i ng-show="canCurate" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = section.cardinality"
-                               id="edit_section_card_{{$index}}"></i> {{cardinalityOptions[section.cardinality]}}
+                               id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(section.cardinality)}}
                         </div>
                     </div>
                 </div>

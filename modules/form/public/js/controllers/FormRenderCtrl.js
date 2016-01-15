@@ -53,7 +53,7 @@ angular.module('formModule')
     };
 
     $scope.canRepeat = function (formElt) {
-        return formElt.cardinality === '*' || formElt.cardinality === '+';
+        return formElt.cardinality === {min:0,max:-1} || formElt.cardinality === {min:1,max:-1};
     };
 
     var findQuestionByTinyId = function (tinyId) {
