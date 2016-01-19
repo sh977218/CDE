@@ -51,19 +51,19 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
     @Test
     public void openAllButton() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         textPresent("Expand All");
         textNotPresent("Collapse All");
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_" + i)));
         }
-        findElement(By.id("openAllCb")).click();
+        clickElement(By.id("openAllCb"));
         textPresent("Collapse All");
         textNotPresent("Expand All");
         for (int i = 0; i < 19; i++) {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_" + i)));
         }
-        findElement(By.id("openAllCb")).click();
+        clickElement(By.id("openAllCb"));
         textPresent("Expand All");
         textNotPresent("Collapse All");
         for (int i = 0; i < 19; i++) {

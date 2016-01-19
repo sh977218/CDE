@@ -31,14 +31,14 @@ public class BaseFormTest extends NlmCdeBaseTest {
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         showSearchFilters();
     }
 
     protected void gotoFormCreate() {
         goHome();
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("Form")).click();
+        clickElement(By.linkText("Create"));
+        clickElement(By.linkText("Form"));
         textPresent("Create Form");
     }
 
@@ -50,7 +50,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             fillInput("Version", version);
         }
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
-        findElement(By.id("createForm")).click();
+        clickElement(By.id("createForm"));
         textPresent("Form created");
         closeAlert();
     }
@@ -58,20 +58,20 @@ public class BaseFormTest extends NlmCdeBaseTest {
     public void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
         scrollToTop();
-        findElement(By.linkText("Form Description")).click();
+        clickElement(By.linkText("Form Description"));
 
-        findElement(By.id("addSection")).click();
+        clickElement(By.id("addSection"));
 
         String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
-        findElement(By.xpath(section_title_path + "//i")).click();
+        clickElement(By.xpath(section_title_path + "//i"));
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]")).click();
+        clickElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]"));
 
         if (card != null) {
-            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
+            clickElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']"));
             new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
-            findElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
+            clickElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']"));
         }
     }
 

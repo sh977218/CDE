@@ -19,7 +19,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.lfOptions = {showCodingInstruction: true};
 
-    $scope.setRenderFormat = function(format) {
+    $scope.setRenderFormat = function (format) {
         $scope.renderWith = format;
     };
 
@@ -68,16 +68,18 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            formCdeIds = exports.getFormCdes($scope.elt).map(function(c){return c.tinyId;});
+            formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+                return c.tinyId;
+            });
             areDerivationRulesSatisfied();
-            converter.convert('form/' + $scope.elt.tinyId, function(lfData) {
+            converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
                     $scope.lfData = new LFormsData(lfData);
                     $scope.$apply($scope.lfData);
                 },
-                function(err) {
+                function (err) {
                     $scope.error = err;
                 });
-        }, function() {
+        }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {
@@ -85,8 +87,8 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.getFormCdes = function(){
-        CdeList.byTinyIdList(formCdeIds, function(cdes){
+    $scope.getFormCdes = function () {
+        CdeList.byTinyIdList(formCdeIds, function (cdes) {
             $scope.cdes = cdes;
         });
     };
@@ -122,13 +124,13 @@ angular.module('formModule').controller('FormViewCtrl',
             templateUrl: '/system/public/html/classifyElt.html',
             controller: 'AddClassificationModalCtrl',
             resolve: {
-                module: function() {
+                module: function () {
                     return $scope.module;
                 },
-                myOrgs: function() {
+                myOrgs: function () {
                     return $scope.myOrgs;
                 },
-                orgName: function() {
+                orgName: function () {
                     return undefined;
                 },
                 userOrgs: function () {
@@ -137,7 +139,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 , cde: function () {
                     return $scope.elt;
                 },
-                pathArray: function() {
+                pathArray: function () {
                     return undefined;
                 }
                 , addClassification: function () {
@@ -150,7 +152,10 @@ angular.module('formModule').controller('FormViewCtrl',
                                         getChildren(e);
                                     });
                                 } else if (element.elementType === 'question') {
-                                    ids.push({id: element.question.cde.tinyId, version: element.question.cde.version});
+                                    ids.push({
+                                        id: element.question.cde.tinyId,
+                                        version: element.question.cde.version
+                                    });
                                 }
                             };
                             $scope.elt.formElements.forEach(function (e) {
@@ -230,9 +235,9 @@ angular.module('formModule').controller('FormViewCtrl',
         if (!previousLevel) return;
         if (languageMode == 'question') return previousLevel.filter(function (q, i) {
             //Will assemble a list of questions
-            if (i == index) return false; //Exclude myself            
+            if (i == index) return false; //Exclude myself
             if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (!q.question.answers || q.question.answers.length === 0) return false; //This question has no permissible answers, ignore
+            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
             return true;
         }).map(function (q) {
             return '"' + q.label + '" ';
@@ -245,10 +250,15 @@ angular.module('formModule').controller('FormViewCtrl',
             });
             if (questions.length <= 0) return [];
             var question = questions[0];
-            var answers = question.question.answers;
-            return answers.map(function (a) {
-                return '"' + a.permissibleValue + '"';
-            });
+            if (question.question.datatype === 'Number') {
+                return [];
+            }
+            else if (question.question.datatype === 'Value List') {
+                var answers = question.question.answers;
+                return answers.map(function (a) {
+                    return '"' + a.permissibleValue + '"';
+                });
+            } else return [];
         }
         if (languageMode == 'conjuction') return ["AND", "OR"];
         return [];
@@ -256,12 +266,12 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.missingCdes = [];
     $scope.inScoreCdes = [];
-    var areDerivationRulesSatisfied = function() {
+    var areDerivationRulesSatisfied = function () {
         $scope.missingCdes = [];
         $scope.inScoreCdes = [];
         var allCdes = {};
         var allQuestions = [];
-        var doFormElement = function(formElt) {
+        var doFormElement = function (formElt) {
             if (formElt.elementType === 'question') {
                 allCdes[formElt.question.cde.tinyId] = formElt.question.cde;
                 allQuestions.push(formElt);
@@ -270,26 +280,26 @@ angular.module('formModule').controller('FormViewCtrl',
             }
         };
         $scope.elt.formElements.forEach(doFormElement);
-        allQuestions.forEach(function(quest) {
+        allQuestions.forEach(function (quest) {
             if (quest.question.cde.derivationRules)
-            quest.question.cde.derivationRules.forEach(function(derRule) {
-                delete quest.incompleteRule;
-                if (derRule.ruleType === 'score') {
-                    quest.question.isScore = true;
-                    quest.question.scoreFormula = derRule.formula;
-                    $scope.inScoreCdes = derRule.inputs;
-                }
-                derRule.inputs.forEach(function(input) {
-                    if (!allCdes[input]) {
-                        $scope.missingCdes.push({tinyId: input});
-                        quest.incompleteRule = true;
+                quest.question.cde.derivationRules.forEach(function (derRule) {
+                    delete quest.incompleteRule;
+                    if (derRule.ruleType === 'score') {
+                        quest.question.isScore = true;
+                        quest.question.scoreFormula = derRule.formula;
+                        $scope.inScoreCdes = derRule.inputs;
                     }
+                    derRule.inputs.forEach(function (input) {
+                        if (!allCdes[input]) {
+                            $scope.missingCdes.push({tinyId: input});
+                            quest.incompleteRule = true;
+                        }
+                    });
                 });
-            });
         });
     };
 
-    $scope.pinAllCdesModal = function() {
+    $scope.pinAllCdesModal = function () {
         var modalInstance = $modal.open({
             animation: false,
             templateUrl: '/cde/public/html/selectBoardModal.html',
@@ -317,14 +327,14 @@ angular.module('formModule').controller('FormViewCtrl',
     };
 
     $scope.reload();
-    
-    $scope.save = function() {
+
+    $scope.save = function () {
         $log.debug("Saving Form.");
         $scope.elt.$save({}, function () {
             $scope.reload();
             $log.debug("Form saved");
             $scope.addAlert("success", "Saved.");
-        }, function(err) {
+        }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);
             $log.error(JSON.stringify(err));
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
