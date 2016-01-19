@@ -49,8 +49,8 @@
 
         <div uib-tabset>
             <div ng-repeat="(tabName, tab) in tabs" uib-tab heading="{{tab.heading}}"
-                 active="tab.active" ng-if="tab.if?tab.if():true"
-                 id="{{tabName}}_tab" select="tab.select()">
+                 active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
+                 id="{{tabName}}_tab" select="tab.select(tabName)">
                 <div ng-repeat="incl in tab.includes" ng-include="incl"/>
             </div>
         </div>

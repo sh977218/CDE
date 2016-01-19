@@ -22,44 +22,93 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.canCurate = false;
 
+    $scope.currentTab = "general";
     $scope.tabs = {
         general: {
             heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html']
+            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html'],
+            show: true
         },
-        pvs: {heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html']},
-        naming: {heading: "Naming", includes: ['/system/public/html/naming.html']},
-        classification: {heading: "Classification", includes: ['/system/public/html/elementClassification.html']},
-        concepts: {heading: "Concepts", includes: ['/cde/public/html/concepts.html']},
-        status: {heading: "Status", includes: ['/system/public/html/status.html']},
-        referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
-        properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
-        ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
+        pvs: {
+            heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
+            show: true
+        },
+        naming: {
+            heading: "Naming", includes: ['/system/public/html/naming.html'],
+            show: true
+        },
+        classification: {
+            heading: "Classification", includes: ['/system/public/html/elementClassification.html'],
+            show: true
+        },
+        concepts: {
+            heading: "Concepts", includes: ['/cde/public/html/concepts.html'],
+            show: true
+        },
+        status: {
+            heading: "Status", includes: ['/system/public/html/status.html'],
+            show: true
+        },
+        referenceDocument: {
+            heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
+            show: true
+        },
+        properties: {
+            heading: "Properties", includes: ['/system/public/html/properties.html'],
+            show: true
+        },
+        ids: {
+            heading: "Identifiers", includes: ['/system/public/html/identifiers.html'],
+            show: true
+        },
         forms: {
             heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
             select: function () {
                 $timeout($scope.$broadcast('loadLinkedForms'), 0);
-            }
+            },
+            show: false
+
         },
-        mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
-        discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
-        boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
-        attachments: {heading: "Attachments", includes: ['/system/public/html/attachments.html']},
-        derivationRules: {heading: "Score / Derivations",
+        mappingSpecifications: {
+            heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html'],
+            show: false
+        },
+        discussions: {
+            heading: "Discussions", includes: ['/system/public/html/comments.html'],
+            show: false
+        },
+        boards: {
+            heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
+            show: false
+        },
+        attachments: {
+            heading: "Attachments", includes: ['/system/public/html/attachments.html'],
+            show: true
+        },
+        derivationRules: {
+            heading: "Score / Derivations",
             includes: ['/cde/public/html/derivationRules.html'],
-            select: function() {
+            select: function () {
                 $timeout($scope.$broadcast('loadDerivationRules'), 0);
-            }},
-        mlt: {heading: "More Like This",
+            },
+            show: false
+        },
+        mlt: {
+            heading: "More Like This",
             includes: ['/cde/public/html/deMlt.html'],
-            select: function() {
+            select: function () {
                 $timeout($scope.$broadcast('loadMlt'), 0);
-            }},
-        history: {heading: "History",
+            },
+            show: false
+        },
+        history: {
+            heading: "History",
             includes: ['/cde/public/html/cdeHistory.html'],
-            select: function() {
+            select: function () {
                 $timeout($scope.$broadcast('loadPriorCdes'), 0);
-            }},
+            },
+            show: false
+        },
         forks: {
             heading: "Forks",
             includes: ['/cde/public/html/forks.html'],
@@ -69,7 +118,32 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function () {
                 $log.debug("select on forks");
                 $timeout($scope.$broadcast('loadForks'), 0);
-            }
+            },
+            show: false
+        },
+        more: {
+            heading: "More...",
+            includes: [],
+            select: function (activeTab) {
+                $timeout(function () {
+                    $scope.tabs.less.show = true;
+                    $scope.tabs.more.show = false;
+                    $scope.tabs.more.active = false;
+                }, 0)
+            },
+            show: true
+        },
+        less: {
+            heading: "Less...",
+            includes: [],
+            select: function () {
+                $timeout(function () {
+                    $scope.tabs.more.show = true;
+                    $scope.tabs.less.show = false;
+                    $scope.tabs.less.active = false;
+                }, 0)
+            },
+            show: false
         }
     };
     $scope.resolveCdeLoaded = null;
