@@ -29,7 +29,7 @@
     "jszip": "2.5.0",
     "jxon": "https://github.com/ludetc/jxon.git#ff0fe536ce798a7dc5174d0c42978f15db766dd5",
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
-    "lforms": "4.2.0",
+    "lforms": "4.2.4",
     "lforms-converter": "1.1.1",
     "autocomplete-lhc": "^7.0.5"
   },
