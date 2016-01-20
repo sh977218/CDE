@@ -26,7 +26,7 @@ public class SkipLogicTest extends BaseFormTest {
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
 
-        clickElement(By.id("question_accordion_0_1"));
+        clickElement(By.id("question_accordion_0_0"));
         textPresent("Female Gender");
         findElement(By.xpath("//*[@id='dd_q_skipLogic_1']/input")).sendKeys("\"Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score\" = 200");
         findElement(By.xpath("//*[@id='dd_s_skipLogic_1']/input")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
