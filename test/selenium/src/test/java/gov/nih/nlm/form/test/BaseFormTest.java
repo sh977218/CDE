@@ -53,8 +53,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("createForm"));
         textPresent("Form created");
         closeAlert();
-        clickElement(By.id("disallowRendering"));
-        saveForm();
     }
 
     public void addSection(String title, String card) {
