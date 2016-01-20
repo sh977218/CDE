@@ -25,17 +25,8 @@ public class BoardExportTest extends BoardTest {
         goToBoard(board_name);
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
-        boolean done = false;
-        for (int i = 0; !done && i < 15; i++) {
-            try {
-                textPresent("Export downloaded.");
-                done = true;
-            } catch (TimeoutException e) {
-                System.out.println("No export after : " + 10 * i + "seconds");
-            }
-        }
+        textPresent("Export downloaded.");
         closeAlert();
-        if (!done) throw new TimeoutException("Export was too slow.");
 
         String url = driver.getCurrentUrl();
         String bid = url.substring(url.lastIndexOf("/") + 1);

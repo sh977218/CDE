@@ -3,6 +3,8 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.module = "cde";
         $scope.quickBoard = QuickBoard;
 
+        $scope.exporters.csv = {id: "csvExport", display: "CSV Export"};
+
         $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
             "/cde/public/html/accordion/addToQuickBoardActions.html"];
 

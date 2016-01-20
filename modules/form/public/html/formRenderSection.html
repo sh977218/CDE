@@ -4,11 +4,10 @@
         <div class="row">
             <div class="col-md-9">
                 <h4 tabindex="0">{{section.label}}</h4>
-                <p tabindex="0">{{section.instructions}}</p>
             </div>
             <div class="col-md-3" ng-if="canRepeat(section)">
-                <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)"> Add
-                    One
+                <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)">
+                    Add One
                 </button>
                 <button ng-if="section.isCopy" class="btn btn-default fa fa-trash-o" ng-click="removeSection($index)">
                     Remove
@@ -17,6 +16,16 @@
         </div>
     </div>
     <div class="panel-body">
+        <div ng-if="displayInstruction" class="row">
+            <div class="col-md-12" ng-switch="section.instructions.valueFormat">
+            <span ng-switch-default class="text-muted">
+                <span ng-bind="section.instructions.value"></span></span>
+            <span ng-switch-when="html">
+                <span ng-bind-html="section.instructions.value"></span>
+            </span>
+            </div>
+        </div>
+        <hr/>
         <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">
             <div ng-switch-when="true">
                 <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>
@@ -24,10 +33,11 @@
             <div ng-switch-default>
                 <div ng-repeat="formElement in section.formElements track by $index" class="row">
                     <div ng-if="formElement.elementType === 'question'">
-                        <div ng-include="'/form/public/html/formRenderQuestion.html'"
+                        <div class="col-md-12" ng-include="'/form/public/html/formRenderQuestion.html'"
                              ng-init="formElements = section.formElements; question = formElement;"></div>
                     </div>
-                    <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
+                    <div ng-if="formElement.elementType === 'section'"
+                         ng-include="'/form/public/html/formRenderSection.html'"
                          ng-init="formElements = section.formElements; section = formElement;"></div>
                 </div>
             </div>

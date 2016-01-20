@@ -20,13 +20,17 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
+
+    testCompile "net.lingala.zip4j:zip4j:1.3.2"
 }
 
 tasks.withType(Test) {
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
+    systemProperty 'timeout', System.getProperty('timeout', "20")
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
-    systemProperty 'timeout', timeout
-    systemProperty 'browser', browser
+    systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
+    systemProperty 'downloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "/usr/nlm/selenium/cde/downloads/";
+    systemProperty 'tempFolder', project.hasProperty('tempFolder') ? tempFolder : "/tmp/";
 }
 
 test {
@@ -34,10 +38,10 @@ test {
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)
     }
+
     maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {
-        // Uncomment to display system.out and system.err messages
         events "standardOut", "standardError"
     }
 }

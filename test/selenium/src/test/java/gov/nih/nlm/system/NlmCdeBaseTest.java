@@ -18,6 +18,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -34,8 +35,9 @@ public class NlmCdeBaseTest {
 
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -74,6 +76,8 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
+    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
+
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
@@ -99,7 +103,6 @@ public class NlmCdeBaseTest {
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
-            caps = DesiredCapabilities.chrome();
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", "T:\\CDE\\downloads");
@@ -135,6 +138,12 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1280, 800);
+
+        filePerms.add(PosixFilePermission.OWNER_READ);
+        filePerms.add(PosixFilePermission.OWNER_WRITE);
+        filePerms.add(PosixFilePermission.OTHERS_READ);
+        filePerms.add(PosixFilePermission.OTHERS_WRITE);
+
     }
 
     @AfterMethod
@@ -197,7 +206,7 @@ public class NlmCdeBaseTest {
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
@@ -222,7 +231,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         hangon(.5);
         clickElement(By.linkText("Classifications"));
-        textPresent("Manage Classifications");
+        textPresent("Classifications");
     }
 
     protected void mustBeLoggedOut() {
@@ -320,13 +329,13 @@ public class NlmCdeBaseTest {
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        findElement(By.linkText("Forms")).click();
+        clickElement(By.linkText("Forms"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();
+        clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
         textPresent(name, By.id("accordionList"));
-        findElement(By.id("acc_link_0")).click();
+        clickElement(By.id("acc_link_0"));
     }
 
     public void checkTooltipText(By by, String text) {
@@ -395,7 +404,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector("button.close")).click();
+            clickElement(By.cssSelector("button.close"));
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -501,14 +510,14 @@ public class NlmCdeBaseTest {
 
     public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
-        findElement(By.id("addToCompare_0")).click();
+        clickElement(By.id("addToCompare_0"));
         hangon(2);
         findElement(By.name("q")).clear();
     }
 
     public void addFormToQuickBoard(String formName) {
         searchForm(formName);
-        findElement(By.id("addToCompare_0")).click();
+        clickElement(By.id("addToCompare_0"));
         hangon(.5);
         findElement(By.name("q")).clear();
     }
@@ -533,6 +542,7 @@ public class NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
@@ -631,7 +641,7 @@ public class NlmCdeBaseTest {
         if ("Show Filters".equals(showHideFilterButton.getText())) {
             wait.until(ExpectedConditions.elementToBeClickable(By
                     .id("gridView")));
-            findElement(By.id("showHideFilters")).click();
+            clickElement(By.id("showHideFilters"));
         }
     }
 
