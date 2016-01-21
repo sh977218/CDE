@@ -158,7 +158,6 @@ exports.logClientError = function(req, callback) {
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
-        logsInQueue.splice(logsInQueue.indexOf(exc.stack), 1);
         callback(err);
     });
 };
