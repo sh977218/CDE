@@ -1,9 +1,7 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
         '$http', 'userResource', 'CdeList', '$log',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-                  $http, userResource, CdeList, $log)
-{
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource, CdeList, $log) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';

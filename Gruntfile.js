@@ -289,7 +289,11 @@ module.exports = function (grunt) {
 
         }
         , useref: {
-            html: [config.node.buildDir + '/modules/system/views/index.ejs', config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/form/views/includeFrontEndJS.ejs', config.node.buildDir + '/modules/cde/views/includeFrontEndJS.ejs']
+            html: [
+                config.node.buildDir + '/modules/system/views/index.ejs',
+                config.node.buildDir + '/modules/system/views/includeFrontEndJS.ejs',
+                config.node.buildDir + '/modules/form/views/includeFormFrontEndJS.ejs',
+                config.node.buildDir + '/modules/cde/views/includeCdeFrontEndJS.ejs']
             , temp: config.node.buildDir + '/modules'
         }
         , uglify: {
