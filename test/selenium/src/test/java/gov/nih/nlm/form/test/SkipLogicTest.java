@@ -17,15 +17,21 @@ public class SkipLogicTest extends BaseFormTest {
         String formDef = "General Cancer Screening Test!";
         String formV = "0.1";
         createForm(formName, formDef, formV, "CTEP");
-        findElement(By.linkText("Form Description")).click();
+        clickElement(By.linkText("Form Description"));
         sectionTest.addSection("Patient Demographics", "0 or more");
         sectionTest.addSection("Female Patient Screening", "0 or more");
         startAddingQuestions();
 
+        questionTest.addQuestionToSection("Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score", 0);
         questionTest.addQuestionToSection("Patient Gender Category", 0);
-        questionTest.addQuestionToSection("Person Birth Date", 0);
         questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
-        findElement(By.xpath("//*[@id='dd_s_skipLogic_1']/input")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
+
+        saveForm();
+
+        clickElement(By.id("question_accordion_0_0"));
+        textPresent("Female Gender");
+        findElement(By.xpath("//*[@id='formQuestion_Patient Gender Category']//*[contains(@id,'dd_q_skipLogic_')]//input")).sendKeys("\"Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score\" = 200");
+        findElement(By.xpath("//*[@id='section_view_1']//*[@id='dd_s_skipLogic_1']//input")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
 
         questionTest.addSectionToSection(1, 0);
         saveForm();
@@ -33,6 +39,9 @@ public class SkipLogicTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
+        textNotPresent("Breast Carcinoma Estrogen Receptor Status");
+        findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score']]/following-sibling::div//input")).sendKeys("200");
+        textPresent("Patient Gender Category");
         new Select(findElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//select")))
                 .selectByVisibleText("Female Gender");
         textPresent("Female Patient Screening");

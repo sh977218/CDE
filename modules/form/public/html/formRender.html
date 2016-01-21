@@ -1,10 +1,19 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="displayInstruction"> Display Instruction
+                </label>
+            </div>
+        </div>
+    </div>
     <h2>{{elt.naming[0].designation}}</h2>
+
     <div ng-if="elt.displayProfiles.length > 0">
         Display Profile:
-        <select ng-model="selection.selectedProfile"
-            ng-options="p.name for p in elt.displayProfiles"
-            id="select_display_profile"></select>
+        <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
+                id="select_display_profile"></select>
     </div>
     <form name="sectionLabel" role="form" class="form-inline">
         <div ng-repeat="formElement in elt.formElements track by $index" class="row">
@@ -14,4 +23,8 @@
                  ng-init="section = formElement; formElements = elt.formElements;"></div>
         </div>
     </form>
+
+    <uib-alert type="danger">
+        <span ng-bind="skipLogicError"></span>
+    </uib-alert>
 </div>

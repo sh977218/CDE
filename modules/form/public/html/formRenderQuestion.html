@@ -1,21 +1,33 @@
 <span ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)">
-    <div class="col-md-3">
-        <label tabindex="0">{{question.label}}</label>
-    </div>
-    <div ng-switch="question.question.isScore">
-        <div ng-switch-when="true">
-            Score: <span type="number" ng-disabled="true" ng-bind="score(question)"></span>
+    <div ng-if="displayInstruction" class="row">
+        <div class="col-md-12" ng-switch="question.instructions.valueFormat">
+            <span ng-switch-default class="text-muted">
+                <span ng-bind="question.instructions.value"></span></span>
+            <span ng-switch-when="html">
+                <span ng-bind-html="question.instructions.value"></span>
+            </span>
         </div>
-        <div ng-switch-default>
-            <div ng-switch="question.question.datatype" class="col-md-9">
-                <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
-                        ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
-                </select>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label tabindex="0">{{question.label}}</label>
+        </div>
+        <div ng-switch="question.question.isScore">
+            <div ng-switch-when="true">
+                Score: <span type="number" ng-disabled="true" ng-bind="score(question)"></span>
+            </div>
+            <div ng-switch-default>
+                <div ng-switch="question.question.datatype" class="col-md-9">
+                    <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
+                            ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
+                    </select>
 
-                <input ng-switch-when="Date" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy" type="text" required
-                       ng-model="question.question.answer"/>
-                <input ng-switch-when="Number" name="{{question.question.cde.tinyId}}" class="form-control" type="number" required ng-model="question.question.answer"
-                        min="{{question.question.datatypeNumber.minValue}}" max="{{question.question.datatypeNumber.maxValue}}"/>
+                    <input ng-switch-when="Date" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy" type="text"
+                           required ng-model="question.question.answer"/>
+                    <input ng-switch-when="Number" name="{{question.question.cde.tinyId}}" class="form-control"
+                           type="number" required ng-model="question.question.answer"
+                           min="{{question.question.datatypeNumber.minValue}}"
+                           max="{{question.question.datatypeNumber.maxValue}}"/>
                 <span ng-switch-default class="form-group">
                   <input type="text" class="form-control" required ng-model="question.question.answer" name=""/>
                   <select class="form-control" ng-if="question.question.uoms.length > 0"
@@ -24,11 +36,13 @@
                       <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
                   </select>
                 </span>
-                <div>
-                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.min">Value is below min.</span>
-                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.max">Value is above max.</span>
+
+                    <div>
+                        <span ng-show="sectionLabel[question.question.cde.tinyId].$error.min">Value is below min.</span>
+                        <span ng-show="sectionLabel[question.question.cde.tinyId].$error.max">Value is above max.</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</span>
+    </span>
