@@ -59,7 +59,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 else {
                     $scope.eltsToCompareMap[elt.tinyId] = elt;
                 }
-                //$event.preventDefault();
                 $event.stopPropagation();
             };
             $scope.includeInAccordion = ["/cde/public/html/accordion/quickBoardAccordionActions.html"];
