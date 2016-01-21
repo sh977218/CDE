@@ -7,7 +7,6 @@ var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
-    , cdesvc = require('../../cde/node-js/cdesvc')
     ;
 
 var esClient = new elasticsearch.Client({

@@ -26,7 +26,7 @@ angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function
     var submitError = '<div id="feedback-submit-error"><div class="feedback-logo">Feedback</div><p>Sadly an error occured while sending your feedback. Please try again.</p><button class="feedback-close-btn feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>';
 
     $scope.feedbackOptions = {
-        html2canvasURL: "/cde/public/assets/js/html2canvas.js",
+        html2canvasURL: "/components/html2canvas/build/html2canvas.min.js",
         ajaxURL: '/feedback/report',
         postBrowserInfo: true,
         postHTML: true,
