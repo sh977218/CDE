@@ -53,6 +53,7 @@ var clientErrorSchema= new mongoose.Schema(
     , name: String
     , stack: String
     , userAgent: String
+    , url: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
 var storedQuerySchema= new mongoose.Schema(
