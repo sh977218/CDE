@@ -1,49 +1,49 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-    'OrgFactories', 'classification', 'ngGrid',
-    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-    , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget'])
-    .config(['$logProvider', function($logProvider){
+        'OrgFactories', 'classification', 'ngGrid',
+        'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+        'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
+        , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget'])
+    .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({enabled: true, requireBase: false});
-        $routeProvider.
-            when('/', {
-                redirectTo: function () {
-                    if (!window.loggedIn) return "/home";
-                    return "/cde/search"
-                }
-            }).
-            when('/home', {controller: 'HomeCtrl', templateUrl: '/system/public/html/home.html'}).
-            when('/login', {controller: 'AuthCtrl', templateUrl: '/system/public/html/login.html'}).
-            when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).
-            when('/inbox', {controller: 'InboxCtrl', templateUrl: '/system/public/html/inbox.html'}).
-            when('/siteaccountmanagement', {
-                controller: 'AccountManagementCtrl',
-                templateUrl: '/system/public/html/siteAccountManagement.html'
-            }).
-            when('/orgaccountmanagement', {
-                controller: 'AccountManagementCtrl',
-                templateUrl: '/system/public/html/orgAccountManagement.html'
-            }).
-            when('/classificationmanagement', {
-                controller: 'ClassificationManagementCtrl',
-                templateUrl: '/system/public/html/classificationManagement.html'
-            }).
-            when('/orgauthority', {
-                controller: 'AccountManagementCtrl',
-                templateUrl: '/system/public/html/orgAuthority.html'
-            }).
-            when('/profile', {controller: 'ProfileCtrl', templateUrl: '/system/public/html/profile.html'}).
-            when('/triggerClientException', {
-                controller: 'TriggerClientExceptionCtrl',
-                templateUrl: '/system/public/html/triggerClientException.html'
-            }).
-            when('/searchSettings', {
-                controller: 'SearchSettingsCtrl',
-                templateUrl: '/system/public/html/searchSettings.html'
-            })
+        $routeProvider.when('/', {
+            redirectTo: function () {
+                if (!window.loggedIn) return "/home";
+                return "/cde/search"
+            }
+        }).when('/home', {
+            controller: 'HomeCtrl',
+            templateUrl: '/system/public/html/home.html'
+        }).when('/login', {
+            controller: 'AuthCtrl',
+            templateUrl: '/system/public/html/login.html'
+        }).when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).when('/inbox', {
+            controller: 'InboxCtrl',
+            templateUrl: '/system/public/html/inbox.html'
+        }).when('/siteaccountmanagement', {
+            controller: 'AccountManagementCtrl',
+            templateUrl: '/system/public/html/siteAccountManagement.html'
+        }).when('/orgaccountmanagement', {
+            controller: 'AccountManagementCtrl',
+            templateUrl: '/system/public/html/orgAccountManagement.html'
+        }).when('/classificationmanagement', {
+            controller: 'ClassificationManagementCtrl',
+            templateUrl: '/system/public/html/classificationManagement.html'
+        }).when('/orgauthority', {
+            controller: 'AccountManagementCtrl',
+            templateUrl: '/system/public/html/orgAuthority.html'
+        }).when('/profile', {
+            controller: 'ProfileCtrl',
+            templateUrl: '/system/public/html/profile.html'
+        }).when('/triggerClientException', {
+            controller: 'TriggerClientExceptionCtrl',
+            templateUrl: '/system/public/html/triggerClientException.html'
+        }).when('/searchSettings', {
+            controller: 'SearchSettingsCtrl',
+            templateUrl: '/system/public/html/searchSettings.html'
+        })
     })
     .directive('inlineEdit', function () {
         return {
@@ -236,6 +236,23 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
 
     return isAllowedModel;
 });
+
+
+angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
+    $templateCache.put("template/accordion/accordion-group.html",
+        "<div class=\"panel\" ng-class=\"panelClass || 'panel-default'\">\n" +
+        "  <div class=\"panel-heading\" ng-keypress=\"toggleOpen($event)\">\n" +
+        "    <h4 class=\"panel-title\">\n" +
+        "      <div href tabindex=\"0\" class=\"accordion-toggle\" ng-click=\"toggleOpen()\" uib-accordion-transclude=\"heading\"><span ng-class=\"{'text-muted': isDisabled}\">{{heading}}</span></div>\n" +
+        "    </h4>\n" +
+        "  </div>\n" +
+        "  <div class=\"panel-collapse collapse\" uib-collapse=\"!isOpen\">\n" +
+        "	  <div class=\"panel-body\" ng-transclude></div>\n" +
+        "  </div>\n" +
+        "</div>\n" +
+        "");
+}]);
+
 
 angular.module('systemModule').directive('diff', function () {
     return {

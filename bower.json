@@ -33,7 +33,8 @@
     "lforms-converter": "1.1.1"
   },
   "resolutions": {
-    "angular": "1.4.7"
+    "angular": "1.4.7",
+    "angular-bootstrap": "1.1.0"
   },
   "overrides": {
     "jquery-ui": {

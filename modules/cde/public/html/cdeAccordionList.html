@@ -2,7 +2,7 @@
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <uib-accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen"
                              ng-init="acc_index = $index">
-            <uib-accordion-heading template-url="uib/template/accordion/accordion.html" ng-controller="AccordionCtrl">
+            <uib-accordion-heading template-url="template/accordion/accordion-group.html" ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
