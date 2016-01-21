@@ -24,7 +24,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
-        hangon(1);
+        waitForESUpdate();
         scrollToTop();
     }
 
