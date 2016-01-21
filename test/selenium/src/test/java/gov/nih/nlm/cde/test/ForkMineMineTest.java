@@ -9,6 +9,7 @@ public class ForkMineMineTest extends ForkTest {
 
     @Test
     public void forkMineMine() {
+        System.out.println("Number of tabs before forkMineMine" + driver.getWindowHandles().size());
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Other Group Patient Identifier Number");
         clickElement(By.linkText("Forks"));
