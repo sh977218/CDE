@@ -281,13 +281,13 @@ angular.module('systemModule').config(function ($provide) {
 });
 
 angular.module('systemModule').config(function ($provide) {
+    var previousException;
+    var http;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function ($delegate, $injector) {
-        var previousException;
         return function (exception, cause) {
             $delegate(exception, cause);
             if (previousException && exception.toString() === previousException.toString()) return;
             previousException = exception;
-            var http;
             if (!http) {
                 http = $injector.get('$http');
             }

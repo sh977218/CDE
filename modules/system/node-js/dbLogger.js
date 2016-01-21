@@ -7,8 +7,6 @@ var mongoose = require('mongoose')
     , mongoosastic = require('mongoosastic')
     , elasticsearch = require('elasticsearch')
     ;
-    
-var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 
 var esClient = new elasticsearch.Client({
     host: config.elastic.uri
@@ -153,22 +151,16 @@ exports.logError = function(message, callback) {
     });
 };
 
-var logsInQueue = [];
-
 exports.logClientError = function(req, callback) {
     var exc = req.body;
-    if (logsInQueue.indexOf(exc.stack) !== -1) return callback();
-    logsInQueue.push(exc.stack);
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     var logEvent = new ClientErrorModel(exc);
-    setTimeout(function() {
-        logEvent.save(function(err) {
-            if (err) console.log ("ERROR: " + err);
-            logsInQueue.splice(logsInQueue.indexOf(exc.stack), 1);
-            callback(err);
-        });
-    }, 5000);
+    logEvent.save(function(err) {
+        if (err) console.log ("ERROR: " + err);
+        logsInQueue.splice(logsInQueue.indexOf(exc.stack), 1);
+        callback(err);
+    });
 };
 
 exports.getLogs = function(inQuery, callback) {
