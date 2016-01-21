@@ -7,12 +7,7 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.defaultQuickBoard = 'CDE Quickboard';
             $scope.defaultQuickBoard = localStorageService.get("defaultQuickBoard");
             $scope.showSideBySideView = false;
-            function interruptEvent(event) {
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            };
+
             $scope.removeElt = function (index, event) {
                 $scope.interruptEvent(event);
                 QuickBoard.remove(index);
@@ -64,8 +59,8 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
                 else {
                     $scope.eltsToCompareMap[elt.tinyId] = elt;
                 }
-                var a = $($event.target.parentElement.parentElement.parentElement)[0];
-                elt.isOpen = false;
+                //$event.preventDefault();
+                $event.stopPropagation();
             };
             $scope.includeInAccordion = ["/cde/public/html/accordion/quickBoardAccordionActions.html"];
             $scope.includeInQuickBoard = ["/cde/public/html/accordion/quickBoardCompareCheckbox.html"];
