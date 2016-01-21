@@ -150,7 +150,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         };
     });
 
-angular.module('systemModule').filter('placeholdEmpty', function () {
+angular.module('systemModule').filter('placeHoldEmpty', function () {
     return function (input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -306,8 +306,7 @@ angular.module('systemModule').config(function ($provide) {
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
-    localStorageServiceProvider
-        .setPrefix('nlmcde')
+    localStorageServiceProvider.setPrefix('nlmcde')
 });
 
 angular.module('systemModule').run(function ($rootScope) {
