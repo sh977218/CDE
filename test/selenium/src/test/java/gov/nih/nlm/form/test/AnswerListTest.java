@@ -16,19 +16,19 @@ public class AnswerListTest extends BaseFormTest {
         mustBeLoggedInAs(ctepCurator_username, password);
 
         String formName = "Answer List Test";
-        String formDef = "Form to test answer lists ";
+        String formDef = "Form to test answer lists";
         String formV = "0.1alpha";
 
         createForm(formName, formDef, formV, "CTEP");
 
-        findElement(By.linkText("Form Description")).click();
+        clickElement(By.linkText("Form Description"));
 
         new CreateEditSectionTest().addSection("Answer List Section", null);
 
         startAddingQuestions();
         questionTest.addQuestionToSection("Patient Gender Category", 0);
         scrollToTop();
-        findElement(By.id("question_accordion_0_0")).click();
+        clickElement(By.id("question_accordion_0_0"));
         hangon(1);
 
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
@@ -37,7 +37,7 @@ public class AnswerListTest extends BaseFormTest {
         Assert.assertEquals(lis.get(1).getText(), "Male Gender");
         Assert.assertEquals(lis.get(2).getText(), "Unknown");
 
-        findElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a")).click();
+        clickElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a"));
         textNotPresent("Female Gender");
         lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 2);
@@ -47,16 +47,16 @@ public class AnswerListTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        findElement(By.linkText("Form Description")).click();
-        findElement(By.id("question_accordion_0_0")).click();
+        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("question_accordion_0_0"));
         textNotPresent("Female Gender");
-        findElement(By.xpath("//input[@ng-click='$select.activate()']")).click();
-        findElement(By.xpath("//span[contains(text(), 'Female Gender')]")).click();
+        clickElement(By.xpath("//input[@ng-click='$select.activate()']"));
+        clickElement(By.xpath("//span[contains(text(), 'Female Gender')]"));
         saveForm();
 
         goToFormByName(formName);
-        findElement(By.linkText("Form Description")).click();
-        findElement(By.id("question_accordion_0_0")).click();
+        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("question_accordion_0_0"));
         textPresent("Female Gender");
 
         new FormRegStatusTest().changeRegistrationStatus(formName, ctepCurator_username, "Incomplete", "Qualified");
