@@ -2,6 +2,8 @@ angular.module('systemModule').controller('AccordionCtrl',
     ['$scope', '$location', '$window', function ($scope, $location, $window)
 {
 
+
+
     $scope.interruptEvent = function (event) {
         if (event) {
             event.preventDefault();
