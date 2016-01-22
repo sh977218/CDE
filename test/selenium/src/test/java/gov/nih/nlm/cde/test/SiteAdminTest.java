@@ -14,24 +14,6 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Organizations"));
     }
 
-//    private void removeOrg(String orgName) {
-//        clickElement(By.linkText("Account"));
-//        clickElement(By.linkText("Site Management"));
-//        clickElement(By.linkText("Organizations"));
-//
-//        int length = driver.findElements(By.xpath("//i[contains(@id,'removeOrg-')]")).size();
-//        for (int i = 0; i < length; i++) {
-//            String name = findElement(By.id("orgName-" + i)).getText();
-//            if (orgName.equals(name)) {
-//                clickElement(By.id("removeOrg-" + i))();
-//                i = length;
-//            }
-//        }
-//
-//        Assert.assertTrue(textPresent("Org Removed"));
-//        Assert.assertTrue(driver.findElement(By.cssSelector("BODY")).getText().indexOf(orgName) < 0);
-//    }
-
     @Test
     public void addOrg() {
         mustBeLoggedInAs("theOrgAuth", password);
@@ -185,6 +167,14 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\",\"org / or Org\"]", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
+    }
+
+    @Test
+    public void siteAdminCanOrgAdmin() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Org Management"));
+        textPresent("Albert Einstein Cancer Center");
     }
 
 }

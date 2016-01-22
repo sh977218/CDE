@@ -298,13 +298,14 @@ angular.module('systemModule').config(function ($provide) {
 });
 
 angular.module('systemModule').config(function ($provide) {
-    $provide.decorator("$exceptionHandler", ['$delegate', '$injector', function ($delegate, $injector) {
-        var previousException;
+    var previousException;
+    var http;
+    $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
+        function ($delegate, $injector) {
         return function (exception, cause) {
             $delegate(exception, cause);
             if (previousException && exception.toString() === previousException.toString()) return;
             previousException = exception;
-            var http;
             if (!http) {
                 http = $injector.get('$http');
             }
@@ -313,7 +314,8 @@ angular.module('systemModule').config(function ($provide) {
                 http.post('/logClientException', {
                     stack: exception.stack,
                     message: exception.message,
-                    name: exception.name
+                    name: exception.name,
+                    url: window.location.pathname
                 });
             } catch (e) {
 
