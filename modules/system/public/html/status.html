@@ -6,24 +6,24 @@
         </button>
     </h4>
     <div tabindex="0" class="col-md-2 text-right">Effective Date:</div>
-    <div tabindex="0" class="col-md-10">
-        {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeholdEmpty}}
+    <div tabindex="0" class="col-md-10" id="effectiveDate">
+        {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Until Date:</div>
-    <div tabindex="0" class="col-md-10">
-        {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeholdEmpty}}
+    <div tabindex="0" class="col-md-10" id="untilDate">
+        {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Administrative Note:</div>
     <div tabindex="0" class="col-md-10">
-        {{elt.registrationState.administrativeNote | placeholdEmpty}}
+        {{elt.registrationState.administrativeNote | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Unresolved Issue:</div>
     <div tabindex="0" class="col-md-10">
-        {{elt.registrationState.unresolvedIssue | placeholdEmpty}}
+        {{elt.registrationState.unresolvedIssue | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Status:</div>
     <div tabindex="0" class="col-md-10" id="status">
-        {{elt.registrationState.registrationStatus | placeholdEmpty}}
+        {{elt.registrationState.registrationStatus | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right" id="div_adminStatus"
          ng-if="elt.registrationState.administrativeStatus">Administrative Status:
