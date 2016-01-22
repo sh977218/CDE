@@ -17,14 +17,14 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         textNotPresent("Imaging dimension type");
 
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("Yes");
-        findElement(By.xpath("//label[@for='/Section_1/1']")).click();
+        clickElement(By.xpath("//label[@for='/Section_1/1']"));
         textPresent("BMSCT Section");
         textPresent("Imaging reference scan date");
         textNotPresent("Imaging dimension type");
 
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).clear();
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("No");
-        findElement(By.xpath("//label[@for='/Section_1/1']")).click();
+        clickElement(By.xpath("//label[@for='/Section_1/1']"));
         textNotPresent("BMSCT Section");
         textNotPresent("Imaging reference scan date");
         textPresent("Imaging dimension type");
@@ -35,7 +35,7 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         // End Test UOM
 
         // Test instructions
-        findElement(By.xpath("//label[contains(text(), 'Show Help')]")).click();
+        clickElement(By.xpath("//label[contains(text(), 'Show Help')]"));
         textPresent("Instructions for section 1");
         textPresent("Instructions for Priod BMSCT");
 
