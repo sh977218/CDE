@@ -1,7 +1,7 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', 'userResource', 'CdeList', '$log',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, userResource, CdeList, $log) {
+        '$http', '$timeout', 'userResource', 'CdeList', '$log',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, CdeList, $log) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -20,25 +20,156 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.setRenderFormat = function (format) {
         $scope.renderWith = format;
     };
+    $scope.currentTab;
+
+    function setCurrentTab(thisTab) {
+        $scope.currentTab = thisTab;
+    };
+
+    var showTab = {
+        displayProfiles: false,
+        classification: false,
+        status: false,
+        referenceDocument: false,
+        properties:false,
+        ids: false,
+        discussions: false,
+        boards: false,
+        attachments: false,
+    };
+
+    function showTabs(showTab,show) {
+        for (var property in showTab) {
+            if (showTab.hasOwnProperty(property)) {
+                $scope.tabs[property].show = show;
+            }
+        }
+    }
 
     $scope.tabs = {
-        general: {heading: "General Details"},
-        description: {heading: "Form Description"},
-        cdeList: {heading: "CDE List"},
-        naming: {heading: "Naming"},
-        displayProfiles: {heading: "Display Profiles"},
-        classification: {heading: "Classification"},
-        concepts: {heading: "Concepts"},
-        status: {heading: "Status"},
-        referenceDocument: {heading: "Reference Documents"},
-        properties: {heading: "Properties"},
-        ids: {heading: "Identifiers"},
-        discussions: {heading: "Discussions"},
-        boards: {heading: "Boards"},
-        attachments: {heading: "Attachments"},
-        mlt: {heading: "More Like This"},
-        history: {heading: "History"},
-        forks: {heading: "Forks"}
+        general: {
+            heading: "General Details",
+            includes: ['/form/public/html/formGeneralDetail.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        description: {
+            heading: "Form Description",
+            includes: ['/form/public/html/formDescription.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        cdeList: {
+            heading: "CDE List",
+            includes:['/form/public/html/cdeList.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+                getFormCdes();
+            },
+            show: true
+        },
+        naming: {
+            heading: "Naming",
+            includes: ['/system/public/html/naming.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        displayProfiles: {
+            heading: "Display Profiles",
+            includes: ['/form/public/html/displayProfiles.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['displayProfiles']
+        },
+        classification: {
+            heading: "Classification",
+            includes: ['/form/public/html/formClassification.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['classification']
+        },
+        status: {
+            heading: "Status",
+            includes: ['/system/public/html/status.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['status']
+        },
+        referenceDocument: {
+            heading: "Reference Documents",
+            includes: ['/system/public/html/referenceDocument.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['referenceDocument']
+        },
+        properties: {
+            heading: "Properties",
+            includes: ['/system/public/html/properties.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['properties']
+        },
+        ids: {
+            heading: "Identifiers",
+            includes: ['/system/public/html/identifiers.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['ids']
+        },
+        discussions: {
+            heading: "Discussions",
+            includes: ['/system/public/html/comments.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['discussions']
+        },
+        boards: {
+            heading: "Boards",
+            includes: [], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['boards']
+        },
+        attachments: {
+            heading: "Attachments",
+            includes: ['/system/public/html/attachments.html'], select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: showTab['attachments']
+        },
+        more: {
+            heading: "More...",
+            includes: [],
+            select: function () {
+                $timeout(function () {
+                    $scope.tabs.less.show = true;
+                    $scope.tabs.more.show = false;
+                    $scope.tabs.more.active = false;
+                    $scope.tabs[$scope.currentTab].active = true;
+                    showTabs(showTab, true);
+                }, 0)
+            },
+            show: true
+        },
+        less: {
+            heading: "Less...",
+            includes: [],
+            select: function () {
+                $timeout(function () {
+                    $scope.tabs.more.show = true;
+                    $scope.tabs.less.show = false;
+                    $scope.tabs.less.active = false;
+                    $scope.tabs[$scope.currentTab].active = true;
+                    showTabs(showTab, false);
+                }, 0)
+            },
+            show: false
+        }
     };
 
     $scope.setToAddCdeMode = function () {
@@ -85,7 +216,7 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    $scope.getFormCdes = function () {
+    function getFormCdes() {
         CdeList.byTinyIdList(formCdeIds, function (cdes) {
             $scope.cdes = cdes;
         });
