@@ -752,4 +752,16 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
+
+    protected void showAllTabs() {
+        textPresent("More...");
+        clickElement(By.id("more_tab"));
+        textPresent("Less...");
+    }
+
+    protected void hideAllTabs() {
+        textPresent("Less...");
+        clickElement(By.id("more_tab"));
+        textPresent("More...");
+    }
 }
