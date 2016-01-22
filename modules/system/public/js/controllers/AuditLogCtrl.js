@@ -5,9 +5,10 @@ angular.module('systemModule').controller('AuditLogCtrl', ['$scope', '$controlle
     $scope.gotoPageLocal = function(page){
         $scope.gotoPage(page, function(){
             $scope.records.forEach(function(rec){
-                rec.diff.forEach(function(d){
-                    CdeDiffPopulate.makeHumanReadable(d);
-                });
+                if (rec.diff)
+                    rec.diff.forEach(function(d){
+                        CdeDiffPopulate.makeHumanReadable(d);
+                    });
             });
         });
     };
