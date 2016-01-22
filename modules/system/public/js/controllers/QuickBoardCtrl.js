@@ -7,14 +7,9 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.defaultQuickBoard = 'CDE Quickboard';
             $scope.defaultQuickBoard = localStorageService.get("defaultQuickBoard");
             $scope.showSideBySideView = false;
-            $scope.interruptEvent = function (event) {
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            };
-            $scope.removeElt = function (index, event) {
-                $scope.interruptEvent(event);
+
+            $scope.removeElt = function (index, $event) {
+                $event.stopPropagation();
                 QuickBoard.remove(index);
             };
 
