@@ -6,11 +6,11 @@
         </button>
     </h4>
     <div tabindex="0" class="col-md-2 text-right">Effective Date:</div>
-    <div tabindex="0" class="col-md-10">
+    <div tabindex="0" class="col-md-10" id="effectiveDate">
         {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Until Date:</div>
-    <div tabindex="0" class="col-md-10">
+    <div tabindex="0" class="col-md-10" id="untilDate">
         {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
     <div tabindex="0" class="col-md-2 text-right">Administrative Note:</div>
