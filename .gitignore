@@ -5,12 +5,12 @@ test/selenium/.gradle
 test/selenium/*.png
 test-console.out
 bower_components
-modules/system/views/version.ejs
+modules/system/views/version.html
 
 ## Secret Config Files
 config.js
 config/test.js
-views/version.ejs
+views/version.html
 modules/system/public/html/version.html
 
 ## Local Files

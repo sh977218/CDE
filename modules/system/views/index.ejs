@@ -22,6 +22,7 @@
     <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
+    <!-- build:css /system/public/assets/css/vendor.css -->
     <!-- bower:css -->
     <link rel='stylesheet' href='/components/fontawesome/css/font-awesome.css' />
     <link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
@@ -38,6 +39,7 @@
     <!-- endbower -->
 
     <link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css' />
+    <!-- endbuild -->
 
     <!-- include config -->
     <%- include config.html %>
@@ -138,10 +140,7 @@
 <!-- endbower -->
 
 <script src="/components/lforms-converter/lforms-converter.js"></script>
-<!-- endbuild -->
 
-
-<!-- build:js /cde/public/assets/js/resource.concat.min.js -->
 <script src="/cde/public/assets/js/diff_match_patch.js"></script>
 <script src="/cde/public/assets/js/match-media.js"></script>
 <script src="/cde/public/assets/js/sortable.js"></script>
@@ -150,14 +149,14 @@
 <script src="/system/public/js/ng-display-object.js"></script>
 <script src="/system/public/js/ng-compare-side-by-side.js"></script>
 <script src="/system/public/js/ng-text-truncate.js"></script>
+<script src="/article/public/js/articleConfig.js"></script>
 <!-- endbuild -->
 
 <%- include includeFrontEndJS.ejs %>
-<%- include ../../cde/views/includeFrontEndJS.ejs %>
-<%- include ../../form/views/includeFrontEndJS.ejs %>
+<%- include ../../cde/views/includeCdeFrontEndJS.ejs %>
+<%- include ../../form/views/includeFormFrontEndJS.ejs %>
 <%- include webtrends.ejs %>
 
-<script src="/article/public/js/articleConfig.js"></script>
 
 <script type="application/ld+json">
         {
