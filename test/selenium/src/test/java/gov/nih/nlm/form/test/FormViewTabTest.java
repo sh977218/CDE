@@ -17,6 +17,6 @@ public class FormViewTabTest extends ViewTabTest {
 
     @Test
     public void formViewTabTest() {
-        tabTest("Intake Medical History");
+        showHideAllTabTest("Intake Medical History");
     }
 }

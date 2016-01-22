@@ -16,6 +16,6 @@ public class CdeViewTabTest extends ViewTabTest {
 
     @Test
     public void cdeViewTabTest() {
-        tabTest("ImgTagTest");
+        showHideAllTabTest("ImgTagTest");
     }
 }
