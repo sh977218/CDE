@@ -48,7 +48,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     function showTabs(showTab,show) {
         for (var property in showTab) {
             if (showTab.hasOwnProperty(property)) {
-                showTab[property] = show;
+                $scope.tabs[property].show = show;
             }
         }
     }
