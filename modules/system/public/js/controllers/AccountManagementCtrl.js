@@ -9,12 +9,12 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.curator = {};
     $scope.transferStewardObj = {from:'', to:''};
     $scope.allUsernames = [];
-    
+
     function resetTransferStewardObj() {
         $scope.transferStewardObj.from = '';
         $scope.transferStewardObj.to = '';
     }
-    
+
     function resetOrgAdminForm() {
         $scope.orgAdmin.username = "";
         $scope.admin = {};
@@ -24,7 +24,11 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.orgCurator.username = "";
         $scope.curator = {};
     }
-    
+
+    $scope.initBatchUpload = function() {
+        $timeout($scope.$broadcast('initBatchUpload'), 0);
+    };
+
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
     });
@@ -100,7 +104,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                   $scope.addAlert("success", res);
                   $scope.orgAdmins = $scope.getOrgAdmins();
                   $scope.myOrgAdmins = $scope.getMyOrgAdmins();
-            }, function (err) {
+            }, function () {
                 $scope.addAlert("danger", "There was an issue adding this administrator.");
             }
         );

@@ -13,8 +13,6 @@ var cdeSource = process.argv[3];
 
 var importDate = new Date().toJSON();
 
-var parser = new xml2js.Parser();
-
 var mongoUri = config.mongoUri;
 var mongoMigrationUri = config.mongoMigrationUri;
 
@@ -60,7 +58,7 @@ var same = 0;
 var todo = 0;
 var doneThisTime = 0;
 
-var checkTodo = function (source) {
+var checkTodo = function () {
     todo--;
     if (todo === 0) {
         console.log("nothing left to do");
