@@ -196,7 +196,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             show: showTab['forks']
         },
         more: {
-            heading: "More...",
+            heading: "More Tabs",
             includes: [],
             select: function () {
                 $timeout(function () {
@@ -210,7 +210,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             show: true
         },
         less: {
-            heading: "Less...",
+            heading: "Less Tabs",
             includes: [],
             select: function () {
                 $timeout(function () {

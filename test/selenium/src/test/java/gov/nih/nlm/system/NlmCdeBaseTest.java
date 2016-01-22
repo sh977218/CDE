@@ -262,7 +262,7 @@ public class NlmCdeBaseTest {
         try {
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More Tabs");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
@@ -270,7 +270,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More Tabs");
             textPresent(name);
             textNotPresent("is archived");
         }
@@ -754,14 +754,14 @@ public class NlmCdeBaseTest {
     }
 
     protected void showAllTabs() {
-        textPresent("More...");
+        textPresent("More Tabs");
         clickElement(By.id("more_tab"));
-        textPresent("Less...");
+        textPresent("Less Tabs");
     }
 
     protected void hideAllTabs() {
-        textPresent("Less...");
+        textPresent("Less Tabs");
         clickElement(By.id("more_tab"));
-        textPresent("More...");
+        textPresent("More Tabs");
     }
 }

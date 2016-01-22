@@ -143,7 +143,7 @@ angular.module('formModule').controller('FormViewCtrl',
             show: showTab['attachments']
         },
         more: {
-            heading: "More...",
+            heading: "More Tabs",
             includes: [],
             select: function () {
                 $timeout(function () {
@@ -157,7 +157,7 @@ angular.module('formModule').controller('FormViewCtrl',
             show: true
         },
         less: {
-            heading: "Less...",
+            heading: "Less Tabs",
             includes: [],
             select: function () {
                 $timeout(function () {
