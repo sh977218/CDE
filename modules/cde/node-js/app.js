@@ -549,7 +549,7 @@ exports.init = function (app, daoManager) {
     app.get('/api/cde/modifiedElements', function(req, res){
         var dstring = req.query.from;
         function badDate(){
-            res.status(300).send("Invalid date format, please provide as: /modified/cde/2015-12-24");
+            res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
         }
         if (dstring[4]!=='-' || dstring[7]!=='-') badDate();
         if (dstring.indexOf('20')!==0) badDate();

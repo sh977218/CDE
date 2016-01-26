@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups="CdeEditTest")
 public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
