@@ -1,7 +1,7 @@
 <span>
     <span ng-hide="editMode">
         <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
-           ng-click="value=model; editMode=true"></i> {{model | placeholdEmpty}}
+           ng-click="value=model; editMode=true"></i> {{model | placeHoldEmpty}}
     </span>
     <form name="inlineForm" ng-show="editMode">
         <input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value"
