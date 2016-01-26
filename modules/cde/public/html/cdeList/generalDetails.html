@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Definition:</th>
-        <td tabindex="0" id="dd_def" ng-bind-html="elt.naming[0].definition | placeholdEmpty"></td>
+        <td tabindex="0" id="dd_def" ng-bind-html="elt.naming[0].definition | placeHoldEmpty"></td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Used By:</th>
@@ -25,7 +25,7 @@
     </tr>
     <tr ng-if="elt.valueDomain.uom">
         <th tabindex="0" class="text-right">Unit of Measure:</th>
-        <td tabindex="0" id="dd_uom">{{elt.valueDomain.uom | placeholdEmpty}}</td>
+        <td tabindex="0" id="dd_uom">{{elt.valueDomain.uom | placeHoldEmpty}}</td>
     </tr>
     <tr ng-if="elt.origin">
         <th tabindex="0" class="text-right">Origin:</th>
