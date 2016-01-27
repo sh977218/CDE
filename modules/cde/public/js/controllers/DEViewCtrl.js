@@ -22,11 +22,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.canCurate = false;
 
-    $scope.currentTab;
-
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
-    };
+    }
 
     var showTab = {
         concepts: false,
