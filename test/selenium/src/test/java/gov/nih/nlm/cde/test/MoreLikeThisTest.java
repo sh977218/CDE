@@ -12,40 +12,41 @@ import org.testng.annotations.Test;
 public class MoreLikeThisTest extends NlmCdeBaseTest {
     @DataProvider(name = "moreLikeThisDP")
     public Object[][] getMoreLikeThisData() {
-        return new Object[][] {
-            { "Patient Gender Category", new String[] {"Person Gender Text Type", "Patient Gender Code"} },
-            { "Induced Mutation Site Begin java.lang.Integer",
-                new String[] {"Therapeutic Procedure First Course Radiation Therapy Begin Date java.lang.String",
-                        "Protein Molecular Modeling Database Relationship Protein Begin java.lang.Long"} },
+        return new Object[][]{
+                {"Patient Gender Category", new String[]{"Person Gender Text Type", "Patient Gender Code"}},
+                {"Induced Mutation Site Begin java.lang.Integer",
+                        new String[]{"Therapeutic Procedure First Course Radiation Therapy Begin Date java.lang.String",
+                                "Protein Molecular Modeling Database Relationship Protein Begin java.lang.Long"}},
         };
     }
-    
+
     @Test(dataProvider = "moreLikeThisDP")
-    public void moreLikeThis(String cdeSource, String[] cdeTargets){
+    public void moreLikeThis(String cdeSource, String[] cdeTargets) {
         goToCdeByName(cdeSource);
-        findElement(By.linkText("More Like This")).click();
+        showAllTabs();
+        clickElement(By.id("mlt_tab"));
         for (String tCde : cdeTargets) {
             Assert.assertTrue(textPresent(tCde));
         }
     }
-    
+
     @Test
     public void mltDoesntShowRetired() {
         CdeCreateTest createTest = new CdeCreateTest();
         String cdeName = "MltTest";
         mustBeLoggedInAs(ctepCurator_username, password);
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
-        findElement(By.id("status_tab")).click();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.id("editStatus")).click();
+        clickElement(By.id("editStatus"));
         new Select(findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         closeAlert();
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
         waitForESUpdate();
         goToCdeByName(cdeName, "Incomplete");
-        findElement(By.linkText("More Like This")).click();
+        clickElement(By.linkText("More Like This"));
         textNotPresent(cdeName, By.id("mltAccordion"));
     }
-    
+
 }

@@ -14,18 +14,20 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
         goToCdeByName(cdeName);
 
-        findElement(By.linkText("Naming")).click();
-        findElement(By.id("addNamePair")).click();
+        showAllTabs();
+        clickElement(By.id("naming_tab"));
+        clickElement(By.id("addNamePair"));
         findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
         findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
-        findElement(By.id("createNamePair")).click();
+        clickElement(By.id("createNamePair"));
         modalGone();
 
-        findElement(By.linkText("Concepts")).click();
-        findElement(By.id("addConcept")).click();
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("addConcept"));
         findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
         findElement(By.xpath("//label[text()=\"Code ID\"]/following-sibling::input")).sendKeys("Code ID 1");
-        findElement(By.id("createConcept")).click();
+        clickElement(By.id("createConcept"));
         modalGone();
 
         newCdeVersion();
@@ -36,22 +38,24 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         checkInHistory("Naming", "", "Alternative Definition 1");
 
         goToCdeByName(cdeName);
-        findElement(By.id("status_tab")).click();
+        showAllTabs();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.xpath("//*[@id='editStatus']")).click();
+        clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         modalGone();
 
         checkInHistory("Registration State", "Qualified", "Recorded");
 
-        findElement(By.linkText("Identifiers")).click();
+        showAllTabs();
+        clickElement(By.id("ids_tab"));
         closeAlert();
-        findElement(By.id("addId")).click();
+        clickElement(By.id("addId"));
         findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
         findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");
         findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1");
-        findElement(By.id("createId")).click();
+        clickElement(By.id("createId"));
         modalGone();
         goToCdeByName(cdeName, "Recorded");
         checkInHistory("Identifiers", "", "Origin 1");
