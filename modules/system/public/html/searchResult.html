@@ -33,19 +33,19 @@
     <div class="container-fluid searchInfo ">
         <div class="col-xs-4">
             <div class="navbar-header">
-        <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
-            <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
-            <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
-            <span ng-show="altClassificationFilterMode">and
-                <span class="label label-success">{{getSelectedClassificationsAlt()}}
-                    <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
-                       ng-click="toggleAltClassificationFilterMode()" uib-tooltip="Remove this classifications filter"
-                       tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                    </i>
+                <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
+                    <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
+                    <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
+                    <span ng-show="altClassificationFilterMode">and
+                        <span class="label label-success">{{getSelectedClassificationsAlt()}}
+                            <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
+                               ng-click="toggleAltClassificationFilterMode()" uib-tooltip="Remove this classifications filter"
+                               tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                            </i>
+                        </span>
+                    </span>
+                    | {{getSelectedStatuses()}}
                 </span>
-            </span>
-            | {{getSelectedStatuses()}}
-        </span>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#searchResult-buttons">
                     <span class="sr-only">Toggle navigation</span>
