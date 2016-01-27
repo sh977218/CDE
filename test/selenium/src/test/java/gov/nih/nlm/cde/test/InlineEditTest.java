@@ -21,6 +21,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
+        showAllTabs();
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         clickElement(By.id("properties_tab"));

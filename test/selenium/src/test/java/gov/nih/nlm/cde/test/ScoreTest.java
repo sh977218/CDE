@@ -72,7 +72,8 @@ public class ScoreTest extends NlmCdeBaseTest {
         newCdeVersion();
         clickElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale"));
         textPresent("Level of functioning (Physical, mental, emotional,");
-        clickElement(By.linkText("Score / Derivations"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         textPresent("This Data Element is used to derive to the following Data Elements:");
         clickElement(By.linkText("DRS Total Score"));
         clickElement(By.linkText("Score / Derivations"));

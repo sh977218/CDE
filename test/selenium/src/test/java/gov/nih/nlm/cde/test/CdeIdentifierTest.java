@@ -15,11 +15,11 @@ public class CdeIdentifierTest extends IdentifiersTest {
     public void findByNestedId() {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName("Ohio State TBI Method Short Form (OSUTBIMS) - ask question category");
+        showAllTabs();
         // same ID as cadsr Person Gender Text Type
         addId("FAKE", "C18059", "3");
 
         goToCdeSearch();
-
         findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
         clickElement(By.cssSelector("i.fa-search"));
         textPresent("2 results for");

@@ -14,7 +14,8 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         String cdeName = "Tooth Sensitivity Mastication Second Oral Cavity Quadrant Assessment Scale";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Mappings"));
+        showAllTabs();
+        clickElement(By.id("mappingSpecifications_tab"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addMappingSpecification")));
     }
 
@@ -47,7 +48,8 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
             findElement(By.xpath("//li/a/strong[contains(text(), 'Content')]"));
         } catch (TimeoutException e) {
             goToCdeByName(cdeName);
-            clickElement(By.linkText("Mappings"));
+            showAllTabs();
+            clickElement(By.id("mappingSpecifications_tab"));
             clickElement(By.id("addMappingSpecification"));
             findElement(By.id("newMappingSpecification.content")).sendKeys("Content");
         }

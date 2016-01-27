@@ -14,7 +14,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void addAttachment(String name) {
-        clickElement(By.linkText("Attachments"));
+        clickElement(By.id("attachments_tab"));
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
         findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\" + name);
