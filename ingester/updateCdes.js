@@ -3,43 +3,36 @@ var fs = require('fs')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
     , config = require('config')
-    , mongo_cde = require('../../cde/node-js/mongo-cde')
-    , mongo_sys = require('../../system/node-js/mongo-data')
-    , cdesvc = require('../../cde/node-js/cdesvc')
-    , classificationShared = require('../../system/shared/classificationShared');
+    , cde_schemas = require('../modules/cde/node-js/schemas')
+    , sys_schemas = require('../modules/system/node-js/schemas')
+    , mongo_cde = require('../modules/cde/node-js/mongo-cde')
+    , cdesvc = require('../modules/cde/node-js/cdesvc')
+    , classificationShared = require('../modules/system/shared/classificationShared');
 
-var cdeSource;
-var importDate;
-var MigrationDataElement;
-var MigrationOrg;
+var cdeSource = process.argv[3];
 
-var changed = 0;
-var created = 0;
-var same = 0;
-var todo = 0;
-var doneThisTime = 0;
+var importDate = new Date().toJSON();
 
-var externalCallback;
+var mongoUri = config.mongoUri;
+var mongoMigrationUri = config.mongoMigrationUri;
 
-exports.beginMigration = function(source, de, org, cb) {
-    cdeSource = source;
-    importDate = new Date().toJSON();
-    MigrationDataElement = de;
-    MigrationOrg = org;
+var conn = mongoose.createConnection(mongoUri, {auth: {authdb: "admin"}});
+conn.on('error', console.error.bind(console, 'connection error:'));
+conn.once('open', function callback() {
+    console.log('mongodb connection open');
+});
 
-    changed = 0;
-    created = 0;
-    same = 0;
-    todo = 0;
-    doneThisTime = 0;
+var migrationConn = mongoose.createConnection(mongoMigrationUri, {auth: {authdb: "admin"}});
+migrationConn.on('error', console.error.bind(console, 'connection error:'));
+migrationConn.once('open', function callback() {
+    console.log('mongodb migration connection open');
+});
 
-    externalCallback = cb;
+var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
+var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
 
-    doStream();
-};
-
-var DataElement = mongo_cde.DataElement;
-var Org = mongo_sys.Org;
+var Org = conn.model('Org', sys_schemas.orgSchema);
+var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
 
 var removeProperty = function (cde, property) {
     for (var i = 0; i < cde.properties.length; i++) {
@@ -58,6 +51,12 @@ var removeClassificationTree = function (cde, org) {
         }
     }
 };
+
+var changed = 0;
+var created = 0;
+var same = 0;
+var todo = 0;
+var doneThisTime = 0;
 
 var checkTodo = function () {
     todo--;
@@ -286,11 +285,15 @@ var streamOnClose = function () {
                     theOrg.classifications = org.classifications;
                     theOrg.save(function (err) {
                         if (err) console.log("Error saving Org " + err);
-                        externalCallback();
                     });
                 });
             });
         });
+
+        // give 5 secs for org to save.
+        setTimeout(function () {
+            process.exit(0);
+        }, 5000);
     }
 };
 
@@ -307,4 +310,4 @@ var doStream = function () {
     stream.on('close', streamOnClose);
 };
 
-
+doStream();
