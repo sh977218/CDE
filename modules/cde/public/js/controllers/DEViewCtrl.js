@@ -26,31 +26,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.currentTab = thisTab;
     }
 
-    var showTab = {
-        concepts: false,
-        status: false,
-        referenceDocument: false,
-        properties: false,
-        ids: false,
-        forms: false,
-        mappingSpecifications: false,
-        discussions: false,
-        boards: false,
-        attachments: false,
-        derivationRules: false,
-        mlt: false,
-        history: false,
-        forks: false
-    };
-
-    function showTabs(showTab,show) {
-        for (var property in showTab) {
-            if (showTab.hasOwnProperty(property)) {
-                $scope.tabs[property].show = show;
-            }
-        }
-    }
-
     $scope.tabs = {
         general: {
             heading: "General Details",
@@ -86,35 +61,40 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['concepts']
+            show: false,
+            hideable: true
         },
         status: {
             heading: "Status", includes: ['/system/public/html/status.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['status']
+            show: false,
+            hideable: true
         },
         referenceDocument: {
             heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['referenceDocument']
+            show: false,
+            hideable: true
         },
         properties: {
             heading: "Properties", includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['properties']
+            show: false,
+            hideable: true
         },
         ids: {
             heading: "Identifiers", includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['ids']
+            show: false,
+            hideable: true
         },
         forms: {
             heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
@@ -122,7 +102,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab();
                 $timeout($scope.$broadcast('loadLinkedForms'), 0);
             },
-            show: showTab['forms']
+            show: false,
+            hideable: true
 
         },
         mappingSpecifications: {
@@ -130,28 +111,32 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['mappingSpecifications']
+            show: false,
+            hideable: true
         },
         discussions: {
             heading: "Discussions", includes: ['/system/public/html/comments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['discussions']
+            show: false,
+            hideable: true
         },
         boards: {
             heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['boards']
+            show: false,
+            hideable: true
         },
         attachments: {
             heading: "Attachments", includes: ['/system/public/html/attachments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['attachments']
+            show: false,
+            hideable: true
         },
         derivationRules: {
             heading: "Score / Derivations",
@@ -160,7 +145,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab();
                 $timeout($scope.$broadcast('loadDerivationRules'), 0);
             },
-            show: showTab['derivationRules']
+            show: false,
+            hideable: true
         },
         mlt: {
             heading: "More Like This",
@@ -169,7 +155,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab();
                 $timeout($scope.$broadcast('loadMlt'), 0);
             },
-            show: showTab['mlt']
+            show: false,
+            hideable: true
         },
         history: {
             heading: "History",
@@ -178,7 +165,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab();
                 $timeout($scope.$broadcast('loadPriorCdes'), 0);
             },
-            show: showTab['history']
+            show: false,
+            hideable: true
         },
         forks: {
             heading: "Forks",
@@ -191,35 +179,24 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 $log.debug("select on forks");
                 $timeout($scope.$broadcast('loadForks'), 0);
             },
-            show: showTab['forks']
+            show:false,
+            hideable: true
         },
         more: {
             heading: "More Tabs",
             includes: [],
             select: function () {
                 $timeout(function () {
-                    $scope.tabs.less.show = true;
+                    //$scope.tabs.less.show = true;
                     $scope.tabs.more.show = false;
                     $scope.tabs.more.active = false;
                     $scope.tabs[$scope.currentTab].active = true;
-                    showTabs(showTab,true);
+                    Object.keys($scope.tabs).forEach(function(key) {
+                        if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
+                    });
                 }, 0)
             },
             show: true
-        },
-        less: {
-            heading: "Less Tabs",
-            includes: [],
-            select: function () {
-                $timeout(function () {
-                    $scope.tabs.more.show = true;
-                    $scope.tabs.less.show = false;
-                    $scope.tabs.less.active = false;
-                    $scope.tabs[$scope.currentTab].active = true;
-                    showTabs(showTab,false);
-                }, 0)
-            },
-            show: false
         }
     };
     $scope.resolveCdeLoaded = null;
