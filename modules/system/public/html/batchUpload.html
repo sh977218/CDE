@@ -3,16 +3,43 @@
     <div ng-show="loading"><h4 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h4></div>
 
     <div ng-if="!loading">
-        <div ng-if="migrationCdeCount > 0">
-            <h4>Migration in Progress</h4>
+        <div ng-if="!currentBatch">
+            <h4>No Batch in progress</h4>
+            <button class="btn btn-default" ng-click="initBatch('caDSR')"> Start caDSR Batch</button>
+        </div>
+        <div ng-if="currentBatch">
+            <button class="btn btn-default" ng-click="abortBatch()"> Abort Batch Process</button>
+
+            <hr>
+
+            <h4>{{currentBatch.batchProcess}} Batch in Progress</h4>
+            <div><b>Start time: </b> {{currentBatch.startTime}}</div>
+            <div><b>Current Step: </b> {{currentBatch.step}}</div>
             <div>{{migrationCdeCount}} cdes in migration</div>
-            <button class="btn btn-default"> Clean Migration</button>
+
+            <hr>
+
         </div>
     </div>
 
-    <div>
-        <input type="file" name="file" id="fileToUpload"
-               onchange="angular.element(this).scope().uploadFile(this.files[0])"/>
+    <hr>
+
+    <div ng-switch="currentBatch.step">
+        <div ng-switch-when="initiated">
+            <h4> Next Step - Load Migration Org</h4>
+            <textarea ng-model="migrationOrg"/>
+            <button ng-disabled="!migrationOrg" class="btn btn-default" ng-click="loadOrg()"> Load Org</button>
+        </div>
+
+        <div ng-switch-when="orgLoaded">
+            <h4>Next Step - Load a batch file</h4>
+            <input type="file" name="file" id="fileToUpload"
+                   onchange="angular.element(this).scope().uploadFile(this.files[0])"/>
+        </div>
+        <div ng-switch-when="migrationReady">
+            <h4>Next Step - Begin Migration</h4>
+            <button class="btn btn-default" ng-click="beginMigration()"> Begin Migration</button>
+        </div>
     </div>
 
 </div>
