@@ -452,8 +452,7 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text, By by) {
-        wait.until(ExpectedConditions.not(ExpectedConditions
-                .textToBePresentInElementLocated(by, text)));
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
