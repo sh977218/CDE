@@ -9,7 +9,8 @@ import java.util.List;
 public abstract class IdentifiersTest extends CommonTest {
 
     protected void addId(String source, String id, String version) {
-        clickElement(By.linkText("Identifiers"));
+        showAllTabs();
+        clickElement(By.id("ids_tab"));
         clickElement(By.id("addId"));
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
@@ -43,7 +44,8 @@ public abstract class IdentifiersTest extends CommonTest {
         }
 
         goToEltByName(eltName, status);
-        findElement(By.linkText("Identifiers")).click();
+        showAllTabs();
+        clickElement(By.id("ids_tab"));
         textPresent("MyOrigin1");
         textPresent("MyId1");
         textPresent("MyVersion1");

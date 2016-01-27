@@ -8,8 +8,9 @@ public abstract class PropertyTest extends CommonTest {
     public void autocomplete(String eltName, String checkString, String expected) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.id("addProperty")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys(checkString);
         try {
             Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
@@ -25,36 +26,37 @@ public abstract class PropertyTest extends CommonTest {
     public void addRemoveProperty(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.id("addProperty")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys("MyKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
-        findElement(By.id("createProperty")).click();
+        clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
-        findElement(By.id("addProperty")).click();
+        clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
-        findElement(By.id("createProperty")).click();
+        clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
-        findElement(By.id("addProperty")).click();
+        clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys("MyKey3");
         findElement(By.name("value")).sendKeys("MyValue3");
-        findElement(By.id("createProperty")).click();
+        clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
 
-        findElement(By.id("removeProperty-1")).click();
-        findElement(By.id("confirmRemoveProperty-1")).click();
+        clickElement(By.id("removeProperty-1"));
+        clickElement(By.id("confirmRemoveProperty-1"));
         textPresent("Property Removed");
         closeAlert();
 
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
+        clickElement(By.linkText("Properties"));
         textPresent("MyKey1");
         textPresent("MyKey3");
         textPresent("MyValue1");
@@ -65,24 +67,26 @@ public abstract class PropertyTest extends CommonTest {
 
     public void richText(String eltName, String status) {
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]"));
         findElement(By.xpath("//*[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
-        findElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]")).click();
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]"));
         textPresent("Hello From Selenium");
     }
 
     public void truncateRichText(String eltName, String status) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
         hangon(1);
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
         hangon(1);
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
@@ -90,12 +94,13 @@ public abstract class PropertyTest extends CommonTest {
     public void truncatePlainText(String eltName, String status) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]")).click();
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
         hangon(1);
-        findElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         hangon(1);
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
@@ -108,14 +113,15 @@ public abstract class PropertyTest extends CommonTest {
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Properties")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
         textPresent("Add Property");
         reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
         textPresent("pk1", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
         textPresent("pk3", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
         textPresent("pk1", By.xpath(prefix + "dd_name_0" + postfix));
     }
 }
