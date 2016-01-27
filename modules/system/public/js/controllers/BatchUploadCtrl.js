@@ -1,6 +1,10 @@
-angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
-    function($scope, $http)
+angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval',
+    function($scope, $http, $interval)
 {
+
+    $scope.tabLostFocus = function() {
+        console.log("lost foc");
+    };
 
     $scope.uploadFile = function (file) {
         var fd = new FormData();
@@ -15,13 +19,18 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
         xhr.send(fd);
     };
 
+    var migUpdatePromise;
+
     $scope.$on('initBatchUpload', function() {
         $scope.loading = true;
-        $http.get("/migrationCdeCount").then(function(response) {
-            $scope.migrationCdeCount = response.data;
-            $scope.loading = false;
-        })
-
+        migUpdatePromise = $interval(function() {
+            console.log("get migs");
+            $http.get("/migrationCdeCount").then(function(response) {
+                if ($scope.migrationCdeCount === response.data) migUpdatePromise.cancel();
+                $scope.migrationCdeCount = response.data;
+                $scope.loading = false;
+            });
+        }, 2000)
     });
 
     function uploadFailed() {

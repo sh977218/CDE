@@ -23,6 +23,15 @@ var Batch = migrationConn.model('Batch', batchSchema);
 exports.init = function(app) {
 
 
+    app.post('/cancelBatch', function(req, res) {
+        MigrationDataElement.remove({}, function(err) {
+            if (err) return res.status(500).send(err);
+            Batch.remove({}, function(err) {
+                if (err) return res.status(500).send(err);
+                res.send("OK");
+            });
+        });
+    });
 
     app.post('/initializeBatch', function(req, res) {
 
