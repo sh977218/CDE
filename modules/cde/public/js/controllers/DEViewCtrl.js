@@ -196,7 +196,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     });
                 }, 0)
             },
-            show: true
+            show: true,
+            showIcon: true
         }
     };
     $scope.resolveCdeLoaded = null;
