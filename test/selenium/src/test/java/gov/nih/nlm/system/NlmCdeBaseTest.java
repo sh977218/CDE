@@ -755,5 +755,6 @@ public class NlmCdeBaseTest {
     protected void showAllTabs() {
         textPresent("More Tabs");
         clickElement(By.id("more_tab"));
+        textPresent("Attachments");
     }
 }
