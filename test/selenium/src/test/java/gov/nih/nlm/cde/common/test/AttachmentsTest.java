@@ -15,18 +15,19 @@ public class AttachmentsTest extends BaseAttachmentTest {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Sedative sleep pill frequency";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        findElement(By.linkText("Attachments")).click();
+        clickElement(By.id("attachments_tab"));
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Alcohol use frequency");
-
         String attachmentName = "painLocationInapr.png";
+        showAllTabs();
         addAttachment(attachmentName);
         checkAttachmentNotReviewed();
         declineAttachment(attachmentName);
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Attachments")).click();
+        showAllTabs();
+        clickElement(By.id("attachments_tab"));
         textNotPresent("glass.jpg");
     }
 

@@ -7,9 +7,9 @@ import org.openqa.selenium.JavascriptExecutor;
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void removeAttachment(String name) {
-        findElement(By.linkText("Attachments")).click();
-        findElement(By.id("removeAttachment-0")).click();
-        findElement(By.id("confirmRemove-0")).click();
+        clickElement(By.id("attachments_tab"));
+        clickElement(By.id("removeAttachment-0"));
+        clickElement(By.id("confirmRemove-0"));
         textNotPresent(name);
     }
 
@@ -28,8 +28,8 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void checkAttachmentReviewed(String name) {
-        findElement(By.linkText("Attachments")).click();
-        findElement(By.linkText(name)).click();
+        clickElement(By.id("attachments_tab"));
+        clickElement(By.linkText(name));
         switchTab(1);
         textNotPresent("File not found");
         textNotPresent("This file has not been approved yet");
@@ -41,11 +41,11 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         gotoInbox();
 
         textPresent("Attachment Approval");
-        findElement(By.xpath("//span[contains(text(), '" + name + "')]")).click();
+        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
         textPresent("Scanned by ClamAV");
-        findElement(By.id("approve-" + name)).click();
+        clickElement(By.id("approve-" + name));
         textPresent("Attachment approved");
         closeAlert();
 
@@ -55,22 +55,21 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(attachmentReviewer_username, password);
         gotoInbox();
 
-
         textPresent("Attachment Approval");
-        findElement(By.xpath("//span[contains(text(), '" + name + "')]")).click();
+        clickElement(By.xpath("//span[contains(text(), '" + name + "')]"));
 
         findElement(By.linkText(name));
         textPresent("Scanned by ClamAV");
 
-        findElement(By.id("decline-" + name)).click();
+        clickElement(By.id("decline-" + name));
         textPresent("Attachment declined");
         closeAlert();
     }
 
     public void setAttachmentDefault() {
-        findElement(By.linkText("Attachments")).click();
+        clickElement(By.id("attachments_tab"));
         textPresent("Upload more files");
-        findElement(By.id("defaultCbLabel")).click();
+        clickElement(By.id("defaultCbLabel"));
         textPresent("Saved");
         closeAlert();
     }
