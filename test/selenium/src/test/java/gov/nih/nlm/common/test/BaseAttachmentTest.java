@@ -14,11 +14,11 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void addAttachment(String name) {
-        findElement(By.linkText("Attachments")).click();
+        clickElement(By.linkText("Attachments"));
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");
         findElement(By.id("fileToUpload")).sendKeys("T:\\CDE\\data\\" + name);
-        findElement(By.id("doUploadButton")).click();
+        clickElement(By.id("doUploadButton"));
 
         textPresent(name);
     }

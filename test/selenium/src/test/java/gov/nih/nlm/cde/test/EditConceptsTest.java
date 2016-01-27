@@ -14,7 +14,8 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         String cdeName = "Patient Photograph Malignant";
 
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Concepts"));
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
 
         clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("DEC1");
@@ -38,7 +39,8 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Concepts"));
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
         textPresent("DEC_CODE_111");
         textPresent("OC_CODE_111");
         textPresent("Prop_CODE_111");
@@ -47,8 +49,8 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         checkInHistory("Concepts", "", "OC_CODE_111");
         checkInHistory("Concepts", "", "Prop_CODE_111");
 
-        clickElement(By.linkText("Concepts"));
-
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
@@ -60,6 +62,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
 
+        showAllTabs();
         checkInHistory("Concepts", "DEC_CODE_111", "");
         checkInHistory("Concepts", "OC_CODE_111", "");
         checkInHistory("Concepts", "Prop_CODE_111", "");
