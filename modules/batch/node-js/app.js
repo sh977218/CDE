@@ -22,6 +22,8 @@ var Batch = migrationConn.model('Batch', batchSchema);
 
 exports.init = function(app) {
 
+
+
     app.post('/initializeBatch', function(req, res) {
 
     });
@@ -33,22 +35,19 @@ exports.init = function(app) {
         })
     });
 
-    app.post("/loadMigrationCdes", upload, function(req, res) {
+    app.post("/loadMigrationCdes", multer({"inMemory": true}), function(req, res) {
         var cdes = JSON.parse(req.files.migrationJson.buffer.toString());
+
+        console.log(cdes);
 
         async.each(cdes,
             function(migCde, cb){
-                MigrationDataElement(migCde).save(function(err) {
-
-                });
+                MigrationDataElement(migCde).save(cb);
             }
             , function(err) {
-
+                if (err) return res.status(500).send(err);
+                return res.send("OK");
             });
-        cdes.forEach(function(migCde) {
-        });
-
-        res.send("OK");
     });
 
 };
