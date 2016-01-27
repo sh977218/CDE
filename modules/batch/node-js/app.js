@@ -5,7 +5,6 @@ var cde_schemas = require('../../cde/node-js/schemas')
     , mongoose = require('mongoose')
     , multer  = require('multer')
     , async = require('async')
-    , updateCdes = require('./updateCdes')
     ;
 
 var migrationConn = connHelper.establishConnection(config.database.migration);
@@ -18,7 +17,8 @@ var batchSchema = new mongoose.Schema({
         step: {type: String
             , enum: ['initiated', 'orgLoaded', 'migrationCdesLoaded', 'loadInProgress', 'batchComplete']
             , default: "initiated"},
-        startTime: {type: Date, default: Date.now}
+        startTime: {type: Date, default: Date.now},
+        logs: String
     }
 );
 
@@ -98,13 +98,24 @@ exports.init = function(app) {
             });
     });
 
+    var spawned;
+
     app.post("/beginMigration", function(req, res) {
-        Batch.update({}, {step: "loadInProgress"}, {}, function(err) {
-            updateCdes.beginMigration('caDSR', MigrationDataElement, MigrationOrg, function () {
-                Batch.update({}, {step: "batchComplete"}, {}, function (err) {
-                    if (err) return res.status(500).send(err);
-                    return res.send("OK");
-                });
+        Batch.update({}, {step: "loadInProgress"}, {}, function() {
+            res.send("OK");
+            var logs;
+            spawned = spawn(config.pmNodeProcess || "node", ['ingester/updateCdes', 'caDSR'], {stdio: 'inherit'});
+            spawned.stdout.on("data", function(data) {
+                logs = logs + data;
+            });
+
+            intervalObj = setInterval(function() {
+                Batch.update({}, {logs: logs}, {});
+            }, 1000);
+
+            spawned.stdout.on("end", function() {
+                clearTimeout(intervalObj);
+                Batch.update({}, {logs: logs}, {});
             });
         })
     });
