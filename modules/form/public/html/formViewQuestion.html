@@ -135,18 +135,20 @@
                         </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-7 answerList" ng-if="question.question.datatype === 'Value List'">
-                <div tabindex="0"><strong>Answer List:</strong></div>
-                <div class="panel-body">
-                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate"
-                               style="min-width: 125px" on-remove="stageElt()" on-select="stageElt()">
-                        <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}</ui-select-match>
-                        <ui-select-choices
-                                repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
-                            {{pv.valueMeaningName}}
-                        </ui-select-choices>
-                    </ui-select>
+                <div class="row answerList" ng-if="question.question.datatype === 'Value List'">
+                    <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
+                    <div class="col-sm-7">
+                        <ui-select multiple ng-model="question.question.answers" theme="select2"
+                                   ng-disabled="!canCurate"
+                                   style="min-width: 125px" on-remove="stageElt()" on-select="stageElt()">
+                            <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
+                                {{pv.valueMeaningName}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
                 </div>
             </div>
         </div>
