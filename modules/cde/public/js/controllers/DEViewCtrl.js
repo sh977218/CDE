@@ -183,7 +183,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             hideable: true
         },
         more: {
-            heading: "More Tabs",
+            heading: "More...",
             includes: [],
             select: function () {
                 $timeout(function () {
@@ -197,7 +197,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }, 0)
             },
             show: true,
-            showIcon: true
+            class: "gray"
         }
     };
     $scope.resolveCdeLoaded = null;
