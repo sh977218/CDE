@@ -32,6 +32,7 @@ Form.find({
                     else {
                         console.log('saved form id: ' + form.tinyId);
                         formCounter++;
+                        console.log('# form' + formCounter++);
                         doneOneForm();
                     }
                 });
