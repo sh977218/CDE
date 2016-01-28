@@ -751,4 +751,5 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
+
 }
