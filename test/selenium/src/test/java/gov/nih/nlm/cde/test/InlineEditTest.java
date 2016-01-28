@@ -50,7 +50,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         alert.sendKeys(url);
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-        hangon(1);
+        showAllTabs();
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
     }
 }

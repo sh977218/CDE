@@ -23,7 +23,8 @@ public class FormScoreTest extends BaseFormTest {
 
         textPresent("Quick Board (3)");
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
-        clickElement(By.linkText("Score / Derivations"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("All 3 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("ALSSS Score");
@@ -32,7 +33,7 @@ public class FormScoreTest extends BaseFormTest {
 
         createForm("ALS Score", "ALS Score Form", null, "NINDS");
 
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
         addSection("Score Section", "0 or more");
 
         startAddingQuestions();

@@ -39,9 +39,9 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         clickElement(By.id("li-blank-Preferred Standard"));
         textPresent("1 results for");
         clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
-        showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));

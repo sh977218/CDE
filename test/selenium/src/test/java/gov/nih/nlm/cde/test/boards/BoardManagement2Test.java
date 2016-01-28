@@ -3,7 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class BoardManagement2Test  extends BoardTest {
+public class BoardManagement2Test extends BoardTest {
 
     @Test
     public void cdeBoards() {
@@ -11,18 +11,19 @@ public class BoardManagement2Test  extends BoardTest {
         mustBeLoggedInAs(boarduser1_username, password);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
-        
+
         createBoard(board1, "");
         createBoard(board2, "");
-        
+
         makePublic(board1);
-        
+
         pinTo("Biomarker Outcome", board1);
         pinTo("Biomarker Outcome", board2);
-        
+
         goToCdeByName("Biomarker Outcome");
-        findElement(By.xpath("//li[@heading='Boards']/a")).click();
-        
+        showAllTabs();
+        clickElement(By.xpath("//li[@heading='Boards']/a"));
+
         textPresent(board1);
         textNotPresent(board2);
 
@@ -30,20 +31,20 @@ public class BoardManagement2Test  extends BoardTest {
 
         hangon(2);
         goToCdeByName("Biomarker Outcome");
-        findElement(By.xpath("//li[@heading='Boards']/a")).click();
-        
+        clickElement(By.xpath("//li[@heading='Boards']/a"));
+
         textPresent(board1);
         textPresent(board2);
-        
+
         removeBoard(board1);
         removeBoard(board2);
-    }  
-    
+    }
+
     @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        findElement(By.linkText("10")).click();
+        clickElement(By.linkText("10"));
     }
 
 }

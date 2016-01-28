@@ -24,6 +24,7 @@ public class ValueDomain2Test extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#dateFormat .fa-check"));
         newCdeVersion();
 
+        showAllTabs();
         checkInHistory("Permissible Values - Date", "", "format1");
         checkInHistory("Permissible Values - Value Type", "Value List", "Date");
 

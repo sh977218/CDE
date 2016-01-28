@@ -33,6 +33,7 @@ public class ForkMineMineTest extends ForkTest {
         textPresent("Unable to accept. This fork may have been updated. Refresh page and try again.");
         closeAlert();
         driver.get(driver.getCurrentUrl());
+        showAllTabs();
         clickElement(By.id("forks_tab"));
         textPresent("This element has no forks");
 

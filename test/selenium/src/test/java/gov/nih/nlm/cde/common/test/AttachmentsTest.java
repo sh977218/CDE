@@ -15,6 +15,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Sedative sleep pill frequency";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        showAllTabs();
         clickElement(By.id("attachments_tab"));
 
         mustBeLoggedInAs(ninds_username, password);

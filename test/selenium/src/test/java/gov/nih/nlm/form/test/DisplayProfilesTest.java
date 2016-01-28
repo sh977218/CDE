@@ -23,7 +23,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
         textNotPresent("Display Profile:");
-        clickElement(By.linkText("Display Profiles"));
+        showAllTabs();
+        clickElement(By.id("displayProfiles_tab"));
 
         createDisplayProfile(0, "Matrix and Values", true, true);
         createDisplayProfile(1, "Matrix No Values", true, false);
@@ -38,7 +39,11 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
         Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 0);
-        textPresent("1");textPresent("2");textPresent("3");textPresent("4");textPresent("5");
+        textPresent("1");
+        textPresent("2");
+        textPresent("3");
+        textPresent("4");
+        textPresent("5");
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
         hangon(1);
@@ -50,9 +55,10 @@ public class DisplayProfilesTest extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 5);
 
-        clickElement(By.linkText("Display Profiles"));
+        showAllTabs();
+        clickElement(By.id("displayProfiles_tab"));
 
-        for (int i =0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             clickElement(By.id("removeDisplayProfile-0"));
             clickElement(By.id("confirmRemoveDisplayProfile-0"));
         }

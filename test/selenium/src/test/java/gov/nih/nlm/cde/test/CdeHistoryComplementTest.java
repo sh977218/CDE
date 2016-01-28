@@ -47,7 +47,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         checkInHistory("Registration State", "Qualified", "Recorded");
 
-        showAllTabs();
         clickElement(By.id("ids_tab"));
         closeAlert();
         clickElement(By.id("addId"));

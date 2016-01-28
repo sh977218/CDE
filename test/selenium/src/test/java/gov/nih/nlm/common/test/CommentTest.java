@@ -34,7 +34,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Inappropriate Comment";
         goToEltByName(eltName, status);
-
+        showAllTabs();
         addComment(commentText);
 
         logout();
