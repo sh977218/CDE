@@ -187,7 +187,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: [],
             select: function () {
                 $timeout(function () {
-                    //$scope.tabs.less.show = true;
                     $scope.tabs.more.show = false;
                     $scope.tabs.more.active = false;
                     $scope.tabs[$scope.currentTab].active = true;

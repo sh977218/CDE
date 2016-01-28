@@ -20,31 +20,10 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.setRenderFormat = function (format) {
         $scope.renderWith = format;
     };
-    $scope.currentTab;
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
     };
-
-    var showTab = {
-        displayProfiles: false,
-        classification: false,
-        status: false,
-        referenceDocument: false,
-        properties:false,
-        ids: false,
-        discussions: false,
-        boards: false,
-        attachments: false,
-    };
-
-    function showTabs(showTab,show) {
-        for (var property in showTab) {
-            if (showTab.hasOwnProperty(property)) {
-                $scope.tabs[property].show = show;
-            }
-        }
-    }
 
     $scope.tabs = {
         general: {
@@ -63,112 +42,118 @@ angular.module('formModule').controller('FormViewCtrl',
             },
             show: true
         },
+        naming: {
+            heading: "Naming",
+            includes: ['/system/public/html/naming.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        classification: {
+            heading: "Classification",
+            includes: ['/form/public/html/formClassification.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
         cdeList: {
             heading: "CDE List",
-            includes:['/form/public/html/cdeList.html'],
+            includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 getFormCdes();
             },
-            show: true
-        },
-        naming: {
-            heading: "Naming",
-            includes: ['/system/public/html/naming.html'], select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: true
+            show: false,
+            hideable: true
         },
         displayProfiles: {
             heading: "Display Profiles",
-            includes: ['/form/public/html/displayProfiles.html'], select: function (thisTab) {
+            includes: ['/form/public/html/displayProfiles.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['displayProfiles']
-        },
-        classification: {
-            heading: "Classification",
-            includes: ['/form/public/html/formClassification.html'], select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: showTab['classification']
+            show: false,
+            hideable: true
         },
         status: {
             heading: "Status",
-            includes: ['/system/public/html/status.html'], select: function (thisTab) {
+            includes: ['/system/public/html/status.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['status']
+            show: false,
+            hideable: true
         },
         referenceDocument: {
             heading: "Reference Documents",
-            includes: ['/system/public/html/referenceDocument.html'], select: function (thisTab) {
+            includes: ['/system/public/html/referenceDocument.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['referenceDocument']
+            show: false,
+            hideable: true
         },
         properties: {
             heading: "Properties",
-            includes: ['/system/public/html/properties.html'], select: function (thisTab) {
+            includes: ['/system/public/html/properties.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['properties']
+            show: false,
+            hideable: true
         },
         ids: {
             heading: "Identifiers",
-            includes: ['/system/public/html/identifiers.html'], select: function (thisTab) {
+            includes: ['/system/public/html/identifiers.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['ids']
+            show: false,
+            hideable: true
         },
         discussions: {
             heading: "Discussions",
-            includes: ['/system/public/html/comments.html'], select: function (thisTab) {
+            includes: ['/system/public/html/comments.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['discussions']
+            show: false,
+            hideable: true
         },
         boards: {
             heading: "Boards",
             includes: [], select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['boards']
+            show: false,
+            hideable: true
         },
         attachments: {
             heading: "Attachments",
-            includes: ['/system/public/html/attachments.html'], select: function (thisTab) {
+            includes: ['/system/public/html/attachments.html'],
+            select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
-            show: showTab['attachments']
+            show: false,
+            hideable: true
         },
         more: {
-            heading: "More Tabs",
+            heading: "More...",
             includes: [],
             select: function () {
                 $timeout(function () {
-                    $scope.tabs.less.show = true;
                     $scope.tabs.more.show = false;
                     $scope.tabs.more.active = false;
                     $scope.tabs[$scope.currentTab].active = true;
-                    showTabs(showTab, true);
+                    Object.keys($scope.tabs).forEach(function (key) {
+                        if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
+                    });
                 }, 0)
             },
-            show: true
-        },
-        less: {
-            heading: "Less Tabs",
-            includes: [],
-            select: function () {
-                $timeout(function () {
-                    $scope.tabs.more.show = true;
-                    $scope.tabs.less.show = false;
-                    $scope.tabs.less.active = false;
-                    $scope.tabs[$scope.currentTab].active = true;
-                    showTabs(showTab, false);
-                }, 0)
-            },
-            show: false
+            show: true,
+            class: "gray"
         }
     };
 

@@ -54,13 +54,13 @@
         </button>
     </h3>
 
-    <div uib-tabset>
-        <div ng-repeat="(tabName, tab) in tabs" uib-tab heading="{{tab.heading}}"
-             active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
-             id="{{tabName}}_tab" select="tab.select(tabName)">
+    <uib-tabset>
+        <uib-tab ng-repeat="(tabName, tab) in tabs" active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
+                 id="{{tabName}}_tab" select="tab.select(tabName)">
+            <uib-tab-heading ng-class="tab.class">{{tab.heading}}</uib-tab-heading>
             <div ng-repeat="incl in tab.includes" ng-include="incl"/>
-        </div>
-    </div>
+        </uib-tab>
+    </uib-tabset>
 
     <div class="row" ng-controller="VersionCtrl">
         <div class="col-md-12" ng-show="elt.unsaved">
