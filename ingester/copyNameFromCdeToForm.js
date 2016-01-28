@@ -14,7 +14,6 @@ var Form = conn.model('Form', form_schemas.formSchema);
 var formCounter = 0;
 
 Form.find({
-    tinyId:'Q1ncc4Rg_',
     archived: null
 }).exec(function (err, forms) {
     if (err) {
