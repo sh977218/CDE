@@ -21,9 +21,9 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
         clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
-        showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));

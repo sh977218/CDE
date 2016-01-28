@@ -14,15 +14,16 @@ public class PvTest extends NlmCdeBaseTest {
         String cdeName = "Additional Pathologic Findings Chronic Proctocolitis Indicator";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click(); 
+        clickElement(By.id("pvs_tab"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='pv-0']/div/span/span[1]/i")));
-        findElement(By.cssSelector("#pv-0 .fa-edit")).click();
+        clickElement(By.cssSelector("#pv-0 .fa-edit"));
         findElement(By.cssSelector("#pv-0 input")).sendKeys(" added to pv");
-        findElement(By.cssSelector("#pv-0 .fa-check")).click();
+        clickElement(By.cssSelector("#pv-0 .fa-check"));
         newCdeVersion("Changed PV");
 
         Assert.assertTrue(textPresent("added to pv"));
-        
+
+        showAllTabs();
         checkInHistory("Permissible Values", "Indeterminate", "Indeterminate added to pv");
         
     }    
@@ -30,10 +31,10 @@ public class PvTest extends NlmCdeBaseTest {
     @Test
     public void longPvList() {
         goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
-        findElement(By.linkText("Permissible Values")).click();         
+        clickElement(By.id("pvs_tab"));
         textPresent("Hemoglobinuria");
         textNotPresent("Hypermagnesemia");
-        findElement(By.id("showMorePvs")).click();
+        clickElement(By.id("showMorePvs"));
         textPresent("Hypermagnesemia");
     }
     
@@ -41,26 +42,26 @@ public class PvTest extends NlmCdeBaseTest {
     public void hideProprietaryPv() {
         mustBeLoggedInAs(ninds_username, password);        
         goToCdeByName("Post traumatic amnesia duration range");
-        findElement(By.linkText("Permissible Values")).click();         
-        findElement(By.cssSelector("#pvCodeSystem-0 .fa-edit")).click();
+        clickElement(By.id("pvs_tab"));
+        clickElement(By.cssSelector("#pvCodeSystem-0 .fa-edit"));
         findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
 
         hangon(1);
         if (driver.findElements(By.cssSelector("#pvCodeSystem-0 a")).size() > 0) {
-            findElement(By.cssSelector("#pvCodeSystem-0 a")).click();
+            clickElement(By.cssSelector("#pvCodeSystem-0 a"));
         }
 
-        findElement(By.cssSelector("#pvCodeSystem-0 .fa-check")).click();
+        clickElement(By.cssSelector("#pvCodeSystem-0 .fa-check"));
         newCdeVersion();
         
         mustBeLoggedInAs(ninds_username, password); 
         goToCdeByName("Post traumatic amnesia duration range");
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.linkText("Permissible Values"));
         textPresent("SNOMEDCT");
        
         logout();
         goToCdeByName("Post traumatic amnesia duration range");
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         textNotPresent("SNOMEDCT");
         textPresent("Login to see the value.");
     }    

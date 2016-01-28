@@ -49,7 +49,6 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         checkInHistory("Concepts", "", "OC_CODE_111");
         checkInHistory("Concepts", "", "Prop_CODE_111");
 
-        showAllTabs();
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));

@@ -76,7 +76,8 @@ public class ScoreTest extends NlmCdeBaseTest {
         clickElement(By.id("derivationRules_tab"));
         textPresent("This Data Element is used to derive to the following Data Elements:");
         clickElement(By.linkText("DRS Total Score"));
-        clickElement(By.linkText("Score / Derivations"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         textNotPresent("Add Score");

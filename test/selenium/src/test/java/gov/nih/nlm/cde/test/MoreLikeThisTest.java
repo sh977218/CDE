@@ -46,6 +46,7 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
         waitForESUpdate();
         goToCdeByName(cdeName, "Incomplete");
+        showAllTabs();
         clickElement(By.linkText("More Like This"));
         textNotPresent(cdeName, By.id("mltAccordion"));
     }

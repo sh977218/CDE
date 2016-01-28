@@ -43,7 +43,6 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Property Added");
         closeAlert();
         modalGone();
-        showAllTabs();
         clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys("MyKey3");
         findElement(By.name("value")).sendKeys("MyValue3");

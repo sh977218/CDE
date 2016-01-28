@@ -16,6 +16,7 @@ public abstract class CommentTest extends CommonTest {
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, test_password);
         goToEltByName(eltName);
+        showAllTabs();
         addComment("My First Comment!");
         textPresent("testuser");
         Assert.assertTrue(textPresent("My First Comment!"));
@@ -39,7 +40,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
-        clickElement(By.linkText("Discussions"));
+        clickElement(By.id("discussions_tab"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -56,11 +57,13 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, test_password);
         String commentText = "Another Inappropriate Comment";
         goToEltByName(eltName, status);
+        showAllTabs();
         addComment(commentText);
         logout();
         loginAs(nlm_username, nlm_password);
         goToEltByName(eltName, status);
-        clickElement(By.linkText("Discussions"));
+        showAllTabs();
+        clickElement(By.id("discussions_tab"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -148,7 +151,7 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        hangon(2);
+        showAllTabs();
         addComment(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);

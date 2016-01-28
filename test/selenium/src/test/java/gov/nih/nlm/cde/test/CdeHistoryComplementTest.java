@@ -22,7 +22,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("createNamePair"));
         modalGone();
 
-        showAllTabs();
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("addConcept"));
         findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
