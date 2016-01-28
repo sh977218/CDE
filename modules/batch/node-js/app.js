@@ -74,7 +74,7 @@ exports.init = function(app) {
     });
 
     app.post("/migrationOrg", function(req, res) {
-        MigrationOrg(req.body.migrationOrg).save(function(err) {
+        new MigrationOrg(req.body.org).save(function(err) {
             if (err) return res.status(500).send(err);
             Batch.update({}, {step: "orgLoaded"}, {}, function(err) {
                 if (err) return res.status(500).send(err);
@@ -83,19 +83,49 @@ exports.init = function(app) {
         });
     });
 
-    app.post("/migrationCdes", multer({"inMemory": true}), function(req, res) {
-        var cdes = JSON.parse(req.files.migrationJson.buffer.toString());
-        async.each(cdes,
-            function(migCde, cb){
-                MigrationDataElement(migCde).save(cb);
-            }
-            , function(err) {
-                if (err) return res.status(500).send(err);
-                Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
-                    if (err) return res.status(500).send(err);
-                    return res.send("OK");
-                });
+    app.post("/migrationCdes",
+        //multer(
+        //    {
+        //        "inMemory": true,
+        //        onFileUploadData:function(file,data) {
+        //            console.log("multer data");
+        //        },
+        //    }
+        //),
+        function(req, res) {
+            console.log(req.files.migrationJson.path);
+
+            var lineReader = require('readline').createInterface({
+                input: require('fs').createReadStream(req.files.migrationJson.path)
             });
+
+            lineReader.on('line', function (line) {
+                console.log('Line from file:', line);
+            });
+
+            var cde = JSON.parse(content);
+
+
+
+            MigrationDataElement(cde).save(function(err) {
+            });
+
+            Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
+                if (err) return res.status(500).send(err);
+                return res.send("OK");
+            });
+
+        //async.each(cdes,
+        //    function(migCde, cb){
+        //        MigrationDataElement(migCde).save(cb);
+        //    }
+        //    , function(err) {
+        //        if (err) return res.status(500).send(err);
+        //        Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
+        //            if (err) return res.status(500).send(err);
+        //            return res.send("OK");
+        //        });
+        //    });
     });
 
     var spawned;

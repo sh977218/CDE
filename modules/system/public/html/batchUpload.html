@@ -27,14 +27,15 @@
     <div ng-switch="currentBatch.step">
         <div ng-switch-when="initiated">
             <h4> Next Step - Load Migration Org</h4>
-            <textarea ng-model="migrationOrg"/>
-            <button ng-disabled="!migrationOrg" class="btn btn-default" ng-click="loadOrg()"> Load Org</button>
+            <textarea ng-model="input.migrationOrg" ng-change="setValid()"/>
+            <button ng-disabled="!input.valid" class="btn btn-default" ng-click="loadOrg()"> Load Org</button>
         </div>
 
         <div ng-switch-when="orgLoaded">
             <h4>Next Step - Load a batch file</h4>
             <input type="file" name="file" id="fileToUpload"
                    onchange="angular.element(this).scope().uploadFile(this.files[0])"/>
+            <div ng-bind="$scope.progressPercentage"></div>
         </div>
         <div ng-switch-when="migrationReady">
             <h4>Next Step - Begin Migration</h4>

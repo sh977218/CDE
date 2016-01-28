@@ -1,25 +1,32 @@
-angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval',
-    function($scope, $http, $interval)
+angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval', '$upload',
+    function($scope, $http, $interval, $upload)
 {
+
+    $scope.input = {};
 
     $scope.tabLostFocus = function() {
         console.log("lost foc");
     };
 
     $scope.uploadFile = function (file) {
-        var fd = new FormData();
-        fd.append("migrationJson", file);
-        var xhr = new XMLHttpRequest();
-        xhr.addEventListener("load", uploadComplete, false);
-        xhr.open("POST", "/migrationCdes" );
-        xhr.send(fd);
+        $upload.upload({
+            url: '/migrationCdes',
+            fields: {},
+            file: file,
+            fileFormDataName: "migrationJson"
+        }).progress(function (evt) {
+            $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total) + " %";
+        }).success(function (data, status, headers, config) {
+            delete $scope.progressPercentage;
+            $scope.addAlert("success", "Upload Complete");
+            updateMigCde();
+        });
     };
 
     function updateMigCde()
     {
         $scope.migrationCdeCount = "...";
         migUpdatePromise = $interval(function() {
-            console.log("get migs");
             $http.get("/migrationCdeCount").then(function(response) {
                 if ($scope.migrationCdeCount === response.data) $interval.cancel(migUpdatePromise);
                 $scope.migrationCdeCount = response.data;
@@ -62,14 +69,20 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
         });
     };
 
+    $scope.setValid = function() {
+          try {
+              JSON.parse($scope.input.migrationOrg);
+              $scope.input.valid = true;
+          } catch (e) {
+              console.log(e);
+              $scope.input.valid = false;
+          }
+    };
+
     $scope.loadOrg = function() {
-        $http.post("/migrationOrg", JSON.parse($scope.migrationOrg)).then(function(result) {
+        $http.post("/migrationOrg", {org: JSON.parse($scope.input.migrationOrg)}).then(function(result) {
             initPage();
         });
     };
-
-    function uploadComplete() {
-        updateMigCde();
-    }
 
 }]);
