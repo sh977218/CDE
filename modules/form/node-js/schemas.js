@@ -10,6 +10,7 @@ var questionSchema = {
         , name: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
+        , ids: [sharedSchemas.idSchema]
     }
     , datatype: String
     , datatypeNumber: {
