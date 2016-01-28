@@ -14,7 +14,6 @@ var Form = conn.model('Form', form_schemas.formSchema);
 var formCounter = 0;
 
 Form.find({
-    tinyId: 'Q1ncc4Rg_',
     archived: null
 }).exec(function (err, forms) {
     if (err) {
@@ -52,7 +51,7 @@ Form.find({
                             process.exit(0);
                         }
                         console.log('found cde id: ' + cdeTinyId + ' version: ' + version);
-                        if (cde) fe.question.cde.ids = cde.ids;
+                        if (cde) fe.question.cde.ids = cde.get('ids');
                         else {
                             console.log("no CDE with id: " + cdeTinyId)
                         }
