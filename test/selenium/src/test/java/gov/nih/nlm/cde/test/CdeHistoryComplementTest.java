@@ -17,15 +17,15 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
-        findElement(By.xpath("//label[text()=\"Name\"]/following-sibling::input")).sendKeys("Alternative Name 1");
-        findElement(By.xpath("//label[text()=\"Definition\"]/following-sibling::textarea")).sendKeys("Alternative Definition 1");
+        findElement(By.xpath("//label[text()='Name']/following-sibling::input")).sendKeys("Alternative Name 1");
+        findElement(By.xpath("//label[text()='Definition']/following-sibling::textarea")).sendKeys("Alternative Definition 1");
         clickElement(By.id("createNamePair"));
         modalGone();
 
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("addConcept"));
-        findElement(By.xpath("//label[text()=\"Code Name\"]/following-sibling::input")).sendKeys("Code Name 1");
-        findElement(By.xpath("//label[text()=\"Code ID\"]/following-sibling::input")).sendKeys("Code ID 1");
+        findElement(By.xpath("//label[text()='Code Name']/following-sibling::input")).sendKeys("Code Name 1");
+        findElement(By.xpath("//label[text()='Code ID']/following-sibling::input")).sendKeys("Code ID 1");
         clickElement(By.id("createConcept"));
         modalGone();
 
@@ -41,7 +41,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
-        new Select(findElement(By.xpath("//label[text()=\"Registration Status\"]/following-sibling::select"))).selectByValue("Recorded");
+        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByValue("Recorded");
         clickElement(By.id("saveRegStatus"));
         modalGone();
 
@@ -50,12 +50,13 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("ids_tab"));
         closeAlert();
         clickElement(By.id("addId"));
-        findElement(By.xpath("//label[text()=\"Source\"]/following-sibling::input")).sendKeys("Origin 1");
-        findElement(By.xpath("//label[text()=\"Identifier\"]/following-sibling::textarea")).sendKeys("Identifier 1");
-        findElement(By.xpath("//label[text()=\"Version\"]/following-sibling::textarea")).sendKeys("Version 1");
+        findElement(By.xpath("//label[text()='Source']/following-sibling::input")).sendKeys("Origin 1");
+        findElement(By.xpath("//label[text()='Identifier']/following-sibling::textarea")).sendKeys("Identifier 1");
+        findElement(By.xpath("//label[text()='Version']/following-sibling::textarea")).sendKeys("Version 1");
         clickElement(By.id("createId"));
         modalGone();
         goToCdeByName(cdeName, "Recorded");
+        showAllTabs();
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");
         checkInHistory("Identifiers", "", "Version 1");

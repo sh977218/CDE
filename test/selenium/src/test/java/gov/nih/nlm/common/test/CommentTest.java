@@ -40,6 +40,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
+        showAllTabs();
         clickElement(By.id("discussions_tab"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {

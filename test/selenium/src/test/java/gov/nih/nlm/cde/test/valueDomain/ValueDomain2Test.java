@@ -36,7 +36,6 @@ public class ValueDomain2Test extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        showAllTabs();
         checkInHistory("Permissible Values - Date - Format", "format1", "format2");
     }
 }
