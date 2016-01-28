@@ -6,30 +6,32 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
 public class RenderRequiredFieldsTest extends NlmCdeBaseTest {
+
+
+    private boolean isRequired(WebElement element) {
+        return "true".equals(element.getAttribute("required"));
+    }
 
     @Test
     public void requiredFields() {
         goToFormByName("Required Field Form");
         clickElement(By.linkText("native"));
-        List<WebElement> inputs = findElements(By.xpath("//div[@id='formRenderSection_New Section']//input"));
 
-        Assert.assertFalse(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[1]")), "required"));
-        Assert.assertTrue(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[2]")), "required"));
+        Assert.assertFalse(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[1]"))));
+        Assert.assertTrue(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[2]"))));
 
-        Assert.assertFalse(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[3]")), "required"));
-        Assert.assertTrue(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[4]")), "required"));
+        Assert.assertFalse(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[3]"))));
+        Assert.assertTrue(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[4]"))));
 
-        Assert.assertFalse(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[5]")), "required"));
-        Assert.assertTrue(isAttributePresent(
-                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[6]")), "required"));
+        Assert.assertFalse(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[5]"))));
+        Assert.assertTrue(isRequired(
+                findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[6]"))));
 
     }
 

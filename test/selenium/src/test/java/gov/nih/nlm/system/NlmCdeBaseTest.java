@@ -752,13 +752,4 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 
-    public static boolean isAttributePresent(WebElement element, String attribute) {
-        try {
-            String value = element.getAttribute(attribute);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
 }
