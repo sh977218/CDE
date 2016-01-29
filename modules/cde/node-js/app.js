@@ -551,16 +551,15 @@ exports.init = function (app, daoManager) {
         function badDate(){
             res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
         }
+        if (!dstring) badDate();
         if (dstring[4]!=='-' || dstring[7]!=='-') badDate();
         if (dstring.indexOf('20')!==0) badDate();
         if (dstring[5]!=="0" && dstring[5]!=="1") badDate();
         if (dstring[8]!=="0" && dstring[8]!=="1" && dstring[8]!=="2" && dstring[8]!=="3") badDate();
 
-
         var date = new Date(dstring);
-
-        mongo_data.findModifiedElementsSince(date, function(err, elements){
-            res.send(elements);
+        mongo_data.streamModifiedElementsSince(date, function(err, elts){
+            res.send(elts);
         });
     });
 

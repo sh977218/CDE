@@ -275,7 +275,7 @@ var doFile = function (cadsrFile, fileCb) {
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                         if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
                             cde.registrationState.registrationStatus = "Qualified";
-                        }\]
+                        }
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
                         // ignore classifications
                     } else {
