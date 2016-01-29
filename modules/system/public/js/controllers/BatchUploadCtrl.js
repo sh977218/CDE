@@ -32,6 +32,9 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
                 $scope.migrationCdeCount = response.data;
                 $scope.loading = false;
             });
+            $http.get('/currentBatch').then(function(response) {
+                $scope.currentBatch = response.data;
+            });
         }, 2000)
     }
 
@@ -69,12 +72,21 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
         });
     };
 
+    $scope.haltMigration = function() {
+        $http.post('/haltMigration', {}).then(function(response) {
+            updateMigCde();
+            $scope.currentBatch = response.data;
+        });
+    };
+
+
     $scope.setValid = function() {
           try {
               JSON.parse($scope.input.migrationOrg);
               $scope.input.valid = true;
+              delete $scope.input.error;
           } catch (e) {
-              console.log(e);
+              $scope.input.error = e.toString();
               $scope.input.valid = false;
           }
     };

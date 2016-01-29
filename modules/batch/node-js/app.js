@@ -6,7 +6,7 @@ var cde_schemas = require('../../cde/node-js/schemas')
     , multer  = require('multer')
     , async = require('async')
     , fs = require('fs')
-    , spawn = require('child_process').spawn
+    , child_process = require('child_process')
 ;
 
 var migrationConn = connHelper.establishConnection(config.database.migration);
@@ -85,77 +85,56 @@ exports.init = function(app) {
         });
     });
 
-    app.post("/migrationCdes",
-        multer(
-            //{
-            //    "inMemory": true,
-            //    onFileUploadData:function(file,data) {
-            //        console.log("multer data");
-            //    },
-            //}
-        ),
-        function(req, res) {
+    app.post("/migrationCdes", multer(), function(req, res) {
+        spawned = child_process.spawn('mongorestore', ['--username', config.database.migration.username
+            , "--password", config.database.migration.password
+            , "-d", config.database.migration.db
+            , "-c", "dataelements", req.files.migrationJson.path], {stdio: 'inherit'}
+        );
 
-            spawned = spawn('mongorestore --username ' + config.database.migration.username
-                + " --password " + config.database.migration.password
-                + " -d " + config.database.migration.db
-                + " -c dataelements " + req.files.migrationJson.path, {stdio: 'inherit'}
-            );
-
-            spawned.on('data', function(data) {
-                console.log(data);
-            });
-
-            spawned.on('end', function() {
-               res.send("OK");
-                fs.unlink(req.files.migrationJson.path);
-            });
-            //var lineReader = require('readline').createInterface({
-            //    input: fs.createReadStream(req.files.migrationJson.path)
-            //});
-            //
-            //lineReader.on('line', function (line) {
-            //    lineReader.pause();
-            //    var cde = JSON.parse(line);
-            //    MigrationDataElement(cde).save(function(err) {
-            //        if (err) {
-            //            console.log(err);
-            //            lineReader.close();
-            //        } else {
-            //            lineReader.resume();
-            //        }
-            //    });
-            //});
-            //
-            //lineReader.on('end', function() {
-            //    Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
-            //        fs.unlink(req.files.migrationJson.path)
-            //    });
-            //});
-
-            res.send("OK");
+        spawned.on('data', function(data) {
+            console.log(data);
         });
+
+        spawned.on('exit', function() {
+            Batch.update({}, {step: "migrationCdesLoaded"}, {}, function() {
+                console.log("Batch Object Updated.");
+            });
+            fs.unlink(req.files.migrationJson.path);
+        });
+        res.send("OK");
+    });
 
     var spawned;
 
     app.post("/beginMigration", function(req, res) {
         Batch.update({}, {step: "loadInProgress"}, {}, function() {
             res.send("OK");
-            var logs;
-            spawned = spawn(config.pmNodeProcess || "node", ['ingester/updateCdes', 'caDSR'], {stdio: 'inherit'});
+            var logs = "";
+            spawned = child_process.spawn(config.pmNodeProcess || "node", ['ingester/updateCdes', 'caDSR'], {stdio: [0, "pipe"]});
+
             spawned.stdout.on("data", function(data) {
-                logs = logs + data;
+                logs = logs + "\n" + data;
             });
 
             intervalObj = setInterval(function() {
-                Batch.update({}, {logs: logs}, {});
+                Batch.update({}, {logs: logs}, {}, function(err) {
+                });
             }, 1000);
 
-            spawned.stdout.on("end", function() {
+            spawned.on("exit", function() {
+                console.log("-- COMPLETE");
                 clearTimeout(intervalObj);
                 Batch.update({}, {logs: logs}, {});
             });
         })
+    });
+
+    app.post("/haltMigration", function(req, res) {
+        Batch.update({}, {step: "stopped"}, {}, function(err, newBatch) {
+            spawned.kill();
+            res.send(newBatch);
+        });
     });
 
 };

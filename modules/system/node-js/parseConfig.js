@@ -46,8 +46,7 @@ config.elasticBoardRiverUri = config.elastic.hosts[0] + "/_river/" + config.elas
 config.elasticStoredQueryUri = config.elastic.hosts[0] + "/" + config.elastic.storedQueryIndex.name + "/";
 config.elasticStoredQueryRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.storedQueryIndex.name;
 
-config.mongoMigrationUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
-
+config.mongoMigrationUri = "mongodb://" + config.database.migration.username + ":" + config.database.migration.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + "migration";

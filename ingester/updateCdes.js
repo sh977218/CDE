@@ -2,7 +2,7 @@ var fs = require('fs')
     , util = require('util')
     , xml2js = require('xml2js')
     , mongoose = require('mongoose')
-    , config = require('config')
+    , config = require('../modules/system/node-js/parseConfig')
     , cde_schemas = require('../modules/cde/node-js/schemas')
     , sys_schemas = require('../modules/system/node-js/schemas')
     , mongo_cde = require('../modules/cde/node-js/mongo-cde')
@@ -16,14 +16,19 @@ var importDate = new Date().toJSON();
 var mongoUri = config.mongoUri;
 var mongoMigrationUri = config.mongoMigrationUri;
 
-var conn = mongoose.createConnection(mongoUri, {auth: {authdb: "admin"}});
-conn.on('error', console.error.bind(console, 'connection error:'));
+console.log(mongoUri)
+console.log(mongoMigrationUri)
+
+var conn = mongoose.createConnection(mongoUri);
+conn.on('error', console.error.bind(console, 'appData connection error:'));
+conn.on('error', function() {process.exit(1);});
 conn.once('open', function callback() {
     console.log('mongodb connection open');
 });
 
-var migrationConn = mongoose.createConnection(mongoMigrationUri, {auth: {authdb: "admin"}});
-migrationConn.on('error', console.error.bind(console, 'connection error:'));
+var migrationConn = mongoose.createConnection(mongoMigrationUri);
+migrationConn.on('error', console.error.bind(console, 'migration connection error:'));
+migrationConn.on('error', function() {process.exit(1);});
 migrationConn.once('open', function callback() {
     console.log('mongodb migration connection open');
 });
@@ -71,13 +76,7 @@ var checkTodo = function () {
     //    if (count>0) doStream();
     //})
 
-    DataElement.where({
-        imported: {$ne: importDate},
-        source: cdeSource
-    }).update({
-        "registrationState.registrationStatus": "Retired",
-        "registrationState.administrativeNote": "Not present in import from " + importDate
-    });
+
 };
 
 setInterval(function () {
@@ -120,7 +119,7 @@ var compareCdes = function (existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 };
 
-var processCde = function (migrationCde, existingCde, orgName) {
+var processCde = function (migrationCde, existingCde, orgName, doneWithCde) {
     // deep copy
     var newDe = existingCde.toObject();
     delete newDe._id;
@@ -164,7 +163,7 @@ var processCde = function (migrationCde, existingCde, orgName) {
                 }
                 else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
-                    else checkTodo();
+                    doneWithCde();
                     changed++;
                 });
             });
@@ -250,8 +249,6 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv) {
 };
 
 var streamOnData = function (migrationCde) {
-    todo++;
-    doneThisTime++;
     classificationShared.sortClassification(migrationCde);
     var source = migrationCde.source;
     var orgName = migrationCde.stewardOrg.name;
@@ -274,32 +271,39 @@ var streamOnData = function (migrationCde) {
 };
 
 var streamOnClose = function () {
-    console.log("End of stream");
-    if (doneThisTime === 0) {
-        console.log("Nothing left to do, saving Org");
-        MigrationOrg.find().exec(function (err, orgs) {
-            if (err) console.log("Error Finding Migration Org " + err);
-            orgs.forEach(function (org) {
-                Org.findOne({name: org.name}).exec(function (err, theOrg) {
-                    if (err)  console.log("Error finding existing org " + err);
-                    theOrg.classifications = org.classifications;
-                    theOrg.save(function (err) {
-                        if (err) console.log("Error saving Org " + err);
-                    });
+
+    // Retire Missing CDEs
+    DataElement.where({
+        imported: {$ne: importDate},
+        source: cdeSource
+    }).update({
+        "registrationState.registrationStatus": "Retired",
+        "registrationState.administrativeNote": "Not present in import from " + importDate
+    });
+
+    console.log("Nothing left to do, saving Org");
+    MigrationOrg.find().exec(function (err, orgs) {
+        if (err) console.log("Error Finding Migration Org " + err);
+        orgs.forEach(function (org) {
+            Org.findOne({name: org.name}).exec(function (err, theOrg) {
+                if (err)  console.log("Error finding existing org " + err);
+                theOrg.classifications = org.classifications;
+                theOrg.save(function (err) {
+                    if (err) console.log("Error saving Org " + err);
                 });
             });
         });
+    });
 
-        // give 5 secs for org to save.
-        setTimeout(function () {
-            process.exit(0);
-        }, 5000);
-    }
+    // give 5 secs for org to save.
+    setTimeout(function () {
+        process.exit(0);
+    }, 5000);
 };
 
 var doStream = function () {
     doneThisTime = 0;
-    var stream = MigrationDataElement.find().limit(200).stream();
+    var stream = MigrationDataElement.find().stream();
 
     stream.on('data', streamOnData);
 

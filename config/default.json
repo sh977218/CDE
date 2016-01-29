@@ -84,7 +84,7 @@
     },
     "migration": {
       "db": "migration",
-      "username": "cdeuser",
+      "username": "miguser",
       "password": "password"
     }
   },
