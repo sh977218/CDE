@@ -16,9 +16,6 @@ var importDate = new Date().toJSON();
 var mongoUri = config.mongoUri;
 var mongoMigrationUri = config.mongoMigrationUri;
 
-console.log(mongoUri)
-console.log(mongoMigrationUri)
-
 var conn = mongoose.createConnection(mongoUri);
 conn.on('error', console.error.bind(console, 'appData connection error:'));
 conn.on('error', function() {process.exit(1);});
@@ -60,27 +57,9 @@ var removeClassificationTree = function (cde, org) {
 var changed = 0;
 var created = 0;
 var same = 0;
-var todo = 0;
-var doneThisTime = 0;
-
-var checkTodo = function () {
-    todo--;
-    if (todo === 0) {
-        console.log("nothing left to do");
-        console.log(changed + " elements changed");
-        console.log(created + " elements Created");
-        console.log(same + " elements unchanged");
-        doStream();
-    }
-    //MigrationDataElement.find().count(function (err, count) {
-    //    if (count>0) doStream();
-    //})
-
-
-};
 
 setInterval(function () {
-    console.log("TODO: " + todo + " changed: " + changed + " same: " + same + " created: " + created);
+    console.log(" changed: " + changed + " same: " + same + " created: " + created);
 }, 10000);
 
 var wipeUseless = function (toWipeCde) {
@@ -119,7 +98,7 @@ var compareCdes = function (existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 };
 
-var processCde = function (migrationCde, existingCde, orgName, doneWithCde) {
+var processCde = function (migrationCde, existingCde, orgName, processCdeCb) {
     // deep copy
     var newDe = existingCde.toObject();
     delete newDe._id;
@@ -133,7 +112,7 @@ var processCde = function (migrationCde, existingCde, orgName, doneWithCde) {
             migrationCde.remove(function (err) {
                 same++;
                 if (err) throw "unable to remove";
-                checkTodo();
+                processCdeCb();
             });
         });
     } else if (deepDiff.length > 0) {
@@ -163,7 +142,7 @@ var processCde = function (migrationCde, existingCde, orgName, doneWithCde) {
                 }
                 else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
-                    doneWithCde();
+                    processCdeCb();
                     changed++;
                 });
             });
@@ -179,7 +158,7 @@ var processCde = function (migrationCde, existingCde, orgName, doneWithCde) {
     }
 };
 
-var findCde = function (cdeId, migrationCde, source, orgName, idv) {
+var findCde = function (cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
         archived: null,
         source: source,
@@ -210,7 +189,7 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv) {
                             created++;
                             migrationCde.remove(function (err) {
                                 if (err) console.log("unable to remove: " + err);
-                                else checkTodo();
+                                else findCdeDone();
                             });
                         }
                     });
@@ -220,7 +199,7 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv) {
                     throw e;
                 }
             } else if (existingCdes.length > 1) {
-                console.log("Too many CDEs with Id = " + cdeId + ",  -- TODO: " + todo);
+                console.log("Too many CDEs with Id = " + cdeId);
 
                 DataElement.find(cdeCond)
                     .where("ids").elemMatch(function (elem) {
@@ -229,7 +208,7 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv) {
                         elem.where("version").equals(idv);
                     }).exec(function (err, existingCdes) {
                         if (existingCdes.length === 1) {
-                            processCde(migrationCde, existingCdes[0], orgName);
+                            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
                         }
                         else if (existingCdes.length > 1) {
                             console.log(cdeId);
@@ -239,34 +218,38 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv) {
                         } else {
                             throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
                         }
-                        //checkTodo(); //Multiple CDEs with the same ID but not any one with the same ID+version? This must be a new version, keep it for later!
                     });
 
             } else {
-                processCde(migrationCde, existingCdes[0], orgName);
+                processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
             }
         });
 };
 
+var migStream;
+
 var streamOnData = function (migrationCde) {
+    migStream.pause();
     classificationShared.sortClassification(migrationCde);
     var source = migrationCde.source;
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
-    var idv;
+    var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {
         if (migrationCde.ids[i].source === source) {
             cdeId = migrationCde.ids[i].id;
-            idv = migrationCde.ids[i].version;
+            version = migrationCde.ids[i].version;
         }
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, idv);
+        findCde(cdeId, migrationCde, source, orgName, version, function() {
+            migStream.resume();
+        });
     } else {
         // No Cde.
         console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
-        checkTodo();
+        migStream.resume();
     }
 };
 
@@ -302,16 +285,15 @@ var streamOnClose = function () {
 };
 
 var doStream = function () {
-    doneThisTime = 0;
-    var stream = MigrationDataElement.find().stream();
+    migStream = MigrationDataElement.find().stream();
 
-    stream.on('data', streamOnData);
+    migStream.on('data', streamOnData);
 
-    stream.on('error', function () {
+    migStream.on('error', function () {
         console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
     });
 
-    stream.on('close', streamOnClose);
+    migStream.on('close', streamOnClose);
 };
 
 doStream();

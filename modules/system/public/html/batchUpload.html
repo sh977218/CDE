@@ -49,13 +49,13 @@
 
         <div ng-switch-when="loadInProgress">
             <h4>Next Step - Wait for load to complete</h4>
-            <div ng-bind="currentBatch.logs"></div>
             or <button class="btn btn-default" ng-click="haltMigration()"><i class="fa fa-stop"></i> Halt</button>
+            <div ng-bind="currentBatch.logs" style="white-space: pre;"></div>
         </div>
 
         <div ng-switch-when="batchComplete">
             <h4>Batch Complete</h4>
-            <div ng-bind="currentBatch.logs"></div>
+            <div ng-bind="currentBatch.logs" style="white-space: pre;"></div>
         </div>
 
 

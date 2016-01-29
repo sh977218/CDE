@@ -114,7 +114,7 @@ exports.init = function(app) {
             spawned = child_process.spawn(config.pmNodeProcess || "node", ['ingester/updateCdes', 'caDSR'], {stdio: [0, "pipe"]});
 
             spawned.stdout.on("data", function(data) {
-                logs = logs + "\n" + data;
+                logs = logs + data;
             });
 
             intervalObj = setInterval(function() {
@@ -125,7 +125,7 @@ exports.init = function(app) {
             spawned.on("exit", function() {
                 console.log("-- COMPLETE");
                 clearTimeout(intervalObj);
-                Batch.update({}, {logs: logs}, {});
+                Batch.update({}, {logs: logs, step: "batchComplete"}, {});
             });
         })
     });
