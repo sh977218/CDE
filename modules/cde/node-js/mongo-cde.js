@@ -497,7 +497,7 @@ exports.upsertStatusCde = function(cde, cb){
 };
 
 exports.findModifiedElementsSince = function(date, cb){
-    DataElement.find({updated: {$gte: date}}, "tinyId").exec(function(err, elts){
+    DataElement.find({updated: {$gte: date}}, "tinyId").limit(100).exec(function(err, elts){
         cb(err, elts.map(function(elt){
             return elt.tinyId;
         }));
