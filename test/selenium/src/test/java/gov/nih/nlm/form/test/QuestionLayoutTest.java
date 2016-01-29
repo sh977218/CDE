@@ -33,9 +33,9 @@ public class QuestionLayoutTest extends BaseFormTest {
         // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
         scrollToTop();
         scrollToTop();
-        scrollToViewById("browseOrg-ACRIN");
-        clickElement(By.id("browseOrg-ACRIN"));
-        textPresent("3 results for All Terms");
+        scrollToViewById("browseOrg-caCORE");
+        clickElement(By.id("browseOrg-caCORE"));
+        textPresent(" results for All Terms");
         findElement(By.id("showHideFilters")).click();
         textPresent("Show Filters");
 
@@ -46,7 +46,7 @@ public class QuestionLayoutTest extends BaseFormTest {
 
         textPresent("There is no content yet.");
 
-        String sec3 = "thrid section";
+        String sec3 = "third section";
         addSection(sec3, "0 or more");
 
         textNotPresent("Show Filters");

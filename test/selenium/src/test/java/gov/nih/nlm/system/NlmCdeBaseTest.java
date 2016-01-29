@@ -452,8 +452,7 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text, By by) {
-        wait.until(ExpectedConditions.not(ExpectedConditions
-                .textToBePresentInElementLocated(by, text)));
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
@@ -752,4 +751,5 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
+
 }
