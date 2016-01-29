@@ -7,6 +7,7 @@ var cde_schemas = require('../../cde/node-js/schemas')
     , async = require('async')
     , fs = require('fs')
     , child_process = require('child_process')
+    , authorization = require('../../system/node-js/authorization')
 ;
 
 var migrationConn = connHelper.establishConnection(config.database.migration);
@@ -28,7 +29,7 @@ var Batch = migrationConn.model('Batch', batchSchema);
 
 exports.init = function(app) {
 
-    app.post('/abortBatch', function(req, res) {
+    app.post('/abortBatch', authorization.checkSiteAdmin, function(req, res) {
         MigrationDataElement.remove({}, function(err) {
             if (err) return res.status(500).send(err);
             Batch.remove({}, function(err) {
@@ -38,7 +39,7 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/currentBatch', function(req, res) {
+    app.get('/currentBatch', authorization.checkSiteAdmin, function(req, res) {
         Batch.find({}, function(err, results) {
             if (err) return res.status(500).send(err);
             if (results.length > 1) {
@@ -52,7 +53,7 @@ exports.init = function(app) {
         });
     });
 
-    app.post('/initBatch', function(req, res) {
+    app.post('/initBatch', authorization.checkSiteAdmin, function(req, res) {
         Batch.remove({}, function(err) {
             if (err) return res.status(500).send(err);
             MigrationOrg.remove({}, function(err) {
@@ -68,14 +69,14 @@ exports.init = function(app) {
         });
     });
 
-    app.get("/migrationCdeCount", function (req, res) {
+    app.get("/migrationCdeCount", authorization.checkSiteAdmin, function (req, res) {
         MigrationDataElement.count({}, function(err, count) {
             if (err) return res.status(500).send(err);
             return res.send("" + count);
         })
     });
 
-    app.post("/migrationOrg", function(req, res) {
+    app.post("/migrationOrg", authorization.checkSiteAdmin, function(req, res) {
         new MigrationOrg(req.body.org).save(function(err) {
             if (err) return res.status(500).send(err);
             Batch.update({}, {step: "orgLoaded"}, {}, function(err) {
@@ -107,7 +108,7 @@ exports.init = function(app) {
 
     var spawned;
 
-    app.post("/beginMigration", function(req, res) {
+    app.post("/beginMigration", authorization.checkSiteAdmin, function(req, res) {
         Batch.update({}, {step: "loadInProgress"}, {}, function() {
             res.send("OK");
             var logs = "";
@@ -130,7 +131,7 @@ exports.init = function(app) {
         })
     });
 
-    app.post("/haltMigration", function(req, res) {
+    app.post("/haltMigration", authorization.checkSiteAdmin, function(req, res) {
         Batch.update({}, {step: "stopped"}, {}, function(err, newBatch) {
             spawned.kill();
             res.send(newBatch);

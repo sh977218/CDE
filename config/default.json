@@ -72,7 +72,7 @@
       }
     },
     "appData": {
-      "db": "nlmcde",
+      "db": "test",
       "username": "cdeuser",
       "password": "password"
     },
