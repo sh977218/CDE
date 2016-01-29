@@ -1,5 +1,4 @@
-var mongo_data = require("./mongo-form")
-    , xmlbuilder = require("xmlbuilder")
+var xmlbuilder = require("xmlbuilder")
     , config = require('../../system/node-js/parseConfig')
 ;
 
@@ -11,15 +10,16 @@ var addCardinality = function(parent, formElement) {
 };
 
 var doQuestion = function(parent, question) {
-    var newQuestion = parent.ele("sdc:question",
-        {"initial_state": "enabled",
-        "data_element_scoped_identifier": config.publicUrl + "/debytinyid/" +
-            question.question.cde.tinyId + "/" + question.question.cde.version});
+    var newQuestion = parent.ele("Question",
+        {"ID": question.question.cde.tinyId + 'v' + question.question.cde.version,
+        title: question.label});
 
-    addCardinality(newQuestion, question);
+    //addCardinality(newQuestion, question);
 
-    newQuestion.ele("sdc:question_prompt").ele("mfi13:label", {}, question.label);
+    if (question.instructions)
+        newQuestion.ele("OtherText", {val: question.instructions});
 
+    
     if (question.question.datatype === 'Value List') {
         var lf = newQuestion.ele("sdc.list_field");
         lf.ele("mfi13:multiselect", {}, question.question.multiselect === true);
@@ -40,39 +40,51 @@ var doQuestion = function(parent, question) {
 };
 
 var doSection = function(parent, section) {
-    var newSection = parent.ele("sdc:section", {"initial_state": "enabled"});
+    var newSection = parent.ele("Section",
+        {title: section.label});
 
-    addCardinality(newSection, section);
+    //addCardinality(newSection, section);
 
-    var title = newSection.ele("sdc:section_title");
-    var label = title.ele("mfi13:label", {}, section.label);
+    //var title = newSection.ele("sdc:section_title");
+    //var label = title.ele("mfi13:label", {}, section.label);
 
-    var inst = newSection.ele("sdc:section_instruction");
-    inst.ele("mfi13:label", {}, section.instructions);
+    //var inst = newSection.ele("sdc:section_instruction");
+    //inst.ele("mfi13:label", {}, section.instructions);
 
+    var childItems = newSection.ele("ChildItems");
     section.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'question') {
-              doQuestion(newSection, formElement);
+            doQuestion(childItems, formElement);
+        } else if (formElement.elementType === 'section') {
+            doSection(childItems, formElement);
         }
     });
 
 };
 
 exports.formToSDC = function(form) {
-    var formPackage = xmlbuilder.create("sdc:form_package");
-    formPackage.att("xmlns:sdc", "http://nlm.nih.gov/sdc/for");
-    formPackage.att("xmlns:mfi13", "http://www.iso.org/19763/13/2013");
-    var formDesign = formPackage.ele("sdc:form_design");
+    var formDesign = xmlbuilder.create("FormDesign");
+    formDesign.att("xmlns:sdc", "http://healthIT.gov/sdc");
+    formDesign.att("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    formDesign.att("xsi:schemaLocation", "http://healthIT.gov/sdc SDCFormDesign.xsd");
+    formDesign.att("formID", "ID=129/v=2.004.001/");
+    formDesign.att("baseItemURI", "https://cap.org/ecc/sdc");
 
-    var sdcDesignation = formDesign.ele("sdc:designation");
-    sdcDesignation.ele("sdc:Context", {}, "SDC Pilot Project");
-    sdcDesignation.ele("sdc:sign", {acceptability: "preferred"}, form.naming[0].designation);
+    var header = formDesign.ele("Header");
+    header.att("ID", form.tinyId + "v" + form.version);
+    header.att("title", form.naming[0].designation);
+    header.att("styleClass", "left");
+
+    var body = formDesign.ele("Body");
+    body.att("styleClass", "body");
+
+    var childItems = body.ele("ChildItems");
 
     form.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'section') {
-            doSection(formDesign, formElement);
+            doSection(childItems, formElement);
         }
     });
 
-    return formPackage.toString();
+    return formDesign.toString();
 };
