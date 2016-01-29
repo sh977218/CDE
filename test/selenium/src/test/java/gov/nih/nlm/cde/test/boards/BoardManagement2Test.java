@@ -22,7 +22,7 @@ public class BoardManagement2Test extends BoardTest {
 
         goToCdeByName("Biomarker Outcome");
         showAllTabs();
-        clickElement(By.xpath("//li[@heading='Boards']/a"));
+        clickElement(By.id("boards_tab"));
 
         textPresent(board1);
         textNotPresent(board2);
@@ -31,7 +31,8 @@ public class BoardManagement2Test extends BoardTest {
 
         hangon(2);
         goToCdeByName("Biomarker Outcome");
-        clickElement(By.xpath("//li[@heading='Boards']/a"));
+        showAllTabs();
+        clickElement(By.id("boards_tab"));
 
         textPresent(board1);
         textPresent(board2);

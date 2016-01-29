@@ -72,7 +72,7 @@ public abstract class CommentTest extends CommonTest {
                 i = length;
                 Assert.assertTrue(textPresent("Comment removed"));
                 hangon(1);
-                Assert.assertTrue(textPresent(commentText));
+                Assert.assertTrue(textNotPresent(commentText));
             }
         }
     }
