@@ -13,20 +13,21 @@ public class AddPvTest extends NlmCdeBaseTest {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         textPresent("Right Middle Abdomen");
-        findElement(By.id("pvRemove-8")).click();
+        clickElement(By.id("pvRemove-8"));
         pvValidator.addPv(10, "New PV");
-        findElement(By.xpath("//td[@id='pvCodeSystem-10']//div[@typeahead-source='pVTypeaheadCodeSystemNameList']//i[@class='fa fa-edit']")).click();
+        clickElement(By.xpath("//td[@id='pvCodeSystem-10']//div[@typeahead-source='pVTypeaheadCodeSystemNameList']//i[@class='fa fa-edit']"));
         textPresent("Confirm");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");
         textPresent("NCI Thesaurus");
         newCdeVersion();
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         textPresent("New PV");
         Assert.assertEquals(driver.findElement(By.cssSelector("BODY")).getText().indexOf("Right Middle Abdomen"), -1);
 
+        showAllTabs();
         checkInHistory("Permissible Values", "", "Right Middle Abdomen");
     }
 

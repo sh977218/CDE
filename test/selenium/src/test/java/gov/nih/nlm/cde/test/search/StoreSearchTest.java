@@ -19,12 +19,13 @@ public class StoreSearchTest extends NlmCdeBaseTest {
     @Test
     public void rememberPageNumber() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         scrollToTop();
-        findElement(By.linkText("2")).click();
+        clickElement(By.linkText("2"));
         hangon(2);
         scrollToTop();
-        findElement(By.id("eyeLink_0")).click();
+        clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         driver.navigate().back();
         Assert.assertTrue(findElement(By.xpath("//li[a = '2']")).getAttribute("ng-class").contains("active"));

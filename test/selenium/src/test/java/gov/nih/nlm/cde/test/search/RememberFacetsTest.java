@@ -13,13 +13,14 @@ public class RememberFacetsTest extends NlmCdeBaseTest {
     @Test
     public void rememberFacets() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-caCORE")).click();
-        findElement(By.id("li-blank-caCORE")).click();
-        findElement(By.id("li-blank-CSM")).click();
+        clickElement(By.id("browseOrg-caCORE"));
+        clickElement(By.id("li-blank-caCORE"));
+        clickElement(By.id("li-blank-CSM"));
         textPresent("2 results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
-        findElement(By.id("eyeLink_0")).click();
+        clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         driver.navigate().back();
         textPresent("User First Name");

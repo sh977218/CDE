@@ -14,10 +14,11 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
         String cdeName = "Tooth Sensitivity Mastication Second Oral Cavity Quadrant Assessment Scale";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        findElement(By.linkText("Mappings")).click();
+        showAllTabs();
+        clickElement(By.id("mappingSpecifications_tab"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addMappingSpecification")));
     }
-    
+
     @Test
     public void addRemoveMappingSpecification() {
         mustBeLoggedInAs(ninds_username, password);
@@ -25,41 +26,44 @@ public class CdeMappingSpecificationTest extends NlmCdeBaseTest {
 
         //test add
         goToCdeByName(cdeName);
-        findElement(By.linkText("Mappings")).click();
-        
-        findElement(By.id("addMappingSpecification")).click();
-        
+        showAllTabs();
+        clickElement(By.id("mappingSpecifications_tab"));
+
+        clickElement(By.id("addMappingSpecification"));
+
         findElement(By.id("newMappingSpecification.content")).sendKeys("MS Content 1");
         findElement(By.id("newMappingSpecification.type")).sendKeys("MS type 1");
         findElement(By.id("newMappingSpecification.script")).sendKeys("MS script 1");
-        
-        findElement(By.id("createMappingSpecification")).click();
+
+        clickElement(By.id("createMappingSpecification"));
         textPresent("Mapping Specification Added");
         closeAlert();
-        
+
         goToCdeByName(cdeName);
-        findElement(By.linkText("Mappings")).click();
-        findElement(By.id("addMappingSpecification")).click();
+        showAllTabs();
+        clickElement(By.id("mappingSpecifications_tab"));
+        clickElement(By.id("addMappingSpecification"));
         findElement(By.id("newMappingSpecification.content")).sendKeys("Content");
         try {
             findElement(By.xpath("//li/a/strong[contains(text(), 'Content')]"));
         } catch (TimeoutException e) {
             goToCdeByName(cdeName);
-            findElement(By.linkText("Mappings")).click();
-            findElement(By.id("addMappingSpecification")).click();
-            findElement(By.id("newMappingSpecification.content")).sendKeys("Content");            
+            showAllTabs();
+            clickElement(By.id("mappingSpecifications_tab"));
+            clickElement(By.id("addMappingSpecification"));
+            findElement(By.id("newMappingSpecification.content")).sendKeys("Content");
         }
-            
-        findElement(By.id("cancelCreate")).click();
+
+        clickElement(By.id("cancelCreate"));
         modalGone();
 
-        findElement(By.id("removeMappingSpecification-0")).click();
-        findElement(By.id("confirmRemoveMappingSpecification-0")).click();
-        
+        clickElement(By.id("removeMappingSpecification-0"));
+        clickElement(By.id("confirmRemoveMappingSpecification-0"));
+
         textPresent("There are no mapping specifications");
         hangon(1);
-        
+
     }
-    
-    
+
+
 }

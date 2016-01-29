@@ -14,15 +14,16 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "CTC Adverse Event Apnea Grade";
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.linkText("Permissible Values"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
-        findElement(By.id("editDatatype")).click();
+        clickElement(By.id("editDatatype"));
         findElement(By.name("datatypeFreeText")).clear();
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
-        findElement(By.id("confirmDatatype")).click();
+        clickElement(By.id("confirmDatatype"));
         newCdeVersion();
 
         Assert.assertTrue(textPresent("java.lang.Date"));
+        showAllTabs();
         checkInHistory("Permissible Values - Value Type", "", "java.lang.Date");
     }  
     
@@ -31,32 +32,33 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency";
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click();
-        findElement(By.id("editDatatype")).click();
+        clickElement(By.id("pvs_tab"));
+        clickElement(By.id("editDatatype"));
         new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Text");
-        findElement(By.id("confirmDatatype")).click();
+        clickElement(By.id("confirmDatatype"));
 
-        findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
-        findElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']")).click();
+        clickElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']"));
+        clickElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='textMinLength']//input")).sendKeys("789");
         findElement(By.xpath("//div[@id='textMaxLength']//input")).sendKeys("987");
         clickElement(By.cssSelector("#textMinLength .fa-check"));
         clickElement(By.cssSelector("#textMaxLength .fa-check"));
         newCdeVersion();
-        
+
+        showAllTabs();
         checkInHistory("Permissible Values - Text", "", "789");
         checkInHistory("Permissible Values - Text", "", "987");
         checkInHistory("Permissible Values - Value Type", "Value List", "Text");
 
-        findElement(By.linkText("Permissible Values")).click();
-        findElement(By.xpath("//div[@id='textRegex']//i[@title='Edit']")).click();
-        findElement(By.xpath("//div[@id='textRule']//i[@title='Edit']")).click();
+        clickElement(By.id("pvs_tab"));
+        clickElement(By.xpath("//div[@id='textRegex']//i[@title='Edit']"));
+        clickElement(By.xpath("//div[@id='textRule']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='textRule']//input")).sendKeys("newre");
         findElement(By.xpath("//div[@id='textRegex']//input")).sendKeys("newrule");
         clickElement(By.cssSelector("#textRule .fa-check"));
         clickElement(By.cssSelector("#textRegex .fa-check"));
 
-        findElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']")).click();
+        clickElement(By.xpath("//div[@id='textMinLength']//i[@title='Edit']"));
         clickElement(By.xpath("//div[@id='textMaxLength']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='textMinLength']//input")).clear();
         findElement(By.xpath("//div[@id='textMaxLength']//input")).clear();

@@ -6,32 +6,34 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
-   public void addClassificationMethod(String[] categories) {     
-        findElement(By.cssSelector("[id^=addClassification]")).click();
-       addClassificationMethodDo(categories);
-    }
-
-    public void addClassificationToNewCdeMethod(String[] categories) {
-        findElement(By.id("addClassification-createCde")).click();
+    public void addClassificationMethod(String[] categories) {
+        clickElement(By.cssSelector("[id^=addClassification]"));
         addClassificationMethodDo(categories);
     }
 
-    private void addClassificationMethodDo(String[] categories){
+    public void addClassificationToNewCdeMethod(String[] categories) {
+        clickElement(By.id("addClassification-createCde"));
+        addClassificationMethodDo(categories);
+    }
+
+    private void addClassificationMethodDo(String[] categories) {
         try {
             new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        } catch(Exception e) {}
+        } catch (Exception ignored) {
+        }
 
         textPresent(categories[1]);
 
         for (int i = 1; i < categories.length - 1; i++) {
-            findElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link")).click();
+            clickElement(By.cssSelector("[id='addClassification-" + categories[i] + "'] span.fake-link"));
         }
-        findElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button")).click();
+        clickElement(By.cssSelector("[id='addClassification-" + categories[categories.length - 1] + "'] button"));
         try {
             closeAlert();
-        } catch(Exception e) {}
+        } catch (Exception ignored) {
+        }
 
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
         hangon(3);
         String selector = "";
         for (int i = 1; i < categories.length; i++) {
@@ -45,37 +47,37 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void checkRecentlyUsedClassifications(String[] categories) {
-        findElement(By.id("addClassification")).click();
-        findElement(By.id("addClass.byRecentlyAdded")).click();
+        clickElement(By.id("addClassification"));
+        clickElement(By.id("addClass.byRecentlyAdded"));
         for (String category : categories) {
             textPresent(category, By.id("addClassificationModalBody"));
         }
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
+        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
         modalGone();
     }
 
     public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
-        findElement(By.id("addClassification-createCde")).click();
-        findElement(By.id("addClass.byRecentlyAdded")).click();
+        clickElement(By.id("addClassification-createCde"));
+        clickElement(By.id("addClass.byRecentlyAdded"));
         for (String category : categories) {
             textPresent(category, By.id("addClassificationModalBody"));
-        }        
-        findElement(By.cssSelector("#addClassificationModalFooter .done")).click();
-        modalGone();   
+        }
+        clickElement(By.cssSelector("#addClassificationModalFooter .done"));
+        modalGone();
     }
-    
+
 
     protected void createClassificationName(String org, String[] categories) {
         scrollToTop();
-        
+
         String addSelector = "";
-        for (int i = 0; i < categories.length-1; i++) {
+        for (int i = 0; i < categories.length - 1; i++) {
             addSelector += categories[i];
             if (i < categories.length - 2) {
                 addSelector += ",";
             }
         }
-        
+
         String compareSelector = "";
         for (int i = 0; i < categories.length; i++) {
             compareSelector += categories[i];
@@ -83,10 +85,10 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
                 compareSelector += ",";
             }
         }
-        
-        if(categories.length==1) {
-            findElement(By.xpath("//h4[@id='org-" + org + "']/a")).click();
-        } else if(categories.length==2){
+
+        if (categories.length == 1) {
+            clickElement(By.xpath("//h4[@id='org-" + org + "']/a"));
+        } else if (categories.length == 2) {
             clickElement(By.xpath("//span[@id='classification-" + addSelector + "']/../../span/a[@title='Add Child Classification']"));
         } else {
             clickElement(By.xpath("//*[@id='classification-" + addSelector + "']/div/div/span/a[@title='Add Child Classification']"));
@@ -96,11 +98,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         clickElement(By.id("addNewCatButton"));
         closeAlert();
         Assert.assertTrue(driver.findElement(By.cssSelector("[id='classification-" + compareSelector + "'] .name")).getText().equals(categories[categories.length - 1]));
-    }    
-    
+    }
+
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("CDE")).click();
+        clickElement(By.linkText("Create"));
+        clickElement(By.linkText("CDE"));
         textPresent("Create Data Element");
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
@@ -113,15 +115,15 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
         goToCdeSearch();
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
-        findElement(By.id("submit")).click();
+        clickElement(By.id("submit"));
         hangon(6);
     }
 
-    public void openClassificationAudit(String name){
+    public void openClassificationAudit(String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Audit")).click();
-        findElement(By.linkText("Classification Audit Log")).click();
-        findElement(By.xpath("(//span[text()=\""+name+"\" and contains(@class,\"text-info\")])[1]")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Audit"));
+        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("(//span[text()=\"" + name + "\" and contains(@class,\"text-info\")])[1]"));
     }
 }
