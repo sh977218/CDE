@@ -199,8 +199,8 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv, findCdeDone) 
                     throw e;
                 }
             } else if (existingCdes.length > 1) {
-                console.log("Too many CDEs with Id = " + cdeId);
-
+                //console.log("Too many CDEs with Id = " + cdeId);
+                //
                 DataElement.find(cdeCond)
                     .where("ids").elemMatch(function (elem) {
                         elem.where("source").equals(source);
