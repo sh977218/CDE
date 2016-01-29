@@ -12,31 +12,35 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        findElement(By.linkText("Attachments")).click();
+        showAllTabs();
+        clickElement(By.id("attachments_tab"));
         textNotPresent("Upload more files");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-
+        showAllTabs();
         addAttachment("glass.jpg");
         checkAttachmentNotReviewed();
         reviewAttachment("glass.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        showAllTabs();
         setAttachmentDefault();
         mustBeLoggedOut();
         hangon(5);
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        findElement(By.xpath("//a[@id='openEltInCurrentTab_0']")).click();
+        clickElement(By.xpath("//a[@id='openEltInCurrentTab_0']"));
 
         goToCdeByName(cdeName);
+        showAllTabs();
         checkAttachmentReviewed("glass.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        showAllTabs();
         removeAttachment("glass.jpg");
     }
 

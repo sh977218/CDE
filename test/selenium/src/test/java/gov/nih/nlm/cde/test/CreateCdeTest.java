@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CreateCdeTest extends BaseClassificationTest {
-  
+
     @Test
     public void createCde() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
@@ -23,27 +23,28 @@ public class CreateCdeTest extends BaseClassificationTest {
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
-        
+
         deleteClassification("classification-Disease,Traumatic Brain Injury");
 
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Headache"});
 
         checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
-        
+
         clickElement(By.id("submit"));
 
         textPresent(definition);
 
-        findElement(By.linkText("Classification")).click();
-        
-        textPresent("Submission and Reporting");
-        textPresent("Breast Cancer Data Mart");        
-        
-        textPresent("Disease");
-        textPresent("Headache");   
+        showAllTabs();
+        clickElement(By.id("classification_tab"));
 
-        findElement(By.linkText("Identifiers")).click();
-        Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());        
+        textPresent("Submission and Reporting");
+        textPresent("Breast Cancer Data Mart");
+
+        textPresent("Disease");
+        textPresent("Headache");
+
+        clickElement(By.id("ids_tab"));
+        Assert.assertEquals("", findElement(By.id("dd_version_nlm")).getText());
     }
-    
+
 }
