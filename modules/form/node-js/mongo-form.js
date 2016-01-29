@@ -30,17 +30,55 @@ exports.findForms = function (request, callback) {
     Form.find(criteria).where("archived").equals(null).exec(callback);
 };
 
-exports.update = function (form, user, callback) {
-    Form.findOne({_id: form._id}).exec(function(err, oldForm) {
+exports.update = function (form, user, callback, special) {
+    if (form.toObject) form = form.toObject();
+    return Form.findOne({_id: form._id}).exec(function (err, oldForm) {
         var origId = form._id;
         delete form._id;
+        if (!form.history) form.history = [];
+        form.history.push(oldForm._id);
         form.comments = oldForm.comments;
+        form.updated = new Date().toJSON();
+        form.updatedBy = {};
+        form.updatedBy.userId = user._id;
+        form.updatedBy.username = user.username;
         var newForm = new Form(form);
-        newForm.updated = Date.now();
-        newForm.updatedBy = {
-            userId: user._id
-            , username: user.username
-        };
+        oldForm.archived = true;
+        if (special) {
+            special(form, oldForm);
+        }
+        if (form.naming.length < 1) {
+            logging.errorLogger.error("Error: Cannot save CDE without names", {
+                origin: "cde.mongo-cde.update.1",
+                stack: new Error().stack,
+                details: "elt " + JSON.stringify(form)
+            });
+            callback("Cannot save without names");
+        }
+
+        form.save(function (err) {
+            if (err) {
+                logging.errorLogger.error("Error: Cannot save CDE", {
+                    origin: "cde.mongo-cde.update.2",
+                    stack: new Error().stack,
+                    details: "err " + err
+                });
+                callback(err);
+            } else {
+                oldForm.save(function (err) {
+                    if (err) {
+                        logging.errorLogger.error("Error: Cannot save CDE", {
+                            origin: "cde.mongo-cde.update.3",
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    }
+                    callback(err, newDe);
+                    exports.saveModification(dataElement, newDe, user);
+                });
+            }
+        });
+
         newForm.save(function (err) {
             Form.update({_id: origId}, {archived: true}, function () {
                 callback(err, newForm);
