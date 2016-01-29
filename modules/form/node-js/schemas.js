@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
 var questionSchema = {
     cde: {
         tinyId: String
+        , name: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
     }
@@ -42,7 +43,8 @@ var formElementTreeRoot = {
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']}
         , condition: String
-    }
+    },
+    _id: false
 };
 var currentLevel = formElementTreeRoot.formElements;
 for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
@@ -59,7 +61,8 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , skipLogic: {
             action: {type: String, enum: ['show', 'enable']}
             , condition: String
-        }
+        },
+        _id: false
     });
     currentLevel = currentLevel[0].formElements;
 }
