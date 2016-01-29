@@ -139,6 +139,15 @@ angular.module('formModule').controller('FormViewCtrl',
             show: false,
             hideable: true
         },
+        history: {
+            heading: "History",
+            includes: ['/form/public/html/formHistory.html'],
+            select: function () {
+                setCurrentTab();
+            },
+            show: false,
+            hideable: true
+        },
         more: {
             heading: "More...",
             includes: [],
