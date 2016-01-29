@@ -20,6 +20,19 @@ exports.idExists = function (id, callback) {
     });
 };
 
+exports.priorForms = function (formId, callback) {
+    Form.findById(formId).exec(function (err, form) {
+        if (form !== null) {
+            return Form.find({}, "updated updatedBy changeNote")
+                .where("_id").in(form.history).exec(function (err, cdes) {
+                    callback(err, cdes);
+                });
+        } else {
+        }
+    });
+};
+
+
 exports.findForms = function (request, callback) {
     var criteria = {};
     if (request && request.term) {

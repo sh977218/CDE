@@ -144,6 +144,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
+                $timeout($scope.$broadcast('loadPriorForms'), 0);
             },
             show: false,
             hideable: true

@@ -1,7 +1,7 @@
 <h4 tabindex="0">History</h4>
 <div class="row" ng-controller="FormDiffCtrl">
     <div class="col-md-5">
-        <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
+        <table ng-show="priorForms.length > 0" class="table" id="historyTable">
             <caption tabindex="0">List of previous versions</caption>
             <thead>
             <tr>
@@ -20,30 +20,20 @@
                 <td tabindex="0"><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
                 <td tabindex="0">Currently Viewing</td>
             </tr>
-            <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
-                <td tabindex="0">{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-                <td tabindex="0">{{priorCde.updatedBy.username || priorCde.createdBy || "Imported"}}</td>
-                <td tabindex="0">{{priorCde.changeNote}}</td>
-                <td tabindex="0"><a class="fa fa-eye" ng-show="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a><span
-                        ng-show="!priorCde.updated">First Version</span></td>
-                <td tabindex="0"><a href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye">
-                    View</a></td>
+            <tr ng-repeat="priorForm in priorForms | orderBy:[nullsToBottom,'-updated']">
+                <td tabindex="0">{{priorForm.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td tabindex="0">{{priorForm.updatedBy.username || priorForm.createdBy || "Imported"}}</td>
+                <td tabindex="0">{{priorForm.changeNote}}</td>
+                <td tabindex="0">
+                    <a class="fa fa-eye" ng-show="priorForm.updated" ng-click="viewDiff(priorForm)"> View</a>
+                    <span ng-show="!priorForm.updated">First Version</span>
+                </td>
+                <td tabindex="0">
+                    <a href="/#/deview?cdeId={{priorForm._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a>
+                </td>
             </tr>
             </tbody>
-
         </table>
-        <div tabindex="0" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
-    </div>
-    <div class="col-md-7">
-        <div ng-include="'/cde/public/html/cdeDiff.html'"></div>
+        <div tabindex="0" ng-hide="priorForms.length > 0">This Data Element has no history</div>
     </div>
 </div>
-
-<script type="text/ng-template" id="/propertyDiff.html">
-    <span tabindex="0" ng-if="values.removed.length>0">Removed: </span><span ng-repeat="pv in values.removed">
-        {{ renderValue(pv) }};
-    </span>
-    <span tabindex="0" ng-if="values.added.length>0">Added: </span><span ng-repeat="pv in values.added">
-        {{ renderValue(pv) }};
-    </span>
-</script>

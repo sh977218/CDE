@@ -11,7 +11,7 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
-    , js2xml = require('js2xmlparser')
+    , formsvc = require('./formsvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -37,7 +37,9 @@ exports.init = function (app, daoManager) {
             adminItemSvc.removeAttachment(req, res, mongo_data);
         });
     }
-
+    app.get('/priorforms/:id', exportShared.nocacheMiddleware, function (req, res) {
+        formsvc.priorForms(req, res);
+    });
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
     app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {

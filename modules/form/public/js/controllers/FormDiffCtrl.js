@@ -1,3 +1,16 @@
-angular.module('formModule').controller('FormDiffCtrl', ['$scope',
-    function ($scope) {
+angular.module('formModule').controller('FormDiffCtrl', ['$scope', 'PriorForms',
+    function ($scope, PriorForms) {
+
+        var loadPriorForms = function () {
+            if (!$scope.priorForms) {
+                if ($scope.elt.history && $scope.elt.history.length > 0) {
+                    PriorForms.getForms({cdeId: $scope.elt._id}, function (forms) {
+                        $scope.priorForms = forms;
+                    });
+                }
+            }
+        };
+
+        $scope.$on('loadPriorForms', loadPriorForms);
+
     }]);
