@@ -30,55 +30,55 @@ exports.findForms = function (request, callback) {
     Form.find(criteria).where("archived").equals(null).exec(callback);
 };
 
-exports.update = function (form, user, callback, special) {
-    if (form.toObject) form = form.toObject();
-    return Form.findOne({_id: form._id}).exec(function (err, oldForm) {
-        var origId = form._id;
-        delete form._id;
-        if (!form.history) form.history = [];
-        form.history.push(oldForm._id);
-        form.comments = oldForm.comments;
-        form.updated = new Date().toJSON();
-        form.updatedBy = {};
-        form.updatedBy.userId = user._id;
-        form.updatedBy.username = user.username;
-        var newForm = new Form(form);
-        oldForm.archived = true;
+exports.update = function (elt, user, callback, special) {
+    if (elt.toObject) elt = elt.toObject();
+    return Form.findOne({_id: elt._id}).exec(function (err, form) {
+        delete elt._id;
+        if (!elt.history)
+            elt.history = [];
+        elt.history.push(form._id);
+        elt.updated = new Date().toJSON();
+        elt.updatedBy = {};
+        elt.updatedBy.userId = user._id;
+        elt.updatedBy.username = user.username;
+
+        elt.comments = form.comments;
+        var newForm = new Form(elt);
+        form.archived = true;
         if (special) {
-            special(form, oldForm);
+            special(form, form);
         }
         if (newForm.naming.length < 1) {
-            logging.errorLogger.error("Error: Cannot save CDE without names", {
-                origin: "cde.mongo-cde.update.1",
+            logging.errorLogger.error("Error: Cannot save form without names", {
+                origin: "cde.mongo-form.update.1",
                 stack: new Error().stack,
-                details: "elt " + JSON.stringify(form)
+                details: "elt " + JSON.stringify(elt)
             });
-            callback("Cannot save without names");
+            callback("Cannot save form without names");
         }
 
-        form.save(function (err) {
+        newForm.save(function (err) {
             if (err) {
-                logging.errorLogger.error("Error: Cannot save CDE", {
-                    origin: "cde.mongo-cde.update.2",
+                logging.errorLogger.error("Error: Cannot save form", {
+                    origin: "cde.mongo-form.update.2",
                     stack: new Error().stack,
                     details: "err " + err
                 });
                 callback(err);
             } else {
-                oldForm.save(function (err) {
+                form.save(function (err) {
                     if (err) {
-                        logging.errorLogger.error("Error: Cannot save CDE", {
-                            origin: "cde.mongo-cde.update.3",
+                        logging.errorLogger.error("Error: Cannot save form", {
+                            origin: "cde.mongo-form.update.3",
                             stack: new Error().stack,
                             details: "err " + err
                         });
                     }
                     callback(err, newForm);
-                    exports.saveModification(oldForm, newForm, user);
+                    exports.saveModification(form, newForm, user);
                 });
             }
         });
-
     });
 };
 
