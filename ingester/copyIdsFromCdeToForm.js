@@ -27,7 +27,7 @@ myStream.on('data', function (form) {
                 if (err)
                     process.exit(1);
                 else {
-                    console.log('saved form id: ' + form.tinyId);
+                    console.log('saved ' + formCounter + ' form id: ' + form.tinyId);
                     formCounter++;
                     myStream.resume();
                 }
