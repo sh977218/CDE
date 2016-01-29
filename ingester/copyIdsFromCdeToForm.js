@@ -16,7 +16,7 @@ var myStream = Form.find({
     archived: null
 }).stream();
 
-myStream.on('data', function(form) {
+myStream.on('data', function (form) {
     myStream.pause();
     console.log("begin " + formCounter + " form id: " + form.tinyId);
     var questionCount = 0;
@@ -49,8 +49,6 @@ myStream.on('data', function(form) {
                     }
                     console.log('found cde id: ' + cdeTinyId + ' version: ' + version);
                     if (cde && cde.ids) fe.question.cde.ids = cde.ids;
-                    //if I run this program with this comment instead of above, there is no error, but error happens on the ids which is array of string.
-                    //fe.question.cde.name = cde.naming[0].designation;
                     else {
                         console.log("no CDE with id: " + cdeTinyId)
                     }
@@ -68,7 +66,7 @@ myStream.on('data', function(form) {
 
 });
 
-myStream.on('end', function() {
+myStream.on('end', function () {
     console.log('finished all forms, # form: ' + formCounter);
     process.exit(0);
 });
