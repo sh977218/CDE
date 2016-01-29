@@ -47,7 +47,7 @@ exports.update = function (form, user, callback, special) {
         if (special) {
             special(form, oldForm);
         }
-        if (form.naming.length < 1) {
+        if (newForm.naming.length < 1) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
                 origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,
@@ -73,17 +73,12 @@ exports.update = function (form, user, callback, special) {
                             details: "err " + err
                         });
                     }
-                    callback(err, newDe);
-                    exports.saveModification(dataElement, newDe, user);
+                    callback(err, newForm);
+                    exports.saveModification(oldForm, newForm, user);
                 });
             }
         });
 
-        newForm.save(function (err) {
-            Form.update({_id: origId}, {archived: true}, function () {
-                callback(err, newForm);
-            });
-        });
     });
 };
 
