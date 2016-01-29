@@ -5,7 +5,9 @@ var cde_schemas = require('../../cde/node-js/schemas')
     , mongoose = require('mongoose')
     , multer  = require('multer')
     , async = require('async')
-    ;
+    , fs = require('fs')
+    , spawn = require('child_process').spawn
+;
 
 var migrationConn = connHelper.establishConnection(config.database.migration);
 
@@ -84,49 +86,55 @@ exports.init = function(app) {
     });
 
     app.post("/migrationCdes",
-        //multer(
-        //    {
-        //        "inMemory": true,
-        //        onFileUploadData:function(file,data) {
-        //            console.log("multer data");
-        //        },
-        //    }
-        //),
+        multer(
+            //{
+            //    "inMemory": true,
+            //    onFileUploadData:function(file,data) {
+            //        console.log("multer data");
+            //    },
+            //}
+        ),
         function(req, res) {
-            console.log(req.files.migrationJson.path);
 
-            var lineReader = require('readline').createInterface({
-                input: require('fs').createReadStream(req.files.migrationJson.path)
+            spawned = spawn('mongorestore --username ' + config.database.migration.username
+                + " --password " + config.database.migration.password
+                + " -d " + config.database.migration.db
+                + " -c dataelements " + req.files.migrationJson.path, {stdio: 'inherit'}
+            );
+
+            spawned.on('data', function(data) {
+                console.log(data);
             });
 
-            lineReader.on('line', function (line) {
-                console.log('Line from file:', line);
+            spawned.on('end', function() {
+               res.send("OK");
+                fs.unlink(req.files.migrationJson.path);
             });
+            //var lineReader = require('readline').createInterface({
+            //    input: fs.createReadStream(req.files.migrationJson.path)
+            //});
+            //
+            //lineReader.on('line', function (line) {
+            //    lineReader.pause();
+            //    var cde = JSON.parse(line);
+            //    MigrationDataElement(cde).save(function(err) {
+            //        if (err) {
+            //            console.log(err);
+            //            lineReader.close();
+            //        } else {
+            //            lineReader.resume();
+            //        }
+            //    });
+            //});
+            //
+            //lineReader.on('end', function() {
+            //    Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
+            //        fs.unlink(req.files.migrationJson.path)
+            //    });
+            //});
 
-            var cde = JSON.parse(content);
-
-
-
-            MigrationDataElement(cde).save(function(err) {
-            });
-
-            Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
-                if (err) return res.status(500).send(err);
-                return res.send("OK");
-            });
-
-        //async.each(cdes,
-        //    function(migCde, cb){
-        //        MigrationDataElement(migCde).save(cb);
-        //    }
-        //    , function(err) {
-        //        if (err) return res.status(500).send(err);
-        //        Batch.update({}, {step: "migrationCdesLoaded"}, {}, function(err) {
-        //            if (err) return res.status(500).send(err);
-        //            return res.send("OK");
-        //        });
-        //    });
-    });
+            res.send("OK");
+        });
 
     var spawned;
 
