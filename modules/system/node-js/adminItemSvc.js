@@ -13,7 +13,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
 
 var commentPendingApprovalText = "This comment is pending approval.";
 
- exports.save = function (req, res, dao, cb) {
+exports.save = function (req, res, dao, cb) {
     var elt = req.body;
     if (req.isAuthenticated()) {
         if (!elt._id) {
@@ -218,7 +218,8 @@ exports.addComment = function (req, res, dao) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
                             origin: "system.adminItemSvc.addComment",
-                            stack: new Error().stack});
+                            stack: new Error().stack
+                        });
                         res.status(500).send(err);
                     } else {
                         exports.hideUnapprovedComments(elt);
@@ -249,7 +250,8 @@ exports.removeComment = function (req, res, dao) {
                             if (err) {
                                 logging.errorLogger.error("Error: Cannot remove comment.", {
                                     origin: "system.adminItemSvc.removeComment",
-                                    stack: new Error().stack});
+                                    stack: new Error().stack
+                                });
                                 res.status(500).send(err);
                             } else {
                                 res.send({message: "Comment removed", elt: elt});
