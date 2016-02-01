@@ -11,7 +11,6 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
-    , formsvc = require('./formsvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -38,7 +37,7 @@ exports.init = function (app, daoManager) {
         });
     }
     app.get('/priorforms/:id', exportShared.nocacheMiddleware, function (req, res) {
-        formsvc.priorForms(req, res);
+        formCtrl.priorForms(req, res);
     });
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
@@ -98,7 +97,7 @@ exports.init = function (app, daoManager) {
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         var exporters = {
             json: {
-                export: function(res) {
+                export: function (res) {
                     var firstElt = true;
                     res.type('application/json');
                     res.write("[");
@@ -125,14 +124,14 @@ exports.init = function (app, daoManager) {
         return [];
     });
 
-    app.post('/pinFormCdes', function(req, res) {
+    app.post('/pinFormCdes', function (req, res) {
         if (req.isAuthenticated()) {
             mongo_data.eltByTinyId(req.body.formTinyId, function (err, form) {
                 if (form) {
                     var allCdes = {};
                     var allTinyIds = [];
                     formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
-                    var fakeCdes = allTinyIds.map(function(_tinyId) {
+                    var fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
                     usersvc.pinAllToBoard(req, fakeCdes, res)
