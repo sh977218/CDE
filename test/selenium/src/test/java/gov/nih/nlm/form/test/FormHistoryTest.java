@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -12,7 +13,7 @@ public class FormHistoryTest extends BaseFormTest {
         goToFormByName("FormHistoryTest");
         showAllTabs();
         clickElement(By.id("history_tab"));
-        textPresent("02/01/2016 @ 11:48AM");
+        Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
         clickElement(By.id("naming_tab"));
         textPresent("this form crated for testing form history");
@@ -26,7 +27,7 @@ public class FormHistoryTest extends BaseFormTest {
         goToFormByName("FormHistoryTest");
         showAllTabs();
         clickElement(By.id("history_tab"));
-        textPresent(newFormDef);
+        Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
     }
 }
