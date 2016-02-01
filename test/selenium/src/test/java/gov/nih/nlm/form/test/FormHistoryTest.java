@@ -22,7 +22,7 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='dd_def_0']//button[contains(text(),'Confirm')]"));
         textPresent(newFormDef, By.id("dd_def_0"));
         saveForm();
-        closeAlert();
+
         goToFormByName("FormHistoryTest");
         showAllTabs();
         clickElement(By.id("history_tab"));
