@@ -19,22 +19,20 @@ var doQuestion = function(parent, question) {
     if (question.instructions)
         newQuestion.ele("OtherText", {val: question.instructions});
 
-    
+    var lf = newQuestion.ele("ListField");
+
     if (question.question.datatype === 'Value List') {
-        var lf = newQuestion.ele("sdc.list_field");
-        lf.ele("mfi13:multiselect", {}, question.question.multiselect === true);
+        var list = lf.ele("List");
+        if(question.question.multiselect) lf.att("multiSelect", "true");
+
         if (question.question.answers) {
             question.question.answers.forEach(function(answer) {
-                var li = lf.ele("sdc:list_item");
-                li.ele("mfi13:value", {}, answer.permissibleValue);
-                li.ele("mfi13:item_prompt").ele("mfi13:label", {}, answer.permissibleValue);
-                //li.ele("mfi13:value_meaning").ele("mfi13:label", {}, answer.valueMeaningName);
-                li.ele("sdc:value_meaning_terminology_code", {}, answer.valueMeaningCode);
-                li.ele("sdc:value_meaning_code_name", {}, answer.valueMeaningName);
-                li.ele("sdc:value_meaning_code_system_name", {}, answer.codeSystemName);
+                var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
+                var li = list.ele("ListItem", {title: title});
             });
         }
-
+    } else {
+        newQuestion.ele("ResponseField").ele("Response");
     }
 
 };
@@ -70,13 +68,12 @@ exports.formToSDC = function(form) {
     formDesign.att("formID", "ID=129/v=2.004.001/");
     formDesign.att("baseItemURI", "https://cap.org/ecc/sdc");
 
-    var header = formDesign.ele("Header");
-    header.att("ID", form.tinyId + "v" + form.version);
-    header.att("title", form.naming[0].designation);
-    header.att("styleClass", "left");
+    var header = formDesign.ele("Header", {
+        "ID": form.tinyId + "v" + form.version,
+        "title": form.naming[0].designation,
+    });
 
     var body = formDesign.ele("Body");
-    body.att("styleClass", "body");
 
     var childItems = body.ele("ChildItems");
 
@@ -86,5 +83,6 @@ exports.formToSDC = function(form) {
         }
     });
 
-    return formDesign.toString();
+    return "<?xml-stylesheet type='text/xsl' href='/cde/public/html/sdctemplate.xslt'?> \n" +
+        formDesign.toString();
 };
