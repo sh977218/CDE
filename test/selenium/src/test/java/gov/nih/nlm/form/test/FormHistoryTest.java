@@ -20,7 +20,7 @@ public class FormHistoryTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='dd_def_0']//textarea")).clear();
         findElement(By.xpath("//*[@id='dd_def_0']//textarea")).sendKeys(newFormDef);
         clickElement(By.xpath("//*[@id='dd_def_0']//button[contains(text(),'Confirm')]"));
-        textPresent("this form crated for testing form history 111", By.id("dd_def_0"));
+        textPresent(newFormDef, By.id("dd_def_0"));
         saveForm();
         closeAlert();
         goToFormByName("FormHistoryTest");
