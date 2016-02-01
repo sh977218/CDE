@@ -17,7 +17,7 @@
                 <td tabindex="0">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td tabindex="0">{{elt.updatedBy.username}}</td>
                 <td tabindex="0">{{elt.changeNote}}</td>
-                <td tabindex="0"><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
+                <td tabindex="0"><!--<a class="fa fa-eye" ng-click="viewDiff(elt)">View</a>--></td>
                 <td tabindex="0">Currently Viewing</td>
             </tr>
             <tr ng-repeat="priorForm in priorForms | orderBy:[nullsToBottom,'-updated']">
@@ -25,7 +25,7 @@
                 <td tabindex="0">{{priorForm.updatedBy.username || priorForm.createdBy || "Imported"}}</td>
                 <td tabindex="0">{{priorForm.changeNote}}</td>
                 <td tabindex="0">
-                    <a class="fa fa-eye" ng-if="priorForm.updated" ng-click="viewDiff(priorForm)">View</a>
+                    <!--<a class="fa fa-eye" ng-if="priorForm.updated" ng-click="viewDiff(priorForm)">View</a>-->
                     <span ng-if="!priorForm.updated">First Version</span>
                 </td>
                 <td tabindex="0">
