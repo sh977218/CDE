@@ -181,6 +181,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     var query;
     if (route._id) query = {formId: route._id, type: '_id'};
+    if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
     var formCdeIds;
