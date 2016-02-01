@@ -17,8 +17,8 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.id("naming_tab"));
         textPresent("this form crated for testing form history");
         clickElement(By.xpath("//*[@id='dd_def_0']//i"));
-        findElement(By.xpath("//*[@id='dd_def_0']//input")).clear();
-        findElement(By.xpath("//*[@id='dd_def_0']//input")).sendKeys(newFormDef);
+        findElement(By.xpath("//*[@id='dd_def_0']//textarea")).clear();
+        findElement(By.xpath("//*[@id='dd_def_0']//textarea")).sendKeys(newFormDef);
         clickElement(By.xpath("//*[@id='dd_def_0']//button[contains(text(),'Confirm')]"));
         textPresent("this form crated for testing form history 111", By.id("dd_def_0"));
         saveForm();
