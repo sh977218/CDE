@@ -13,6 +13,7 @@ public class FormHistoryTest extends BaseFormTest {
         goToFormByName("FormHistoryTest");
         showAllTabs();
         clickElement(By.id("history_tab"));
+        textPresent("List of previous versions");
         Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
         clickElement(By.id("naming_tab"));
@@ -27,6 +28,7 @@ public class FormHistoryTest extends BaseFormTest {
         goToFormByName("FormHistoryTest");
         showAllTabs();
         clickElement(By.id("history_tab"));
+        textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
     }
