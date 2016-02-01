@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
     , config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , connHelper = require('../../system/node-js/connections')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     ;
@@ -88,7 +89,7 @@ exports.update = function (elt, user, callback, special) {
                         });
                     }
                     callback(err, newForm);
-                    exports.saveModification(form, newForm, user);
+                    mongo_cde.saveModification(form, newForm, user);
                 });
             }
         });
