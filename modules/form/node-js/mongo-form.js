@@ -24,8 +24,8 @@ exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {
             return Form.find({}, "updated updatedBy changeNote")
-                .where("_id").in(form.history).exec(function (err, cdes) {
-                    callback(err, cdes);
+                .where("_id").in(form.history).exec(function (err, forms) {
+                    callback(err, forms);
                 });
         } else {
         }
