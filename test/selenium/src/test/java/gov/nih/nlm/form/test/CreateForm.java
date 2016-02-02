@@ -1,5 +1,7 @@
 package gov.nih.nlm.form.test;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -7,13 +9,26 @@ public class CreateForm extends BaseFormTest {
 
     @Test
     public void createForm() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Create Form Test Name";
         String formDef = "Fill out carefully!";
         String formV = "0.1alpha";
+        String formOrg = "TEST";
 
-        createForm(formName, formDef, formV, "CTEP");
+        goHome();
+        clickElement(By.id("createEltLink"));
+        clickElement(By.id("createFormLInk"));
+        textPresent("Please enter a name for the new form.");
+
+        findElement(By.id("formName")).sendKeys(formName);
+        findElement(By.id("formDefinition")).sendKeys(formDef);
+        if (version != null) {
+            fillInput("Version", version);
+        }
+        new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(formOrg);
+        clickElement(By.id("createForm"));
+        textPresent("Form created");
+        closeAlert();
 
         Assert.assertTrue(textPresent(formName));
         Assert.assertTrue(textPresent(formDef));

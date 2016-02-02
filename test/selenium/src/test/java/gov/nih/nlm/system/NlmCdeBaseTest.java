@@ -629,9 +629,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void fillInput(String type, String value) {
-        findElement(
-                By.xpath("//label[text()=\"" + type
-                        + "\"]/following-sibling::input")).sendKeys(value);
+        findElement(By.xpath("//label[text()='" + type + "']/following-sibling::input")).sendKeys(value);
     }
 
     protected void showSearchFilters() {

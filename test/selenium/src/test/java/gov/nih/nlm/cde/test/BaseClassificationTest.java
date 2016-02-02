@@ -101,8 +101,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {
-        clickElement(By.linkText("Create"));
-        clickElement(By.linkText("CDE"));
+        clickElement(By.id("createEltLink"));
+        clickElement(By.id("createCDELink"));
         textPresent("Create Data Element");
         findElement(By.name("elt.designation")).sendKeys(name);
         findElement(By.name("elt.definition")).sendKeys(definition);
