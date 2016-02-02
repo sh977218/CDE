@@ -5,6 +5,7 @@
     </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.
+        <a href="/#formView?tinyId={{elt.tinyId}}">View current form</a>
     </div>
 
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
