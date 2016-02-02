@@ -46,22 +46,6 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         findElement(By.id("submit")).click();
         modalGone();
 
-        // create 2 forms
-        String formName1 = "Transfer Steward Test Form 1";
-        String formDef1 = "Definition for Transfer Steward Test CDE 1";
-        String formV1 = "3.0";
-        new BaseFormTest().createForm(formName1, formDef1, formV1, org1);
-        textPresent(formName1);
-        textPresent(formDef1);
-
-        String formName2 = "Transfer Steward Test Form 2";
-        String formDef2 = "Definition for Transfer Steward Test CDE 2";
-        String formV2 = "4.0";
-        new BaseFormTest().createForm(formName2, formDef2, formV2, org1);
-        textPresent(formName2);
-        textPresent(formDef2);
-
-        //
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("CDE & Form Management")).click();
