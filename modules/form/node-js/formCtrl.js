@@ -4,8 +4,7 @@ var mongo_data_form = require('./mongo-form'),
     formShared = require('../shared/formShared'),
     JXON = require('jxon'),
     util = require('util'),
-    sdc = require('./sdcForm'),
-    mongo_data = require('./mongo-form');
+    sdc = require('./sdcForm');
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
@@ -105,7 +104,7 @@ exports.priorForms = function (req, res) {
     if (!formId) {
         res.send("No Form Id");
     }
-    mongo_data.priorForms(formId, function (err, priorForms) {
+    mongo_data_form.priorForms(formId, function (err, priorForms) {
         if (err) {
             res.send("ERROR");
         } else {
