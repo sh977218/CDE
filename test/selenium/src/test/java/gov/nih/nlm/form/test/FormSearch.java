@@ -10,7 +10,6 @@ public class FormSearch extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
         String formName = "Find By CDE";
-        clickElement(By.id("description_tab"));
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("forms_tab"));

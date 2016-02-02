@@ -19,6 +19,7 @@ public class AnswerListTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
 
         clickElement(By.id("question_accordion_0_0"));
+        textPresent("Multiple Selections:");
         List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "Female Gender");
