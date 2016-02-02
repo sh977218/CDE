@@ -262,7 +262,7 @@ public class NlmCdeBaseTest {
         try {
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More...");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
@@ -270,7 +270,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More...");
             textPresent(name);
             textNotPresent("is archived");
         }
@@ -752,4 +752,9 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 
+    protected void showAllTabs() {
+        textPresent("More...");
+        clickElement(By.id("more_tab"));
+        textNotPresent("More...");
+    }
 }

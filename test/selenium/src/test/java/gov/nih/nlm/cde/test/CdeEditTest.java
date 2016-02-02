@@ -15,9 +15,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         goToCdeByName(cdeName);
-        findElement(By.cssSelector("i.fa-edit")).click();
+        clickElement(By.cssSelector("i.fa-edit"));
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector(".fa-check")).click();
+        clickElement(By.cssSelector(".fa-check"));
         clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
         clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
@@ -33,11 +33,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         // test that label and its value are aligned. 
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
-        clickElement(By.linkText("Identifiers"));
+        showAllTabs();
+        clickElement(By.id("ids_tab"));
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 
         // Test history
-        clickElement(By.linkText("History"));
+        clickElement(By.id("history_tab"));
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         hangon(1);
@@ -50,7 +51,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
 
         // View Prior Version
-        clickElement(By.linkText("History"));
+        clickElement(By.id("history_tab"));
         showHistoryFull(1);
         textPresent("1");
         textPresent("Warning: this data element is archived.");
@@ -80,38 +81,37 @@ public class CdeEditTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         goToCdeByName(cdeName);
-        findElement(By.cssSelector("i.fa-edit")).click();
+        clickElement(By.cssSelector("i.fa-edit"));
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector(".fa-check")).click();
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.cssSelector(".fa-check"));
+        clickElement(By.linkText("Classification"));
 
         Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
-
-        findElement(By.linkText("Properties")).click();
-
-        findElement(By.id("addProperty")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("addProperty"));
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
-        findElement(By.id("createProperty")).click();
+        clickElement(By.id("createProperty"));
         Assert.assertTrue(textPresent("Property added. Save to confirm."));
         closeAlert();
         modalGone();
-        findElement(By.id("removeProperty-0")).click();
-        findElement(By.id("confirmRemoveProperty-0")).click();
+        clickElement(By.id("removeProperty-0"));
+        clickElement(By.id("confirmRemoveProperty-0"));
         Assert.assertTrue(textPresent("Property removed. Save to confirm."));
         closeAlert();
 
-        findElement(By.linkText("Identifiers")).click();
-        findElement(By.id("addId")).click();
+        clickElement(By.linkText("Identifiers"));
+        clickElement(By.id("addId"));
         findElement(By.name("source")).sendKeys("MyOrigin1");
         findElement(By.name("id")).sendKeys("MyId1");
         findElement(By.name("version")).sendKeys("MyVersion1");
-        findElement(By.id("createId")).click();
+        clickElement(By.id("createId"));
         Assert.assertTrue(textPresent("Identifier added. Save to confirm."));
         modalGone();
         closeAlert();
-        findElement(By.id("removeId-1")).click();
-        findElement(By.id("confirmRemoveId-1")).click();
+        clickElement(By.id("removeId-1"));
+        clickElement(By.id("confirmRemoveId-1"));
         Assert.assertTrue(textPresent("Identifier removed. Save to confirm."));
     }
 

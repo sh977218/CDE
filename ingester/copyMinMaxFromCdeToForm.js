@@ -3,7 +3,6 @@ var mongoose = require('mongoose'),
     schemas = require('../modules/system/node-js/schemas.js'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     form_schemas = require('../modules/form/node-js/schemas'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
     async = require('async');
 
 var mongoUrl = config.mongoUri;
