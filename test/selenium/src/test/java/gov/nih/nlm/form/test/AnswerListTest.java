@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.form.test.regstatus.FormRegStatusTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -9,15 +8,12 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class AnswerListTest extends BaseFormTest {
-    private QuestionTest questionTest = new QuestionTest();
 
     @Test
     public void answerList() {
         mustBeLoggedInAs(testAdmin_username, password);
 
         String formName = "Answer List Test";
-        String formDef = "Form to test answer lists";
-        String formV = "0.1alpha";
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
