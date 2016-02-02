@@ -31,7 +31,8 @@ public class FormScoreTest extends BaseFormTest {
         clickElement(By.id("createDerivationRule"));
         newCdeVersion();
 
-        createForm("ALS Score", "ALS Score Form", null, "NINDS");
+        String formName = "ALS Score Form";
+        goToFormByName(formName);
 
         clickElement(By.id("description_tab"));
         addSection("Score Section", "0 or more");
@@ -66,7 +67,7 @@ public class FormScoreTest extends BaseFormTest {
 
         saveForm();
         waitForESUpdate();
-        goToFormByName("ALS Score");
+        goToFormByName(formName);
 
         clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
