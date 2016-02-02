@@ -496,6 +496,6 @@ exports.upsertStatusCde = function(cde, cb){
     });
 };
 
-exports.streamModifiedElementsSince = function(date, cb){
-    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).limit(1000).exec(cb);
+exports.findModifiedElementsSince = function(date, cb){
+    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).limit(2000).exec(cb);
 };

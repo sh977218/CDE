@@ -558,7 +558,7 @@ exports.init = function (app, daoManager) {
         if (dstring[8]!=="0" && dstring[8]!=="1" && dstring[8]!=="2" && dstring[8]!=="3") badDate();
 
         var date = new Date(dstring);
-        mongo_data.streamModifiedElementsSince(date, function(err, elts){
+        mongo_data.findModifiedElementsSince(date, function(err, elts){
             res.send(elts);
         });
     });
