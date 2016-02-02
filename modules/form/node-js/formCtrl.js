@@ -3,7 +3,6 @@ var mongo_data_form = require('./mongo-form')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , formShared = require('../shared/formShared')
     , JXON = require('jxon')
-    , logging = require('../../system/node-js/logging')
     , sdc = require('./sdcForm')
     ;
 

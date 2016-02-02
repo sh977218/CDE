@@ -1,88 +1,96 @@
 var xmlbuilder = require("xmlbuilder")
     , config = require('../../system/node-js/parseConfig')
+    , JXON = require('jxon')
 ;
 
 
-var addCardinality = function(parent, formElement) {
-    var card = parent.ele("mfi13:cardinality");
-    card.ele("mfi13:minimum", {}, "0");
-    card.ele("mfi13:maximum", {}, "1");
-};
+//var addCardinality = function(parent, formElement) {
+//    var card = parent.ele("mfi13:cardinality");
+//    card.ele("mfi13:minimum", {}, "0");
+//    card.ele("mfi13:maximum", {}, "1");
+//};
 
 var doQuestion = function(parent, question) {
-    var newQuestion = parent.ele("Question",
-        {"ID": question.question.cde.tinyId + 'v' + question.question.cde.version,
-        title: question.label});
+    var newQuestion = {
+        "Question": {
+            "@ID": question.question.cde.tinyId + 'v' + question.question.cde.version,
+            "@title": question.label
+        }
+    };
 
     //addCardinality(newQuestion, question);
 
     if (question.instructions)
-        newQuestion.ele("OtherText", {val: question.instructions});
-
-    var lf = newQuestion.ele("ListField");
+        newQuestion.Question.OtherText = {"@val": question.instructions};
 
     if (question.question.datatype === 'Value List') {
-        var list = lf.ele("List");
-        if(question.question.multiselect) lf.att("multiSelect", "true");
+        newQuestion.Question.ListField = {"List": {"ListItem": []}};
+        if(question.question.multiselect) newQuestion.ListField["multiSelect"] = "true";
 
         if (question.question.answers) {
             question.question.answers.forEach(function(answer) {
                 var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
-                var li = list.ele("ListItem", {title: title});
+                newQuestion.Question.ListField.List.ListItem.push({"@title": title});
             });
         }
     } else {
-        newQuestion.ele("ResponseField").ele("Response");
+        newQuestion.ResponseField = {"Response": ""};
     }
+
+    parent.push(newQuestion);
 
 };
 
 var doSection = function(parent, section) {
-    var newSection = parent.ele("Section",
-        {title: section.label});
+    var newSection = {
+        "Section": {
+            "@title": section.label,
+            "ChildItems": []
+        }
+    };
 
-    //addCardinality(newSection, section);
-
-    //var title = newSection.ele("sdc:section_title");
-    //var label = title.ele("mfi13:label", {}, section.label);
-
-    //var inst = newSection.ele("sdc:section_instruction");
-    //inst.ele("mfi13:label", {}, section.instructions);
-
-    var childItems = newSection.ele("ChildItems");
     section.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'question') {
-            doQuestion(childItems, formElement);
+            doQuestion(newSection.Section.ChildItems, formElement);
         } else if (formElement.elementType === 'section') {
-            doSection(childItems, formElement);
+            doSection(newSection.Section.ChildItems, formElement);
         }
     });
+
+    parent.push(newSection);
+
+    //addCardinality(newSection, section);
 
 };
 
 exports.formToSDC = function(form) {
-    var formDesign = xmlbuilder.create("FormDesign");
-    formDesign.att("xmlns:sdc", "http://healthIT.gov/sdc");
-    formDesign.att("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    formDesign.att("xsi:schemaLocation", "http://healthIT.gov/sdc SDCFormDesign.xsd");
-    formDesign.att("formID", "ID=129/v=2.004.001/");
-    formDesign.att("baseItemURI", "https://cap.org/ecc/sdc");
+    var root = {
+        "FormDesign": {
+            "@xmlns:sdc": "http://healthIT.gov/sdc",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
+            "@formID": form.tinyId + "v" + form.version,
+            "@baseItemURI": "https://cap.org/ecc/sdc",
+            "Header": {
+                "@ID": form.tinyId + "v" + form.version,
+                "@title": form.naming[0].designation
+            },
+            "Body": {
+                "ChildItems": []
+            }
+        }
 
-    var header = formDesign.ele("Header", {
-        "ID": form.tinyId + "v" + form.version,
-        "title": form.naming[0].designation,
-    });
-
-    var body = formDesign.ele("Body");
-
-    var childItems = body.ele("ChildItems");
+    };
 
     form.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'section') {
-            doSection(childItems, formElement);
+            doSection(root.FormDesign.Body.ChildItems, formElement);
         }
     });
 
+    console.log(JSON.stringify(root));
+
     return "<?xml-stylesheet type='text/xsl' href='/cde/public/html/sdctemplate.xslt'?> \n" +
-        formDesign.toString();
+        JXON.jsToString(root);
+
 };
