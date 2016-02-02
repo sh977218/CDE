@@ -10,7 +10,7 @@ public class QuestionLayoutTest extends BaseFormTest {
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1524, 1150);
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Question Layout Test Form";
         String formDef = "This form is used to test the permission of tests";
         String formV = "0.1";
