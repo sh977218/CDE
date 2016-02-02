@@ -17,7 +17,7 @@ public class CreateForm extends BaseFormTest {
 
         goHome();
         clickElement(By.id("createEltLink"));
-        clickElement(By.id("createFormLInk"));
+        clickElement(By.id("createFormLink"));
         textPresent("Please enter a name for the new form.");
 
         findElement(By.id("formName")).sendKeys(formName);
