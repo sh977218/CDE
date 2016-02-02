@@ -7,28 +7,13 @@ public class FormSearch extends BaseFormTest {
 
     @Test
     public void findFormByCde() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
+        mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
-
         String formName = "Find By CDE";
-        String formDef = "Fill out carefully!";
-        String formV = "0.1alpha";
-
-        createForm(formName, formDef, formV, "CTEP");
-
-        clickElement(By.linkText("Form Description"));
-
-        new CreateEditSectionTest().addSection("Answer List Section", null);
-
-        startAddingQuestions();
-        new QuestionTest().addQuestionToSection(cdeName, 0);
-        saveForm();
-
+        clickElement(By.id("description_tab"));
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("forms_tab"));
-
         textPresent(formName);
     }
 
