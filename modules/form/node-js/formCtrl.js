@@ -4,6 +4,7 @@ var mongo_data_form = require('./mongo-form'),
     formShared = require('../shared/formShared'),
     JXON = require('jxon'),
     util = require('util'),
+    sdc = require('./sdcForm'),
     mongo_data = require('./mongo-form');
 
 exports.findForms = function (req, res) {
