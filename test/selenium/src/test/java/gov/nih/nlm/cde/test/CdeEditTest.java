@@ -71,6 +71,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
     public void modifiedSinceAPI() {
         String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
         Assert.assertFalse(response.contains("Invalid"));
+        System.out.println(response);
         Assert.assertTrue(response.contains("64YoxVrtASF"));
     }
 
