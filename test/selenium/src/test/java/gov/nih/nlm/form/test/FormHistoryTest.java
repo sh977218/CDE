@@ -31,5 +31,9 @@ public class FormHistoryTest extends BaseFormTest {
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
+        clickElement(By.id("prior-1"));
+        textPresent("Warning: this form is archived. View current form.");
+        clickElement(By.id("viewCurrentEltLink"));
+        textNotPresent("Warning: this form is archived.");
     }
 }
