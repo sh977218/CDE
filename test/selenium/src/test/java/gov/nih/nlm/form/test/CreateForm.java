@@ -22,9 +22,8 @@ public class CreateForm extends BaseFormTest {
 
         findElement(By.id("formName")).sendKeys(formName);
         findElement(By.id("formDefinition")).sendKeys(formDef);
-        if (version != null) {
-            fillInput("Version", version);
-        }
+        fillInput("Version", formV);
+
         new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(formOrg);
         clickElement(By.id("createForm"));
         textPresent("Form created");
@@ -34,8 +33,8 @@ public class CreateForm extends BaseFormTest {
         Assert.assertTrue(textPresent(formDef));
         Assert.assertTrue(textPresent(formV));
 
-        goToFormByName("Create Form Test Name", "Incomplete");
-        textPresent("Fill out carefully!");
+        goToFormByName(formName, "Incomplete");
+        textPresent(formDef);
     }
 
 }
