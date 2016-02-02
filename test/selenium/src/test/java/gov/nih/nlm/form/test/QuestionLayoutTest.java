@@ -12,7 +12,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         resizeWindow(1524, 1150);
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Question Layout Test Form";
-
+        goToFormByName(formName);
         String sec1 = "first section";
         String sec2 = "second section";
 
