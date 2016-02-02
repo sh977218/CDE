@@ -422,8 +422,7 @@ public class NlmCdeBaseTest {
         hangon(1);
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys(
-                    "Change note for change number 1");
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");

@@ -10,32 +10,11 @@ public class FormEditTest extends BaseFormTest {
 
     @Test
     public void formGetOutdated() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
+        mustBeLoggedInAs(test_username, password);
         String formName = "Form that gets outdated";
-        String formDef = "Fill out carefully!";
-
-        createForm(formName, formDef, null, "CTEP");
-        new CreateEditSectionTest().addSection("Any Section Name", "0 or more");
-        startAddingQuestions();
-
-        questionTest.addQuestionToSection("Noncompliant Reason Text", 0);
-        questionTest.addQuestionToSection("Cytogenetics Karyotype Mutation Abnormality Cell Count", 0);
-
-        saveForm();
-
-        textNotPresent("Some CDEs in this form have newer version");
-        textNotPresent("(Outdated)");
-
-        goToCdeByName("Cytogenetics Karyotype Mutation Abnormality Cell Count");
-        clickElement(By.cssSelector("i.fa-edit"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
-        clickElement(By.cssSelector(".fa-check"));
-        newCdeVersion();
-
-        goToFormByName(formName, "Incomplete");
+        goToFormByName(formName);
         textPresent("Some CDEs in this form have newer version");
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
         textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
     }
 
