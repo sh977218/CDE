@@ -9,7 +9,9 @@ var xmlbuilder = require("xmlbuilder")
 //    card.ele("mfi13:maximum", {}, "1");
 //};
 
-var doQuestion = function(parent, question) {
+
+function addQuestion(parent, question) {
+
     var newQuestion = {
         "Question": {
             "@ID": question.question.cde.tinyId + 'v' + question.question.cde.version,
@@ -17,8 +19,32 @@ var doQuestion = function(parent, question) {
         }
     };
 
+    if (question.instructions) {
+        newQuestion.Question.OtherText = {"@val": question.instructions};
+    }
+
+    if (question.question.datatype === 'Value List') {
+        newQuestion.Question.ListField = {"List": {"ListItem": []}};
+        if(question.question.multiselect) newQuestion.Question.ListField["@multiSelect"] = "true";
+
+        if (question.question.answers) {
+            question.question.answers.forEach(function(answer) {
+                var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
+                newQuestion.Question.ListField.List.ListItem.push({"@title": title});
+            });
+        }
+    } else {
+        newQuestion.Question.ResponseField = {"Response": ""};
+    }
+
+    parent.push(newQuestion);
+}
+
+function doQuestion(parent, question) {
+
     //addCardinality(newQuestion, question);
 
+    var embed = false;
 
     try {
         if (question.skipLogic.condition.length > 0) {
@@ -29,7 +55,20 @@ var doQuestion = function(parent, question) {
                 if (terms.length === 2) {
                     previousQ = parent[parent.length - 1].Question;
                     if(previousQ && previousQ["@title"] === terms[0]) {
-                        previousQ.ListField.List
+                        previousQ.ListField.List.ListItem.forEach(function (li) {
+                            if (li["@title"] === terms[1]) {
+                                embed = true;
+                                if (question.question.datatype === 'Value List') {
+                                    li.ChildItems = [];
+                                    question.label = "";
+                                    addQuestion(li.ChildItems, question);
+                                } else {
+                                    li.ListItemResponseField = {
+                                        Response: {string: ""}
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -38,26 +77,10 @@ var doQuestion = function(parent, question) {
 
     }
 
-    if (question.instructions)
-        newQuestion.Question.OtherText = {"@val": question.instructions};
+    if (!embed)
+        addQuestion(parent, question);
 
-    if (question.question.datatype === 'Value List') {
-        newQuestion.Question.ListField = {"List": {"ListItem": []}};
-        if(question.question.multiselect) newQuestion.ListField["multiSelect"] = "true";
-
-        if (question.question.answers) {
-            question.question.answers.forEach(function(answer) {
-                var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
-                newQuestion.Question.ListField.List.ListItem.push({"@title": title});
-            });
-        }
-    } else {
-        newQuestion.ResponseField = {"Response": ""};
-    }
-
-    parent.push(newQuestion);
-
-};
+}
 
 var doSection = function(parent, section) {
     var newSection = {
