@@ -15,7 +15,7 @@ public class FormScoreTest extends BaseFormTest {
 
     @Test
     public void score() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(ninds_username, password);
         qbTest.emptyQuickBoardByModule("form");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - lower extremity walk score");
         addCdeToQuickBoard("ALS Severity Score (ALSSS) - swallow score");
@@ -31,6 +31,7 @@ public class FormScoreTest extends BaseFormTest {
         clickElement(By.id("createDerivationRule"));
         newCdeVersion();
 
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "ALS Score Form";
         goToFormByName(formName);
 
