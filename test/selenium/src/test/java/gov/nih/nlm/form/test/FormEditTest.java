@@ -59,7 +59,7 @@ public class FormEditTest extends BaseFormTest {
     }
 
     private void editQuestion() {
-        clickElement(By.xpath("//*[@id='question_0']/div/div/div/div/div/h4/a"));
+        clickElement(By.xpath("//*[@id='question_0']//h4"));
         textPresent("Value List");
         scrollTo(findElement(By.xpath("//*[@id='question_0']")).getLocation().getY());
 
