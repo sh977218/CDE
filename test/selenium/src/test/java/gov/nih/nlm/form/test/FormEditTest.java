@@ -21,10 +21,9 @@ public class FormEditTest extends BaseFormTest {
     @Test
     public void editSectionAndQuestions() {
         mustBeLoggedInAs(ninds_username, password);
-        goToFormByName("History of Injury");
-        textPresent("Timeframe of onset of NTSCI");
-        clickElement(By.linkText("Form Description"));
-        textPresent("N/A");
+        String formName = "Form Edit Section And Question Test";
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
         editSection();
         editQuestion();
         saveForm();
