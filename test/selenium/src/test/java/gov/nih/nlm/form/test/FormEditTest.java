@@ -20,7 +20,7 @@ public class FormEditTest extends BaseFormTest {
 
     @Test
     public void editSectionAndQuestions() {
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Form Edit Section And Question Test";
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
