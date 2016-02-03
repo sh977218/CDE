@@ -11,31 +11,8 @@ public class SkipLogicTest extends BaseFormTest {
 
     @Test
     public void singlePermissibleValue() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        maxWindow();
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Cancer Screening Test";
-        String formDef = "General Cancer Screening Test!";
-        String formV = "0.1";
-        createForm(formName, formDef, formV, "CTEP");
-        clickElement(By.linkText("Form Description"));
-        sectionTest.addSection("Patient Demographics", "0 or more");
-        sectionTest.addSection("Female Patient Screening", "0 or more");
-        startAddingQuestions();
-
-        questionTest.addQuestionToSection("Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score", 0);
-        questionTest.addQuestionToSection("Patient Gender Category", 0);
-        questionTest.addQuestionToSection("Breast Carcinoma Estrogen Receptor Status", 1);
-
-        saveForm();
-
-        clickElement(By.id("question_accordion_0_0"));
-        textPresent("Female Gender");
-        findElement(By.xpath("//*[@id='formQuestion_Patient Gender Category']//*[contains(@id,'dd_q_skipLogic_')]//input")).sendKeys("\"Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score\" = 200");
-        findElement(By.xpath("//*[@id='section_view_1']//*[@id='dd_s_skipLogic_1']//input")).sendKeys("\"Patient Gender Category\" = \"FEMALE\"");
-
-        questionTest.addSectionToSection(1, 0);
-        saveForm();
-
         goToFormByName(formName);
         clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
