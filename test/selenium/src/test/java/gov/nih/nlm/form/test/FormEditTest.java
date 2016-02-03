@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 
 public class FormEditTest extends BaseFormTest {
 
-    QuestionTest questionTest = new QuestionTest();
-
     @Test
     public void formGetOutdated() {
         mustBeLoggedInAs(test_username, test_password);
@@ -20,11 +18,10 @@ public class FormEditTest extends BaseFormTest {
 
     @Test
     public void editSectionAndQuestions() {
-        mustBeLoggedInAs(ninds_username, password);
-        goToFormByName("History of Injury");
-        textPresent("Timeframe of onset of NTSCI");
-        clickElement(By.linkText("Form Description"));
-        textPresent("N/A");
+        mustBeLoggedInAs(testAdmin_username, password);
+        String formName = "Form Edit Section And Question Test";
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
         editSection();
         editQuestion();
         saveForm();
@@ -62,28 +59,28 @@ public class FormEditTest extends BaseFormTest {
     }
 
     private void editQuestion() {
-        clickElement(By.xpath("//*[@id='question_2']/div/div/div/div/div/h4/a"));
+        clickElement(By.xpath("//*[@id='question_0']//h4"));
         textPresent("Value List");
-        scrollTo(findElement(By.xpath("//*[@id='question_2']")).getLocation().getY());
+        scrollTo(findElement(By.xpath("//*[@id='question_0']")).getLocation().getY());
 
-        clickElement(By.xpath("//*[@id='dd_question_title_2']/i"));
+        clickElement(By.xpath("//*[@id='dd_question_title_0']/i"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_1']/div/button"));
-        textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_2']"));
+        textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_0']"));
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='dd_question_instructions_2']//i"));
+        clickElement(By.xpath("//*[@id='dd_question_instructions_0']//i"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='dd_question_instructions_2']//textarea")).clear();
-        findElement(By.xpath("//*[@id='dd_question_instructions_2']//textarea")).sendKeys(newQuestionInstruction);
-        clickElement(By.xpath("//*[@id='dd_question_instructions_2']//button[contains(text(),'Confirm')]"));
+        findElement(By.xpath("//*[@id='dd_question_instructions_0']//textarea")).clear();
+        findElement(By.xpath("//*[@id='dd_question_instructions_0']//textarea")).sendKeys(newQuestionInstruction);
+        clickElement(By.xpath("//*[@id='dd_question_instructions_0']//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newQuestionInstruction, By.xpath("//*[@id='dd_question_instructions_2']/div/div/div/span/span"));
+        textPresent(newQuestionInstruction, By.xpath("//*[@id='dd_question_instructions_0']/div/div/div/span/span"));
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
-        clickElement(By.xpath("//*[@id='dd_q_uoms_2']/button"));
+        clickElement(By.xpath("//*[@id='dd_q_uoms_0']/button"));
         textPresent("Please specify");
         clickElement(By.xpath("//*[@id='q_uom_list_0']/span/span/i"));
         textPresent("Confirm");

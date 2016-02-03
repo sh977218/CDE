@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
     , config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , connHelper = require('../../system/node-js/connections')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     ;
@@ -20,6 +21,19 @@ exports.idExists = function (id, callback) {
     });
 };
 
+exports.priorForms = function (formId, callback) {
+    Form.findById(formId).exec(function (err, form) {
+        if (form !== null) {
+            return Form.find({}, "updated updatedBy changeNote")
+                .where("_id").in(form.history).exec(function (err, forms) {
+                    callback(err, forms);
+                });
+        } else {
+        }
+    });
+};
+
+
 exports.findForms = function (request, callback) {
     var criteria = {};
     if (request && request.term) {
@@ -30,21 +44,54 @@ exports.findForms = function (request, callback) {
     Form.find(criteria).where("archived").equals(null).exec(callback);
 };
 
-exports.update = function (form, user, callback) {
-    Form.findOne({_id: form._id}).exec(function(err, oldForm) {
-        var origId = form._id;
-        delete form._id;
-        form.comments = oldForm.comments;
-        var newForm = new Form(form);
-        newForm.updated = Date.now();
-        newForm.updatedBy = {
-            userId: user._id
-            , username: user.username
-        };
-        newForm.save(function (err) {
-            Form.update({_id: origId}, {archived: true}, function () {
-                callback(err, newForm);
+exports.update = function (elt, user, callback, special) {
+    if (elt.toObject) elt = elt.toObject();
+    return Form.findOne({_id: elt._id}).exec(function (err, form) {
+        delete elt._id;
+        if (!elt.history)
+            elt.history = [];
+        elt.history.push(form._id);
+        elt.updated = new Date().toJSON();
+        elt.updatedBy = {};
+        elt.updatedBy.userId = user._id;
+        elt.updatedBy.username = user.username;
+
+        elt.comments = form.comments;
+        var newForm = new Form(elt);
+        form.archived = true;
+        if (special) {
+            special(form, form);
+        }
+        if (newForm.naming.length < 1) {
+            logging.errorLogger.error("Error: Cannot save form without names", {
+                origin: "cde.mongo-form.update.1",
+                stack: new Error().stack,
+                details: "elt " + JSON.stringify(elt)
             });
+            callback("Cannot save form without names");
+        }
+
+        newForm.save(function (err) {
+            if (err) {
+                logging.errorLogger.error("Error: Cannot save form", {
+                    origin: "cde.mongo-form.update.2",
+                    stack: new Error().stack,
+                    details: "err " + err
+                });
+                callback(err);
+            } else {
+                form.save(function (err) {
+                    if (err) {
+                        logging.errorLogger.error("Error: Cannot save form", {
+                            origin: "cde.mongo-form.update.3",
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    }
+                    callback(err, newForm);
+                    mongo_cde.saveModification(form, newForm, user);
+                });
+            }
         });
     });
 };
@@ -97,7 +144,8 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
 
 exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
-    Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
+    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
+    else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
 };
 
 exports.removeAttachmentLinks = function (id) {

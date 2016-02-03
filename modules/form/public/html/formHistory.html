@@ -1,0 +1,33 @@
+<h4 tabindex="0">History</h4>
+<div class="row" ng-controller="FormDiffCtrl">
+    <div class="col-md-5">
+        <table ng-show="priorForms.length > 0" class="table" id="historyTable">
+            <caption tabindex="0">List of previous versions</caption>
+            <thead>
+            <tr>
+                <th tabindex="0">Updated at</th>
+                <th tabindex="0">Updated by</th>
+                <th tabindex="0">Change Note</th>
+                <th tabindex="0">See Full</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td tabindex="0">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td tabindex="0">{{elt.updatedBy.username}}</td>
+                <td tabindex="0">{{elt.changeNote}}</td>
+                <td tabindex="0">Currently Viewing</td>
+            </tr>
+            <tr ng-repeat="priorForm in priorForms | orderBy:[nullsToBottom,'-updated']">
+                <td tabindex="0">{{priorForm.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                <td tabindex="0">{{priorForm.updatedBy.username || priorForm.createdBy || "Imported"}}</td>
+                <td tabindex="0">{{priorForm.changeNote}}</td>
+                <td tabindex="0">
+                    <a href="/#/formView?formId={{priorForm._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div tabindex="0" ng-hide="priorForms.length > 0">This Form has no history</div>
+    </div>
+</div>
