@@ -9,11 +9,11 @@ public class CreateEditSectionTest extends BaseFormTest {
 
     @Test
     public void createEditSection() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Section Test Form";
-        createForm(formName, "Form def", "1.0", "CTEP");
 
-        clickElement(By.linkText("Form Description"));
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
 
         addSection("Section 1", "0 or more");
         addSection("Section 2", "1 or more");
@@ -29,13 +29,13 @@ public class CreateEditSectionTest extends BaseFormTest {
 
         saveForm();
         scrollToTop();
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
 
         clickElement(By.id("moveEltUp-1"));
         clickElement(By.id("moveEltDown-1"));
 
         saveForm();
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
 
         Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
@@ -54,7 +54,7 @@ public class CreateEditSectionTest extends BaseFormTest {
         clickElement(By.xpath("//div[@id='section_title_2']//button[text() = ' Discard']"));
 
         saveForm();
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
 
         Assert.assertEquals("Section 2 - New", findElement(By.id("section_title_0")).getText());
         Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
@@ -66,10 +66,9 @@ public class CreateEditSectionTest extends BaseFormTest {
 
         clickElement(By.id("removeElt-1"));
         saveForm();
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
 
         Assert.assertEquals("Section 1", findElement(By.id("section_title_1")).getText());
-
     }
 
 }

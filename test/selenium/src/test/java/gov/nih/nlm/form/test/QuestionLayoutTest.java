@@ -10,13 +10,9 @@ public class QuestionLayoutTest extends BaseFormTest {
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1524, 1150);
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Question Layout Test Form";
-        String formDef = "This form is used to test the permission of tests";
-        String formV = "0.1";
-
-        createForm(formName, formDef, formV, "CTEP");
-
+        goToFormByName(formName);
         String sec1 = "first section";
         String sec2 = "second section";
 
@@ -36,12 +32,12 @@ public class QuestionLayoutTest extends BaseFormTest {
         scrollToViewById("browseOrg-caCORE");
         clickElement(By.id("browseOrg-caCORE"));
         textPresent(" results for All Terms");
-        findElement(By.id("showHideFilters")).click();
+        clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
 
-        findElement(By.id("removeElt-1")).click();
+        clickElement(By.id("removeElt-1"));
         textNotPresent(sec2);
-        findElement(By.id("removeElt-0")).click();
+        clickElement(By.id("removeElt-0"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");

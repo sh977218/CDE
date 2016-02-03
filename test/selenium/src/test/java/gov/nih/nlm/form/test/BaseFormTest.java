@@ -35,31 +35,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         showSearchFilters();
     }
 
-    protected void gotoFormCreate() {
-        goHome();
-        clickElement(By.linkText("Create"));
-        clickElement(By.linkText("Form"));
-        textPresent("Create Form");
-    }
-
-    public void createForm(String name, String definition, String version, String org) {
-        gotoFormCreate();
-        findElement(By.id("formName")).sendKeys(name);
-        findElement(By.id("formDefinition")).sendKeys(definition);
-        if (version != null) {
-            fillInput("Version", version);
-        }
-        new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
-        clickElement(By.id("createForm"));
-        textPresent("Form created");
-        closeAlert();
-    }
-
     public void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
         scrollToTop();
-        clickElement(By.linkText("Form Description"));
-
+        clickElement(By.id("description_tab"));
         clickElement(By.id("addSection"));
 
         String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";

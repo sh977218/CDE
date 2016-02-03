@@ -8,9 +8,10 @@ public class FormHistoryTest extends BaseFormTest {
 
     @Test
     public void formHistoryTest() {
+        String formName = "Form History Test";
         String newFormDef = "this is new form def";
         mustBeLoggedInAs(testAdmin_username, password);
-        goToFormByName("FormHistoryTest");
+        goToFormByName(formName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
@@ -25,7 +26,7 @@ public class FormHistoryTest extends BaseFormTest {
         textPresent(newFormDef, By.id("dd_def_0"));
         saveForm();
 
-        goToFormByName("FormHistoryTest");
+        goToFormByName(formName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
