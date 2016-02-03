@@ -18,7 +18,7 @@ public class FormHistoryTest extends BaseFormTest {
         Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
         clickElement(By.id("naming_tab"));
-        textPresent("this form crated for testing form history");
+        textPresent("Form testing history");
         clickElement(By.xpath("//*[@id='dd_def_0']//i"));
         findElement(By.xpath("//*[@id='dd_def_0']//textarea")).clear();
         findElement(By.xpath("//*[@id='dd_def_0']//textarea")).sendKeys(newFormDef);
