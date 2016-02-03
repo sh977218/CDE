@@ -1,5 +1,4 @@
 var xmlbuilder = require("xmlbuilder")
-    , config = require('../../system/node-js/parseConfig')
     , JXON = require('jxon')
 ;
 
@@ -19,6 +18,25 @@ var doQuestion = function(parent, question) {
     };
 
     //addCardinality(newQuestion, question);
+
+
+    try {
+        if (question.skipLogic.condition.length > 0) {
+            if (question.skipLogic.condition.match('".+" = ".+"')) {
+                var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function(t) {
+                    return t.substr(1, t.length - 2);
+                });
+                if (terms.length === 2) {
+                    previousQ = parent[parent.length - 1].Question;
+                    if(previousQ && previousQ["@title"] === terms[0]) {
+                        previousQ.ListField.List
+                    }
+                }
+            }
+        }
+    } catch (e) {
+
+    }
 
     if (question.instructions)
         newQuestion.Question.OtherText = {"@val": question.instructions};
