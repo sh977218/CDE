@@ -10,22 +10,23 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Tobacco product fail control indicator";
         goToCdeByName(cdeName);
-        findElement(By.linkText("Permissible Values")).click();
-        findElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']")).click();
+        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Custom Datatype");
-        findElement(By.cssSelector("#listDatatype .fa-check")).click();
+        clickElement(By.cssSelector("#listDatatype .fa-check"));
 
         newCdeVersion();
 
+        showAllTabs();
         checkInHistory("Permissible Values - Value List", "", "Custom Datatype");
 
-        findElement(By.linkText("Permissible Values")).click();
-        findElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']")).click();
+        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Other Datatype");
-        findElement(By.cssSelector("#listDatatype .fa-check")).click();
+        clickElement(By.cssSelector("#listDatatype .fa-check"));
 
         newCdeVersion();
         checkInHistory("Permissible Values - Value List", "Custom Datatype", "Other Datatype");
-    }      
+    }
 
 }

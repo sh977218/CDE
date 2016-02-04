@@ -8,30 +8,31 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdeStewardTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void changeCDESteward() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
 
         goToCdeByName(cdeName);
-        
+
         // Changes Steward and cancels
-        findElement(By.id("dd_edit_steward")).click();
+        clickElement(By.id("dd_edit_steward"));
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        findElement(By.id("elt.stewardOrg.name.cancel")).click();
+        clickElement(By.id("elt.stewardOrg.name.cancel"));
         textPresent("CTEP");
-        
+
         // Changes Steward and save
-        findElement(By.id("dd_edit_steward")).click();
+        clickElement(By.id("dd_edit_steward"));
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
-        findElement(By.id("elt.stewardOrg.name.ok")).click();
+        clickElement(By.id("elt.stewardOrg.name.ok"));
         Assert.assertTrue(textPresent("NINDS"));
         newCdeVersion();
         Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
+        showAllTabs();
         checkInHistory("Steward", "CTEP", "NINDS");
     }
-    
+
     @Test
     public void checkStewardOrgDetails() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
@@ -53,10 +54,10 @@ public class CdeStewardTest extends NlmCdeBaseTest {
 
 
         // Changes Steward and save
-        findElement(By.id("dd_edit_steward")).click();
+        clickElement(By.id("dd_edit_steward"));
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("CTEP");
         hangon(.5);
-        findElement(By.id("elt.stewardOrg.name.ok")).click();
+        clickElement(By.id("elt.stewardOrg.name.ok"));
         textPresent("CTEP");
         newCdeVersion();
 

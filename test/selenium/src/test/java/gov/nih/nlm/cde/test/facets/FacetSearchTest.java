@@ -122,6 +122,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
     public void preferredStandardFacet() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Noncompliant Reason Text");
+        showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));

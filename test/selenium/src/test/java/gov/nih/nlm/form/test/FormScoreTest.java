@@ -23,16 +23,19 @@ public class FormScoreTest extends BaseFormTest {
 
         textPresent("Quick Board (3)");
         goToCdeByName("ALS Severity Score (ALSSS) - total score value");
-        clickElement(By.linkText("Score / Derivations"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("All 3 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("ALSSS Score");
         clickElement(By.id("createDerivationRule"));
         newCdeVersion();
 
-        createForm("ALS Score", "ALS Score Form", null, "NINDS");
+        mustBeLoggedInAs(testAdmin_username, password);
+        String formName = "ALS Score Form";
+        goToFormByName(formName);
 
-        clickElement(By.linkText("Form Description"));
+        clickElement(By.id("description_tab"));
         addSection("Score Section", "0 or more");
 
         startAddingQuestions();
@@ -65,7 +68,7 @@ public class FormScoreTest extends BaseFormTest {
 
         saveForm();
         waitForESUpdate();
-        goToFormByName("ALS Score");
+        goToFormByName(formName);
 
         clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");

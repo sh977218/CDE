@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class IdentifiersTest extends CommonTest {
 
     protected void addId(String source, String id, String version) {
-        clickElement(By.linkText("Identifiers"));
+        clickElement(By.id("ids_tab"));
         clickElement(By.id("addId"));
         findElement(By.id("newSource")).sendKeys(source);
         findElement(By.id("newId")).sendKeys(id);
@@ -24,6 +24,7 @@ public abstract class IdentifiersTest extends CommonTest {
     public void addRemoveId(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName, status);
+        showAllTabs();
         addId("MyOrigin1", "MyId1", "MyVersion1");
         scrollToTop();
         addId("MyOrigin2", "MyId2", null);
@@ -43,7 +44,8 @@ public abstract class IdentifiersTest extends CommonTest {
         }
 
         goToEltByName(eltName, status);
-        findElement(By.linkText("Identifiers")).click();
+        showAllTabs();
+        clickElement(By.id("ids_tab"));
         textPresent("MyOrigin1");
         textPresent("MyId1");
         textPresent("MyVersion1");

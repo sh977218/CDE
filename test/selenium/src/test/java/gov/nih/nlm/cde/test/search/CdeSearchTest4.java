@@ -12,7 +12,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     @Test
     public void basicPagination() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         WebElement pagElt = findElement(By.cssSelector("ul.pagination"));
         findElement(By.linkText("10"));
         List<WebElement> linkList = pagElt.findElements(By.cssSelector("a"));
@@ -24,7 +24,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         goHome();
         goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
         textNotPresent("Views");
-        for (int i =0 ; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             goToCdeByName("Tissue Donor Genetic Testing Other Disease or Disorder Specify");
             textPresent("Someone who gives blood");
         }
@@ -36,8 +36,9 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     @Test
     public void relatedConcepts() {
         goToCdeByName("Patient Visual Change Chief Complaint Indicator");
-        findElement(By.linkText("Concepts")).click();
-        findElement(By.linkText("Change")).click();
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.linkText("Change"));
         textPresent("Specimen Inflammation Change Type");
         textNotPresent("Patient Visual Change Chief Complaint Indicator", By.cssSelector("uib-accordion"));
     }
@@ -47,7 +48,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         goToCdeSearch();
         try {
             openCdeInList("Patient Race Category");
-        } catch (Exception e){
+        } catch (Exception e) {
             waitForESUpdate();
             openCdeInList("Patient Race Category");
         }
@@ -65,7 +66,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
-        findElement(By.cssSelector("i.fa-search")).click();
+        clickElement(By.cssSelector("i.fa-search"));
         textPresent("There was a problem with your query");
         closeAlert();
     }

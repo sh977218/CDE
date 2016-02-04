@@ -14,10 +14,13 @@ function addQuestion(parent, question) {
 
     var newQuestion = {
         "Question": {
-            "@ID": question.question.cde.tinyId + 'v' + question.question.cde.version,
-            "@title": question.label
+            "@ID": question.question.cde.tinyId + 'v' + question.question.cde.version
         }
     };
+
+    if (question.label !== undefined) {
+        newQuestion.Question["@title"] = question.label;
+    }
 
     if (question.instructions) {
         newQuestion.Question.OtherText = {"@val": question.instructions};
@@ -59,12 +62,16 @@ function doQuestion(parent, question) {
                             if (li["@title"] === terms[1]) {
                                 embed = true;
                                 if (question.question.datatype === 'Value List') {
-                                    li.ChildItems = [];
-                                    question.label = "";
+                                    if (li.ChildItems === undefined) li.ChildItems = [];
                                     addQuestion(li.ChildItems, question);
                                 } else {
-                                    li.ListItemResponseField = {
-                                        Response: {string: ""}
+                                    if (question.label === "") {
+                                        li.ListItemResponseField = {
+                                            Response: {string: ""}
+                                        }
+                                    } else {
+                                        if (li.ChildItems === undefined) li.ChildItems = [];
+                                        addQuestion(li.ChildItems, question);
                                     }
                                 }
                             }
