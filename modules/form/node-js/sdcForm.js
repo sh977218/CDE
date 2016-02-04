@@ -10,15 +10,16 @@ var xmlbuilder = require("xmlbuilder")
 //};
 
 
+
 function addQuestion(parent, question) {
 
     var newQuestion = {
         "Question": {
-            "@ID": question.question.cde.tinyId + 'v' + question.question.cde.version
+            "@ID": question.question.cde.tinyId
         }
     };
 
-    if (question.label !== undefined) {
+    if (question.label !== undefined && !question.hideLabel) {
         newQuestion.Question["@title"] = question.label;
     }
 
@@ -40,6 +41,9 @@ function addQuestion(parent, question) {
         newQuestion.Question.ResponseField = {"Response": ""};
     }
 
+    idToName[question.question.cde.tinyId] = question.label;
+
+    questionsInSection[question.label] = newQuestion;
     parent.push(newQuestion);
 }
 
@@ -49,6 +53,8 @@ function doQuestion(parent, question) {
 
     var embed = false;
 
+    console.log("Q.label: " + question.label);
+
     try {
         if (question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
@@ -56,27 +62,30 @@ function doQuestion(parent, question) {
                     return t.substr(1, t.length - 2);
                 });
                 if (terms.length === 2) {
-                    previousQ = parent[parent.length - 1].Question;
-                    if(previousQ && previousQ["@title"] === terms[0]) {
-                        previousQ.ListField.List.ListItem.forEach(function (li) {
-                            if (li["@title"] === terms[1]) {
-                                embed = true;
-                                if (question.question.datatype === 'Value List') {
+                    console.log("2 terms - " + terms);
+                    //previousQ = parent[parent.length - 1].Question;
+                    //if(previousQ && idToName[previousQ["@ID"]] === terms[0]) {
+                    var qToAddTo = questionsInSection[terms[0]].Question;
+                    console.log("matched q before: " + terms[0])
+                    qToAddTo.ListField.List.ListItem.forEach(function (li) {
+                        if (li["@title"] === terms[1]) {
+                            console.log("matched term: " + terms[1])
+                            embed = true;
+                            if (question.question.datatype === 'Value List') {
+                                if (li.ChildItems === undefined) li.ChildItems = [];
+                                addQuestion(li.ChildItems, question);
+                            } else {
+                                if (question.label === "" || question.hideLabel) {
+                                    li.ListItemResponseField = {
+                                        Response: {string: ""}
+                                    }
+                                } else {
                                     if (li.ChildItems === undefined) li.ChildItems = [];
                                     addQuestion(li.ChildItems, question);
-                                } else {
-                                    if (question.label === "") {
-                                        li.ListItemResponseField = {
-                                            Response: {string: ""}
-                                        }
-                                    } else {
-                                        if (li.ChildItems === undefined) li.ChildItems = [];
-                                        addQuestion(li.ChildItems, question);
-                                    }
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }
         }
@@ -88,6 +97,8 @@ function doQuestion(parent, question) {
         addQuestion(parent, question);
 
 }
+
+var questionsInSection = {};
 
 var doSection = function(parent, section) {
     var newSection = {
@@ -105,13 +116,17 @@ var doSection = function(parent, section) {
         }
     });
 
+    questionsInSection = {};
     parent.push(newSection);
 
     //addCardinality(newSection, section);
 
 };
 
+var idToName = {};
+
 exports.formToSDC = function(form) {
+
     var root = {
         "FormDesign": {
             "@xmlns:sdc": "http://healthIT.gov/sdc",
@@ -120,15 +135,39 @@ exports.formToSDC = function(form) {
             "@formID": form.tinyId + "v" + form.version,
             "@baseItemURI": "https://cap.org/ecc/sdc",
             "Header": {
-                "@ID": form.tinyId + "v" + form.version,
-                "@title": form.naming[0].designation
+                "@ID": "S1",
+                "@title": form.naming[0].designation,
+                "@styleClass": "left"
             },
             "Body": {
                 "ChildItems": []
             }
         }
-
     };
+
+    //form.properties.forEach(function(prop) {
+    //   if  (prop.key.toLowerCase().indexOf("header_") === 0) {
+    //       if (prop.valueFormat === "html") {
+    //           try {
+    //               root.FormDesign.Header.OtherText.push({
+    //                   "@val": "html", "@type": "title", "@styleClass": "title", "@name": "title",
+    //                   HTML: {
+    //                       div: {
+    //                           "@xmlns": "http://www.w3.org/1999/xhtml",
+    //                           "@xsi:schemaLocation": "http://www.w3.org/1999/xhtml xhtml.xsd",
+    //                           div: JXON.stringToJs(prop.value)
+    //                       }
+    //                   }
+    //               });
+    //           } catch (e) {
+    //               console.log(e)
+    //               console.log("skipping " + prop.key);
+    //           }
+    //       } else {
+    //           root.FormDesign.Header.OtherText.push({"@val": prop.value})
+    //       }
+    //   }
+    //});
 
     form.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'section') {
@@ -137,6 +176,8 @@ exports.formToSDC = function(form) {
     });
 
     console.log(JSON.stringify(root));
+
+    idToName = {};
 
     return "<?xml-stylesheet type='text/xsl' href='/cde/public/html/sdctemplate.xslt'?> \n" +
         JXON.jsToString(root);
