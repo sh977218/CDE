@@ -10,6 +10,7 @@ var questionSchema = {
         , name: String
         , version: String
         , permissibleValues: [sharedSchemas.permissibleValueSchema]
+        , ids: [sharedSchemas.idSchema]
     }
     , datatype: String
     , datatypeNumber: {
@@ -98,6 +99,10 @@ exports.formSchema = new Schema({
     , updated: Date
     , imported: Date
     , createdBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
+    , updatedBy: {
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }

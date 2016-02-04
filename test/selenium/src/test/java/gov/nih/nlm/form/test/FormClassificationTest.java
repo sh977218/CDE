@@ -8,11 +8,11 @@ public class FormClassificationTest extends BaseFormTest {
     @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textPresent("Disease");
         textPresent("Headache");
-        textPresent("Participant/Subject History and Family History");          
-        findElement(By.linkText("Participant/Subject History and Family History")).click();
+        textPresent("Participant/Subject History and Family History");
+        clickElement(By.linkText("Participant/Subject History and Family History"));
         textPresent("Skin Cancer Patient");
     }
     
@@ -20,7 +20,7 @@ public class FormClassificationTest extends BaseFormTest {
     public void addClassification() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Traumatic Brain Injury - Adverse Events");
-        clickElement(By.linkText("Classification"));
+        clickElement(By.id("classification_tab"));
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
     }  
     
@@ -29,19 +29,19 @@ public class FormClassificationTest extends BaseFormTest {
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
         goToFormByName("Deployment Risk and Resiliency Inventory, Version 2 (Combat)");
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("classifyAllCdes")).click();
+        clickElement(By.id("classification_tab"));
+        clickElement(By.id("classifyAllCdes"));
         clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
         clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
         goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Combat patrol frequency scale");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
         goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Witness enemy serious injury casuality frequency scale");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
 

@@ -22,11 +22,12 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
     public void adminCantEditStandardCde(String cdeName, String regStatus) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        findElement(By.id("status_tab")).click();
+        showAllTabs();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         closeAlert();
         hangon(1);
         logout();
@@ -63,6 +64,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
 
         // Can't edit Concepts
+        showAllTabs();
         clickElement(By.id("concepts_tab"));
         Assert.assertEquals(driver.findElements(By.id("removeobjectClass-0")).size(), 0);
         Assert.assertEquals(driver.findElements(By.id("removeproperty-0")).size(), 0);

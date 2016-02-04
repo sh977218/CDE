@@ -1,11 +1,10 @@
-var mongo_data_form = require('./mongo-form')
-    , mongo_data_cde = require('../../cde/node-js/mongo-cde')
-    , adminSvc = require('../../system/node-js/adminItemSvc.js')
-    , formShared = require('../shared/formShared')
-    , JXON = require('jxon')
-    , logging = require('../../system/node-js/logging')
-    , sdc = require('./sdcForm')
-    ;
+var mongo_data_form = require('./mongo-form'),
+    mongo_data_cde = require('../../cde/node-js/mongo-cde'),
+    adminSvc = require('../../system/node-js/adminItemSvc.js'),
+    formShared = require('../shared/formShared'),
+    JXON = require('jxon'),
+    util = require('util'),
+    sdc = require('./sdcForm');
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
@@ -30,13 +29,15 @@ exports.findAllCdesInForm = function (node, map, array) {
     }
 };
 
-var getFormJson = function(form, req, res){
+var getFormJson = function (form, req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);
-        var ids = cdes.map(function(cde){ return cde.tinyId});
+        var ids = cdes.map(function (cde) {
+            return cde.tinyId
+        });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
-            cdes.forEach(function(formCde){
-                currCdes.forEach(function(systemCde){
+            cdes.forEach(function (formCde) {
+                currCdes.forEach(function (systemCde) {
                     if (formCde.tinyId === systemCde.tinyId) {
                         if (formCde.version !== systemCde.version) {
                             formCde.outdated = true;
@@ -56,14 +57,16 @@ var getFormJson = function(form, req, res){
     });
 };
 
-var getFormPlainXml = function(form, req, res){
+var getFormPlainXml = function (form, req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-        if(!form) return res.status(404).end();
+        if (!form) return res.status(404).end();
         res.setHeader("Content-Type", "application/xml");
         var exportForm = form.toObject();
         delete exportForm._id;
-        exportForm.formElements.forEach(function(s){
-            s.formElements.forEach(function(q){delete q._id;});
+        exportForm.formElements.forEach(function (s) {
+            s.formElements.forEach(function (q) {
+                delete q._id;
+            });
         });
         res.send(JXON.jsToString({element: exportForm}));
     });
@@ -75,7 +78,7 @@ exports.formById = function (req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
         if (req.query.type === 'xml' && req.query.subtype === 'odm') {
-            formShared.getFormOdm(form, function(err, xmlForm) {
+            formShared.getFormOdm(form, function (err, xmlForm) {
                 if (err) res.status(err).send(xmlForm);
                 else {
                     res.set('Content-Type', 'text/xml');
@@ -89,7 +92,23 @@ exports.formById = function (req, res) {
     });
 };
 
-var getFormSdc = function(form, req, res){
+var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     res.send(sdc.formToSDC(form));
+};
+
+
+exports.priorForms = function (req, res) {
+    var formId = req.params.id;
+
+    if (!formId) {
+        res.send("No Form Id");
+    }
+    mongo_data_form.priorForms(formId, function (err, priorForms) {
+        if (err) {
+            res.send("ERROR");
+        } else {
+            res.send(priorForms);
+        }
+    });
 };

@@ -4,30 +4,15 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormSearch extends BaseFormTest {
-    
+
     @Test
     public void findFormByCde() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
+        mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
-        
         String formName = "Find By CDE";
-        String formDef = "Fill out carefully!";
-        String formV = "0.1alpha";
-
-        createForm(formName, formDef, formV, "CTEP");
-
-        findElement(By.linkText("Form Description")).click();
-
-        new CreateEditSectionTest().addSection("Answer List Section", null);
-        
-        startAddingQuestions();
-        new QuestionTest().addQuestionToSection(cdeName, 0);
-        saveForm();
-        
         goToCdeByName(cdeName);
-        findElement(By.linkText("Linked Forms")).click();
-        
+        showAllTabs();
+        clickElement(By.id("forms_tab"));
         textPresent(formName);
     }
 
@@ -35,9 +20,9 @@ public class FormSearch extends BaseFormTest {
     public void noPinAllNoExport() {
         // this test will be removed when the features are implemented.
         goToFormSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         textPresent("Expand All");
         textNotPresent("Pin All");
     }
-    
+
 }

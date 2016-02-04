@@ -17,8 +17,9 @@ public abstract class ReferenceDocumentTest extends CommonTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToElt(eltName);
-        findElement(By.linkText("Reference Documents")).click();
-        findElement(By.id("addReferenceDocument")).click();
+        showAllTabs();
+        clickElement(By.id("referenceDocument_tab"));
+        clickElement(By.id("addReferenceDocument"));
         textPresent("Add New Reference Document");
 
         findElement(By.id("nrd_id")).sendKeys(id);
@@ -27,9 +28,11 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         findElement(By.id("nrd_providerOrg")).sendKeys(providerOrg);
         findElement(By.id("nrd_languageCode")).sendKeys(languageCode);
         findElement(By.id("nrd_document")).sendKeys(document);
-        findElement(By.id("createReferenceDocument")).click();
+        clickElement(By.id("createReferenceDocument"));
         textPresent("Reference document Added");
 
+        showAllTabs();
+        clickElement(By.id("referenceDocument_tab"));
         textPresent(id);
         textPresent(title);
         textPresent(uri);
@@ -37,9 +40,9 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         textPresent(providerOrg);
         textPresent(document);
 
-        findElement(By.id("removeReferenceDocument-0")).click();
+        clickElement(By.id("removeReferenceDocument-0"));
         textPresent("Confirm Delete");
-        findElement(By.id("confirmRemoveReferenceDocument-0")).click();
+        clickElement(By.id("confirmRemoveReferenceDocument-0"));
         textPresent("Reference document Removed");
     }
 
@@ -50,14 +53,15 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         String tabName = "referenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Reference Documents")).click();
+        showAllTabs();
+        clickElement(By.id("referenceDocument_tab"));
         textPresent("Language Code:");
         reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd1"));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_1" + postfix)).getText().contains("rd3"));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "rd_id_0" + postfix)).getText().contains("rd1"));
 
     }

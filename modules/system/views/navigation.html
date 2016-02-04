@@ -36,12 +36,12 @@
                     <a href="/#/boardList">Boards</a>
                 </li>
                 <li uib-dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
-                    ng-show='isOrgCurator()'>
+                    ng-show='isOrgCurator()' id="createEltLink">
                     <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="dropdownMenu2" title="Create"
                        aria-label="Create">Create<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <li><a href="/#/createCde">CDE</a></li>
-                        <li ng-if="canCreateForms()"><a href="/#/createForm">Form</a></li>
+                        <li><a id="createCDELink" href="/#/createCde">CDE</a></li>
+                        <li ng-if="canCreateForms()"><a id="createFormLink" href="/#/createForm">Form</a></li>
                     </ul>
                 </li>
                 <li id="menu_qb_link" ng-class="{ active: isPageActive('/quickBoard')}">
@@ -62,11 +62,13 @@
                     </ul>
                 </li>
             </ul>
-            <ul ng-controller="AuthCtrl" class="nav navbar-nav navbar-right" data-userloaded="loaded-{{user.userLoaded}}">
+            <ul ng-controller="AuthCtrl" class="nav navbar-nav navbar-right"
+                data-userloaded="loaded-{{user.userLoaded}}">
                 <a ng-cloak ng-if="userHasMail" title="New messages" href="/#/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id">
-                    <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in" ng-bind="'Log In'"></a>
+                    <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in"
+                       ng-bind="'Log In'"></a>
                 </li>
                 <li uib-dropdown class="login" ng-show="user._id">
                     <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="username_link"
