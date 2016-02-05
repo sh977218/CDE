@@ -179,7 +179,7 @@ exports.formToSDC = function(form) {
 
     idToName = {};
 
-    return "<?xml-stylesheet type='text/xsl' href='/cde/public/html/sdctemplate.xslt'?> \n" +
+    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" +
         JXON.jsToString(root);
 
 };

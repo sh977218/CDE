@@ -16,8 +16,8 @@
         <html>
             <head>
 			
-			<script type="text/javascript" src="/cde/public/html/sdctemplate.js"/>
-			<link rel="stylesheet" href="/cde/public/html/sdctemplate.css" type="text/css" />
+			<script type="text/javascript" src="/form/public/assets/sdc/sdctemplate.js"/>
+			<link rel="stylesheet" href="/form/public/assets/sdc/sdctemplate.css" type="text/css" />
             </head>
             <body align="left">
 				<xsl:if test="$show-toc='true' and count($template-links/template-link) &gt; 0">
