@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import gov.nih.nlm.system.EltIdMaps.*;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -160,10 +161,6 @@ public class NlmCdeBaseTest {
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
-    protected void maxWindow() {
-        driver.manage().window().maximize();
-    }
-
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
@@ -259,20 +256,28 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToElementByName(String name, String type, String status) {
-        try {
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
+        String tinyId = EltIdMaps.eltMap.get(name);
+        if (tinyId != null) {
+            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "tinyId="
+                + tinyId);
             textPresent("More...");
             textPresent(name);
-            textNotPresent("is archived");
-        } catch (Exception e) {
-            System.out.println("Element is archived. Will retry...");
-            hangon(1);
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
-            textPresent("More...");
-            textPresent(name);
-            textNotPresent("is archived");
+        } else {
+            try {
+                searchElt(name, type, status);
+                clickElement(By.id("eyeLink_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            } catch (Exception e) {
+                System.out.println("Element is archived. Will retry...");
+                hangon(1);
+                searchElt(name, type, status);
+                clickElement(By.id("eyeLink_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            }
         }
     }
 

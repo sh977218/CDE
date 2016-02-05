@@ -10,17 +10,27 @@ import static com.jayway.restassured.RestAssured.get;
 public class SdcExport extends NlmCdeBaseTest {
 
     @Test
-    public void sdcExport() {
-        goToFormByName("Apathy Scale (AS)");
-        findElement(By.id("export")).click();
+    public void sdcXmlExport() {
         String url = findElement(By.id("sdcExport")).getAttribute("href");
 
-        String response = get(url).asString();
+        String response = get(baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc").asString();
         
-        Assert.assertTrue(response.contains("<sdc:form_package xmlns:sdc=\"http://nlm.nih.gov/sdc/for\" xmlns:mfi13=\"http://www.iso.org/19763/13/2013\"><sdc:form_design><sdc:designation><sdc:Context>SDC Pilot Project</sdc:Context><sdc:sign acceptability=\"preferred\">Apathy Scale (AS)</sdc:sign>"));
-
+        Assert.assertTrue(response.contains("<FormDesign xmlns:sdc=\"http://healthIT.gov/sdc\""));
+        Assert.assertTrue(response.contains("<Section title=\"CLINICAL\">"));
+        Assert.assertTrue(response.contains("<ListItem title=\"Intact\"/>"));
+        Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"));
 
     }
 
+    @Test
+    public void sdcRender() {
+        goToFormByName("SDC Adrenal");
+        findElement(By.id("export")).click();
+        switchTab(1);
+        textPresent("Hormone production");
+        findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));
+        textPresent("Distance from Closest Margin");
+        switchTabAndClose(0);
+    }
 
 }
