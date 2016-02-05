@@ -53,8 +53,6 @@ function doQuestion(parent, question) {
 
     var embed = false;
 
-    console.log("Q.label: " + question.label);
-
     try {
         if (question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
@@ -63,13 +61,9 @@ function doQuestion(parent, question) {
                 });
                 if (terms.length === 2) {
                     console.log("2 terms - " + terms);
-                    //previousQ = parent[parent.length - 1].Question;
-                    //if(previousQ && idToName[previousQ["@ID"]] === terms[0]) {
                     var qToAddTo = questionsInSection[terms[0]].Question;
-                    console.log("matched q before: " + terms[0])
                     qToAddTo.ListField.List.ListItem.forEach(function (li) {
                         if (li["@title"] === terms[1]) {
-                            console.log("matched term: " + terms[1])
                             embed = true;
                             if (question.question.datatype === 'Value List') {
                                 if (li.ChildItems === undefined) li.ChildItems = [];
@@ -174,8 +168,6 @@ exports.formToSDC = function(form) {
             doSection(root.FormDesign.Body.ChildItems, formElement);
         }
     });
-
-    console.log(JSON.stringify(root));
 
     idToName = {};
 
