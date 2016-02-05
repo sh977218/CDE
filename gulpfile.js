@@ -41,7 +41,7 @@ gulp.task('wiredep', function() {
 });
 
 gulp.task('copyCode', function() {
-    ['article', 'cde', 'form', 'processManager', 'system'].forEach(function(module) {
+    ['article', 'cde', 'form', 'processManager', 'system', 'batch'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')

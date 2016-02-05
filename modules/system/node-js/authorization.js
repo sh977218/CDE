@@ -24,3 +24,11 @@ exports.isSiteOrgAdmin = function(req) {
     }    
     return false;
 };
+
+exports.checkSiteAdmin = function(req, res, next) {
+    if (req.isAuthenticated() && req.user.siteAdmin) {
+        next();
+    } else {
+        res.status(401).send();
+    }
+};

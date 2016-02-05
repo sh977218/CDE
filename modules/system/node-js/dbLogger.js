@@ -56,7 +56,7 @@ var clientErrorSchema= new mongoose.Schema(
     , url: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
-var storedQuerySchema= new mongoose.Schema(
+var storedQuerySchema = new mongoose.Schema(
     {
         searchTerm: String
         , date: {type: Date, default: Date.now}

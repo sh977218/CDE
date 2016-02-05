@@ -81,6 +81,11 @@
       "username": "cdeuser",
       "password": "password",
       "cappedCollectionSizeMB": 262144000
+    },
+    "migration": {
+      "db": "migration",
+      "username": "miguser",
+      "password": "password"
     }
   },
   "node": {
