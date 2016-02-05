@@ -30,7 +30,7 @@ exports.init = function(app) {
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deview", "/myboards",
+        "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function(path) {
         app.get(path, function(req, res) {
