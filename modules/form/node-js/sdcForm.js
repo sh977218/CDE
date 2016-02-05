@@ -60,7 +60,6 @@ function doQuestion(parent, question) {
                     return t.substr(1, t.length - 2);
                 });
                 if (terms.length === 2) {
-                    console.log("2 terms - " + terms);
                     var qToAddTo = questionsInSection[terms[0]].Question;
                     qToAddTo.ListField.List.ListItem.forEach(function (li) {
                         if (li["@title"] === terms[1]) {
