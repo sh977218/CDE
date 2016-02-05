@@ -139,6 +139,16 @@ angular.module('formModule').controller('FormViewCtrl',
             show: false,
             hideable: true
         },
+        history: {
+            heading: "History",
+            includes: ['/form/public/html/formHistory.html'],
+            select: function () {
+                setCurrentTab();
+                $timeout($scope.$broadcast('loadPriorForms'), 0);
+            },
+            show: false,
+            hideable: true
+        },
         more: {
             heading: "More...",
             includes: [],
@@ -171,6 +181,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     var query;
     if (route._id) query = {formId: route._id, type: '_id'};
+    if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
     var formCdeIds;

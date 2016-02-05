@@ -172,7 +172,11 @@ try {
     formModule.init(app, daoManager);
 
     var articleModule = require(path.join(__dirname, './modules/article/node-js/app.js'));
-    articleModule.init(app, daoManager);
+    articleModule.init(app);
+
+    var batchModule = require(path.join(__dirname, './modules/batch/node-js/app.js'));
+    batchModule.init(app);
+
 } catch (e) {
     console.log(e.stack);
     process.exit();

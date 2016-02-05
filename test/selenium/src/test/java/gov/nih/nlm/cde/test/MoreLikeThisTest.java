@@ -26,7 +26,7 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("mlt_tab"));
         for (String tCde : cdeTargets) {
-            Assert.assertTrue(textPresent(tCde));
+            textPresent(tCde);
         }
     }
 

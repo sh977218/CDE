@@ -30,6 +30,7 @@ exports.sessionStore = sessionStore;
 
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
+exports.Org = Org;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);

@@ -294,6 +294,10 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
+exports.newObject = function(obj) {
+    return new DataElement(obj);
+};
+
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, function (err, dataElement) {

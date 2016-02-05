@@ -38,6 +38,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("concepts_tab"));
@@ -56,6 +57,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
+        mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));

@@ -82,12 +82,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("key")).sendKeys("MyKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));
-        Assert.assertTrue(textPresent("Property added. Save to confirm."));
+        textPresent("Property added. Save to confirm.");
         closeAlert();
         modalGone();
         clickElement(By.id("removeProperty-0"));
         clickElement(By.id("confirmRemoveProperty-0"));
-        Assert.assertTrue(textPresent("Property removed. Save to confirm."));
+        textPresent("Property removed. Save to confirm.");
         closeAlert();
 
         clickElement(By.linkText("Identifiers"));
@@ -96,12 +96,12 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.name("id")).sendKeys("MyId1");
         findElement(By.name("version")).sendKeys("MyVersion1");
         clickElement(By.id("createId"));
-        Assert.assertTrue(textPresent("Identifier added. Save to confirm."));
+        textPresent("Identifier added. Save to confirm.");
         modalGone();
         closeAlert();
         clickElement(By.id("removeId-1"));
         clickElement(By.id("confirmRemoveId-1"));
-        Assert.assertTrue(textPresent("Identifier removed. Save to confirm."));
+        textPresent("Identifier removed. Save to confirm.");
     }
 
 
