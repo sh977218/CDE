@@ -258,7 +258,7 @@ public class NlmCdeBaseTest {
     protected void goToElementByName(String name, String type, String status) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "/tinyId="
+            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "/?tinyId="
                 + tinyId);
             textPresent("More...");
             textPresent(name);
