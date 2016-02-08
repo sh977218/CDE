@@ -4,7 +4,6 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -32,7 +31,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
-        textPresent(newClassification);
+        textPresent(oldClassification);
 
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
