@@ -9,6 +9,7 @@ public class EltIdMaps {
 
     static {
         eltMap.put("SDC Adrenal", "XySUBn_NZ");
+        eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
     }
 
 }
