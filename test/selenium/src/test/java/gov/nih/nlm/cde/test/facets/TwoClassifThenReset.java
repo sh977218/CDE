@@ -18,7 +18,7 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
         findElement(By.id("li-blank-Domain")).click();
         textPresent("Additional Instruments");
         clickElement(By.id("menu_cdes_link"));
-        clickElement(By.id("browseOrg-AECC"));
+        clickElement(By.id("browseOrg-CCR"));
         textPresent("NCI Standard");
         textNotPresent("NINDS");
     }
