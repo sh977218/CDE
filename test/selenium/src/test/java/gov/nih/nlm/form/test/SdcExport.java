@@ -24,6 +24,7 @@ public class SdcExport extends NlmCdeBaseTest {
     public void sdcRender() {
         goToFormByName("SDC Adrenal");
         findElement(By.id("export")).click();
+        findElement(By.id("sdcExport")).click();
         switchTab(1);
         textPresent("Hormone production");
         findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));

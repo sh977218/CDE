@@ -65,7 +65,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
 
         openClassificationAudit("NINDS > Disease > Epilepsy");
         String body = findElement(By.cssSelector("body")).getText();
-        Assert.assertTrue(body.contains("941 elements") || body.contains("942 elements"));
+        Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
         textPresent("Delete NINDS > Disease > Epilepsy");
     }
 
