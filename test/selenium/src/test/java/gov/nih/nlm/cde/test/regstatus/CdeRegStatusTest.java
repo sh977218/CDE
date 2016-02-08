@@ -7,7 +7,7 @@ public class CdeRegStatusTest extends RegStatusTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
     
     @Override

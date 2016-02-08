@@ -32,7 +32,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
-        textPresent(oldClassification);
+        textPresent(newClassification);
 
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();

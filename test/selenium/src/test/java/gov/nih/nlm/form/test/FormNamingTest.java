@@ -7,8 +7,8 @@ import org.testng.annotations.Test;
 
 public class FormNamingTest extends BaseFormTest {
 
-    public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+    public void goToEltByName(String name) {
+        goToFormByName(name);
     }
 
     public void goToEltSearch() {
@@ -54,7 +54,7 @@ public class FormNamingTest extends BaseFormTest {
     public void formReorderNamingTest() {
         setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
-        goToEltByName("form for test cde reorder detail tabs", null);
+        goToEltByName("form for test cde reorder detail tabs");
         String tabName = "namingDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
