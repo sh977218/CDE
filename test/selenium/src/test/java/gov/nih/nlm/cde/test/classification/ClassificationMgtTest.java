@@ -10,22 +10,22 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     private void searchNestedClassifiedCdes() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
-        findElement(By.id("search.submit")).click();    
+        findElement(By.id("search.submit")).click();
     }
-    
+
     private void searchNestedClassifiedForms() {
         goToFormSearch();
         findElement(By.name("q")).sendKeys("classification.elements.elements.name:Epilepsy");
-        findElement(By.id("search.submit")).click();    
-    }    
+        findElement(By.id("search.submit")).click();
+    }
 
     private void deleteNestedClassifTree() {
-        deleteMgtClassification("classification-Disease,Epilepsy","Epilepsy");
+        deleteMgtClassification("classification-Disease,Epilepsy", "Epilepsy");
         textNotPresent("Epilepsy");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations']");
         checkElementDoesNotExistByCSS("[id='classification-Disease,Epilepsy,Assessments and Examinations,Imaging Diagnostics']");
-    }    
+    }
 
     @Test
     public void viewOrgClassifications() {
@@ -41,7 +41,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
         textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");
     }
-    
+
     @Test
     public void removeClassificationMgt() {
         mustBeLoggedInAs(ninds_username, password);
@@ -50,12 +50,12 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         searchNestedClassifiedForms();
         textPresent("NINDS (44)");
         gotoClassificationMgt();
-        
+
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification'] .name")).getText().equals("Classification"));
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy,Classification,Supplemental'] .name")).getText().equals("Supplemental"));
 
-        deleteNestedClassifTree();  
+        deleteNestedClassifTree();
         searchNestedClassifiedCdes();
         hangon(3);
         textNotPresent("NINDS (9)");
@@ -64,22 +64,23 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         textNotPresent("NINDS (44)");
 
         openClassificationAudit("NINDS > Disease > Epilepsy");
-        textPresent("941 elements");
+        String body = findElement(By.cssSelector("body")).getText();
+        Assert.assertTrue(body.contains("941 elements") || body.contains("942 elements"));
         textPresent("Delete NINDS > Disease > Epilepsy");
     }
-    
+
     @Test
     public void addNestedClassification() {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
         Assert.assertTrue(textPresent("Headache"));
-        createClassificationName(org, new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI"});
+        createClassificationName(org, new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics", "MRI"});
         modalGone();
-        createClassificationName(org, new String[]{"Domain","Assessments and Examinations","Imaging Diagnostics","MRI","Contrast T1"});
+        createClassificationName(org, new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics", "MRI", "Contrast T1"});
         modalGone();
     }
-    
+
     @Test
     public void link() {
         mustBeLoggedInAs(ninds_username, password);

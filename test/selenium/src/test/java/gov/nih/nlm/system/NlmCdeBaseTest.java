@@ -262,7 +262,7 @@ public class NlmCdeBaseTest {
         try {
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More...");
             textPresent(name);
             textNotPresent("is archived");
         } catch (Exception e) {
@@ -270,7 +270,7 @@ public class NlmCdeBaseTest {
             hangon(1);
             searchElt(name, type, status);
             clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+            textPresent("More...");
             textPresent(name);
             textNotPresent("is archived");
         }
@@ -422,8 +422,7 @@ public class NlmCdeBaseTest {
         hangon(1);
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys(
-                    "Change note for change number 1");
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
@@ -452,8 +451,7 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text, By by) {
-        wait.until(ExpectedConditions.not(ExpectedConditions
-                .textToBePresentInElementLocated(by, text)));
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
@@ -630,9 +628,7 @@ public class NlmCdeBaseTest {
     }
 
     protected void fillInput(String type, String value) {
-        findElement(
-                By.xpath("//label[text()=\"" + type
-                        + "\"]/following-sibling::input")).sendKeys(value);
+        findElement(By.xpath("//label[text()='" + type + "']/following-sibling::input")).sendKeys(value);
     }
 
     protected void showSearchFilters() {
@@ -751,5 +747,11 @@ public class NlmCdeBaseTest {
         Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
+    }
+
+    protected void showAllTabs() {
+        textPresent("More...");
+        clickElement(By.id("more_tab"));
+        textNotPresent("More...");
     }
 }

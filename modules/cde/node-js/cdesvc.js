@@ -1,9 +1,9 @@
 var express = require('express')
-  , util = require('util')
-  , mongo_data = require('./mongo-cde')
-  , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
-  , adminSvc = require('../../system/node-js/adminItemSvc.js')
-  , deepDiff = require('deep-diff')
+    , util = require('util')
+    , mongo_data = require('./mongo-cde')
+    , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
+    , adminSvc = require('../../system/node-js/adminItemSvc.js')
+    , deepDiff = require('deep-diff')
     , elastic = require('../../cde/node-js/elastic')
     ;
 

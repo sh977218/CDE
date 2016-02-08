@@ -17,17 +17,18 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
     public void removeStatusStatusFilter() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
-        findElement(By.id("browseOrg-PBTC")).click();
+        clickElement(By.id("browseOrg-PBTC"));
         textPresent("4 results for");
         String viewing = findElement(By.id("acc_link_0")).getText();
-        findElement(By.id("eyeLink_0")).click();
+        clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
-        findElement(By.id("status_tab")).click();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.xpath("//*[@id='editStatus']")).click();
+        clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         closeAlert();
         // @TODO REMOVE
         waitForESUpdate();
@@ -35,20 +36,21 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         hangon(3);
         showSearchFilters();
         hangon(1);
-        findElement(By.id("li-blank-Preferred Standard")).click();
+        clickElement(By.id("li-blank-Preferred Standard"));
         textPresent("1 results for");
         clickElement(By.id("eyeLink_0"));
+        showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
-        findElement(By.id("status_tab")).click();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.xpath("//*[@id='editStatus']")).click();
+        clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
-        findElement(By.id("saveRegStatus")).click();
+        clickElement(By.id("saveRegStatus"));
         closeAlert();
         waitForESUpdate();
         goToCdeSearch();
-        findElement(By.id("browseOrg-PBTC")).click();
+        clickElement(By.id("browseOrg-PBTC"));
         textPresent("4 results for");
     }
 

@@ -13,11 +13,12 @@ public class ForkMineTheirsTest extends ForkTest {
         // can't edit.
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
 
-        findElement(By.linkText("Forks")).click();
+        showAllTabs();
+        clickElement(By.id("forks_tab"));
         hangon(1);
         addFork("forking a st cde", "CTEP");
 
-        findElement(By.id("fork-0")).click();
+        clickElement(By.id("fork-0"));
         switchTab(1);
         textPresent("You are editing a fork");
 
@@ -25,13 +26,15 @@ public class ForkMineTheirsTest extends ForkTest {
         switchTabAndClose(0);
 
         driver.get(driver.getCurrentUrl());
-        findElement(By.linkText("Forks")).click();
+        showAllTabs();
+        clickElement(By.id("forks_tab"));
         Assert.assertFalse(driver.findElement(By.id("accept_fork_0")).isDisplayed());
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
-        findElement(By.linkText("Forks")).click();
-        findElement(By.id("accept_fork_0")).click();
+        showAllTabs();
+        clickElement(By.id("forks_tab"));
+        clickElement(By.id("accept_fork_0"));
         textPresent("Fork merged");
 
         Assert.assertEquals("Adverse Event Ongoing Event Indicator - ST FORKED", findElement(By.id("dd_general_name")).getText());
@@ -39,7 +42,7 @@ public class ForkMineTheirsTest extends ForkTest {
         waitForESUpdate();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("\"Adverse Event Ongoing Event Indicator\"");
-        findElement(By.cssSelector("i.fa-search")).click();
+        clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
         textPresent("Adverse Event Ongoing Event Indicator - ST FORKED");
     }

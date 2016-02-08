@@ -9,10 +9,10 @@ public class ListTourTest extends TourTest {
     public void listTour() {
         mustBeLoggedOut();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         hangon(1);
-        findElement(By.linkText("Help")).click();
-        findElement(By.linkText("Take a tour")).click();
+        clickElement(By.linkText("Help"));
+        clickElement(By.linkText("Take a tour"));
         textPresent("Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections.");
         hangon(1);
         getNext("This menu will take you back to the CDE search page");
@@ -32,7 +32,7 @@ public class ListTourTest extends TourTest {
         getNext("You can add a second classification restriction by clicking this plus sign.");
         getNext("See which filter are applied to your query");
         getNext("Restrict search to one or more statuses here.");
-        findElement(By.xpath("//button[@data-role='end']")).click();
+        clickElement(By.xpath("//button[@data-role='end']"));
     }
 
 }

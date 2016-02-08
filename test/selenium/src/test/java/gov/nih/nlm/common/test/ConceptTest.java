@@ -11,14 +11,15 @@ public abstract class ConceptTest extends CommonTest {
         String tabName = "conceptsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Concepts")).click();
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
         textPresent("Data Element");
         reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "concept_cde_name_1" + postfix)).getText().contains("cb1"));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "concept_cde_name_1" + postfix)).getText().contains("cn3"));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
         Assert.assertTrue(findElement(By.xpath(prefix + "concept_cde_name_0" + postfix)).getText().contains("cb1"));
     }
 }

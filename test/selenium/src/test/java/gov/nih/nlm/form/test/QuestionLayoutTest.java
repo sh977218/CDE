@@ -10,13 +10,9 @@ public class QuestionLayoutTest extends BaseFormTest {
     public void questionsLayoutTest() {
         Dimension currentWindowSize = getWindowSize();
         resizeWindow(1524, 1150);
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Question Layout Test Form";
-        String formDef = "This form is used to test the permission of tests";
-        String formV = "0.1";
-
-        createForm(formName, formDef, formV, "CTEP");
-
+        goToFormByName(formName);
         String sec1 = "first section";
         String sec2 = "second section";
 
@@ -33,20 +29,20 @@ public class QuestionLayoutTest extends BaseFormTest {
         // we are doing twice because of the double scroll bar and we are not sure how Selenium handles it.
         scrollToTop();
         scrollToTop();
-        scrollToViewById("browseOrg-ACRIN");
-        clickElement(By.id("browseOrg-ACRIN"));
-        textPresent("3 results for All Terms");
-        findElement(By.id("showHideFilters")).click();
+        scrollToViewById("browseOrg-caCORE");
+        clickElement(By.id("browseOrg-caCORE"));
+        textPresent(" results for All Terms");
+        clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
 
-        findElement(By.id("removeElt-1")).click();
+        clickElement(By.id("removeElt-1"));
         textNotPresent(sec2);
-        findElement(By.id("removeElt-0")).click();
+        clickElement(By.id("removeElt-0"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");
 
-        String sec3 = "thrid section";
+        String sec3 = "third section";
         addSection(sec3, "0 or more");
 
         textNotPresent("Show Filters");

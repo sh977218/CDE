@@ -1,7 +1,8 @@
-<div uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
+<uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <div uib-accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen" ng-init="acc_index = $index">
-            <div uib-accordion-heading ng-controller="AccordionCtrl">
+        <uib-accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen"
+                             ng-init="acc_index = $index">
+            <uib-accordion-heading template-url="template/accordion/accordion-group.html" ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
@@ -17,7 +18,7 @@
                     <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
 
                 <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
-            </div>
+            </uib-accordion-heading>
             <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div ng-include="'/cde/public/html/cdeList/generalDetails.html'"></div>
@@ -44,7 +45,7 @@
                        ng-click="openPinModal(elt)" id="pin_{{$index}}">
                         <i class="fa fa-thumb-tack"></i> Attach to Board</a>
                     <a tabindex="0" ng-if="user._id && ejsPage=='board'" class="btn btn-small btn-default"
-                       ng-click="unpin(elt)" id="pin_{{$index}}">
+                       ng-click="unpin(elt)" id="unpin_{{$index}}">
                         <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
                     <a tabindex="0" ng-if="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
                        ng-click="quickBoard.add(elt)" id="compare_{{$index}}">
@@ -54,7 +55,7 @@
                         <i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>
             </div>
-        </div>
+        </uib-accordion-group>
     </div>
-</div>
+</uib-accordion>
 

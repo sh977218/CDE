@@ -1,7 +1,5 @@
 angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '$timeout', '$http',
     function ($scope, $modal, $timeout, $http) {
-
-
         $scope.cardinalityOptions =
             [
                 {label: "Exactly 1", value: {min: 1, max: 1}},
@@ -101,6 +99,12 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     }
                     if (cde.valueDomain.uom) {
                         question.question.uoms.push(cde.valueDomain.uom);
+                    }
+                    if (cde.naming && cde.naming.length > 0) {
+                        question.question.cde.name = cde.naming[0].designation;
+                    }
+                    if (cde.ids && cde.ids.length > 0) {
+                        question.question.cde.ids = cde.ids;
                     }
                     question.question.answers = [];
                     question.question.cde.permissibleValues = [];

@@ -9,8 +9,9 @@ public class TourDeViewTest extends TourTest {
     public void deViewTour() {
         mustBeLoggedOut();
         goToCdeByName("Person Birth Date");
-        findElement(By.linkText("Help")).click();
-        findElement(By.linkText("Take a tour")).click();
+        showAllTabs();
+        clickElement(By.linkText("Help"));
+        clickElement(By.linkText("Take a tour"));
         textPresent("Welcome to the NIH");
         getNext("back to the CDE search page");
         getNext("take you to the Form search page");
@@ -36,7 +37,7 @@ public class TourDeViewTest extends TourTest {
         getNext("This section lists CDEs that are most similar");
         getNext("shows all prior states of the CDE");
         getNext("would like to propose a change to an existing CDE, he may create a fork");
-        findElement(By.xpath("//button[@data-role='end']")).click();
+        clickElement(By.xpath("//button[@data-role='end']"));
     }
 
 }

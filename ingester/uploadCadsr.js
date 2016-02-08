@@ -12,10 +12,15 @@ var fs = require('fs'),
     , entities = require("entities")
         ;
 
+
+// 1) Change your config file to point to migration DB
+// 2) Download caDSR https://wiki.nci.nih.gov/x/AbH9AQ
+// 3) run this:  node ingester/getCadsrClassifs.js
+// 4) run each file, for example, like this:
+// for f in $(find ../seed/caDSR/*.xml); do  node ingester/uploadCadsr.js $f ; done
+
 var parser = new xml2js.Parser();
 var builder = new xml2js.Builder();
-
-//  for f in $(find ../nlm-seed/ExternalCDEs/caDSR/xml_cde_20151510354/  -name *.xml); do  node ingester/uploadCadsr.js $f ; done
 
 var cadsrFolder = process.argv[2];
 if (!cadsrFolder) {
@@ -34,21 +39,6 @@ var datatypeMapping = {
 
 var phenxOrg = null;
 var nciOrg = null;
-
-setTimeout(function() {
-    mongo_data_system.orgByName("PhenX", function(stewardOrg) {
-       phenxOrg = stewardOrg;
-        if (!phenxOrg) {
-            throw "PhenX Org does not exists!";
-        }
-    });
-    mongo_data_system.orgByName("NCI", function(stewardOrg) {
-        nciOrg = stewardOrg; 
-        if (!nciOrg) {
-            throw "NCI Org does not exists!";
-        }
-    });
-}, 1000);
 
 var convertCadsrStatusToNlmStatus = function(status) {
     switch (status) {
@@ -305,13 +295,25 @@ var doFile = function (cadsrFile, fileCb) {
                      }, 500);
                }
             });              
-        }, function(err){
+        }, function(){
             fileCb();
         });            
     });
 });
 };
 
+mongo_data_system.orgByName("PhenX", function(stewardOrg) {
+    phenxOrg = stewardOrg;
+    if (!phenxOrg) {
+        throw "PhenX Org does not exists!";
+    }
+});
+mongo_data_system.orgByName("NCI", function(stewardOrg) {
+    nciOrg = stewardOrg;
+    if (!nciOrg) {
+        throw "NCI Org does not exists!";
+    }
+});
 
 setTimeout(function() {
     doFile(cadsrFolder, function() {

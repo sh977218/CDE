@@ -7,8 +7,6 @@ var mongoose = require('mongoose')
     , mongoosastic = require('mongoosastic')
     , elasticsearch = require('elasticsearch')
     ;
-    
-var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 
 var esClient = new elasticsearch.Client({
     host: config.elastic.uri
@@ -55,9 +53,10 @@ var clientErrorSchema= new mongoose.Schema(
     , name: String
     , stack: String
     , userAgent: String
+    , url: String
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
-var storedQuerySchema= new mongoose.Schema(
+var storedQuerySchema = new mongoose.Schema(
     {
         searchTerm: String
         , date: {type: Date, default: Date.now}
@@ -160,7 +159,7 @@ exports.logClientError = function(req, callback) {
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
-        callback(err); 
+        callback(err);
     });
 };
 
