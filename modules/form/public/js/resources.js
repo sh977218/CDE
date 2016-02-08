@@ -9,4 +9,8 @@ angular.module('resourcesForm', ['ngResource'])
         return $resource('/cdesinform/:formId', {formId: '@formId'},
             {'getCdes': {method: 'GET', isArray: true}});
     })
+    .factory('PriorForms', function ($resource) {
+        return $resource('/priorforms/:formId', {formId: '@formId'},
+            {'getForms': {method: 'GET', isArray: true}});
+    })
 ;    

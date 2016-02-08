@@ -102,6 +102,10 @@ exports.formSchema = new Schema({
         userId: mongoose.Schema.Types.ObjectId
         , username: String
     }
+    , updatedBy: {
+        userId: mongoose.Schema.Types.ObjectId
+        , username: String
+    }
     , formElements: [formElementSchema]
     , archived: Boolean
     , classification: [sharedSchemas.classificationSchema]

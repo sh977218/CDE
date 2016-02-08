@@ -26,7 +26,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         clickElement(By.id("dd_edit_steward"));
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
         clickElement(By.id("elt.stewardOrg.name.ok"));
-        Assert.assertTrue(textPresent("NINDS"));
+        textPresent("NINDS");
         newCdeVersion();
         Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
         showAllTabs();

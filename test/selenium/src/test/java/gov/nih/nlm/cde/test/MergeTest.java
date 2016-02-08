@@ -33,7 +33,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.cssSelector(".accordion-toggle")).click();  
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking History Ind")));
-        Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));
+        textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned.");
         textPresent("3279225");
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
@@ -83,13 +83,13 @@ public class MergeTest extends NlmCdeBaseTest {
         addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
         hangon(1);
         findElement(By.linkText("Retire & Merge")).click();  
-        Assert.assertTrue(textPresent("Fields to be Imported"));
+        textPresent("Fields to be Imported");
         findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
         hangon(1);
         findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("caBIG"));
-        Assert.assertTrue(textPresent("caLIMS2"));      
-        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));
+        textPresent("caBIG");
+        textPresent("caLIMS2");
+        textPresent("gov.nih.nci.calims2.domain.inventory");
     }
   
     /*@Test*/

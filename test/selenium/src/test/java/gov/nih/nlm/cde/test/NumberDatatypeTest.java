@@ -12,7 +12,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Resource Utilization Group Version IV (RUG IV) - alpha-numeric code";
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         clickElement(By.id("editDatatype"));
         new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Number");
@@ -26,12 +26,13 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#numberMaxValue .fa-check"));
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         showAllTabs();
         checkInHistory("Permissible Values - Number", "", "123");
         checkInHistory("Permissible Values - Number", "", "456");
         checkInHistory("Permissible Values - Value Type", "", "Number");
 
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='numberMinValue']//i[@title='Edit']"));
         clickElement(By.xpath("//div[@id='numberMaxValue']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='numberMinValue']//input")).clear();
@@ -40,13 +41,14 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='numberMaxValue']//input")).sendKeys("987");
         clickElement(By.cssSelector("#numberMinValue .fa-check"));
         clickElement(By.cssSelector("#numberMaxValue .fa-check"));
-
         newCdeVersion();
 
+        goToCdeByName(cdeName);
+        showAllTabs();
         checkInHistory("Permissible Values - Number - Minimum Value", "123", "789");
         checkInHistory("Permissible Values - Number - Maximum Value", "456", "987");
 
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
     }
 
 }
