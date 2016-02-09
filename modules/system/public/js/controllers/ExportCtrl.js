@@ -19,9 +19,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             {
                 'csv': function(result) {
                     var settings = SearchSettings.getPromise().then(function(settings) {
-                        var csv = exports.exportHeader.cdeHeader;
+                        var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
                         JSON.parse(result).forEach(function (ele) {
-                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings));
+                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
                         });
                         var blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');

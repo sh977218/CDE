@@ -4,6 +4,45 @@ exports.exportHeader = {
     cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
 };
 
+exports.getCdeCsvHeader = function(settings) {
+    var cdeHeader = "Name, Value Type";
+
+    if (settings.naming) {
+        cdeHeader += ", Other Names";
+    }
+    if (settings.permissibleValues) {
+        cdeHeader += ", Permissible Values";
+    }
+    if (settings.uom) {
+        cdeHeader += ", Unit of Measure";
+    }
+    if (settings.stewardOrg) {
+        cdeHeader += ", Steward";
+    }
+    if (settings.usedBy) {
+        cdeHeader += ", Used By";
+    }
+    if (settings.registrationStatus) {
+        cdeHeader += ", Registration Status";
+    }
+    if (settings.administrativeStatus) {
+        cdeHeader += ", Administrative Status";
+    }
+    if (settings.source) {
+        cdeHeader += ", Source";
+    }
+    if (settings.updated) {
+        cdeHeader += ", Updated";
+    }
+
+    if (settings.ids) {
+        cdeHeader += ", Identifiers";
+    }
+
+    cdeHeader += "\n";
+    return cdeHeader;
+};
+
 exports.projectFormForExport = function (ele) {
     var form = {
         name: ele.naming[0].designation
@@ -22,41 +61,50 @@ exports.projectFormForExport = function (ele) {
 
 exports.projectCdeForExport = function (ele, settings) {
     var cde = {
-        name: ele.naming[0].designationn
+        name: ele.naming[0].designation,
         valueDomainType: ele.valueDomain.datatype
     };
-
-    if (settings.tableViewFields.cde.naming) {
+    if (settings.naming) {
         cde.otherNames = ele.naming.slice(1).map(function (n) {
             return n.designation;
         }).filter(function (n) {
             return n;
         });
     }
-
-    if (settings.tableViewFields.cde.permissibleValues) {
-        permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
+    if (settings.permissibleValues) {
+        cde.permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
             return pv.permissibleValue;
         })
     }
-
-    if (settings.tableViewFields.cde.nbOfPVs) {
-        
+    if (settings.uom) {
+        cde.uom = ele.valueDomain.uom;
     }
-
-    if (settings.tableViewFields.cde.permissibleValues) {
-        ids: ele.ids.map(function (id) {
+    if (settings.stewardOrg) {
+        cde.stewardOrg = ele.stewardOrg.name;
+    }
+    if (settings.usedBy) {
+        if (ele.classification) cde.usedBy = ele.classification.map(function (c) {
+            return c.stewardOrg.name
+        });
+    }
+    if (settings.registrationStatus) {
+        cde.registrationStatus = ele.registrationState.registrationStatus;
+    }
+    if (settings.administrativeStatus) {
+        cde.administrativeStatus = ele.registrationState.administrativeStatus;
+    }
+    if (settings.source) {
+        cde.source = ele.source;
+    }
+    if (settings.updated) {
+        cde.updated = ele.updated;
+    }
+    if (settings.ids) {
+        cde.ids = ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "")
         })
-
     }
-        , stewardOrg: ele.stewardOrg.name
-        , registrationStatus: ele.registrationState.registrationStatus
-        , adminStatus: ele.registrationState.administrativeStatus
-    };
-    if (ele.classification) cde.usedBy = ele.classification.map(function (c) {
-        return c.stewardOrg.name
-    });
+
     return cde;
 };
 
