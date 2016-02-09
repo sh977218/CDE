@@ -9,6 +9,10 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
             $scope.cde = "error";
         });
 
+        $scope.okClear = function() {
+            $modalInstance.close("");
+        };
+
         $scope.okSelect = function (naming) {
             $modalInstance.close(naming.designation);
         };

@@ -55,7 +55,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         findElement(By.xpath("//label[text()='Version']/following-sibling::textarea")).sendKeys("Version 1");
         clickElement(By.id("createId"));
         modalGone();
-        goToCdeByName(cdeName, "Recorded");
+        goToCdeByName(cdeName);
         showAllTabs();
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");

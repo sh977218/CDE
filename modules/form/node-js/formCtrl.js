@@ -1,10 +1,11 @@
-var mongo_data_form = require('./mongo-form'),
-    mongo_data_cde = require('../../cde/node-js/mongo-cde'),
-    adminSvc = require('../../system/node-js/adminItemSvc.js'),
-    formShared = require('../shared/formShared'),
-    JXON = require('jxon'),
-    util = require('util'),
-    sdc = require('./sdcForm');
+var mongo_data_form = require('./mongo-form')
+    , mongo_data_cde = require('../../cde/node-js/mongo-cde')
+    , adminSvc = require('../../system/node-js/adminItemSvc.js')
+    , formShared = require('../shared/formShared')
+    , JXON = require('jxon')
+    , sdc = require('./sdcForm')
+    , util = require('util')
+;
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {

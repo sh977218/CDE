@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class CdeViewTabTest extends ViewTabTest {
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override

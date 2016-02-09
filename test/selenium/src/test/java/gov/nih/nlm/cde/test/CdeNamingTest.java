@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class CdeNamingTest extends NamingTest {
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override
