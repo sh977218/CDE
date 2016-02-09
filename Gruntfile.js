@@ -380,17 +380,17 @@ module.exports = function (grunt) {
         grunt.task.run('http:elasticDeleteIndex');
         grunt.task.run('http:elasticCreateIndex');
         grunt.task.run('http:elasticCreateRiver');
-
+        //
         grunt.task.run('http:elasticDeleteFormRiver');
         grunt.task.run('http:elasticDeleteFormIndex');
         grunt.task.run('http:elasticCreateFormIndex');
         grunt.task.run('http:elasticCreateFormRiver');
-
+        //
         grunt.task.run('http:elasticDeleteBoardRiver');
         grunt.task.run('http:elasticDeleteBoardIndex');
         grunt.task.run('http:elasticCreateBoardIndex');
         grunt.task.run('http:elasticCreateBoardRiver');
-
+        //
         grunt.task.run('http:elasticDeleteStoredQueryIndex');
         grunt.task.run('http:elasticCreateStoredQueryIndex');
     });
