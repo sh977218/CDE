@@ -214,6 +214,7 @@ exports.addComment = function (req, res, dao) {
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
                 elt.comments.push(comment);
+                elt.updated = new Date();
                 elt.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
