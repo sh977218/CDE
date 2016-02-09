@@ -405,8 +405,7 @@ exports.saveModification = function (oldDe, newDe, user) {
         }
         , diff: diff
     };
-    var auditItem = new CdeAudit(message);
-    auditItem.save();
+    CdeAudit(message).save();
 };
 
 exports.getCdeAuditLog = function (params, callback) {

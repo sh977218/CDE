@@ -58,7 +58,7 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
         textPresent("Rename NINDS > Disease > Spinal Cord Injury to Spinal Cord Injuries");
         String body = findElement(By.cssSelector("body")).getText();
-        Assert.assertTrue(body.contains("1282 elements") || body.contains("1281 elements"));
+        Assert.assertTrue(body.contains("10+ elements") || body.contains("1281 elements"));
     }
     
 }
