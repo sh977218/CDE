@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings',
+    function ($scope, Elastic, SearchSettings)
+{
 
     $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
@@ -16,12 +18,14 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             var exporters =
             {
                 'csv': function(result) {
-                    var csv = exports.exportHeader.cdeHeader;
-                    JSON.parse(result).forEach(function (ele) {
-                        csv += exports.convertToCsv(exports.projectCdeForExport(ele));
+                    var settings = SearchSettings.getPromise().then(function(settings) {
+                        var csv = exports.exportHeader.cdeHeader;
+                        JSON.parse(result).forEach(function (ele) {
+                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings));
+                        });
+                        var blob = new Blob([csv], {type: "text/csv"});
+                        saveAs(blob, 'SearchExport.csv');
                     });
-                    var blob = new Blob([csv], {type: "text/csv"});
-                    saveAs(blob, 'SearchExport.csv');
                 },
                 'json': function(result) {
                     var blob = new Blob([result], {type: "application/json"});

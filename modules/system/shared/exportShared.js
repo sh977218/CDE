@@ -20,21 +20,36 @@ exports.projectFormForExport = function (ele) {
     return form;
 };
 
-exports.projectCdeForExport = function (ele) {
+exports.projectCdeForExport = function (ele, settings) {
     var cde = {
-        name: ele.naming[0].designation
-        , otherNames: ele.naming.slice(1).map(function (n) {
+        name: ele.naming[0].designationn
+        valueDomainType: ele.valueDomain.datatype
+    };
+
+    if (settings.tableViewFields.cde.naming) {
+        cde.otherNames = ele.naming.slice(1).map(function (n) {
             return n.designation;
         }).filter(function (n) {
             return n;
-        })
-        , valueDomainType: ele.valueDomain.datatype
-        , permissibleValues: ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
+        });
+    }
+
+    if (settings.tableViewFields.cde.permissibleValues) {
+        permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
             return pv.permissibleValue;
         })
-        , ids: ele.ids.map(function (id) {
+    }
+
+    if (settings.tableViewFields.cde.nbOfPVs) {
+        
+    }
+
+    if (settings.tableViewFields.cde.permissibleValues) {
+        ids: ele.ids.map(function (id) {
             return id.source + ": " + id.id + (id.version ? " v" + id.version : "")
         })
+
+    }
         , stewardOrg: ele.stewardOrg.name
         , registrationStatus: ele.registrationState.registrationStatus
         , adminStatus: ele.registrationState.administrativeStatus
