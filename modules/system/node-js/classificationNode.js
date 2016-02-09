@@ -19,6 +19,7 @@ classification.saveCdeClassif = function(err, cde, cb) {
             cde.classification.splice(i, 1);
         }
     });
+    cde.updated = new Date();
     cde.markModified('classification');
     cde.save(function() {
         if (cb) cb(err);
