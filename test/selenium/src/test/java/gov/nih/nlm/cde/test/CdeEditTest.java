@@ -5,6 +5,9 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static com.jayway.restassured.RestAssured.get;
+
+@Test(groups="CdeEditTest")
 public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
@@ -66,6 +69,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
 
 
+    }
+
+    @Test(dependsOnMethods = {"editCde"})
+    public void modifiedSinceAPI() {
+        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        Assert.assertFalse(response.contains("Invalid"));
+        System.out.println(response);
+        Assert.assertTrue(response.contains("64YoxVrtASF"));
     }
 
     @Test
