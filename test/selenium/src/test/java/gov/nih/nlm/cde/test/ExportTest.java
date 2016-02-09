@@ -59,7 +59,47 @@ public class ExportTest extends NlmCdeBaseTest {
 
 
         clickElement(By.id("searchSettings"));
-    
+        findElement(By.id("uom")).click();
+        findElement(By.id("administrativeStatus")).click();
+        findElement(By.id("source")).click();
+        findElement(By.id("updated")).click();
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
+        closeAlert();
+
+        goToCdeSearch();
+        findElement(By.id("browseOrg-NINDS")).click();
+        textPresent("All Statuses");
+        findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
+        findElement(By.id("export")).click();
+        findElement(By.id("csvExport")).click();
+        textPresent("export is being generated");
+        closeAlert();
+        textPresent("Export downloaded.");
+        closeAlert();
+
+        String[] expected2 = {
+                "Name, Value Type, Other Names, Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Source, Updated, Identifiers",
+                "Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score","Value List","TOE TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore",
+                "Unified Parkinson's Disease Rating Scale (UPDRS) - Heart rate seated measurement","Number","Symptomatic orthostasis: Pulse: seated","","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C18605 v1; NINDS Variable Name: UPDRSHRSeatedMeasr"
+
+        };
+
+        try {
+            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport (1).csv")));
+            for (String s : expected2) {
+                if (!actual.contains(s)) {
+                    Files.copy(
+                            Paths.get(downloadFolder + "/SearchExport (1).csv"),
+                            Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
+                    Assert.fail("missing line in export : " + s);
+                }
+            }
+        } catch (IOException e) {
+            Assert.fail("Exception reading SearchExport.csv");
+        }
+
+
 
     }
 
