@@ -38,7 +38,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't edit name, def or status
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_uom']//i[@class='fa fa-edit']")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']")).size(), 0);
 
         // Can't edit Value Type or add / remove pv

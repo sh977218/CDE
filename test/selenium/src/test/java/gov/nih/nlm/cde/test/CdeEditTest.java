@@ -18,11 +18,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
         clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
+
+        clickElement(By.linkText("Permissible Values"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'dd_uom']//input")).sendKeys("myUom");
         clickElement(By.cssSelector("#dd_uom .fa-check"));
         textPresent("myUom");
         newCdeVersion("Change note for change number 1");
+
         goToCdeByName(cdeName);
         textPresent("[name change number 1]");
         textPresent("[def change number 1]");
