@@ -12,7 +12,7 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-TEST")).click();
         findElement(By.id("altClassificationFilterModeToggle")).click();
         textPresent("CIP (1)");
-        textPresent("Person Birth Date");
+        textPresent("NHLBI (");
         findElement(By.id("li-blank-CIP")).click();
         textNotPresent("Person Birth Date");
         textPresent("1 results for");

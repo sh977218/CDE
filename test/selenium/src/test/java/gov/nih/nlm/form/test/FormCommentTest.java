@@ -7,7 +7,7 @@ public class FormCommentTest extends CommentTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override

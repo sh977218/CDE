@@ -6,9 +6,6 @@ import org.testng.annotations.Test;
 
 public class SkipLogicTest extends BaseFormTest {
 
-    QuestionTest questionTest = new QuestionTest();
-    CreateEditSectionTest sectionTest = new CreateEditSectionTest();
-
     @Test
     public void singlePermissibleValue() {
         mustBeLoggedInAs(testAdmin_username, password);

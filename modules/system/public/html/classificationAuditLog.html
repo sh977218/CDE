@@ -1,8 +1,11 @@
 <uib-accordion>
     <uib-accordion-group ng-repeat="edit in records">
         <uib-accordion-heading>
-            <span ng-if="edit.elements.length === 1">{{edit.elements[0].name}}</span>
-            <span ng-if="edit.elements.length > 1">{{edit.elements.length}} elements</span>
+            <span ng-switch="edit.elements.length">
+                <span ng-switch-when="1">{{edit.elements[0].name}}</span>
+                <span ng-switch-when="10">10+ elements</span>
+                <span ng-switch-default>{{edit.elements.length}} elements</span>
+            </span>
             <span class="text-info">{{edit.path.join(" > ")}}</span>
             <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
         </uib-accordion-heading>
