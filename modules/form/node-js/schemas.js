@@ -52,6 +52,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
     currentLevel.push({
         elementType: {type: String, enum: ['section', 'question']}
         , label: String
+        , hideLabel: {type: Boolean, default: false}
         , instructions: sharedSchemas.instructionSchema
         , cardinality: cardinalitySchema
         , repeatsFor: String

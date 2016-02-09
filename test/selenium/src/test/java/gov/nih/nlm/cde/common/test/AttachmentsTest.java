@@ -52,7 +52,7 @@ public class AttachmentsTest extends BaseAttachmentTest {
         showAllTabs();
         addAttachment("nonDefault.jpg");
 
-        openEltInList(cdeName, "cde", null);
+        openEltInList(cdeName, "cde");
 
         List<WebElement> l = driver.findElements(By.cssSelector("cdeAttachmentThumbnail"));
         for (WebElement we : l) {

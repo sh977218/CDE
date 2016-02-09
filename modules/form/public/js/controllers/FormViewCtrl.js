@@ -23,7 +23,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
-    };
+    }
 
     $scope.tabs = {
         general: {
@@ -216,7 +216,7 @@ angular.module('formModule').controller('FormViewCtrl',
         CdeList.byTinyIdList(formCdeIds, function (cdes) {
             $scope.cdes = cdes;
         });
-    };
+    }
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
