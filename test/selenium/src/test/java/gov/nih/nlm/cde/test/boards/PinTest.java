@@ -9,7 +9,7 @@ public class PinTest extends BoardTest {
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
-        goToCdeSearch();
+
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
         
