@@ -52,7 +52,6 @@ public class QuestionTest extends BaseFormTest {
 
         scrollTo(targetElt.getLocation().getY());
 
-        Actions action = new Actions(driver);
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("section_drop_area_" + sectionNumTo), sourceStr));
     }

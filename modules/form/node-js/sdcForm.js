@@ -1,78 +1,176 @@
-var mongo_data = require("./mongo-form")
-    , xmlbuilder = require("xmlbuilder")
-    , config = require('../../system/node-js/parseConfig')
+var xmlbuilder = require("xmlbuilder")
+    , JXON = require('jxon')
 ;
 
 
-var addCardinality = function(parent, formElement) {
-    var card = parent.ele("mfi13:cardinality");
-    card.ele("mfi13:minimum", {}, "0");
-    card.ele("mfi13:maximum", {}, "1");
-};
+//var addCardinality = function(parent, formElement) {
+//    var card = parent.ele("mfi13:cardinality");
+//    card.ele("mfi13:minimum", {}, "0");
+//    card.ele("mfi13:maximum", {}, "1");
+//};
 
-var doQuestion = function(parent, question) {
-    var newQuestion = parent.ele("sdc:question",
-        {"initial_state": "enabled",
-        "data_element_scoped_identifier": config.publicUrl + "/debytinyid/" +
-            question.question.cde.tinyId + "/" + question.question.cde.version});
 
-    addCardinality(newQuestion, question);
 
-    newQuestion.ele("sdc:question_prompt").ele("mfi13:label", {}, question.label);
+function addQuestion(parent, question) {
+
+    var newQuestion = {
+        "Question": {
+            "@ID": question.question.cde.tinyId
+        }
+    };
+
+    if (question.label !== undefined && !question.hideLabel) {
+        newQuestion.Question["@title"] = question.label;
+    }
+
+    if (question.instructions) {
+        newQuestion.Question.OtherText = {"@val": question.instructions};
+    }
 
     if (question.question.datatype === 'Value List') {
-        var lf = newQuestion.ele("sdc.list_field");
-        lf.ele("mfi13:multiselect", {}, question.question.multiselect === true);
+        newQuestion.Question.ListField = {"List": {"ListItem": []}};
+        if(question.question.multiselect) newQuestion.Question.ListField["@multiSelect"] = "true";
+
         if (question.question.answers) {
             question.question.answers.forEach(function(answer) {
-                var li = lf.ele("sdc:list_item");
-                li.ele("mfi13:value", {}, answer.permissibleValue);
-                li.ele("mfi13:item_prompt").ele("mfi13:label", {}, answer.permissibleValue);
-                //li.ele("mfi13:value_meaning").ele("mfi13:label", {}, answer.valueMeaningName);
-                li.ele("sdc:value_meaning_terminology_code", {}, answer.valueMeaningCode);
-                li.ele("sdc:value_meaning_code_name", {}, answer.valueMeaningName);
-                li.ele("sdc:value_meaning_code_system_name", {}, answer.codeSystemName);
+                var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
+                newQuestion.Question.ListField.List.ListItem.push({"@title": title});
             });
         }
+    } else {
+        newQuestion.Question.ResponseField = {"Response": ""};
+    }
+
+    idToName[question.question.cde.tinyId] = question.label;
+
+    questionsInSection[question.label] = newQuestion;
+    parent.push(newQuestion);
+}
+
+function doQuestion(parent, question) {
+
+    //addCardinality(newQuestion, question);
+
+    var embed = false;
+
+    try {
+        if (question.skipLogic.condition.length > 0) {
+            if (question.skipLogic.condition.match('".+" = ".+"')) {
+                var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function(t) {
+                    return t.substr(1, t.length - 2);
+                });
+                if (terms.length === 2) {
+                    var qToAddTo = questionsInSection[terms[0]].Question;
+                    qToAddTo.ListField.List.ListItem.forEach(function (li) {
+                        if (li["@title"] === terms[1]) {
+                            embed = true;
+                            if (question.question.datatype === 'Value List') {
+                                if (li.ChildItems === undefined) li.ChildItems = [];
+                                addQuestion(li.ChildItems, question);
+                            } else {
+                                if (question.label === "" || question.hideLabel) {
+                                    li.ListItemResponseField = {
+                                        Response: {string: ""}
+                                    }
+                                } else {
+                                    if (li.ChildItems === undefined) li.ChildItems = [];
+                                    addQuestion(li.ChildItems, question);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    } catch (e) {
 
     }
 
-};
+    if (!embed)
+        addQuestion(parent, question);
+
+}
+
+var questionsInSection = {};
 
 var doSection = function(parent, section) {
-    var newSection = parent.ele("sdc:section", {"initial_state": "enabled"});
-
-    addCardinality(newSection, section);
-
-    var title = newSection.ele("sdc:section_title");
-    var label = title.ele("mfi13:label", {}, section.label);
-
-    var inst = newSection.ele("sdc:section_instruction");
-    inst.ele("mfi13:label", {}, section.instructions);
+    var newSection = {
+        "Section": {
+            "@title": section.label,
+            "ChildItems": []
+        }
+    };
 
     section.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'question') {
-              doQuestion(newSection, formElement);
+            doQuestion(newSection.Section.ChildItems, formElement);
+        } else if (formElement.elementType === 'section') {
+            doSection(newSection.Section.ChildItems, formElement);
         }
     });
+
+    questionsInSection = {};
+    parent.push(newSection);
+
+    //addCardinality(newSection, section);
 
 };
 
-exports.formToSDC = function(form) {
-    var formPackage = xmlbuilder.create("sdc:form_package");
-    formPackage.att("xmlns:sdc", "http://nlm.nih.gov/sdc/for");
-    formPackage.att("xmlns:mfi13", "http://www.iso.org/19763/13/2013");
-    var formDesign = formPackage.ele("sdc:form_design");
+var idToName = {};
 
-    var sdcDesignation = formDesign.ele("sdc:designation");
-    sdcDesignation.ele("sdc:Context", {}, "SDC Pilot Project");
-    sdcDesignation.ele("sdc:sign", {acceptability: "preferred"}, form.naming[0].designation);
+exports.formToSDC = function(form) {
+
+    var root = {
+        "FormDesign": {
+            "@xmlns:sdc": "http://healthIT.gov/sdc",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
+            "@formID": form.tinyId + "v" + form.version,
+            "@baseItemURI": "https://cap.org/ecc/sdc",
+            "Header": {
+                "@ID": "S1",
+                "@title": form.naming[0].designation,
+                "@styleClass": "left"
+            },
+            "Body": {
+                "ChildItems": []
+            }
+        }
+    };
+
+    //form.properties.forEach(function(prop) {
+    //   if  (prop.key.toLowerCase().indexOf("header_") === 0) {
+    //       if (prop.valueFormat === "html") {
+    //           try {
+    //               root.FormDesign.Header.OtherText.push({
+    //                   "@val": "html", "@type": "title", "@styleClass": "title", "@name": "title",
+    //                   HTML: {
+    //                       div: {
+    //                           "@xmlns": "http://www.w3.org/1999/xhtml",
+    //                           "@xsi:schemaLocation": "http://www.w3.org/1999/xhtml xhtml.xsd",
+    //                           div: JXON.stringToJs(prop.value)
+    //                       }
+    //                   }
+    //               });
+    //           } catch (e) {
+    //               console.log(e)
+    //               console.log("skipping " + prop.key);
+    //           }
+    //       } else {
+    //           root.FormDesign.Header.OtherText.push({"@val": prop.value})
+    //       }
+    //   }
+    //});
 
     form.formElements.forEach(function(formElement) {
         if (formElement.elementType === 'section') {
-            doSection(formDesign, formElement);
+            doSection(root.FormDesign.Body.ChildItems, formElement);
         }
     });
 
-    return formPackage.toString();
+    idToName = {};
+
+    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" +
+        JXON.jsToString(root);
+
 };

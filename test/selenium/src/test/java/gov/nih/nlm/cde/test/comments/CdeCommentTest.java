@@ -7,7 +7,7 @@ public class CdeCommentTest extends CommentTest {
     
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override

@@ -477,7 +477,7 @@ exports.addToClassifAudit = function(msg) {
 };
 
 exports.getClassificationAuditLog = function(params, callback){
-    classificationAudit.find()
+    classificationAudit.find({}, {elements: {$slice: 10}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)

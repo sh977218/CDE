@@ -124,9 +124,7 @@ exports.addOrgClassification = function(body, cb) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            if(cb) cb(err, stewardOrg);
-        });
+        stewardOrg.save(cb);
     });
 };
 
