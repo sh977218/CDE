@@ -26,7 +26,6 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         clickElement(By.id("addNewCatButton"));
         closeAlert();
         textPresent(oldClassification);
-        hangon(2);
         clickElement(By.id("addClassification"));
         textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
