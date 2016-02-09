@@ -726,4 +726,9 @@ exports.init = function(app) {
             res.send({});
         });
     });
+
+    app.get('/api/reloadProd', function(req, res){
+        if(!req.isAuthenticated() || !req.user.siteAdmin) return res.status(401).send("Not Authorized");
+
+    });
 };
