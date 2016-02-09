@@ -7,7 +7,7 @@ public class FormPropertyTest extends PropertyTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override
