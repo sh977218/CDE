@@ -38,10 +38,9 @@ public class WorkingGroupTest2  extends BaseClassificationTest {
         //NINDS-WG-1
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeSearch();
-        scrollToViewById("browserOrg-NINDS");
-        scrollToViewById("browserOrg-NINDS-WG-1");
+        scrollToViewById("browseOrg-NINDS-WG-1");
         textPresent("NINDS-WG-1");
-        scrollToViewById("browserOrg-NINDS-WG-2");
+        scrollToViewById("browseOrg-NINDS-WG-2");
         textPresent("NINDS-WG-2");
         
         //NINDS-WG-2
