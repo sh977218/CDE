@@ -23,11 +23,8 @@ public class CreateCdeTest extends BaseClassificationTest {
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Traumatic Brain Injury"});
         modalGone();
         textPresent("Traumatic Brain Injury");
-
         deleteClassification("classification-Disease,Traumatic Brain Injury");
-
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Disease", "Headache"});
-
         checkRecentlyUsedClassificationsForNewCde(new String[]{"NINDS", "Disease", "Headache"});
 
         clickElement(By.id("submit"));
