@@ -17,27 +17,30 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void searchExport() {
+        mustBeLoggedOut();
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("loadDefaultSettings"));
+        textPresent("Default settings loaded");
+        closeAlert();
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
+        closeAlert();
+
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("All Statuses");
-        findElement(By.id("ftsearch-input")).sendKeys("\"Parkinson's\"");
+        findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         findElement(By.id("export")).click();
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
-        closeAlert();
-        findElement(By.id("export")).click();
-        findElement(By.id("csvExport")).click();
-        textPresent("export is being generated");
-        closeAlert();
-        textPresent("server is busy processing");
         closeAlert();
         textPresent("Export downloaded.");
         closeAlert();
 
         String[] expected = {
-                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n\"",
-                "\"Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator\",\"In the past month, have you had to pass urine at night?\",\"Value List\",\"Never; Sometimes; Regularly; Often; use catheter\",\"NINDS: C10354 v3; NINDS Variable Name: SCOPAAUTUrinateNightInd\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - anxious mood score\",\"ANXIOUS MOOD\",\"Value List\",\"0; 1; 2; 3; 4\",\"NINDS: C09962 v3; NINDS Variable Name: MDSUPDRSAnxsMoodScore\",\"NINDS\",\"Qualified\",\"\",\"NINDS\",\n"
+                "Name, Value Type, Other Names, Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Source, Updated, Identifiers\n",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score","Value List","TOE TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore",
+                "Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - finger tap left hand score","Value List","FINGER TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C09998 v3; NINDS Variable Name: MDSUPDRSFingerTppngLftHndScore"
         };
 
         try {
@@ -53,6 +56,10 @@ public class ExportTest extends NlmCdeBaseTest {
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.csv");
         }
+
+
+        clickElement(By.id("searchSettings"));
+    
 
     }
 
