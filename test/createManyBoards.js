@@ -17,3 +17,10 @@
 //for (var i = 0; i < nrBoards; i++){
 //    db.pinningBoards.insert(boardSchema);
 //}
+
+db.pinningBoards.find({}).forEach(function(board) {
+    db.users.find({username: board.owner.username}).forEach(function(user) {
+        db.pinningBoards.update({_id: board._id}, {$set: {"owner.userId": user._id}});
+    });
+});
+
