@@ -90,11 +90,11 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         setLowStatusesVisible();
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
-        findElement(By.id("li-blank-CATEGORY")).click();
+        clickElement(By.id("li-blank-CATEGORY"));
         hangon(1);
-        findElement(By.id("li-blank-Standard")).click();
+        clickElement(By.id("li-blank-Standard"));
         hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
+        findElement(By.id("li-blank-Qualified"));
         hangon(1);
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");

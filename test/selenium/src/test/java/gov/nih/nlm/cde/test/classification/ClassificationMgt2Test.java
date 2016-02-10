@@ -92,9 +92,8 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test(dependsOnMethods = {"reclassify"})
     public void modifiedSinceAPI() {
         String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
-        Assert.assertFalse(response.contains("Invalid"));
-        System.out.println(response);
-        Assert.assertTrue(response.contains("Z2hYKE_bwar"));
+        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
+        Assert.assertTrue(response.contains("Z2hYKE_bwar"), "Actual: " + response);
     }
 
     @Test
