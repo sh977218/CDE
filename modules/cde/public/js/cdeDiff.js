@@ -99,9 +99,11 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
         this.stringify = function(obj) {
             if (typeof obj === "string") return obj;
             if (typeof obj === "number") return obj;
-            return Object.keys(obj).map(function(f){
-                return f + ": " + obj[f];
-            }).join(", ");                    
+            else if (typeof obj === "object") {
+                return Object.keys(obj).map(function (f) {
+                    return f + ": " + obj[f];
+                }).join(", ");
+            } else return "";
         };
         this.stringifyClassif = function(obj) {
             if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);

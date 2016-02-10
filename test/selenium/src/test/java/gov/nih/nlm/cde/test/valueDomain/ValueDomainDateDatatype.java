@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class ValueDomain2Test extends NlmCdeBaseTest {
+public class ValueDomainDateDatatype extends NlmCdeBaseTest {
 
     @Test
     public void dateDatatype() {
