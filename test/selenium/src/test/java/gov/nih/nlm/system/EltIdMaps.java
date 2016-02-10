@@ -16,6 +16,7 @@ public class EltIdMaps {
         eltMap.put("Genotype Therapy Basis Mutation", "PwdyV7rn1Pp");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
 
         // Forms
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
