@@ -20,7 +20,9 @@ public class WorkingGroupTest2  extends BaseClassificationTest {
         findElement(By.linkText("Classification")).click();
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-2", "WG2 Classif", "WG2 Sub Classif"});
         textPresent("WG2 Sub Classif");
-        
+
+        waitForESUpdate();
+
         //ANONYMOUS
         logout();           
         goToCdeSearch();
@@ -35,8 +37,10 @@ public class WorkingGroupTest2  extends BaseClassificationTest {
         
         //NINDS-WG-1
         mustBeLoggedInAs("nindsWg1User", "pass");
-        goToCdeSearch();        
+        goToCdeSearch();
+        scrollToViewById("browseOrg-NINDS-WG-1");
         textPresent("NINDS-WG-1");
+        scrollToViewById("browseOrg-NINDS-WG-2");
         textPresent("NINDS-WG-2");
         
         //NINDS-WG-2

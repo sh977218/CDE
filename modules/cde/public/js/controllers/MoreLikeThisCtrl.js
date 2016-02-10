@@ -24,5 +24,7 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
         loadMlt();
     });
 
+    $scope.mltCtrlLoadedPromise.resolve();
+
 
 }]);
