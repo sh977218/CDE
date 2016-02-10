@@ -9,7 +9,7 @@ public class PinTest extends BoardTest {
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
-        goToCdeSearch();
+
         createBoard("Blood Board", "Collect blood related cdes here");
         createBoard("Smoking Board", "Collect Smoking CDEs here");
         
@@ -47,23 +47,5 @@ public class PinTest extends BoardTest {
         removeBoard("Smoking Board");
 
     }
-    
-    @Test
-    public void unpin() {
-        mustBeLoggedInAs(pinUser, password);
-        String cdeName = "Imaging volumetric result";
-        goToCdeSearch();
-        createBoard("Unpin Board", "test");
-        pinTo(cdeName, "Unpin Board");
-        goToBoard("Unpin Board");
-        textPresent(cdeName);
-        findElement(By.id("unpin_0")).click();
-        goToBoard("Unpin Board");
-        textNotPresent(cdeName);
-        
-        removeBoard("Unpin Board");
-    }
-        
-    
 
 }
