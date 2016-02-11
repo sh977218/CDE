@@ -59,19 +59,7 @@
 
     "tar": "2.1.0",
 
-    "grunt": "*",
-    "grunt-git": "*",
-    "grunt-http": "*",
-    "grunt-shell": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-prompt": "*",
-    "grunt-npm-install": "*",
-    "grunt-attention": "*",
-    "grunt-available-tasks": "*",
-    "grunt-useref": "*",
-    "grunt-wiredep": "*",
-    "grunt-bower-install-simple": "1.0.3",
-    "grunt-bowercopy": "1.1.0",
+
 
     "gulp": "3.9.0",
     "gulp-concat": "2.6.0",
