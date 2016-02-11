@@ -145,6 +145,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
+gulp.task('default', ['bower', 'wiredep', 'copyNpmDeps', 'copyCode', 'usemin']);
 
 
