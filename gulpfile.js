@@ -84,11 +84,12 @@ gulp.task('copyCode', ['wiredep'], function() {
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
 
+});
+
+gulp.task('perpareVersion', ['copyCode'], function() {
     git.revParse({args:'--short HEAD'}, function(err, hash) {
-        fs.writeFileSync(config.node.buildDir + "/modules/system/public/html/version.html", hash);
+        fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash);
     });
-
-
 });
 
 gulp.task('usemin', ['copyCode'], function() {
@@ -157,6 +158,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'usemin']);
 
 
