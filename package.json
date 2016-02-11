@@ -56,9 +56,7 @@
     "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484"
   },
   "devDependencies": {
-
     "tar": "2.1.0",
-
 
     "es6-promise": "*",
     "gulp": "3.9.1",
@@ -73,6 +71,7 @@
     "gulp-install": "0.6.0",
     "gulp-cssnano": "2.1.0",
     "gulp-wiredep": "0.0.0",
+    "gulp-git": "1.7.0",
     "json-beautify": "1.0.1",
     "entities": "1.1.1"
    }

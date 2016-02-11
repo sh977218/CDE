@@ -14,7 +14,8 @@ var gulp = require('gulp'),
     zlib = require('zlib'),
     fs = require('fs'),
     fstream = require('fstream'),
-    spawn = require('child_process').spawn
+    spawn = require('child_process').spawn,
+    git = require('gulp-git')
 ;
 
 require('es6-promise').polyfill();
@@ -82,6 +83,11 @@ gulp.task('copyCode', ['wiredep'], function() {
 
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
+
+    git.revParse({args:'--short HEAD'}, function(err, hash) {
+        fs.writeFileSync(config.node.buildDir + "/modules/system/public/html/version.html", hash);
+    });
+
 
 });
 
