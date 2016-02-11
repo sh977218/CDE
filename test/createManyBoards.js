@@ -18,6 +18,8 @@
 //    db.pinningBoards.insert(boardSchema);
 //}
 
+print("fixing board  owners")
+
 db.pinningBoards.find({}).forEach(function(board) {
     db.users.find({username: board.owner.username}).forEach(function(user) {
         db.pinningBoards.update({_id: board._id}, {$set: {"owner.userId": user._id}});
