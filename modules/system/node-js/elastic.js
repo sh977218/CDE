@@ -7,6 +7,7 @@ var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
+    , elastic = require('../../../deploy/elasticSearchInit.js')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -436,4 +437,24 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         }
     });
 
+};
+
+exports.recreateIndexes = function(){
+    [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
+        config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function (uri) {
+            request.del(uri);
+        });
+
+    [
+        {uri: config.elasticUri, data: elastic.createIndexJson},
+        {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
+        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
+        {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
+        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
+        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
+        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
+    ].forEach(function (item) {
+            request.post(item.uri, {json: true, body: item.data});
+        });
+    console.log('yo');
 };

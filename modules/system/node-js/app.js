@@ -18,6 +18,10 @@ var passport = require('passport')
     , fs = require('fs')
     , multer  = require('multer')
     , exportShared = require('../../system/shared/exportShared')
+    , tar = require('tar-fs')
+    , zlib = require('zlib')
+    , spawn = require('child_process').spawn
+    , elastic = require('elastic')
 ;
 
 exports.init = function(app) {
@@ -729,6 +733,18 @@ exports.init = function(app) {
 
     app.get('/api/reloadProd', function(req, res){
         if(!req.isAuthenticated() || !req.user.siteAdmin) return res.status(401).send("Not Authorized");
+        var url = 'https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz';
+        var target = './prodDump';
 
+        var untar = tar.extract(target);
+        request(url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
+        untar.on('finish', function () {
+            spawned = spawn('mongorestore', ['-u', 'siteRootAdmin', '-p', 'password', '--authenticationDatabase', 'admin', './prodDump', '--drop', '--db', 'nlmcde'], {stdio: 'inherit'});
+            setTimeout(function(){
+                spawned.kill();
+                elastic.recreateIndexes();
+                res.send("Data reloded.");
+            }, 5 * 60 * 1000);
+        });
     });
 };
