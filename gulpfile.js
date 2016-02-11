@@ -17,6 +17,8 @@ var gulp = require('gulp'),
     spawn = require('child_process').spawn
 ;
 
+require('es6-promise').polyfill();
+
 gulp.task('npm', function() {
     gulp.src(['./package.json'])
         .pipe(install());
