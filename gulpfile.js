@@ -31,7 +31,7 @@ gulp.task('bower', function() {
         .pipe(gulp.dest('./modules/components'));
 });
 
-gulp.task('wiredep', function() {
+gulp.task('wiredep', ['bower'], function() {
     return gulp.src("./modules/system/views/index.ejs")
         .pipe(wiredep({
             directory: "modules/components"
@@ -40,7 +40,7 @@ gulp.task('wiredep', function() {
         .pipe(gulp.dest("./modules/system/views"));
 });
 
-gulp.task('copyCode', function() {
+gulp.task('copyCode', ['wiredep'], function() {
     ['article', 'cde', 'form', 'processManager', 'system', 'batch'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
@@ -81,7 +81,7 @@ gulp.task('copyCode', function() {
 
 });
 
-gulp.task('usemin', function() {
+gulp.task('usemin', ['copyCode'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
@@ -145,6 +145,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['bower', 'wiredep', 'copyNpmDeps', 'copyCode', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
 
 
