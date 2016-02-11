@@ -72,6 +72,8 @@ gulp.task('copyCode', ['wiredep'], function() {
 
     gulp.src('./app.js')
         .pipe(gulp.dest(config.node.buildDir + "/"));
+    gulp.src('./package.json')
+        .pipe(gulp.dest(config.node.buildDir + "/"));
 
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
