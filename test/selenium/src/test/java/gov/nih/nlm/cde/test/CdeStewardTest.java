@@ -36,7 +36,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     @Test
     public void checkStewardOrgDetails() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
-        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
+        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale");
         By by = By.linkText("caBIG");
         try {
             hoverOverElement(findElement(by));
@@ -61,7 +61,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         textPresent("CTEP");
         newCdeVersion();
 
-        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale", "Candidate");
+        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale");
         Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
         hangon(1);
 

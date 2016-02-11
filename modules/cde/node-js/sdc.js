@@ -20,10 +20,10 @@ var sdcExport = function(req, res, cde) {
         , valueSet: {id: cde.valueDomain.vsacOid, name: "see vsac", administrativeStatus: "see vsac", lastChangeDate: "see vsac"}
     };
     for (var i = 0; i < cde.naming.length; i++) {
-        if (!sdcRecord.preferredQuestionText && cde.naming[i].context.contextName === "Preferred Question Text") {
+        if (!sdcRecord.preferredQuestionText && cde.naming[i].context.contextName.toLowerCase() === "preferred question text") {
             sdcRecord.preferredQuestionText = cde.naming[i].definition;
         }
-        if (!sdcRecord.alternateQuestionText && cde.naming[i].context.contextName === "Alternate Question Text") {
+        if (!sdcRecord.alternateQuestionText && cde.naming[i].context.contextName.toLowerCase() === "alternate question text") {
             sdcRecord.alternateQuestionText = cde.naming[i].definition;
         }
     }

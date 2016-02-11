@@ -7,7 +7,7 @@ public class FormRefDocumentTest extends ReferenceDocumentTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override
