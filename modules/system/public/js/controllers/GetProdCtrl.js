@@ -11,7 +11,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
             });
             modalInstance.result.then(function () {
                 $http.get('/api/reloadProd').success(function(){
-
+                    $scope.addAlert("success", "Data has been reloaded.");
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
             }, function(reason) {
