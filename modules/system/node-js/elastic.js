@@ -456,5 +456,4 @@ exports.recreateIndexes = function(){
     ].forEach(function (item) {
             request.post(item.uri, {json: true, body: item.data});
         });
-    console.log('yo');
 };
