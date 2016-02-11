@@ -14,6 +14,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class BoardExportTest extends BoardTest {
     @Test
     public void boardExport() {
+        mustBeLoggedInAs("boardexport", password);
+        
         String board_name = "Board Export Test";
 
         goToBoard(board_name);
