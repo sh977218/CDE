@@ -91,7 +91,7 @@ gulp.task('prepareVersion', ['copyCode'], function() {
         git.revParse({args:'--short HEAD'}, function(err, hash) {
             fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash);
         });
-    }, 10000);
+    }, 15000);
 });
 
 gulp.task('usemin', ['copyCode'], function() {
