@@ -125,12 +125,12 @@ gulp.task('es', function() {
     var timeoutCount = 0;
     [
        {uri: config.elasticUri, data: elastic.createIndexJson},
-        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
-        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
-        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson},
         {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
+        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
         {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
-        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson}
+        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
+        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
+        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
     ].forEach(function (item) {
             timeoutCount++;
             setTimeout(function() {
