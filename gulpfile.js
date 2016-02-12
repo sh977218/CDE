@@ -135,6 +135,7 @@ gulp.task('es', function() {
             {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
             {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
         ].forEach(function (item) {
+            timeoutCount++;
             setTimeout(function() {
                 request.post(item.uri, {json: true, body: item.data});
             }, timeoutCount * 1000);
