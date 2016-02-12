@@ -117,12 +117,16 @@ gulp.task('usemin', ['copyCode'], function() {
 });
 
 gulp.task('es', function() {
-    [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
-        config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function(uri) {
+    var timeoutCount = 0;
+
+    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
+        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
+        timeoutCount++;
+        setTimeout(function() {
             request.del(uri);
+            }, timeoutCount * 1000);
         });
 
-    var timeoutCount = 0;
     [
        {uri: config.elasticUri, data: elastic.createIndexJson},
         {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
@@ -135,7 +139,7 @@ gulp.task('es', function() {
             timeoutCount++;
             setTimeout(function() {
                 request.post(item.uri, {json: true, body: item.data});
-            }, timeoutCount * 3000);
+            }, timeoutCount * 1000);
         });
 
 
