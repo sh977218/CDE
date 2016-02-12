@@ -104,7 +104,8 @@ gulp.task('usemin', ['copyCode'], function() {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    css: [minifyCss({root: "./", relativeTo: "./", rebase: true}), 'concat'],
+                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
                     js: [ uglify({mangle: false}), 'concat' ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
@@ -133,7 +134,7 @@ gulp.task('es', function() {
         ].forEach(function (item) {
             request.post(item.uri, {json: true, body: item.data});
         });
-    }, 2000);
+    }, 10000);
 });
 
 gulp.task('tarCode', function () {
