@@ -122,19 +122,17 @@ gulp.task('es', function() {
             request.del(uri);
         });
 
-    setTimeout(function() {
-        [
-            {uri: config.elasticUri, data: elastic.createIndexJson},
-            {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
-            {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
-            {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
-            {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
-            {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
-            {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
-        ].forEach(function (item) {
-            request.post(item.uri, {json: true, body: item.data});
-        });
-    }, 30000);
+    [
+        {uri: config.elasticUri, data: elastic.createIndexJson},
+        {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
+        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
+        {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
+        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
+        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
+        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
+    ].forEach(function (item) {
+        request.post(item.uri, {json: true, body: item.data});
+    });
 });
 
 gulp.task('tarCode', function () {
