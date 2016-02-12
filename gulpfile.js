@@ -134,7 +134,7 @@ gulp.task('es', function() {
         ].forEach(function (item) {
             request.post(item.uri, {json: true, body: item.data});
         });
-    }, 10000);
+    }, 30000);
 });
 
 gulp.task('tarCode', function () {
