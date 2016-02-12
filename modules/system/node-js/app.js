@@ -22,6 +22,7 @@ var passport = require('passport')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
     , elastic = require('./elastic')
+    , authorization = require('../../system/node-js/authorization')
 ;
 
 exports.init = function(app) {
@@ -731,20 +732,20 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/api/reloadProd', function(req, res){
-        if(!req.isAuthenticated() || !req.user.siteAdmin) return res.status(401).send("Not Authorized");
-        var url = 'https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz';
+    app.post('/api/reloadProd', authorization.checkSiteAdmin, function(req, res){
+        if (!config.prodDump.enabled) return res.status(401).send();
         var target = './prodDump';
-
         var untar = tar.extract(target);
-        request(url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
+        request(req.body.url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
-            spawned = spawn('mongorestore', ['-u', 'siteRootAdmin', '-p', 'password', '--authenticationDatabase', 'admin', './prodDump', '--drop', '--db', 'nlmcde'], {stdio: 'inherit'});
-            setTimeout(function(){
-                spawned.kill();
+            var restore = spawn('mongorestore', ['-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
+            restore.on('exit', function() {
                 elastic.recreateIndexes();
-                res.send("Data reloded.");
-            }, 5 * 60 * 1000);
+                var rm = spawn('rm', [target + '/*']);
+                rm.on('exit', function(){
+                    res.send();
+                });
+            });
         });
     });
 };

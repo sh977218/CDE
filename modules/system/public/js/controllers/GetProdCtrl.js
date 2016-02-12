@@ -10,7 +10,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
                 }
             });
             modalInstance.result.then(function () {
-                $http.get('/api/reloadProd').success(function(){
+                $http.post('/api/reloadProd', {url: $scope.sourceUrl}).success(function(){
                     $scope.addAlert("success", "Data has been reloaded.");
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
@@ -18,6 +18,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
 
             });
         };
+        $scope.sourceUrl = window.prodDumpUrl;
     }
 ]);
 

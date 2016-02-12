@@ -182,5 +182,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             };
 
+            $scope.prodDumpEnabled = window.prodDumpEnabled;
         }
     ]);

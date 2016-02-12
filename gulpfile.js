@@ -102,9 +102,7 @@ gulp.task('usemin', function() {
         });
 });
 
-gulp.task('es', function() {
-    elastic.recreateIndexes();
-});
+gulp.task('es', elastic.recreateIndexes);
 
 gulp.task('tarCode', function () {
     //var done = this.async();

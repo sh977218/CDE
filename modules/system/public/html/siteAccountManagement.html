@@ -48,8 +48,8 @@
         <div uib-tab heading="Server Statuses">
             <div ng-include="'/system/public/html/serverStatuses.html'"></div>
         </div>
-        <div uib-tab heading="Get Latest Prod Data">
+        <div ng-show="prodDumpEnabled" uib-tab heading="Get Latest Prod Data">
             <div ng-include="'/system/public/html/getProd.html'"></div>
         </div>
     </uib-tabset>
-</div>   
+</div>
