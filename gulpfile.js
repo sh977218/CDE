@@ -117,30 +117,28 @@ gulp.task('usemin', ['copyCode'], function() {
 });
 
 gulp.task('es', function() {
+    var timeoutCount = 0;
     [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
         config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function(uri) {
-            request.del(uri);
+            timeoutCount++;
+            setTimeout(function() {
+                request.del(uri);
+            }, timeoutCount * 1000);
         });
 
-    setTimeout(function() {
         [
-            {uri: config.elasticUri, data: elastic.createIndexJson},
-            {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
-            {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
-            {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
+        {uri: config.elasticUri, data: elastic.createIndexJson},
+        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
+        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
+        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
+            {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
+            {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
+            {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
         ].forEach(function (item) {
-            request.post(item.uri, {json: true, body: item.data});
-        });
-        setTimeout(function() {
-            [
-                {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
-                {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
-                {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
-            ].forEach(function (item) {
+            setTimeout(function() {
                 request.post(item.uri, {json: true, body: item.data});
-            });
-        }, 2000)
-    }, 2000);
+            }, timeoutCount * 1000);
+        });
 
 
 });
