@@ -117,15 +117,12 @@ gulp.task('usemin', ['copyCode'], function() {
 });
 
 gulp.task('es', function() {
-    var timeoutCount = 0;
     [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
         config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function(uri) {
-            timeoutCount++;
-            setTimeout(function() {
-                request.del(uri);
-            }, timeoutCount * 1000);
+            request.del(uri);
         });
 
+    var timeoutCount = 0;
     [
        {uri: config.elasticUri, data: elastic.createIndexJson},
         {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
@@ -138,7 +135,7 @@ gulp.task('es', function() {
             timeoutCount++;
             setTimeout(function() {
                 request.post(item.uri, {json: true, body: item.data});
-            }, timeoutCount * 1000);
+            }, timeoutCount * 3000);
         });
 
 
