@@ -93,7 +93,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-CATEGORY"));
         hangon(1);
         clickElement(By.id("li-blank-Standard"));
-        hangon(1);
+        hangon(2);
         findElement(By.id("li-blank-Qualified"));
         hangon(1);
         scrollToTop();
