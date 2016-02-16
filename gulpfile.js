@@ -14,8 +14,11 @@ var gulp = require('gulp'),
     zlib = require('zlib'),
     fs = require('fs'),
     fstream = require('fstream'),
-    spawn = require('child_process').spawn
+    spawn = require('child_process').spawn,
+    git = require('gulp-git')
 ;
+
+require('es6-promise').polyfill();
 
 gulp.task('npm', function() {
     gulp.src(['./package.json'])
@@ -31,7 +34,7 @@ gulp.task('bower', function() {
         .pipe(gulp.dest('./modules/components'));
 });
 
-gulp.task('wiredep', function() {
+gulp.task('wiredep', ['bower'], function() {
     return gulp.src("./modules/system/views/index.ejs")
         .pipe(wiredep({
             directory: "modules/components"
@@ -40,7 +43,7 @@ gulp.task('wiredep', function() {
         .pipe(gulp.dest("./modules/system/views"));
 });
 
-gulp.task('copyCode', function() {
+gulp.task('copyCode', ['wiredep'], function() {
     ['article', 'cde', 'form', 'processManager', 'system', 'batch'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
@@ -72,6 +75,8 @@ gulp.task('copyCode', function() {
 
     gulp.src('./app.js')
         .pipe(gulp.dest(config.node.buildDir + "/"));
+    gulp.src('./package.json')
+        .pipe(gulp.dest(config.node.buildDir + "/"));
 
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
@@ -81,7 +86,15 @@ gulp.task('copyCode', function() {
 
 });
 
-gulp.task('usemin', function() {
+gulp.task('prepareVersion', ['copyCode'], function() {
+    setTimeout(function() {
+        git.revParse({args:'--short HEAD'}, function(err, hash) {
+            fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash);
+        });
+    }, 15000);
+});
+
+gulp.task('usemin', ['copyCode'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
@@ -91,7 +104,8 @@ gulp.task('usemin', function() {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    css: [minifyCss({root: "./", relativeTo: "./", rebase: true}), 'concat'],
+                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
                     js: [ uglify({mangle: false}), 'concat' ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
@@ -103,22 +117,32 @@ gulp.task('usemin', function() {
 });
 
 gulp.task('es', function() {
-    [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
-        config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function(uri) {
+    var timeoutCount = 0;
+
+    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
+        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
+        timeoutCount++;
+        setTimeout(function() {
             request.del(uri);
+            }, timeoutCount * 1000);
         });
 
     [
-        {uri: config.elasticUri, data: elastic.createIndexJson},
+       {uri: config.elasticUri, data: elastic.createIndexJson},
         {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
         {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
         {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
         {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
         {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
         {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
-    ].forEach(function(item) {
-        request.post(item.uri, {json: true, body: item.data});
-    });
+    ].forEach(function (item) {
+            timeoutCount++;
+            setTimeout(function() {
+                request.post(item.uri, {json: true, body: item.data});
+            }, timeoutCount * 1000);
+        });
+
+
 });
 
 gulp.task('tarCode', function () {
@@ -145,6 +169,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'usemin']);
 
 
