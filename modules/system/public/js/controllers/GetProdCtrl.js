@@ -10,18 +10,18 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
                 }
             });
             modalInstance.result.then(function () {
-                $scope.restoreInProgress = true;
+                $scope.restoreStatus = {progress: true, success: false, danger: false};
                 $http.post('/api/reloadProd', {url: $scope.sourceUrl}).success(function(){
                     $scope.addAlert("success", "Data has been reloaded.");
-                    $scope.restoreInProgress = false;
+                    $scope.restoreStatus = {progress: false, success: true, danger: false};
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
             }, function(reason) {
-
+                $scope.restoreStatus = {progress: false, success: false, danger: true};
             });
         };
         $scope.sourceUrl = window.prodDumpUrl;
-        $scope.restoreInProgress = false;
+        $scope.restoreStatus = {progress: false, success: false, danger: false};
     }
 ]);
 
