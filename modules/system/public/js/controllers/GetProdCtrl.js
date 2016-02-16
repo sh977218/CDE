@@ -10,8 +10,10 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
                 }
             });
             modalInstance.result.then(function () {
+                $scope.restoreInProgress = true;
                 $http.post('/api/reloadProd', {url: $scope.sourceUrl}).success(function(){
                     $scope.addAlert("success", "Data has been reloaded.");
+                    $scope.restoreInProgress = false;
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
             }, function(reason) {
@@ -19,6 +21,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
             });
         };
         $scope.sourceUrl = window.prodDumpUrl;
+        $scope.restoreInProgress = false;
     }
 ]);
 

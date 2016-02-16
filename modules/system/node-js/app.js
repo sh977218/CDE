@@ -738,6 +738,9 @@ exports.init = function(app) {
         var untar = tar.extract(target);
         request(req.body.url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
+
+            
+
             var restore = spawn('mongorestore', ['-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
             restore.on('exit', function() {
                 elastic.recreateIndexes();
