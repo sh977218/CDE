@@ -51,7 +51,5 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         textPresent("NINDS (");
         int numRes = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
         Assert.assertTrue(numRes > 90);
-
     }
-
 }

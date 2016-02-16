@@ -57,10 +57,10 @@ public class BoardManagement3Test extends BoardTest {
         findElement(By.name("search")).sendKeys("Blood");
         findElement(By.id("search.submit")).click();
         
-        Assert.assertTrue(textPresent(pubBlood));
+        textPresent(pubBlood);
 
-        Assert.assertTrue(textNotPresent("Smoking"));
-        Assert.assertTrue(textNotPresent("Private"));
+        textNotPresent("Smoking");
+        textNotPresent("Private");
         
         removeBoard(pubBlood);
         removeBoard(privBlood);
