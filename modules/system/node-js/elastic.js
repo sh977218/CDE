@@ -379,7 +379,7 @@ exports.elasticsearch = function (query, type, cb) {
 var lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return dataCb(503, "Servers busy");
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -430,7 +430,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            dataCb(500, "ES Error");
+            dataCb("ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }
