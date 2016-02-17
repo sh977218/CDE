@@ -28,6 +28,8 @@ public class EltIdMaps {
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
+        eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
+
 
         // Forms
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
