@@ -49,7 +49,6 @@ public class ClassificationFilter extends NlmCdeBaseTest {
 
         findElement(By.id("li-checked-caBIG")).click();
         textPresent("NINDS (");
-        int numRes = Integer.parseInt(findElement(By.id("searchResultNum")).getText());
-        Assert.assertTrue(numRes > 90);    }
-
+        Assert.assertTrue(getNumberOfResults() > 90);
+    }
 }
