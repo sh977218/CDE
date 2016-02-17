@@ -21,7 +21,7 @@ var passport = require('passport')
     , tar = require('tar-fs')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
-    , elastic = require('./elastic')
+    , elastic = require('./createIndexes')
     , authorization = require('../../system/node-js/authorization')
 ;
 

@@ -14,7 +14,7 @@ var gulp = require('gulp'),
     fs = require('fs'),
     fstream = require('fstream'),
     spawn = require('child_process').spawn,
-    elastic = require('./modules/system/node-js/elastic'),
+    elastic = require('./modules/system/node-js/createIndexes'),
     git = require('gulp-git')
 ;
 
