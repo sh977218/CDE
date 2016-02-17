@@ -97,13 +97,17 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
     CdeDiffPopulate.makeHumanReadable = function(change){
         if (!change) return;
         this.stringify = function(obj) {
-            if (typeof obj === "string") return obj;
-            if (typeof obj === "number") return obj;
-            else if (typeof obj === "object") {
-                return Object.keys(obj).map(function (f) {
-                    return f + ": " + obj[f];
-                }).join(", ");
-            } else return "";
+            try {
+                if (typeof obj === "string") return obj;
+                if (typeof obj === "number") return obj;
+                else if (typeof obj === "object") {
+                    return Object.keys(obj).map(function (f) {
+                        return f + ": " + obj[f];
+                    }).join(", ");
+                } else return "";
+            } catch (e) {
+                return "";
+            }
         };
         this.stringifyClassif = function(obj) {
             if (obj && obj.elements) return " > " + obj.name + this.stringifyClassif(obj.elements[0]);

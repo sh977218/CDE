@@ -48,8 +48,8 @@ public class ClassificationTest extends BaseClassificationTest {
     @Test(dependsOnMethods = {"addClassification"})
     public void modifiedSinceAPI() {
         String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
-        Assert.assertFalse(response.contains("Invalid"));
-        Assert.assertTrue(response.contains("cGx6UmQnY8G"));
+        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
+        Assert.assertTrue(response.contains("cGx6UmQnY8G"), "Actual: " + response);
     }
 
 	private void removeClassificationMethod(String[] categories) {

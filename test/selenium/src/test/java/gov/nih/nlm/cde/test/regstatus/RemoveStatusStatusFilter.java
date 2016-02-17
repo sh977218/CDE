@@ -5,13 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class CdeRegStatusTest2 extends CdeRegStatusTest {
-
-
-    @Test
-    public void nlmPromotesToStandard() {
-        nlmPromotesToStandard("Axillary Surgery Dissection Date");
-    }
+public class RemoveStatusStatusFilter extends CdeRegStatusTest {
 
     @Test
     public void removeStatusStatusFilter() {

@@ -238,6 +238,10 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected int getNumberOfResults() {
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+    }
+
     protected void goToCdeByName(String name) {
         goToElementByName(name, "cde");
     }
@@ -460,7 +464,7 @@ public class NlmCdeBaseTest {
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-        driver.get(baseUrl + "/#/" + type + "/search");
+        driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
         if ("form".equals(type)) {
