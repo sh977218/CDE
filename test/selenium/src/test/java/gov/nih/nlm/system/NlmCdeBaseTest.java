@@ -238,6 +238,10 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected int getNumberOfResults() {
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+    }
+
     protected void goToCdeByName(String name) {
         goToElementByName(name, "cde");
     }
