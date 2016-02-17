@@ -10,6 +10,14 @@
     <dd tabindex="0">
         <input type="checkbox" ng-model="elt.isCopyrighted" ng-disabled="!canCurate"
                id="isCopyrighted" ng-click="stageElt()"/>
+        <div ng-show="elt.isCopyrighted">
+            Statement: <div inline-edit id="formCopyrightText" model="elt.copyright.text" is-allowed="canCurate" on-ok="stageElt(elt)"></div>
+            <!--input type="text" ng-model="elt.copyright.copyright"-->
+        </div>
+        <div ng-show="elt.isCopyrighted">
+            Authority: <div inline-edit id="formCopyrightAuthority" model="elt.copyright.authority" is-allowed="canCurate" on-ok="stageElt(elt)"></div>
+            <!--input type="text" ng-model="elt.copyright.authority"-->
+        </div>
     </dd>
     <dt tabindex="0">Disallow Rendering:</dt>
     <dd tabindex="0">
