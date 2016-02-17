@@ -97,8 +97,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         numRes = getNumberOfResults();
         clickElement(By.id("li-blank-Standard"));
         textNotPresent(numRes + " results for");
-        numRes = getNumberOfResults();
-        findElement(By.id("li-blank-Qualified"));
+        clickElement(By.id("li-blank-Qualified"));
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
         clickElement(By.id("li-checked-Qualified"));
