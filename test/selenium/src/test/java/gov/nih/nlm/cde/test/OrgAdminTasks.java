@@ -1,23 +1,11 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class OrgAdminTest extends BaseClassificationTest {
-
-    @Test
-    public void orgAdminCanEditHisCdes() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
-        goToCdeByName("Cervical Tumor Clinical T Stage");
-        textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed.");
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("i.fa-edit")));
-        goToCdeByName("Communication Contact Email Address java.lang.String");
-        textPresent("A modern Internet e-mail address (using SMTP)");
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("i.fa-edit")));
-    }
+public class OrgAdminTasks extends BaseClassificationTest {
     
     @Test
     public void orgAdminTasks() {
