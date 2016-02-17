@@ -464,7 +464,7 @@ public class NlmCdeBaseTest {
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-        driver.get(baseUrl + "/#/" + type + "/search");
+        driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
         if ("form".equals(type)) {
