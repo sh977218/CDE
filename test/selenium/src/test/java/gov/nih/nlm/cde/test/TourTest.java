@@ -6,10 +6,10 @@ import org.openqa.selenium.By;
 public class TourTest extends NlmCdeBaseTest {
 
 	void getNext(String expectedText) {
-		hangon(2);
+//		hangon(2);
 		clickElement(By.xpath("//button[@data-role='next']"));
 		textPresent(expectedText);
-		hangon(2);
+//		hangon(2);
 	}
 
 }
