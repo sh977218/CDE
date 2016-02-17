@@ -19,7 +19,7 @@ public class WorkingGroupClassifInvisible extends BaseClassificationTest {
         textPresent("WG Sub Classif");
         logout();
         goToCdeByName("Specimen Block Received Count");
-        Assert.assertEquals(findElement(By.id("dd_usedBy")).getText(), "NINDS");
+        textNotPresent("WG-TEST", By.id("dd_usedBy"));
         showAllTabs();
         clickElement(By.id("classification_tab"));
         textNotPresent("WG Sub Classif");
