@@ -16,7 +16,7 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
                     $scope.restoreStatus = {progress: false, success: true, danger: false};
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
-            }, function(reason) {
+            }, function() {
                 $scope.restoreStatus = {progress: false, success: false, danger: true};
             });
         };
