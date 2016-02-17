@@ -31,7 +31,11 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
         textPresent("server is busy processing");
         closeAlert();
-        textPresent("Export downloaded.");
+        try {
+            textPresent("Export downloaded.");
+        } catch(TimeoutException e) {
+            textPresent("Export downloaded.");
+        }
         closeAlert();
 
         String[] expected = {
