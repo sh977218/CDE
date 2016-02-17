@@ -19,6 +19,7 @@ classification.saveCdeClassif = function(err, cde, cb) {
             cde.classification.splice(i, 1);
         }
     });
+    cde.updated = new Date();
     cde.markModified('classification');
     cde.save(function() {
         if (cb) cb(err);
@@ -123,9 +124,7 @@ exports.addOrgClassification = function(body, cb) {
         var fakeTree = {elements: stewardOrg.classifications};
         classificationShared.addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");
-        stewardOrg.save(function (err) {
-            if(cb) cb(err, stewardOrg);
-        });
+        stewardOrg.save(cb);
     });
 };
 

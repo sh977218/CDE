@@ -33,7 +33,7 @@ public class CreateForm extends BaseFormTest {
         Assert.assertTrue(textPresent(formDef));
         Assert.assertTrue(textPresent(formV));
 
-        goToFormByName(formName, "Incomplete");
+        goToFormByName(formName);
         textPresent(formDef);
     }
 

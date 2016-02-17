@@ -145,7 +145,12 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             });
 
             modalInstance.result.then(function (selectedName) {
-                question.label = selectedName;
+                if (selectedName.length > 0) {
+                    question.label = selectedName;
+                    question.hideLabel = false;
+                } else {
+                    question.hideLabel = true;
+                }
                 $scope.stageElt();
             });
         };

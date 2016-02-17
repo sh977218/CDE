@@ -64,7 +64,7 @@ public abstract class RegStatusTest extends CommonTest {
         closeAlert();
         setLowStatusesVisible();
         waitForESUpdate();
-        goToEltByName(eltName, "Recorded");
+        goToEltByName(eltName);
         textPresent("Recorded");
         showAllTabs();
         clickElement(By.id("status_tab"));

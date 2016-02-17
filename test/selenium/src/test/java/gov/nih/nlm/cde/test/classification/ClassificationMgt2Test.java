@@ -4,12 +4,13 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test
@@ -26,12 +27,14 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("addNewCatName")).sendKeys(oldClassification);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
+        textPresent(oldClassification);
         clickElement(By.id("addClassification"));
         textPresent("Add Classification Under");
         findElement(By.id("addNewCatName")).sendKeys(newClassification);
         clickElement(By.id("addNewCatButton"));
         closeAlert();
-
+        textPresent(oldClassification);
+        textPresent(newClassification);
 
         goToCdeByName("Gastrointestinal therapy water flush status");
         findElement(By.linkText("Classification")).click();
@@ -40,7 +43,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("by recently added");
         findElement(By.id("selectClassificationOrg")).click();
         textPresent("org / or Org");
-        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent(oldClassification);
         textPresent(newClassification);
         findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
@@ -55,7 +58,7 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("by recently added");
         findElement(By.id("selectClassificationOrg")).click();
         textPresent("org / or Org");
-        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent(oldClassification);
         textPresent(newClassification);
         findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
@@ -64,16 +67,14 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textNotPresent("by recently added");
 
         gotoClassificationMgt();
-        findElement(By.id("orgToManage")).click();
-        textPresent("org / or Org");
-        findElement(By.xpath("//*[@id='orgToManage']/option[6]")).click();
+        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
         textPresent(oldClassification);
         textPresent(newClassification);
         findElement(By.xpath("//*[@id='classification-OldClassification-div']/div/div/span/a[@title='Reclassify']")).click();
         textPresent("Classify CDEs in Bulk");
         findElement(By.id("selectClassificationOrg")).click();
         textPresent("NINDS");
-        findElement(By.xpath("//*[@id='selectClassificationOrg']/option[7]")).click();
+        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         hangon(3);
         findElement(By.xpath("//*[@id='addClassification-NewClassification']/button")).click();
         hangon(3);
@@ -86,6 +87,13 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("Remote Address");
         findElement(By.linkText("Classification Audit Log")).click();
         textPresent("2 elements org / or Org > NewClassification");
+    }
+
+    @Test(dependsOnMethods = {"reclassify"})
+    public void modifiedSinceAPI() {
+        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
+        Assert.assertTrue(response.contains("Z2hYKE_bwar"), "Actual: " + response);
     }
 
     @Test

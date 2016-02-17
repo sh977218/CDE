@@ -7,7 +7,7 @@ public class FormRegStatusTest extends RegStatusTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override

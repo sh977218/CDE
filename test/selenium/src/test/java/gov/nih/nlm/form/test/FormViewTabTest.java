@@ -7,7 +7,7 @@ public class FormViewTabTest extends ViewTabTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override

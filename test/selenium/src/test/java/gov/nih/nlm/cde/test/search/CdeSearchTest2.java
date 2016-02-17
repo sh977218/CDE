@@ -49,7 +49,6 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         Assert.assertEquals("The free text field used to describe the results of the anascopy.", findElement(By.id("dd_def")).getText());
         Assert.assertEquals("Anal Endoscopy Diagnostic Procedure Performed", findElement(By.id("dd_dec")).getText());
         Assert.assertEquals("DCP", findElement(By.id("dd_ctx")).getText());
-        Assert.assertEquals("DCP", findElement(By.id("dd_ctxName")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_adminStatus")).getText());
         Assert.assertEquals("Qualified", findElement(By.id("dd_regStatus")).getText());
         Assert.assertEquals("N/A", findElement(By.id("dd_updated")).getText());
@@ -91,12 +90,14 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         setLowStatusesVisible();
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
-        findElement(By.id("li-blank-CATEGORY")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Standard")).click();
-        hangon(1);
-        findElement(By.id("li-blank-Qualified")).click();
-        hangon(1);
+        textPresent("results for All Terms");
+        int numRes = getNumberOfResults();
+        clickElement(By.id("li-blank-CATEGORY"));
+        textNotPresent(numRes + " results for");
+        numRes = getNumberOfResults();
+        clickElement(By.id("li-blank-Standard"));
+        textNotPresent(numRes + " results for");
+        clickElement(By.id("li-blank-Qualified"));
         scrollToTop();
         textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
         clickElement(By.id("li-checked-Qualified"));

@@ -27,6 +27,11 @@ var logSchema = new mongoose.Schema(
     , responseTime: Number
 }, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
 
+logSchema.pre('save', function (next) {
+    if (isNaN(this.responseTime)) delete this.responseTime;
+    next();
+});
+
 var logErrorSchema = new mongoose.Schema(
 {
     message: String

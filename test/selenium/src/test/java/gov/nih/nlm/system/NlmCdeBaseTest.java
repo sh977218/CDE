@@ -160,10 +160,6 @@ public class NlmCdeBaseTest {
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
-    protected void maxWindow() {
-        driver.manage().window().maximize();
-    }
-
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
     }
@@ -242,67 +238,63 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void goToCdeByName(String name) {
-        goToCdeByName(name, null);
+    protected int getNumberOfResults() {
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
     }
 
-    protected void goToCdeByName(String name, String status) {
-        goToElementByName(name, "cde", status);
+    protected void goToCdeByName(String name) {
+        goToElementByName(name, "cde");
     }
 
     protected void goToFormByName(String name) {
-        goToFormByName(name, null);
+        goToElementByName(name, "form");
     }
 
-    protected void goToFormByName(String name, String status) {
-        goToElementByName(name, "form", status);
-    }
-
-    protected void goToElementByName(String name, String type, String status) {
-        try {
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
+    protected void goToElementByName(String name, String type) {
+        String tinyId = EltIdMaps.eltMap.get(name);
+        if (tinyId != null) {
+            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "/?tinyId="
+                + tinyId);
             textPresent("More...");
             textPresent(name);
-            textNotPresent("is archived");
-        } catch (Exception e) {
-            System.out.println("Element is archived. Will retry...");
-            hangon(1);
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
-            textPresent("More...");
-            textPresent(name);
-            textNotPresent("is archived");
+        } else {
+            try {
+                searchElt(name, type);
+                clickElement(By.id("eyeLink_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            } catch (Exception e) {
+                System.out.println("Element is archived. Will retry...");
+                hangon(1);
+                searchElt(name, type);
+                clickElement(By.id("eyeLink_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            }
         }
     }
 
     protected void openCdeInList(String name) {
-        openCdeInList(name, null);
-    }
-
-    protected void openCdeInList(String name, String status) {
-        openEltInList(name, "cde", status);
+        openEltInList(name, "cde");
     }
 
     public void searchCde(String cdeName) {
-        searchElt(cdeName, "cde", null);
+        searchElt(cdeName, "cde");
     }
 
     public void searchForm(String formName) {
-        searchElt(formName, "form", null);
+        searchElt(formName, "form");
     }
 
 
-    public void searchElt(String name, String type, String status) {
+    public void searchElt(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         clickElement(By.id("search.submit"));
-        if (status != null) {
-            hangon(2);
-            clickElement(By.id("li-blank-" + status));
-        }
         try {
             textPresent("1 results for");
         } catch (Exception e) {
@@ -310,17 +302,13 @@ public class NlmCdeBaseTest {
             findElement(By.id("ftsearch-input")).clear();
             findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
             clickElement(By.id("search.submit"));
-            if (status != null) {
-                hangon(2);
-                clickElement(By.id("li-blank-" + status));
-            }
             textPresent("1 results for");
         }
         textPresent(name, By.id("acc_link_0"));
     }
 
-    protected void openEltInList(String name, String type, String status) {
-        searchElt(name, type, status);
+    protected void openEltInList(String name, String type) {
+        searchElt(name, type);
         clickElement(By.id("acc_link_0"));
         textPresent("View Full Detail");
         wait.until(ExpectedConditions.elementToBeClickable(By
@@ -404,7 +392,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            clickElement(By.cssSelector("button.close"));
+            findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -476,7 +464,7 @@ public class NlmCdeBaseTest {
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-        driver.get(baseUrl + "/#/" + type + "/search");
+        driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
         if ("form".equals(type)) {

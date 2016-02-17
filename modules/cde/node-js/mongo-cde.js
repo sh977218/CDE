@@ -405,8 +405,7 @@ exports.saveModification = function (oldDe, newDe, user) {
         }
         , diff: diff
     };
-    var auditItem = new CdeAudit(message);
-    auditItem.save();
+    CdeAudit(message).save();
 };
 
 exports.getCdeAuditLog = function (params, callback) {
@@ -498,4 +497,8 @@ exports.upsertStatusCde = function(cde, cb){
     DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, cde, {upsert: true}, function(err, cde){
         if (cb) cb(err, cde);
     });
+};
+
+exports.findModifiedElementsSince = function(date, cb){
+    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated:-1}).limit(5000).exec(cb);
 };

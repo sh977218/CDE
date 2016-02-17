@@ -7,7 +7,7 @@ public class CdePropertyTest extends PropertyTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override
