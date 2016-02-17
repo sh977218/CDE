@@ -379,7 +379,7 @@ exports.elasticsearch = function (query, type, cb) {
 var lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return dataCb(503, "Servers busy");
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -426,7 +426,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            dataCb(500, "ES Error");
+            dataCb("ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }
@@ -435,9 +435,14 @@ exports.elasticSearchExport = function (dataCb, query, type) {
 };
 
 exports.recreateIndexes = function(){
-    [config.elasticUri, config.elasticRiverUri, config.elasticFormUri, config.elasticFormRiverUri,
-        config.elasticBoardIndexUri, config.elasticBoardRiverUri, config.elasticStoredQueryUri].forEach(function (uri) {
-            request.del(uri);
+    var timeoutCount = 0;
+
+    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
+        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
+            timeoutCount++;
+            setTimeout(function() {
+                request.del(uri);
+            }, timeoutCount * 1000);
         });
 
     [
@@ -449,6 +454,9 @@ exports.recreateIndexes = function(){
         {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
         {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
     ].forEach(function (item) {
-            request.post(item.uri, {json: true, body: item.data});
+            timeoutCount++;
+            setTimeout(function() {
+                request.post(item.uri, {json: true, body: item.data});
+            }, timeoutCount * 1000);
         });
 };
