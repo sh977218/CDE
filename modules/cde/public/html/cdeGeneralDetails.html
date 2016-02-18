@@ -32,7 +32,7 @@
         <span ng-switch="elt.classification.length > 0">
             <span ng-switch-when="false">None</span>
             <span ng-switch-default>
-                <span ng-repeat="cl in elt.classification">{{cl.stewardOrg.name}} </span>
+                <span ng-repeat="ub in elt.usedBy">{{ub}} </span>
             </span>
         </span>
         </dd>
