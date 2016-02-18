@@ -1,25 +1,17 @@
-<dl class="dl-horizontal" ng-if="elt.valueDomain.datatypeValueList.multi === true">
-    <span ng-if="elt.valueDomain.datatypeValueList.multi === true">
-        <dt>Multiple Values:</dt>
-        <dd>Yes</dd>
-    </span>
-</dl>
-
 <div ng-if="elt.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
 <table ng-show="elt.valueDomain.permissibleValues.length > 0"
        class="table cdeTable" summary="List of permissible values">
-    <caption tabindex="0" >Permissible Values</caption>
     <tr>
-        <th tabindex="0" id="value" class="col-xs-4">Value</th>
-        <th tabindex="0" id="codeName" class="col-xs-4">Code Name</th>
-        <th tabindex="0" id="code" class="col-xs-4">Code</th>
+        <th tabindex="0" id="value" class="col-xs-5">Value</th>
+        <th tabindex="0" id="codeName" class="col-xs-5">Code Name</th>
+        <th tabindex="0" id="code" class="col-xs-2">Code</th>
     </tr>
-    <tr ng-repeat="pv in elt.valueDomain.permissibleValues">
-        <td tabindex="0" ng-bind="pv.permissibleValue" headers="value" class="col-xs-4"></td>
-        <td tabindex="0" ng-bind="pv.valueMeaningName" headers="codeName" class="col-xs-4"></td>
-        <td tabindex="0" ng-bind="pv.valueMeaningCode" headers="code" class="col-xs-4"></td>
+    <tr ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:5">
+        <td tabindex="0" ng-bind="pv.permissibleValue | truncateTo : 35" headers="value" class="col-xs-5"></td>
+        <td tabindex="0" ng-bind="pv.valueMeaningName | truncateTo : 35" headers="codeName" class="col-xs-5"></td>
+        <td tabindex="0" ng-bind="pv.valueMeaningCode" headers="code" class="col-xs-2"></td>
     </tr>
-    <tr ng-show="elt.valueDomain.permissibleValues.length == 10">
+    <tr ng-show="elt.valueDomain.permissibleValues.length > 5">
         <td tabindex="0" colspan="3"> ({{elt.valueDomain.nbOfPVs}} total) See full list in Detailed View</td>
     </tr>
 </table>

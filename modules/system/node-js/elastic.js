@@ -155,6 +155,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
+    } else {
+        queryStuff.sort = {"views": {order: "desc"}};
     }
 
     // Filter by selected org
@@ -357,6 +359,8 @@ exports.elasticsearch = function (query, type, cb) {
         } else {
             var result = {
                 totalNumber: response.hits.total
+                , maxScore: response.hits.max_score
+                , took: response.took
             };
             result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {

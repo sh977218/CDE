@@ -9,7 +9,7 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "defaultSearchView": "accordion"
+                "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
                     "cde": {

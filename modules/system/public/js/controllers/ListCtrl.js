@@ -210,6 +210,20 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.totalItems = result.totalNumber;
             $scope[type + 's'] = result[type + 's'];
             $scope.elts = result[type + 's'];
+            $scope.took = result.took;
+            console.log($scope.searchSettings.page);
+            if ($scope.searchSettings.page == 1 && result.totalNumber > 0) {
+                var cutoffScore = result.maxScore / 2;
+                $scope.cutoffIndex = 0;
+                $scope.elts.forEach(function(r, i) {
+                    if (r.score < cutoffScore && $scope.cutoffIndex === 0) {
+                        $scope.cutoffIndex = i;
+                    }
+                });
+            } else {
+                $scope.cutoffIndex = 100;
+            }
+
             $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {

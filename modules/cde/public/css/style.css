@@ -635,8 +635,8 @@ button#selectDefault {
 
 .cdeTable th, .cdeTable td {
     overflow: hidden;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 .generalDetailsTable th, .generalDetailsTable td {

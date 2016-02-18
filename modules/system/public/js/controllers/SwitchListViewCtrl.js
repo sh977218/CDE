@@ -1,6 +1,18 @@
 angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
     function ($scope, OrgHelpers, SearchSettings) {
 
+        $scope.viewTypes = {
+            accordion: {
+                url: '/' + $scope.module + '/public/html/' + $scope.module + 'AccordionList.html'
+            }, table: {
+                url : '/' + $scope.module + '/public/html/' + $scope.module + 'GridList.html'
+            }, sideBySide: {
+                url: '/system/public/html/eltsCompare.html'
+            }, summary: {
+                url: '/' + $scope.module + '/public/html/' + $scope.module + 'SummaryList.html'
+            }
+        };
+
         $scope.listViewType = "accordion";
 
         $scope.maxLines = 5;

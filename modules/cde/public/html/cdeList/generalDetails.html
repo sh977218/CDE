@@ -1,16 +1,12 @@
-<table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border">
-    <caption tabindex="0">General Details</caption>
-    <tr>
-        <th tabindex="0" class="text-right">Name:</th>
-        <td tabindex="0" id="dd_general_name" ng-bind-html="elt.naming[0].designation"></td>
-    </tr>
-    <tr>
-        <th tabindex="0" class="text-right">Steward:</th>
-        <td tabindex="0" ng-bind-html="elt.stewardOrg.name"></td>
-    </tr>
+<table class="generalDetailsTable cdeTable cdeTable-noBorder table table-border" style="margin-bottom: 0px">
     <tr>
         <th tabindex="0" class="text-right">Definition:</th>
-        <td tabindex="0" id="dd_def" ng-bind-html="elt.naming[0].definition | placeHoldEmpty"></td>
+        <td tabindex="0" id="dd_def" ng-bind-html="elt.primaryDefinitionCopy | placeHoldEmpty | truncateTo : 200 ">
+        </td>
+    </tr>
+    <tr>
+        <th tabindex="0" class="text-right" id="dt_status">Status:</th>
+        <td tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</td>
     </tr>
     <tr>
         <th tabindex="0" class="text-right">Used By:</th>
@@ -23,25 +19,14 @@
             </span>
         </td>
     </tr>
-    <tr ng-if="elt.valueDomain.uom">
-        <th tabindex="0" class="text-right">Unit of Measure:</th>
-        <td tabindex="0" id="dd_uom">{{elt.valueDomain.uom | placeHoldEmpty}}</td>
-    </tr>
-    <tr ng-if="elt.origin">
-        <th tabindex="0" class="text-right">Origin:</th>
-        <td tabindex="0">{{elt.origin}}</td>
-    </tr>
-    <tr ng-if="elt.source">
-        <th tabindex="0" class="text-right">Source:</th>
-        <td tabindex="0">{{elt.source}}</td>
-    </tr>
     <tr>
-        <th tabindex="0" class="text-right" id="dt_status">Status:</th>
-        <td tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</td>
+        <th tabindex="0" class="text-right">Steward, Source:</th>
+        <td tabindex="0" ng-bind-html="elt.stewardOrg.name + ', ' + elt.source"></td>
     </tr>
-    <tr ng-if="elt.views">
-        <th tabindex="0" class="text-right">Views:</th>
-        <td tabindex="0" id="dd_views">{{elt.views}}</td>
-    </tr>
+    <!--<tr ng-if="elt.source">-->
+        <!--<th tabindex="0" class="text-right">Source:</th>-->
+        <!--<td tabindex="0">{{elt.source}}</td>-->
+    <!--</tr>-->
 </table>
+
 

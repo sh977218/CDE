@@ -46,6 +46,7 @@
                     </span>
                     | {{getSelectedStatuses()}}
                 </span>
+                <small> ({{took / 1000}} secs)</small>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#searchResult-buttons">
                     <span class="sr-only">Toggle navigation</span>
@@ -191,7 +192,7 @@
                     <h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more
                         statuses</h4>
                 </span>
-            <span ng-include="'/system/public/html/switchListViewContent.html'"></span>
+            <div ng-include="viewTypes[listViewType].url"></div>
             <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20"
                             ng-model="searchSettings.page" next-text="Next" ng-change="pageChange()"></uib-pagination>
         </div>
