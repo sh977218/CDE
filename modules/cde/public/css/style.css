@@ -202,7 +202,8 @@ body {
 }
 
 .cdeAttachmentThumbnail {
-    max-width: 160px;
+    max-width: 100%;
+    max-height: 200px;
 }
 
 .img-center-responsive {
@@ -640,8 +641,14 @@ button#selectDefault {
 }
 
 .generalDetailsTable th, .generalDetailsTable td {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 2px!important;
+    padding-right: 2px!important;
+}
+
+.generalDetailsTable th {
+    width: 70px;
 }
 
 .nonLinkAnchor {
@@ -928,4 +935,8 @@ div + .questionPlaceholder {
     border-radius: 0px;
     margin-left: -2px;
     margin-right: -2px;
+}
+
+#resultList {
+    max-width: 1200px;
 }
