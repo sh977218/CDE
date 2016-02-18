@@ -37,10 +37,6 @@ body {
     padding-top: 20px;
 }
 
-.pt30 {
-    padding-top: 30px;
-}
-
 .pt40 {
     padding-top: 40px;
 }
@@ -939,4 +935,13 @@ div + .questionPlaceholder {
 
 #resultList {
     max-width: 1200px;
+}
+
+.navbar-btn {
+    margin-top: 0px!important;
+    margin-bottom: 0px!important;
+}
+
+#searchDiv{
+    margin:  30px 0px 30px 0px;
 }
