@@ -9,12 +9,12 @@ var gulp = require('gulp'),
     install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
     request = require('request'),
-    elastic = require('./deploy/elasticSearchInit.js'),
     tar = require('tar'),
     zlib = require('zlib'),
     fs = require('fs'),
     fstream = require('fstream'),
     spawn = require('child_process').spawn,
+    elastic = require('./modules/system/node-js/createIndexes'),
     git = require('gulp-git')
 ;
 
@@ -116,34 +116,7 @@ gulp.task('usemin', ['copyCode'], function() {
         });
 });
 
-gulp.task('es', function() {
-    var timeoutCount = 0;
-
-    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
-        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
-        timeoutCount++;
-        setTimeout(function() {
-            request.del(uri);
-            }, timeoutCount * 1000);
-        });
-
-    [
-       {uri: config.elasticUri, data: elastic.createIndexJson},
-        {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
-        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
-        {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
-        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
-        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
-        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
-    ].forEach(function (item) {
-            timeoutCount++;
-            setTimeout(function() {
-                request.post(item.uri, {json: true, body: item.data});
-            }, timeoutCount * 1000);
-        });
-
-
-});
+gulp.task('es', elastic.recreateIndexes);
 
 gulp.task('tarCode', function () {
     //var done = this.async();
