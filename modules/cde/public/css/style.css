@@ -78,8 +78,7 @@ body {
 }
 
 .searchInfo {
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 2px;
 }
 
 .searchInfoHr {
@@ -963,10 +962,10 @@ div + .questionPlaceholder {
     border-left: 3px solid rgba(0,0,0,0.1);
 }
 
-/*#advSearchForm {*/
-    /*margin: 5px;*/
-/*}*/
+#advSearchForm {
+    margin: 5px;
+}
 
-/*#searchResult-buttons {*/
-    /*margin: 5px;*/
-/*}*/
+#searchResult-buttons {
+    margin: 5px;
+}

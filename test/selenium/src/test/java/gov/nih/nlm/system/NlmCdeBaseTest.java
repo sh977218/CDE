@@ -308,9 +308,7 @@ public class NlmCdeBaseTest {
 
     protected void openEltInList(String name, String type) {
         searchElt(name, type);
-        textPresent("View Full Detail");
-        wait.until(ExpectedConditions.elementToBeClickable(By
-                .id("openEltInCurrentTab_0")));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openFormInList(String name) {
