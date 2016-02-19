@@ -1,6 +1,5 @@
 var config = require('./parseConfig')
     , logging = require('../../system/node-js/logging')
-    , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
     , usersvc = require("./usersrvc")
@@ -396,8 +395,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     search.search_type = 'scan';
     search.body = query;
 
-    var sentElements = 0;
-
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
             function (err, response) {
@@ -418,8 +415,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
                             dataCb(null, thisCde);
-                            sentElements++;
-                            var isLast = sentElements === response.hits.total;
                         }
                         scrollThrough(newScrollId);
                     }
