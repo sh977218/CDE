@@ -259,7 +259,7 @@ public class NlmCdeBaseTest {
         } else {
             try {
                 searchElt(name, type);
-                clickElement(By.linkText(name));
+                clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
@@ -267,7 +267,7 @@ public class NlmCdeBaseTest {
                 System.out.println("Element is archived. Will retry...");
                 hangon(1);
                 searchElt(name, type);
-                clickElement(By.linkText(name));
+                clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
@@ -303,7 +303,7 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        findElement(By.linkText(name));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openEltInList(String name, String type) {

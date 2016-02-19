@@ -53,6 +53,7 @@ angular.module('ElasticSearchResource')
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
                 searchSettings = user.searchSettings;
                 if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
+                if (user.searchSettings.defaultSearchView === 'accordion') user.searchSettings.defaultSearchView = "summary";
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });
