@@ -24,15 +24,16 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
 
         $scope.getUsedBy = OrgHelpers.getUsedBy;
 
-        $scope.switchToTableView = function () {
-            switchGridAccordionView("table");
-        };
 
-        $scope.switchToAccordionView = function () {
-            switchGridAccordionView("accordion");
-        };
+        //$scope.switchToTableView = function () {
+        //    switchGridAccordionView("table");
+        //};
+        //
+        //$scope.switchToAccordionView = function () {
+        //    switchGridAccordionView("accordion");
+        //};
 
-        var switchGridAccordionView = function (viewType) {
+        $scope.switchToView = function (viewType) {
             $scope.eltsToCompare = [];
             $scope.listViewType = viewType;
             $scope.cache.put(listViewCacheName, $scope.listViewType);

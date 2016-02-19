@@ -71,7 +71,6 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
-    protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
 
     protected static String password = "pass";
@@ -304,7 +303,7 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        textPresent(name, By.id("searchResult_0"));
+        findElement(By.linkText(name));
     }
 
     protected void openEltInList(String name, String type) {

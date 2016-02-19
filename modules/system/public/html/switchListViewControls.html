@@ -1,10 +1,10 @@
-<button ng-if="listViewType === 'accordion'" ng-click="switchToTableView()" id="{{module}}_gridView" value="Table View"
+<button ng-if="listViewType === 'summary'" ng-click="switchToView('table')" id="{{module}}_gridView" value="Table View"
         class="btn btn-default " ng-class="customClasses">
     <i class="fa fa-table"></i>
     Table View
 </button>
-<button ng-if="listViewType === 'table'" ng-click="switchToAccordionView()" id="{{module}}_accordionView"
-        value="Accordion View" class="btn btn-default " ng-class="customClasses">
+<button ng-if="listViewType === 'table'" ng-click="switchToView('summary')" id="{{module}}_summaryView"
+        value="Summary View" class="btn btn-default " ng-class="customClasses">
     <i class="fa fa-bars"></i>
-    Accordion View
+    Summary View
 </button>
