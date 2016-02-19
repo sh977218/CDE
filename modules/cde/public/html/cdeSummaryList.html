@@ -4,10 +4,10 @@
         <h3>More results</h3>
     </div>
 
-    <div style="padding-left: 10px; margin-bottom: 20px; border-top: 1px solid rgba(0,0,0,0.1);border-left: 3px solid rgba(0,0,0,0.1);">
+    <div class="singleSearchResult" id="searchResult_{{$index}}">
         <h4>
             <a ng-href="/deview/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"></a>
-            <small>{{elt.registrationState.registrationStatus}} ({{elt.score}})</small>
+            <small>{{elt.registrationState.registrationStatus}}</small>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>

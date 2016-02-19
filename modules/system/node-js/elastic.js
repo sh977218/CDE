@@ -137,7 +137,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             "query_string": {
-                "fields": ["naming.designation^5", "naming.definition^2"]
+                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                 , "query": searchQ
             }
         };
@@ -148,7 +148,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
                 "query_string": {
-                    "fields": ["naming.designation^5", "naming.definition^2"]
+                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                     , "query": "\"" + searchQ + "\"~4"
                 }
             };
@@ -158,6 +158,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
     else {
         queryStuff.sort = {"views": {order: "desc"}};
     }
+
+
 
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {

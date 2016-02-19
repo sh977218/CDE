@@ -211,15 +211,21 @@ angular.module('systemModule').controller('ListCtrl',
             $scope[type + 's'] = result[type + 's'];
             $scope.elts = result[type + 's'];
             $scope.took = result.took;
-            console.log($scope.searchSettings.page);
+
             if ($scope.searchSettings.page == 1 && result.totalNumber > 0) {
-                var cutoffScore = result.maxScore / 2;
-                $scope.cutoffIndex = 0;
-                $scope.elts.forEach(function(r, i) {
-                    if (r.score < cutoffScore && $scope.cutoffIndex === 0) {
-                        $scope.cutoffIndex = i;
+                var maxJump = 0;
+                var maxJumpIndex = 100;
+                $scope.elts.map(function(e, i) {
+                    if (!$scope.elts[i+1]) return;
+                    var jump = e.score - $scope.elts[i+1].score;
+                    if (jump>maxJump) {
+                        maxJump = jump;
+                        maxJumpIndex = i+1;
                     }
                 });
+
+                if (maxJump > (result.maxScore/4)) $scope.cutoffIndex = maxJumpIndex;
+                else $scope.cutoffIndex = 100;
             } else {
                 $scope.cutoffIndex = 100;
             }
