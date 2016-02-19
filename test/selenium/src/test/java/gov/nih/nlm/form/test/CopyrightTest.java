@@ -9,7 +9,7 @@ public class CopyrightTest extends BaseFormTest {
 
     @Test
     public void editCopyright() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(ninds_username, password);
         String formName = "Quantitative Sensory Testing (QST)";
         String statement = "Never ever share this form";
         String authority = "Patent for truth";
