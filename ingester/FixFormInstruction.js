@@ -10,9 +10,9 @@ var counter = 0;
 
 function loopFormElements(fe) {
     fe.formElements.forEach(function (e) {
-        if (e.instruction !== undefined) {
-            e.instruction = {
-                value: e.instruction
+        if (e.instructions !== undefined) {
+            e.instructions = {
+                value: e.instructions
             };
         }
         loopFormElements(e);

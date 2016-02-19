@@ -7,20 +7,20 @@ public class BoardManagement2Test extends BoardTest {
 
     @Test
     public void cdeBoards() {
-        hangon(.5);
         mustBeLoggedInAs(boarduser1_username, password);
         String board1 = "First CDE Board";
         String board2 = "Second CDE Board";
+        String cdeName = "Biomarker Outcome Characteristics java.lang.String";
 
         createBoard(board1, "");
         createBoard(board2, "");
 
         makePublic(board1);
 
-        pinTo("Biomarker Outcome", board1);
-        pinTo("Biomarker Outcome", board2);
+        pinTo(cdeName, board1);
+        pinTo(cdeName, board2);
 
-        goToCdeByName("Biomarker Outcome");
+        goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("boards_tab"));
 
@@ -29,8 +29,7 @@ public class BoardManagement2Test extends BoardTest {
 
         makePublic(board2);
 
-        hangon(2);
-        goToCdeByName("Biomarker Outcome");
+        goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("boards_tab"));
 
