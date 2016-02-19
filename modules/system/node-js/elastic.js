@@ -155,7 +155,8 @@ exports.buildElasticSearchQuery = function (user, settings) {
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
-    } else {
+    }
+    else {
         queryStuff.sort = {"views": {order: "desc"}};
     }
 

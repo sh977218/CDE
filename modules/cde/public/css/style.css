@@ -641,6 +641,7 @@ button#selectDefault {
     padding-bottom: 0px !important;
     padding-left: 2px!important;
     padding-right: 2px!important;
+    font-size: small;
 }
 
 .generalDetailsTable th {
@@ -935,6 +936,7 @@ div + .questionPlaceholder {
 
 #resultList {
     max-width: 1200px;
+    font-size: small;
 }
 
 .navbar-btn {
@@ -942,6 +944,22 @@ div + .questionPlaceholder {
     margin-bottom: 0px!important;
 }
 
-#searchDiv{
+#searchDiv {
     margin:  30px 0px 30px 0px;
 }
+
+.navbar {
+    margin-bottom: 0px!important;
+}
+
+#searchInfoBar {
+    margin: 10px;
+}
+
+/*#advSearchForm {*/
+    /*margin: 5px;*/
+/*}*/
+
+/*#searchResult-buttons {*/
+    /*margin: 5px;*/
+/*}*/

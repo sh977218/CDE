@@ -3,22 +3,22 @@
 
 <nav id="searchInfo" class="navbar navbar-default">
     <div class="container-fluid searchInfo ">
-        <div class="col-md-4">
+        <div class="col-md-2">
             <div class="navbar-header">
-                <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
-                    <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
-                    <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
-                    <span ng-show="altClassificationFilterMode">and
-                        <span class="label label-success">{{getSelectedClassificationsAlt()}}
-                            <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
-                               ng-click="toggleAltClassificationFilterMode()" uib-tooltip="Remove this classifications filter"
-                               tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
-                            </i>
-                        </span>
-                    </span>
-                    | {{getSelectedStatuses()}}
-                </span>
-                <small> ({{took / 1000}} secs)</small>
+                <!--<span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for-->
+                    <!--<strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |-->
+                    <!--<span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>-->
+                    <!--<span ng-show="altClassificationFilterMode">and-->
+                        <!--<span class="label label-success">{{getSelectedClassificationsAlt()}}-->
+                            <!--<i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"-->
+                               <!--ng-click="toggleAltClassificationFilterMode()" uib-tooltip="Remove this classifications filter"-->
+                               <!--tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">-->
+                            <!--</i>-->
+                        <!--</span>-->
+                    <!--</span>-->
+                    <!--| {{getSelectedStatuses()}}-->
+                <!--</span>-->
+                <!--<small> ({{took / 1000}} secs)</small>-->
 
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#searchResult-buttons">
@@ -29,7 +29,7 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <form name="advSearchForm" id="advSearchForm" novalidate>
                 <div class="input-group input-group">
                     <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
@@ -90,9 +90,22 @@
         </div>
     </div>
 </nav>
-
-
-
+<div id="searchInfoBar">
+    <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
+        <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
+        <span class="label label-success" id="classif_filter" ng-bind="getSelectedClassifications()"></span>
+        <span ng-show="altClassificationFilterMode">and
+            <span class="label label-success">{{getSelectedClassificationsAlt()}}
+                <i id="removeAltClassificationFilterMode" class="fa fa-times hand-cursor dark-icon pl5"
+                   ng-click="toggleAltClassificationFilterMode()" uib-tooltip="Remove this classifications filter"
+                   tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
+                </i>
+            </span>
+        </span>
+        | {{getSelectedStatuses()}}
+    </span>
+    <small> ({{took / 1000}} secs)</small>
+</div>
 <div class="container-fluid">
     <script type="text/ng-template" id="facet_elements_tree.html">
         <span ng-click="selectElement(e)" class="hand-cursor"
@@ -187,7 +200,8 @@
                     <h4><i class="fa fa-frown-o"></i> No results were found. Try other criterias or selecting more
                         statuses</h4>
                 </span>
-            <div ng-include="viewTypes[listViewType].url"></div>
+            <div ng-if="!embedded" ng-include="viewTypes[listViewType].url"></div>
+            <div ng-if="embedded" ng-include="viewTypes.accordion.url"></div>
             <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="20"
                             ng-model="searchSettings.page" next-text="Next" ng-change="pageChange()"></uib-pagination>
         </div>
