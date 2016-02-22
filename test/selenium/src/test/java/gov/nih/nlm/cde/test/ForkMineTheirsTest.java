@@ -28,7 +28,7 @@ public class ForkMineTheirsTest extends ForkTest {
         driver.get(driver.getCurrentUrl());
         showAllTabs();
         clickElement(By.id("forks_tab"));
-        Assert.assertFalse(findElement(By.id("accept_fork_0")).isDisplayed());
+        findInvisibleElement(By.id("accept_fork_0"));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
