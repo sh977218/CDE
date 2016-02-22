@@ -18,14 +18,14 @@ public class NoDoublePinTest extends BoardTest {
 
         goToCdeSearch();
         openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
+        findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
 
         Assert.assertTrue(textPresent("Already added"));
         modalGone();
 
         goToBoard(boardName);
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 1);
 
         removeBoard(boardName);
     }

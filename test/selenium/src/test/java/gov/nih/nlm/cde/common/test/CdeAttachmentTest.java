@@ -32,7 +32,6 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        clickElement(By.xpath("//a[@id='openEltInCurrentTab_0']"));
 
         goToCdeByName(cdeName);
         showAllTabs();
