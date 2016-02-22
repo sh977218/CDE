@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class AWorkingGroupTest extends BaseClassificationTest {
+public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
 
     @Test
     public void addOrgWithWorkingGroupOf() {

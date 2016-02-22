@@ -18,6 +18,11 @@ var passport = require('passport')
     , fs = require('fs')
     , multer  = require('multer')
     , exportShared = require('../../system/shared/exportShared')
+    , tar = require('tar-fs')
+    , zlib = require('zlib')
+    , spawn = require('child_process').spawn
+    , elastic = require('./createIndexes')
+    , authorization = require('../../system/node-js/authorization')
 ;
 
 exports.init = function(app) {
@@ -30,7 +35,7 @@ exports.init = function(app) {
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/deview", "/myboards",
+        "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function(path) {
         app.get(path, function(req, res) {
@@ -724,6 +729,27 @@ exports.init = function(app) {
     app.post('/feedback/report', function(req, res) {
         dbLogger.saveFeedback(req, function(){
             res.send({});
+        });
+    });
+
+    app.post('/api/reloadProd', authorization.checkSiteAdmin, function(req, res){
+        if (!config.prodDump.enabled) return res.status(401).send();
+        var target = './prodDump';
+        var untar = tar.extract(target);
+        request(req.body.url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
+        untar.on('finish', function () {
+
+            spawn('rm', [target + '/system*']).on('exit', function(){
+                var restore = spawn('mongorestore', ['-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
+                restore.on('exit', function() {
+                    elastic.recreateIndexes();
+                    var rm = spawn('rm', [target + '/*']);
+                    rm.on('exit', function(){
+                        res.send();
+                    });
+                });
+            });
+
         });
     });
 };

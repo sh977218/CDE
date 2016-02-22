@@ -75,6 +75,8 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
         }
     };
 
+    $scope.derRulesCtrlLoadedPromise.resolve();
+
 }
 ]);
 

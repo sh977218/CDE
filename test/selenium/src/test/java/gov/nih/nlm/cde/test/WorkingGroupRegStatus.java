@@ -1,6 +1,6 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.classification.ClassificationTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class WorkingGroupTest3 extends BaseClassificationTest {
+public class WorkingGroupRegStatus extends NlmCdeBaseTest {
 
     @Test
     public void wgRegStatus() {
@@ -25,21 +25,5 @@ public class WorkingGroupTest3 extends BaseClassificationTest {
             Assert.assertNotEquals("Recorded", option.getText());
         }
     }
-
-    @Test
-    public void wgClassificationsInvisible() {
-        mustBeLoggedInAs(wguser_username, password);
-        goToCdeByName("Specimen Block Received Count");
-        showAllTabs();
-        clickElement(By.id("classification_tab"));
-        new ClassificationTest().addClassificationMethod(new String[]{"WG-TEST", "WG Classif", "WG Sub Classif"});
-        textPresent("WG Sub Classif");
-        logout();
-        goToCdeByName("Specimen Block Received Count");
-        showAllTabs();
-        clickElement(By.id("classification_tab"));
-        textNotPresent("WG Sub Classif");
-    }
-
 
 }

@@ -5,30 +5,29 @@
                 ng-click="openRegStatusUpdate()"><span class="fa fa-edit"> Edit</span>
         </button>
     </h4>
-    <div tabindex="0" class="col-md-2 text-right">Effective Date:</div>
+    <div tabindex="0" class="col-md-2 text-right"><strong>Effective Date:</strong></div>
     <div tabindex="0" class="col-md-10" id="effectiveDate">
         {{elt.registrationState.effectiveDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
-    <div tabindex="0" class="col-md-2 text-right">Until Date:</div>
+    <div tabindex="0" class="col-md-2 text-right"><strong>Until Date:</strong></div>
     <div tabindex="0" class="col-md-10" id="untilDate">
         {{elt.registrationState.untilDate | date: 'MM/dd/yyyy' | placeHoldEmpty}}
     </div>
-    <div tabindex="0" class="col-md-2 text-right">Administrative Note:</div>
+    <div tabindex="0" class="col-md-2 text-right"><strong>Administrative Note:</strong></div>
     <div tabindex="0" class="col-md-10">
         {{elt.registrationState.administrativeNote | placeHoldEmpty}}
     </div>
-    <div tabindex="0" class="col-md-2 text-right">Unresolved Issue:</div>
+    <div tabindex="0" class="col-md-2 text-right"><strong>Unresolved Issue:</strong></div>
     <div tabindex="0" class="col-md-10">
         {{elt.registrationState.unresolvedIssue | placeHoldEmpty}}
     </div>
-    <div tabindex="0" class="col-md-2 text-right">Status:</div>
+    <div tabindex="0" class="col-md-2 text-right"><strong>Registration Status:</strong></div>
     <div tabindex="0" class="col-md-10" id="status">
         {{elt.registrationState.registrationStatus | placeHoldEmpty}}
     </div>
-    <div tabindex="0" class="col-md-2 text-right" id="div_adminStatus"
-         ng-if="elt.registrationState.administrativeStatus">Administrative Status:
+    <div tabindex="0" class="col-md-2 text-right" id="div_adminStatus"><strong>Administrative Status:</strong>
     </div>
-    <div tabindex="0" class="col-md-10" ng-if="elt.registrationState.administrativeStatus">
-        {{elt.registrationState.administrativeStatus}}
+    <div tabindex="0" class="col-md-10">
+        {{elt.registrationState.administrativeStatus | placeHoldEmpty}}
     </div>
 </div>

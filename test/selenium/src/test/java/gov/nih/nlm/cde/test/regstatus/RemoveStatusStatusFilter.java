@@ -5,13 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class CdeRegStatusTest2 extends CdeRegStatusTest {
-
-
-    @Test
-    public void nlmPromotesToStandard() {
-        nlmPromotesToStandard("Axillary Surgery Dissection Date");
-    }
+public class RemoveStatusStatusFilter extends CdeRegStatusTest {
 
     @Test
     public void removeStatusStatusFilter() {
@@ -26,7 +20,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         textPresent(viewing);
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        clickElement(By.xpath("//*[@id='editStatus']"));
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
@@ -44,7 +38,7 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         textPresent(viewing);
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        clickElement(By.xpath("//*[@id='editStatus']"));
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         clickElement(By.id("saveRegStatus"));
         closeAlert();

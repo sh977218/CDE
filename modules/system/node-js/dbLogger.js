@@ -133,7 +133,7 @@ exports.storeQuery = function(settings, callback) {
 };
 
 exports.log = function(message, callback) {
-    if (!isNaN(message.reponseTime)) delete message.reponseTime;
+    if (isNaN(message.reponseTime)) delete message.reponseTime;
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function(err) {

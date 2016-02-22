@@ -1,6 +1,5 @@
 var config = require('./parseConfig')
     , logging = require('../../system/node-js/logging')
-    , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
     , usersvc = require("./usersrvc")
@@ -379,7 +378,7 @@ exports.elasticsearch = function (query, type, cb) {
 var lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return dataCb(503, "Servers busy");
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -390,8 +389,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     search.scroll = '1m';
     search.search_type = 'scan';
     search.body = query;
-
-    var sentElements = 0;
 
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
@@ -413,8 +410,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
                             dataCb(null, thisCde);
-                            sentElements++;
-                            var isLast = sentElements === response.hits.total;
                         }
                         scrollThrough(newScrollId);
                     }
@@ -430,7 +425,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            dataCb(500, "ES Error");
+            dataCb("ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }

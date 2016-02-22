@@ -67,8 +67,8 @@ public class MiscTests extends NlmCdeBaseTest {
         // Provide fake ticket and make sure user info is retrieved
         response = get(baseUrl + "/user/me?ticket=valid").asString();
         get(baseUrl + "/user/me?ticket=valid").then().assertThat().contentType(ContentType.JSON);
-        Assert.assertTrue(response.contains("_id"));
-        Assert.assertTrue(response.contains("ninds"));
+        Assert.assertTrue(response.contains("_id"), "actualResponse: " + response);
+        Assert.assertTrue(response.contains("ninds"), "actualReponse: " + response);
     }
 
     @Test

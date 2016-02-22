@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log',
+        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
                  isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                 CdeDiff, $q, QuickBoard, $log)
+                 CdeDiff, $q, QuickBoard, $log, userResource)
 {
 
     $scope.module = 'cde';
@@ -21,6 +21,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.quickBoard = QuickBoard;
 
     $scope.canCurate = false;
+
+    $scope.forkCtrlLoadedPromise =  $q.defer();
+    $scope.formsCtrlLoadedPromise = $q.defer();
+    $scope.derRulesCtrlLoadedPromise = $q.defer();
+    $scope.mltCtrlLoadedPromise = $q.defer();
+    $scope.historyCtrlLoadedPromise = $q.defer();
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
@@ -100,7 +106,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadLinkedForms'), 0);
+                $scope.formsCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadLinkedForms');});
             },
             show: false,
             hideable: true
@@ -143,7 +149,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/derivationRules.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadDerivationRules'), 0);
+                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
             },
             show: false,
             hideable: true
@@ -153,7 +159,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/deMlt.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadMlt'), 0);
+                $scope.mltCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadMlt');});
             },
             show: false,
             hideable: true
@@ -163,7 +169,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/cdeHistory.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadPriorCdes'), 0);
+                $scope.historyCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorCdes');});
             },
             show: false,
             hideable: true
@@ -177,7 +183,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function () {
                 setCurrentTab();
                 $log.debug("select on forks");
-                $timeout($scope.$broadcast('loadForks'), 0);
+                $scope.forkCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadForks');});
             },
             show:false,
             hideable: true
@@ -237,6 +243,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     $scope.rootFork = result.data;
                 });
             }
+            $scope.elt.usedBy = OrgHelpers.getUsedBy($scope.elt, userResource.user);
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);

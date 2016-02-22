@@ -93,7 +93,7 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(commentText);
         textPresent(censoredText);
 
-        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        doLogin(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
         textPresent("Comment Approval");
@@ -123,7 +123,6 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.cssSelector(preClass + ".approveComment"));
         textPresent("Comment approved");
 
-
         logout();
         goToEltByName(eltName, status);
         showAllTabs();
@@ -131,14 +130,15 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(censoredText);
         textPresent(commentText);
 
-        mustBeLoggedInAs(user, anonymousCommentUser_password);
+        doLogin(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         showAllTabs();
         addComment("OK comment.");
         textNotPresent(censoredText);
         textPresent("OK comment.");
 
-        mustBeLoggedInAs(ninds_username, password);
+        logout();
+        doLogin(ninds_username, password);
         goToEltByName(eltName, status);
         showAllTabs();
         addComment("Curator's comment.");

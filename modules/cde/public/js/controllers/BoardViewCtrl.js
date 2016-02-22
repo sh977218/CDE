@@ -46,19 +46,18 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
     };
 
     $scope.exportBoard = function () {
-        var bid = $scope.board._id;
-        $http({method: 'get', url: '/board/' + bid + '/0/500'})
+        $http.get('/board/' + $scope.board._id + '/0/500')
             .success(function (response) {
-                var result = exports.exportHeader.cdeHeader;
+                var csv = exports.exportHeader.cdeHeader;
                 response.cdes.forEach(function (ele) {
-                    result += exports.convertToCsv(ele);
+                    csv += exports.convertToCsv(exports.projectCdeForExport(ele));
                 });
-                if (result) {
-                    var blob = new Blob([result], {
+                if (csv) {
+                    var blob = new Blob([csv], {
                         type: "text/csv"
                     });
                     saveAs(blob, 'BoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.")
+                    $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {
                     $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
@@ -66,7 +65,7 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
             })
             .error(function (data, status, headers, config) {
             })
-    }
+    };
 
 
     $scope.reload();

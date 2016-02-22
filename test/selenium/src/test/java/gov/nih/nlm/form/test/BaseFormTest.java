@@ -24,6 +24,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
+        // This is not the right place for waitForES
         waitForESUpdate();
         scrollToTop();
     }
