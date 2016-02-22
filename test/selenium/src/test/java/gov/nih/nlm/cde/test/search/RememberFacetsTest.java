@@ -19,7 +19,7 @@ public class RememberFacetsTest extends NlmCdeBaseTest {
         textPresent("2 results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
         Assert.assertEquals(linkList.size(), 2);
-        clickElement(By.id("eyeLink_0"));
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         driver.navigate().back();
