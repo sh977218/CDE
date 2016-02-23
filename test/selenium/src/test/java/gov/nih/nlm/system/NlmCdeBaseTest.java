@@ -341,11 +341,6 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
-    protected WebElement findInvisibleElement(By by) {
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
-        return driver.findElement(by);
-    }
-
     protected List<WebElement> findElements(By by) {
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
         return driver.findElements(by);
