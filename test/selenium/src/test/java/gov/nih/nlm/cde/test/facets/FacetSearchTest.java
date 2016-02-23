@@ -39,8 +39,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-Traumatic Brain Injury"));
         clickElement(By.id("li-blank-Acute Hospitalized"));
         clickElement(By.id("li-blank-Classification"));
+        int numRes = getNumberOfResults();
         clickElement(By.id("li-blank-Basic"));
-        textPresent("251 results for");
+        textNotPresent(numRes + " results for");
+        numRes = getNumberOfResults();
+        Assert.assertTrue(numRes > 248);
+        Assert.assertTrue(numRes < 254);
         clickElement(By.id("li-checked-Acute Hospitalized"));
         textPresent("Domain (19");
         clickElement(By.id("li-blank-Domain"));

@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log',
+        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
                  isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                 CdeDiff, $q, QuickBoard, $log)
+                 CdeDiff, $q, QuickBoard, $log, userResource)
 {
 
     $scope.module = 'cde';
@@ -243,6 +243,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     $scope.rootFork = result.data;
                 });
             }
+            $scope.elt.usedBy = OrgHelpers.getUsedBy($scope.elt, userResource.user);
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
