@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -28,7 +29,7 @@ public class ForkMineTheirsTest extends ForkTest {
         driver.get(driver.getCurrentUrl());
         showAllTabs();
         clickElement(By.id("forks_tab"));
-        Assert.assertFalse(driver.findElement(By.id("accept_fork_0")).isDisplayed());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("accept_fork_0")));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Adverse Event Ongoing Event Indicator");
