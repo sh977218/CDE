@@ -22,7 +22,6 @@
                 <div ng-if="elt.valueDomain.datatype === 'Value List'" ng-include="'/cde/public/html/cdeList/valueDomain.html'"></div>
             </div>
             <div class="col-md-3 col-sm-4 col-xs-12">
-                <div ng-include="'/cde/public/html/cdeList/idTable.html'"/>
                 <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"
                      alt="Image attached to the CDE"
                      ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
