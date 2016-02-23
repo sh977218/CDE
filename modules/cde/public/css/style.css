@@ -847,6 +847,7 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareDiff {
+    background-color: rgba(242, 217, 217, 0.5);
 }
 
 .quickBoardContentCompareModified {

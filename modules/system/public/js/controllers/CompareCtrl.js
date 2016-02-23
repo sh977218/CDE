@@ -80,6 +80,10 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
 
             $scope.namingOption = {
+                equal: function (a, b) {
+                    if (a.designation === b.designation) return true;
+                    else return false;
+                },
                 properties: [
                     {label: 'Name', property: 'designation'}, {
                         label: 'Definition',
@@ -102,6 +106,10 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.propertiesOption = {
+                equal: function (a, b) {
+                    if (a.key === b.key) return true;
+                    else return false;
+                },
                 properties: [
                     {label: 'Key', property: 'key'},
                     {label: 'Value', property: 'value'}
