@@ -39,14 +39,14 @@ exports.compareSideBySide = {
                 // element didn't found in right list.
                 if (rightIndex === -1) {
                     // if this is last element in left, put all right list elements before this element
-                    if (beginIndex === leftArray.length) {
+                    if (beginIndex === 0) {
                         for (var m = 0; m < rightArray.length; m++) {
                             result.push({
                                 found: "right",
                                 rightIndex: m,
                                 result: exports.copyProperties(options.properties)
                             });
-//                            beginIndex++;
+                            beginIndex++;
                         }
                     }
                     // put this element not found
