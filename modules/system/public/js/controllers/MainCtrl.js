@@ -7,6 +7,7 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
             $scope.formEnabled = window.formEnabled;
+            $scope.prodDumpEnabled = window.prodDumpEnabled;
 
             // Global variables
             var GLOBALS = {
