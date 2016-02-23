@@ -26,6 +26,18 @@ exports.removeElasticFields = function(elt) {
     return elt;
 };
 
+exports.nbOfCdes = function (cb) {
+    esClient.count({index: config.elastic.index.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+exports.nbOfForms = function (cb) {
+    esClient.count({index: config.elastic.formIndex.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+
+
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
