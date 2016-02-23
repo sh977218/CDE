@@ -23,16 +23,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
 
         $scope.getUsedBy = OrgHelpers.getUsedBy;
-
-
-        //$scope.switchToTableView = function () {
-        //    switchGridAccordionView("table");
-        //};
-        //
-        //$scope.switchToAccordionView = function () {
-        //    switchGridAccordionView("accordion");
-        //};
-
+        
         $scope.switchToView = function (viewType) {
             $scope.eltsToCompare = [];
             $scope.listViewType = viewType;
