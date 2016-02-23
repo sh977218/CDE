@@ -92,6 +92,9 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.referenceDocumentOption = {
+                equal: function (a, b) {
+                    return (a.title === b.title);
+                },
                 properties: [
                     {label: 'Title', property: 'title'},
                     {label: 'URI', property: 'uri'},
