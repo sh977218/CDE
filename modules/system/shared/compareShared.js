@@ -75,7 +75,7 @@ exports.compareSideBySide = {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
                         property.match = JSON.stringify(getValueByNestedProperty(leftArray[found.leftIndex], property.property))
-                        === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
+                            === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
                         found.result.push(property);
                     });
                     result.push(found);

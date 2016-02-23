@@ -81,8 +81,7 @@ angular.module('cdeModule').controller('CompareCtrl',
 
             $scope.namingOption = {
                 equal: function (a, b) {
-                    if (a.designation === b.designation) return true;
-                    else return false;
+                    return (a.designation === b.designation);
                 },
                 properties: [
                     {label: 'Name', property: 'designation'}, {
@@ -107,8 +106,7 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.propertiesOption = {
                 equal: function (a, b) {
-                    if (a.key === b.key) return true;
-                    else return false;
+                    return (a.key === b.key);
                 },
                 properties: [
                     {label: 'Key', property: 'key'},
@@ -144,8 +142,7 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.questionOption = {
                 equal: function (a, b) {
-                    if (a.question.cde.tinyId === b.question.cde.tinyId) return true;
-                    else return false;
+                    return (a.question.cde.tinyId === b.question.cde.tinyId);
                 },
                 properties: [{label: 'Label', property: 'label'},
                     {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
