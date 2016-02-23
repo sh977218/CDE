@@ -81,7 +81,10 @@ angular.module('cdeModule').controller('CompareCtrl',
 
             $scope.namingOption = {
                 equal: function (a, b) {
-                    return (a.designation === b.designation);
+                    return a.designation === b.designation;
+                },
+                sort: function (a, b) {
+                    return a.designation.localeCompare(b.designation);
                 },
                 properties: [
                     {label: 'Name', property: 'designation'}, {
@@ -93,7 +96,10 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.referenceDocumentOption = {
                 equal: function (a, b) {
-                    return (a.title === b.title);
+                    return a.title === b.title;
+                },
+                sort: function (a, b) {
+                    return a.title.localeCompare(b.title);
                 },
                 properties: [
                     {label: 'Title', property: 'title'},
@@ -109,7 +115,10 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.propertiesOption = {
                 equal: function (a, b) {
-                    return (a.key === b.key);
+                    return a.key === b.key;
+                },
+                sort: function (a, b) {
+                    return a.key.localeCompare(b.key);
                 },
                 properties: [
                     {label: 'Key', property: 'key'},
@@ -118,6 +127,12 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.dataElementConceptOption = {
+                equal: function (a, b) {
+                    return a.name === b.name;
+                },
+                sort: function (a, b) {
+                    return a.name.localeCompare(b.name);
+                },
                 properties: [
                     {label: 'Name', property: 'name'},
                     {label: 'Origin', property: 'origin'},

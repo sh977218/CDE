@@ -26,6 +26,10 @@ exports.compareSideBySide = {
                 return JSON.stringify(a) === JSON.stringify(b);
             }
         }
+        if (options.sort) {
+            leftArray.sort(options.sort);
+            rightArray.sort(options.sort);
+        }
         if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
         leftArray.forEach(function (o) {
                 if (options.wipeUseless) {
