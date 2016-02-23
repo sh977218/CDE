@@ -34,7 +34,7 @@ exports.compareSideBySide = {
                 var rightIndex = exports.findIndexInArray(rightArray.slice(beginIndex, rightArray.length), o, options.equal);
                 // element didn't found in right list.
                 if (rightIndex === -1) {
-                    // put all right list elements before this element
+                    // if this is last element in left, put all right list elements before this element
                     if (beginIndex === leftArray.length) {
                         for (var m = 0; m < rightArray.length; m++) {
                             result.push({
