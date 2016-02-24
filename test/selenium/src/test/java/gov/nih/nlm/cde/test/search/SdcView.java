@@ -11,6 +11,7 @@ public class SdcView extends NlmCdeBaseTest {
     public void sdcView() {
         String cdeName = "Anal Endoscopy Diagnostic Procedure Performed Other Specify Text";
         goToCdeByName(cdeName);
+        switchTab(1);
         clickElement(By.linkText("SDC View"));
         textPresent(cdeName);
         Assert.assertTrue(findElement(By.id("dd_scopedId")).getText().trim().startsWith("cde.nlm.nih.gov/"));
