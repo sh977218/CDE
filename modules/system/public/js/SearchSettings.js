@@ -48,6 +48,7 @@ angular.module('ElasticSearchResource')
             if (user === "Not logged in.") {
                 if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
                 searchSettingsFactory.deferred.resolve(searchSettings);
+                if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
             }
             else {
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();

@@ -36,24 +36,15 @@ public class MiscTests extends NlmCdeBaseTest {
         textPresent("NHLBI");
         textPresent("SPOREs");
         textPresent("NICHD");
+
         clickElement(By.id("cde_summaryView"));
         textNotPresent("Pathologic N Stage");
         textNotPresent("If No, specify reason for ");
         textNotPresent("AE Ongoing?");
         textNotPresent("Patient DOB");
-        textNotPresent("pN0");
-        textNotPresent("pN1");
         textNotPresent("Not Hispanic or Latino");
         textNotPresent("Hispanic or Latino");
-        textNotPresent("American Indian or Alaska Native");
-        textNotPresent("Female");
-        textNotPresent("3436564");
-        textNotPresent("2182832");
-        textNotPresent("2746311");
-        textNotPresent("2192217");
-        textNotPresent("NHLBI");
-        textNotPresent("SPOREs");
-        textNotPresent("NICHD");
+
     }
 
 

@@ -308,7 +308,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         , "fields": {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
-            , "primaryDefinitionCopy": {"fragment_size" : 200, "number_of_fragments" : 1}
+            , "primaryDefinitionCopy": {"number_of_fragments" : 1}
             , "naming.designation": {}
             , "naming.definition": {}
             , "dataElementConcept.concepts.name": {}

@@ -24,15 +24,6 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , searchToken: this.searchToken
             };
         }
-        , getSelectedElements: function(scope) {
-            return scope.classificationFilters[0].elements?scope.classificationFilters[0].elements:[];
-        }
-        , getSelectedElementsAlt: function(scope) {
-            return scope.classificationFilters[0].elements?scope.classificationFilters[1].elements:[];
-        }
-        , getSize: function(settings) {
-            return settings.resultPerPage?settings.resultPerPage:20;
-        }
         , generalSearchQuery: function(settings, type, cb) {
             var elastic = this; 
             $http.post("/elasticSearch/" + type, settings)
@@ -40,23 +31,23 @@ angular.module('ElasticSearchResource', ['ngResource'])
                         elastic.highlightResults(response[type + 's']);
                         cb(null, response);
                     })
-                    .error(function(response) {
+                    .error(function() {
                         cb("Error");
                     });
         } 
-        , highlightResults: function(cdes) {
+        , highlightResults: function(elts) {
             var elastic = this;
-            cdes.forEach(function(cde) {
-                elastic.highlightCde(cde);
+            elts.forEach(function(elt) {
+                elastic.highlightElt(elt);
             });
         }        
-        , highlightCde: function(cde) {
+        , highlightElt: function(cde) {
             if (!cde.highlight) return;
-            this.highlight = function(field1,field2, cde) {
-                if (cde.highlight[field1+"."+field2]) {
-                    cde.highlight[field1+"."+field2].forEach(function(nameHighlight) {
+            this.highlight = function(field1, field2, cde) {
+                if (cde.highlight[field1 + "." + field2]) {
+                    cde.highlight[field1 + "." + field2].forEach(function(nameHighlight) {
                         var elements;
-                        if (field1.indexOf(".")<0) elements = cde[field1];
+                        if (field1.indexOf(".") < 0) elements = cde[field1];
                         else elements = cde[field1.replace(/\..+$/,"")][field1.replace(/^.+\./,"")];
                         elements.forEach(function(nameCde, i){
                             if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
@@ -70,7 +61,14 @@ angular.module('ElasticSearchResource', ['ngResource'])
             };
             this.highlightOne = function(field, cde) {
                 if (cde.highlight[field]) {
-                    if (field.indexOf(".")<0) cde[field] = cde.highlight[field][0];
+                    if (field.indexOf(".") < 0){
+                        if (cde.highlight[field][0].replace("<strong>", "").replace("</strong>", "")
+                                .substr(0, 50) === cde[field].substr(0, 50)) {
+                            cde[field] = cde.highlight[field][0];
+                        } else {
+                            cde[field] = cde[field].substr(0, 50) + " [...] " +  cde.highlight[field][0];
+                        }
+                    }
                     else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
                 }
             };
@@ -98,11 +96,10 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 url: "/elasticSearchExport/" + type
                 , method: "POST"
                 , data: query
-                , transformResponse: function(a){return a;}
             }).success(function (response) {
                 cb(null, response);
             })
-            .error(function(data, status, headers, config) {
+            .error(function(data, status) {
                 if (status === 503) cb("The server is busy processing similar request, please try again in a minute.");
                 else cb("An error occured. This issue has been reported.");
             });
