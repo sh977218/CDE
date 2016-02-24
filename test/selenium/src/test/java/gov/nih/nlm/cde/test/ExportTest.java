@@ -16,7 +16,7 @@ import static java.nio.file.StandardCopyOption.*;
 public class ExportTest extends NlmCdeBaseTest {
 
     @Test
-    public void searchExport() {
+    public void cdeSearchExport() {
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("All Statuses");
@@ -24,6 +24,7 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("export")).click();
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
+
         closeAlert();
         findElement(By.id("export")).click();
         findElement(By.id("csvExport")).click();
@@ -61,7 +62,7 @@ public class ExportTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void searchXmlExport() {
+    public void cdeSearchXmlExport() {
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
         textPresent("All Statuses");
@@ -98,7 +99,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
 
     @Test
-    public void quickBoardExport() {
+    public void cdeQuickBoardExport() {
         goToSearch("cde");
         clickElement(By.id("browseOrg-caBIG"));
         hangon(1);
