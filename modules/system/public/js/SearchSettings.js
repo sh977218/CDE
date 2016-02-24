@@ -44,6 +44,7 @@ angular.module('ElasticSearchResource')
             });
         };
         var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = this.getDefault();
         if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") {
@@ -58,6 +59,5 @@ angular.module('ElasticSearchResource')
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });
-        if (!searchSettings) searchSettings = this.getDefault();
         return this;
     });
