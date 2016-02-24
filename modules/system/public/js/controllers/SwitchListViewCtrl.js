@@ -13,8 +13,6 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
             }
         };
 
-        $scope.listViewType = "accordion";
-
         $scope.maxLines = 5;
         $scope.lineLength = 50;
 
@@ -27,7 +25,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         $scope.switchToView = function (viewType) {
             $scope.eltsToCompare = [];
             $scope.listViewType = viewType;
-            $scope.cache.put(listViewCacheName, $scope.listViewType);
+            //$scope.cache.put(listViewCacheName, $scope.listViewType);
         };
 
         $scope.showSideBySideView = function () {

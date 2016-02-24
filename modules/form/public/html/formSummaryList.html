@@ -11,6 +11,7 @@
 
     <div class="singleSearchResult" id="searchResult_{{$index}}">
         <h4>
+            <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"

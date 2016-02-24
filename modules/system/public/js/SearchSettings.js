@@ -44,11 +44,11 @@ angular.module('ElasticSearchResource')
             });
         };
         var searchSettings = localStorageService.get("SearchSettings");
+        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") {
                 if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
                 searchSettingsFactory.deferred.resolve(searchSettings);
-                if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
             }
             else {
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
