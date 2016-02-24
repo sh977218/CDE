@@ -54,7 +54,8 @@
     "mongoosastic": "3.3.2",
     "js2xmlparser": "1.0.0",
     "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484",
-    "csv": "0.4.6"
+    "csv": "0.4.6",
+    "byline": "4.2.1"
   },
   "devDependencies": {
     "tar": "2.1.0",
