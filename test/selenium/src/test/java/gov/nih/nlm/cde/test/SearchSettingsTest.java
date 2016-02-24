@@ -10,7 +10,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-NINDS")).click();
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
-        textNotPresent("Registration Status", By.id("gridList"));
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 

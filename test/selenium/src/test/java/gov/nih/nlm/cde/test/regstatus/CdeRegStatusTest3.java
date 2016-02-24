@@ -18,10 +18,5 @@ public class CdeRegStatusTest3 extends CdeRegStatusTest {
     public void changeRegistrationStatus() {
         changeRegistrationStatus("Investigator Identifier java.lang.Integer", cabigAdmin_username);
     }
-        
-    @Test
-    public void retire() {
-        retire("Laboratory Procedure Alkaline Phosphatase Result Date", ctepCurator_username);
-    }
     
 }

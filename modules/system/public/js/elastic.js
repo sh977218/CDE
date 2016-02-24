@@ -61,8 +61,8 @@ angular.module('ElasticSearchResource', ['ngResource'])
             };
             this.highlightOne = function(field, cde) {
                 if (cde.highlight[field]) {
-                    if (field.indexOf(".") < 0){
-                        if (cde.highlight[field][0].replace("<strong>", "").replace("</strong>", "")
+                    if (field.indexOf(".") < 0) {
+                        if (cde.highlight[field][0].replace(/<strong>/g, "").replace(/<\/strong>/g, "")
                                 .substr(0, 50) === cde[field].substr(0, 50)) {
                             cde[field] = cde.highlight[field][0];
                         } else {
@@ -70,6 +70,11 @@ angular.module('ElasticSearchResource', ['ngResource'])
                         }
                     }
                     else cde[field.replace(/\..+$/,"")][field.replace(/^.+\./,"")] = cde.highlight[field][0];            
+                } else {
+                    if (field.indexOf(".") < 0) {
+                        cde[field] = cde[field].substr(0, 200);
+                        if (cde[field].length > 199) cde[field] += "...";
+                    }
                 }
             };
             this.highlightOne("stewardOrgCopy.name", cde);

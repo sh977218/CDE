@@ -42,6 +42,8 @@
             <a ng-href="/#/{{module}}/search">Go to the search page and get started.</a></p>
     </div>
 
+    {{listViewType}}
+
     <div ng-if="quickBoard.elts.length > 0">
         <div ng-include="viewTypes[listViewType].url" ng-init="ejsPage='quickboard'" ></div>
     </div>
