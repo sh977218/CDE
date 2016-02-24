@@ -836,6 +836,11 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareSameArray {
     overflow: hidden;
+    /*
+    background-color: rgba(223, 240, 216, 0.79);
+    */
+}
+.quickBoardContentCompareSame{
     background-color: rgba(223, 240, 216, 0.79);
 }
 
@@ -850,6 +855,7 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareDiff {
+    background-color: rgba(242, 217, 217, 0.5);
 }
 
 .quickBoardContentCompareModified {
