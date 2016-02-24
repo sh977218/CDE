@@ -21,7 +21,7 @@ public class NoDoublePinTest extends BoardTest {
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
 
-        Assert.assertTrue(textPresent("Already added"));
+        textPresent("Already added");
         modalGone();
 
         goToBoard(boardName);
