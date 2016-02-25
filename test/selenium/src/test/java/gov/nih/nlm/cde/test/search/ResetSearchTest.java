@@ -18,13 +18,13 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caCORE")).click();
         findElement(By.id("li-blank-CSM")).click();
         textPresent("2 results");
-        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
         findElement(By.id("menu_cdes_link")).click();
         textPresent("Browse by classification");
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("Population (");
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertTrue(linkList.size() > 10);
     }
 

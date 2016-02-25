@@ -6,18 +6,18 @@ import org.testng.annotations.Test;
 
 public class CdeCreate2Test extends BaseClassificationTest {
 
-    @Test
-    public void testAlignmentForMissingFields() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
-
-        mustBeLoggedOut();
-        setLowStatusesVisible();
-
-        openCdeInList("AlignmentCDE");
-
-        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
-    }
+//    @Test
+//    public void testAlignmentForMissingFields() {
+//        mustBeLoggedInAs(ctepCurator_username, password);
+//        createBasicCde("AlignmentCDE", "Definition for alignment cde", "CTEP", "DISEASE", "Brain");
+//
+//        mustBeLoggedOut();
+//        setLowStatusesVisible();
+//
+//        openCdeInList("AlignmentCDE");
+//
+//        Assert.assertEquals(findElement(By.id("dt_status")).getLocation().y, findElement(By.id("dd_status")).getLocation().y);
+//    }
 
     @Test
     public void createCdeSuggest() {

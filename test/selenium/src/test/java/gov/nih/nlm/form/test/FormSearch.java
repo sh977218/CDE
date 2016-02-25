@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -21,7 +22,7 @@ public class FormSearch extends BaseFormTest {
         // this test will be removed when the features are implemented.
         goToFormSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("Expand All");
+        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim()) > 600);
         textNotPresent("Pin All");
     }
 

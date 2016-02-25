@@ -1,40 +1,10 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.quickboard;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
-
-    @Test
-    public void cdeMoreElementsNoSideBySideCompare() {
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("Quick Board (3)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_elt_compare_2"));
-        clickElement(By.id("qb_cde_compare"));
-        textPresent("You may only compare 2 elements side by side.");
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
-    public void cdeLessElementsNoSideBySideCompare() {
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("Quick Board (3)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_cde_compare"));
-        textPresent("You may only compare 2 elements side by side.");
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
+public class CdeSideBySideCompare extends NlmCdeBaseTest{
 
     @Test
     public void cdeSideBySideCompare() {
@@ -77,60 +47,6 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
 
         clickElement(By.id("qb_cde_empty"));
         textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
-    public void cdeExpandAllQuickBoard() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        textPresent("Quick Board (2)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_cde_openCloseAll"));
-        textPresent("AJCC Based:");
-        textPresent("Value used as a Standard Deviation");
-
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
-    public void testQuickBoardButtons() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        textPresent("Quick Board (2)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_cde_compare"));
-        textPresent("Prostate Cancer pN0 TNM Finding");
-        textPresent("Prostate Tumor Pathologic N Stage");
-        textPresent("NCI Thesaurus");
-
-        clickElement(By.id("cde_accordionView"));
-        textNotPresent("Prostate Cancer pN0 TNM Finding");
-        textNotPresent("Prostate Tumor Pathologic N Stage");
-        textNotPresent("NCI Thesaurus");
-
-        clickElement(By.id("cde_gridView"));
-        textPresent("NX");
-        textPresent("pN0");
-        textPresent("Pathologic N Stage");
-        textPresent("NUMBER");
-        textPresent("3028594");
-        textPresent("3436564");
-        textPresent("Fluorescence in situ ");
-        textPresent("Standard");
-        textPresent("Qualified");
-        textNotPresent("NCI Thesaurus");
-
-        clickElement(By.id("cde_accordionView"));
-        textNotPresent("Prostate Cancer pN0 TNM Finding");
-        textNotPresent("Prostate Tumor Pathologic N Stage");
-        textNotPresent("NCI Thesaurus");
-        clickElement(By.id("qb_cde_compare"));
-        textPresent("Prostate Cancer pN0 TNM Finding");
-        textPresent("Prostate Tumor Pathologic N Stage");
-        textPresent("NCI Thesaurus");
     }
 
 }
