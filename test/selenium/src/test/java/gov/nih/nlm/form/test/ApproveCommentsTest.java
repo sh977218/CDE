@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class ApproveCommentsTest extends FormCommentTest {
 
-    @Test
+    @Test(priority = -1)
     public void approvingCommentsForm() {
         approvingComments("Vital Signs and Tests", null, anonymousFormCommentUser_username);
     }

@@ -14,7 +14,7 @@ public class CdeNamingTest extends NamingTest {
         goToCdeSearch();
     }
 
-    @Test
+    @Test(priority = -1)
     public void addRemoveEdit() {
         addRemoveEditTest();
     }

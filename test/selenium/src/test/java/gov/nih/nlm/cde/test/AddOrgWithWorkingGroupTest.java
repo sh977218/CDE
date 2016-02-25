@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
 
-    @Test
+    @Test(priority = -1)
     public void addOrgWithWorkingGroupOf() {
         // Create working group
         mustBeLoggedInAs(nlm_username, nlm_password);

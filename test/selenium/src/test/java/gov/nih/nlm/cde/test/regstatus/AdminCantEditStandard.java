@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 public class AdminCantEditStandard extends CdeStandardStatusTest {
 
-    @Test
+    @Test(priority = -1)
     public void adminCantEditStandard() {
         adminCantEditStandardCde("Patient Visual Change", "Standard");
     }
