@@ -101,6 +101,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 url: "/elasticSearchExport/" + type
                 , method: "POST"
                 , data: query
+                , transformResponse: function(a){return a;}
             }).success(function (response) {
                 cb(null, response);
             })

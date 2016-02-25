@@ -13,6 +13,7 @@ public class HighlightTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"using OMB Approved\"");
+        clickElement(By.id("search.submit"));
         textPresent("the patient's self declared racial origination, independent of ethnic origination, using OMB approved categories");
 
         // highlight with fragment
