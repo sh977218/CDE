@@ -9,7 +9,7 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "defaultSearchView": "accordion"
+                "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
                     "cde": {
@@ -44,6 +44,8 @@ angular.module('ElasticSearchResource')
             });
         };
         var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = this.getDefault();
+        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") {
                 if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
@@ -53,9 +55,9 @@ angular.module('ElasticSearchResource')
                 if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
                 searchSettings = user.searchSettings;
                 if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
+                if (user.searchSettings.defaultSearchView === 'accordion') user.searchSettings.defaultSearchView = "summary";
                 searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
         });
-        if (!searchSettings) searchSettings = this.getDefault();
         return this;
     });

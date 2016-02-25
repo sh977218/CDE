@@ -1,7 +1,17 @@
 angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
     function ($scope, OrgHelpers, SearchSettings) {
 
-        $scope.listViewType = "accordion";
+        $scope.viewTypes = {
+            accordion: {
+                url: '/' + $scope.module + '/public/html/' + $scope.module + 'AccordionList.html'
+            }, table: {
+                url : '/' + $scope.module + '/public/html/' + $scope.module + 'GridList.html'
+            }, sideBySide: {
+                url: '/system/public/html/eltsCompare.html'
+            }, summary: {
+                url: '/' + $scope.module + '/public/html/' + $scope.module + 'SummaryList.html'
+            }
+        };
 
         $scope.maxLines = 5;
         $scope.lineLength = 50;
@@ -11,16 +21,8 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
 
         $scope.getUsedBy = OrgHelpers.getUsedBy;
-
-        $scope.switchToTableView = function () {
-            switchGridAccordionView("table");
-        };
-
-        $scope.switchToAccordionView = function () {
-            switchGridAccordionView("accordion");
-        };
-
-        var switchGridAccordionView = function (viewType) {
+        
+        $scope.switchToView = function (viewType) {
             $scope.eltsToCompare = [];
             $scope.listViewType = viewType;
             $scope.cache.put(listViewCacheName, $scope.listViewType);

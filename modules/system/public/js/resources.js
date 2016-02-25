@@ -16,6 +16,10 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
             var res = localStorageService.get(param.localStorage);
             if (!res) res = [];
             this.elts = res;
+            this.elts.forEach(function(elt) {
+                if (!elt.primaryNameCopy) elt.primaryNameCopy = elt.naming[0].designation;
+                if (!elt.primaryDefinitionCopy) elt.primaryDefinitionCopy = elt.naming[0].definition;
+            })
         },
         elts: [],
         loading: false,
@@ -25,6 +29,8 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
                 var de = result.data;
                 if (de) {
                     de.usedBy = OrgHelpers.getUsedBy(de, userResource.user);
+                    de.primaryNameCopy = de.naming[0].designation;
+                    de.primaryDefinitionCopy = de.naming[0].definition;
                     qb.elts.push(de);
                     localStorageService.add(param.localStorage, qb.elts);
                 }

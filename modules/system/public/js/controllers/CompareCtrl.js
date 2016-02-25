@@ -80,6 +80,12 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
 
             $scope.namingOption = {
+                equal: function (a, b) {
+                    return a.designation === b.designation;
+                },
+                sort: function (a, b) {
+                    return a.designation.localeCompare(b.designation);
+                },
                 properties: [
                     {label: 'Name', property: 'designation'}, {
                         label: 'Definition',
@@ -89,6 +95,12 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.referenceDocumentOption = {
+                equal: function (a, b) {
+                    return a.title === b.title;
+                },
+                sort: function (a, b) {
+                    return a.title.localeCompare(b.title);
+                },
                 properties: [
                     {label: 'Title', property: 'title'},
                     {label: 'URI', property: 'uri'},
@@ -102,6 +114,12 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.propertiesOption = {
+                equal: function (a, b) {
+                    return a.key === b.key;
+                },
+                sort: function (a, b) {
+                    return a.key.localeCompare(b.key);
+                },
                 properties: [
                     {label: 'Key', property: 'key'},
                     {label: 'Value', property: 'value'}
@@ -109,6 +127,12 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.dataElementConceptOption = {
+                equal: function (a, b) {
+                    return a.name === b.name;
+                },
+                sort: function (a, b) {
+                    return a.name.localeCompare(b.name);
+                },
                 properties: [
                     {label: 'Name', property: 'name'},
                     {label: 'Origin', property: 'origin'},
@@ -136,8 +160,7 @@ angular.module('cdeModule').controller('CompareCtrl',
             };
             $scope.questionOption = {
                 equal: function (a, b) {
-                    if (a.question.cde.tinyId === b.question.cde.tinyId) return true;
-                    else return false;
+                    return (a.question.cde.tinyId === b.question.cde.tinyId);
                 },
                 properties: [{label: 'Label', property: 'label'},
                     {label: 'CDE', property: 'question.cde.tinyId', link: true, url: '/#/deview/?tinyId='},
