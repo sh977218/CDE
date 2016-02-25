@@ -11,6 +11,6 @@ public class FormSearchShowNumberQuestionsTest extends NlmCdeBaseTest {
     public void formSearchShowNumberQuestionsTest() {
         mustBeLoggedOut();
         searchElt("Classification of Seizures", "form");
-        Assert.assertEquals(findElement(By.id("nQuestion-0")).getText(), "8 questions");
+        Assert.assertEquals(findElement(By.id("dd_nQuestion-0")).getText(), "8");
     }
 }

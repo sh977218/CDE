@@ -17,7 +17,7 @@ public class MiscTests extends NlmCdeBaseTest {
     public void gridView() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-AECC"));
-        hangon(2);
+        textPresent("NCI Standard Template");
         clickElement(By.id("cde_gridView"));
         textPresent("Pathologic N Stage");
         textPresent("If No, specify reason for ");
@@ -36,30 +36,19 @@ public class MiscTests extends NlmCdeBaseTest {
         textPresent("NHLBI");
         textPresent("SPOREs");
         textPresent("NICHD");
-        clickElement(By.id("cde_accordionView"));
+
+        clickElement(By.id("cde_summaryView"));
         textNotPresent("Pathologic N Stage");
         textNotPresent("If No, specify reason for ");
         textNotPresent("AE Ongoing?");
         textNotPresent("Patient DOB");
-        textNotPresent("pN0");
-        textNotPresent("pN1");
-        textNotPresent("Not Hispanic or Latino");
-        textNotPresent("Hispanic or Latino");
-        textNotPresent("American Indian or Alaska Native");
-        textNotPresent("Female");
-        textNotPresent("3436564");
-        textNotPresent("2182832");
-        textNotPresent("2746311");
         textNotPresent("2192217");
-        textNotPresent("NHLBI");
-        textNotPresent("SPOREs");
-        textNotPresent("NICHD");
+        textPresent("Not Hispanic or Latino");
+        textPresent("Hispanic or Latino");
     }
-
 
     @Test
     public void checkTicketValid() {
-
         // Test to make sure user isn't logged in
         String response = get(baseUrl + "/user/me").asString();
         Assert.assertEquals("Not logged in.", response);

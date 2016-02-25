@@ -14,7 +14,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
-            , helper: "clone"
             , appendTo: "body"
             , revert: true
             , placeholder: "questionPlaceholder"
@@ -22,7 +21,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height("20px");
             }
-            , stop: function (event, ui) {
+            , stop: function () {
                 $('.dragQuestions').css('border', '');
             }
             , helper: function () {
@@ -50,7 +49,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 , content: "Enter one or more search terms. For example, search for \"Ethnicity\"."
             }
             , {
-                element: "#accordionList"
+                element: "#resultList"
                 ,
                 title: "Search result"
                 ,
@@ -62,16 +61,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 element: "#acc_link_0"
                 , title: "CDE summary"
                 , content: "Click the accordion to view the CDE summary"
-            }
-            , {
-                element: "#openEltInCurrentTab_0"
-                , title: "CDE Detail"
-                , content: "This button will take you to the full detail of this CDE."
-            }
-            , {
-                element: ".fa-eye:first"
-                , title: "View full detail"
-                , content: "Click the eye to see the full detail of this data element"
             }
             , {
                 element: "#addToCompare_0"

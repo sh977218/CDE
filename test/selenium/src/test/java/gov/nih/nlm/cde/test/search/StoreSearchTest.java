@@ -13,7 +13,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         driver.navigate().back();
         textPresent(cdeName);
-        Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("acc_link_0")).getText()));
+        Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("linkToElt_0")).getText()));
     }
     
     @Test
@@ -24,7 +24,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         clickElement(By.linkText("2"));
         hangon(2);
         scrollToTop();
-        clickElement(By.id("eyeLink_0"));
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         driver.navigate().back();
