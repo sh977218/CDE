@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.quickboard;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
@@ -55,7 +55,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         clickElement(By.id("addToCompare_0"));
         clickElement(By.id("addToCompare_1"));
         clickElement(By.id("addToCompare_2"));
-        String toRemove = findElement(By.id("acc_link_2")).getText();
+        String toRemove = findElement(By.id("linkToElt_2")).getText();
         clickElement(By.id("addToCompare_3"));
         hangon(.5);
         goToQuickBoardByModule("cde");
