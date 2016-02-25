@@ -47,28 +47,9 @@ mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password 
 mongo test test/initOrgs.js -u $db_user -p $db_password 
 
-target='{"count":11671,"_shards":{"total":1,"successful":1,"failed":0}}'
-#wait for full
-COUNTER=0
-while [ $COUNTER -lt 80 ]; do
-    curl_res=$(curl http://localhost:9200/cdetest/_count)
-    if [ "$curl_res" == "$target" ] 
-    then
-        COUNTER=80
-    else
-        sleep 1
-        let COUNTER=COUNTER+1
-    fi
-done
 
-if [ "$curl_res" == "$target" ] 
-then
-    gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ test &
-    #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *Board* &
-    export NODE_ENV=test
-    node $NODE_LOC/app > test-console.out
-else
-    echo "Not all documents indexed. Aborting"
-    echo $curl_res
-    exit
-fi
+#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ test &
+#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &
+gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *gridVi* &
+export NODE_ENV=test
+node $NODE_LOC/app > test-console.o

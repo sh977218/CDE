@@ -304,7 +304,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/elasticSearch/count', function (req, res) {
-        return elastic.nbOfElements(function (err, result) {
+        return elastic_system.nbOfCdes(function (err, result) {
             res.send("" + result);
         });
     });
@@ -544,6 +544,23 @@ exports.init = function (app, daoManager) {
             }
             res.send(result);
         })
+    });
+
+    app.get('/api/cde/modifiedElements', function(req, res){
+        var dstring = req.query.from;
+        function badDate(){
+            res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
+        }
+        if (!dstring) badDate();
+        if (dstring[4]!=='-' || dstring[7]!=='-') badDate();
+        if (dstring.indexOf('20')!==0) badDate();
+        if (dstring[5]!=="0" && dstring[5]!=="1") badDate();
+        if (dstring[8]!=="0" && dstring[8]!=="1" && dstring[8]!=="2" && dstring[8]!=="3") badDate();
+
+        var date = new Date(dstring);
+        mongo_data.findModifiedElementsSince(date, function(err, elts){
+            res.send(elts);
+        });
     });
 
 };

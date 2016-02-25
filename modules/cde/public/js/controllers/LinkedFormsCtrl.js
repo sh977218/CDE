@@ -8,5 +8,6 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
         $scope.reload("form");
     });
 
+    $scope.formsCtrlLoadedPromise.resolve();
 
 }]);

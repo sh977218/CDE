@@ -71,7 +71,6 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
-    protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
 
     protected static String password = "pass";
@@ -81,9 +80,15 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
+        for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of records: " + nbOfRecords);
+            System.out.println("nb of cdes: " + nbOfRecords);
+            hangon(10);
+        }
+        nbOfRecords = 0;
+        for (int i = 0; i < 5 && nbOfRecords < 815; i++) {
+            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
+            System.out.println("nb of forms: " + nbOfRecords);
             hangon(10);
         }
     }
@@ -238,6 +243,10 @@ public class NlmCdeBaseTest {
         }
     }
 
+    protected int getNumberOfResults() {
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
+    }
+
     protected void goToCdeByName(String name) {
         goToElementByName(name, "cde");
     }
@@ -254,21 +263,21 @@ public class NlmCdeBaseTest {
             textPresent("More...");
             textPresent(name);
         } else {
-            try {
+//            try {
                 searchElt(name, type);
-                clickElement(By.id("eyeLink_0"));
+                clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
-            } catch (Exception e) {
-                System.out.println("Element is archived. Will retry...");
-                hangon(1);
-                searchElt(name, type);
-                clickElement(By.id("eyeLink_0"));
-                textPresent("More...");
-                textPresent(name);
-                textNotPresent("is archived");
-            }
+//            } catch (Exception e) {
+//                System.out.println("Element is archived. Will retry...");
+//                hangon(1);
+//                searchElt(name, type);
+//                clickElement(By.id("linkToElt_0"));
+//                textPresent("More...");
+//                textPresent(name);
+//                textNotPresent("is archived");
+//            }
         }
     }
 
@@ -300,15 +309,12 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        textPresent(name, By.id("acc_link_0"));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openEltInList(String name, String type) {
         searchElt(name, type);
-        clickElement(By.id("acc_link_0"));
-        textPresent("View Full Detail");
-        wait.until(ExpectedConditions.elementToBeClickable(By
-                .id("openEltInCurrentTab_0")));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openFormInList(String name) {
@@ -318,8 +324,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
-        textPresent(name, By.id("accordionList"));
-        clickElement(By.id("acc_link_0"));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     public void checkTooltipText(By by, String text) {
@@ -388,7 +393,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            clickElement(By.cssSelector("button.close"));
+            findElement(By.cssSelector("button.close")).click();
             driver.manage().timeouts()
                     .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -460,7 +465,7 @@ public class NlmCdeBaseTest {
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-        driver.get(baseUrl + "/#/" + type + "/search");
+        driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
         if ("form".equals(type)) {

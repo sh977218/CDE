@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import static com.jayway.restassured.RestAssured.get;
+
 public class ClassificationMgt2Test extends BaseClassificationTest {
     @Test
     public void reclassify() {
@@ -85,6 +87,13 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent("Remote Address");
         findElement(By.linkText("Classification Audit Log")).click();
         textPresent("2 elements org / or Org > NewClassification");
+    }
+
+    @Test(dependsOnMethods = {"reclassify"})
+    public void modifiedSinceAPI() {
+        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
+        Assert.assertTrue(response.contains("Z2hYKE_bwar"), "Actual: " + response);
     }
 
     @Test

@@ -26,4 +26,6 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', 'CdeDiff', 'Cde
 
     $scope.$on('loadPriorCdes', loadPriorCdes);
 
+    $scope.historyCtrlLoadedPromise.resolve();
+
 }]);

@@ -21,12 +21,6 @@ exports.elasticsearch = function (user, settings, cb) {
     sharedElastic.elasticsearch(query, 'cde', cb);
 };
 
-exports.nbOfElements = function (cb) {
-    esClient.count({index: config.elastic.index.name}, function(err, result){
-        cb(err, result.count);
-    });
-};
-
 var mltConf = {
     "mlt_fields": [
         "naming.designation",

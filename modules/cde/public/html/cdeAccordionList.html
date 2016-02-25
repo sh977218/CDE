@@ -8,7 +8,7 @@
                     <i class="fa fa-arrows question-move-handle"></i></a>
                 <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
                 <a href tabindex="0" class="nonLinkAnchor">
-                    <span role="link" ng-bind-html="elt.naming[0].designation" id="acc_link_{{$index}}"
+                    <span role="link" ng-bind-html="elt.primaryNameCopy" id="acc_link_{{$index}}"
                           class="hand-cursor"></span></a>
                 <a ng-href="/deview?tinyId={{elt.tinyId}}" tabindex="0" class="nonLinkAnchor" ng-if="!openCdeInNewTab"
                    ng-click="view(elt, $event)">

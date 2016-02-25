@@ -64,7 +64,7 @@ public abstract class RegStatusTest extends CommonTest {
         closeAlert();
         setLowStatusesVisible();
         waitForESUpdate();
-        goToEltByName(eltName, "Recorded");
+        goToEltByName(eltName);
         textPresent("Recorded");
         showAllTabs();
         clickElement(By.id("status_tab"));
@@ -92,7 +92,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.name("q")).sendKeys("Alkaline");
         clickElement(By.id("search.submit"));
         hangon(3);
-        Assert.assertTrue(!driver.findElement(By.id("accordionList")).getText().contains(eltName));
+        Assert.assertTrue(!driver.findElement(By.id("resultList")).getText().contains(eltName));
     }
 
     public void nlmPromotesToStandard(String eltName) {

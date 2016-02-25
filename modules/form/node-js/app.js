@@ -23,6 +23,12 @@ exports.init = function (app, daoManager) {
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
+    app.get('/elasticSearch/form/count', function (req, res) {
+        return elastic_system.nbOfForms(function (err, result) {
+            res.send("" + result);
+        });
+    });
+
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
             adminItemSvc.setAttachmentDefault(req, res, mongo_data);

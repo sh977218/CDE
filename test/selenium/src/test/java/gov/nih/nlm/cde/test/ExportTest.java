@@ -104,7 +104,7 @@ public class ExportTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void searchXmlExport() {
+    public void cdeSearchXmlExport() {
         goToCdeSearch();
         findElement(By.id("browseOrg-CTEP")).click();
         textPresent("All Statuses");
@@ -141,10 +141,7 @@ public class ExportTest extends NlmCdeBaseTest {
 
 
     @Test
-    public void quickBoardExport() {
-        goToSearch("cde");
-        clickElement(By.id("browseOrg-caBIG"));
-        hangon(1);
+    public void cdeQuickBoardExport() {
         addCdeToQuickBoard("Intravesical Protocol Agent Administered Specify");
         addCdeToQuickBoard("Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale");
         addCdeToQuickBoard("User Login Name java.lang.String");
@@ -161,7 +158,7 @@ public class ExportTest extends NlmCdeBaseTest {
         String[] expected = {
                 "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
                 "\"Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing  scale\",\"Like voices commenting, voices conversing are cons",
-                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1;",
+                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1",
                 "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2223533 v3\",\"caCORE\",\"Qualified\",\"\",\"caBIG; caCORE\","
         };
 
@@ -172,7 +169,7 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/QuickBoardExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s);
+                    Assert.fail("missing line in export : " + s + "--Actual: " + actual);
                 }
             }
         } catch (IOException e) {

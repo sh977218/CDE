@@ -1,6 +1,5 @@
 var config = require('./parseConfig')
     , logging = require('../../system/node-js/logging')
-    , es = require('event-stream')
     , trim = require("trim")
     , regStatusShared = require('../../system/shared/regStatusShared')
     , usersvc = require("./usersrvc")
@@ -26,6 +25,18 @@ exports.removeElasticFields = function(elt) {
     delete elt.usedByOrgs;
     return elt;
 };
+
+exports.nbOfCdes = function (cb) {
+    esClient.count({index: config.elastic.index.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+exports.nbOfForms = function (cb) {
+    esClient.count({index: config.elastic.formIndex.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+
 
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
@@ -138,7 +149,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             "query_string": {
-                "fields": ["naming.designation^5", "naming.definition^2"]
+                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                 , "query": searchQ
             }
         };
@@ -149,13 +160,18 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
                 "query_string": {
-                    "fields": ["naming.designation^5", "naming.definition^2"]
+                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                     , "query": "\"" + searchQ + "\"~4"
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
     }
+    else {
+        queryStuff.sort = {"views": {order: "desc"}};
+    }
+
+
 
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
@@ -292,7 +308,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         , "fields": {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
-            , "primaryDefinitionCopy": {}
+            , "primaryDefinitionCopy": {"number_of_fragments" : 1}
             , "naming.designation": {}
             , "naming.definition": {}
             , "dataElementConcept.concepts.name": {}
@@ -357,6 +373,8 @@ exports.elasticsearch = function (query, type, cb) {
         } else {
             var result = {
                 totalNumber: response.hits.total
+                , maxScore: response.hits.max_score
+                , took: response.took
             };
             result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {
@@ -379,7 +397,7 @@ exports.elasticsearch = function (query, type, cb) {
 var lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return dataCb(503, "Servers busy");
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -390,8 +408,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     search.scroll = '1m';
     search.search_type = 'scan';
     search.body = query;
-
-    var sentElements = 0;
 
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
@@ -413,8 +429,6 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
                             dataCb(null, thisCde);
-                            sentElements++;
-                            var isLast = sentElements === response.hits.total;
                         }
                         scrollThrough(newScrollId);
                     }
@@ -430,7 +444,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
                     details: "body " + body + ", query: " + query
                 });
-            dataCb(500, "ES Error");
+            dataCb("ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }

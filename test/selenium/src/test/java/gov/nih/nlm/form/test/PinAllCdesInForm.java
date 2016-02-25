@@ -21,7 +21,8 @@ public class PinAllCdesInForm extends NlmCdeBaseTest {
         textPresent("All elements pinned");
         closeAlert();
         boardTest.gotoMyBoards();
-        Assert.assertEquals(findElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName + "\"]//dd[@id='dd_numb_0']")).getText(), "7");
+        Assert.assertEquals(findElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName +
+                "\"]//dd[contains(@id,'dd_numb_')]")).getText(), "7");
         findElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName + "\"]//a")).click();
         textPresent("Optical coherence");
         boardTest.removeBoard(boardName);

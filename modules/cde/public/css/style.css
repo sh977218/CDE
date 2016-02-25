@@ -37,10 +37,6 @@ body {
     padding-top: 20px;
 }
 
-.pt30 {
-    padding-top: 30px;
-}
-
 .pt40 {
     padding-top: 40px;
 }
@@ -82,8 +78,7 @@ body {
 }
 
 .searchInfo {
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 2px;
 }
 
 .searchInfoHr {
@@ -202,7 +197,8 @@ body {
 }
 
 .cdeAttachmentThumbnail {
-    max-width: 160px;
+    max-width: 100%;
+    max-height: 200px;
 }
 
 .img-center-responsive {
@@ -635,13 +631,20 @@ button#selectDefault {
 
 .cdeTable th, .cdeTable td {
     overflow: hidden;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 .generalDetailsTable th, .generalDetailsTable td {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 2px!important;
+    padding-right: 2px!important;
+    font-size: small;
+}
+
+.generalDetailsTable th {
+    width: 70px;
 }
 
 .nonLinkAnchor {
@@ -833,6 +836,11 @@ div + .questionPlaceholder {
 
 .quickBoardContentCompareSameArray {
     overflow: hidden;
+    /*
+    background-color: rgba(223, 240, 216, 0.79);
+    */
+}
+.quickBoardContentCompareSame{
     background-color: rgba(223, 240, 216, 0.79);
 }
 
@@ -847,6 +855,7 @@ div + .questionPlaceholder {
 }
 
 .quickBoardContentCompareDiff {
+    background-color: rgba(242, 217, 217, 0.5);
 }
 
 .quickBoardContentCompareModified {
@@ -928,4 +937,41 @@ div + .questionPlaceholder {
     border-radius: 0px;
     margin-left: -2px;
     margin-right: -2px;
+}
+
+#resultList {
+    max-width: 1200px;
+    font-size: small;
+}
+
+.navbar-btn {
+    margin-top: 0px!important;
+    margin-bottom: 0px!important;
+}
+
+#searchDiv {
+    margin:  30px 0px 30px 0px;
+}
+
+.navbar {
+    margin-bottom: 0px!important;
+}
+
+#searchInfoBar {
+    margin: 10px;
+}
+
+.singleSearchResult {
+    padding-left: 10px;
+    margin-bottom: 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    border-left: 3px solid rgba(0,0,0,0.1);
+}
+
+#advSearchForm {
+    margin: 5px;
+}
+
+#searchResult-buttons {
+    margin: 5px;
 }

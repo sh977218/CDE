@@ -5,13 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class CdeRegStatusTest2 extends CdeRegStatusTest {
-
-
-    @Test
-    public void nlmPromotesToStandard() {
-        nlmPromotesToStandard("Axillary Surgery Dissection Date");
-    }
+public class RemoveStatusStatusFilter extends CdeRegStatusTest {
 
     @Test
     public void removeStatusStatusFilter() {
@@ -19,14 +13,14 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-PBTC"));
         textPresent("4 results for");
-        String viewing = findElement(By.id("acc_link_0")).getText();
-        clickElement(By.id("eyeLink_0"));
+        String viewing = findElement(By.id("linkToElt_0")).getText();
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        clickElement(By.xpath("//*[@id='editStatus']"));
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
@@ -38,13 +32,13 @@ public class CdeRegStatusTest2 extends CdeRegStatusTest {
         hangon(1);
         clickElement(By.id("li-blank-Preferred Standard"));
         textPresent("1 results for");
-        clickElement(By.id("eyeLink_0"));
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        clickElement(By.xpath("//*[@id='editStatus']"));
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
