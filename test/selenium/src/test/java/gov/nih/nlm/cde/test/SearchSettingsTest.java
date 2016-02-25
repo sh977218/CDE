@@ -10,9 +10,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-NINDS")).click();
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
-        textNotPresent("Steward");
-        textNotPresent("Used by");
-        textNotPresent("Registration Status", By.id("gridList"));
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 
@@ -30,8 +27,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Search Results View");
         findElement(By.id("registrationStatus")).click();
         findElement(By.id("administrativeStatus")).click();
-        scrollTo(1000);
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();

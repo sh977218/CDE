@@ -52,7 +52,7 @@ schemas.userSchema = new mongoose.Schema({
     , knownIPs: [String]
     , roles: [{type: String, enum: authorizationShared.rolesEnum}]
     , searchSettings: {
-        defaultSearchView: {type: String, enum: ["accordion", "table"]}
+        defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
             cde: {

@@ -160,6 +160,15 @@ angular.module('systemModule').filter('placeHoldEmpty', function () {
     };
 });
 
+angular.module('systemModule').filter('truncateTo', function () {
+    return function (input, l) {
+        if (input && input.length > l) {
+            return input.substr(0, l) + '...';
+        } else return input;
+    };
+});
+
+
 angular.module('systemModule').filter('truncateLongUserName', function () {
     return function (input) {
         if (!(input === undefined || input === null || input === "")) {

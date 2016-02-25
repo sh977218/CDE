@@ -16,13 +16,6 @@ public class CompareTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void emptyList() {
-        openCdeInList("Sedation status");
-        findElement(By.id("compare_0")).click();
-        textPresent("Quick Board (1)");
-    }
-
-    @Test
     public void compare2Elements() {
         goToCdeSearch();
         addToCompare("Person Gender Text Type", "Patient Gender Category");

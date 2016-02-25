@@ -26,6 +26,18 @@ exports.removeElasticFields = function(elt) {
     return elt;
 };
 
+exports.nbOfCdes = function (cb) {
+    esClient.count({index: config.elastic.index.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+exports.nbOfForms = function (cb) {
+    esClient.count({index: config.elastic.formIndex.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+
+
 exports.initEs = function () {
     var createIndex = function (indexName, indexMapping, river) {
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
@@ -137,7 +149,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             "query_string": {
-                "fields": ["naming.designation^5", "naming.definition^2"]
+                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                 , "query": searchQ
             }
         };
@@ -148,13 +160,18 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
                 "query_string": {
-                    "fields": ["naming.designation^5", "naming.definition^2"]
+                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                     , "query": "\"" + searchQ + "\"~4"
                 }
             };
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
     }
+    else {
+        queryStuff.sort = {"views": {order: "desc"}};
+    }
+
+
 
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
@@ -291,7 +308,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         , "fields": {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
-            , "primaryDefinitionCopy": {}
+            , "primaryDefinitionCopy": {"number_of_fragments" : 1}
             , "naming.designation": {}
             , "naming.definition": {}
             , "dataElementConcept.concepts.name": {}
@@ -356,6 +373,8 @@ exports.elasticsearch = function (query, type, cb) {
         } else {
             var result = {
                 totalNumber: response.hits.total
+                , maxScore: response.hits.max_score
+                , took: response.took
             };
             result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {

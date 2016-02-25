@@ -156,7 +156,7 @@ exports.createFormIndexJson = {
                         "id": {"type": "string"},
                         "version": {"type": "string"}
                     }
-                }
+                }, "views": {"type": "integer"}
             }
         }
     }

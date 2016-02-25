@@ -64,9 +64,9 @@ public class AttachmentsTest extends BaseAttachmentTest {
 
     @Test
     public void checkOnlyShowingDefaultAttachmentForm() {
-        String cdeName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
+        String formName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
         mustBeLoggedInAs(ninds_username, password);
-        goToFormByName(cdeName);
+        goToFormByName(formName);
 
         showAllTabs();
         addAttachment("defaultAttachmentForForm.jpg");
@@ -74,15 +74,15 @@ public class AttachmentsTest extends BaseAttachmentTest {
         reviewAttachment("defaultAttachmentForForm.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
-        goToFormByName(cdeName);
+        goToFormByName(formName);
         showAllTabs();
         setAttachmentDefault();
 
-        goToFormByName(cdeName);
+        goToFormByName(formName);
         showAllTabs();
         addAttachment("nonDefault.jpg");
 
-        openFormInList(cdeName);
+        openFormInList(formName);
 
         List<WebElement> l = driver.findElements(By.cssSelector("cdeAttachmentThumbnail"));
         for (WebElement we : l) {

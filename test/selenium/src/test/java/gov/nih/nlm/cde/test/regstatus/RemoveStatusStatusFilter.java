@@ -13,8 +13,8 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-PBTC"));
         textPresent("4 results for");
-        String viewing = findElement(By.id("acc_link_0")).getText();
-        clickElement(By.id("eyeLink_0"));
+        String viewing = findElement(By.id("linkToElt_0")).getText();
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);
@@ -32,7 +32,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         hangon(1);
         clickElement(By.id("li-blank-Preferred Standard"));
         textPresent("1 results for");
-        clickElement(By.id("eyeLink_0"));
+        clickElement(By.id("linkToElt_0"));
         showAllTabs();
         textPresent("More Like This");
         textPresent(viewing);

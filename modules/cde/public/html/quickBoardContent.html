@@ -43,12 +43,6 @@
     </div>
 
     <div ng-if="quickBoard.elts.length > 0">
-        <span ng-if="listViewType !== 'sideBySide'" ng-include="'/system/public/html/switchListViewContent.html'"
-              ng-init="ejsPage='quickboard'">
-        </span>
-
-        <div ng-if="listViewType === 'sideBySide'">
-            <div ng-include="'/system/public/html/eltsCompare.html'"></div>
-        </div>
+        <div ng-include="viewTypes[listViewType].url" ng-init="ejsPage='quickboard'" ></div>
     </div>
 </div>
