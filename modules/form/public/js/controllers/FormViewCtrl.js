@@ -208,6 +208,7 @@ angular.module('formModule').controller('FormViewCtrl',
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
         if (route.tab) {
+            $scope.tabs.more.select();
             $scope.tabs[route.tab].active = true;
         }
     };
