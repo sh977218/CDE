@@ -227,13 +227,17 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.visibleStatuses = regStatusShared.statusList.map(function(s) { return s.name; });
     }
 
-    var regStatusAggFilter = {"or": []};
+    var regStatusAggFilter = {
+        "and": [
+            {"or": []},
+            {"not": {term: {"registrationState.registrationStatus": "Retired"}}}
+        ]};
     settings.visibleStatuses.forEach(function(regStatus) {
-        regStatusAggFilter.or.push({"term": {"registrationState.registrationStatus": regStatus}});
+        regStatusAggFilter.and[0].or.push({"term": {"registrationState.registrationStatus": regStatus}});
     });
     if (user) {
         usersvc.myOrgs(user).forEach(function(myOrg) {
-            regStatusAggFilter.or.push({"term": {"stewardOrg.name": myOrg}});
+            regStatusAggFilter.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
         });
     }
 
