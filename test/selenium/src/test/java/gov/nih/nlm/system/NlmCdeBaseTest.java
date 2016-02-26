@@ -80,16 +80,20 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
+        int waitTime = 0;
         for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
+            hangon(waitTime);
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of cdes: " + nbOfRecords);
-            hangon(10);
+            waitTime = 10;
         }
+        waitTime = 0;
         nbOfRecords = 0;
         for (int i = 0; i < 5 && nbOfRecords < 815; i++) {
+            hangon(waitTime);
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
             System.out.println("nb of forms: " + nbOfRecords);
-            hangon(10);
+            waitTime = 10;
         }
     }
 
