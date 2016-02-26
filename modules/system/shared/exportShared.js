@@ -5,13 +5,17 @@ exports.exportHeader = {
 };
 
 exports.getCdeCsvHeader = function(settings) {
-    var cdeHeader = "Name, Value Type";
+    var cdeHeader = "Name";
 
     if (settings.naming) {
         cdeHeader += ", Other Names";
     }
     if (settings.permissibleValues) {
+        cdeHeader += ", Value Type";
         cdeHeader += ", Permissible Values";
+    }
+    if (settings.nbOfPVs) {
+        cdeHeader += ", Nb of Permissible Values";
     }
     if (settings.uom) {
         cdeHeader += ", Unit of Measure";
@@ -28,17 +32,15 @@ exports.getCdeCsvHeader = function(settings) {
     if (settings.administrativeStatus) {
         cdeHeader += ", Administrative Status";
     }
+    if (settings.ids) {
+        cdeHeader += ", Identifiers";
+    }
     if (settings.source) {
         cdeHeader += ", Source";
     }
     if (settings.updated) {
         cdeHeader += ", Updated";
     }
-
-    if (settings.ids) {
-        cdeHeader += ", Identifiers";
-    }
-
     cdeHeader += "\n";
     return cdeHeader;
 };
@@ -61,8 +63,7 @@ exports.projectFormForExport = function (ele) {
 
 exports.projectCdeForExport = function (ele, settings) {
     var cde = {
-        name: ele.naming[0].designation,
-        valueDomainType: ele.valueDomain.datatype
+        name: ele.naming[0].designation
     };
     if (settings.naming) {
         cde.otherNames = ele.naming.slice(1).map(function (n) {
@@ -72,9 +73,14 @@ exports.projectCdeForExport = function (ele, settings) {
         });
     }
     if (settings.permissibleValues) {
+        cde.valueDomainType = ele.valueDomain.datatype;
         cde.permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(function (pv) {
             return pv.permissibleValue;
         })
+    }
+    if (settings.nbOfPVs) {
+        if (ele.valueDomain.permissibleValues)
+        cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;
     }
     if (settings.uom) {
         cde.uom = ele.valueDomain.uom;
@@ -93,16 +99,16 @@ exports.projectCdeForExport = function (ele, settings) {
     if (settings.administrativeStatus) {
         cde.administrativeStatus = ele.registrationState.administrativeStatus;
     }
+    if (settings.ids) {
+        cde.ids = ele.ids.map(function (id) {
+            return id.source + ": " + id.id + (id.version ? " v" + id.version : "")
+        })
+    }
     if (settings.source) {
         cde.source = ele.source;
     }
     if (settings.updated) {
         cde.updated = ele.updated;
-    }
-    if (settings.ids) {
-        cde.ids = ele.ids.map(function (id) {
-            return id.source + ": " + id.id + (id.version ? " v" + id.version : "")
-        })
     }
 
     return cde;
