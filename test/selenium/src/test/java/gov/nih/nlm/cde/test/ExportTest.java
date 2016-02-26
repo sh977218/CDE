@@ -38,9 +38,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-                "Name, Value Type, Other Names, Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Source, Updated, Identifiers\n",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score","Value List","TOE TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore",
-                "Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - finger tap left hand score","Value List","FINGER TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C09998 v3; NINDS Variable Name: MDSUPDRSFingerTppngLftHndScore"
+                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - hygiene bed scale\",\"Turning in bed and adjusting bed clothes\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09897 v3; NINDS Variable Name: UPDRSHygBedScale\","
         };
 
         try {
@@ -57,7 +57,6 @@ public class ExportTest extends NlmCdeBaseTest {
             Assert.fail("Exception reading SearchExport.csv");
         }
 
-
         clickElement(By.id("searchSettings"));
         findElement(By.id("uom")).click();
         findElement(By.id("administrativeStatus")).click();
@@ -67,10 +66,6 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
 
-        goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        textPresent("All Statuses");
-        findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         findElement(By.id("export")).click();
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
@@ -79,10 +74,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected2 = {
-                "Name, Value Type, Other Names, Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Source, Updated, Identifiers",
-                "Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score","Value List","TOE TAPPING","0; 1; 2; 3; 4","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore",
-                "Unified Parkinson's Disease Rating Scale (UPDRS) - Heart rate seated measurement","Number","Symptomatic orthostasis: Pulse: seated","","","NINDS","NINDS","Qualified","","NINDS","","NINDS: C18605 v1; NINDS Variable Name: UPDRSHRSeatedMeasr"
-
+                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",\"NINDS\",\"\",",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\",\"NINDS\",\"\","
         };
 
         try {
@@ -98,9 +92,6 @@ public class ExportTest extends NlmCdeBaseTest {
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.csv");
         }
-
-
-
     }
 
     @Test
@@ -138,7 +129,6 @@ public class ExportTest extends NlmCdeBaseTest {
             Assert.fail("Error reading SearchExport_XML.zip " + e);
         }
     }
-
 
     @Test
     public void cdeQuickBoardExport() {
@@ -178,5 +168,4 @@ public class ExportTest extends NlmCdeBaseTest {
         }
 
     }
-
 }
