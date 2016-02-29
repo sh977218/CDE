@@ -249,14 +249,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             $scope.resolveCdeLoaded();
             $scope.$broadcast("elementReloaded");
+            if (route.tab) {
+                $scope.tabs.more.select();
+                $scope.tabs[route.tab].active = true;
+            }
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
-        if (route.tab) {
-            $scope.tabs[route.tab].active = true;
-        }
     };
 
     $scope.reload($routeParams);

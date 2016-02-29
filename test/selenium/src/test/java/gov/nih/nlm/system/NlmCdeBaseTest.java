@@ -267,21 +267,21 @@ public class NlmCdeBaseTest {
             textPresent("More...");
             textPresent(name);
         } else {
-//            try {
+            try {
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
-//            } catch (Exception e) {
-//                System.out.println("Element is archived. Will retry...");
-//                hangon(1);
-//                searchElt(name, type);
-//                clickElement(By.id("linkToElt_0"));
-//                textPresent("More...");
-//                textPresent(name);
-//                textNotPresent("is archived");
-//            }
+            } catch (Exception e) {
+                System.out.println("Element is archived. Will retry...");
+                hangon(1);
+                searchElt(name, type);
+                clickElement(By.id("linkToElt_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            }
         }
     }
 
