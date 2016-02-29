@@ -387,12 +387,9 @@ angular.module('systemModule').controller('ListCtrl',
         } else {
             var modalInstance = $modal.open({
                 animation: false,
-                templateUrl: '/system/public/html/ifYouLoginModal.html',
-                controller: ''
+                templateUrl: '/system/public/html/ifYouLoginModal.html'
             });
         }
-
-
     };
 
     $scope.getRegStatusHelp = function(key) {
