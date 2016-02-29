@@ -92,29 +92,36 @@ angular.module('systemModule').controller('MainCtrl',
             };
 
             $scope.openPinModal = function (cde) {
-                var modalInstance = $modal.open({
-                    animation: false,
-                    templateUrl: '/cde/public/html/selectBoardModal.html',
-                    controller: 'SelectBoardModalCtrl',
-                    resolve: {
-                        boards: function () {
-                            return $scope.boards;
+                if (userResource.user.username) {
+                    var modalInstance = $modal.open({
+                        animation: false,
+                        templateUrl: '/cde/public/html/selectBoardModal.html',
+                        controller: 'SelectBoardModalCtrl',
+                        resolve: {
+                            boards: function () {
+                                return $scope.boards;
+                            }
                         }
-                    }
-                });
-
-                modalInstance.result.then(function (selectedBoard) {
-                    $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                        if (response.status == 200) {
-                            $scope.addAlert("success", response.data);
-                            $scope.loadMyBoards();
-                        } else
-                            $scope.addAlert("warning", response.data);
-                    }, function (response) {
-                        $scope.addAlert("danger", response.data);
                     });
-                }, function () {
-                });
+
+                    modalInstance.result.then(function (selectedBoard) {
+                        $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
+                            if (response.status == 200) {
+                                $scope.addAlert("success", response.data);
+                                $scope.loadMyBoards();
+                            } else
+                                $scope.addAlert("warning", response.data);
+                        }, function (response) {
+                            $scope.addAlert("danger", response.data);
+                        });
+                    }, function () {
+                    });
+                } else {
+                    var modalInstance = $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/ifYouLogInModal.html'
+                    });
+                }
             };
 
             $scope.isPageActive = function (viewLocation) {

@@ -8,7 +8,7 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class CdeExport extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 4)
     public void exportJson() {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
@@ -20,7 +20,7 @@ public class CdeExport extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    @Test
+    @Test(priority = 4)
     public void exportXml() {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);

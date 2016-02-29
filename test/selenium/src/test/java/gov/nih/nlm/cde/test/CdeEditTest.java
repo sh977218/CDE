@@ -21,17 +21,22 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
         clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
+
+        clickElement(By.linkText("Permissible Values"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'dd_uom']//input")).sendKeys("myUom");
         clickElement(By.cssSelector("#dd_uom .fa-check"));
         textPresent("myUom");
         newCdeVersion("Change note for change number 1");
+
         goToCdeByName(cdeName);
         textPresent("[name change number 1]");
         textPresent("[def change number 1]");
-        textPresent("myUom");
-        // test that label and its value are aligned. 
+        // test that label and its value are aligned.
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
+
+        clickElement(By.id("pvs_tab"));
+        textPresent("myUom");
 
         showAllTabs();
         clickElement(By.id("ids_tab"));
@@ -59,6 +64,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.linkText("view the current version here"));
         textPresent("[name change number 1]");
         textPresent("[def change number 1]");
+
+        clickElement(By.id("pvs_tab"));
         textPresent("myUom");
 
         openCdeAudit(cdeName);

@@ -28,9 +28,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Rich Text')]"));
-        hangon(2);
         clickElement(By.xpath("//div[contains(@id,'taTextElement')]"));
-        hangon(2);
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
@@ -50,7 +48,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         alert.sendKeys(url);
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
-        showAllTabs();
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
     }
 }

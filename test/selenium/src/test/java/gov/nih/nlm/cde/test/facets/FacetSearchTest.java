@@ -31,7 +31,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
-    @Test
+    @Test(priority = 3)
     public void deepFacets() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));

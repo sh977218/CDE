@@ -1,14 +1,11 @@
 package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
 
 public class CdeSearchTest2 extends NlmCdeBaseTest {
     
-    @Test
+    @Test(priority = 2)
     public void StandardStatusWarningCheck() {
         mustBeLoggedOut();
         // Check that a none Standard or Preferred Standard CDE doesn't have warning message when not logged in
