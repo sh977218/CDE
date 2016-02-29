@@ -119,7 +119,7 @@ angular.module('systemModule').controller('MainCtrl',
                 } else {
                     var modalInstance = $modal.open({
                         animation: false,
-                        templateUrl: '/system/public/html/ifYouLoginModal.html'
+                        templateUrl: '/system/public/html/ifYouLogInModal.html'
                     });
                 }
             };
