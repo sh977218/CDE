@@ -31,7 +31,6 @@ public class FormPropertyTest extends PropertyTest {
         richText("Form Rich Text Property Test", "Recorded");
     }
 
-
     @Test
     public void reorderProperties() {
         reorderPropertyTest("form for test cde reorder detail tabs");
