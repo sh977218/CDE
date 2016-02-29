@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AttachmentsTest extends BaseAttachmentTest {
 
-    @Test
+    @Test(priority = 1)
     public void declineCdeAttachment() {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Sedative sleep pill frequency";
         mustBeLoggedInAs(ninds_username, password);

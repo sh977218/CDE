@@ -11,6 +11,7 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
+        textPresent("results for All Terms");
         clickElement(By.id("pinAll"));
         textPresent("Create Boards and attach CDEs to them");
         clickElement(By.id("signUpLink"));

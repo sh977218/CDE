@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class BoardManagementTest extends BoardTest {
     
-    @Test
+    @Test(priority = 2)
     public void boardPublisher() {
         mustBeLoggedInAs("boardPublisherTest", password);
         createBoard("IsItPublic", "A board that we try to make public");
@@ -29,7 +29,7 @@ public class BoardManagementTest extends BoardTest {
     }
     
 
-    @Test
+    @Test(priority = 4)
     public void iHaveNoBoard() {
         mustBeLoggedInAs(boarduser2_username, password);
         String cdeName = "Specimen Array";
