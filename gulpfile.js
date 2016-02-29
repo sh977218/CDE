@@ -67,9 +67,13 @@ gulp.task('copyCode', ['wiredep'], function() {
     gulp.src('./modules/components/**/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/components/"));
 
+    gulp.src('./modules/processManager/pmApp.js')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/processManager/"));
+
     gulp.src('./modules/system/public/robots.txt')
         .pipe(gulp.dest(config.node.buildDir + "/modules/system/public/"));
-    
+
+
     gulp.src('./config/*.json')
         .pipe(gulp.dest(config.node.buildDir + "/config/"));
 

@@ -13,7 +13,7 @@ public class FormScoreTest extends BaseFormTest {
     private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
     private QuestionTest questionTest = new QuestionTest();
 
-    @Test
+    @Test(priority = -1)
     public void score() {
         mustBeLoggedInAs(ninds_username, password);
         qbTest.emptyQuickBoardByModule("form");

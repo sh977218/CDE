@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = -1)
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
