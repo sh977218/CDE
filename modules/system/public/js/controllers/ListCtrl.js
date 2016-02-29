@@ -357,32 +357,39 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.showPinAllModal = function() {
-        var modalInstance = $modal.open({
-            animation: false,
-          templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: 'SelectBoardModalCtrl',
-          resolve: {
-            boards: function () {
-              return $scope.boards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
-            var data = {
-                query: Elastic.buildElasticQuerySettings($scope.searchSettings)
-                , board: selectedBoard
-                , itemType: $scope.module
-            };
-            data.query.resultPerPage = window.maxPin;
-            $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards();
-            }).error(function() {
-                $scope.addAlert("danger", "Not all elements were not pinned!");
+        if (userResource.user.username) {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/cde/public/html/selectBoardModal.html',
+                controller: 'SelectBoardModalCtrl',
+                resolve: {
+                    boards: function () {
+                        return $scope.boards;
+                    }
+                }
             });
-        }, function () {
-        });
+
+            modalInstance.result.then(function (selectedBoard) {
+                var data = {
+                    query: Elastic.buildElasticQuerySettings($scope.searchSettings)
+                    , board: selectedBoard
+                    , itemType: $scope.module
+                };
+                data.query.resultPerPage = window.maxPin;
+                $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
+                    $scope.addAlert("success", "All elements pinned.");
+                    $scope.loadMyBoards();
+                }).error(function() {
+                    $scope.addAlert("danger", "Not all elements were not pinned!");
+                });
+            }, function () {
+            });
+        } else {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/ifYouLogInModal.html'
+            });
+        }
     };
 
     $scope.getRegStatusHelp = function(key) {

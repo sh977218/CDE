@@ -9,7 +9,7 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class SdcExport extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 5)
     public void sdcXmlExport() {
         String response = get(baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc").asString();
         
@@ -20,7 +20,7 @@ public class SdcExport extends NlmCdeBaseTest {
 
     }
 
-    @Test
+    @Test(priority = 4)
     public void sdcRender() {
         goToFormByName("SDC Adrenal");
         findElement(By.id("export")).click();

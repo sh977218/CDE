@@ -14,7 +14,7 @@ public class CdeViewTabTest extends ViewTabTest {
         goToCdeSearch();
     }
 
-    @Test
+    @Test(priority = 5)
     public void cdeViewTabTest() {
         showHideAllTabTest("ImgTagTest");
     }

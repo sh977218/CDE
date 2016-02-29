@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BrowseUsers extends NlmCdeBaseTest {
-    @Test
+    @Test(priority = 5)
     public void browseUsers() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));

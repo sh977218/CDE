@@ -17,7 +17,7 @@ public class ArticleTest extends NlmCdeBaseTest {
         textPresent("has no content");        
     }
     
-    @Test
+    @Test (priority = 4)
     public void createNew() {
         mustBeLoggedInAs(docEditor, password);
         newArticle("createNewTest");
@@ -25,7 +25,7 @@ public class ArticleTest extends NlmCdeBaseTest {
         textPresent("has no content");
     }
     
-    @Test
+    @Test(priority = 4)
     public void adminCanEdit() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "#/help/testAdminCanEdit");
@@ -47,7 +47,7 @@ public class ArticleTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNewArticle")));
     }
     
-    @Test
+    @Test(priority = 5)
     public void edits() {
         mustBeLoggedInAs(docEditor, password);
         driver.get(baseUrl + "#/help/testEdits");
