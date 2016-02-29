@@ -14,7 +14,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
         textPresent(cdeName);
     }
 
-    @Test
+    @Test(priority = -1)
     public void viewingHistory() {
         mustBeLoggedInAs(history_username, password);
         checkUserHistory("Patient Eligibility Ind-2");
