@@ -40,7 +40,7 @@ public class BoardManagement2Test extends BoardTest {
         removeBoard(board2);
     }
 
-    @Test
+    @Test(priority = 4)
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");

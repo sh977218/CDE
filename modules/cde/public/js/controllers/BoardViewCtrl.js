@@ -1,4 +1,5 @@
 angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', function ($scope, $routeParams, $http, OrgHelpers, userResource) {
+    $scope.module = 'cde';
     $scope.cdes = [];
 
     $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",

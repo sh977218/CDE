@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class WorkingGroupTest2  extends BaseClassificationTest {
 
-    @Test
+    @Test(priority = -1)
     public void wgSeesOtherWg() {
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeByName("Brief Pain Inventory (BPI) - pain general activity interference scale");

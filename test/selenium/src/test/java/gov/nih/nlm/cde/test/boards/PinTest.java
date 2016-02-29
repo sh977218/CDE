@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class PinTest extends BoardTest {
     
-    @Test
+    @Test(priority = -1)
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
 
@@ -24,12 +24,12 @@ public class PinTest extends BoardTest {
         pinTo("Form Element End Date", "Smoking Board");
         
         goToBoard("Smoking Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 2);
         textPresent("Smoking History");
         textPresent("Form Element End Date");
 
         goToBoard("Blood Board");
-        Assert.assertEquals(driver.findElements(By.cssSelector("div.panel-default")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 2);
         textPresent("Laboratory Procedure Blood Urea Nitrogen");
         textPresent("Umbilical Cord Blood");
 

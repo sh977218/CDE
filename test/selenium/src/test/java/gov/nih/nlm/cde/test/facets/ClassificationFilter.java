@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClassificationFilter extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 4)
     public void classificationFilters() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("Image");
@@ -20,7 +20,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         textPresent("Generic Image");
 
         textPresent("8 results for");
-        List<WebElement> linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 8);
 
         // Check that CTEP classification with 0 items does not show
@@ -31,20 +31,20 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         findElement(By.id("li-blank-gov.nih.nci.ivi.genericimage")).click();
         textPresent("2 results for");
 
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
         // Now test unclicking everything
         findElement(By.id("li-checked-Generic Image")).click();
         textPresent("8 results for");
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 8);
 
         textPresent("Generic Image (2)");
         findElement(By.id("li-blank-Generic Image")).click();
 
         textPresent("2 results for");
-        linkList = driver.findElements(By.cssSelector("div.panel-default"));
+        linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
         findElement(By.id("li-checked-caBIG")).click();

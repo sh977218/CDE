@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class BoardManagement4Test extends BoardTest {
     
-    @Test
+    @Test(priority = 4)
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
         createBoard("Remove me board", "Not a very useful board");

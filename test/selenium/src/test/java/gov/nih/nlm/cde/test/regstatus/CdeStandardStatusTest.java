@@ -5,21 +5,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
-    @DataProvider(name = "standardAndPreferredStandardCde")
-    public Object[][] standardAndPreferredStandardCdeArray() {
-        return new Object[][]{
-                {"Patient Visual Change", "Standard"},
-                {"Patient Visual Change", "Preferred Standard"},
-        };
-    }
-
-    @Test(dataProvider = "standardAndPreferredStandardCde")
-    public void adminCantEditStandardCde(String cdeName, String regStatus) {
+    protected void adminCantEditStandardCde(String cdeName, String regStatus) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         showAllTabs();
@@ -38,7 +27,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't edit name, def or status
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']")).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_uom']//i[@class='fa fa-edit']")).size(), 0);
         Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']")).size(), 0);
 
         // Can't edit Value Type or add / remove pv

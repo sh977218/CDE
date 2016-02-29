@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class BoardManagementTest extends BoardTest {
     
-    @Test
+    @Test(priority = 2)
     public void boardPublisher() {
         mustBeLoggedInAs("boardPublisherTest", password);
         createBoard("IsItPublic", "A board that we try to make public");
@@ -29,15 +29,15 @@ public class BoardManagementTest extends BoardTest {
     }
     
 
-    @Test
+    @Test(priority = 4)
     public void iHaveNoBoard() {
         mustBeLoggedInAs(boarduser2_username, password);
         String cdeName = "Specimen Array";
 
         goToCdeSearch();
         openCdeInList(cdeName);
-        findElement(By.id("pin_0")).click();
-        Assert.assertTrue(textPresent("Click here to create a board now"));
+        findElement(By.id("pinToBoard_0")).click();
+        textPresent("Click here to create a board now");
         findElement(By.id("cancelSelect")).click();
         modalGone();
     }

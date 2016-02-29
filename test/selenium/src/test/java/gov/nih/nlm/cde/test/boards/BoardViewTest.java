@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class BoardViewTest extends BoardTest {
 
-    @Test
+    @Test(priority = 3)
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
@@ -13,7 +13,7 @@ public class BoardViewTest extends BoardTest {
         clickElement(By.id("cde_gridView"));
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");
-        clickElement(By.id("cde_accordionView"));
+        clickElement(By.id("cde_summaryView"));
         textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");

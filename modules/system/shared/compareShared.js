@@ -26,6 +26,10 @@ exports.compareSideBySide = {
                 return JSON.stringify(a) === JSON.stringify(b);
             }
         }
+        if (options.sort) {
+            leftArray.sort(options.sort);
+            rightArray.sort(options.sort);
+        }
         if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
         leftArray.forEach(function (o) {
                 if (options.wipeUseless) {
@@ -75,7 +79,7 @@ exports.compareSideBySide = {
                         var property = exports.deepCopy(p);
                         if (!property.label) property.label = property.property;
                         property.match = JSON.stringify(getValueByNestedProperty(leftArray[found.leftIndex], property.property))
-                        === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
+                            === JSON.stringify(getValueByNestedProperty(rightArray[found.rightIndex], property.property));
                         found.result.push(property);
                     });
                     result.push(found);

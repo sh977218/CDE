@@ -210,6 +210,26 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.totalItems = result.totalNumber;
             $scope[type + 's'] = result[type + 's'];
             $scope.elts = result[type + 's'];
+            $scope.took = result.took;
+
+            if ($scope.searchSettings.page == 1 && result.totalNumber > 0) {
+                var maxJump = 0;
+                var maxJumpIndex = 100;
+                $scope.elts.map(function(e, i) {
+                    if (!$scope.elts[i+1]) return;
+                    var jump = e.score - $scope.elts[i+1].score;
+                    if (jump>maxJump) {
+                        maxJump = jump;
+                        maxJumpIndex = i+1;
+                    }
+                });
+
+                if (maxJump > (result.maxScore/4)) $scope.cutoffIndex = maxJumpIndex;
+                else $scope.cutoffIndex = 100;
+            } else {
+                $scope.cutoffIndex = 100;
+            }
+
             $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                 if ($scope.localEltTransform) {
@@ -337,32 +357,39 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.showPinAllModal = function() {
-        var modalInstance = $modal.open({
-            animation: false,
-          templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: 'SelectBoardModalCtrl',
-          resolve: {
-            boards: function () {
-              return $scope.boards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
-            var data = {
-                query: Elastic.buildElasticQuerySettings($scope.searchSettings)
-                , board: selectedBoard
-                , itemType: $scope.module
-            };
-            data.query.resultPerPage = window.maxPin;
-            $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards();
-            }).error(function() {
-                $scope.addAlert("danger", "Not all elements were not pinned!");
+        if (userResource.user.username) {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/cde/public/html/selectBoardModal.html',
+                controller: 'SelectBoardModalCtrl',
+                resolve: {
+                    boards: function () {
+                        return $scope.boards;
+                    }
+                }
             });
-        }, function () {
-        });
+
+            modalInstance.result.then(function (selectedBoard) {
+                var data = {
+                    query: Elastic.buildElasticQuerySettings($scope.searchSettings)
+                    , board: selectedBoard
+                    , itemType: $scope.module
+                };
+                data.query.resultPerPage = window.maxPin;
+                $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
+                    $scope.addAlert("success", "All elements pinned.");
+                    $scope.loadMyBoards();
+                }).error(function() {
+                    $scope.addAlert("danger", "Not all elements were not pinned!");
+                });
+            }, function () {
+            });
+        } else {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/ifYouLogInModal.html'
+            });
+        }
     };
 
     $scope.getRegStatusHelp = function(key) {

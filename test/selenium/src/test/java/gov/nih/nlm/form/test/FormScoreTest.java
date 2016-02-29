@@ -1,6 +1,6 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.cde.test.CdeQuickBoardTest1;
+import gov.nih.nlm.cde.test.quickboard.CdeQuickBoardTest1;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -13,7 +13,7 @@ public class FormScoreTest extends BaseFormTest {
     private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
     private QuestionTest questionTest = new QuestionTest();
 
-    @Test
+    @Test(priority = -1)
     public void score() {
         mustBeLoggedInAs(ninds_username, password);
         qbTest.emptyQuickBoardByModule("form");

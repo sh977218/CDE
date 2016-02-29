@@ -71,7 +71,6 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
-    protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
 
     protected static String password = "pass";
@@ -81,10 +80,20 @@ public class NlmCdeBaseTest {
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
+        int waitTime = 0;
+        for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
+            hangon(waitTime);
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of records: " + nbOfRecords);
-            hangon(10);
+            System.out.println("nb of cdes: " + nbOfRecords);
+            waitTime = 10;
+        }
+        waitTime = 0;
+        nbOfRecords = 0;
+        for (int i = 0; i < 5 && nbOfRecords < 815; i++) {
+            hangon(waitTime);
+            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
+            System.out.println("nb of forms: " + nbOfRecords);
+            waitTime = 10;
         }
     }
 
@@ -260,7 +269,7 @@ public class NlmCdeBaseTest {
         } else {
             try {
                 searchElt(name, type);
-                clickElement(By.id("eyeLink_0"));
+                clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
@@ -268,7 +277,7 @@ public class NlmCdeBaseTest {
                 System.out.println("Element is archived. Will retry...");
                 hangon(1);
                 searchElt(name, type);
-                clickElement(By.id("eyeLink_0"));
+                clickElement(By.id("linkToElt_0"));
                 textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
@@ -304,15 +313,12 @@ public class NlmCdeBaseTest {
             clickElement(By.id("search.submit"));
             textPresent("1 results for");
         }
-        textPresent(name, By.id("acc_link_0"));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openEltInList(String name, String type) {
         searchElt(name, type);
-        clickElement(By.id("acc_link_0"));
-        textPresent("View Full Detail");
-        wait.until(ExpectedConditions.elementToBeClickable(By
-                .id("openEltInCurrentTab_0")));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openFormInList(String name) {
@@ -322,8 +328,7 @@ public class NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
-        textPresent(name, By.id("accordionList"));
-        clickElement(By.id("acc_link_0"));
+        textPresent(name, By.id("searchResult_0"));
     }
 
     public void checkTooltipText(By by, String text) {

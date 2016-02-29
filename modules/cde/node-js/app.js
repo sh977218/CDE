@@ -304,7 +304,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/elasticSearch/count', function (req, res) {
-        return elastic.nbOfElements(function (err, result) {
+        return elastic_system.nbOfCdes(function (err, result) {
             res.send("" + result);
         });
     });
