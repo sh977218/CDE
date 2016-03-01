@@ -39,7 +39,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = 11
+    maxParallelForks = 16
 
     testLogging {
         events "standardOut", "standardError"
