@@ -3,10 +3,6 @@ angular.module('ElasticSearchResource')
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
 
-        var searchSettings = localStorageService.get("SearchSettings");
-        if (!searchSettings) searchSettings = this.getDefault();
-        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
-
         this.saveConfiguration = function (settings) {
             searchSettings = settings;
             localStorageService.set("SearchSettings", settings);
@@ -34,6 +30,11 @@ angular.module('ElasticSearchResource')
                 }
             };
         };
+
+        var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = this.getDefault();
+        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
+
         this.getDefaultSearchView = function () {
             return searchSettings.defaultSearchView;
         };
