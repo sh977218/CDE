@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class OriginEditTest extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 3)
     void originEdit() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Person Gender Text Type");

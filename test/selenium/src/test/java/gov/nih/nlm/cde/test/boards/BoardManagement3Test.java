@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class BoardManagement3Test extends BoardTest {
 
-    @Test
+    @Test(priority = 3)
     public void editBoard() {
         mustBeLoggedInAs(boarduserEdit_username, password);
         createBoard("Edit Board", "Test");

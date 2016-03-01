@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class CreateCdeTest extends BaseClassificationTest {
 
-    @Test
+    @Test(priority = -1)
     public void createCde() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         String name = "Abracadabra";

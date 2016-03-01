@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClassificationFilter extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 4)
     public void classificationFilters() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("Image");

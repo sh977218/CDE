@@ -35,7 +35,7 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
 
     }
 
-    @Test
+    @Test(priority = 4)
     public void uploadMaliciousAttachment() {
         String cde = "Stasis dilation upper urinary tract indicator";
         mustBeLoggedInAs(ninds_username, password);

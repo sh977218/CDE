@@ -47,7 +47,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textPresent("CDE QuickBoard (0)");
     }
 
-    @Test
+    @Test(priority = 5)
     public void removeOneFromCdeQuickBoard() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-OHSU Knight"));
@@ -74,7 +74,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textNotPresent(toRemove);
     }
 
-    @Test
+    @Test(priority = 5)
     public void goToEmptyQuickBoard() {
         goHome();
         textPresent("Quick Board (0)");

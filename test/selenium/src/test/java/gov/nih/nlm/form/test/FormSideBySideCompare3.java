@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class FormSideBySideCompare3 extends NlmCdeBaseTest {
 
-    @Test
+    @Test(priority = 3)
     public void formSideBySideCompare3() {
         mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm3");
