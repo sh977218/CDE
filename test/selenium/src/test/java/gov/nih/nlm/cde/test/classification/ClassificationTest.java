@@ -42,7 +42,7 @@ public class ClassificationTest extends BaseClassificationTest {
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
 		textPresent("classMgtUser");
 		textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
-		textPresent("Add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+		textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
 	}
 
     @Test(dependsOnMethods = {"addClassification"})
@@ -82,7 +82,7 @@ public class ClassificationTest extends BaseClassificationTest {
 		textNotPresent("Myasthenia Gravis");
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
 		textPresent("classMgtUser");
-		textPresent("Delete NINDS > Disease > Myasthenia Gravis");
+		textPresent("delete NINDS > Disease > Myasthenia Gravis");
 	}
 
 	@Test
@@ -97,29 +97,5 @@ public class ClassificationTest extends BaseClassificationTest {
         textPresent("NINDS (12");
 		textPresent("Imaging Diagnostics");
 	}
-
-	// Feature is Temporarily Disabled
-	// @Test
-//	public void classifyEntireSearch() {
-//		mustBeLoggedInAs(ninds_username, password);
-//		goToCdeSearch();
-//		findElement(By.id("li-blank-AECC")).click();
-//		textPresent("NCI Standard Template CDEs (7)");
-//		findElement(By.id("classifyAll")).click();
-//		findElement(By.xpath("//span[text()='Population']")).click();
-//		findElement(By.xpath("//div[@id='addClassification-Adult']//button"))
-//				.click();
-//		textPresent("Search result classified");
-//		goToCdeByName("Noncompliant Reason Text");
-//		findElement(By.linkText("Classification")).click();
-//		textPresent("NINDS");
-//		textPresent("Population");
-//		textPresent("Adult");
-//		goToCdeByName("Adverse Event Ongoing Event Indicator");
-//		findElement(By.linkText("Classification")).click();
-//		textPresent("NINDS");
-//		textPresent("Population");
-//		textPresent("Adult");
-//	}
 
 }
