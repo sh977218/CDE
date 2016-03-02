@@ -1,8 +1,15 @@
+// usage: node loadLoincFields.js /temp/loinc.csv
+// path to loinc csv needs to be argument #2 right after 'node load(..).js'
+
 var csv = require('csv')
     , fs = require('fs')
     , byline = require('byline')
+    , async = require('async')
     , mongo_cde = require('../../modules/cde/node-js/mongo-cde.js')
+    , mongo_form = require('../../modules/form/node-js/mongo-form.js')
 ;
+
+var loincCsvPath = process.argv[2];
 
 var loincXmlMap = {
     0: 'LOINC_NUM'
@@ -14,6 +21,7 @@ var loincXmlMap = {
     , 6: 'METHOD_TYP'
     , 12: 'STATUS'
     , 23: 'SHORTNAME'
+    , 27: 'EXTERNAL_COPYRIGHT'
 };
 
 var loincData = function(){
@@ -26,22 +34,21 @@ var loincData = function(){
         return !!ld.data[id];
     };
     this.add = function(line){
-        //TODO: concurency on callback? some els wont fit in...
         csv.parse(line, function(err, data){
             var ar = data[0];
             var loincId = ar[0].replace(/"/g,"");
             if (!ld.doWeCare(loincId)) return;
             ld.data[loincId] = {};
             Object.keys(loincXmlMap).forEach(function(k){
-                ld.data[loincId][loincXmlMap[k]] = ar[k].replace(/"/g,"");
+                ld.data[loincId][loincXmlMap[k]] = ar[k]?ar[k].replace(/"/g,""):null;
             });
         });
     };
     this.getPropertiesById = function(id){
         var obj = ld.data[id];
-        var output = "LOINC_NUM: " + id + ", ";
+        var output = "";
         Object.keys(obj).forEach(function(k){
-            output += k + ": " + obj[k] + ", ";
+            if (obj[k]) output += k + ": " + obj[k] + "<br> ";
         });
         output = output.substr(0, output.length-1);
         return output;
@@ -50,35 +57,45 @@ var loincData = function(){
 var loinc = new loincData();
 
 function createLoincMap(){
-    bylineStream = byline.createStream(fs.createReadStream('loinc.csv', {encoding: 'utf8'}));
+    bylineStream = byline.createStream(fs.createReadStream(loincCsvPath, {encoding: 'utf8'}));
     bylineStream.on('data', function (line) {
         if (line.indexOf('LOINC_NUM') > -1) return;
         loinc.add(line);
     });
     bylineStream.on('end', function () {
-        console.log(loinc.getPropertiesById('72826-1'));
-        updateCdes();
+        async.parallel([
+                function(callback){
+                    updateElts(mongo_cde.DataElement, callback);
+                },
+                function(callback){
+                    updateElts(mongo_form.Form, callback);
+                }
+            ],
+            function(err){
+                console.log('LOINC Update Successfully ended!');
+                process.exit();
+            });
     });
 }
 
 
-function lookupCdes(){
-    var cdeStream = mongo_cde.DataElement.find({"ids.source":"LOINC"}).stream();
-    cdeStream.on('data', function(cde){
+function lookupElts(model, cb){
+    var stream = model.find({"ids.source":"LOINC"}).stream();
+    stream.on('data', function(cde){
         var loincId;
         cde.ids.forEach(function(id){
             if (id.source === 'LOINC') loincId = id.id;
         });
         loinc.init(loincId);
     });
-    cdeStream.on('end', function(){
-        createLoincMap();
+    stream.on('end', function(){
+        cb();
     });
 }
 
-function updateCdes(){
-    var cdeStream = mongo_cde.DataElement.find({"ids.source":"LOINC"}).stream();
-    cdeStream.on('data', function(cde){
+function updateElts(model){
+    var stream = model.find({"ids.source":"LOINC"}).stream();
+    stream.on('data', function(cde){
         var loincId;
         cde.ids.forEach(function(id){
             if (id.source === 'LOINC') loincId = id.id;
@@ -88,18 +105,32 @@ function updateCdes(){
             if (prop.key === 'LOINC Fields') {
                 foundLoincProp = true;
                 prop.value = loinc.getPropertiesById(loincId);
+                prop.valueFormat = 'html';
             }
         });
         if (!foundLoincProp) {
             cde.properties.push({key: 'LOINC Fields', value: loinc.getPropertiesById(loincId)});
         }
-        //mongo_cde.DataElement.update({tinyId: cde.tinyId}, {});
         cde.save();
     });
-    cdeStream.on('end', function(){
-        createLoincMap();
+    stream.on('end', function(){
+
     });
 };
 
-lookupCdes();
+
+async.parallel([
+    function(callback){
+        lookupElts(mongo_cde.DataElement, callback);
+    },
+    function(callback){
+        lookupElts(mongo_form.Form, callback);
+    }
+],
+function(err){
+    createLoincMap();
+});
+
+
+
 

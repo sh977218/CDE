@@ -752,4 +752,10 @@ exports.init = function(app) {
 
         });
     });
+
+    app.post('/uploadLoincCsv', multer(), function (req, res) {
+        spawn('node', ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(){
+            console.log('load done');
+        });
+    });
 };

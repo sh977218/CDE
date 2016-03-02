@@ -1,0 +1,12 @@
+<div ng-controller="LoadLoincPropCtrl">
+    <div class="form-group">
+        <label for="src">Loinc CSV file</label>
+        <div class="input-group">
+            <input type="file" class="form-control" id="src" placeholder="Loinc CSV file" onchange="angular.element(this).scope().setFile(this)">
+            lcsv: {{loincCsv}}
+            <div class="input-group-btn">
+                <button class="btn btn-default btn-danger" ng-click="uploadLoincCsv(loincCsv)">Load Loinc Fields</button>
+            </div>
+        </div>
+    </div>
+</div>
