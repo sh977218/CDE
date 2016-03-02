@@ -48,7 +48,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         searchNestedClassifiedCdes();
         textPresent("NINDS (9");
         searchNestedClassifiedForms();
-        textPresent("NINDS (44)");
+        Assert.assertTrue(getNumberOfResults() > 40);
         gotoClassificationMgt();
 
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));

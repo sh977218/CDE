@@ -162,7 +162,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("comment Approval");
+        textPresent("comment approval");
         clickElement(By.cssSelector(".accordion-toggle"));
 
         String preClass = "";
