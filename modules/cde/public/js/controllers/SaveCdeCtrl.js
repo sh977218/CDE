@@ -1,4 +1,32 @@
-angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', function($scope, $modal) {
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http',
+    function($scope, $timeout, $http) {
+    // This controller shoudl be rename to PV Controller ?
+
+    $scope.sourceOptions = [
+        {displayAs: "NCI", source: "NCI", termType: "PT"},
+        {displayAs: "LOINC", source:"LNC", termType: "LA"}
+    ];
+
+    $scope.lookupAsSource = function() {
+        $timeout(function() {
+            $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
+                if (pv.codeSystemName === 'UMLS') {
+                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.selectedSource).then(function(result) {
+                       result.result.forEach(function(atom) {
+                           if (atom.termType === "PT") {
+
+                               pv.NCI = {
+
+                                   valueMeaningCode: atom.code.split('/')
+                               }
+                           }
+                       })
+                   })
+                }
+            });
+        }, 0);
+    };
+
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;
@@ -27,7 +55,6 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', fu
     $scope.addPv = function() {
         $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
     };
-
 
     $scope.canAddPv = function() {
         var result = true;
@@ -64,14 +91,13 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', fu
     };    
     
     $scope.convertVsacValueToPv = function(vsacValue) {
-        var mongoPv = {
+        return {
             "permissibleValue": vsacValue.displayName,
             "valueMeaningName": vsacValue.displayName,
             "valueMeaningCode": vsacValue.code,
             "codeSystemName": vsacValue.codeSystemName,
             "codeSystemVersion": vsacValue.codeSystemVersion
         };        
-        return mongoPv;
     };
 
 }]);

@@ -91,8 +91,7 @@ exports.getTicket = function(cb) {
             output += chunk;
         });
         res.on('end', function() {
-            var ticket = output;
-            cb(ticket);
+            cb(output);
         });
     });
     
@@ -129,5 +128,13 @@ exports.getValueSet = function(vs_id, cb) {
         });
 
         req.end();
+    });
+};
+
+exports.getAtomsFromUMLS = function(cui, source, res) {
+    this.getTicket(function(oneTimeTicket) {
+        var url = "https://uts-ws.nlm.nih.gov/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
+            + "&pageSize=500&ticket=" + oneTimeTicket;
+        request.get(url).pipe(res);
     });
 };

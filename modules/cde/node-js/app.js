@@ -417,6 +417,10 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get('/umlsAtomsBridge/:cui/:source', function(req, res) {
+       vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
+    });
+
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);
     });
