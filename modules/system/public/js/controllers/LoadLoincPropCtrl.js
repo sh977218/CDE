@@ -26,7 +26,7 @@ angular.module('systemModule').controller('LoadLoincPropCtrl', function ($scope,
         }, 1000);
         $timeout(function(){
             $interval.cancel(i);
-        }, 60000);
+        }, 4 * 60 * 1000);
     };
 
     function uploadProgress(evt) {
