@@ -250,7 +250,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
                     "orgs": {
                         "terms": {
                             "field": "classification.stewardOrg.name",
-                            "size": 40,
+                            "size": 500,
                             "order": {
                                 "_term": "desc"
                             }
