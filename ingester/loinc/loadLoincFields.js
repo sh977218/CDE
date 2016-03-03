@@ -63,6 +63,7 @@ function createLoincMap(){
         loinc.add(line);
     });
     bylineStream.on('end', function () {
+        console.log("Updating elements in database.");
         async.parallel([
                 function(callback){
                     updateElts(mongo_cde.DataElement, callback);
@@ -94,7 +95,7 @@ function lookupElts(model, cb){
 }
 
 function updateElts(model){
-    var stream = model.find({"ids.source":"LOINC"}).stream();
+    var stream = model.find({"ids.source": "LOINC"}).stream();
     stream.on('data', function(cde){
         var loincId;
         cde.ids.forEach(function(id){
@@ -121,6 +122,7 @@ function updateElts(model){
 
 async.parallel([
     function(callback){
+        console.log("Searching CDEs & Forms with LOINC IDs.");
         lookupElts(mongo_cde.DataElement, callback);
     },
     function(callback){
@@ -128,6 +130,7 @@ async.parallel([
     }
 ],
 function(err){
+    console.log("Parsing loing.csv and storing it in memory.");
     createLoincMap();
 });
 
