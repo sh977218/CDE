@@ -96,7 +96,7 @@ public abstract class CommentTest extends CommonTest {
         doLogin(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("Comment Approval");
+        textPresent("comment approval");
         clickElement(By.cssSelector(".accordion-toggle"));
 
         String preClass = "";
@@ -162,7 +162,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("Comment Approval");
+        textPresent("comment approval");
         clickElement(By.cssSelector(".accordion-toggle"));
 
         String preClass = "";

@@ -75,7 +75,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Smoking Status");
     }
 
-
     @Test
     public void unitOfMeasure() {
         goToCdeByName("Laboratory Procedure Blood");
