@@ -66,7 +66,7 @@ public class ExportTest extends NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
 
-        findElement(By.id("export")).click();
+        clickElement(By.id("export"));
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
         closeAlert();

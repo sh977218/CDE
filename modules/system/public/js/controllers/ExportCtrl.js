@@ -18,7 +18,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             var exporters =
             {
                 'csv': function(result) {
-                    var settings = SearchSettings.getPromise().then(function(settings) {
+                   SearchSettings.getPromise().then(function(settings) {
                         var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
                         JSON.parse(result).forEach(function (ele) {
                             csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
@@ -71,20 +71,23 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
     };
 
     $scope.quickBoardExport = function (quickBoard) {
-        var result = exports.exportHeader.cdeHeader;
-        quickBoard.elts.forEach(function (ele) {
-            result += exports.convertToCsv(exports.projectCdeForExport(ele));
-        });
-        if (result) {
-            var blob = new Blob([result], {
-                type: "text/csv"
+        SearchSettings.getPromise().then(function(settings) {
+            var result = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+            quickBoard.elts.forEach(function (ele) {
+                result += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
             });
-            saveAs(blob, 'QuickBoardExport' + '.csv');
-            $scope.addAlert("success", "Export downloaded.");
-            $scope.feedbackClass = ["fa-download"];
-        } else {
-            $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
-        }
+
+            if (result) {
+                var blob = new Blob([result], {
+                    type: "text/csv"
+                });
+                saveAs(blob, 'QuickBoardExport' + '.csv');
+                $scope.addAlert("success", "Export downloaded.");
+                $scope.feedbackClass = ["fa-download"];
+            } else {
+                $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+            }
+        });
     }
 
 }])

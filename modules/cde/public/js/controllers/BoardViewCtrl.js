@@ -1,4 +1,8 @@
-angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', function ($scope, $routeParams, $http, OrgHelpers, userResource) {
+angular.module('cdeModule').controller('BoardViewCtrl',
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings',
+        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings)
+{
+
     $scope.module = 'cde';
     $scope.cdes = [];
 
@@ -35,13 +39,13 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
                     });
                 }
             }).
-            error(function (response) {
+            error(function () {
                 $scope.addAlert("danger", "Board not found");
             });
     };
 
     $scope.unpin = function (pin) {
-        $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function (response) {
+        $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function () {
             $scope.reload();
         });
     };
@@ -49,25 +53,24 @@ angular.module('cdeModule').controller('BoardViewCtrl', ['$scope', '$routeParams
     $scope.exportBoard = function () {
         $http.get('/board/' + $scope.board._id + '/0/500')
             .success(function (response) {
-                var csv = exports.exportHeader.cdeHeader;
-                response.cdes.forEach(function (ele) {
-                    csv += exports.convertToCsv(exports.projectCdeForExport(ele));
-                });
-                if (csv) {
-                    var blob = new Blob([csv], {
-                        type: "text/csv"
+                SearchSettings.getPromise().then(function (settings) {
+                    var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+                    response.cdes.forEach(function (ele) {
+                        csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
                     });
-                    saveAs(blob, 'BoardExport' + '.csv');
-                    $scope.addAlert("success", "Export downloaded.");
-                    $scope.feedbackClass = ["fa-download"];
-                } else {
-                    $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
-                }
-            })
-            .error(function (data, status, headers, config) {
-            })
+                    if (csv) {
+                        var blob = new Blob([csv], {
+                            type: "text/csv"
+                        });
+                        saveAs(blob, 'BoardExport' + '.csv');
+                        $scope.addAlert("success", "Export downloaded.");
+                        $scope.feedbackClass = ["fa-download"];
+                    } else {
+                        $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+                    }
+                });
+            });
     };
-
 
     $scope.reload();
 
