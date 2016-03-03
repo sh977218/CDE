@@ -138,3 +138,11 @@ exports.getAtomsFromUMLS = function(cui, source, res) {
         request.get(url).pipe(res);
     });
 };
+
+exports.getUMLSBySourceId = function(source, id, res) {
+    this.getTicket(function(oneTimeTicket) {
+        var url = "https://uts-ws.nlm.nih.gov/rest/search/current?ticket=" +
+        oneTimeTicket + "&searchType=exact&returnIdType=concept&string=" + id + "&inputType=sourceUi&sabs=" + source;
+        request.get(url).pipe(res);
+    });
+};

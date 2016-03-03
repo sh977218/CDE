@@ -1,23 +1,36 @@
 angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http',
-    function($scope, $timeout, $http) {
+    function($scope, $timeout, $http)
+{
+
     // This controller shoudl be rename to PV Controller ?
 
+    $scope.umls = {};
     $scope.sourceOptions = [
         {displayAs: "NCI", source: "NCI", termType: "PT"},
         {displayAs: "LOINC", source:"LNC", termType: "LA"}
     ];
 
+    $scope.replaceWithUMLS = function () {
+        $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+            if (pv.codeSystemName === 'NCI Thesaurus') {
+                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(result) {
+                    var uriArr = result.data.result.results[0].uri.split("/");
+                    console.log(uriArr[uriArr.length - 1]);
+                });
+            }
+        })
+    };
+
     $scope.lookupAsSource = function() {
         $timeout(function() {
             $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
                 if (pv.codeSystemName === 'UMLS') {
-                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.selectedSource).then(function(result) {
+                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.umls.selectedSource).then(function(result) {
                        result.result.forEach(function(atom) {
                            if (atom.termType === "PT") {
-
+                               var codeArr = atom.code.split('/');
                                pv.NCI = {
-
-                                   valueMeaningCode: atom.code.split('/')
+                                   valueMeaningCode: codeArr[codeArr.length - 1]
                                }
                            }
                        })

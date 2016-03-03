@@ -16,6 +16,7 @@
 
 <div class="row">
     <div class="col-md-6">
+        <button class="btn btn-default" style="margin-bottom: 10px" ng-click="replaceWithUMLS()">Replace with UMLS Codes</button>
         <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
                summary="List of permissible values">
             <thead>
@@ -71,7 +72,7 @@
         </table>
     </div>
     <div class="col-md-6">
-        <select ng-model="selectedSource" ng-change="lookupAsSource()">
+        <select ng-model="umls.selectedSource" ng-change="lookupAsSource()">
             <option ng-repeat="option in sourceOptions" value="{{option.source}}">{{option.displayAs}}</option>
         </select>
         <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
