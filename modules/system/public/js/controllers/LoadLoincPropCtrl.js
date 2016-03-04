@@ -41,7 +41,7 @@ angular.module('systemModule').controller('LoadLoincPropCtrl', function ($scope,
         $rootScope.$apply(function () {
             $scope.status.progress = null;
             if (evt.target.status !== 200) $scope.status = {error: "Cannot upload loinc.csv"};
-            else $scope.status = {success: "Loinc CSV uploaded. Parsing."}
+            else $scope.status = {info: "Loinc CSV is being parsed."}
         });
     }
 
