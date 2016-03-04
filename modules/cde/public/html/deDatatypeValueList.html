@@ -88,14 +88,17 @@
             <tbody>
             <tr id="pvAsTr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
                 <td tabindex="0" headers="value" id="pvAs-{{$index}}">{{pv.permissibleValue}}</td>
-                <td tabindex="0" headers="codeName" id="pvAsName-{{$index}}">{{pv[selectedSource].valueMeaningName}}</td>
-                <td tabindex="0" headers="code" id="pvAsCode-{{$index}}">{{pv[selectedSource].valueMeaningCode}}</td>
-                <td tabindex="0" headers="codeSystem" id="pvAsCodeSystem-{{$index}}">{{pv[selectedSource].codeSystemName}}</td>
+                <td tabindex="0" headers="codeName" id="pvAsName-{{$index}}">{{pv[umls.selectedSource].valueMeaningName}}</td>
+                <td tabindex="0" headers="code" id="pvAsCode-{{$index}}">{{pv[umls.selectedSource].valueMeaningCode}}</td>
+                <td tabindex="0" headers="codeSystem" id="pvAsCodeSystem-{{$index}}">{{pv[umls.selectedSource].codeSystemName}}</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+{{elt.valueDomain.permissibleValues}}
+
 <div class="mt20">
     <a class="btn btn-small btn-default" ng-show="canCurate" ng-click="addPv()" ng-disabled="!canAddPv()">
         <i id="addPv" class="fa fa-plus"></i> Add Permissible Value</a>
