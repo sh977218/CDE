@@ -13,9 +13,11 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
     $scope.replaceWithUMLS = function () {
         $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
             if (pv.codeSystemName === 'NCI Thesaurus') {
-                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(result) {
-                    var uriArr = result.data.result.results[0].uri.split("/");
-                    console.log(uriArr[uriArr.length - 1]);
+                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
+                    pv.valueMeaningCode = response.data.result.results[0].ui;
+                    pv.valueMeaningName = response.data.result.results[0].name;
+                    pv.codeSystemName = "UMLS";
+                    $scope.stageElt($scope.elt);
                 });
             }
         })
@@ -25,12 +27,14 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         $timeout(function() {
             $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
                 if (pv.codeSystemName === 'UMLS') {
-                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.umls.selectedSource).then(function(result) {
-                       result.result.forEach(function(atom) {
+                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.umls.selectedSource).then(function(response) {
+                       response.data.result.forEach(function(atom) {
                            if (atom.termType === "PT") {
                                var codeArr = atom.code.split('/');
-                               pv.NCI = {
-                                   valueMeaningCode: codeArr[codeArr.length - 1]
+                               pv[$scope.umls.selectedSource] = {
+                                   valueMeaningName: atom.name,
+                                   valueMeaningCode: codeArr[codeArr.length - 1],
+                                   codeSystemName: "NCI Thesaurus/LOINC"
                                }
                            }
                        })
