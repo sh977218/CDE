@@ -754,4 +754,16 @@ public class NlmCdeBaseTest {
         clickElement(By.id("more_tab"));
         textNotPresent("More...");
     }
+
+    protected void loadDefaultSettings() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("loadDefaultSettings"));
+        textPresent("Default settings loaded");
+        closeAlert();
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
+        closeAlert();
+    }
+
+
 }

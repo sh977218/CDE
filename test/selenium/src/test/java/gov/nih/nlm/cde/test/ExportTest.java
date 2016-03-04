@@ -18,13 +18,7 @@ public class ExportTest extends NlmCdeBaseTest {
     @Test
     public void searchExport() {
         mustBeLoggedOut();
-        clickElement(By.id("searchSettings"));
-        clickElement(By.id("loadDefaultSettings"));
-        textPresent("Default settings loaded");
-        closeAlert();
-        clickElement(By.id("saveSettings"));
-        textPresent("Settings saved!");
-        closeAlert();
+        loadDefaultSettings();
 
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
@@ -132,6 +126,9 @@ public class ExportTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeQuickBoardExport() {
+        mustBeLoggedOut();
+        loadDefaultSettings();
+
         addCdeToQuickBoard("Intravesical Protocol Agent Administered Specify");
         addCdeToQuickBoard("Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing scale");
         addCdeToQuickBoard("User Login Name java.lang.String");
@@ -146,10 +143,10 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("qb_cde_empty")).click();
 
         String[] expected = {
-                "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
-                "\"Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing  scale\",\"Like voices commenting, voices conversing are cons",
-                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"caDSR: 2399243 v1",
-                "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"caDSR: 2223533 v3\",\"caCORE\",\"Qualified\",\"\",\"caBIG; caCORE\","
+                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+                "\"Scale for the Assessment of Positive Symptoms (SAPS) - voice conversing  scale\",\"Like voices commenting, voices conversing are considered a Schneiderian first-rank symptom. They involve hearing two or more voices talking with one another, usually discussing something about the subject. As in the case of voices commenting, they should be scored independently of other auditory hallucinations.  Have you heard two or more voices talking with each other?  What did they say?\",\"Value List\",\"0; 1; 2; 3; 4; 5\",\"6\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09512 v3; NINDS Variable Name: SAPSVocConvrsngScale\"",
+                "\"Intravesical Protocol Agent Administered Specify\",\"No explain\",\"CHARACTER\",\"\",\"\",\"CTEP\",\"CTEP\",\"Qualified\",\"caDSR: 2399243 v1\"",
+                "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"\",\"caCORE\",\"caBIG; caCORE\",\"Qualified\",\"caDSR: 2223533 v3\""
         };
 
         try {
