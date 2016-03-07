@@ -19,13 +19,11 @@
         <button class="btn btn-default" style="margin-bottom: 10px" ng-click="replaceWithUMLS()">Replace with UMLS
             Codes
         </button>
-        <input ng-model="selectedMappings.NCI" type="checkbox">View NCI Mapping
-        <input ng-model="selectedMappings.LNC" type="checkbox">View LOINC Mapping
+        <span ng-repeat="(key, value) in srcOptions">
+            <input ng-model="selectedMappings[key]" type="checkbox">View {{value.displayAs}} Mapping
+        </span>
     </div>
 
-    <!--<select ng-model="umls.selectedSource" ng-change="lookupAsSource()">-->
-    <!--<option ng-repeat="option in sourceOptions" value="{{option.source}}">{{option.displayAs}}</option>-->
-    <!--</select>-->
     <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
            summary="List of permissible values">
         <thead>
@@ -34,7 +32,7 @@
             <th tabindex="0" id="codeName">Code Name</th>
             <th tabindex="0" id="code">Code</th>
             <th tabindex="0" id="codeSystem">Code System</th>
-            <th tabindex="0" id="NCICodeName" ng-if="selectedMappings.NCI" colspan="2">NCI</th>
+            <th tabindex="0" id="NCICodeName" ng-if="selectedMappings.NCI" colspan="2">NCI Thesaurus</th>
             <th tabindex="0" id="LNCCodeName" ng-if="selectedMappings.LNC" colspan="2">LOINC</th>
             <th tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
             <th tabindex="0" id="actions" ng-show="canCurate">Actions</th>
