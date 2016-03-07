@@ -4,7 +4,22 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
 
     // This controller shoudl be rename to PV Controller ?
 
-    $scope.umls = {};
+    //$scope.umls = {};
+
+    $scope.selectedMappings = {
+        NCI: false,
+        LNC: false
+    };
+
+    $scope.$watch('selectedMappings.NCI', function() {
+        if ($scope.selectedMappings.NCI) lookupAsSource('NCI');
+    });
+    $scope.$watch('selectedMappings.LNC', function() {
+        if ($scope.selectedMappings.LNC) lookupAsSource('LNC');
+    });
+
+
+
     $scope.sourceOptions = [
         {displayAs: "NCI", source: "NCI", termType: "PT"},
         {displayAs: "LOINC", source:"LNC", termType: "LA"}
@@ -19,19 +34,27 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
                     pv.codeSystemName = "UMLS";
                     $scope.stageElt($scope.elt);
                 });
+            } else if (!pv.codeSystemName) {
+                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
+                    if (pv.valueMeaningName.toLowerCase() === response.data.result.results[0].name.toLowerCase()) {
+                        pv.valueMeaningCode = response.data.result.results[0].ui;
+                        pv.codeSystemName = "UMLS";
+                        $scope.stageElt($scope.elt);
+                    }
+                });
             }
         })
     };
 
-    $scope.lookupAsSource = function() {
+    var lookupAsSource = function(src) {
         $timeout(function() {
             $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
                 if (pv.codeSystemName === 'UMLS') {
-                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + $scope.umls.selectedSource).then(function(response) {
+                   $http.get("/umlsAtomsBridge/" + pv.valueMeaningCode + "/" + src).then(function(response) {
                        response.data.result.forEach(function(atom) {
-                           if (atom.termType === "PT") {
+                           if (atom.termType === "PT" || atom.termType === "LA" ) {
                                var codeArr = atom.code.split('/');
-                               pv[$scope.umls.selectedSource] = {
+                               pv[src] = {
                                    valueMeaningName: atom.name,
                                    valueMeaningCode: codeArr[codeArr.length - 1],
                                    codeSystemName: "NCI Thesaurus/LOINC"

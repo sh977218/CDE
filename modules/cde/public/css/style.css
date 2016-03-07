@@ -975,3 +975,7 @@ div + .questionPlaceholder {
 #searchResult-buttons {
     margin: 5px;
 }
+
+.leftSeparator {
+    border-left: 5px solid black;
+}
