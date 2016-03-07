@@ -89,5 +89,12 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
 
+    protected void goToPublicBoard(String boardName) {
+        gotoPublicBoards();
+        findElement(By.name("search")).sendKeys("\"" + boardName + "\"");
+        findElement(By.id("search.submit")).click();
+        clickElement(By.linkText(boardName));
+    }
+
 
 }

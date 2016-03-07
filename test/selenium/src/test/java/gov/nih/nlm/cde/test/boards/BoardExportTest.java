@@ -19,7 +19,7 @@ public class BoardExportTest extends BoardTest {
 
         String board_name = "Board Export Test";
 
-        goToBoard(board_name);
+        goToPublicBoard(board_name);
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
         textPresent("Export downloaded.");
