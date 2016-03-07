@@ -13,90 +13,89 @@
 
 <div ng-show="elt.valueDomain.permissibleValues.length === 0">No Permissible Values</div>
 
-
 <div class="row">
     <div class="col-md-12">
-        <button class="btn btn-default" style="margin-bottom: 10px" ng-click="replaceWithUMLS()">Replace with UMLS
-            Codes
-        </button>
+        <!--<button class="btn btn-default" style="margin-bottom: 10px" ng-click="replaceWithUMLS()">Replace with UMLS-->
+            <!--Codes-->
+        <!--</button>-->
+        <div ng-if="srcOptions.NCI">The list of codes below includes UMLS codes, you can also view them as:</div>
         <span ng-repeat="(key, value) in srcOptions">
-            <input ng-model="selectedMappings[key]" type="checkbox">View {{value.displayAs}} Mapping
+            <input ng-model="value.selected" type="checkbox">{{value.displayAs}} Codes
         </span>
+
+        <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
+               summary="List of permissible values">
+            <thead>
+            <tr>
+                <th tabindex="0" id="value">Value</th>
+                <th tabindex="0" id="codeName">Code Name</th>
+                <th tabindex="0" id="code">Code</th>
+                <th tabindex="0" id="codeSystem">Code System</th>
+                <th tabindex="0" id="NCICodeName" ng-if="srcOptions.NCI.selected" colspan="2">NCI Thesaurus</th>
+                <th tabindex="0" id="LNCCodeName" ng-if="srcOptions.LNC.selected" colspan="2">LOINC</th>
+                <th tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
+                <th tabindex="0" id="actions" ng-show="canCurate">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
+                <td tabindex="0" headers="value" id="pv-{{$index}}">
+                    <div inline-edit model="pv.permissibleValue" is-allowed="canCurate"
+                         on-ok="stageElt(elt);checkPvUnicity();"></div>
+                </td>
+                <td tabindex="0" headers="codeName" id="pvName-{{$index}}">
+                    <div inline-edit model="pv.valueMeaningName" is-allowed="canCurate"
+                         typeahead-source="pVTypeheadVsacNameList"
+                         on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+                </td>
+                <td tabindex="0" headers="code" id="pvCode-{{$index}}">
+                    <div inline-edit model="pv.valueMeaningCode" is-allowed="canCurate"
+                         on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+                </td>
+                <td tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}">
+                    <div inline-edit model="pv.codeSystemName" is-allowed="canCurate"
+                         typeahead-source="pVTypeaheadCodeSystemNameList"
+                         on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+                </td>
+                <td tabindex="0" headers="NCICodeName" id="pvAsName-{{$index}}" ng-if="srcOptions.NCI.selected">
+                    {{pv.NCI.valueMeaningName}}
+                </td>
+                <td tabindex="0" headers="NCICodeName" id="pvAsNCI-{{$index}}" ng-if="srcOptions.NCI.selected">
+                    {{pv.NCI.valueMeaningCode}}
+                </td>
+                <td tabindex="0" headers="LNCCodeName" id="pvAsName-{{$index}}" ng-if="srcOptions.LNC.selected">
+                    {{pv.LNC.valueMeaningName}}
+                </td>
+                <td tabindex="0" headers="LNCCodeName" id="pvAsNCI-{{$index}}" ng-if="srcOptions.LNC.selected">
+                    {{pv.LNC.valueMeaningCode}}
+                </td>
+                <td tabindex="0" headers="validation" ng-show="vsacMappingExists() || compareView">
+                     <span ng-switch="pv.isValid">
+                         <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
+                         <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
+                     </span>
+                </td>
+                <td tabindex="0" headers="actions" ng-if="canCurate">
+                        <span ng-if="pv.notValid">
+                            <span class="btn-default fa fa-warning text-danger" id="pv-{{$index}}-notValid"> </span>
+                        </span>
+                        <span id="pvRemove-{{$index}}" class="btn-default fa fa-trash-o" ng-click="removePv($index)"
+                              title="Remove"
+                              href=""></span>
+                    <span sortable-array="elt.valueDomain.permissibleValues" index="$index" cb="stageElt(elt)"></span>
+                </td>
+            </tr>
+
+            <tr tabindex="0" ng-show="elt.valueDomain.permissibleValues.length > pvLimit">
+                <td colspan="6">Showing {{pvLimit}} values.
+                    <a class="btn btn-small btn-default fa fa-plus" ng-click="pvLimit = pvLimit + 50" id="showMorePvs"> Show
+                        more</a>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
     </div>
-
-    <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
-           summary="List of permissible values">
-        <thead>
-        <tr>
-            <th tabindex="0" id="value">Value</th>
-            <th tabindex="0" id="codeName">Code Name</th>
-            <th tabindex="0" id="code">Code</th>
-            <th tabindex="0" id="codeSystem">Code System</th>
-            <th tabindex="0" id="NCICodeName" ng-if="selectedMappings.NCI" colspan="2">NCI Thesaurus</th>
-            <th tabindex="0" id="LNCCodeName" ng-if="selectedMappings.LNC" colspan="2">LOINC</th>
-            <th tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
-            <th tabindex="0" id="actions" ng-show="canCurate">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
-            <td tabindex="0" headers="value" id="pv-{{$index}}">
-                <div inline-edit model="pv.permissibleValue" is-allowed="canCurate"
-                     on-ok="stageElt(elt);checkPvUnicity();"></div>
-            </td>
-            <td tabindex="0" headers="codeName" id="pvName-{{$index}}">
-                <div inline-edit model="pv.valueMeaningName" is-allowed="canCurate"
-                     typeahead-source="pVTypeheadVsacNameList"
-                     on-ok="stageElt(elt); runDelayedManualValidation();"></div>
-            </td>
-            <td tabindex="0" headers="code" id="pvCode-{{$index}}">
-                <div inline-edit model="pv.valueMeaningCode" is-allowed="canCurate"
-                     on-ok="stageElt(elt); runDelayedManualValidation();"></div>
-            </td>
-            <td tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}">
-                <div inline-edit model="pv.codeSystemName" is-allowed="canCurate"
-                     typeahead-source="pVTypeaheadCodeSystemNameList"
-                     on-ok="stageElt(elt); runDelayedManualValidation();"></div>
-            </td>
-            <td tabindex="0" headers="NCICodeName" id="pvAsName-{{$index}}" ng-if="selectedMappings.NCI">
-                {{pv.NCI.valueMeaningName}}
-            </td>
-            <td tabindex="0" headers="NCICodeName" id="pvAsNCI-{{$index}}" ng-if="selectedMappings.NCI">
-                {{pv.NCI.valueMeaningCode}}
-            </td>
-            <td tabindex="0" headers="LNCCodeName" id="pvAsName-{{$index}}" ng-if="selectedMappings.LNC">
-                {{pv.LNC.valueMeaningName}}
-            </td>
-            <td tabindex="0" headers="LNCCodeName" id="pvAsNCI-{{$index}}" ng-if="selectedMappings.LNC">
-                {{pv.LNC.valueMeaningCode}}
-            </td>
-            <td tabindex="0" headers="validation" ng-show="vsacMappingExists() || compareView">
-                 <span ng-switch="pv.isValid">
-                     <i ng-switch-when="true" class="fa fa-check text-success" id="pv-{{$index}}-valid"></i>
-                     <i ng-switch-default class="fa fa-exclamation text-warning" id="pv-{{$index}}-warning"></i>
-                 </span>
-            </td>
-            <td tabindex="0" headers="actions" ng-if="canCurate">
-                    <span ng-if="pv.notValid">
-                        <span class="btn-default fa fa-warning text-danger" id="pv-{{$index}}-notValid"> </span>
-                    </span>
-                    <span id="pvRemove-{{$index}}" class="btn-default fa fa-trash-o" ng-click="removePv($index)"
-                          title="Remove"
-                          href=""></span>
-                <span sortable-array="elt.valueDomain.permissibleValues" index="$index" cb="stageElt(elt)"></span>
-            </td>
-        </tr>
-
-        <tr tabindex="0" ng-show="elt.valueDomain.permissibleValues.length > pvLimit">
-            <td colspan="6">Showing {{pvLimit}} values.
-                <a class="btn btn-small btn-default fa fa-plus" ng-click="pvLimit = pvLimit + 50" id="showMorePvs"> Show
-                    more</a>
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
-</div>
 </div>
 
 <div class="mt20">

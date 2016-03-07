@@ -1,44 +1,42 @@
 angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http',
     function($scope, $timeout, $http)
 {
+    // @TODO This controller should be renamed to PV Controller ?
 
-    // This controller should be renamed to PV Controller ?
+    $scope.srcOptions = {};
 
-    $scope.selectedMappings = {
-        NCI: false,
-        LNC: false
-    };
+    function initSrcOptions() {
+        for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
+            if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
+                $scope.srcOptions = {
+                    NCI: {displayAs: "NCI", termType: "PT", selected: false},
+                    LNC: {displayAs: "LOINC", termType: "LA", selected: false}
+                };
+                Object.keys($scope.srcOptions).forEach(function(srcKey) {
+                    $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
+                        if ($scope.srcOptions[srcKey].selected) {
+                            lookupAsSource(srcKey);
+                        }
+                    });
+                });
+                i = $scope.elt.valueDomain.permissibleValues.length;
+            }
+        }
 
-    $scope.srcOptions = {
-        NCI: {displayAs: "NCI", termType: "PT"},
-        LNC: {displayAs: "LOINC", termType: "LA"}
-    };
-
-    Object.keys($scope.srcOptions).forEach(function(srcKey) {
-        $scope.$watch('selectedMappings' + srcKey, function() {
-            lookupAsSource(srcKey);
-        });
-    });
+    }
 
     $scope.replaceWithUMLS = function () {
         $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
-            if (pv.codeSystemName === 'NCI Thesaurus') {
+            if (pv.codeSystemName === 'NCI Thesaurus' || !pv.codeSystemName) {
                 $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
                     pv.valueMeaningCode = response.data.result.results[0].ui;
                     pv.valueMeaningName = response.data.result.results[0].name;
                     pv.codeSystemName = "UMLS";
                     $scope.stageElt($scope.elt);
-                });
-            } else if (!pv.codeSystemName) {
-                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
-                    if (pv.valueMeaningName.toLowerCase().trim() === response.data.result.results[0].name.toLowerCase().trim()) {
-                        pv.valueMeaningCode = response.data.result.results[0].ui;
-                        pv.codeSystemName = "UMLS";
-                        $scope.stageElt($scope.elt);
-                    }
+                    initSrcOptions();
                 });
             }
-        })
+        });
     };
 
     var lookupAsSource = function(src) {
@@ -51,7 +49,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
                                var codeArr = atom.code.split('/');
                                pv[src] = {
                                    valueMeaningName: atom.name,
-                                   valueMeaningCode: codeArr[codeArr.length - 1],
+                                   valueMeaningCode: codeArr[codeArr.length - 1]
                                }
                            }
                        })
@@ -60,6 +58,8 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
             });
         }, 0);
     };
+
+    initSrcOptions();
 
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
