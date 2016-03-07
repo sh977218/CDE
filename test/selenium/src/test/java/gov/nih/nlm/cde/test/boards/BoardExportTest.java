@@ -14,20 +14,25 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class BoardExportTest extends BoardTest {
     @Test
     public void boardExport() {
-        mustBeLoggedInAs("boardexport", password);
-        
+        mustBeLoggedOut();
+        loadDefaultSettings();
+
         String board_name = "Board Export Test";
 
-        goToBoard(board_name);
+        findElement(By.linkText("Boards")).click();
+        findElement(By.name("search")).sendKeys("\"" + board_name + "\"");
+        findElement(By.id("search.submit")).click();
+        clickElement(By.linkText(board_name));
+
         textPresent("Export Board");
         findElement(By.id("mb.export")).click();
         textPresent("Export downloaded.");
         closeAlert();
 
         String[] expected = {
-            "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By",
-            "PTSD Checklist Military (PCLM) - Happening again indicator","Suddenly acting or feeling as if the stressful experience were happening again (as if you were reliving it)?","Value List","1; 2; 3; 4; 5","NINDS: C07394 v3; NINDS Variable Name: PCLMHappeningAgainInd","NINDS","Qualified","","NINDS",
-            "Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale","My Parkinson�s symptoms cause me to stay away from social gatherings","Value List","Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree","NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale","NINDS","Qualified","","NINDS"
+            "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+            "\"PTSD Checklist Military (PCLM) - Happening again indicator\",\"Suddenly acting or feeling as if the stressful experience were happening again (as if you were reliving it)?\",\"Value List\",\"1; 2; 3; 4; 5\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C07394 v3; NINDS Variable Name: PCLMHappeningAgainInd\"",
+            "\"Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale\",\"My Parkinson�s symptoms cause me to stay away from social gatherings\",\"Value List\",\"Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale\""
         };
 
         try {
@@ -37,7 +42,7 @@ public class BoardExportTest extends BoardTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/BoardExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-boardExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s);
+                    Assert.fail("missing line in export : " + s + " --- ACTUAL: " + actual);
                 }
             }
         } catch (IOException e) {

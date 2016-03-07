@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('BoardExportCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+angular.module('cdeModule').controller('BoardExportCtrl',
+    ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams)
+{
 
     $http.get("/board/" + $routeParams.boardId + "/0/500").
         success(function(response) {
@@ -25,7 +27,5 @@ angular.module('cdeModule').controller('BoardExportCtrl', ['$scope', '$http', '$
             if (response.statusCode === 403)
                 $scope.addAlert("danger", "Board too large");
         });
-
-
 }
 ]);

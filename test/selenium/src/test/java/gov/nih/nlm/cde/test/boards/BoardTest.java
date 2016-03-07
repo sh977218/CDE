@@ -89,5 +89,4 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
 
-
 }

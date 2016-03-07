@@ -2,6 +2,7 @@ angular.module('ElasticSearchResource')
     .factory('SearchSettings', function (localStorageService, $q, userResource) {
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
+
         this.saveConfiguration = function (settings) {
             searchSettings = settings;
             localStorageService.set("SearchSettings", settings);
@@ -29,6 +30,11 @@ angular.module('ElasticSearchResource')
                 }
             };
         };
+
+        var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = this.getDefault();
+        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
+
         this.getDefaultSearchView = function () {
             return searchSettings.defaultSearchView;
         };
@@ -43,9 +49,6 @@ angular.module('ElasticSearchResource')
                 return true;
             });
         };
-        var searchSettings = localStorageService.get("SearchSettings");
-        if (!searchSettings) searchSettings = this.getDefault();
-        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") {
                 if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
