@@ -29,7 +29,12 @@ function getUMLSBySourceId(source, id, cb) {
         request.get(url, function(err, response, body) {
             if (response.statusCode === 200)
                 cb(err, body);
-            else cb ("get UMLS - something happened." + err + "  --- " + response.statusCode);
+            else {
+                if (response.statusCode !== 404) {
+                    console.log("Err " + response.statusCode + " -- " + err);
+                }
+                cb ("get UMLS - something happened." + err + "  --- " + response.statusCode);
+            }
         });
     });
 }
@@ -41,17 +46,25 @@ function getAtomFromUMLS(cui, source, cb) {
         request.get(url, function(err, response, body) {
             if (response.statusCode === 200)
                 cb(err, body);
-            else cb ("getAtom - something happened." + err + "  --- " + response.statusCode);
+            else {
+                if (response.statusCode !== 404) {
+                    console.log("Err " + response.statusCode + " -- " + err);
+                }
+                cb ("getAtom - something happened." + err + "  --- " + response.statusCode);
+
+            }
+
+
         });
     });
 }
 
-umls.getTGT(function() {
+function startMapping() {
     var nbOfPvs = 0;
     var cdesTodo = 0;
     DataElement.find(
         {"valueDomain.permissibleValues.valueMeaningCode": {$exists: true}, archived: null,
-         "valueDomain.permissibleValues.codeSystemName": {$nin: ['AHRQ Common Formats', 'UMLS', 'NA']}}).limit(100).stream()
+            "valueDomain.permissibleValues.codeSystemName": {$nin: ['AHRQ Common Formats', 'UMLS', 'NA']}}).limit(50).stream()
         .on('data', function(cde) {
             cdesTodo++;
             console.log("starting CDE: " + cde.naming[0].designation);
@@ -63,11 +76,8 @@ umls.getTGT(function() {
             });
             if (allHaveCodes) {
                 nbOfPvs += cde.valueDomain.permissibleValues.length;
-                //console.log(cde.tinyId + " all Have Codes. (" + cde.valueDomain.permissibleValues.length + ") of "
-                //+ nbOfPvs);
 
                 async.eachSeries(cde.valueDomain.permissibleValues, function (pv, onePvDone) {
-                    //console.log("doing pv: " + pv.valueMeaningName);
                     var src;
                     if (!pv.codeSystemName || pv.codeSystemName.length === 0 || pv.codeSystemName === "NCI Thesaurus") {
                         src = "NCI";
@@ -75,35 +85,52 @@ umls.getTGT(function() {
                         src = "LNC"
                     }
                     if (src) {
-                        getUMLSBySourceId(src, pv.valueMeaningCode, function(err, umlsResult) {
-                            if (err) {
-                                pv.codeSystemName = "NA";
-                                return onePvDone(err);
-                            }
-                            else {
-                                umlsResult = JSON.parse(umlsResult);
-                                var cui = umlsResult.result.results[0].ui;
-                                var name = umlsResult.result.results[0].name;
+                        var pvCodes = [];
+                        var vmNames = [];
+                        async.eachSeries(pv.valueMeaningCode.split(":"), function(pvCode, oneCodeDone) {
+                            getUMLSBySourceId(src, pv.valueMeaningCode, function(err, umlsResult) {
+                                if (err) {
+                                    pv.codeSystemName = "NA";
+                                    return oneCodeDone(err);
+                                }
+                                else {
+                                    umlsResult = JSON.parse(umlsResult);
+                                    var cui = umlsResult.result.results[0].ui;
+                                    var name = umlsResult.result.results[0].name;
 
-                                getAtomFromUMLS(cui, src, function(err, atomResult) {
-                                    if (err) {
-                                        pv.codeSystemName = "NA";
-                                        return onePvDone(err);
-                                    }
-                                    atomResult = JSON.parse(atomResult);
-                                    atomResult.result.forEach(function(atom) {
-                                        if (atom.termType === srcOptions[src].termType) {
-                                            if (atom.name.toLowerCase().trim() === pv.valueMeaningName.toLowerCase().trim()) {
-                                                pv.valueMeaningName = name;
-                                                pv.valueMeaningCode = cui;
-                                                pv.codeSystemName = "UMLS";
-                                            }
+                                    getAtomFromUMLS(cui, src, function(err, atomResult) {
+                                        if (err) {
+                                            pv.codeSystemName = "NA";
+                                            return oneCodeDone(err);
                                         }
+                                        atomResult = JSON.parse(atomResult);
+                                        atomResult.result.forEach(function(atom) {
+                                            if (atom.termType === srcOptions[src].termType) {
+                                                vmNames.push(name);
+                                                pvCodes.push(cui);
+                                            } else {
+                                                return onePvDone("At Least one code not the same.");
+                                            }
+                                        });
+                                        oneCodeDone();
                                     });
-                                    onePvDone();
-                                });
+                                }
+                            })
+                        }, function allCodesDones(err) {
+                            if (err) return onePvDone(err);
+                            else {
+                                var finalName = vmNames.join(" ");
+                                if (finalName.toLowerCase().trim() === pv.valueMeaningName.toLowerCase().trim()) {
+                                    pv.valueMeaningName = finalName;
+                                    pv.valueMeaningCode = pvCodes.join(":");
+                                    pv.codeSystemName = "UMLS";
+                                }
+                                onePvDone();
                             }
-                        })
+
+                        });
+
+
                     } else {
                         onePvDone("Not a good src: " + pv.codeSystemName);
                     }
@@ -120,13 +147,18 @@ umls.getTGT(function() {
                 cdesTodo--;
             }
         }).on('end', function() {
-     setInterval(function() {
-         if (cdesTodo === 0) process.exit(0);
-         else {
-             console.log(cdesTodo + " cdes todo");
-         }
-     }, 2000)
+        setInterval(function() {
+            if (cdesTodo === 0) setTimeout(startMapping, 3000);
+            else {
+                console.log(cdesTodo + " cdes todo");
+            }
+        }, 2000)
     });
+}
+
+umls.getTGT(function() {
+    startMapping();
+
 });
 
 
