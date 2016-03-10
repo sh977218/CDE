@@ -191,5 +191,3 @@ conn.on('error', function (err) {
 conn.once('open', function callback() {
     setTimeout(processFile(), 3000);
 });
-
-

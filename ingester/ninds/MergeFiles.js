@@ -43,4 +43,4 @@ async.eachSeries(tasks, function (file, fileCallback) {
             }
         })
     }
-)
+);

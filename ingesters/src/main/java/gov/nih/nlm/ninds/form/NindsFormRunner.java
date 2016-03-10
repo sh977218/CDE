@@ -5,8 +5,8 @@ public class NindsFormRunner {
     public static void main(String[] args) {
         Thread[] t = new Thread[1];
 
-        NindsFormLoader runner2 = new NindsFormLoader(15, 15);
-        t[0] = new Thread(runner2);
+        NindsFormLoader runner1 = new NindsFormLoader(1, 27);
+        t[0] = new Thread(runner1);
 
         for (int i = 0; i < t.length; i++) {
             t[i].start();

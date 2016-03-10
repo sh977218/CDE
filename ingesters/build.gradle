@@ -15,4 +15,5 @@ dependencies {
     compile "com.jayway.restassured:rest-assured:2.3.2"
     compile "com.google.code.gson:gson:2.2.4"
     compile "org.springframework.data:spring-data-mongodb:1.7.2.RELEASE"
+    compile "org.slf4j:slf4j-simple:1.6.1"
 }

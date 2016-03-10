@@ -20,7 +20,7 @@ import java.util.List;
 
 public class NindsFormLoader implements Runnable {
     Map<String, String> diseaseMap = new HashMap<String, String>();
-    String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
+    String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
     WebDriver driver;
     WebDriverWait wait;
     Collection<MyForm> forms = new ArrayList<MyForm>();
@@ -93,8 +93,8 @@ public class NindsFormLoader implements Runnable {
         textPresent("Page: 1 of 1");
         hangon(10);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
-        textPresent("2549 items found.");
-        textPresent("Page: 1 of 26");
+        textPresent("2605 items found.");
+        textPresent("Page: 1 of 27");
 
         String sortHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > a";
         String imgHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > img";
@@ -111,28 +111,28 @@ public class NindsFormLoader implements Runnable {
         if (pageStart > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
-            textPresent("Page: 26 of 26");
+            textPresent("Page: 27 of 27");
             goToPageFromLast(pageStart);
         } else {
             for (int i = 1; i < pageStart; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-                textPresent("Page: " + i + " of 26");
+                textPresent("Page: " + i + " of 27");
             }
         }
     }
 
     void goToPageFromLast(int pageStart) {
-        for (int n = 26; n > pageStart; n--) {
+        for (int n = 27; n > pageStart; n--) {
             findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
             int num = n - 1;
-            String s = "Page: " + num + " of 26";
+            String s = "Page: " + num + " of 27";
             textPresent(s);
         }
     }
 
     void findAndSaveToForms(Collection<MyForm> forms, int pageStart, int pageEnd) {
-        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
         for (int i = 1; i < trs.size(); i++) {
@@ -143,17 +143,8 @@ public class NindsFormLoader implements Runnable {
             for (int j = 0; j < tds.size(); j++) {
                 WebElement td = tds.get(j);
                 String text = td.getText().replace("\"", " ").trim();
-                if (index == 1)
+                if (index == 1) {
                     form.crfModuleGuideline = text;
-                if (index == 2)
-                    form.description = text;
-                if (index == 3) {
-                    List<WebElement> img = td.findElements(By.cssSelector("img"));
-                    if (img.size() > 0) {
-                        form.copyRight = "true";
-                    }
-                }
-                if (index == 4) {
                     hangon(5);
                     List<WebElement> a = td.findElements(By.cssSelector("a"));
                     if (a.size() > 0) {
@@ -161,8 +152,11 @@ public class NindsFormLoader implements Runnable {
                         form.downloads = href;
                         form.downloadsTitle = text;
                     }
+
                 }
-                if (index == 5) {
+                if (index == 2)
+                    form.description = text;
+                if (index == 3) {
                     List<WebElement> as = td.findElements(By.cssSelector("a"));
                     if (as.size() > 0) {
                         grabDomain = true;
@@ -170,14 +164,14 @@ public class NindsFormLoader implements Runnable {
                         getCdes(form, a);
                     }
                 }
-                if (index == 6)
+                if (index == 4)
                     form.versionNum = text;
-                if (index == 7)
+                if (index == 5)
                     form.versionDate = text;
-                if (index == 8) {
+                if (index == 6) {
                     form.diseaseName = text;
                 }
-                if (index == 9) {
+                if (index == 7) {
                     form.subDiseaseName = text;
                 }
                 index++;
@@ -390,17 +384,19 @@ public class NindsFormLoader implements Runnable {
         forms.add(myForm);
         Gson gson = new Gson();
         String json = gson.toJson(forms);
+        String fileName = "C:\\NLMCDE\\nindsForms" + pageStart + "-" + pageEnd + ".json";
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist" + pageStart + ".json"), "UTF-8"));
+                    new FileOutputStream(fileName), "UTF-8"));
             out.write(json);
             out.close();
         } catch (IOException e) {
             System.out.println("exception of writing to file.");
             e.printStackTrace();
         } finally {
-            System.out.println("nindsFormsChrist" + pageStart + "-" + pageEnd + ".json done.");
+            System.out.println(fileName + " done.");
             System.out.println("forms size after info: " + forms.size());
+            System.exit(0);
         }
     }
 
