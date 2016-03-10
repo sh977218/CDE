@@ -47,7 +47,6 @@ public class NindsFormLoader implements Runnable {
         diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
-
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 120);
@@ -57,7 +56,6 @@ public class NindsFormLoader implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("running page: " + pageStart);
         openTab();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);
@@ -77,7 +75,6 @@ public class NindsFormLoader implements Runnable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     void goToNindsSiteAndGoToPageOf(int pageStart) {
@@ -95,11 +92,9 @@ public class NindsFormLoader implements Runnable {
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
         textPresent("2605 items found.");
         textPresent("Page: 1 of 27");
-
         String sortHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > a";
         String imgHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > img";
         findElement(By.cssSelector(sortHeadSelector)).click();
-
         String sortImg = findElement(By.cssSelector(imgHeadSelector)).getAttribute("src");
         while (!sortImg.contains("image/triangleup.gif")) {
             findElement(By.cssSelector(sortHeadSelector)).click();
@@ -132,6 +127,7 @@ public class NindsFormLoader implements Runnable {
     }
 
     void findAndSaveToForms(Collection<MyForm> forms, int pageStart, int pageEnd) {
+        System.out.println("running page: " + pageStart);
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
@@ -189,11 +185,10 @@ public class NindsFormLoader implements Runnable {
     void getDomainAndSubDomain(MyForm form) {
         switchTab(0);
         driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
-        String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
-                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
-                + "\"]/ancestor::table/preceding-sibling::a[1]";
-
+        String subDomianSelector = "//*[normalize-space(text())='" + form.crfModuleGuideline
+                + "']/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[normalize-space(text())='" + form.crfModuleGuideline
+                + "']/ancestor::table/preceding-sibling::a[1]";
         List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.subDomainName = subDomains.get(0).getText().trim();
@@ -399,5 +394,4 @@ public class NindsFormLoader implements Runnable {
             System.exit(0);
         }
     }
-
 }
