@@ -139,10 +139,18 @@ exports.getAtomsFromUMLS = function(cui, source, res) {
     });
 };
 
-exports.getUMLSBySourceId = function(source, id, res) {
+exports.searchUmls = function(term, res) {
     this.getTicket(function(oneTimeTicket) {
         var url = "https://uts-ws.nlm.nih.gov/rest/search/current?ticket=" +
-        oneTimeTicket + "&searchType=exact&returnIdType=concept&string=" + id + "&inputType=sourceUi&sabs=" + source;
+        oneTimeTicket + "&string=" + term;
         request.get(url).pipe(res);
     });
 };
+
+//exports.getUMLSBySourceId = function(source, id, res) {
+//    this.getTicket(function(oneTimeTicket) {
+//        var url = "https://uts-ws.nlm.nih.gov/rest/search/current?ticket=" +
+//        oneTimeTicket + "&searchType=exact&returnIdType=concept&string=" + id + "&inputType=sourceUi&sabs=" + source;
+//        request.get(url).pipe(res);
+//    });
+//};

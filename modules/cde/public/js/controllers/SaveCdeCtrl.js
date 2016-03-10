@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http',
-    function($scope, $timeout, $http)
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http', '$uibModal',
+    function($scope, $timeout, $http, $modal)
 {
     // @TODO This controller should be renamed to PV Controller ?
 
@@ -10,7 +10,8 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
             if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
                 $scope.srcOptions = {
                     NCI: {displayAs: "NCI", termType: "PT", selected: false},
-                    LNC: {displayAs: "LOINC", termType: "LA", selected: false}
+                    LNC: {displayAs: "LOINC", termType: "LA", selected: false},
+                    SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
                 };
                 Object.keys($scope.srcOptions).forEach(function(srcKey) {
                     $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
@@ -25,19 +26,19 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
 
     }
 
-    $scope.replaceWithUMLS = function () {
-        $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
-            if (pv.codeSystemName === 'NCI Thesaurus' || !pv.codeSystemName) {
-                $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
-                    pv.valueMeaningCode = response.data.result.results[0].ui;
-                    pv.valueMeaningName = response.data.result.results[0].name;
-                    pv.codeSystemName = "UMLS";
-                    $scope.stageElt($scope.elt);
-                    initSrcOptions();
-                });
-            }
-        });
-    };
+    //$scope.replaceWithUMLS = function () {
+    //    $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+    //        if (pv.codeSystemName === 'NCI Thesaurus' || !pv.codeSystemName) {
+    //            $http.get("/umlsBySourceId/NCI/" + pv.valueMeaningCode).then(function(response) {
+    //                pv.valueMeaningCode = response.data.result.results[0].ui;
+    //                pv.valueMeaningName = response.data.result.results[0].name;
+    //                pv.codeSystemName = "UMLS";
+    //                $scope.stageElt($scope.elt);
+    //                initSrcOptions();
+    //            });
+    //        }
+    //    });
+    //};
 
     var lookupAsSource = function(src) {
         $timeout(function() {
@@ -86,7 +87,17 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         $scope.stageElt($scope.elt);
         $scope.runManualValidation();
     };
+
     $scope.addPv = function() {
+        $modal.open({
+            animation: false,
+            templateUrl: '/cde/public/html/AddPvModal.html',
+            controller: 'NewPvModalCtrl',
+            resolve: {
+            }
+        });
+
+
         $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
     };
 

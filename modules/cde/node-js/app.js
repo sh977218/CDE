@@ -418,11 +418,23 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/umlsAtomsBridge/:cui/:source', function(req, res) {
-       vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
+        if(!config.umls.sourceOptions[req.params.source]) {
+            return res.send("Source cannot be looked up, use UTS Instead.");
+        }
+        if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
+            return res.send(403);
+        }
+
+        vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
     });
-    app.get('/umlsBySourceId/:source/:id', function(req, res) {
-        vsac.getUMLSBySourceId(req.params.source, req.params.id, res);
+
+    app.get('/searchUmls', function(req, res) {
+        return vsac.searchUmls(req.query.searchTerm, res);
     });
+
+    //app.get('/umlsBySourceId/:source/:id', function(req, res) {
+    //    vsac.getUMLSBySourceId(req.params.source, req.params.id, res);
+    //});
 
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);

@@ -4,7 +4,12 @@
   "publicUrl": "https://cde.nlm.nih.gov",
   "debugEnabled": false,
   "umls": {
-    "licenseCode": "NLM-4110134256"
+    "licenseCode": "NLM-4110134256",
+    "sourceOptions": {
+      "NCI": {},
+      "LNC": {},
+      "SNOMEDCT_US": {"requiresLogin": true}
+    }
   },
   "internalIP": "130.14.",
   "banEndsWith": [

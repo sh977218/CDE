@@ -2,7 +2,7 @@
     <dt tabindex="0">Datatype:</dt>
     <dd>
         <div inline-edit id="listDatatype" model="elt.valueDomain.datatypeValueList.datatype" is-allowed="canCurate"
-             on-ok="stageElt(elt)"/>
+             on-ok="stageElt(elt)"></div>
     </dd>
 </dl>
 <hr/>
@@ -15,12 +15,10 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!--<button class="btn btn-default" style="margin-bottom: 10px" ng-click="replaceWithUMLS()">Replace with UMLS-->
-            <!--Codes-->
-        <!--</button>-->
-        <div ng-if="srcOptions.NCI">The list of codes below includes UMLS codes, you can also view them as:</div>
-        <span ng-repeat="(key, value) in srcOptions">
-            <input ng-model="value.selected" type="checkbox">{{value.displayAs}} Codes
+        <div ng-if="srcOptions.NCI">The list below includes UMLS codes, you can also view them as:</div>
+        <span ng-repeat="(key, value) in srcOptions" style="margin-left: 50px">
+            <input ng-model="value.selected" type="checkbox" ng-disabled="value.disabled">{{value.displayAs}} Codes
+            <span ng-if="value.disabled"> (Login to enable)</span>
         </span>
 
         <table ng-show="elt.valueDomain.permissibleValues.length > 0" class="table-bordered table-condensed table-striped"
@@ -33,6 +31,7 @@
                 <th tabindex="0" id="codeSystem">Code System</th>
                 <th tabindex="0" id="NCICodeName" ng-if="srcOptions.NCI.selected" colspan="2">NCI Thesaurus</th>
                 <th tabindex="0" id="LNCCodeName" ng-if="srcOptions.LNC.selected" colspan="2">LOINC</th>
+                <th tabindex="0" id="SNOCodeName" ng-if="srcOptions.SNOMEDCT_US.selected" colspan="2">SNOMEDCT US</th>
                 <th tabindex="0" id="validation" ng-show="vsacMappingExists() || compareView">Match</th>
                 <th tabindex="0" id="actions" ng-show="canCurate">Actions</th>
             </tr>
@@ -68,6 +67,12 @@
                 </td>
                 <td tabindex="0" headers="LNCCodeName" id="pvAsNCI-{{$index}}" ng-if="srcOptions.LNC.selected">
                     {{pv.LNC.valueMeaningCode}}
+                </td>
+                <td tabindex="0" headers="LNCCodeName" id="pvAsName-{{$index}}" ng-if="srcOptions.SNOMEDCT_US.selected">
+                    {{pv.SNOMEDCT_US.valueMeaningName}}
+                </td>
+                <td tabindex="0" headers="LNCCodeName" id="pvAsNCI-{{$index}}" ng-if="srcOptions.SNOMEDCT_US.selected">
+                    {{pv.SNOMEDCT_US.valueMeaningCode}}
                 </td>
                 <td tabindex="0" headers="validation" ng-show="vsacMappingExists() || compareView">
                      <span ng-switch="pv.isValid">
