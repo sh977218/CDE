@@ -36,4 +36,15 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         textPresent("CDE QuickBoard (0)");
     }
 
+    @Test
+    public void doubleElementedQuickboard(){
+        addCdeToQuickBoard("In the past 7 days how much did pain interfere with work around the home?");
+        addCdeToQuickBoard("During the past 4 weeks, how much have you been bothered by headaches?");
+        textPresent("Quick Board (2)");
+        goToQuickBoardByModule("cde");
+        clickElement(By.id("qb_cde_compare"));
+        textPresent("During the past 4 weeks, how much have you been bothered by headaches?");
+        textPresent("how much did pain interfere with work around the home?");
+    }
+
 }
