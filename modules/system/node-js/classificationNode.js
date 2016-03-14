@@ -131,7 +131,6 @@ exports.classifyCdesInBoard = function(req, cb) {
     var newClassification = req.body.newClassification;
 
     var action = function(id, actionCallback) {
-        console.log("will classify: " + id);
         var classifReq = {
             orgName: newClassification.orgName
             , categories: newClassification.categories
@@ -143,7 +142,6 @@ exports.classifyCdesInBoard = function(req, cb) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
         var tinyIds = board.pins.map(function(cde) {return cde.deTinyId});
-        console.log("tinyIds in board" + JSON.stringify(tinyIds));
         mongo_data_cde.cdesByTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
@@ -158,7 +156,6 @@ exports.classifyCdesInBoard = function(req, cb) {
             });
         });
     });
-
 };
 
 exports.classifyEntireSearch = function(req, cb) {
