@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
     config = require('../../modules/system/node-js/parseConfig'),
     async = require('async'),
     schemas = require('../../modules/cde/node-js/schemas'),
-    mongo_data = require('../../modules/system/node-js/mongo-data')
+    mongo_cde = require('../../modules/cde/node-js/mongo-cde')
     ;
 
 var mongoMigrationUri = config.mongoMigrationUri;
@@ -17,8 +17,6 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-var dcwDir = 'C:/Users/huangs8/Downloads/phenX/All_PhenX_DCW_Files/';
-
 var DataElement = mongoConn.model('DataElement', schemas.dataElementSchema);
 var PhenxModel = migrationConn.model('Phenx', new mongoose.Schema({}, {strict: false, collection: 'phenx'}));
 var LoincModel = migrationConn.model('Loinc', new mongoose.Schema({}, {strict: false, collection: 'loinc'}));
@@ -30,12 +28,28 @@ var PhenxNotInLoincModel = migrationConn.model('PhenxNotInLoinc', new mongoose.S
     strict: false,
     collection: 'phenxNotInLoinc'
 }));
+var MappingModel = migrationConn.model('Mapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'mapping'
+}));
+var PhenxInLoincInDbGapModel = migrationConn.model('PhenxInLoincInDbGap', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'phenxInLoincInDbGap'
+}));
+var PhenxInLoincNotInDbGapModel = migrationConn.model('PhenxInLoincNotInDbGap', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'phenxInLoincNotInDbGap'
+}));
+
+var user = {username: 'batchloader'};
 var phenxCounter = 0;
 var phenxInLoinc = [];
 var phenxNotInLoinc = [];
+var phenxInLoincInDbGap = [];
+var phenxInLoincNotInDbGap = [];
 
-var user = {username: "batchloader"};
-var comment = "changed by batchloader load on " + new Date();
+var dbGapUrlPre = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.gapmapping&vname=';
+var dbGapUrlPost = '&vid=';
 
 function init(taskNum) {
     async.series([
@@ -90,36 +104,46 @@ function init(taskNum) {
                     async.forEachSeries(phenxInLoincArray, function (one, doneOne) {
                         var phenx = one.phenx;
                         var loinc = one.loinc[0];
-                        var id = loinc.LOINC_NUM;
-
-                        var formatAttachmentFilePath = function (s) {
-                            var tmpArr1 = s.split('DCW_');
-                            var preStr = tmpArr1[0] + 'DCW_';
-                            var tmpArr2 = tmpArr1[1].split('.doc');
-                            var postStr = tmpArr2[1] + '_Finalized.doc';
-                            var midStr = tmpArr2[0];
-                            if (midStr.length === 5)
-                                return preStr + '0' + midStr + postStr;
-                            else return s;
-                        };
-
-                        var dcwFile = dcwDir + formatAttachmentFilePath(phenx.DOCFILE);
-
-                        DataElement.findOne({'archived': null, 'ids.id': id}).exec(function (err, de) {
+                        var loincId = loinc.LOINC_NUM;
+                        mongo_cde.query({'archived': null, 'ids.id': loincId}, function (err, deArr) {
                             if (err) throw err;
-                            var file = {
-                                stream: fs.createReadStream(dcwFile),
-                                ingested: true
-                            };
-                            mongo_data.addAttachment(file, user, comment, de, function (attachment, isCreated) {
-                                doneOne();
-                            })
+                            var de = deArr[0].toObject();
+                            MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
+                                if (err) throw err;
+                                if (m) {
+                                    var uri = dbGapUrlPre + m.get('VARIABLE_NAME') + dbGapUrlPost + m.get('VARIABLE_ID');
+                                    var dataSets = de.get('dataSets');
+                                    if (!dataSets) {
+                                        dataSets = [];
+                                    }
+                                    var dataSet = {dbGapId: m.get('VARIABLE_ID'), uri: uri};
+                                    dataSets.push(dataSet);
+                                    phenxInLoincInDbGap.push(phenx);
+                                    mongo_cde.update(de, user, function (err, newDe) {
+                                        doneOne();
+                                    })
+                                }
+                                else {
+                                    phenxInLoincNotInDbGap.push(phenx);
+                                    doneOne();
+                                }
+                            });
+
                         });
                     }, function doneAll() {
                         stream.resume();
                     })
                 });
                 stream.on('end', function () {
+                    var obj1 = new PhenxInLoincInDbGapModel({phenxInLoincInDbGap: phenxInLoincInDbGap});
+                    obj1.save(function () {
+                        console.log('phenxInLoincInDbGap saved.');
+                        var obj2 = new PhenxInLoincNotInDbGapModel({phenxInLoincNotInDbGap: phenxInLoincNotInDbGap});
+                        obj2.save(function () {
+                            console.log('phenxInLoincNotInDbGap saved.');
+                            cb();
+                        });
+                    });
                     cb();
                 })
             } else {

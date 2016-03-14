@@ -216,7 +216,10 @@ schemas.referenceDocumentSchema = {
     languageCode: String,
     _id: false
 };
-
+schemas.dataSetSchema = {
+    dbGapId: String,
+    uri: String
+};
 schemas.classificationAudit = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true}
     , user: {
