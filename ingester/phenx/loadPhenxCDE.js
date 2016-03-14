@@ -84,8 +84,8 @@ function init(taskNum) {
                 var stream = PhenxInLoincModel.findOne({}).stream();
                 stream.on('data', function (data) {
                     stream.pause();
-                    var phenInLoincArray = data.get('phenxInLoinc');
-                    async.forEachSeries(phenInLoincArray, function (one, doneOne) {
+                    var phenxInLoincArray = data.get('phenxInLoinc');
+                    async.forEachSeries(phenxInLoincArray, function (one, doneOne) {
                         var phenx = one.phenx;
                         var loinc = one.loinc[0];
                         var dcwFile = dcwDir + phenx.DOCFILE.replace('.doc', '_Finalized.doc');
