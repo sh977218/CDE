@@ -40,6 +40,10 @@ var PhenxInLoincNotInDbGapModel = migrationConn.model('PhenxInLoincNotInDbGap', 
     strict: false,
     collection: 'phenxInLoincNotInDbGap'
 }));
+var DeprecatedLoincModel = migrationConn.model('DeprecatedLoinc', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'deprecatedLoinc'
+}));
 
 var user = {username: 'batchloader'};
 var phenxCounter = 0;
@@ -47,6 +51,7 @@ var phenxInLoinc = [];
 var phenxNotInLoinc = [];
 var phenxInLoincInDbGap = [];
 var phenxInLoincNotInDbGap = [];
+var deprecatedLoinc = [];
 
 var dbGapUrlPre = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.gapmapping&vname=';
 var dbGapUrlPost = '&vid=';
@@ -62,7 +67,6 @@ function init(taskNum) {
                     var variableSrc = phenx.get('VARIABLE_SOURCE');
                     var variableId = phenx.get('VARIABLE_TERM');
                     LoincModel.find({
-                        'STATUS': 'ACTIVE',
                         'SURVEY_QUEST_SRC': variableId.replace('PX', 'PhenX.')
                     }, function (err, data) {
                         if (err) throw err;
@@ -108,31 +112,44 @@ function init(taskNum) {
                         mongo_cde.query({'archived': null, 'ids.id': loincId}, function (err, deArr) {
                             if (err) throw err;
                             if (!deArr || !deArr[0]) {
-                                console.log(loincId);
-                                console.log(loinc);
+                                var status = loinc.STATUS;
+                                if (status === 'DEPRECATED') {
+                                    deprecatedLoinc.push(phenx);
+                                }
+                                doneOne();
                             }
-                            var de = deArr[0].toObject();
-                            MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
-                                if (err) throw err;
-                                if (m) {
-                                    var uri = dbGapUrlPre + m.get('VARIABLE_NAME') + dbGapUrlPost + m.get('VARIABLE_ID');
-                                    var dataSets = de.dataSets;
-                                    if (!dataSets) {
-                                        dataSets = [];
+                            else {
+                                var de = deArr[0].toObject();
+                                MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
+                                    if (err) throw err;
+                                    if (m) {
+                                        var uri = dbGapUrlPre + m.get('VARIABLE_NAME') + dbGapUrlPost + m.get('VARIABLE_ID');
+                                        var dataSets = de.dataSets;
+                                        var exist = false;
+                                        if (!dataSets) {
+                                            dataSets = [];
+                                            exist = true;
+                                        }
+                                        if (dataSets.length === 0)
+                                            exist = true;
+                                        dataSets.forEach(function (ds) {
+                                            if (ds.dbGapId === m.get('VARIABLE_ID' && ds.uri === uri))
+                                                exist = true;
+                                        });
+                                        var dataSet = {dbGapId: m.get('VARIABLE_ID'), uri: uri};
+                                        if (exist)
+                                            dataSets.push(dataSet);
+                                        phenxInLoincInDbGap.push({phenx: phenx, loinc: loinc});
+                                        mongo_cde.update(de, user, function () {
+                                            doneOne();
+                                        })
                                     }
-                                    var dataSet = {dbGapId: m.VARIABLE_ID, uri: uri};
-                                    dataSets.push(dataSet);
-                                    phenxInLoincInDbGap.push(phenx);
-                                    mongo_cde.update(de, user, function () {
+                                    else {
+                                        phenxInLoincNotInDbGap.push({phenx: phenx, loinc: loinc});
                                         doneOne();
-                                    })
-                                }
-                                else {
-                                    phenxInLoincNotInDbGap.push(phenx);
-                                    doneOne();
-                                }
-                            });
-
+                                    }
+                                });
+                            }
                         });
                     }, function doneAll() {
                         stream.resume();
@@ -145,10 +162,13 @@ function init(taskNum) {
                         var obj2 = new PhenxInLoincNotInDbGapModel({phenxInLoincNotInDbGap: phenxInLoincNotInDbGap});
                         obj2.save(function () {
                             console.log('phenxInLoincNotInDbGap saved.');
-                            cb();
+                            var obj3 = new DeprecatedLoincModel({deprecatedLoinc: deprecatedLoinc});
+                            obj3.save(function () {
+                                console.log('deprecatedLoinc saved.');
+                                cb();
+                            })
                         });
                     });
-                    cb();
                 })
             } else {
                 cb();
