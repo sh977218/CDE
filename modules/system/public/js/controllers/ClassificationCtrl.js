@@ -5,16 +5,13 @@ angular.module('systemModule').controller('ClassificationCtrl',
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
           templateUrl: '/system/public/html/classifyElt.html',
           controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;
-                }
-                , myOrgs: function() {
-                    return $scope.myOrgs;
                 }
                 , cde: function() {
                     return $scope.elt;
