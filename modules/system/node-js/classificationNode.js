@@ -161,14 +161,14 @@ exports.classifyCdesInBoard = function(req, cb) {
 exports.classifyEntireSearch = function(req, cb) {
     var action = function(id, actionCallback) {
         var classifReq = {
-            orgName: req.newClassification.orgName
-            , categories: req.newClassification.categories
+            orgName: req.body.newClassification.orgName
+            , categories: req.body.newClassification.categories
             , cdeId: id
         };
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    var query = elastic.buildElasticSearchQuery(req.user, req.query);
-    elastic.elasticsearch(query, req.itemType, function(err, result) {
+    var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
+    elastic.elasticsearch(query, req.body.itemType, function(err, result) {
         var ids = result.cdes.map(function(cde) {return cde._id;});
         adminItemSvc.bulkAction(ids, action, cb);
         mongo_data_system.addToClassifAudit({
@@ -178,7 +178,7 @@ exports.classifyEntireSearch = function(req, cb) {
             }
             , elements: result.cdes.map(function(e){return {tinyId: e.tinyId};})
             , action: "reclassify"
-            , path: [req.newClassification.orgName].concat(req.newClassification.categories)
+            , path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
         });
     });
 };
