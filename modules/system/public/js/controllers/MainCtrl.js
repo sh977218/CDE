@@ -48,9 +48,12 @@ angular.module('systemModule').controller('MainCtrl',
             };
             $scope.checkSystemAlert();
 
+            //TODO: Don't use the following methods. Use $scope.Alert instead.
             $scope.addAlert = Alert.addAlert;
             $scope.closeAlert = Alert.closeAlert;
             $scope.alerts = Alert.mapAlerts();
+
+            $scope.Alert = Alert;
 
             $scope.boards = [];
 
