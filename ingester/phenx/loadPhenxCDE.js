@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
     config = require('../../modules/system/node-js/parseConfig'),
     async = require('async'),
-    schemas = require('../../modules/cde/node-js/schemas')
+    schemas = require('../../modules/cde/node-js/schemas'),
+    mongo_cde = require('../../modules/cde/node-js/mongo-cde')
     ;
 
 var mongoMigrationUri = config.mongoMigrationUri;
@@ -91,7 +92,7 @@ function init(taskNum) {
                         var dcwFile = dcwDir + phenx.DOCFILE.replace('.doc', '_Finalized.doc');
                         var id = loinc.LOINC_NUM;
 
-                        DataElement.find({'archived': null, 'ids.id': id}).exec(function (err, de) {
+                        mongo_cde.query({'archived': null, 'ids.id': id}, function (err, de) {
                             if (err)
                                 throw err;
                             console.log('h');
