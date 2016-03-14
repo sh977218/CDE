@@ -14,7 +14,10 @@ angular.module('systemModule').controller('SearchSettingsCtrl', ['$scope', 'Sear
         $scope.goBack();
     };
     $scope.loadDefault = function () {
-        $scope.searchSettings = angular.copy(SearchSettings.getDefault());
+        var defaultSettings = SearchSettings.getDefault();
+        Object.keys(defaultSettings).forEach(function(key) {
+            $scope.searchSettings[key] = defaultSettings[key];
+        });
         $scope.addAlert("info", "Default settings loaded. Press Save to persist them.");
     };
     $scope.goBack = function () {

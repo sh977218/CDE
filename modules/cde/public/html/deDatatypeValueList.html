@@ -27,6 +27,7 @@
             <tr>
                 <th tabindex="0" id="value">Value</th>
                 <th tabindex="0" id="codeName">Code Name</th>
+                <th tabindex="0" id="codeDescription">Code Description</th>
                 <th tabindex="0" id="code">Code</th>
                 <th tabindex="0" id="codeSystem">Code System</th>
                 <th tabindex="0" id="NCICodeName" ng-if="srcOptions.NCI.selected" colspan="2">NCI Thesaurus</th>
@@ -45,6 +46,10 @@
                 <td tabindex="0" headers="codeName" id="pvName-{{$index}}">
                     <div inline-edit model="pv.valueMeaningName" is-allowed="canCurate"
                          typeahead-source="pVTypeheadVsacNameList"
+                         on-ok="stageElt(elt); runDelayedManualValidation();"></div>
+                </td>
+                <td tabindex="0" headers="code" id="pvCodeDesc-{{$index}}">
+                    <div inline-edit model="pv.valueMeaningDefinition" is-allowed="canCurate"
                          on-ok="stageElt(elt); runDelayedManualValidation();"></div>
                 </td>
                 <td tabindex="0" headers="code" id="pvCode-{{$index}}">

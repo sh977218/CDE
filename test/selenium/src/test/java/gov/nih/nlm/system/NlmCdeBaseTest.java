@@ -77,6 +77,8 @@ public class NlmCdeBaseTest {
 
     protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
 
+    protected int randomNb = (int)(Math.random()  * 1000);
+
     @BeforeTest
     public void countElasticElements() {
         int nbOfRecords = 0;
@@ -159,6 +161,11 @@ public class NlmCdeBaseTest {
     public void countTabs(Method method) {
         if (driver.getWindowHandles().size() > 1)
             System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+    }
+
+    @BeforeMethod
+    public void printRandomNb(Method method) {
+        System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
     }
 
     @BeforeMethod
@@ -747,4 +754,16 @@ public class NlmCdeBaseTest {
         clickElement(By.id("more_tab"));
         textNotPresent("More...");
     }
+
+    protected void loadDefaultSettings() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("loadDefaultSettings"));
+        textPresent("Default settings loaded");
+        closeAlert();
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
+        closeAlert();
+    }
+
+
 }

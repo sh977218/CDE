@@ -31,7 +31,7 @@ public class CdeEdit2Test extends NlmCdeBaseTest {
     public void editCdeByTinyId() {
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl + "/#/deview?tinyId=xNugcDxoqKW");
-        findElement(By.cssSelector("i.fa-edit")).click();
+        findElement(By.cssSelector("#nameEdit i.fa-edit")).click();
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
         newCdeVersion("Change note for change number 1");

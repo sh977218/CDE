@@ -24,6 +24,8 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
             Assert.assertNotEquals("Qualified", option.getText());
             Assert.assertNotEquals("Recorded", option.getText());
         }
+        clickElement(By.id("cancelRegStatus"));
+        modalGone();
     }
 
 }

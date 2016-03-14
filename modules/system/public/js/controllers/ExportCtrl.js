@@ -1,4 +1,6 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', function ($scope, Elastic) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings',
+    function ($scope, Elastic, SearchSettings)
+{
 
     $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
@@ -16,12 +18,14 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
             var exporters =
             {
                 'csv': function(result) {
-                    var csv = exports.exportHeader.cdeHeader;
-                    JSON.parse(result).forEach(function (ele) {
-                        csv += exports.convertToCsv(exports.projectCdeForExport(ele));
+                   SearchSettings.getPromise().then(function(settings) {
+                        var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+                        JSON.parse(result).forEach(function (ele) {
+                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
+                        });
+                        var blob = new Blob([csv], {type: "text/csv"});
+                        saveAs(blob, 'SearchExport.csv');
                     });
-                    var blob = new Blob([csv], {type: "text/csv"});
-                    saveAs(blob, 'SearchExport.csv');
                 },
                 'json': function(result) {
                     var blob = new Blob([result], {type: "application/json"});
@@ -67,20 +71,23 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', fu
     };
 
     $scope.quickBoardExport = function (quickBoard) {
-        var result = exports.exportHeader.cdeHeader;
-        quickBoard.elts.forEach(function (ele) {
-            result += exports.convertToCsv(exports.projectCdeForExport(ele));
-        });
-        if (result) {
-            var blob = new Blob([result], {
-                type: "text/csv"
+        SearchSettings.getPromise().then(function(settings) {
+            var result = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+            quickBoard.elts.forEach(function (ele) {
+                result += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
             });
-            saveAs(blob, 'QuickBoardExport' + '.csv');
-            $scope.addAlert("success", "Export downloaded.");
-            $scope.feedbackClass = ["fa-download"];
-        } else {
-            $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
-        }
+
+            if (result) {
+                var blob = new Blob([result], {
+                    type: "text/csv"
+                });
+                saveAs(blob, 'QuickBoardExport' + '.csv');
+                $scope.addAlert("success", "Export downloaded.");
+                $scope.feedbackClass = ["fa-download"];
+            } else {
+                $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
+            }
+        });
     }
 
 }])

@@ -752,4 +752,26 @@ exports.init = function(app) {
 
         });
     });
+
+    var loincUploadStatus;
+    app.post('/uploadLoincCsv', multer(), function (req, res) {
+        loincUploadStatus = [];
+        var load = spawn('node', ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
+            loincUploadStatus.push("Complete with Code: " + code);
+            setTimeout(function( ) {loincUploadStatus = []}, 5 * 60 * 1000);
+            fs.unlink(req.files.uploadedFiles.path);
+        });
+        res.send();
+
+        load.stdout.on('data', function(data) {
+            loincUploadStatus.push("" + data);
+        });
+        load.stderr.on('data', function(data) {
+            loincUploadStatus.push("" + data);
+        });
+    });
+
+    app.get('/uploadLoincCsvStatus', function(req, res){
+        res.send(loincUploadStatus);
+    })
 };

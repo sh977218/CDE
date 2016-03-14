@@ -48,7 +48,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         searchNestedClassifiedCdes();
         textPresent("NINDS (9");
         searchNestedClassifiedForms();
-        textPresent("NINDS (44)");
+        Assert.assertTrue(getNumberOfResults() > 40);
         gotoClassificationMgt();
 
         Assert.assertTrue(findElement(By.cssSelector("[id='classification-Disease,Epilepsy'] .name")).getText().equals("Epilepsy"));
@@ -66,7 +66,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         openClassificationAudit("NINDS > Disease > Epilepsy");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
-        textPresent("Delete NINDS > Disease > Epilepsy");
+        textPresent("delete NINDS > Disease > Epilepsy");
     }
 
     @Test
