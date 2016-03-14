@@ -16,7 +16,7 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-var dcwDir = 'C:/Users/huangs8/Downloads/phenX/All_PhenX_DCW_Files/';
+//var dcwDir = 'C:/Users/huangs8/Downloads/phenX/All_PhenX_DCW_Files/';
 
 var DataElement = mongoConn.model('DataElement', schemas.dataElementSchema);
 var PhenxModel = migrationConn.model('Phenx', new mongoose.Schema({}, {strict: false, collection: 'phenx'}));
@@ -34,11 +34,8 @@ var phenxInLoinc = [];
 var phenxNotInLoinc = [];
 
 function init(taskNum) {
-    async.series({
-        setup: function (cb) {
-            cb();
-        },
-        one: function (cb) {
+    async.series([
+        function (cb) {
             if (taskNum === 1) {
                 var stream = PhenxModel.find().stream();
                 stream.on('data', function (phenx) {
@@ -67,10 +64,10 @@ function init(taskNum) {
                     console.log('finished all phenx.');
                     console.log('found ' + phenxInLoinc.length + ' in loinc.');
                     var obj1 = new PhenxInLoincModel({phenxInLoinc: phenxInLoinc});
-                    obj1.save(function (err) {
+                    obj1.save(function () {
                         console.log('phenxInLoinc saved.');
                         var obj2 = new PhenxNotInLoincModel({phenxNotInLoinc: phenxNotInLoinc});
-                        obj2.save(function (err) {
+                        obj2.save(function () {
                             console.log('phenxNotInLoinc saved.');
                             cb();
                         });
@@ -80,24 +77,23 @@ function init(taskNum) {
                 cb();
             }
         },
-        two: function (cb) {
+        function (cb) {
             if (taskNum === 2) {
                 var stream = PhenxInLoincModel.findOne({}).stream();
                 stream.on('data', function (data) {
                     stream.pause();
                     var phenxInLoincArray = data.get('phenxInLoinc');
                     async.forEachSeries(phenxInLoincArray, function (one, doneOne) {
-                        var phenx = one.phenx;
+                        //var phenx = one.phenx;
                         var loinc = one.loinc[0];
-                        var dcwFile = dcwDir + phenx.DOCFILE.replace('.doc', '_Finalized.doc');
+                        //var dcwFile = dcwDir + phenx.DOCFILE.replace('.doc', '_Finalized.doc');
                         var id = loinc.LOINC_NUM;
 
-                        mongo_cde.query({'archived': null, 'ids.id': id}, function (err, de) {
-                            if (err)
-                                throw err;
+                        mongo_cde.query({'archived': null, 'ids.id': id}, function (err, cdes) {
+                            if (err) throw err;
                             console.log('h');
+                            doneOne();
                         });
-                        doneOne();
                     }, function doneAll() {
                         stream.resume();
                     })
@@ -108,10 +104,10 @@ function init(taskNum) {
             } else {
                 cb();
             }
-        }, three: function () {
+        }], function (err) {
+            if (err) console.log("ERROR: " + err);
             process.exit(0);
-        }
-    });
+        });
 }
 
 init(2);

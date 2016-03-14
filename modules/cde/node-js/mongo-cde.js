@@ -373,9 +373,7 @@ exports.allPropertiesKeys = function (callback) {
 };
 
 exports.query = function (query, callback) {
-    DataElement.find(query).exec(function (err, result) {
-        callback(err, result);
-    });
+    DataElement.find(query).exec(callback);
 };
 
 exports.transferSteward = function (from, to, callback) {
