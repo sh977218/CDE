@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
-    function ($scope, OrgHelpers, SearchSettings) {
+angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard',
+    function ($scope, OrgHelpers, SearchSettings, QuickBoard) {
 
         $scope.viewTypes = {
             accordion: {
@@ -29,6 +29,13 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         };
 
         $scope.showSideBySideView = function () {
+
+            if (QuickBoard.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
+                QuickBoard.elts.forEach(function(a){
+                    $scope.eltsToCompareMap[a.tinyId] = a;
+                });
+            }
+
             $scope.eltsToCompare = [];
             for (var key in $scope.eltsToCompareMap) {
                 $scope.eltsToCompare.push($scope.eltsToCompareMap[key]);
