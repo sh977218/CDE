@@ -38,13 +38,13 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void doubleElementedQuickboard(){
-        addCdeToQuickBoard("In the past 7 days how much did pain interfere with work around the home?");
-        addCdeToQuickBoard("During the past 4 weeks, how much have you been bothered by headaches?");
+        addCdeToQuickBoard("Spinal cord injury upper extremity function complications status");
+        addCdeToQuickBoard("Right upper extremity upper motor neuron clinical indicator");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
         clickElement(By.id("qb_cde_compare"));
-        textPresent("During the past 4 weeks, how much have you been bothered by headaches?");
-        textPresent("how much did pain interfere with work around the home?");
+        textPresent("Indicator of whether the examination found clinical evidence of upper motor neuron (UMN) dysfunction in the right upper extremity (RUE) region.");
+        textPresent("The status of complications to upper extremity function like pain, spasms, contractures, edema, etc.");
     }
 
 }
