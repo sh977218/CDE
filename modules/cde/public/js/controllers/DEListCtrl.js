@@ -115,15 +115,4 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             TourContent.stop();
         });
 
-
-        $(".fa-plus-square-o").click(function() {
-            $(".fa-plus-square-o").animate({
-                opacity: 0.25,
-                left: "+=50",
-                height: "toggle"
-            }, 5000, function() {
-                // Animation complete.
-            });
-        });
-
     }]);
