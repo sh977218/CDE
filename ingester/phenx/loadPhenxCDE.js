@@ -62,7 +62,7 @@ function init(taskNum) {
                     var variableSrc = phenx.get('VARIABLE_SOURCE');
                     var variableId = phenx.get('VARIABLE_TERM');
                     LoincModel.find({
-                        'SOURCE': variableSrc,
+                        'STATUS': 'ACTIVE',
                         'SURVEY_QUEST_SRC': variableId.replace('PX', 'PhenX.')
                     }, function (err, data) {
                         if (err) throw err;
@@ -120,10 +120,10 @@ function init(taskNum) {
                                     if (!dataSets) {
                                         dataSets = [];
                                     }
-                                    var dataSet = {dbGapId: m.get('VARIABLE_ID'), uri: uri};
+                                    var dataSet = {dbGapId: m.VARIABLE_ID, uri: uri};
                                     dataSets.push(dataSet);
                                     phenxInLoincInDbGap.push(phenx);
-                                    mongo_cde.update(de, user, function (err, newDe) {
+                                    mongo_cde.update(de, user, function () {
                                         doneOne();
                                     })
                                 }
