@@ -107,12 +107,16 @@ function init(taskNum) {
                         var loincId = loinc.LOINC_NUM;
                         mongo_cde.query({'archived': null, 'ids.id': loincId}, function (err, deArr) {
                             if (err) throw err;
+                            if (!deArr || !deArr[0]) {
+                                console.log(loincId);
+                                console.log(loinc);
+                            }
                             var de = deArr[0].toObject();
                             MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
                                 if (err) throw err;
                                 if (m) {
                                     var uri = dbGapUrlPre + m.get('VARIABLE_NAME') + dbGapUrlPost + m.get('VARIABLE_ID');
-                                    var dataSets = de.get('dataSets');
+                                    var dataSets = de.dataSets;
                                     if (!dataSets) {
                                         dataSets = [];
                                     }
