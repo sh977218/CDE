@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('MainCtrl',
     ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard',
+        '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', 'Alert',
         function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard) {
+                  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, Alert) {
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
@@ -48,21 +48,9 @@ angular.module('systemModule').controller('MainCtrl',
             };
             $scope.checkSystemAlert();
 
-            $scope.alerts = [];
-            $scope.closeAlert = function (index) {
-                $scope.alerts.splice(index, 1);
-            };
-            $scope.addAlert = function (type, msg) {
-                var id = (new Date()).getTime();
-                $scope.alerts.push({type: type, msg: msg, id: id});
-                $timeout(function () {
-                    for (var i = 0; i < $scope.alerts.length; i++) {
-                        if ($scope.alerts[i].id === id) {
-                            $scope.alerts.splice(i, 1);
-                        }
-                    }
-                }, window.userAlertTime);
-            };
+            $scope.addAlert = Alert.addAlert;
+            $scope.closeAlert = Alert.closeAlert;
+            $scope.alerts = Alert.mapAlerts();
 
             $scope.boards = [];
 
