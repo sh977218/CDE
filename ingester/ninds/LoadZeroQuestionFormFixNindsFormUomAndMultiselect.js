@@ -107,7 +107,7 @@ stream.on('data', function (data) {
             mongo_form.query(query, function (err, existingForms) {
                 if (err) throw err;
                 if (existingForms.length === 0) {
-                    console.log('no form found for query: ' + query);
+                    console.log('no form found, query: ' + query);
                 }
                 else if (existingForms.length === 1) {
                     var existingForm = existingForms[0];

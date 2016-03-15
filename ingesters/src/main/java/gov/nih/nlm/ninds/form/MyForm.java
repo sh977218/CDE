@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class MyForm {
     String crfModuleGuideline;
     String description;
-    String copyRight;
-    String downloads;
-    String downloadsTitle;
+    boolean copyRight;
+    String downloadLink;
+    String id;
     ArrayList<Cde> cdes = new ArrayList<Cde>();
     String versionNum;
     String versionDate;

@@ -145,8 +145,15 @@ public class NindsFormLoader implements Runnable {
                     List<WebElement> a = td.findElements(By.cssSelector("a"));
                     if (a.size() > 0) {
                         String href = a.get(0).getAttribute("href");
-                        form.downloads = href;
-                        form.downloadsTitle = text;
+                        form.downloadLink = href;
+                        String title = a.get(0).getAttribute("title");
+                        form.id = title;
+                        List<WebElement> copyRightClass = a.get(0).findElements(By.className("copyright"));
+                        if (copyRightClass.size() > 0) {
+                            form.copyRight = true;
+                        } else {
+                            form.copyRight = false;
+                        }
                     }
 
                 }
