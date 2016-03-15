@@ -11,7 +11,7 @@ public class StripHtmlFromDefTest extends BaseClassificationTest {
         goToFormSearch();
         findElement(By.id("browseOrg-NIDA")).click();
         textPresent("Single-Question Screening Test - Self-Administered");
-        textPresent("<b>");
+        textNotPresent("<b>");
         textNotPresent("<p>");
     }
 
