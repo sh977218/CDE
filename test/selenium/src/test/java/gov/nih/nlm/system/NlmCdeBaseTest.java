@@ -456,13 +456,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-        // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
-
-        driver.get(baseUrl + "/#/home");
+//        // gonowhere gets rid of possible alert.
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
+//
+        driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
-        hangon(.5);
+//        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -589,28 +589,28 @@ public class NlmCdeBaseTest {
         findElement(By.id("passwd")).clear();
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
-        try {
+//        try {
             textPresent(checkText);
             // sometimes an issue with csrf, need to reload the whole page.
-        } catch (TimeoutException e) {
-            // csrf collision, wait random before re-trying
-            hangon(new Random().nextInt(10));
-            System.out.println("Login failed. Re-trying. error: "
-                    + e.getMessage());
-            System.out.println("*************checkText:" + checkText);
-            goHome();
-            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
-            WebElement loginLinkList = driver.findElement(By.id("login_link"));
-            if (loginLinkList.isDisplayed()) {
-                findElement(By.id("login_link")).click();
-                findElement(By.id("uname")).clear();
-                findElement(By.id("uname")).sendKeys(username);
-                findElement(By.id("passwd")).clear();
-                findElement(By.id("passwd")).sendKeys(password);
-                clickElement(By.id("login_button"));
-            }
-            textPresent(checkText);
-        }
+//        } catch (TimeoutException e) {
+//            // csrf collision, wait random before re-trying
+//            hangon(new Random().nextInt(10));
+//            System.out.println("Login failed. Re-trying. error: "
+//                    + e.getMessage());
+//            System.out.println("*************checkText:" + checkText);
+//            goHome();
+//            findElement(By.xpath("//*[@data-userloaded='loaded-true']"));
+//            WebElement loginLinkList = driver.findElement(By.id("login_link"));
+//            if (loginLinkList.isDisplayed()) {
+//                findElement(By.id("login_link")).click();
+//                findElement(By.id("uname")).clear();
+//                findElement(By.id("uname")).sendKeys(username);
+//                findElement(By.id("passwd")).clear();
+//                findElement(By.id("passwd")).sendKeys(password);
+//                clickElement(By.id("login_button"));
+//            }
+//            textPresent(checkText);
+//        }
     }
 
     protected void switchTabAndClose(int i) {

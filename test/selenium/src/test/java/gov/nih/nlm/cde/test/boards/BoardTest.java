@@ -21,7 +21,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 textPresent(response);
                 closeAlert();
-                hangon(2);
+//                hangon(2);
                 return;
             }
         }
