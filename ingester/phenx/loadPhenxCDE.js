@@ -133,10 +133,11 @@ function init(taskNum) {
                                         if (dataSets.length === 0)
                                             exist = true;
                                         dataSets.forEach(function (ds) {
-                                            if (ds.dbGapId === m.get('VARIABLE_ID' && ds.uri === uri))
+                                            if (ds.dbGapId === m.VARIABLE_ID && ds.uri === uri)
                                                 exist = true;
                                         });
-                                        var dataSet = {dbGapId: m.get('VARIABLE_ID'), uri: uri};
+                                        de.ids.push({source: 'phenx variable', id: phenx.VARIABLE_TERM});
+                                        var dataSet = {dbGapId: m.VARIABLE_ID, uri: uri};
                                         if (exist)
                                             dataSets.push(dataSet);
                                         phenxInLoincInDbGap.push({phenx: phenx, loinc: loinc});

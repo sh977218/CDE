@@ -149,15 +149,6 @@ angular.module('formModule').controller('FormViewCtrl',
             show: false,
             hideable: true
         },
-        dataSet: {
-            heading: "Dataset",
-            includes: ['/form/public/html/cdeDataSet.html'],
-            select: function () {
-                setCurrentTab();
-            },
-            show: false,
-            hideable: true
-        },
         more: {
             heading: "More...",
             includes: [],
