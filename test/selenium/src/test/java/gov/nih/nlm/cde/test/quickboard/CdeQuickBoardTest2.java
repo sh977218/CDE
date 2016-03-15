@@ -53,10 +53,14 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-OHSU Knight"));
         textPresent("4 results for");
         clickElement(By.id("addToCompare_0"));
+        closeAlert();
         clickElement(By.id("addToCompare_1"));
+        closeAlert();
         clickElement(By.id("addToCompare_2"));
+        closeAlert();
         String toRemove = findElement(By.id("linkToElt_2")).getText();
         clickElement(By.id("addToCompare_3"));
+        closeAlert();
         hangon(.5);
         goToQuickBoardByModule("cde");
         hangon(.5);
