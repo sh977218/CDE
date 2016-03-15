@@ -122,8 +122,9 @@ function init(taskNum) {
                                 var de = deArr[0].toObject();
                                 MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
                                     if (err) throw err;
-                                    if (m) {
-                                        var uri = dbGapUrlPre + m.get('VARIABLE_NAME') + dbGapUrlPost + m.get('VARIABLE_ID');
+                                    var mapping = m ? null : m.toObject();
+                                    if (mapping) {
+                                        var uri = dbGapUrlPre + mapping.VARIABLE_NAME + dbGapUrlPost + mapping.VARIABLE_ID;
                                         var dataSets = de.dataSets;
                                         var exist = false;
                                         if (!dataSets) {
@@ -133,11 +134,11 @@ function init(taskNum) {
                                         if (dataSets.length === 0)
                                             exist = true;
                                         dataSets.forEach(function (ds) {
-                                            if (ds.dbGapId === m.VARIABLE_ID && ds.uri === uri)
+                                            if (ds.dbGapId === mapping.VARIABLE_ID && ds.uri === uri)
                                                 exist = true;
                                         });
                                         de.ids.push({source: 'phenx variable', id: phenx.VARIABLE_TERM});
-                                        var dataSet = {dbGapId: m.VARIABLE_ID, uri: uri};
+                                        var dataSet = {dbGapId: mapping.VARIABLE_ID, uri: uri};
                                         if (exist)
                                             dataSets.push(dataSet);
                                         phenxInLoincInDbGap.push({phenx: phenx, loinc: loinc});
