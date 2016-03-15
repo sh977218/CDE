@@ -150,6 +150,7 @@ public class NindsFormLoader implements Runnable {
                         form.id = title;
                         List<WebElement> copyRightClass = a.get(0).findElements(By.className("copyright"));
                         if (copyRightClass.size() > 0) {
+                            form.crfModuleGuideline = form.crfModuleGuideline.replace("©", "");
                             form.copyRight = true;
                         } else {
                             form.copyRight = false;
