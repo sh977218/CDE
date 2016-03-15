@@ -16,6 +16,7 @@ public class FormCdesTest extends BaseFormTest {
         textPresent("Sub-score for memory section as part of Addenbrooke's Cognitive Examination - Revised (ACE-R).");
         textPresent("ACERMemrySubScore");
         clickElement(By.id("addToCompare_1"));
+        closeAlert();
         textPresent("Quick Board (1)");
         clickElement(By.id("pinToBoard_1"));
         textPresent("Choose a Board to pin");

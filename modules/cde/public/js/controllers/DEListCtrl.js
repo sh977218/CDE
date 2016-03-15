@@ -115,5 +115,4 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             TourContent.stop();
         });
 
-
     }]);
