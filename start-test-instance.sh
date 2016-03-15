@@ -44,9 +44,7 @@ mongorestore -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $d
 mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password 
-mongo test test/createManyBoards.js -u $db_user -p $db_password 
-mongo test test/initOrgs.js -u $db_user -p $db_password 
-
+mongo test test/createManyBoards.js -u $db_user -p $db_password
 
 gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ test &
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &

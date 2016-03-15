@@ -499,7 +499,7 @@ exports.init = function(app) {
             res.status(401).send();
             return;
         }      
-        classificationNode.classifyEntireSearch(req.body, function(err) {
+        classificationNode.classifyEntireSearch(req, function(err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
         });        
