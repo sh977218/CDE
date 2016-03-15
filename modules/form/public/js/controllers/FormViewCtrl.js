@@ -253,9 +253,6 @@ angular.module('formModule').controller('FormViewCtrl',
                 module: function () {
                     return $scope.module;
                 },
-                myOrgs: function () {
-                    return $scope.myOrgs;
-                },
                 orgName: function () {
                     return undefined;
                 },
