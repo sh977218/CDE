@@ -258,10 +258,10 @@ public class NindsFormLoader implements Runnable {
                     cde.dataType = text;
                 }
                 if (index == 9) {
-                    cde.instructions = text;
+                    cde.instruction = text;
                 }
                 if (index == 10) {
-                    cde.references = text;
+                    cde.reference = text;
                 }
                 if (index == 11) {
                     cde.population = text;
@@ -315,16 +315,16 @@ public class NindsFormLoader implements Runnable {
                     cde.measurementType = text;
                 }
                 if (index == 26 + noise) {
-                    cde.loincID = text;
+                    cde.loincId = text;
                 }
                 if (index == 27 + noise) {
                     cde.snomed = text;
                 }
                 if (index == 28 + noise) {
-                    cde.cadsrID = text;
+                    cde.cadsrId = text;
                 }
                 if (index == 29 + noise) {
-                    cde.cdiscID = text;
+                    cde.cdiscId = text;
                 }
                 index++;
             }

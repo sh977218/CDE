@@ -9,8 +9,8 @@ public class Cde {
     String permissibleValue;
     String permissibleDescription;
     String dataType;
-    String instructions;
-    String references;
+    String instruction;
+    String reference;
     String population;
     String classification;
     String versionNum;
@@ -26,8 +26,8 @@ public class Cde {
     String minValue;
     String maxValue;
     String measurementType;
-    String loincID;
+    String loincId;
     String snomed;
-    String cadsrID;
-    String cdiscID;
+    String cadsrId;
+    String cdiscId;
 }

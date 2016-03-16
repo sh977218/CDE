@@ -100,7 +100,6 @@ var deJsonSchema = {
     ]
     , comments: [sharedSchemas.commentSchema]
     , instructions: [{source: String, instruction: sharedSchemas.instructionSchema}]
-    , guidelines: [{source: String, guideline: sharedSchemas.guidelineSchema}]
     , archived: Boolean
     , forkOf: String
     , attachments: [sharedSchemas.attachmentSchema]

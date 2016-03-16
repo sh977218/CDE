@@ -117,7 +117,6 @@ schemas.registrationStateSchema = {
 };
 
 schemas.instructionSchema = {value: String, valueFormat: String};
-schemas.guidelineSchema = {value: String, valueFormat: String};
 
 schemas.idSchema = {source: String, id: String, version: String, _id: false};
 
