@@ -48,6 +48,25 @@ function createCde(cde, form) {
         referenceDocuments.push(referenceDocument);
     }
 
+    var pvsArray = cde.permissibleValue.split(';');
+    var pdsArray = cde.permissibleDescription.split(';');
+    if (pvsArray.length != pdsArray.length) {
+        console.log('permissibleValue and permisslbeDescription do not match.' + ' form id: ' + form.id + 'cde id: ' + cde.cdeId);
+        process.exit(1);
+    }
+    var permissibleValues = [];
+    for (var i = 0; i < pvsArray.length; i++) {
+        var permissibleValue = {
+            permissibleValue: pvsArray[i],
+            valueMeaningName: pvsArray[i],
+            valueMeaningDefinition: pdsArray[i]
+        };
+        if (permissibleValue.permissibleValue.length > 0)
+            permissibleValues.push(permissibleValue);
+    }
+    var valueDomain = {};
+    
+
     var newCde = {
         referenceDocuments: referenceDocuments,
         ids: ids,
