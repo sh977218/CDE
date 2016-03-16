@@ -3,17 +3,26 @@ package gov.nih.nlm.ninds.form;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        Thread[] t = new Thread[1];
+        // args --pages 1,2,3
+        // --pages 1-4
+        // --thread 5
 
-        NindsFormLoader runner1 = new NindsFormLoader(1, 27);
-        t[0] = new Thread(runner1);
+        int startingPage = 1;
 
-        for (int i = 0; i < t.length; i++) {
-            t[i].start();
+        int nbOfThreads = 27;
+        Thread[] t = new Thread[nbOfThreads];
+
+        for (int i = 0; i < nbOfThreads; i++) {
+            NindsFormLoader loader = new NindsFormLoader(i+startingPage,i+startingPage);
+            t[i] = new Thread(loader);
         }
-        for (int i = 0; i < t.length; i++) {
+
+        for (Thread aT : t) {
+            aT.start();
+        }
+        for (Thread aT : t) {
             try {
-                t[i].join();
+                aT.join();
             } catch (Exception e) {
                 e.printStackTrace();
             }
