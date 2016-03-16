@@ -1,5 +1,3 @@
-var timeStart = new Date().getTime();
-
 var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
