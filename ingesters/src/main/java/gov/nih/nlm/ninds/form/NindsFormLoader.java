@@ -9,8 +9,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,7 +19,7 @@ import java.util.List;
 public class NindsFormLoader implements Runnable {
     Map<String, String> diseaseMap = new HashMap<String, String>();
     String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
-    WebDriver driver;
+    WebDriver driver, classifDriver;
     WebDriverWait wait;
     Collection<MyForm> forms = new ArrayList<MyForm>();
     int pageStart;
@@ -52,33 +50,22 @@ public class NindsFormLoader implements Runnable {
         wait = new WebDriverWait(driver, 120);
         this.pageStart = ps;
         this.pageEnd = pe;
+
+        classifDriver = new ChromeDriver();
+
     }
 
     @Override
     public void run() {
-        openTab();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(forms, pageStart, pageEnd);
         saveToJson(forms);
         driver.close();
+        classifDriver.close();
     }
 
-    void openTab() {
-        try {
-            Robot r = new Robot();
-            r.keyPress(KeyEvent.VK_CONTROL);
-            r.keyPress(KeyEvent.VK_T);
-            r.keyRelease(KeyEvent.VK_T);
-            r.keyRelease(KeyEvent.VK_CONTROL);
-            Thread.sleep(5000);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     void goToNindsSiteAndGoToPageOf(int pageStart) {
-        switchTab(1);
         driver.get(url);
         textPresent("or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
         hangon(10);
@@ -135,19 +122,15 @@ public class NindsFormLoader implements Runnable {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             MyForm form = new MyForm();
             int index = 1;
-            boolean grabDomain = true;
-            for (int j = 0; j < tds.size(); j++) {
-                WebElement td = tds.get(j);
+            for (WebElement td : tds) {
                 String text = td.getText().replace("\"", " ").trim();
                 if (index == 1) {
                     form.crfModuleGuideline = text;
                     hangon(5);
                     List<WebElement> a = td.findElements(By.cssSelector("a"));
                     if (a.size() > 0) {
-                        String href = a.get(0).getAttribute("href");
-                        form.downloadLink = href;
-                        String title = a.get(0).getAttribute("title");
-                        form.id = title;
+                        form.downloadLink = a.get(0).getAttribute("href");
+                        form.id = a.get(0).getAttribute("title");
                         List<WebElement> copyRightClass = a.get(0).findElements(By.className("copyright"));
                         if (copyRightClass.size() > 0) {
                             form.crfModuleGuideline = form.crfModuleGuideline.replace("©", "");
@@ -163,7 +146,6 @@ public class NindsFormLoader implements Runnable {
                 if (index == 3) {
                     List<WebElement> as = td.findElements(By.cssSelector("a"));
                     if (as.size() > 0) {
-                        grabDomain = true;
                         WebElement a = as.get(0);
                         getCdes(form, a);
                     }
@@ -180,8 +162,7 @@ public class NindsFormLoader implements Runnable {
                 }
                 index++;
             }
-            if (grabDomain)
-                getDomainAndSubDomain(form);
+            getDomainAndSubDomain(form);
             forms.add(form);
         }
         if (pageStart < pageEnd) {
@@ -191,36 +172,33 @@ public class NindsFormLoader implements Runnable {
     }
 
     void getDomainAndSubDomain(MyForm form) {
-        switchTab(0);
-        driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
-        String subDomianSelector = "//*[normalize-space(text())='" + form.crfModuleGuideline
-                + "']/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())='" + form.crfModuleGuideline
-                + "']/ancestor::table/preceding-sibling::a[1]";
+        classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
+        String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
+                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
+                + "\"]/ancestor::table/preceding-sibling::a[1]";
         List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.subDomainName = subDomains.get(0).getText().trim();
         List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
         if (domains.size() > 0)
             form.domainName = domains.get(0).getText().trim();
-        switchTab(1);
     }
 
     boolean tableIsLoad() {
         String tableSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(2) > td:nth-child(1)";
-        Boolean tableIsPresent = false;
-        while (tableIsPresent == false) {
+        Boolean tableIsPresent;
+        while (true) {
             tableIsPresent = driver.findElements(By.cssSelector(tableSelector)).size() > 0;
-            if (tableIsPresent == true)
+            if (tableIsPresent)
                 return true;
         }
-        return false;
     }
 
     void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
-        switchTab(2);
+        switchTab(1);
         getCdesList(form);
         String cdesTotalPageStr = findElement(By.id("viewer_ctl01_ctl01_ctl04")).getText();
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
@@ -234,14 +212,14 @@ public class NindsFormLoader implements Runnable {
                 getCdesList(form);
             }
         }
-        switchTabAndClose(1);
+        switchTabAndClose(0);
     }
 
     void refreshSession() {
-        switchTab(1);
+        switchTab(0);
         findElement(By.id("ContentPlaceHolder1_lbDownload")).click();
         hangon(10);
-        switchTab(2);
+        switchTab(1);
     }
 
     void getCdesList(MyForm form) {
@@ -253,8 +231,7 @@ public class NindsFormLoader implements Runnable {
             int index = 1;
             Cde cde = new Cde();
             int noise = 0;
-            for (int j = 0; j < tds.size(); j++) {
-                WebElement td = tds.get(j);
+            for (WebElement td : tds) {
                 String text = td.getText().replace("\"", " ").trim();
                 if (index == 1) {
                     cde.cdeId = text;
@@ -399,7 +376,7 @@ public class NindsFormLoader implements Runnable {
         } finally {
             System.out.println(fileName + " done.");
             System.out.println("forms size after info: " + forms.size());
-            System.exit(0);
+
         }
     }
 }
