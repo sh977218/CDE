@@ -240,7 +240,7 @@ public class NindsFormLoader implements Runnable {
                     cde.cdeName = text;
                 }
                 if (index == 3) {
-                    cde.varibleName = text;
+                    cde.variableName = text;
                 }
                 if (index == 4) {
                     cde.definitionDescription = text;
@@ -261,7 +261,7 @@ public class NindsFormLoader implements Runnable {
                     cde.instructions = text;
                 }
                 if (index == 10) {
-                    cde.referrences = text;
+                    cde.references = text;
                 }
                 if (index == 11) {
                     cde.population = text;

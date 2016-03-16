@@ -3,14 +3,14 @@ package gov.nih.nlm.ninds.form;
 public class Cde {
     String cdeId;
     String cdeName;
-    String varibleName;
+    String variableName;
     String definitionDescription;
     String questionText;
     String permissibleValue;
     String permissibleDescription;
     String dataType;
     String instructions;
-    String referrences;
+    String references;
     String population;
     String classification;
     String versionNum;
