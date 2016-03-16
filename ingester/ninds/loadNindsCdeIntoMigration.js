@@ -21,6 +21,11 @@ function createCde(cde, form) {
     var nindsId = {source: 'NINDS', id: cde.cdeId, version: cde.versionNum};
     var caDSRId = {source: 'caDSR', id: cde.cadsrId, version: cde.versionNum};
     var nindsVariableId = {source: 'NINDS Variable Name', id: cde.varibleName, version: cde.versionNum};
+    var nindsVariableAliasId = {
+        source: 'NINDS Variable Name Alias',
+        id: cde.aliasesForVaiableName,
+        version: cde.versionNum
+    };
     ids.push(nindsId);
     ids.push(caDSRId);
     ids.push(nindsVariableId);
@@ -29,9 +34,26 @@ function createCde(cde, form) {
     var instructions = [];
     instructions.push(instruction);
 
+    var property = {key: 'NINDS Previous Title', value: cde.previousTitle};
+    var properties = [];
+    properties.push(property);
 
-    var newCde = {};
-    newCde
+    var referenceDocument = {};
+    referenceDocument = {
+        title: cde.referrences,
+        uri: cde.referrences.indexOf('http://www.') != -1 ? cde.referrences : ''
+    };
+    var referenceDocuments = [];
+    if (referenceDocument.title != 'No references available') {
+        referenceDocuments.push(referenceDocument);
+    }
+
+    var newCde = {
+        referenceDocuments: referenceDocuments,
+        ids: ids,
+        instructions: instructions,
+        properties: properties
+    };
     return newCde;
 }
 function a(cb) {
