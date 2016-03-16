@@ -2,6 +2,7 @@ var cdesvc = require('./cdesvc')
     , boardsvc = require('./boardsvc')
     , usersvc = require('./usersvc')
     , mongo_data = require('./mongo-cde')
+    , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
     , xml2js = require('xml2js')
     , vsac = require('./vsac-io')
@@ -20,6 +21,7 @@ var cdesvc = require('./cdesvc')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
+    , usersrvc = require('../../system/node-js/usersrvc')
     ;
 
 
@@ -260,7 +262,17 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    // Check that apache will support delete
+    app.post('/classifyBoard', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.classifyCdesInBoard(req, function(err) {
+            if (!err) res.end();
+            else res.status(500).send(err);
+        });
+    });
+
     app.delete('/pincde/:pinId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             usersvc.removePinFromBoard(req, res);

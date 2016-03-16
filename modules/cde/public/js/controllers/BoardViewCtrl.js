@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('BoardViewCtrl',
-    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings',
-        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings)
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout',
+        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout)
 {
 
     $scope.module = 'cde';
@@ -70,6 +70,55 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             });
+    };
+
+    $scope.classifyBoard = function () {
+        var $modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/cde/public/html/classifyCdesInBoard.html',
+            controller: 'AddClassificationModalCtrl',
+            resolve: {
+                // @TODO bad design -> refactor
+                cde: function () {
+                    return null;
+                }
+                , orgName: function () {
+                    return null;
+                }
+                , pathArray: function () {
+                    return null;
+                }
+                , module: function () {
+                    return null;
+                }
+                , addClassification: function () {
+                    return {
+                        addClassification: function (newClassification) {
+                            var _timeout = $timeout(function () {
+                                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+                            }, 3000);
+                            $http({
+                                method: 'post',
+                                url: '/classifyBoard',
+                                data: {
+                                    boardId: $scope.board._id
+                                    , newClassification: newClassification
+                                }
+                            })
+                            .success(function (data, status) {
+                                $timeout.cancel(_timeout);
+                                if (status === 200) $scope.addAlert("success", "All Elements classified.");
+                                else $scope.addAlert("danger", data.error.message);
+                            }).error(function () {
+                                $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
+                                $timeout.cancel(_timeout);
+                            });
+                            $modalInstance.close();
+                        }
+                    };
+                }
+            }
+        });
     };
 
     $scope.reload();

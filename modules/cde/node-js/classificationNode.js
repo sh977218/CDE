@@ -1,5 +1,4 @@
 var mongo_data_cde = require('./mongo-cde')
-    , mongo_data_system = require('../../system/node-js/mongo-data') 
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../../system/shared/classificationShared.js');
 
