@@ -4,7 +4,7 @@ var async = require('async'),
     FormModel = require('./createConnection').FormModel
 
     ;
-function createCde(cde) {
+function createCde(cde, form) {
     var naming = [];
     var name1 = {designation: cde.cdeName, definition: cde.definitionDescription};
     var name2 = {
@@ -16,6 +16,7 @@ function createCde(cde) {
     naming.push(name1);
     naming.push(name2);
 
+
     var ids = [];
     var nindsId = {source: 'NINDS', id: cde.cdeId, version: cde.versionNum};
     var caDSRId = {source: 'caDSR', id: cde.cadsrId, version: cde.versionNum};
@@ -23,6 +24,11 @@ function createCde(cde) {
     ids.push(nindsId);
     ids.push(caDSRId);
     ids.push(nindsVariableId);
+
+    var instruction = {Disease: form.diseaseName, instruction: {value: cde.instruction}};
+    var instructions = [];
+    instructions.push(instruction);
+
 
     var newCde = {};
     newCde
@@ -34,7 +40,7 @@ function a(cb) {
         stream.pause();
         if (data && data.get('cdes').length > 0) {
             async.forEachSeries(data.get('cdes'), function (cde, doneOneCde) {
-                var newCde = createCde(cde);
+                var newCde = createCde(cde, data);
             }, function doneAllCdes() {
                 stream.resume();
             })

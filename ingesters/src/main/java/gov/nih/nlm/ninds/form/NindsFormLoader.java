@@ -258,10 +258,10 @@ public class NindsFormLoader implements Runnable {
                     cde.dataType = text;
                 }
                 if (index == 9) {
-                    cde.instructions = text;
+                    cde.instruction = text;
                 }
                 if (index == 10) {
-                    cde.references = text;
+                    cde.reference = text;
                 }
                 if (index == 11) {
                     cde.population = text;

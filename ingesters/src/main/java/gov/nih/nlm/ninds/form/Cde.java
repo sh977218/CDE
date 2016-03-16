@@ -9,8 +9,8 @@ public class Cde {
     String permissibleValue;
     String permissibleDescription;
     String dataType;
-    String instructions;
-    String references;
+    String instruction;
+    String reference;
     String population;
     String classification;
     String versionNum;
