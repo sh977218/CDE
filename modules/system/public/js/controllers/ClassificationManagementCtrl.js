@@ -120,12 +120,10 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                 module: function() {
                     return $scope.module;
                 }
-                , myOrgs: function() {
-                    return userResource.userOrgs;
+                , cde: function () {
+                    return null;
                 }
-                , cde: function() {
-                    return {_id:null};
-                }
+                // @TODO: this is the only place of 5 where this dependency is used.
                 , orgName: function() {
                     return orgName;
                 }

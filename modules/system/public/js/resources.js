@@ -1,4 +1,4 @@
-function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageService) {
+function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageService, Alert) {
     var params = {
         cde: {
             url: "/debytinyid/",
@@ -33,6 +33,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
                     de.primaryDefinitionCopy = de.naming[0].definition;
                     qb.elts.push(de);
                     localStorageService.add(param.localStorage, qb.elts);
+                    Alert.addAlert("success", "Added to QuickBoard!");
                 }
             });
         },
@@ -219,14 +220,34 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     })
-    .factory("QuickBoard", function ($http, OrgHelpers, userResource, localStorageService) {
-        var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService);
+    .factory("QuickBoard", function ($http, OrgHelpers, userResource, localStorageService, Alert) {
+        var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
     })
-    .factory("FormQuickBoard", function ($http, OrgHelpers, userResource, localStorageService) {
-        var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService);
+    .factory("FormQuickBoard", function ($http, OrgHelpers, userResource, localStorageService, Alert) {
+        var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
+    })
+
+    .factory("Alert", function($timeout){
+        var alerts = [];
+        var closeAlert = function (index) {
+            alerts.splice(index, 1);
+        };
+        var addAlert = function (type, msg) {
+            var id = (new Date()).getTime();
+            alerts.push({type: type, msg: msg, id: id});
+            $timeout(function () {
+                for (var i = 0; i < alerts.length; i++) {
+                    if (alerts[i].id === id) {
+                        alerts.splice(i, 1);
+                    }
+                }
+            }, window.userAlertTime);
+        };
+        var mapAlerts = function(){return alerts;}
+        return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
     })
 ;

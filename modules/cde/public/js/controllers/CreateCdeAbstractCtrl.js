@@ -72,9 +72,6 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                         module: function() {
                             return $scope.module;
                         }
-                        , myOrgs: function() {
-                            return userResource.userOrgs;
-                        }
                         , cde: function() {
                             return $scope.elt;
                         }
