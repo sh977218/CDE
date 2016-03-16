@@ -315,16 +315,16 @@ public class NindsFormLoader implements Runnable {
                     cde.measurementType = text;
                 }
                 if (index == 26 + noise) {
-                    cde.loincID = text;
+                    cde.loincId = text;
                 }
                 if (index == 27 + noise) {
                     cde.snomed = text;
                 }
                 if (index == 28 + noise) {
-                    cde.cadsrID = text;
+                    cde.cadsrId = text;
                 }
                 if (index == 29 + noise) {
-                    cde.cdiscID = text;
+                    cde.cdiscId = text;
                 }
                 index++;
             }

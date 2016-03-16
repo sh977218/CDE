@@ -26,8 +26,8 @@ public class Cde {
     String minValue;
     String maxValue;
     String measurementType;
-    String loincID;
+    String loincId;
     String snomed;
-    String cadsrID;
-    String cdiscID;
+    String cadsrId;
+    String cdiscId;
 }
