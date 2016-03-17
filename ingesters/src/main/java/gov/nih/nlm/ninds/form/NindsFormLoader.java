@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.*;
-import java.util.List;
 
 public class NindsFormLoader implements Runnable {
     Map<String, String> diseaseMap = new HashMap<String, String>();
@@ -24,6 +23,7 @@ public class NindsFormLoader implements Runnable {
     Collection<MyForm> forms = new ArrayList<MyForm>();
     int pageStart;
     int pageEnd;
+    Date today = new Date();
 
     public NindsFormLoader(int ps, int pe) {
         diseaseMap.put("General (For all diseases)", "General.aspx");
@@ -147,6 +147,8 @@ public class NindsFormLoader implements Runnable {
                     List<WebElement> as = td.findElements(By.cssSelector("a"));
                     if (as.size() > 0) {
                         WebElement a = as.get(0);
+                        if (form.cdes.size() > 0 && form.diseaseName.contains("Traumatic Brain Injury") && form.subDiseaseName.contains("Moderate/Severe TBI: Rehabilitation"))
+                            System.out.println('x');
                         getCdes(form, a);
                     }
                 }
@@ -197,8 +199,8 @@ public class NindsFormLoader implements Runnable {
 
     void getCdes(MyForm form, WebElement a) {
         a.click();
-        hangon(5);
         switchTab(1);
+        textPresent(today.getMonth() + "-" + today.getDay() + "-" + today.getYear());
         getCdesList(form);
         String cdesTotalPageStr = findElement(By.id("viewer_ctl01_ctl01_ctl04")).getText();
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
@@ -208,7 +210,7 @@ public class NindsFormLoader implements Runnable {
                     refreshSession();
                 }
                 findElement(By.xpath("//*[@id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
-                hangon(5);
+                textPresent("Page " + j + " of " + cdesTotalPage);
                 getCdesList(form);
             }
         }
@@ -358,10 +360,6 @@ public class NindsFormLoader implements Runnable {
     }
 
     public void saveToJson(Collection<MyForm> forms) {
-        String info = "forms size without info: " + forms.size();
-        MyForm myForm = new MyForm();
-        myForm.crfModuleGuideline = info;
-        forms.add(myForm);
         Gson gson = new Gson();
         String json = gson.toJson(forms);
         String fileName = "C:\\NLMCDE\\nindsForms" + pageStart + "-" + pageEnd + ".json";

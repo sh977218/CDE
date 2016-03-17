@@ -4,7 +4,7 @@ var async = require('async'),
     FormModel = require('./createConnection').FormModel
 
     ;
-function createCde(cde, form) {
+function createCde(cde, ninds) {
     var naming = [];
     var name1 = {designation: cde.cdeName, definition: cde.definitionDescription};
     var name2 = {
@@ -23,14 +23,14 @@ function createCde(cde, form) {
     var nindsVariableId = {source: 'NINDS Variable Name', id: cde.varibleName, version: cde.versionNum};
     var nindsVariableAliasId = {
         source: 'NINDS Variable Name Alias',
-        id: cde.aliasesForVaiableName,
+        id: cde.aliasesForVariableName,
         version: cde.versionNum
     };
     ids.push(nindsId);
     ids.push(caDSRId);
     ids.push(nindsVariableId);
 
-    var instruction = {Disease: form.diseaseName, instruction: {value: cde.instruction}};
+    var instruction = {Disease: ninds.diseaseName, instruction: {value: cde.instruction}};
     var instructions = [];
     instructions.push(instruction);
 
@@ -40,8 +40,8 @@ function createCde(cde, form) {
 
     var referenceDocument = {};
     referenceDocument = {
-        title: cde.referrences,
-        uri: cde.referrences.indexOf('http://www.') != -1 ? cde.referrences : ''
+        title: cde.reference,
+        uri: cde.reference.indexOf('http://www.') != -1 ? cde.reference : ''
     };
     var referenceDocuments = [];
     if (referenceDocument.title != 'No references available') {
@@ -64,24 +64,36 @@ function createCde(cde, form) {
         if (permissibleValue.permissibleValue.length > 0)
             permissibleValues.push(permissibleValue);
     }
-    var valueDomain = {};
-    
+    var dataType;
+    if (cde.dataType === 'Alphanumeric') {
+
+    } else if (cde.dataType === 'Alphanumeric') {
+
+    } else {
+
+    }
+    var valueDomain = {
+        uom: cde.measurementType
+    };
+
 
     var newCde = {
+        naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,
         instructions: instructions,
-        properties: properties
+        properties: properties,
+        valueDomain: valueDomain
     };
     return newCde;
 }
 function a(cb) {
     var stream = NindsModel.find({}).stream();
-    stream.on('data', function (data) {
+    stream.on('data', function (ninds) {
         stream.pause();
-        if (data && data.get('cdes').length > 0) {
-            async.forEachSeries(data.get('cdes'), function (cde, doneOneCde) {
-                var newCde = createCde(cde, data);
+        if (ninds && ninds.get('cdes').length > 0) {
+            async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
+                var newCde = createCde(cde, ninds);
             }, function doneAllCdes() {
                 stream.resume();
             })

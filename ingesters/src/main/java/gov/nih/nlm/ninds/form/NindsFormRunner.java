@@ -7,13 +7,13 @@ public class NindsFormRunner {
         // --pages 1-4
         // --thread 5
 
-        int startingPage = 1;
+        int startingPage = 5;
 
-        int nbOfThreads = 27;
+        int nbOfThreads = 1;
         Thread[] t = new Thread[nbOfThreads];
 
         for (int i = 0; i < nbOfThreads; i++) {
-            NindsFormLoader loader = new NindsFormLoader(i+startingPage,i+startingPage);
+            NindsFormLoader loader = new NindsFormLoader(i + startingPage, i + startingPage);
             t[i] = new Thread(loader);
         }
 
