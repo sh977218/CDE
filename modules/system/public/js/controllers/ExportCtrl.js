@@ -19,9 +19,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             {
                 'csv': function(result) {
                    SearchSettings.getPromise().then(function(settings) {
-                        var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+                        var csv = exports.getCdeCsvHeader(settings.tableViewFields);
                         JSON.parse(result).forEach(function (ele) {
-                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
+                            csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                         });
                         var blob = new Blob([csv], {type: "text/csv"});
                         saveAs(blob, 'SearchExport.csv');
@@ -72,9 +72,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
     $scope.quickBoardExport = function (quickBoard) {
         SearchSettings.getPromise().then(function(settings) {
-            var result = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+            var result = exports.getCdeCsvHeader(settings.tableViewFields);
             quickBoard.elts.forEach(function (ele) {
-                result += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
+                result += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
             });
 
             if (result) {

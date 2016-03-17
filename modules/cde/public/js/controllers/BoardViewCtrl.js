@@ -54,9 +54,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
         $http.get('/board/' + $scope.board._id + '/0/500')
             .success(function (response) {
                 SearchSettings.getPromise().then(function (settings) {
-                    var csv = exports.getCdeCsvHeader(settings.tableViewFields.cde);
+                    var csv = exports.getCdeCsvHeader(settings.tableViewFields);
                     response.cdes.forEach(function (ele) {
-                        csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields.cde));
+                        csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                     });
                     if (csv) {
                         var blob = new Blob([csv], {

@@ -13,20 +13,19 @@ angular.module('ElasticSearchResource')
                 "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
-                    "cde": {
-                        "name": true,
-                        "naming": true,
-                        "permissibleValues": true,
-                        "nbOfPVs": true,
-                        "uom": false,
-                        "stewardOrg": true,
-                        "usedBy": true,
-                        "registrationStatus": true,
-                        "administrativeStatus": false,
-                        "ids": true,
-                        "source": false,
-                        "updated": false
-                    }
+                    "name": true,
+                    "naming": true,
+                    "permissibleValues": true,
+                    "nbOfPVs": true,
+                    "uom": false,
+                    "stewardOrg": true,
+                    "usedBy": true,
+                    "registrationStatus": true,
+                    "administrativeStatus": false,
+                    "ids": true,
+                    "source": false,
+                    "updated": false,
+                    "numQuestions": true
                 }
             };
         };

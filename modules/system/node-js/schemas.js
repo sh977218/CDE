@@ -55,19 +55,17 @@ schemas.userSchema = new mongoose.Schema({
         defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
-            cde: {
-                name: Boolean
-                , naming: Boolean
-                , permissibleValues: Boolean
-                , uom: Boolean
-                , stewardOrg: Boolean
-                , usedBy: Boolean
-                , registrationStatus: Boolean
-                , administrativeStatus: Boolean
-                , ids: Boolean
-                , source: Boolean
-                , updated: Boolean
-            }
+            name: Boolean
+            , naming: Boolean
+            , permissibleValues: Boolean
+            , uom: Boolean
+            , stewardOrg: Boolean
+            , usedBy: Boolean
+            , registrationStatus: Boolean
+            , administrativeStatus: Boolean
+            , ids: Boolean
+            , source: Boolean
+            , updated: Boolean
         }
     }
     , accessToken: String

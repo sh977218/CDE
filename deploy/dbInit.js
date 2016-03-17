@@ -76,19 +76,17 @@ users.forEach(function(u) {
         "defaultSearchView": "accordion"
         , "lowestRegistrationStatus": "Incomplete"
         , "tableViewFields": {
-            "cde": {
-                "name": true,
-                "naming": true,
-                "permissibleValues": true,
-                "uom": false,
-                "stewardOrg": true,
-                "usedBy": true,
-                "registrationStatus": true,
-                "administrativeStatus": false,
-                "ids": true,
-                "source": false,
-                "updated": false
-            }
+            "name": true,
+            "naming": true,
+            "permissibleValues": true,
+            "uom": false,
+            "stewardOrg": true,
+            "usedBy": true,
+            "registrationStatus": true,
+            "administrativeStatus": false,
+            "ids": true,
+            "source": false,
+            "updated": false
         }
     };
     db.users.insert(u);
