@@ -7,7 +7,7 @@
     "licenseCode": "NLM-4110134256",
     "sourceOptions": {
       "NCI": {},
-      "LNC": {},
+      "LNC": {"requiresLogin": true},
       "SNOMEDCT_US": {"requiresLogin": true}
     }
   },

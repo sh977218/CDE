@@ -436,17 +436,13 @@ exports.init = function (app, daoManager) {
         if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
             return res.send(403);
         }
-
         vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
     });
 
     app.get('/searchUmls', function(req, res) {
+        if (!req.user) return res.status(403).send();
         return vsac.searchUmls(req.query.searchTerm, res);
     });
-
-    //app.get('/umlsBySourceId/:source/:id', function(req, res) {
-    //    vsac.getUMLSBySourceId(req.params.source, req.params.id, res);
-    //});
 
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);

@@ -82,8 +82,7 @@ exports.diff = function(newCde, oldCde) {
 exports.hideProprietaryPvs = function(cdes, user) {      
     this.hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
-        "LOINC"
-        , "RXNORM"
+        "RXNORM"
         , "HSLOC"
         , "CDCREC"
         , "SOP"

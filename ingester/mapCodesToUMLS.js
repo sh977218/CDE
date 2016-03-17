@@ -57,35 +57,25 @@ function getAtomFromUMLS(cui, source, cb) {
 }
 
 
-// ex names === ["Frequently/Often", "Sick/Ill"]
-//function generateFinalName(names) {
-//
-//    var rec = function(array,result){
-//
-//        var oneHasSlash = false;
-//        for(var i = 0; i < array.length; i++){
-//            var temp = array[i].split('/');
-//            if(temp.length > 1) {
-//                var temp1 ;
-//                var temp2;
-//                if(temp1 validate)
-//                result.push(temp1)
-//                if(temp2 validate)
-//                result.push(temp2)
-//                if(temp1. invalidate)
-//                rec(temp1,result)
-//                if(temp2. invalidate)
-//                    rec(temp2,result)
-//            }
-//        }
-//
-//        rec(names,[]);
-//    }
-//}
+// ex namesArray === [["Frequently", "Often"], ["Very", "Intensely"], ["Sick", "Ill"]]
+function generateFinalNames(namesArray) {
+    var finalOptions = namesArray[0];
+    for (var i = 1; i < namesArray.length; i++) {
+        var copyOfFinal = finalOptions.slice(0, finalOptions.length);
+        finalOptions = [];
+        namesArray[i].forEach(function(name) {
+            copyOfFinal.forEach(function(b4Final) {
+                finalOptions.push(b4Final + " " + name);
+            });
+        });
+    }
+    return finalOptions.map(function(n) {return n.toLowerCase().trim()});
+}
 
 function startMapping() {
     var cdeStream = DataElement.find(
         {
+            "ids.id": "2976193",
             "valueDomain.permissibleValues.valueMeaningCode": {$exists: true}, archived: null,
             "valueDomain.permissibleValues.codeSystemName": {$nin: ['AHRQ Common Formats', 'UMLS', 'NA']}
         }).stream();
@@ -109,11 +99,13 @@ function startMapping() {
                 }
                 if (src) {
                     var pvCodes = [];
+                    var umlsNames = [];
                     var vmNames = [];
                     async.eachSeries(pv.valueMeaningCode.split(":"), function (pvCode, oneCodeDone) {
-                        getUMLSBySourceId(src, pv.valueMeaningCode, function (err, umlsResult) {
+                        var singleVmNames = [];
+                        vmNames.push(singleVmNames);
+                        getUMLSBySourceId(src, pvCode, function (err, umlsResult) {
                             if (err) {
-                                //pv.codeSystemName = "NA";
                                 return oneCodeDone(err);
                             }
                             else {
@@ -123,23 +115,22 @@ function startMapping() {
 
                                 getAtomFromUMLS(cui, src, function (err, atomResult) {
                                     if (err) {
-                                        //pv.codeSystemName = "NA";
                                         return oneCodeDone(err);
                                     }
                                     atomResult = JSON.parse(atomResult);
                                     var termFound = false;
-                                    var allTerms = [];
+                                    //var allTerms = [];
                                     atomResult.result.forEach(function (atom) {
                                         if (atom.termType === srcOptions[src].termType) {
-                                            //vmNames.push(atom.name);
-                                            allTerms.push(atom.name);
-                                            pvCodes.push(cui);
+                                            singleVmNames.push(atom.name);
+                                            //allTerms.push(atom.name);
                                             termFound = true;
                                         }
                                     });
-
                                     if (termFound) {
-                                        vmNames.push(allTerms.join('/'));
+                                        pvCodes.push(cui);
+                                        umlsNames.push(name);
+                                        //vmNames.push(allTerms);
                                         return oneCodeDone();
                                     }
                                     else return oneCodeDone("Cannot find correct termType");
@@ -149,9 +140,9 @@ function startMapping() {
                     }, function allCodesDones(err) {
                         if (err) return onePvDone(err);
                         else {
-                            var finalName = vmNames.join(" ");
-                            if (finalName.toLowerCase().trim() === pv.valueMeaningName.toLowerCase().trim()) {
-                                pv.valueMeaningName = finalName;
+                            var allowedNames = generateFinalNames(vmNames);
+                            if (allowedNames.indexOf(pv.valueMeaningName.toLowerCase().trim()) > -1) {
+                                pv.valueMeaningName = umlsNames.join(" ");
                                 pv.valueMeaningCode = pvCodes.join(":");
                                 pv.codeSystemName = "UMLS";
                                 onePvDone();
@@ -162,7 +153,6 @@ function startMapping() {
 
                     });
                 } else {
-                    //pv.codeSystemName = 'NA';
                     onePvDone("Not a good src: " + pv.codeSystemName);
                 }
             }, function allPvsDone(err) {
