@@ -3,27 +3,33 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
 {
     // @TODO This controller should be renamed to PV Controller ?
 
+
+    var defaultSrcOptions = {
+        NCI: {displayAs: "NCI", termType: "PT", selected: false},
+        LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
+        SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
+    };
+
+    Object.keys(defaultSrcOptions).forEach(function(srcKey) {
+        $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
+            if ($scope.srcOptions[srcKey] && $scope.srcOptions[srcKey].selected) {
+                lookupAsSource(srcKey);
+            }
+        });
+    });
+
+
     $scope.srcOptions = {};
+    $scope.containsUMLS = false;
 
     function initSrcOptions() {
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
             if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
-                $scope.srcOptions = {
-                    NCI: {displayAs: "NCI", termType: "PT", selected: false},
-                    LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
-                    SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
-                };
-                Object.keys($scope.srcOptions).forEach(function(srcKey) {
-                    $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
-                        if ($scope.srcOptions[srcKey].selected) {
-                            lookupAsSource(srcKey);
-                        }
-                    });
-                });
+                $scope.containsUMLS = true;
+                $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
         }
-
     }
 
     var lookupAsSource = function(src) {
@@ -104,6 +110,7 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         $scope.elt.valueDomain.permissibleValues.splice(index, 1);
         $scope.stageElt($scope.elt);
         $scope.runManualValidation();
+        initSrcOptions();
     };
 
     $scope.addPv = function() {
@@ -115,6 +122,9 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
 
         modalInstance.result.then(function (newPv) {
             $scope.elt.valueDomain.permissibleValues.push(newPv);
+            $scope.stageElt($scope.elt);
+            initSrcOptions();
+            $scope.runManualValidation();
         });
     };
 
