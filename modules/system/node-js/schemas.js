@@ -55,7 +55,8 @@ schemas.userSchema = new mongoose.Schema({
         defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
-            name: Boolean
+            version: Number
+            , name: Boolean
             , naming: Boolean
             , permissibleValues: Boolean
             , uom: Boolean
@@ -66,6 +67,7 @@ schemas.userSchema = new mongoose.Schema({
             , ids: Boolean
             , source: Boolean
             , updated: Boolean
+            , numQuestions: Number
         }
     }
     , accessToken: String
