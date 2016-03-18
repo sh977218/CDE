@@ -23,6 +23,7 @@ public class EltIdMaps {
         eltMap.put("Person Birth Date", "2yWPshAKKN7");
         eltMap.put("Person Mother Onset Menopause Age Value", "qKGWuJZ1zxz");
         eltMap.put("SDC Adrenal", "XySUBn_NZ");
+        eltMap.put("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator", "NuQwuCAZrz5");
         eltMap.put("Service Item Display Name java.lang.String", "_Qg5FbwRP98");
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Specimen Inflammation Change Type", "vdw_hgaMyxc");
@@ -34,7 +35,6 @@ public class EltIdMaps {
 
         // Forms
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
-
 
 
     }
