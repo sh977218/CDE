@@ -52,6 +52,9 @@ app.get('/vsac/ws/RetrieveValueSet', function(req, res) {
     }
 });
 
+// FAKE UMLS requests
+app.get('')
+
 // Mocks UTS ticket validation process
 app.post('/cas/serviceValidate', function(req, res) {
     if( req.query.ticket === 'invalid' ) {
