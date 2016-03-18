@@ -38,13 +38,13 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void doubleElementedQuickboard(){
-        addCdeToQuickBoard("Spinal cord injury upper extremity function complications status");
+        addCdeToQuickBoard("Spinal cord injury upper extremity shoulder function status");
         addCdeToQuickBoard("Right upper extremity upper motor neuron clinical indicator");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
         clickElement(By.id("qb_cde_compare"));
+        textPresent("The status of shoulder function as part of the test in spinal cord injury.");
         textPresent("Indicator of whether the examination found clinical evidence of upper motor neuron (UMN) dysfunction in the right upper extremity (RUE) region.");
-        textPresent("The status of complications to upper extremity function like pain, spasms, contractures, edema, etc.");
     }
 
 }
