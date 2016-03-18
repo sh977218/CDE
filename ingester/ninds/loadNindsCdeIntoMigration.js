@@ -1,118 +1,225 @@
 var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
     DataElementModel = require('./createConnection').DataElementModel,
-    FormModel = require('./createConnection').FormModel
+    classificationShared = require('../../modules/system/shared/classificationShared'),
+    logger = require('./log')
     ;
 
 var cdeCounter = 0;
-
-function transferCde(existingCde, newCde) {
-    var existingNaming = existingCde.get('naming');
+function checkExistingNaming(existingNaming, newCde, ninds) {
     var existCdeName, existQuestionText;
     existingNaming.forEach(function (existingName) {
-        if (existingName.designation === newCde.cdeName)
+        if (existingName.designation === newCde.cdeName && newCde.cdeName.length > 0)
             existCdeName = true;
-        if (existingName.designation === newCde.questionText)
+        if (existingName.designation === newCde.questionText && newCde.questionText.length > 0 && newCde.questionText != 'N/A')
             existQuestionText = true;
     });
-    if (existCdeName) {
-        var newCdeName = {designation: newCde.cdeName, definition: newCde.definitionDescription};
+    if (!existCdeName && newCde.cdeName.length > 0) {
+        var newCdeName = {designation: newCde.cdeName, definition: newCde.definitionDescription, languageCode: "EN-US"};
         existingNaming.push(newCdeName);
+        logger.info('added new cde name to cde id: ' + newCde.cdeId);
+        logger.info('newCde cdeName: ' + newCde.cdeName);
+        logger.info('ninds._id: ' + ninds._id);
     }
-    if (existQuestionText) {
+    if (!existQuestionText && newCde.questionText.length > 0 && newCde.questionText != 'N/A') {
         var newQuestionText = {
             designation: newCde.questionText,
+            languageCode: "EN-US",
             context: {
                 contextName: 'Question Text'
             }
         };
         existingNaming.push(newQuestionText);
+        logger.info('added new question text: ' + newCde.cdeId);
+        logger.info('newCde questionText: ' + newCde.questionText);
+        logger.info('ninds._id: ' + ninds._id);
     }
-
-    var existingIds = existingCde.get('ids');
-    var existCaDSRId, existNindsVariableId, existNindsVariableAliasId;
+}
+function checkExistingIds(existingIds, newCde, ninds) {
+    var existCaDSRId, existVariableName, existAliasesForVariableName;
     existingIds.forEach(function (existingId) {
         if (existingId.source === 'caDSR' && existingId.id === newCde.cadsrId)
             existCaDSRId = true;
-        if (existingId.source === 'NINDS Variable Name' && existingId.id === newCde.nindsVariableId)
-            existNindsVariableId = true;
-        if (existingId.source === 'NINDS Variable Name Alias' && existingId.id === newCde.nindsVariableAliasId)
-            existNindsVariableAliasId = true;
+        if (existingId.source === 'NINDS Variable Name' && existingId.id === newCde.variableName)
+            existVariableName = true;
+        if (existingId.source === 'NINDS Variable Name Alias' && existingId.id === newCde.aliasesForVariableName)
+            existAliasesForVariableName = true;
     });
-    if (existCaDSRId) {
-        var newCaDSRId = {source: 'caDSR', id: newCde.cadsrId, version: newCde.versionNum};
-        existingNaming.push(newCdeName);
+    if (!existCaDSRId && newCde.cadsrId.length > 0) {
+        var newCaDSRId = {source: 'caDSR', id: newCde.cadsrId};
+        existingIds.push(newCaDSRId);
+        logger.info('added new cadsr id: ' + newCde.cdeId);
+        logger.info('newCde cadsrId: ' + newCde.cadsrId);
+        logger.info('ninds._id: ' + ninds._id);
     }
-    if (existNindsVariableId) {
-        var newNindsVariableId = {source: 'NINDS Variable Name', id: newCde.varibleName, version: newCde.versionNum};
-        existingNaming.push(newCdeName);
+    if (!existVariableName && newCde.variableName.length > 0) {
+        var newVariableName = {source: 'NINDS Variable Name', id: newCde.varibleName};
+        existingIds.push(newVariableName);
+        logger.info('added new ninds variable id: ' + newCde.cdeId);
+        logger.info('newCde varibleName: ' + newCde.varibleName);
+        logger.info('ninds._id: ' + ninds._id);
     }
-    if (existNindsVariableAliasId) {
-        var newNindsVariableAliasId = {
+    if (!existAliasesForVariableName && newCde.aliasesForVariableName.length > 0) {
+        var newAliasesForVariableName = {
             source: 'NINDS Variable Name Alias',
-            id: newCde.aliasesForVariableName,
-            version: newCde.versionNum
+            id: newCde.aliasesForVariableName
         };
-        existingNaming.push(newCdeName);
+        existingIds.push(newAliasesForVariableName);
+        logger.info('added new ninds variable alias id: ' + newCde.cdeId);
+        logger.info('newCde aliasesForVariableName: ' + newCde.aliasesForVariableName);
+        logger.info('ninds._id: ' + ninds._id);
     }
+}
+function checkExistingInstructions(existingInstructions, newCde, ninds) {
+    var existInstruction;
+    existingInstructions.forEach(function (existingInstruction) {
+        if (existingInstruction.Disease === ninds.diseaseName && existingInstruction.instruction.value === newCde.instruction && newCde.instruction != 'No instructions available')
+            existInstruction = true;
+    });
+    if (!existInstruction && newCde.instruction.length > 0 && newCde.instruction != 'No instructions available') {
+        var newInstruction = {Disease: ninds.diseaseName, instruction: {value: newCde.instruction}};
+        existingInstructions.push(newInstruction);
+        logger.info('added new instruction: ' + newCde.cdeId);
+        logger.info('newCde instruction: ' + newCde.instruction);
+        logger.info('ninds._id: ' + ninds._id);
+    }
+}
+function checkExistingProperties(existingProperties, newCde, ninds) {
+    var existPreviousTitleProperty, existGuidelinesProperty;
+    existingProperties.forEach(function (existingProperty) {
+        if (existingProperty.key === 'NINDS Previous Title' && existingProperty.value === newCde.previousTitle)
+            existPreviousTitleProperty = true;
+        if (existingProperty.key === 'NINDS Guidelines' && existingProperty.value === newCde.crfModuleGuideline)
+            existGuidelinesProperty = true;
+    });
+    if (!existPreviousTitleProperty && newCde.previousTitle.length > 0) {
+        var newPreviousTitleProperty = {key: 'NINDS Previous Title', value: newCde.previousTitle};
+        existingProperties.push(newPreviousTitleProperty);
+        logger.info('added new previous title property: ' + newCde.cdeId);
+        logger.info('newCde crfModuleGuideline: ' + newCde.crfModuleGuideline);
+        logger.info('ninds._id: ' + ninds._id);
+    }
+    if (!existGuidelinesProperty && newCde.crfModuleGuideline.length > 0) {
+        var newGuidelinesProperty = {key: 'NINDS Guidelines', value: newCde.crfModuleGuideline};
+        existingProperties.push(newGuidelinesProperty);
+        logger.info('added new guideline property: ' + newCde.cdeId);
+        logger.info('newCde crfModuleGuideline: ' + newCde.crfModuleGuideline);
+        logger.info('ninds._id: ' + ninds._id);
+    }
+}
+function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds) {
+    var existReferenceDocument;
+    existingReferenceDocuments.forEach(function (existingReferenceDocument) {
+        if (newCde.reference !== 'No references available') {
+            if (existingReferenceDocument.title === newCde.reference)
+                existReferenceDocument = true;
+        }
+    });
+    if (!existReferenceDocument && newCde.reference.length > 0 && newCde.reference != 'No references available') {
+        var newReferenceDocument = {
+            title: newCde.reference,
+            uri: newCde.reference.indexOf('http://www.') != -1 ? newCde.reference : ''
+        };
+        existingReferenceDocuments.push(newReferenceDocument);
+        logger.info('added new reference document: ' + newCde.cdeId);
+        logger.info('newCde reference: ' + newCde.reference);
+        logger.info('ninds._id: ' + ninds._id);
+    }
+}
+function transferCde(existingCde, newCde, ninds) {
+    // add newCde naming if no name existing
+    var existingNaming = existingCde.get('naming');
+    checkExistingNaming(existingNaming, newCde, ninds);
 
+    // add newCde ids if no id existing
+    var existingIds = existingCde.get('ids');
+    checkExistingIds(existingIds, newCde, ninds);
 
+    // add newCde instruction if no instruction existing
+    var existingInstructions = existingCde.get('instructions');
+    checkExistingInstructions(existingInstructions, newCde, ninds);
+
+    // add newCde property if no property existing
+    var existingProperties = existingCde.get('properties');
+    checkExistingProperties(existingProperties, newCde, ninds);
+
+    // add newCde referenceDocument if no referenceDocument existing
+    var existingReferenceDocuments = existingCde.get('referenceDocuments');
+    checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
+
+    if (!newCde.classification.length || newCde.classification.length === 0)
+        logger.info('x');
+    classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
 };
 
 function createCde(cde, ninds) {
     var naming = [];
-    var name1 = {designation: cde.cdeName, definition: cde.definitionDescription};
-    var name2 = {
+    var cdeName = {
+        designation: cde.cdeName, definition: cde.definitionDescription,
+        languageCode: "EN-US",
+        context: {
+            contextName: "Health",
+            acceptability: "preferred"
+        }
+    };
+    var questionTextName = {
         designation: cde.questionText,
+        languageCode: "EN-US",
         context: {
             contextName: 'Question Text'
         }
     };
-    naming.push(name1);
-    naming.push(name2);
+    naming.push(cdeName);
+    if (questionTextName.designation != 'N/A')
+        naming.push(questionTextName);
 
     var ids = [];
     var nindsId = {source: 'NINDS', id: cde.cdeId, version: cde.versionNum};
-    var caDSRId = {source: 'caDSR', id: cde.cadsrId, version: cde.versionNum};
-    var nindsVariableId = {source: 'NINDS Variable Name', id: cde.varibleName, version: cde.versionNum};
+    var caDSRId = {source: 'caDSR', id: cde.cadsrId};
+    var nindsVariableId = {source: 'NINDS Variable Name', id: cde.variableName};
     var nindsVariableAliasId = {
         source: 'NINDS Variable Name Alias',
-        id: cde.aliasesForVariableName,
-        version: cde.versionNum
+        id: cde.aliasesForVariableName
     };
     ids.push(nindsId);
-    ids.push(caDSRId);
-    ids.push(nindsVariableId);
+    if (cde.cadsrId.length > 0)
+        ids.push(caDSRId);
+    if (cde.variableName.length > 0)
+        ids.push(nindsVariableId);
+    if (cde.aliasesForVariableName.length > 0)
+        ids.push(nindsVariableAliasId);
 
-    var instruction = {Disease: ninds.diseaseName, instruction: {value: cde.instruction}};
     var instructions = [];
+    var instruction = {Disease: ninds.diseaseName, instruction: {value: cde.instruction}};
     instructions.push(instruction);
 
-    var property1 = {key: 'NINDS Previous Title', value: cde.previousTitle};
-    var property2 = {key: 'NINDS Guidelines', value: cde.crfModuleGuideline};
     var properties = [];
-    properties.push(property1);
-    properties.push(property2);
+    var previousTitleProperty = {key: 'NINDS Previous Title', value: cde.previousTitle};
+    var guidelinesProperty = {key: 'NINDS Guidelines', value: cde.crfModuleGuideline};
+    properties.push(previousTitleProperty);
+    properties.push(guidelinesProperty);
 
-    var referenceDocument = {};
-    referenceDocument = {
+    var referenceDocuments = [];
+    var referenceDocument = {
         title: cde.reference,
         uri: cde.reference.indexOf('http://www.') != -1 ? cde.reference : ''
     };
-    var referenceDocuments = [];
     if (referenceDocument.title != 'No references available') {
         referenceDocuments.push(referenceDocument);
     }
 
+    var valueDomain = {
+        uom: cde.measurementType
+    };
+    var permissibleValues = [];
     var pvsArray = cde.permissibleValue.split(';');
     var pdsArray = cde.permissibleDescription.split(';');
     if (pvsArray.length != pdsArray.length) {
-        console.log('*******************permissibleValue and permisslbeDescription do not match.');
-        console.log('*******************ninds:\n' + ninds);
-        console.log('*******************cde:\n' + cde);
+        logger.info('*******************permissibleValue and permisslbeDescription do not match.');
+        logger.info('*******************ninds:\n' + ninds);
+        logger.info('*******************cde:\n' + cde);
         process.exit(1);
     }
-    var permissibleValues = [];
     for (var i = 0; i < pvsArray.length; i++) {
         var permissibleValue = {
             permissibleValue: pvsArray[i],
@@ -122,36 +229,66 @@ function createCde(cde, ninds) {
         if (permissibleValue.permissibleValue.length > 0)
             permissibleValues.push(permissibleValue);
     }
-    var valueDomain = {
-        uom: cde.measurementType
-    };
     if (cde.dataType === 'Alphanumeric') {
         if (cde.inputRestrictions === 'Free-Form Entry') {
-            var datatypeText = {maxLength: cde.size};
+            var datatypeText = {maxLength: Number(cde.size)};
             valueDomain.datatypeText = datatypeText;
             valueDomain.datatype = 'Text';
         } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
             valueDomain.permissibleValues = permissibleValues;
             valueDomain.datatype = 'Value List';
         } else {
-            console.log('unknown cde.inputRestrictions found:' + cde.inputRestritions);
-            console.log('*******************ninds:\n' + ninds);
-            console.log('*******************cde:\n' + cde);
+            logger.info('unknown cde.inputRestrictions found:' + cde.inputRestritions);
+            logger.info('*******************ninds:\n' + ninds);
+            logger.info('*******************cde:\n' + cde);
             process.exit(1);
         }
     }
     else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
-        var datatypeNumber = {minValue: cde.minValue, maxValue: cde.maxValue};
+        var datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
         valueDomain.datatypeNumber = datatypeNumber;
         valueDomain.datatype = 'Number';
     } else if (cde.dataType === 'Date or Date & Time') {
         valueDomain.datatype = 'Date';
     } else {
-        console.log('unknown cde.dataType found:' + cde.dataType);
-        console.log('*******************ninds:\n' + ninds);
-        console.log('*******************cde:\n' + cde);
+        logger.info('unknown cde.dataType found:' + cde.dataType);
+        logger.info('*******************ninds:\n' + ninds);
+        logger.info('*******************cde:\n' + cde);
         process.exit(1);
     }
+
+    var elements = [];
+    var populationElement = {
+        name: 'Population',
+        elements: [{
+            "name": cde.population,
+            "elements": []
+        }]
+    };
+    var domainElement = {
+        name: 'Domain',
+        elements: [{
+            "name": cde.domain,
+            "elements": [{
+                "name": cde.subDomain,
+                "elements": []
+            }]
+        }]
+    };
+    var diseaseElement = {
+        name: 'Disease',
+        elements: [{
+            "name": ninds.diseaseName,
+            "elements": [{
+                "name": ninds.subDiseaseName,
+                "elements": []
+            }]
+        }]
+    };
+    elements.push(populationElement);
+    elements.push(domainElement);
+    elements.push(diseaseElement);
+    var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
 
     var newCde = {
         naming: naming,
@@ -159,7 +296,8 @@ function createCde(cde, ninds) {
         ids: ids,
         instructions: instructions,
         properties: properties,
-        valueDomain: valueDomain
+        valueDomain: valueDomain,
+        classification: classification
     };
     return newCde;
 }
@@ -169,17 +307,26 @@ function a(cb) {
         stream.pause();
         if (ninds && ninds.get('cdes').length > 0) {
             async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
-                DataElementModel.findOne({'ids.id': cde.cdeId}, function (err, existingCde) {
+                DataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                     if (err) throw err;
-                    if (existingCde) {
-                        transferCde(existingCde, cde);
-                    } else {
+                    if (existingCdes.length === 0) {
                         var newCde = createCde(cde, ninds);
                         var newCdeObj = new DataElementModel(newCde);
                         newCdeObj.save(function () {
-                            cdeCounter++;
                             doneOneCde();
                         });
+                    } else if (existingCdes.length === 1) {
+                        var existingCde = existingCdes[0];
+                        if (existingCde) {
+                            transferCde(existingCde, cde, ninds);
+                            existingCde.save(function () {
+                                doneOneCde();
+                            })
+                        }
+                    }
+                    else {
+                        logger.info(existingCdes.length + ' cdes found, ids.id:' + cde.cdeId);
+                        process.exit(1);
                     }
                 })
             }, function doneAllCdes() {

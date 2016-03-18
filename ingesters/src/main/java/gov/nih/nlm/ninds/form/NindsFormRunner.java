@@ -4,7 +4,7 @@ public class NindsFormRunner {
 
     public static void main(String[] args) {
 
-        int startingPage = 27;
+        int startingPage = 1;
 
         int nbOfThreads = 1;
         Thread[] t = new Thread[nbOfThreads];

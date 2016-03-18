@@ -17,6 +17,14 @@ exports.loadFiles = function (directory, cb) {
                     var forms = JSON.parse(data);
                     var counter = 0;
                     async.forEachSeries(forms, function (form, doneOne) {
+                        if (form.id)
+                            form.formId = form.id.replace('NOC-', '').trim();
+                        else if (form.downloadLink)
+                            form.formId = form.downloadLink.split('CrfId=')[1];
+                        else {
+                            console.log('no id found');
+                            process.exit(0);
+                        }
                         var ninds = new NindsModel(form);
                         ninds.save(function () {
                             doneOne();
