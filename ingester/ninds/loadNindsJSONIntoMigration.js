@@ -17,8 +17,6 @@ exports.loadFiles = function (directory, cb) {
                     var forms = JSON.parse(data);
                     var counter = 0;
                     async.forEachSeries(forms, function (form, doneOne) {
-                        if (form.cdes.length > 0 && form.diseaseName === 'Traumatic Brain Injury' && form.subDiseaseName === 'Moderate/Severe TBI: Rehabilitation')
-                            console.log('x');
                         var ninds = new NindsModel(form);
                         ninds.save(function () {
                             doneOne();
@@ -37,4 +35,6 @@ exports.loadFiles = function (directory, cb) {
     });
 };
 
-exports.loadFiles('S:/CDE/ninds/3-11-2016/');
+exports.loadFiles('S:/CDE/ninds/3-11-2016/1/', function () {
+    process.exit(0);
+});

@@ -3,11 +3,8 @@ package gov.nih.nlm.ninds.form;
 public class NindsFormRunner {
 
     public static void main(String[] args) {
-        // args --pages 1,2,3
-        // --pages 1-4
-        // --thread 5
 
-        int startingPage = 5;
+        int startingPage = 27;
 
         int nbOfThreads = 1;
         Thread[] t = new Thread[nbOfThreads];
@@ -27,5 +24,6 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
+        System.exit(0);
     }
 }

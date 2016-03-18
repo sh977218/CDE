@@ -189,6 +189,6 @@ stream.on('data', function (data) {
 });
 
 stream.on('end', function () {
-    console.log('finished all form' + formCounter);
+    console.log('finished all form' + nindsCounter);
     process.exit(0);
 });
