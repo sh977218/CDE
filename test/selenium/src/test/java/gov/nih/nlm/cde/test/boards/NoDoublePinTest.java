@@ -8,7 +8,7 @@ public class NoDoublePinTest extends BoardTest {
 
     @Test
     public void noDoublePin() {
-        mustBeLoggedInAs(pinUser, password);
+        mustBeLoggedInAs("doublePinUser", password);
         goToCdeSearch();
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";

@@ -37,6 +37,7 @@ var users = [
     , {username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boardexport', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []}
+    , {username: 'doublepinuser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []}

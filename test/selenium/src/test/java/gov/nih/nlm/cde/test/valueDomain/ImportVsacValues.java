@@ -3,10 +3,9 @@ package gov.nih.nlm.cde.test.valueDomain;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class Vsac2Test extends NlmCdeBaseTest {
+public class ImportVsacValues extends NlmCdeBaseTest {
 
     @Test
     public void importVsacValues() {
@@ -38,36 +37,4 @@ public class Vsac2Test extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
     }
 
-    @Test(dependsOnMethods = {"importVsacValues"})
-    public void modifyValueCode() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Patient Race Category");
-        findElement(By.linkText("Permissible Values")).click();
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-valid")));
-        findElement(By.cssSelector("#pvName-4 .fa-edit")).click();
-        findElement(By.cssSelector("#pvName-4 input.typeahead")).sendKeys(" Category");
-        findElement(By.cssSelector("#pvName-4 .fa-check")).click();
-        hangon(1);
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-warning")));
-
-        findElement(By.cssSelector("#pvCode-4 .fa-edit")).click();
-        findElement(By.cssSelector("#pvCode-4 input")).sendKeys(".1");
-        findElement(By.cssSelector("#pvCode-4 .fa-check")).click();
-
-        findElement(By.cssSelector("#pvCodeSystem-4 .fa-edit")).click();
-        findElement(By.xpath("//td[@id='pvCodeSystem-4']//input")).sendKeys(".modifVC");
-        clickElement(By.cssSelector("#pvCodeSystem-4 .fa-check"));
-
-        hangon(.5);
-
-        newCdeVersion("Modified VS Codes");
-
-        goToCdeByName("Patient Race Category");
-
-        findElement(By.linkText("Permissible Values")).click();
-
-        textPresent("Other Race Category");
-        textPresent("2131-1.1");
-        textPresent("CDCREC.modifVC");
-    }
 }

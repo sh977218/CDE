@@ -16,7 +16,7 @@ public class AddPvTest extends NlmCdeBaseTest {
         clickElement(By.id("pvs_tab"));
         textPresent("Right Middle Abdomen");
         clickElement(By.id("pvRemove-8"));
-        pvValidator.addPv(10, "New PV");
+        pvValidator.addPv("New PV");
         clickElement(By.xpath("//td[@id='pvCodeSystem-10']//div[@typeahead-source='pVTypeaheadCodeSystemNameList']//i[@class='fa fa-edit']"));
         textPresent("Confirm");
         findElement(By.xpath("//td[@id='pvCodeSystem-10']//input")).sendKeys("N");

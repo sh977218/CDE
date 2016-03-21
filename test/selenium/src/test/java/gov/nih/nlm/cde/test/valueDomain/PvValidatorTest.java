@@ -8,28 +8,31 @@ import org.testng.annotations.Test;
 
 public class PvValidatorTest extends BaseClassificationTest {
 
-    public void addPv(int index, String pv) {
-        addPv(index, pv, null, null);
+    public void addPv(String pv) {
+        addPv(pv, null, null);
     }
 
-    public void addPv(int index, String pv, String name, String code) {
+    public void addPv(String pv, String name, String code) {
+        addPv(pv, name, code, null);
+    }
+
+    public void addPv(String pv, String name, String code, String codeSystem) {
         findElement(By.id("addPv")).click();
-        findElement(By.xpath("//td[@id='pv-" + index + "']//i")).click();
-        findElement(By.xpath("//td[@id='pv-" + index + "']//input")).sendKeys(pv);
-        findElement(By.cssSelector("#pv-" + index + " .fa-check")).click();
+        findElement(By.id("permissibleValueInput")).sendKeys(pv);
 
         if (name != null) {
-            findElement(By.xpath("//td[@id='pvName-" + index + "']//i")).click();
-            findElement(By.xpath("//td[@id='pvName-" + index + "']//input")).sendKeys(name);
-            findElement(By.cssSelector("#pvName-" + index + " .fa-check")).click();
+            findElement(By.id("valueMeaningNameInput")).sendKeys(name);
         }
 
         if (code != null) {
-            findElement(By.xpath("//td[@id='pvCode-" + index + "']//i")).click();
-            findElement(By.xpath("//td[@id='pvCode-" + index + "']//input")).sendKeys(code);
-            findElement(By.cssSelector("#pvCode-" + index + " .fa-check")).click();
+            findElement(By.id("valueMeaningCodeInput")).sendKeys(code);
         }
 
+        if (codeSystem != null) {
+            findElement(By.id("codeSystemInput")).sendKeys(codeSystem);
+        }
+
+        clickElement(By.id("createNewPv"));
     }
 
     public void changeField(String which, String to) {
@@ -49,10 +52,10 @@ public class PvValidatorTest extends BaseClassificationTest {
         clickElement(By.id("editDatatype"));
         new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Value List");
 
-        addPv(0, "pv1", "name1", "code1");
-        addPv(1, "pv2", "name2", "code2");
-        addPv(2, "pv3");
-        addPv(3, "pv4");
+        addPv("pv1", "name1", "code1");
+        addPv("pv2", "name2", "code2");
+        addPv("pv3");
+        addPv("pv4");
 
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
@@ -66,21 +69,19 @@ public class PvValidatorTest extends BaseClassificationTest {
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        changeField("pvName-2", "name1");
+        addPv("pv5", "name1", "code5");
         textPresent("There are validation errors. Duplicate Code Name");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-2-notValid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-
-        changeField("pvName-2", "name3");
+        clickElement(By.id("pvRemove-6"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
-        changeField("pvCode-3", "code2");
+        addPv("pv5", "name1", "code2");
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-
-        changeField("pvCode-3", "code4");
+        clickElement(By.id("pvRemove-6"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
