@@ -1,9 +1,11 @@
+// @TODO this many dependencies is a warning of poor design. Refac.
 angular.module('systemModule').controller('AddClassificationModalCtrl',
     ['$scope', '$timeout', '$uibModalInstance', 'ClassificationTree', 'Organization', 'ClassificationPathBuilder',
-        'module', 'myOrgs', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
+        'module', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
         function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
-                 myOrgs, cde, orgName, pathArray, addClassification, localStorageService, userResource) {
+                 cde, orgName, pathArray, addClassification, localStorageService, userResource)
 
+{
 
     $scope.viewTypes = {
         "byClassTree": {
@@ -29,7 +31,7 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     };
     
     $scope.module = module;
-    $scope.myOrgs = myOrgs;
+    $scope.myOrgs = userResource.userOrgs;
     $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
 
     $scope.classTree = ClassificationTree;
@@ -45,13 +47,6 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
             $scope.org = '';
         }
     };
-
-    if(myOrgs && myOrgs.length===1) {
-        $scope.newClassification = { orgName: myOrgs[0], categories: [], cdeId: cde._id };
-        $scope.selectOrg(myOrgs[0]);
-    } else {
-        $scope.newClassification = { orgName: undefined, categories: [], cdeId: cde._id };        
-    }
 
     $scope.close = function () {
         $modalInstance.close();
@@ -107,6 +102,18 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
         }
         return false;
     };
+
+
+    // @TODO bad design. Refactor.
+    if (cde === null) cde = {_id: null};
+    if($scope.myOrgs && $scope.myOrgs.length===1) {
+        $scope.newClassification = { orgName: $scope.myOrgs[0], categories: [], cdeId: cde._id };
+        $scope.selectOrg($scope.myOrgs[0]);
+    } else {
+        $scope.newClassification = { orgName: undefined, categories: [], cdeId: cde._id };
+    }
+
+
 
 }
 ]);
