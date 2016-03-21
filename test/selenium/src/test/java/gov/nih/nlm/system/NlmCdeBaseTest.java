@@ -388,7 +388,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForESUpdate() {
-        hangon(10);
+        hangon(8);
     }
 
     /*

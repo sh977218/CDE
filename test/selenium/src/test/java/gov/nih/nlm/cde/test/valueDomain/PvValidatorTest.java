@@ -79,7 +79,7 @@ public class PvValidatorTest extends BaseClassificationTest {
 
         addPv("pv5", "name1", "code2");
         textPresent("There are validation errors. Duplicate Code");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-notValid")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
         clickElement(By.id("pvRemove-4"));
         textNotPresent("There are validation errors");

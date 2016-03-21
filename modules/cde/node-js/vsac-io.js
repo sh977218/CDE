@@ -145,12 +145,9 @@ exports.getAtomsFromUMLS = function(cui, source, res) {
 };
 
 exports.searchUmls = function(term, res) {
-    console.log("search");
     this.getTicket(function(oneTimeTicket) {
-        console.log("ticket: " + oneTimeTicket);
         var url = config.umls.wsHost + "/rest/search/current?ticket=" +
         oneTimeTicket + "&string=" + term;
-        console.log("url: " + url);
         request.get({url: url, strictSSL: false}).pipe(res);
     });
 };

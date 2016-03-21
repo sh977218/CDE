@@ -32,7 +32,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
 
         findElement(By.id("displaySNOMEDCT_USCodes")).click();
         textPresent("Female", By.id("nameAsSCT-5"));
-        textPresent("C16576", By.id("248152002"));
+        textPresent("248152002", By.id("codeAsSCT-5"));
 
         newCdeVersion();
 
