@@ -29,12 +29,11 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         };
 
         $scope.showSideBySideView = function () {
-
-            if (QuickBoard.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
-                QuickBoard.elts.forEach(function(a){
-                    $scope.eltsToCompareMap[a.tinyId] = a;
-                });
-            }
+            //if (QuickBoard.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
+            //    QuickBoard.elts.forEach(function(a){
+            //        $scope.eltsToCompareMap[a.tinyId] = a;
+            //    });
+            //}
 
             $scope.eltsToCompare = [];
             for (var key in $scope.eltsToCompareMap) {
@@ -49,6 +48,5 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
                 $scope.listViewType = "sideBySide";
             }
         };
-
 
     }]);

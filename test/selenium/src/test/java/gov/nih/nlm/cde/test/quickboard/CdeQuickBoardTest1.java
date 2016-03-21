@@ -36,7 +36,7 @@ public class CdeQuickBoardTest1 extends NlmCdeBaseTest {
         textPresent("CDE QuickBoard (0)");
     }
 
-    @Test
+//    @Test
     public void doubleElementedQuickboard(){
         addCdeToQuickBoard("Spinal cord injury upper extremity shoulder function status");
         addCdeToQuickBoard("Right upper extremity upper motor neuron clinical indicator");
