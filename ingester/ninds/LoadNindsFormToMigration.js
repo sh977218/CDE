@@ -1,11 +1,11 @@
 var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
+    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     FormModel = require('./createConnection').FormModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     logger = require('./log')
     ;
 
-var cdeCounter = 0;
 function checkExistingNaming(existingNaming, newCde, ninds) {
     var existCdeName, existQuestionText;
     existingNaming.forEach(function (existingName) {
@@ -154,123 +154,37 @@ function transferForm(existingCde, ninds) {
 
 function createForm(ninds) {
     var naming = [];
-    var cdeName = {
-        designation: cde.cdeName, definition: cde.definitionDescription,
+    var formName = {
+        designation: ninds.crfModuleGuideline, definition: ninds.description,
         languageCode: "EN-US",
         context: {
             contextName: "Health",
             acceptability: "preferred"
         }
     };
-    var questionTextName = {
-        designation: cde.questionText,
-        languageCode: "EN-US",
-        context: {
-            contextName: 'Question Text'
-        }
-    };
-    naming.push(cdeName);
-    if (questionTextName.designation != 'N/A')
-        naming.push(questionTextName);
+    naming.push(formName);
 
     var ids = [];
-    var nindsId = {source: 'NINDS', id: cde.cdeId, version: cde.versionNum};
-    var caDSRId = {source: 'caDSR', id: cde.cadsrId};
-    var nindsVariableId = {source: 'NINDS Variable Name', id: cde.variableName};
-    var nindsVariableAliasId = {
-        source: 'NINDS Variable Name Alias',
-        id: cde.aliasesForVariableName
-    };
-    ids.push(nindsId);
-    if (cde.cadsrId.length > 0)
-        ids.push(caDSRId);
-    if (cde.variableName.length > 0)
-        ids.push(nindsVariableId);
-    if (cde.aliasesForVariableName.length > 0)
-        ids.push(nindsVariableAliasId);
-
-    var instructions = [];
-    var instruction = {Disease: ninds.diseaseName, instruction: {value: cde.instruction}};
-    instructions.push(instruction);
-
-    var properties = [];
-    var previousTitleProperty = {key: 'NINDS Previous Title', value: cde.previousTitle};
-    var guidelinesProperty = {key: 'NINDS Guidelines', value: cde.crfModuleGuideline};
-    properties.push(previousTitleProperty);
-    properties.push(guidelinesProperty);
+    var crfId = {source: 'CRF Id', id: ninds.formId, version: ninds.versionNum};
+    if (ninds.formId && ninds.formId.length > 0)
+        ids.push(crfId);
 
     var referenceDocuments = [];
     var referenceDocument = {
-        title: cde.reference,
-        uri: cde.reference.indexOf('http://www.') != -1 ? cde.reference : ''
+        title: ninds.crfModuleGuideline,
+        uri: ninds.get('downloadLink').indexOf('http://www.') != -1 ? ninds.get('downloadLink') : ''
     };
-    if (referenceDocument.title != 'No references available') {
+    if (referenceDocument.uri.length > 0) {
         referenceDocuments.push(referenceDocument);
     }
 
-    var valueDomain = {
-        uom: cde.measurementType
-    };
-    var permissibleValues = [];
-    var pvsArray = cde.permissibleValue.split(';');
-    var pdsArray = cde.permissibleDescription.split(';');
-    if (pvsArray.length != pdsArray.length) {
-        logger.info('*******************permissibleValue and permisslbeDescription do not match.');
-        logger.info('*******************ninds:\n' + ninds);
-        logger.info('*******************cde:\n' + cde);
-        process.exit(1);
-    }
-    for (var i = 0; i < pvsArray.length; i++) {
-        var permissibleValue = {
-            permissibleValue: pvsArray[i],
-            valueMeaningName: pvsArray[i],
-            valueMeaningDefinition: pdsArray[i]
-        };
-        if (permissibleValue.permissibleValue.length > 0)
-            permissibleValues.push(permissibleValue);
-    }
-    if (cde.dataType === 'Alphanumeric') {
-        if (cde.inputRestrictions === 'Free-Form Entry') {
-            var datatypeText = {maxLength: Number(cde.size)};
-            valueDomain.datatypeText = datatypeText;
-            valueDomain.datatype = 'Text';
-        } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
-            valueDomain.permissibleValues = permissibleValues;
-            valueDomain.datatype = 'Value List';
-        } else {
-            logger.info('unknown cde.inputRestrictions found:' + cde.inputRestritions);
-            logger.info('*******************ninds:\n' + ninds);
-            logger.info('*******************cde:\n' + cde);
-            process.exit(1);
-        }
-    }
-    else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
-        var datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
-        valueDomain.datatypeNumber = datatypeNumber;
-        valueDomain.datatype = 'Number';
-    } else if (cde.dataType === 'Date or Date & Time') {
-        valueDomain.datatype = 'Date';
-    } else {
-        logger.info('unknown cde.dataType found:' + cde.dataType);
-        logger.info('*******************ninds:\n' + ninds);
-        logger.info('*******************cde:\n' + cde);
-        process.exit(1);
-    }
-
     var elements = [];
-    var populationElement = {
-        name: 'Population',
-        elements: [{
-            "name": cde.population,
-            "elements": []
-        }]
-    };
     var domainElement = {
         name: 'Domain',
         elements: [{
-            "name": cde.domain,
+            "name": ninds.domainName,
             "elements": [{
-                "name": cde.subDomain,
+                "name": ninds.subDomainname,
                 "elements": []
             }]
         }]
@@ -285,58 +199,92 @@ function createForm(ninds) {
             }]
         }]
     };
-    elements.push(populationElement);
     elements.push(domainElement);
     elements.push(diseaseElement);
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
 
-    var newCde = {
-        naming: naming,
-        referenceDocuments: referenceDocuments,
-        ids: ids,
-        instructions: instructions,
-        properties: properties,
-        valueDomain: valueDomain,
-        classification: classification
-    };
-    return newCde;
-}
-function a(cb) {
-    var stream = NindsModel.find({}).stream();
-    stream.on('data', function (ninds) {
-        stream.pause();
-        if (ninds) {
-            FormModel.find({'ids.id': form.formId}, function (err, existingForms) {
+    if (ninds.get('cdes').length > 0) {
+        var formElements = [];
+        async.forEachSeries(ninds.get('cdes'), function (cde, doneOne) {
+            mongo_cde.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                 if (err) throw err;
-                if (existingForms.length === 0) {
-                    var newForm = createForm(ninds);
-                    var newFormObj = new FormModel(newForm);
-                    newFormObj.save(function () {
-                        stream.resume();
-                    });
-                } else if (existingForms.length === 1) {
-                    var existingForm = existingForms[0];
-                    if (existingForm) {
-                        transferForm(existingForm, ninds);
-                        existingForm.save(function () {
-                            stream.resume();
-                        })
-                    }
-                }
-                else {
-                    logger.info(existingForms.length + ' forms found, ids.id:' + form.formId);
+                if (existingCdes.length === 0) {
+                    console.log('cannot find cde, cde Id:' + cde.cdeId);
                     process.exit(1);
                 }
-            })
-        } else {
-            stream.resume();
-        }
-    });
+                else if (existingCdes.length === 1) {
+                    var existingCde = existingCdes[0];
+                    var cde = {
+                        tinyId: existingCde.tinyId,
+                    };
+                    var question;
+                    var formElement = {
+                        elementType: {type: 'question'},
+                        instructions: existingCde.instructions[0],
+                        label: existingCde.naming[0]
+                    };
+                    doneOne();
+                }
+                else {
+                    console.log('find ' + existingCdes.length + 'cdes, cde Id:' + cde.cdeId);
+                    process.exit(1);
+                }
+            });
+        }, function doneAll() {
+            return {
+                naming: naming,
+                referenceDocuments: referenceDocuments,
+                ids: ids,
+                classification: classification
+            };
+        });
+    }
+    else
+        return {
+            naming: naming,
+            referenceDocuments: referenceDocuments,
+            ids: ids,
+            classification: classification
+        };
+}
+function a(cb) {
+    FormModel.remove({}, function () {
+        var stream = NindsModel.find({}).stream();
+        stream.on('data', function (ninds) {
+            stream.pause();
+            if (ninds) {
+                FormModel.find({'ids.id': ninds.formId}, function (err, existingForms) {
+                    if (err) throw err;
+                    if (existingForms.length === 0) {
+                        var newForm = createForm(ninds);
+                        var newFormObj = new FormModel(newForm);
+                        newFormObj.save(function () {
+                            stream.resume();
+                        });
+                    } else if (existingForms.length === 1) {
+                        var existingForm = existingForms[0];
+                        if (existingForm) {
+                            transferForm(existingForm, ninds);
+                            existingForm.save(function () {
+                                stream.resume();
+                            })
+                        }
+                    }
+                    else {
+                        logger.info(existingForms.length + ' forms found, ids.id:' + form.formId);
+                        process.exit(1);
+                    }
+                })
+            } else {
+                stream.resume();
+            }
+        });
 
-    stream.on('end', function (err) {
-        if (err) throw err;
-        cb();
-    });
+        stream.on('end', function (err) {
+            if (err) throw err;
+            cb();
+        });
+    })
 }
 
 a();
