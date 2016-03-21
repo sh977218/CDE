@@ -135,7 +135,7 @@ exports.getAtomsFromUMLS = function(cui, source, res) {
     this.getTicket(function(oneTimeTicket) {
         var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
             + "&pageSize=500&ticket=" + oneTimeTicket;
-        request({url: url}, function(err, response, body) {
+        request({url: url, strictSSL: false}, function(err, response, body) {
             if (!err && response.statusCode == 200) res.send(body);
             else {
                 res.send();
@@ -151,7 +151,7 @@ exports.searchUmls = function(term, res) {
         var url = config.umls.wsHost + "/rest/search/current?ticket=" +
         oneTimeTicket + "&string=" + term;
         console.log("url: " + url);
-        request.get(url).pipe(res);
+        request.get({url: url, strictSSL: false}).pipe(res);
     });
 };
 

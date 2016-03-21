@@ -17,7 +17,8 @@
     <div class="col-md-12">
         <div ng-if="containsUMLS">The list below includes UMLS codes, you can also view them as:</div>
         <span ng-repeat="(key, value) in srcOptions" style="margin-left: 50px">
-            <input ng-model="value.selected" type="checkbox" ng-disabled="value.disabled">{{value.displayAs}} Codes
+            <input ng-model="value.selected" type="checkbox" ng-disabled="value.disabled"
+                   id="display{{key}}Codes">{{value.displayAs}} Codes
             <span ng-if="value.disabled"> (Login to enable)</span>
         </span>
 
