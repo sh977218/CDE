@@ -73,7 +73,7 @@ public class PvValidatorTest extends BaseClassificationTest {
         textPresent("There are validation errors. Duplicate Code Name");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-4-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-6"));
+        clickElement(By.id("pvRemove-4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
@@ -81,7 +81,7 @@ public class PvValidatorTest extends BaseClassificationTest {
         textPresent("There are validation errors. Duplicate Code");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-notValid")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openSave")));
-        clickElement(By.id("pvRemove-6"));
+        clickElement(By.id("pvRemove-4"));
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 

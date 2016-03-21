@@ -148,7 +148,7 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 200);
         shortWait = new WebDriverWait(driver, 2);
 
-        resizeWindow(1280, 800);
+        resizeWindow(1600, 980);
 
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
@@ -403,14 +403,13 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector("button.close")).click();
-            driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
+            if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
+
 
     protected void newCdeVersion() {
         newCdeVersion(null);
