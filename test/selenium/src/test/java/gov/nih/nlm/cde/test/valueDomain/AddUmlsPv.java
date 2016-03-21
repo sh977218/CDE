@@ -11,7 +11,9 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator");
         clickElement(By.id("pvs_tab"));
-
+        clickElement(By.partialLinkText("Add Permissible Value"));
+        clickElement(By.id("valueMeaningNameInput"));
+        findElement(By.id("valueMeaningNameInput")).sendKeys("Female");
     }
 
 
