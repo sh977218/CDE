@@ -5,7 +5,6 @@ var async = require('async'),
     logger = require('./log')
     ;
 
-var cdeCounter = 0;
 function checkExistingNaming(existingNaming, newCde, ninds) {
     var existCdeName, existQuestionText;
     existingNaming.forEach(function (existingName) {
@@ -150,7 +149,7 @@ function transferCde(existingCde, newCde, ninds) {
     if (!newCde.classification.length || newCde.classification.length === 0)
         logger.info('x');
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
-};
+}
 
 function createCde(cde, ninds) {
     var naming = [];
@@ -231,8 +230,7 @@ function createCde(cde, ninds) {
     }
     if (cde.dataType === 'Alphanumeric') {
         if (cde.inputRestrictions === 'Free-Form Entry') {
-            var datatypeText = {maxLength: Number(cde.size)};
-            valueDomain.datatypeText = datatypeText;
+            valueDomain.datatypeText = {maxLength: Number(cde.size)};
             valueDomain.datatype = 'Text';
         } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
             valueDomain.permissibleValues = permissibleValues;
@@ -245,8 +243,7 @@ function createCde(cde, ninds) {
         }
     }
     else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
-        var datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
-        valueDomain.datatypeNumber = datatypeNumber;
+        valueDomain.datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
         valueDomain.datatype = 'Number';
     } else if (cde.dataType === 'Date or Date & Time') {
         valueDomain.datatype = 'Date';
@@ -290,7 +287,7 @@ function createCde(cde, ninds) {
     elements.push(diseaseElement);
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
 
-    var newCde = {
+    return {
         naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,
@@ -299,7 +296,6 @@ function createCde(cde, ninds) {
         valueDomain: valueDomain,
         classification: classification
     };
-    return newCde;
 }
 function a(cb) {
     var stream = NindsModel.find({}).stream();
@@ -339,7 +335,8 @@ function a(cb) {
 
     stream.on('end', function (err) {
         if (err) throw err;
-        cb();
+        if (cb) cb();
+        process.exit(0);
     });
 }
 
