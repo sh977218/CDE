@@ -21,7 +21,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.id("confirmChangeStatus_" + i)).click();
                 textPresent(response);
                 closeAlert();
-                hangon(2);
+//                hangon(2);
                 return;
             }
         }
@@ -77,8 +77,8 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
         textPresent("Added to Board");
-        modalGone();
         closeAlert();
+        modalGone();
     }
 
     protected void goToBoard(String boardName) {

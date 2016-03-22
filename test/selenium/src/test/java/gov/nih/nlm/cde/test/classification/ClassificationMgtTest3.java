@@ -48,11 +48,11 @@ public class ClassificationMgtTest3 extends BaseClassificationTest {
         findElement(By.id("renameClassifInput")).sendKeys(Keys.BACK_SPACE);
         findElement(By.xpath("//button[text()='Save']")).click();
         modalGone();
-        hangon(5);
+        waitForESUpdate();
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification"));
         findElement(By.id("classification-Disease,Spinal Cord Injuries,Classification,Supplemental"));
         findElement(By.xpath("//li[@id='classification-Disease,Spinal Cord Injuries,Classification']/div/div/a")).click();
-        hangon(1);
+//        hangon(1);
         textPresent("Spinal Cord Injuries");
 
         openClassificationAudit("NINDS > Disease > Spinal Cord Injury");
