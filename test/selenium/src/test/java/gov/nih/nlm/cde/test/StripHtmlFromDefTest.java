@@ -9,7 +9,7 @@ public class StripHtmlFromDefTest extends BaseClassificationTest {
     @Test
     public void stripHtmlFromDef() {
         goToFormSearch();
-        findElement(By.id("browseOrg-NIDA")).click();
+        findElement(By.id("browseOrg-TEST")).click();
         textPresent("Single-Question Screening Test - Self-Administered");
         textNotPresent("<b>");
         textNotPresent("<p>");
