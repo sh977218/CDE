@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard',
-    function ($scope, OrgHelpers, SearchSettings, QuickBoard) {
+angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
+    function ($scope, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
 
         $scope.viewTypes = {
             accordion: {
@@ -30,11 +30,19 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
 
         $scope.showSideBySideView = function () {
 
-            if (QuickBoard.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
-                QuickBoard.elts.forEach(function(a){
+            var qbResource;
+
+            if (localStorageService.get("defaultQuickBoard") === 'cdeQuickBoard') qbResource = QuickBoard;
+            if (localStorageService.get("defaultQuickBoard") === 'formQuickBoard') qbResource = FormQuickBoard;
+
+            if (qbResource.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
+                qbResource.elts.forEach(function(a){
                     $scope.eltsToCompareMap[a.tinyId] = a;
                 });
             }
+
+
+
 
             $scope.eltsToCompare = [];
             for (var key in $scope.eltsToCompareMap) {
