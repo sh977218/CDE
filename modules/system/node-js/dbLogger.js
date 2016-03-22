@@ -12,7 +12,6 @@ var esClient = new elasticsearch.Client({
     host: config.elastic.uri
 });
 
-
 // w = 0 means write very fast. It's ok if it fails.   
 // capped means no more than 5 gb for that collection.
 var logSchema = new mongoose.Schema(
@@ -133,7 +132,9 @@ exports.storeQuery = function(settings, callback) {
 };
 
 exports.log = function(message, callback) {
-    if (isNaN(message.reponseTime)) delete message.reponseTime;
+    if (isNaN(message.responseTime)) {
+        delete message.responseTime;
+    }
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function(err) {
@@ -221,6 +222,7 @@ exports.getFeedbackIssues = function(params, callback) {
 exports.usageByDay = function(callback) {
     var d = new Date();
     d.setDate(d.getDate() - 3);
+    //noinspection JSDuplicatedDeclaration
     LogModel.aggregate(
         {$match: {date: {$exists: true}, date: {$gte: d}}}
         , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
