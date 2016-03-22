@@ -3,24 +3,11 @@ package gov.nih.nlm.cde.test.regstatus;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
-    protected void adminCantEditStandardCde(String cdeName, String regStatus) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName(cdeName);
-        showAllTabs();
-        clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(regStatus);
-        clickElement(By.id("saveRegStatus"));
-        closeAlert();
-        hangon(1);
-        logout();
-
+    protected void adminCantEditStandardCde(String cdeName) {
         loginAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
