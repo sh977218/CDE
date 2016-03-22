@@ -155,7 +155,7 @@ function transferForm(existingCde, ninds) {
 function createForm(ninds) {
     var naming = [];
     var formName = {
-        designation: ninds.crfModuleGuideline, definition: ninds.description,
+        designation: ninds.get('crfModuleGuideline'), definition: ninds.get('description'),
         languageCode: "EN-US",
         context: {
             contextName: "Health",
@@ -165,14 +165,14 @@ function createForm(ninds) {
     naming.push(formName);
 
     var ids = [];
-    var crfId = {source: 'CRF Id', id: ninds.formId, version: ninds.versionNum};
-    if (ninds.formId && ninds.formId.length > 0)
+    var crfId = {source: 'CRF Id', id: ninds.get('formId')};
+    if (ninds.get('formId') && ninds.get('formId').length > 0)
         ids.push(crfId);
 
     var referenceDocuments = [];
     var referenceDocument = {
-        title: ninds.crfModuleGuideline,
-        uri: ninds.get('downloadLink').indexOf('http://www.') != -1 ? ninds.get('downloadLink') : ''
+        title: ninds.get('crfModuleGuideline'),
+        uri: (ninds.get('downloadLink').indexOf('http://') != -1 || ninds.get('downloadLink').indexOf('https://') != -1) ? ninds.get('downloadLink') : ''
     };
     if (referenceDocument.uri.length > 0) {
         referenceDocuments.push(referenceDocument);
@@ -182,9 +182,9 @@ function createForm(ninds) {
     var domainElement = {
         name: 'Domain',
         elements: [{
-            "name": ninds.domainName,
+            "name": ninds.get('domainName'),
             "elements": [{
-                "name": ninds.subDomainname,
+                "name": ninds.get('subDomainname'),
                 "elements": []
             }]
         }]
@@ -192,9 +192,9 @@ function createForm(ninds) {
     var diseaseElement = {
         name: 'Disease',
         elements: [{
-            "name": ninds.diseaseName,
+            "name": ninds.get('diseaseName'),
             "elements": [{
-                "name": ninds.subDiseaseName,
+                "name": ninds.get('subDiseaseName'),
                 "elements": []
             }]
         }]
@@ -202,50 +202,54 @@ function createForm(ninds) {
     elements.push(domainElement);
     elements.push(diseaseElement);
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
-
+    var newForm = {
+        isCopyrighted: ninds.get('copyRight'),
+        stewardOrg: {name: 'NINDS'},
+        registrationState: {registrationStatus: "Qualified"},
+        version: ninds.get('versionNum'),
+        naming: naming,
+        referenceDocuments: referenceDocuments,
+        ids: ids,
+        classification: classification
+    };
     if (ninds.get('cdes').length > 0) {
         var formElements = [];
         async.forEachSeries(ninds.get('cdes'), function (cde, doneOne) {
-            mongo_cde.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
+            mongo_cde.byOtherId('NINDS', cde.cdeId, function (err, existingCde) {
                 if (err) throw err;
-                if (existingCdes.length === 0) {
-                    console.log('cannot find cde, cde Id:' + cde.cdeId);
-                    process.exit(1);
-                }
-                else if (existingCdes.length === 1) {
-                    var existingCde = existingCdes[0];
-                    var cde = {
-                        tinyId: existingCde.tinyId,
-                    };
-                    var question;
-                    var formElement = {
-                        elementType: {type: 'question'},
-                        instructions: existingCde.instructions[0],
-                        label: existingCde.naming[0]
-                    };
-                    doneOne();
-                }
-                else {
-                    console.log('find ' + existingCdes.length + 'cdes, cde Id:' + cde.cdeId);
-                    process.exit(1);
-                }
+                var cde = {
+                    tinyId: existingCde.tinyId,
+                    name: existingCde.naming[0].designation,
+                    version: existingCde.version,
+                    permissibleValues: existingCde.valueDomain.permissibleValues,
+                    ids: existingCde.ids
+                };
+                var question = {
+                    cde: cde,
+                    datatype: existingCde.valueDomain.datatype,
+                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                    datatypeText: existingCde.valueDomain.datatypeText,
+                    uom: existingCde.valueDomain.uom,
+                    answers: existingCde.valueDomain.permissibleValues,
+                    multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected' ? true : cde.inputRestrictions === 'Single Pre-Defined Value Selected' ? false : null
+                };
+                var formElement = {
+                    elementType: {type: 'question'},
+                    instructions: existingCde.instructions[0],
+                    label: existingCde.naming[0],
+                    question: question,
+                    formElements: []
+                };
+                formElements.push(formElement);
+                doneOne();
             });
         }, function doneAll() {
-            return {
-                naming: naming,
-                referenceDocuments: referenceDocuments,
-                ids: ids,
-                classification: classification
-            };
+            newForm.formElements = formElements;
+            return newForm;
         });
     }
     else
-        return {
-            naming: naming,
-            referenceDocuments: referenceDocuments,
-            ids: ids,
-            classification: classification
-        };
+        return newForm;
 }
 function a(cb) {
     FormModel.remove({}, function () {

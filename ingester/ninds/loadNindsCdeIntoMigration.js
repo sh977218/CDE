@@ -295,6 +295,10 @@ function createCde(cde, ninds) {
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
 
     return {
+        stewardOrg: {name: "NINDS"},
+        registrationState: {registrationStatus: "Qualified"},
+        source: 'NINDS',
+        version: cde.versionNum,
         naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,
