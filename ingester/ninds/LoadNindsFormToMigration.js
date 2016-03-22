@@ -212,11 +212,16 @@ function createForm(ninds) {
         ids: ids,
         classification: classification
     };
-    if (ninds.get('cdes').length > 0) {
+    if (ninds.get('cdes').length == 0) {
+        return newForm;
+    } else {
         var formElements = [];
         async.forEachSeries(ninds.get('cdes'), function (cde, doneOne) {
             mongo_cde.byOtherId('NINDS', cde.cdeId, function (err, existingCde) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
                 var cde = {
                     tinyId: existingCde.tinyId,
                     name: existingCde.naming[0].designation,
@@ -248,8 +253,6 @@ function createForm(ninds) {
             return newForm;
         });
     }
-    else
-        return newForm;
 }
 function a(cb) {
     FormModel.remove({}, function () {
