@@ -429,6 +429,21 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get('/umlsAtomsBridge/:cui/:source', function(req, res) {
+        if(!config.umls.sourceOptions[req.params.source]) {
+            return res.send("Source cannot be looked up, use UTS Instead.");
+        }
+        if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
+            return res.send(403);
+        }
+        vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
+    });
+
+    app.get('/searchUmls', function(req, res) {
+        if (!req.user) return res.status(403).send();
+        return vsac.searchUmls(req.query.searchTerm, res);
+    });
+
     app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, function (req, res) {
         res.send(elastic.pVCodeSystemList);
     });
