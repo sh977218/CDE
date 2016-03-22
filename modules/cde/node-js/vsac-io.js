@@ -91,8 +91,7 @@ exports.getTicket = function(cb) {
             output += chunk;
         });
         res.on('end', function() {
-            var ticket = output;
-            cb(ticket);
+            cb(output);
         });
     });
     
@@ -131,3 +130,25 @@ exports.getValueSet = function(vs_id, cb) {
         req.end();
     });
 };
+
+exports.getAtomsFromUMLS = function(cui, source, res) {
+    this.getTicket(function(oneTimeTicket) {
+        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
+            + "&pageSize=500&ticket=" + oneTimeTicket;
+        request({url: url, strictSSL: false}, function(err, response, body) {
+            if (!err && response.statusCode == 200) res.send(body);
+            else {
+                res.send();
+            }
+        });
+    });
+};
+
+exports.searchUmls = function(term, res) {
+    this.getTicket(function(oneTimeTicket) {
+        var url = config.umls.wsHost + "/rest/search/current?ticket=" +
+        oneTimeTicket + "&string=" + term;
+        request.get({url: url, strictSSL: false}).pipe(res);
+    });
+};
+
