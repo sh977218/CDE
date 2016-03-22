@@ -29,21 +29,14 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         };
 
         $scope.showSideBySideView = function () {
-
             var qbResource;
-
             if (localStorageService.get("defaultQuickBoard") === 'cdeQuickBoard') qbResource = QuickBoard;
             if (localStorageService.get("defaultQuickBoard") === 'formQuickBoard') qbResource = FormQuickBoard;
-
             if (qbResource.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
                 qbResource.elts.forEach(function(a){
                     $scope.eltsToCompareMap[a.tinyId] = a;
                 });
             }
-
-
-
-
             $scope.eltsToCompare = [];
             for (var key in $scope.eltsToCompareMap) {
                 $scope.eltsToCompare.push($scope.eltsToCompareMap[key]);
@@ -57,6 +50,5 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
                 $scope.listViewType = "sideBySide";
             }
         };
-
 
     }]);
