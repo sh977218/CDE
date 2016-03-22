@@ -43,4 +43,15 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
         textPresent("Form QuickBoard (0)");
     }
 
+    @Test
+    public void doubleElementedQuickboard(){
+        addCdeToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
+        addCdeToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
+        textPresent("Quick Board (2)");
+        goToQuickBoardByModule("form");
+        clickElement(By.id("qb_form_compare"));
+        textPresent("Baseline Attempt Time #1 Total Time");
+        textPresent("Contains data elements which rate the severity of the participant/subject's level of anxiety. (Examples of CDEs included: Anxious mood; Tension; Fears; etc.)");
+    }
+
 }
