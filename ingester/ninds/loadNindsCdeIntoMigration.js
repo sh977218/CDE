@@ -177,7 +177,7 @@ function createCde(cde, ninds) {
         naming.push(questionTextName);
 
     var ids = [];
-    var nindsId = {source: 'NINDS', id: cde.cdeId, version: cde.versionNum};
+    var nindsId = {source: 'NINDS', id: cde.cdeId, version: Number(cde.versionNum).toString()};
     var caDSRId = {source: 'caDSR', id: cde.cadsrId};
     var nindsVariableId = {source: 'NINDS Variable Name', id: cde.variableName};
     var nindsVariableAliasId = {
@@ -298,7 +298,7 @@ function createCde(cde, ninds) {
         stewardOrg: {name: "NINDS"},
         registrationState: {registrationStatus: "Qualified"},
         source: 'NINDS',
-        version: cde.versionNum,
+        version: Number(cde.versionNum).toString(),
         naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,

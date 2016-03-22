@@ -217,7 +217,7 @@ function createForm(ninds) {
     } else {
         var formElements = [];
         async.forEachSeries(ninds.get('cdes'), function (cde, doneOne) {
-            mongo_cde.byOtherId('NINDS', cde.cdeId, function (err, existingCde) {
+            mongo_cde.byOtherIdAndVersion('NINDS', cde.cdeId, cde.versionNum, function (err, existingCde) {
                 if (err) {
                     console.log(err);
                     throw err;
