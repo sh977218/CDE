@@ -45,8 +45,8 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
 
     @Test
     public void doubleElementedQuickboard(){
-        addCdeToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
-        addCdeToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
+        addFormToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
+        addFormToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("form");
         clickElement(By.id("qb_form_compare"));
