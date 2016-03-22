@@ -5,6 +5,9 @@
   "debugEnabled": true,
   "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
+  "umls": {
+    "wsHost": "https://localhost:4000"
+  },
   "vsac": {
     "username": "user",
     "password": "pass",

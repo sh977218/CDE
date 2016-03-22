@@ -38,33 +38,4 @@ public class PvTest extends NlmCdeBaseTest {
         textPresent("Hypermagnesemia");
     }
     
-    @Test
-    public void hideProprietaryPv() {
-        mustBeLoggedInAs(ninds_username, password);        
-        goToCdeByName("Post traumatic amnesia duration range");
-        clickElement(By.id("pvs_tab"));
-        clickElement(By.cssSelector("#pvCodeSystem-0 .fa-edit"));
-        findElement(By.xpath("//td[@id='pvCodeSystem-0']//input")).sendKeys("SNOMEDCT");
-
-        hangon(1);
-        if (driver.findElements(By.cssSelector("#pvCodeSystem-0 a")).size() > 0) {
-            clickElement(By.cssSelector("#pvCodeSystem-0 a"));
-        }
-
-        clickElement(By.cssSelector("#pvCodeSystem-0 .fa-check"));
-        newCdeVersion();
-        
-        mustBeLoggedInAs(ninds_username, password); 
-        goToCdeByName("Post traumatic amnesia duration range");
-        clickElement(By.linkText("Permissible Values"));
-        textPresent("SNOMEDCT");
-       
-        logout();
-        goToCdeByName("Post traumatic amnesia duration range");
-        clickElement(By.id("pvs_tab"));
-        textNotPresent("SNOMEDCT");
-        textPresent("Login to see the value.");
-    }    
-
-    
 }
