@@ -8,7 +8,7 @@ import org.testng.Assert;
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
     protected void adminCantEditStandardCde(String cdeName) {
-        loginAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
         // Can't edit name, def or status
