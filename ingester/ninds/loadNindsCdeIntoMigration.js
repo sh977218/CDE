@@ -262,13 +262,19 @@ function createCde(cde, ninds) {
     }
 
     var elements = [];
+    var populationArray = cde.population.split(';');
     var populationElement = {
         name: 'Population',
-        elements: [{
-            "name": cde.population,
-            "elements": []
-        }]
+        elements: []
     };
+    populationArray.forEach(function (p) {
+        if (p.length > 0) {
+            populationElement.elements.push({
+                "name": p,
+                "elements": []
+            })
+        }
+    });
     var domainElement = {
         name: 'Domain',
         elements: [{
