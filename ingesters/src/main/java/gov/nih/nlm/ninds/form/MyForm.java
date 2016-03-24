@@ -11,6 +11,7 @@ public class MyForm {
     private String id;
     private int page = 0;
     private int row = 0;
+    private String url = "";
     private String crfModuleGuideline = "";
     private String description = "";
     private boolean copyRight = false;
@@ -144,12 +145,21 @@ public class MyForm {
         this.subDomainName = subDomainName;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return "MyForm{" +
                 "id='" + id + '\'' +
                 ", page=" + page +
                 ", row=" + row +
+                ", url='" + url + '\'' +
                 ", crfModuleGuideline='" + crfModuleGuideline + '\'' +
                 ", description='" + description + '\'' +
                 ", copyRight=" + copyRight +

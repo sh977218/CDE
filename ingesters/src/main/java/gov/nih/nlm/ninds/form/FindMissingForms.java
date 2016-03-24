@@ -42,12 +42,16 @@ public class FindMissingForms implements Runnable {
         driver.get(url);
         String formsXPathTh = "//*[@class='cdetable']/tbody/tr/th[@scope='row']";
         List<WebElement> formList = driver.findElements(By.xpath(formsXPathTh));
+        int i = 1;
         for (WebElement we : formList) {
             MyForm form = new MyForm();
+            form.setUrl(url);
+            form.setRow(i);
             List<WebElement> aList = we.findElements(By.cssSelector("a"));
-            String formId;
+            String formId, downloadLink = "";
             if (aList.size() > 0) {
                 formId = aList.get(0).getAttribute("title");
+                downloadLink = aList.get(0).getAttribute("href");
             } else {
                 String id = we.getAttribute("id");
                 formId = id.replace("form", "");
@@ -58,12 +62,13 @@ public class FindMissingForms implements Runnable {
             String domianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::a[1]";
             List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
             if (subDomains.size() > 0)
-                subDomainName = subDomains.get(0).getText().trim();
+                subDomainName = cleanSubDomain(subDomains.get(0).getText().trim());
             List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
             if (domains.size() > 0)
                 domainName = domains.get(0).getText().trim();
             form.setFormId(formId);
             form.setCrfModuleGuideline(formName);
+            form.setDownloadLink(downloadLink);
             form.setDomainName(domainName);
             form.setSubDomainName(subDomainName);
             Query searchUserQuery = new Query(Criteria.where("formId").is(formId).and("domainName").is(domainName).and("subDomainName").is(subDomainName));
@@ -77,27 +82,52 @@ public class FindMissingForms implements Runnable {
                 }
                 mongoOperation.save(form);
             }
+            i++;
         }
+    }
+
+
+    private String cleanSubDomain(String s) {
+        String result = s;
+        String[] badStrings = {"The NINDS strongly encourages researchers to use these NIH-developed materials for NINDS-sponsored research, when appropriate. Utilization of these resources will enable greater consistency for NINDS-sponsored research studies. These tools are free of charge.",
+                "See \"CRF Search\" to find all Imaging forms under Subdomain option.",
+                "See \"CRF Search\" to find all Non-Imaging forms under Subdomain option.",
+                "See \"CRF Search\" to find Surgeries and Other Procedures forms under Subdomain option.",
+                "See \"CRF Search\" to find all History of Disease/Injury Event forms under Subdomain option.",
+                "See \"CRF Search\" to find all Classification forms under Subdomain option.",
+                "See \"CRF Search\" to find all Second Insults forms under Subdomain option.",
+                "See \"CRF Search\" to find all Discharge forms under Subdomain option."};
+        for (String badString : badStrings) {
+            result = result.replace(badString, "").trim();
+        }
+        return result;
     }
 
     void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
         switchTab(1);
-        String diseaseName = null, subDiseaseName = null;
+        String diseaseName = "", subDiseaseName = "";
         String diseaseXPath = "//td//div[contains(text(), 'Disease: ')]";
         String subDiseaseXPath = "//td//div[contains(text(), 'SubDisease: ')]";
         List<WebElement> diseaseList = driver.findElements(By.xpath(diseaseXPath));
         if (diseaseList.size() > 0) {
             String diseaseNameText = diseaseList.get(0).getText();
             diseaseName = diseaseNameText.replace("Disease:", "").trim();
+            form.setDiseaseName(diseaseName);
         }
         List<WebElement> subDiseaseList = driver.findElements(By.xpath(subDiseaseXPath));
         if (subDiseaseList.size() > 0) {
             String subDiseaseNameText = subDiseaseList.get(0).getText();
             subDiseaseName = subDiseaseNameText.replace("SubDisease:", "").trim();
+            form.setSubDiseaseName(subDiseaseName);
         }
-        Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId()).and("domainName").is(form.getDomainName()).and("subDomainName").is(form.getSubDomainName()).and("diseaseName").is(form.getDiseaseName()).and("subDiseaseName").and(form.getSubDiseaseName()));
+        Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId())
+                .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
+                .and("domainName").is(form.getDomainName())
+                .and("subDomainName").is(form.getSubDomainName())
+                .and("diseaseName").is(form.getDiseaseName())
+                .and("subDiseaseName").and(form.getSubDiseaseName()));
         MyForm existingForm = mongoOperation.findOne(searchUserQuery, MyForm.class);
         if (existingForm != null) return;
         getCdesList(form);

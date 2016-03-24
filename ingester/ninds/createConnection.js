@@ -22,7 +22,7 @@ mongoConn.once('open', function callback() {
 
 exports.NindsModel = migrationConn.model('NINDS', new mongoose.Schema({}, {
     strict: false,
-    collection: 'ninds'
+    collection: 'ninds1'
 }));
 exports.DataElementModel = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
 exports.FormModel = migrationConn.model('Form', form_schemas.formSchema);

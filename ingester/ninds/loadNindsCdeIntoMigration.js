@@ -12,9 +12,9 @@ var nindsOrg = null;
 function checkExistingNaming(existingNaming, newCde, ninds) {
     var existCdeName, existQuestionText;
     existingNaming.forEach(function (existingName) {
-        if (existingName.designation === newCde.cdeName && newCde.cdeName.length > 0)
+        if (existingName.designation.toLowerCase() === newCde.cdeName.toLowerCase() && newCde.cdeName.length > 0)
             existCdeName = true;
-        if (existingName.designation === newCde.questionText && newCde.questionText.length > 0 && newCde.questionText != 'N/A')
+        if (existingName.designation.toLowerCase() === newCde.questionText.toLowerCase() && newCde.questionText.length > 0 && newCde.questionText != 'N/A')
             existQuestionText = true;
     });
     if (!existCdeName && newCde.cdeName.length > 0) {

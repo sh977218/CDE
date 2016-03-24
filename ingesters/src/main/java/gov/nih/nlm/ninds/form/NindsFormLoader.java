@@ -137,7 +137,7 @@ public class NindsFormLoader implements Runnable {
                             form.setFormId(downloadLink.split("CrfId=")[1]);
                         List<WebElement> copyRightClass = a.get(0).findElements(By.className("copyright"));
                         if (copyRightClass.size() > 0) {
-                            form.setCrfModuleGuideline(text.replace("©", ""));
+                            form.setCrfModuleGuideline(text.replace("©", "").replace("™", ""));
                             form.setCopyRight(true);
                         } else {
                             form.setCrfModuleGuideline(text);

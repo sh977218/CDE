@@ -38,9 +38,9 @@ public class NindsFormRunner {
         diseaseMap6.put("Stroke", "Stroke.aspx");
         diseaseMap6.put("Traumatic Brain Injury", "TBI.aspx");
 
-        int startingPage = 5;
+        int startingPage = 11;
 
-        int nbOfThreads = 3;
+        int nbOfThreads = 4;
         Thread[] t = new Thread[nbOfThreads];
 
         for (int i = 0; i < nbOfThreads; i++) {
