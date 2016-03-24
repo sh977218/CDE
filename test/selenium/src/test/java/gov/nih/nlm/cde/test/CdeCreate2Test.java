@@ -12,14 +12,13 @@ public class CdeCreate2Test extends BaseClassificationTest {
         findElement(By.linkText("Create")).click();
         findElement(By.linkText("CDE")).click();
         // wait for page to load
-        hangon(3);
+        textPresent("Please enter a name for the new CDE");
         textNotPresent("Possible Matches");
         findElement(By.name("elt.designation")).sendKeys("10");
         hangon(3);
         textNotPresent("Possible Matches");
         findElement(By.name("elt.designation")).clear();
         findElement(By.name("elt.designation")).sendKeys("ind");
-        hangon(3);
         textPresent("Possible Matches");
         textPresent("Smoking History Ind");
     }

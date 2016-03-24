@@ -27,7 +27,6 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         // @TODO REMOVE
         waitForESUpdate();
         driver.navigate().back();
-        hangon(3);
         showSearchFilters();
         hangon(1);
         clickElement(By.id("li-blank-Preferred Standard"));
