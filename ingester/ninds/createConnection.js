@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
     config = require('../../modules/system/node-js/parseConfig'),
     cde_schemas = require('../../modules/cde/node-js/schemas'),
-    form_schemas = require('../../modules/form/node-js/schemas');
+    form_schemas = require('../../modules/form/node-js/schemas'),
+    sharedSchemas = require('../../modules/system/node-js/schemas.js')
+    ;
 
 
 var mongoMigrationUri = config.mongoMigrationUri;
@@ -24,3 +26,5 @@ exports.NindsModel = migrationConn.model('NINDS', new mongoose.Schema({}, {
 }));
 exports.DataElementModel = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
 exports.FormModel = migrationConn.model('Form', form_schemas.formSchema);
+exports.OrgModel = migrationConn.model('Org', sharedSchemas.orgSchema);
+

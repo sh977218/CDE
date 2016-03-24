@@ -294,7 +294,7 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.newObject = function(obj) {
+exports.newObject = function (obj) {
     return new DataElement(obj);
 };
 
@@ -427,7 +427,7 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {"source": source, "id": id}).exec(function (err, cdes) {
+    DataElement.find({archived: null}).eleMatch("ids", {"source": source, "id": id}).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
@@ -456,8 +456,8 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function(doc, cb){
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
+var correctBoardPinsForCde = function (doc, cb) {
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
         if (err) throw err;
         if (cb) cb();
     });
@@ -492,13 +492,14 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
-exports.upsertStatusCde = function(cde, cb){
-    DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, cde, {upsert: true}, function(err, cde){
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
+});
+exports.upsertStatusCde = function (cde, cb) {
+    DataElement.update({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, cde, {upsert: true}, function (err, cde) {
         if (cb) cb(err, cde);
     });
 };
 
-exports.findModifiedElementsSince = function(date, cb){
-    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated:-1}).limit(5000).exec(cb);
+exports.findModifiedElementsSince = function (date, cb) {
+    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);
 };
