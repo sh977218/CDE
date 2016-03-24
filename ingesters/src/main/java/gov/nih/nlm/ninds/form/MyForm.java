@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Document(collection = "ninds")
 public class MyForm {
@@ -24,6 +25,15 @@ public class MyForm {
     private String subDiseaseName = "";
     private String domainName = "";
     private String subDomainName = "";
+    private Date createDate;
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     public String getId() {
         return id;
@@ -172,6 +182,7 @@ public class MyForm {
                 ", subDiseaseName='" + subDiseaseName + '\'' +
                 ", domainName='" + domainName + '\'' +
                 ", subDomainName='" + subDomainName + '\'' +
+                ", createDate=" + createDate +
                 '}';
     }
 }

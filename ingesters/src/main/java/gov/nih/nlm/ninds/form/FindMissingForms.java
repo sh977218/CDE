@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FindMissingForms implements Runnable {
@@ -19,7 +20,6 @@ public class FindMissingForms implements Runnable {
     WebDriver driver;
     WebDriverWait wait;
     String url;
-    List<String> missingForms = new ArrayList<String>();
     MyLog log = new MyLog();
 
     FindMissingForms(String url, MongoOperations mongoOperation) {
@@ -34,7 +34,6 @@ public class FindMissingForms implements Runnable {
     public void run() {
         goToSite(url);
         driver.close();
-        log.info.add(" missing Forms:" + missingForms);
         mongoOperation.save(log);
     }
 
@@ -44,12 +43,17 @@ public class FindMissingForms implements Runnable {
         List<WebElement> formList = driver.findElements(By.xpath(formsXPathTh));
         int i = 1;
         for (WebElement we : formList) {
+            if (i != 60) {
+                i++;
+                continue;
+            }
             MyForm form = new MyForm();
             form.setUrl(url);
             form.setRow(i);
-            List<WebElement> aList = we.findElements(By.cssSelector("a"));
+            List<WebElement> aList = we.findElements(By.xpath("/a"));
             String formId, downloadLink = "";
             if (aList.size() > 0) {
+                String temp = we.getText();
                 formId = aList.get(0).getAttribute("title");
                 downloadLink = aList.get(0).getAttribute("href");
             } else {
@@ -76,10 +80,12 @@ public class FindMissingForms implements Runnable {
             String cdeLinkXPath = "//*[@class='cdetable']/tbody/tr[th[@id='form" + formId + "']]/td/a";
             List<WebElement> cdeLinks = driver.findElements(By.xpath(cdeLinkXPath));
             if (existingForm == null) {
-                missingForms.add(formId);
+                log.info.add("found form on web:" + form);
+                log.info.add(formId);
                 if (cdeLinks.size() > 0) {
                     getCdes(form, cdeLinks.get(0));
                 }
+                form.setCreateDate(new Date());
                 mongoOperation.save(form);
             }
             i++;

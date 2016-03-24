@@ -13,10 +13,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NindsFormLoader implements Runnable {
     MongoOperations mongoOperation;
@@ -186,6 +183,7 @@ public class NindsFormLoader implements Runnable {
                 log.info.add("found existing form in migration: " + existingForm);
                 log.info.add("found form on web:" + form);
             } else {
+                form.setCreateDate(new Date());
                 mongoOperation.save(form);
             }
         }
