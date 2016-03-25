@@ -13,13 +13,15 @@ public class EltIdMaps {
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
+        eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");
         eltMap.put("Genotype Therapy Basis Mutation", "PwdyV7rn1Pp");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
-        eltMap.put("Patient Visual Change", "q3bWgQN1wCq");
+        eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
+        eltMap.put("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode", "qPsdBFBSTRc");
         eltMap.put("Person Birth Date", "2yWPshAKKN7");
         eltMap.put("Person Mother Onset Menopause Age Value", "qKGWuJZ1zxz");
         eltMap.put("SDC Adrenal", "XySUBn_NZ");

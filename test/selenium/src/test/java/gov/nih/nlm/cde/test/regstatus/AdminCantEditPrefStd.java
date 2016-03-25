@@ -4,9 +4,9 @@ import org.testng.annotations.Test;
 
 public class AdminCantEditPrefStd extends CdeStandardStatusTest {
 
-    @Test(priority = -1)
+    @Test
     public void adminCantEditStandard() {
-        adminCantEditStandardCde("Patient Visual Change", "Preferred Standard");
+        adminCantEditStandardCde("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode");
     }
 
 }
