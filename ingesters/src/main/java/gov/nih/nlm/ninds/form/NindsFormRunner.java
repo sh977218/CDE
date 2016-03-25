@@ -38,22 +38,26 @@ public class NindsFormRunner {
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
 
-        int nbOfThread = 5;
+        int nbOfThread = 3;
         ExecutorService executor = Executors.newFixedThreadPool(nbOfThread);
 
-        for (int i = 0; i < 27; i++) {
-            executor.execute(new Thread(new NindsFormLoader(i + 1, i + 1, mongoOperation)));
+        for (int i = 1; i <= 27; i++) {
+            Runnable worker = new NindsFormLoader(i, i, mongoOperation);
+            executor.execute(worker);
         }
 
         Iterator it = diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             System.out.println(pair.getKey() + " = " + pair.getValue());
-            executor.execute(new Thread(new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation)));
+            Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation);
+            executor.execute(worker);
         }
+
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
+        System.out.println("Finished all pages.");
         System.exit(0);
     }
 }

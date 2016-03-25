@@ -24,14 +24,14 @@ public class FindMissingForms implements Runnable {
 
     FindMissingForms(String url, MongoOperations mongoOperation) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 120);
         this.url = url;
         this.mongoOperation = mongoOperation;
     }
 
     @Override
     public void run() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();
         goToSite(url);
         driver.close();

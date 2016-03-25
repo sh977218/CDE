@@ -22,7 +22,8 @@ public class NindsFormLoader implements Runnable {
     MongoOperations mongoOperation;
     Map<String, String> diseaseMap = new HashMap<String, String>();
     String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
-    WebDriver driver, classifDriver;
+    WebDriver driver;
+    WebDriver classifDriver;
     WebDriverWait wait;
     int pageStart;
     int pageEnd;
@@ -50,12 +51,9 @@ public class NindsFormLoader implements Runnable {
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 120);
         this.pageStart = ps;
         this.pageEnd = pe;
         this.mongoOperation = mongoOperation;
-        classifDriver = new ChromeDriver();
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
 
@@ -63,6 +61,10 @@ public class NindsFormLoader implements Runnable {
 
     @Override
     public void run() {
+        this.driver = new ChromeDriver();
+        this.classifDriver = new ChromeDriver();
+        this.wait = new WebDriverWait(driver, 120);
+
         long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(pageStart, pageEnd);
