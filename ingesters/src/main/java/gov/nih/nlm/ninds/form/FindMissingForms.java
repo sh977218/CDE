@@ -59,7 +59,7 @@ public class FindMissingForms implements Runnable {
                 String id = we.getAttribute("id");
                 formId = id.replace("form", "");
             }
-            String formName = we.getText().replace("©", "").replace("™", "").trim();
+            String formName = cdeUtility.cleanFormName(we.getText());
             String domainName = null, subDomainName = null;
             String subDomianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
             String domianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::a[1]";
@@ -87,12 +87,12 @@ public class FindMissingForms implements Runnable {
             String cdeLinkXPath = "//*[@class='cdetable']/tbody/tr[th[@id='form" + formId + "']]/td/a";
             List<WebElement> cdeLinks = driver.findElements(By.xpath(cdeLinkXPath));
             if (existingForm == null) {
-                log.info.add("found form on web:" + form);
-                log.info.add(formId);
                 if (cdeLinks.size() > 0) {
                     getCdes(form, cdeLinks.get(0));
                 }
                 form.setCreateDate(new Date());
+                log.info.add("found form on web:" + form);
+                log.info.add(formId);
                 mongoOperation.save(form);
             }
             i++;

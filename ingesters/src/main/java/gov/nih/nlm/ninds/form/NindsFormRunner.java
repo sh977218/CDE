@@ -59,7 +59,6 @@ public class NindsFormRunner {
 */
 
 
-/*
         int nbOfDisease1 = diseaseMap1.size();
         Thread[] t1 = new Thread[nbOfDisease1];
 
@@ -82,9 +81,9 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
-*/
 
 
+/*
         int nbOfDisease2 = diseaseMap2.size();
         Thread[] t2 = new Thread[nbOfDisease2];
 
@@ -108,6 +107,7 @@ public class NindsFormRunner {
             }
         }
 
+*/
 
         System.exit(0);
     }

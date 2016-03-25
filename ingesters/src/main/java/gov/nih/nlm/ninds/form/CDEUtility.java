@@ -12,6 +12,17 @@ public class CDEUtility {
 
     }
 
+    public String cleanFormName(String s) {
+        String result = s.replace("©", "").replace("™", "").trim();
+        String[] badStrings = {
+                "For additional information please visit NINDS-Coriell",
+                "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status."};
+        for (String badString : badStrings) {
+            result = result.replace(badString, "").trim();
+        }
+        return result;
+    }
+
     public String cleanSubDomain(String s) {
         String result = s;
         String[] badStrings = {
