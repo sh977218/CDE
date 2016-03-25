@@ -4,6 +4,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,6 +19,7 @@ public class NindsFormRunner {
 
         Map<String, String> diseaseMap1 = new HashMap<String, String>();
         Map<String, String> diseaseMap2 = new HashMap<String, String>();
+
         diseaseMap1.put("General (For all diseases)", "General.aspx");
         diseaseMap1.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
         diseaseMap1.put("Epilepsy", "Epilepsy.aspx");
@@ -24,6 +29,7 @@ public class NindsFormRunner {
         diseaseMap1.put("Mitochondrial Disease", "MITO.aspx");
         diseaseMap1.put("Multiple Sclerosis", "MS.aspx");
         diseaseMap1.put("Neuromuscular Diseases", "NMD.aspx");
+
         diseaseMap2.put("Congenital Muscular Dystrophy", "CMD.aspx");
         diseaseMap2.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "DMD.aspx");
         diseaseMap2.put("Facioscapulohumeral Muscular Dystrophy", "FSHD.aspx");
@@ -34,30 +40,18 @@ public class NindsFormRunner {
         diseaseMap2.put("Spinal Cord Injury", "SCI.aspx");
         diseaseMap2.put("Stroke", "Stroke.aspx");
         diseaseMap2.put("Traumatic Brain Injury", "TBI.aspx");
-/*
 
-        int startingPage = 11;
+        int startingPage = 1;
 
-        int nbOfThreads = 0;
-        Thread[] t = new Thread[nbOfThreads];
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        int nbOfPages = 27;
 
-        for (int i = 0; i < nbOfThreads; i++) {
-            NindsFormLoader loader = new NindsFormLoader(i + startingPage, i + startingPage, mongoOperation);
-            t[i] = new Thread(loader);
+        for (int i = 0; i < nbOfPages; i++) {
+            executor.execute(new Thread(new NindsFormLoader(i + startingPage, i + startingPage, mongoOperation)));
         }
-
-        for (Thread aT : t) {
-            aT.start();
+        executor.shutdown();
+        while (!executor.isTerminated()) {
         }
-        for (Thread aT : t) {
-            try {
-                aT.join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-*/
-
 
         int nbOfDisease1 = diseaseMap1.size();
         Thread[] t1 = new Thread[nbOfDisease1];
