@@ -32,8 +32,14 @@ public class FindMissingForms implements Runnable {
 
     @Override
     public void run() {
+        long startTime = System.currentTimeMillis();
         goToSite(url);
         driver.close();
+        long endTime = System.currentTimeMillis();
+        long totalTimeInMillis = endTime - startTime;
+        long totalTimeInSeconds = totalTimeInMillis / 1000;
+        long totalTimeInMinutes = totalTimeInSeconds / 60;
+        log.setRunTime(totalTimeInMinutes);
         mongoOperation.save(log);
         cdeUtility.checkDataQuality(mongoOperation, url);
     }
