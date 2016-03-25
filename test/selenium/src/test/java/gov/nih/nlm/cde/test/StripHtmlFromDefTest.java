@@ -11,8 +11,8 @@ public class StripHtmlFromDefTest extends BaseClassificationTest {
         goToFormSearch();
         findElement(By.id("browseOrg-TEST")).click();
         textPresent("Form Def HTML");
-        textNotPresent("<b>");
-        textNotPresent("<p>");
+        textNotPresent("<uvwxyz>");
+        textNotPresent("</uvwxyz>");
     }
 
 }
