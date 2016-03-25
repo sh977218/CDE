@@ -35,7 +35,9 @@ public class FindMissingForms implements Runnable {
         goToSite(url);
         driver.close();
         mongoOperation.save(log);
+        cdeUtility.checkDataQuality(mongoOperation, url);
     }
+
 
     public void goToSite(String url) {
         driver.get(url);
@@ -61,9 +63,10 @@ public class FindMissingForms implements Runnable {
             }
             String formName = cdeUtility.cleanFormName(we.getText());
             String domainName = null, subDomainName = null;
-            String subDomianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-            String domianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::a[1]";
-            String domianSelector1 = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
+            String thisElementXpath = "(//*[@class='cdetable']/tbody/tr/th[@scope='row'])";
+            String subDomianSelector = thisElementXpath + "[" + i + "]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+            String domianSelector = thisElementXpath + "[" + i + "]/ancestor::table/preceding-sibling::a[1]";
+            String domianSelector1 = thisElementXpath + "[" + i + "]/ancestor::table/preceding-sibling::h3[1]/a";
             List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
             if (subDomains.size() > 0)
                 subDomainName = cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim());
@@ -75,7 +78,7 @@ public class FindMissingForms implements Runnable {
                 if (domains1.size() > 0) {
                     form.setDomainName(domains1.get(0).getText().trim());
                 } else
-                    log.info.add("cannot find domainName, " + "url:" + url + "row:" + i + "formName:" + formName);
+                    log.info.add("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName);
             }
             form.setFormId(formId);
             form.setCrfModuleGuideline(formName);
@@ -101,7 +104,7 @@ public class FindMissingForms implements Runnable {
     }
 
 
-    void getCdes(MyForm form, WebElement a) {
+    private void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
         cdeUtility.switchTab(driver, 1);
@@ -148,12 +151,12 @@ public class FindMissingForms implements Runnable {
         return true;
     }
 
-    public void hangon(double i) {
+    private void hangon(double i) {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
 
-    WebElement findElement(By by) {
+    private WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }

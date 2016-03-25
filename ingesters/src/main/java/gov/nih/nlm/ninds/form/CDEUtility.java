@@ -3,6 +3,7 @@ package gov.nih.nlm.ninds.form;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.data.mongodb.core.MongoOperations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,25 @@ public class CDEUtility {
 
     }
 
+    public void checkDataQuality(MongoOperations mongoOperation, String url) {
+        List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
+        if (dataTypeList.size() != 4) {
+            System.out.println("data type is not good. url:" + url);
+            System.exit(1);
+        }
+        List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
+        if (inputRestrictionsList.size() != 3) {
+            System.out.println("inputRestrictionsList is not good. url:" + url);
+            System.exit(1);
+        }
+    }
+
     public String cleanFormName(String s) {
         String result = s.replace("©", "").replace("™", "").trim();
         String[] badStrings = {
                 "For additional information please visit NINDS-Coriell",
-                "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status."};
+                "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status.",
+                "The CDEs for this CRF Module are included directly below for the individual RFQ CRFs."};
         for (String badString : badStrings) {
             result = result.replace(badString, "").trim();
         }
@@ -35,7 +50,7 @@ public class CDEUtility {
                 "See \"CRF Search\" to find all Second Insults forms under Subdomain option.",
                 "See \"CRF Search\" to find all Discharge forms under Subdomain option.",
                 "Note: The General CDE Standards contain additional useful CRF Modules and CDEs for this sub-domain.",
-                "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status."
+                "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status.",
         };
         for (String badString : badStrings) {
             result = result.replace(badString, "").trim();

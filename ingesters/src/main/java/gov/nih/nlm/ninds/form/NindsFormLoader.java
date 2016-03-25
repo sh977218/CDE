@@ -69,6 +69,7 @@ public class NindsFormLoader implements Runnable {
         driver.close();
         classifDriver.close();
         log.info.add("finished " + pageStart + " to " + pageEnd);
+        cdeUtility.checkDataQuality(mongoOperation, "");
         long endTime = System.currentTimeMillis();
         long totalTimeInMillis = endTime - startTime;
         long totalTimeInSeconds = totalTimeInMillis / 1000;
@@ -168,7 +169,7 @@ public class NindsFormLoader implements Runnable {
                 }
                 index++;
             }
-            getDomainAndSubDomain(form);
+            getDomainAndSubDomain(form, i);
 
             Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId())
                     .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
@@ -198,12 +199,13 @@ public class NindsFormLoader implements Runnable {
     }
 
 
-    private void getDomainAndSubDomain(MyForm form) {
+    private void getDomainAndSubDomain(MyForm form, int i) {
         String crfModuleGuideline = form.getCrfModuleGuideline().trim();
         classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.getDiseaseName()));
-        String subDomianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::a[1]";
-        String domianSelector1 = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
+        String thisElmentXpath = "(//*[@class='cdetable']/tbody/tr/th[@scope='row'])";
+        String subDomianSelector = thisElmentXpath + "[" + i + "]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = thisElmentXpath + "[" + i + "]/ancestor::table/preceding-sibling::a[1]";
+        String domianSelector1 = thisElmentXpath + "[" + i + "]/ancestor::table/preceding-sibling::h3[1]/a";
         List<WebElement> subDomains = classifDriver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
