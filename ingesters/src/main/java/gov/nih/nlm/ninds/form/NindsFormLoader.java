@@ -210,7 +210,7 @@ public class NindsFormLoader implements Runnable {
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
         else {
-            log.info.add("cannot find subDomainName " + crfModuleGuideline + " disease name:" + form.getDiseaseName());
+            log.info.add("cannot find subDomainName of form: " + form);
         }
         List<WebElement> domains = classifDriver.findElements(By.xpath(domianSelector));
         if (domains.size() > 0) {
@@ -220,7 +220,7 @@ public class NindsFormLoader implements Runnable {
             if (domains1.size() > 0) {
                 form.setDomainName(domains1.get(0).getText().trim());
             } else
-                log.info.add("cannot find domainName, " + form.getCrfModuleGuideline() + " disease name:" + form.getDiseaseName());
+                log.info.add("cannot find domainName of form: " + form);
         }
     }
 

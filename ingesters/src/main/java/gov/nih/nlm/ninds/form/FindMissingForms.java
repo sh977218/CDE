@@ -84,7 +84,7 @@ public class FindMissingForms implements Runnable {
                 if (domains1.size() > 0) {
                     form.setDomainName(domains1.get(0).getText().trim());
                 } else
-                    log.info.add("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName);
+                    log.info.add("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName + " with xpath:" + domianSelector1);
             }
             form.setFormId(formId);
             form.setCrfModuleGuideline(formName);

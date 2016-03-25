@@ -17,14 +17,12 @@ public class NindsFormRunner {
 
         Map<String, String> diseaseMap = new HashMap<String, String>();
 
-/*
         diseaseMap.put("General (For all diseases)", "General.aspx");
         diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
         diseaseMap.put("Epilepsy", "Epilepsy.aspx");
         diseaseMap.put("Friedreich's Ataxia", "FA.aspx");
         diseaseMap.put("Headache", "Headache.aspx");
         diseaseMap.put("Huntington's Disease", "HD.aspx");
-
         diseaseMap.put("Mitochondrial Disease", "MITO.aspx");
         diseaseMap.put("Multiple Sclerosis", "MS.aspx");
         diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
@@ -35,22 +33,17 @@ public class NindsFormRunner {
         diseaseMap.put("Myotonic Muscular Dystrophy", "MMD.aspx");
         diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         diseaseMap.put("Parkinson's Disease", "PD.aspx");
-        */
         diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
-/*
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
-*/
 
 
         int nbOfThread = 5;
         ExecutorService executor = Executors.newFixedThreadPool(nbOfThread);
 
-/*
         for (int i = 0; i < 27; i++) {
             executor.execute(new Thread(new NindsFormLoader(i + 1, i + 1, mongoOperation)));
         }
-*/
 
         Iterator it = diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
