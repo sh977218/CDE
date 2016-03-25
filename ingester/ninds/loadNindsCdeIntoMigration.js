@@ -17,14 +17,14 @@ function checkExistingNaming(existingNaming, newCde, ninds) {
         if (existingName.designation.toLowerCase() === newCde.questionText.toLowerCase() && newCde.questionText.length > 0 && newCde.questionText != 'N/A')
             existQuestionText = true;
     });
-    if (!existCdeName && newCde.cdeName.length > 0) {
+    if (!existCdeName && newCde.cdeName && newCde.cdeName.length > 0) {
         var newCdeName = {designation: newCde.cdeName, definition: newCde.definitionDescription, languageCode: "EN-US"};
         existingNaming.push(newCdeName);
         console.log('added new cde name to cde id: ' + newCde.cdeId);
         console.log('newCde cdeName: ' + newCde.cdeName);
         console.log('ninds._id: ' + ninds._id);
     }
-    if (!existQuestionText && newCde.questionText.length > 0 && newCde.questionText != 'N/A') {
+    if (!existQuestionText && newCde.questionText && newCde.questionText.length > 0 && newCde.questionText != 'N/A') {
         var newQuestionText = {
             designation: newCde.questionText,
             languageCode: "EN-US",
@@ -48,21 +48,21 @@ function checkExistingIds(existingIds, newCde, ninds) {
         if (existingId.source === 'NINDS Variable Name Alias' && existingId.id === newCde.aliasesForVariableName)
             existAliasesForVariableName = true;
     });
-    if (!existCaDSRId && newCde.cadsrId.length > 0) {
+    if (!existCaDSRId && newCde.cadsrId && newCde.cadsrId.length > 0) {
         var newCaDSRId = {source: 'caDSR', id: newCde.cadsrId};
         existingIds.push(newCaDSRId);
         console.log('added new cadsr id: ' + newCde.cdeId);
         console.log('newCde cadsrId: ' + newCde.cadsrId);
         console.log('ninds._id: ' + ninds._id);
     }
-    if (!existVariableName && newCde.variableName.length > 0) {
+    if (!existVariableName && newCde.variableName && newCde.variableName.length > 0) {
         var newVariableName = {source: 'NINDS Variable Name', id: newCde.varibleName};
         existingIds.push(newVariableName);
         console.log('added new ninds variable id: ' + newCde.cdeId);
         console.log('newCde varibleName: ' + newCde.varibleName);
         console.log('ninds._id: ' + ninds._id);
     }
-    if (!existAliasesForVariableName && newCde.aliasesForVariableName.length > 0) {
+    if (!existAliasesForVariableName && newCde.aliasesForVariableName && newCde.aliasesForVariableName.length > 0) {
         var newAliasesForVariableName = {
             source: 'NINDS Variable Name Alias',
             id: newCde.aliasesForVariableName
@@ -79,7 +79,7 @@ function checkExistingInstructions(existingInstructions, newCde, ninds) {
         if (existingInstruction.Disease === ninds.diseaseName && existingInstruction.instruction.value === newCde.instruction && newCde.instruction != 'No instructions available')
             existInstruction = true;
     });
-    if (!existInstruction && newCde.instruction.length > 0 && newCde.instruction != 'No instructions available') {
+    if (!existInstruction && newCde.instruction && newCde.instruction.length > 0 && newCde.instruction != 'No instructions available') {
         var newInstruction = {Disease: ninds.diseaseName, instruction: {value: newCde.instruction}};
         existingInstructions.push(newInstruction);
         console.log('added new instruction: ' + newCde.cdeId);
@@ -95,14 +95,14 @@ function checkExistingProperties(existingProperties, newCde, ninds) {
         if (existingProperty.key === 'NINDS Guidelines' && existingProperty.value === newCde.crfModuleGuideline)
             existGuidelinesProperty = true;
     });
-    if (!existPreviousTitleProperty && newCde.previousTitle.length > 0) {
+    if (!existPreviousTitleProperty && newCde.previousTitle && newCde.previousTitle.length > 0) {
         var newPreviousTitleProperty = {key: 'NINDS Previous Title', value: newCde.previousTitle};
         existingProperties.push(newPreviousTitleProperty);
         console.log('added new previous title property: ' + newCde.cdeId);
         console.log('newCde crfModuleGuideline: ' + newCde.crfModuleGuideline);
         console.log('ninds._id: ' + ninds._id);
     }
-    if (!existGuidelinesProperty && newCde.crfModuleGuideline.length > 0) {
+    if (!existGuidelinesProperty && newCde.crfModuleGuideline && newCde.crfModuleGuideline.length > 0) {
         var newGuidelinesProperty = {key: 'NINDS Guidelines', value: newCde.crfModuleGuideline};
         existingProperties.push(newGuidelinesProperty);
         console.log('added new guideline property: ' + newCde.cdeId);
@@ -118,7 +118,7 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, nin
                 existReferenceDocument = true;
         }
     });
-    if (!existReferenceDocument && newCde.reference.length > 0 && newCde.reference != 'No references available') {
+    if (!existReferenceDocument && newCde.reference && newCde.reference.length > 0 && newCde.reference != 'No references available') {
         var newReferenceDocument = {
             title: newCde.reference,
             uri: newCde.reference.indexOf('http://www.') != -1 ? newCde.reference : ''

@@ -15,7 +15,6 @@ public class NindsFormRunner {
 
         Map<String, String> diseaseMap1 = new HashMap<String, String>();
         Map<String, String> diseaseMap2 = new HashMap<String, String>();
-/*
         diseaseMap1.put("General (For all diseases)", "General.aspx");
         diseaseMap1.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
         diseaseMap1.put("Epilepsy", "Epilepsy.aspx");
@@ -25,8 +24,6 @@ public class NindsFormRunner {
         diseaseMap1.put("Mitochondrial Disease", "MITO.aspx");
         diseaseMap1.put("Multiple Sclerosis", "MS.aspx");
         diseaseMap1.put("Neuromuscular Diseases", "NMD.aspx");
-*/
-
         diseaseMap2.put("Congenital Muscular Dystrophy", "CMD.aspx");
         diseaseMap2.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "DMD.aspx");
         diseaseMap2.put("Facioscapulohumeral Muscular Dystrophy", "FSHD.aspx");
@@ -60,8 +57,9 @@ public class NindsFormRunner {
             }
         }
 */
-/*
 
+
+/*
         int nbOfDisease1 = diseaseMap1.size();
         Thread[] t1 = new Thread[nbOfDisease1];
 
@@ -109,6 +107,7 @@ public class NindsFormRunner {
                 e.printStackTrace();
             }
         }
+
 
         System.exit(0);
     }

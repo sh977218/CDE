@@ -47,9 +47,12 @@ public class FindMissingForms implements Runnable {
             form.setUrl(url);
             form.setRow(i);
             List<WebElement> aList = we.findElements(By.xpath("/a"));
+            List<WebElement> copyRightList = we.findElements(By.className("copyright"));
+            if (copyRightList.size() > 0) {
+                form.setCopyRight(true);
+            }
             String formId, downloadLink = "";
             if (aList.size() > 0) {
-                String temp = we.getText();
                 formId = aList.get(0).getAttribute("title");
                 downloadLink = aList.get(0).getAttribute("href");
             } else {
@@ -60,12 +63,20 @@ public class FindMissingForms implements Runnable {
             String domainName = null, subDomainName = null;
             String subDomianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
             String domianSelector = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::a[1]";
+            String domianSelector1 = "//*[normalize-space(text())=\"" + formName + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
             List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
             if (subDomains.size() > 0)
                 subDomainName = cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim());
             List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
             if (domains.size() > 0)
                 domainName = domains.get(0).getText().trim();
+            else {
+                List<WebElement> domains1 = driver.findElements(By.xpath(domianSelector1));
+                if (domains1.size() > 0) {
+                    form.setDomainName(domains1.get(0).getText().trim());
+                } else
+                    log.info.add("cannot find domainName, " + formName);
+            }
             form.setFormId(formId);
             form.setCrfModuleGuideline(formName);
             form.setDownloadLink(downloadLink);

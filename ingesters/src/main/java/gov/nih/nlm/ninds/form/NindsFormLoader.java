@@ -127,16 +127,16 @@ public class NindsFormLoader implements Runnable {
                 String text = td.getText().replace("\"", " ").replace(" - Paper version", " Paper version").trim();
                 if (index == 1) {
                     hangon(5);
-                    List<WebElement> a = td.findElements(By.cssSelector("a"));
-                    if (a.size() > 0) {
-                        String downloadLink = a.get(0).getAttribute("href");
+                    List<WebElement> aList = td.findElements(By.xpath("/a"));
+                    if (aList.size() > 0) {
+                        String downloadLink = aList.get(0).getAttribute("href");
                         form.setDownloadLink(downloadLink);
-                        String id = a.get(0).getAttribute("title");
+                        String id = aList.get(0).getAttribute("title");
                         if (id.length() > 0)
                             form.setFormId(id.replace("NOC-", ""));
                         else
                             form.setFormId(downloadLink.split("CrfId=")[1]);
-                        List<WebElement> copyRightClass = a.get(0).findElements(By.className("copyright"));
+                        List<WebElement> copyRightClass = aList.get(0).findElements(By.className("copyright"));
                         if (copyRightClass.size() > 0) {
                             form.setCrfModuleGuideline(text.replace("©", "").replace("™", ""));
                             form.setCopyRight(true);
