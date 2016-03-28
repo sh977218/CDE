@@ -1,6 +1,7 @@
 var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    mongo_data = require('../../modules/system/node-js/mongo-data'),
     FormModel = require('./createConnection').FormModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     logger = require('./log')
@@ -126,28 +127,28 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, nin
         logger.info('ninds._id: ' + ninds._id);
     }
 }
-function transferForm(existingCde, ninds) {
-    // add newCde naming if no name existing
-    var existingNaming = existingCde.get('naming');
+function transferForm(existingForm, ninds) {
+    // add newForm naming if no name existing
+    var existingNaming = existingForm.get('naming');
     checkExistingNaming(existingNaming, newCde, ninds);
 
-    // add newCde ids if no id existing
-    var existingIds = existingCde.get('ids');
+    // add newForm ids if no id existing
+    var existingIds = existingForm.get('ids');
     checkExistingIds(existingIds, newCde, ninds);
 
-    // add newCde instruction if no instruction existing
-    var existingInstructions = existingCde.get('instructions');
+    // add newForm instruction if no instruction existing
+    var existingInstructions = existingForm.get('instructions');
     checkExistingInstructions(existingInstructions, newCde, ninds);
 
-    // add newCde property if no property existing
-    var existingProperties = existingCde.get('properties');
+    // add newForm property if no property existing
+    var existingProperties = existingForm.get('properties');
     checkExistingProperties(existingProperties, newCde, ninds);
 
-    // add newCde referenceDocument if no referenceDocument existing
-    var existingReferenceDocuments = existingCde.get('referenceDocuments');
+    // add newForm referenceDocument if no referenceDocument existing
+    var existingReferenceDocuments = existingForm.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
-    if (!newCde.classification.length || newCde.classification.length === 0)
+    if (!newForm.classification.length || newCde.classification.length === 0)
         logger.info('x');
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
 };
@@ -165,7 +166,11 @@ function createForm(ninds) {
     naming.push(formName);
 
     var ids = [];
-    var crfId = {source: 'CRF Id', id: ninds.get('formId')};
+    var crfId = {
+        source: 'CRF Id',
+        id: ninds.get('formId'),
+        'version': ninds.get('versionNum').length > 0 ? Number(ninds.get('versionNum')).toString() : ''
+    };
     if (ninds.get('formId') && ninds.get('formId').length > 0)
         ids.push(crfId);
 
@@ -184,25 +189,55 @@ function createForm(ninds) {
         elements: [{
             "name": ninds.get('domainName'),
             "elements": [{
-                "name": ninds.get('subDomainname'),
+                "name": ninds.get('subDomainName'),
                 "elements": []
             }]
         }]
     };
-    var diseaseElement = {
-        name: 'Disease',
-        elements: [{
-            "name": ninds.get('diseaseName'),
-            "elements": [{
-                "name": ninds.get('subDiseaseName'),
-                "elements": []
+    var diseaseElement;
+    if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
+        diseaseElement = {
+            name: 'Disease',
+            elements: [{
+                "name": ninds.get('diseaseName'),
+                "elements": [{
+                    "name": ninds.get('subDiseaseName'),
+                    "elements": [{
+                        "name": 'Domain',
+                        "elements": [{
+                            "name": ninds.get('domainName'),
+                            "elements": [{
+                                "name": ninds.get('subDomainName'),
+                                "elements": []
+                            }]
+                        }]
+                    }]
+                }]
             }]
-        }]
-    };
+        };
+    } else {
+        diseaseElement = {
+            name: 'Disease',
+            elements: [{
+                "name": ninds.get('diseaseName'),
+                "elements": [{
+                    "name": 'Domain',
+                    "elements": [{
+                        "name": ninds.get('domainName'),
+                        "elements": [{
+                            "name": ninds.get('subDomainName'),
+                            "elements": []
+                        }]
+                    }]
+                }]
+            }]
+        };
+    }
     elements.push(domainElement);
     elements.push(diseaseElement);
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
     var newForm = {
+        tinyId: mongo_data.generateTinyId(),
         isCopyrighted: ninds.get('copyRight'),
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
@@ -217,7 +252,7 @@ function createForm(ninds) {
     } else {
         var formElements = [];
         async.forEachSeries(ninds.get('cdes'), function (cde, doneOne) {
-            mongo_cde.byOtherIdAndVersion('NINDS', cde.cdeId, cde.versionNum, function (err, existingCde) {
+            mongo_cde.byOtherId('NINDS', cde.cdeId, function (err, existingCde) {
                 if (err) {
                     console.log(err);
                     throw err;
