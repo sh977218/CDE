@@ -10,9 +10,8 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
 
     @Test
     public void checkStewardOrgDetails() {
-        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale");
+        goToCdeByName("Feature Modified By java.lang.String");
         By by = By.linkText("caBIG");
-
         checkTooltipText(by, "Organization Details");
         checkTooltipText(by, "Cancer Biomedical Informatics Grid");
         checkTooltipText(by, "123 Somewhere On Earth, Abc, Def, 20001");
@@ -20,18 +19,7 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
         checkTooltipText(by, "111-222-3333");
         checkTooltipText(by, "https://cabig.nci.nih.gov/");
 
-        // Changes Steward and save
-        clickElement(By.id("dd_edit_steward"));
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("CTEP");
-        hangon(.5);
-        clickElement(By.id("elt.stewardOrg.name.ok"));
-        textPresent("CTEP");
-        newCdeVersion();
-
-        goToCdeByName("MFLIE Hardship 24 Hour Nausea Personal Affect 7 Point Likert Scale");
-        Assert.assertEquals("CTEP", findElement(By.id("dd_general_steward")).getText());
-        hangon(1);
-
+        goToCdeByName("Lesion Nontarget Location Type");
         by = By.linkText("CTEP");
         hoverOverElement(findElement(By.linkText("CTEP")));
         checkTooltipText(by, "Organization Details");
