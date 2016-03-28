@@ -2,11 +2,10 @@ var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
     DataElementModel = require('./createConnection').DataElementModel,
     OrgModel = require('./createConnection').OrgModel,
-    classificationShared = require('../../modules/system/shared/classificationShared'),
-    logger = require('./log')
+    classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-var counter = 0;
+
 var nindsOrg = null;
 
 function checkExistingNaming(existingNaming, newCde, ninds) {
@@ -290,8 +289,20 @@ function createCde(cde, ninds) {
         elements: [{
             "name": ninds.get('diseaseName'),
             "elements": [{
-                "name": ninds.get('subDiseaseName'),
-                "elements": []
+                "name": 'Classification',
+                "elements": [{
+                    "name": cde.classification,
+                    "elements": []
+                }]
+            }, {
+                "name": 'Domain',
+                "elements": [{
+                    "name": cde.domain,
+                    "elements": [{
+                        "name": cde.subDomain,
+                        "elements": []
+                    }]
+                }]
             }]
         }]
     };
