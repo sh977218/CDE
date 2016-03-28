@@ -39,7 +39,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = Integer.parseInt(6)
+    maxParallelForks = 6
 
     testLogging {
         events "standardOut", "standardError"
