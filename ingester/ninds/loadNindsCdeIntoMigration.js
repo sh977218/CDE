@@ -288,9 +288,9 @@ function createCde(cde, ninds) {
     var diseaseElement = {
         name: 'Disease',
         elements: [{
-            "name": ninds.diseaseName,
+            "name": ninds.get('diseaseName'),
             "elements": [{
-                "name": ninds.subDiseaseName,
+                "name": ninds.get('subDiseaseName'),
                 "elements": []
             }]
         }]
