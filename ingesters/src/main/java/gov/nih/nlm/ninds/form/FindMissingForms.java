@@ -30,6 +30,7 @@ public class FindMissingForms implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("start url: " + url);
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();

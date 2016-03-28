@@ -64,20 +64,19 @@ public class NindsFormLoader implements Runnable {
         this.driver = new ChromeDriver();
         this.classifDriver = new ChromeDriver();
         this.wait = new WebDriverWait(driver, 120);
-
         long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(pageStart);
         findAndSaveToForms(pageStart, pageEnd);
-        driver.close();
-        classifDriver.close();
-        log.info.add("finished " + pageStart + " to " + pageEnd);
         cdeUtility.checkDataQuality(mongoOperation, "");
         long endTime = System.currentTimeMillis();
         long totalTimeInMillis = endTime - startTime;
         long totalTimeInSeconds = totalTimeInMillis / 1000;
         long totalTimeInMinutes = totalTimeInSeconds / 60;
-        log.setRunTime(totalTimeInMinutes);
-        mongoOperation.save(log);
+        this.log.setRunTime(totalTimeInMinutes);
+        this.log.info.add("finished " + pageStart + " to " + pageEnd);
+        mongoOperation.save(this.log);
+        this.driver.close();
+        this.classifDriver.close();
     }
 
 
@@ -127,10 +126,10 @@ public class NindsFormLoader implements Runnable {
             form.setRow(i);
             int index = 1;
             for (WebElement td : tds) {
-                String text = td.getText().replace("\"", " ").replace(" - Paper version", " Paper version").trim();
+                String text = td.getText();
                 if (index == 1) {
                     hangon(5);
-                    List<WebElement> aList = td.findElements(By.xpath("/a"));
+                    List<WebElement> aList = td.findElements(By.cssSelector("a"));
                     if (aList.size() > 0) {
                         String downloadLink = aList.get(0).getAttribute("href");
                         form.setDownloadLink(downloadLink);
@@ -139,16 +138,12 @@ public class NindsFormLoader implements Runnable {
                             form.setFormId(id.replace("NOC-", ""));
                         else
                             form.setFormId(downloadLink.split("CrfId=")[1]);
-                        List<WebElement> copyRightClass = aList.get(0).findElements(By.className("copyright"));
+                        List<WebElement> copyRightClass = td.findElements(By.className("copyright"));
                         if (copyRightClass.size() > 0) {
-                            form.setCrfModuleGuideline(text.replace("©", "").replace("™", ""));
                             form.setCopyRight(true);
-                        } else {
-                            form.setCrfModuleGuideline(text);
-                            form.setCopyRight(false);
                         }
                     }
-
+                    form.setCrfModuleGuideline(cdeUtility.cleanFormName(text));
                 }
                 if (index == 2)
                     form.setDescription(text);
@@ -171,7 +166,7 @@ public class NindsFormLoader implements Runnable {
                 }
                 index++;
             }
-            getDomainAndSubDomain(form, i);
+            getDomainAndSubDomain(form);
 
             Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId())
                     .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
@@ -186,9 +181,9 @@ public class NindsFormLoader implements Runnable {
                     .and("subDomainName").is(form.getSubDomainName()));
             MyForm existingForm = mongoOperation.findOne(searchUserQuery, MyForm.class);
             if (existingForm != null) {
-                log.info.add("search with query: " + searchUserQuery.toString());
-                log.info.add("found existing form in migration: " + existingForm);
-                log.info.add("found form on web:" + form);
+                this.log.info.add("search with query: " + searchUserQuery.toString());
+                this.log.info.add("found existing form in migration: " + existingForm);
+                this.log.info.add("found form on web:" + form);
             } else {
                 form.setCreateDate(new Date());
                 mongoOperation.save(form);
@@ -201,18 +196,17 @@ public class NindsFormLoader implements Runnable {
     }
 
 
-    private void getDomainAndSubDomain(MyForm form, int i) {
+    private void getDomainAndSubDomain(MyForm form) {
         String crfModuleGuideline = form.getCrfModuleGuideline().trim();
         classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.getDiseaseName()));
-        String thisElmentXpath = "(//*[@class='cdetable']/tbody/tr/th[@scope='row'])";
-        String subDomianSelector = thisElmentXpath + "[" + i + "]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = thisElmentXpath + "[" + i + "]/ancestor::table/preceding-sibling::a[1]";
-        String domianSelector1 = thisElmentXpath + "[" + i + "]/ancestor::table/preceding-sibling::h3[1]/a";
+        String subDomianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::a[1]";
+        String domianSelector1 = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
         List<WebElement> subDomains = classifDriver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
         else {
-            log.info.add("cannot find subDomainName of form: " + form);
+            this.log.info.add("cannot find subDomainName of form: " + form + " of xpath: " + subDomianSelector);
         }
         List<WebElement> domains = classifDriver.findElements(By.xpath(domianSelector));
         if (domains.size() > 0) {
@@ -221,8 +215,9 @@ public class NindsFormLoader implements Runnable {
             List<WebElement> domains1 = classifDriver.findElements(By.xpath(domianSelector1));
             if (domains1.size() > 0) {
                 form.setDomainName(domains1.get(0).getText().trim());
-            } else
-                log.info.add("cannot find domainName of form: " + form);
+            } else {
+                this.log.info.add("cannot find domainName of form: " + form + " of xpath: " + domianSelector1);
+            }
         }
     }
 
@@ -269,4 +264,14 @@ public class NindsFormLoader implements Runnable {
         return driver.findElement(by);
     }
 
+    @Override
+    public String toString() {
+        return "NindsFormLoader{" +
+                ", url='" + url + '\'' +
+                ", pageStart=" + pageStart +
+                ", pageEnd=" + pageEnd +
+                ", log=" + log +
+                ", cdeUtility=" + cdeUtility +
+                '}';
+    }
 }
