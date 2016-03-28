@@ -16,7 +16,7 @@ var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataEl
 var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
 
 var batchSchema = new mongoose.Schema({
-        batchProcess: {type: String, enum: ['caDSR']},
+        batchProcess: {type: String, enum: ['caDSR', 'NINDS']},
         step: {type: String
             , enum: ['initiated', 'orgLoaded', 'migrationCdesLoaded', 'loadInProgress', 'batchComplete']
             , default: "initiated"},
