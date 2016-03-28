@@ -85,6 +85,9 @@ gulp.task('copyCode', ['wiredep'], function() {
     gulp.src('./deploy/*')
         .pipe(gulp.dest(config.node.buildDir + "/deploy/"));
 
+    gulp.src('./ingester/*')
+        .pipe(gulp.dest(config.node.buildDir + "/ingester/"));
+
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
 
