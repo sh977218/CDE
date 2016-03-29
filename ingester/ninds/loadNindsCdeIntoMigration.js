@@ -82,8 +82,8 @@ function checkExistingProperties(existingProperties, newCde, ninds) {
         if (existingProperty.key === 'NINDS Previous Title' && existingProperty.value === newCde.previousTitle)
             existPreviousTitleProperty = true;
         if (existingProperty.key === 'NINDS Guidelines') {
-            existingGuidelinesProperties = existingProperty.value;
-            if (existingGuidelinesProperties.indexOf(ninds.get('formId') === -1))
+            existingGuidelinesProperties = existingProperty;
+            if (existingGuidelinesProperties.value.indexOf(ninds.get('formId')) != -1)
                 existGuidelinesProperty = true;
         }
     });
@@ -95,7 +95,7 @@ function checkExistingProperties(existingProperties, newCde, ninds) {
         console.log('ninds._id: ' + ninds._id);
     }
     if (!existGuidelinesProperty && newCde.instruction && newCde.instruction.length > 0) {
-        existingGuidelinesProperties.concat(ninds.get('formId') + '\n' + newCde.instruction) + '\n';
+        existingGuidelinesProperties.value = existingGuidelinesProperties.value + ninds.get('formId') + '\n' + newCde.instruction + '\n';
         console.log('added new guideline property: ' + newCde.cdeId);
         console.log('newCde crfModuleGuideline: ' + newCde.instruction);
         console.log('ninds._id: ' + ninds._id);
@@ -135,8 +135,6 @@ function transferCde(existingCde, newCde, ninds) {
     var existingReferenceDocuments = existingCde.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
-    if (!newCde.classification.length || newCde.classification.length === 0)
-        console.log('x');
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
 }
 
@@ -179,7 +177,11 @@ function createCde(cde, ninds) {
 
     var properties = [];
     var previousTitleProperty = {key: 'NINDS Previous Title', value: cde.previousTitle};
-    var guidelinesProperty = {key: 'NINDS Guidelines', value: ninds.get('formId') + '\n' + cde.instruction + '\n'};
+    var guidelinesProperty = {
+        key: 'NINDS Guidelines',
+        value: ninds.get('formId') + '\n' + cde.instruction + '\n',
+        valueFormat: 'html'
+    };
     if (cde.previousTitle && cde.previousTitle.length > 0)
         properties.push(previousTitleProperty);
     if (cde.instruction && cde.instruction.length > 0)
