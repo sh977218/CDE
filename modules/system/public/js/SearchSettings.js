@@ -58,7 +58,6 @@ angular.module('ElasticSearchResource')
                 }
                 searchSettings = user.searchSettings;
             }
-
             if (searchSettings.version !== version) searchSettings = searchSettingsFactory.getDefault();
             searchSettingsFactory.deferred.resolve(searchSettings);
         });
