@@ -81,7 +81,7 @@ var wipeUseless = function (toWipeCde) {
 };
 
 var compareCdes = function (existingCde, newCde) {
-    existingCde = JSON.parse(JSON.stringify(existingCde));
+    var existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
     for (var i = existingCde.classification.length - 1; i > 0; i--) {
         if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
@@ -208,7 +208,6 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv, findCdeDone) 
             }
         } else if (existingCdes.length > 1) {
             //console.log("Too many CDEs with Id = " + cdeId);
-            //
             DataElement.find(cdeCond)
                 .where("ids").elemMatch(function (elem) {
                 elem.where("source").equals(source);
