@@ -30,25 +30,4 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         }
     }
 
-    @Test
-    public void mltDoesntShowRetired() {
-        CdeCreateTest createTest = new CdeCreateTest();
-        String cdeName = "MltTest";
-        mustBeLoggedInAs(ctepCurator_username, password);
-        createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
-        showAllTabs();
-        clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
-        clickElement(By.id("editStatus"));
-        new Select(findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
-        clickElement(By.id("saveRegStatus"));
-        closeAlert();
-        createTest.createBasicCde(cdeName, "mlt def", "CTEP", "Phase", "Phase II");
-        waitForESUpdate();
-        goToCdeByName(cdeName);
-        showAllTabs();
-        clickElement(By.linkText("More Like This"));
-        textNotPresent(cdeName, By.id("mltAccordion"));
-    }
-
 }
