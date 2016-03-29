@@ -11,7 +11,8 @@ function checkExistingNaming(existingNaming, ninds) {
     var description = ninds.get('description');
     var existFormName;
     existingNaming.forEach(function (existingName) {
-        if (existingName.designation === crfModuleGuideline && crfModuleGuideline.length > 0)
+        if (existingName.designation === crfModuleGuideline && crfModuleGuideline.length > 0
+            && existingName.definition === description && description.length > 0)
             existFormName = true;
     });
     if (!existFormName && crfModuleGuideline.length > 0) {
@@ -150,52 +151,7 @@ function createForm(ninds) {
         classification: classification,
         formElements: []
     };
-    if (ninds.get('cdes').length == 0)
-        return newForm;
-    else {
-        console.log('start cde of form: ' + formId);
-        var i = 0;
-        var cdes = ninds.get('cdes');
-        async.eachSeries(cdes, function (cde, doneOneCDE) {
-            var cdeId = cde.cdeId;
-            mongo_cde.byOtherId('NINDS', cdeId, function (err, existingCde) {
-                if (err) {
-                    console.log(err + ' cdeId: ' + cdeId);
-                    throw err;
-                }
-                var cde = {
-                    tinyId: existingCde.tinyId,
-                    name: existingCde.naming[0].designation,
-                    version: existingCde.version,
-                    permissibleValues: existingCde.valueDomain.permissibleValues,
-                    ids: existingCde.ids
-                };
-                var question = {
-                    cde: cde,
-                    datatype: existingCde.valueDomain.datatype,
-                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                    datatypeText: existingCde.valueDomain.datatypeText,
-                    uom: existingCde.valueDomain.uom,
-                    answers: existingCde.valueDomain.permissibleValues,
-                    multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected' ? true : cde.inputRestrictions === 'Single Pre-Defined Value Selected' ? false : null
-                };
-                var formElement = {
-                    elementType: {type: 'question'},
-                    instructions: cde.instruction,
-                    label: cde.questionText,
-                    question: question,
-                    formElements: []
-                };
-                newForm.formElements.push(formElement);
-                console.log('finished ' + i + ' cde:' + cdeId);
-                i++;
-                doneOneCDE();
-            });
-        }, function doneAll() {
-            console.log('finished all cdes in form ' + formId);
-            return newForm;
-        });
-    }
+    return newForm;
 }
 function a(cb) {
     FormModel.remove({}, function () {
@@ -203,19 +159,57 @@ function a(cb) {
         stream.on('data', function (ninds) {
             stream.pause();
             if (ninds) {
-                FormModel.find({'ids.id': ninds.get('formId')}, function (err, existingForms) {
+                var formId = ninds.get('formId');
+                var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '').trim();
+                ninds.set('crfModuleGuideline', filterName);
+                FormModel.find({'ids.id': formId}, function (err, existingForms) {
                     if (err) throw err;
                     if (existingForms.length === 0) {
                         var newForm = createForm(ninds);
-                        var newFormObj = new FormModel(newForm);
-                        if (newForm === undefined)
-                            console.log('a');
-                        newFormObj.save(function (err) {
-                            if (err) {
-                                console.log(err);
-                                throw err;
-                            }
-                            stream.resume();
+                        console.log('start cde of form: ' + formId);
+                        var cdes = ninds.get('cdes');
+                        async.forEachSeries(cdes, function (cde, doneOneCDE) {
+                            var cdeId = cde.cdeId;
+                            mongo_cde.byOtherId('NINDS', cdeId, function (err, existingCde) {
+                                if (err) {
+                                    console.log(err + ' cdeId: ' + cdeId);
+                                    throw err;
+                                }
+                                var question = {
+                                    cde: {
+                                        tinyId: existingCde.tinyId,
+                                        name: existingCde.naming[0].designation,
+                                        version: existingCde.version,
+                                        permissibleValues: existingCde.valueDomain.permissibleValues,
+                                        ids: existingCde.ids
+                                    },
+                                    datatype: existingCde.valueDomain.datatype,
+                                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                                    datatypeText: existingCde.valueDomain.datatypeText,
+                                    uom: existingCde.valueDomain.uom,
+                                    answers: existingCde.valueDomain.permissibleValues,
+                                    multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected' ? true : false
+                                };
+                                var formElement = {
+                                    elementType: 'question',
+                                    instructions: {value: cde.instruction},
+                                    label: cde.questionText,
+                                    question: question,
+                                    formElements: []
+                                };
+                                newForm.formElements.push(formElement);
+                                doneOneCDE();
+                            });
+                        }, function doneAll() {
+                            console.log('finished all cdes in form ' + formId);
+                            var newFormObj = new FormModel(newForm);
+                            newFormObj.save(function (err) {
+                                if (err) {
+                                    console.log(err);
+                                    throw err;
+                                }
+                                stream.resume();
+                            });
                         });
                     } else if (existingForms.length === 1) {
                         var existingForm = existingForms[0];
