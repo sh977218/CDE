@@ -1,5 +1,6 @@
 angular.module('ElasticSearchResource')
     .factory('SearchSettings', function (localStorageService, $q, userResource) {
+        var version = 20160329;
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
 
@@ -10,7 +11,7 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "version": 20160329
+                "version": version
                 , "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
@@ -58,7 +59,7 @@ angular.module('ElasticSearchResource')
                 searchSettings = user.searchSettings;
             }
 
-            if (searchSettings.version!==20160329) searchSettings = searchSettingsFactory.getDefault();
+            if (searchSettings.version !== version) searchSettings = searchSettingsFactory.getDefault();
             searchSettingsFactory.deferred.resolve(searchSettings);
         });
         return this;
