@@ -427,7 +427,10 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({archived: null}).elemMatch("ids", {
+    DataElement.find({
+        archived: null,
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    }).elemMatch("ids", {
         source: source, id: id
     }).exec(function (err, cdes) {
         if (cdes.length > 1)
