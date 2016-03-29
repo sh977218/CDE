@@ -6,6 +6,10 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
     $scope.csvDownloadState = "none";
 
     $scope.exportSearchResults = function (type) {
+        if ($scope.module === 'form' && (!$scope.user || !$scope.user._id)) {
+            return $scope.Alert.addAlert("danger", "Please login to access this feature");
+        }
+
         try {
             !!new Blob;
         } catch (e) {
