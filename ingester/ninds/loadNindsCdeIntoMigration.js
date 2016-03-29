@@ -6,6 +6,7 @@ var async = require('async'),
     ;
 
 var nindsOrg = null;
+var newline = '<br>';
 
 function removeNewline(s) {
     return s.replace(/\n/g, '  ').trim();
@@ -95,7 +96,8 @@ function checkExistingProperties(existingProperties, newCde, ninds) {
         console.log('ninds._id: ' + ninds._id);
     }
     if (!existGuidelinesProperty && newCde.instruction && newCde.instruction.length > 0) {
-        existingGuidelinesProperties.value = existingGuidelinesProperties.value + ninds.get('formId') + '\n' + newCde.instruction + '\n';
+        var newGuidelinesProperty = ninds.get('formId') + newline + newCde.instruction + newline;
+        existingGuidelinesProperties.value = existingGuidelinesProperties.value + newGuidelinesProperty;
         console.log('added new guideline property: ' + newCde.cdeId);
         console.log('newCde crfModuleGuideline: ' + newCde.instruction);
         console.log('ninds._id: ' + ninds._id);
@@ -179,7 +181,7 @@ function createCde(cde, ninds) {
     var previousTitleProperty = {key: 'NINDS Previous Title', value: cde.previousTitle};
     var guidelinesProperty = {
         key: 'NINDS Guidelines',
-        value: ninds.get('formId') + '\n' + cde.instruction + '\n',
+        value: ninds.get('formId') + newline + cde.instruction + newline,
         valueFormat: 'html'
     };
     if (cde.previousTitle && cde.previousTitle.length > 0)
