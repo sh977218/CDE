@@ -12,9 +12,9 @@ var sdcExport = function(req, res, cde) {
         , registrationStatus: cde.registrationState.registrationStatus
         , creationDate: cde.created
         , lastChangeDate: cde.updated
-        , submittingOrganization: 'N/A'
-        , stewardOrganization: {name: cde.stewardOrg.name, contactName: 'N/A'}
-        , registrationOrganization: 'N/A'
+        , submittingOrganization: ''
+        , stewardOrganization: {name: cde.stewardOrg.name, contactName: ''}
+        , registrationOrganization: ''
         , valueDomain: {name: cde.valueDomain.name}
         , origin: cde.origin
         , valueSet: {id: cde.valueDomain.vsacOid, name: "see vsac", administrativeStatus: "see vsac", lastChangeDate: "see vsac"}

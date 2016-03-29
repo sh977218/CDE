@@ -509,7 +509,6 @@ exports.init = function (app, daoManager) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(types);
-                res.send(types);
             }
         });
     });
