@@ -36,7 +36,8 @@ public class NlmCdeBaseTest {
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
-    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
+    protected static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -116,7 +117,7 @@ public class NlmCdeBaseTest {
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
-            prefs.put("download.default_directory", "T:\\CDE\\downloads");
+            prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);
