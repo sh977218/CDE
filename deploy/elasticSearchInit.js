@@ -47,6 +47,17 @@ exports.createIndexJson = {
                 , "version": {"type": "string", "index": "no"}
             }
         }
+    }, settings: {
+        index: {
+            analysis: {
+                analyzer:{
+                    default: {
+                        type: 'snowball'
+                        , language: 'English'
+                    }
+                }
+            }
+        }
     }
 };
 
