@@ -3,14 +3,9 @@ package gov.nih.nlm.cde.test.valueDomain;
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class PvValidatorTest extends BaseClassificationTest {
-
-    public void addPv(String pv) {
-        addPv(pv, null, null);
-    }
 
     public void addPv(String pv, String name, String code) {
         addPv(pv, name, code, null);
@@ -45,18 +40,8 @@ public class PvValidatorTest extends BaseClassificationTest {
     @Test
     public void pvValidation() {
         mustBeLoggedInAs("selenium", password);
-        createBasicCde("PvValidatorCde", "Def for PV Validator", "SeleniumOrg", "Test Classif", "Sub Classif");
-
+        goToCdeByName("PvValidatorCde");
         clickElement(By.linkText("Permissible Values"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
-        clickElement(By.id("editDatatype"));
-        new Select(findElement(By.id("valueTypeSelect"))).selectByVisibleText("Value List");
-
-        addPv("pv1", "name1", "code1");
-        addPv("pv2", "name2", "code2");
-        addPv("pv3");
-        addPv("pv4");
-
         textNotPresent("There are validation errors");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
