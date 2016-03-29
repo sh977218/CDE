@@ -43,7 +43,6 @@ public class PvValidatorTest extends BaseClassificationTest {
         goToCdeByName("PvValidatorCde");
         clickElement(By.linkText("Permissible Values"));
         textNotPresent("There are validation errors");
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         changeField("pv-0", "pv2");
         textPresent("There are validation errors. Duplicate Permissible Value");
