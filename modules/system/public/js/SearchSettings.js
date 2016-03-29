@@ -10,7 +10,7 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "schemaVersion": 1
+                "version": 20160329
                 , "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
@@ -52,11 +52,13 @@ angular.module('ElasticSearchResource')
             if (user === "Not logged in.") {
             }
             else {
-                if (!user.searchSettings || user.searchSettings.version!==1) {
+                if (!user.searchSettings) {
                     user.searchSettings = searchSettingsFactory.getDefault();
                 }
                 searchSettings = user.searchSettings;
             }
+
+            if (searchSettings.version!==20160329) searchSettings = searchSettingsFactory.getDefault();
             searchSettingsFactory.deferred.resolve(searchSettings);
         });
         return this;

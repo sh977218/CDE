@@ -75,7 +75,8 @@ var users = [
 
 users.forEach(function(u) {
     u.searchSettings = {
-        "defaultSearchView": "accordion"
+        "version": 20160329
+        , "defaultSearchView": "accordion"
         , "lowestRegistrationStatus": "Incomplete"
         , "tableViewFields": {
             "name": true,
