@@ -18,27 +18,24 @@ conn.once('open', function callback() {
 
 var Form = conn.model('Form', form_schemas.formSchema);
 
-
-var stream = Form.find({'stewardOrg.name': 'NINDS', archived: null}).stream();
-
-function a() {
+function run() {
+    var stream = Form.find({'stewardOrg.name': 'NINDS', archived: null}).stream();
     stream.on('data', function (form) {
         stream.pause();
         var formId;
-        var rds = form.get('referenceDocuments');
-        var rd = rds[0];
-        var uri = rd.uri;
+        var uri = form.referenceDocuments[0].uri;
         var formIdArray = uri.match('/F[0-9]{0,4}');
         if (formIdArray && formIdArray.length > 0) {
-            formId = formIdArray[0].replace('/', '');
-            var id = {
-                id: formId,
+            form.ids.push({
+                id: formIdArray[0].replace('/', ''),
                 source: 'NINDS'
-            };
-            stream.resume();
+            });
+            form.save(function(err) {
+                if (err) throw err;
+                stream.resume();
+            });
         } else {
-            var formNames = form.get('naming');
-            var formName = formNames[0].designation;
+            var formName = form.naming[0].designation;
             NindsModel.find({
                 'crfModuleGuideline': formName,
                 'downloadLink': uri
@@ -49,23 +46,24 @@ function a() {
                     console.log('form._id:' + form.get('_id'));
                     process.exit(1);
                 } else if (existingForms.length === 1) {
-                    formId = existingForms[0].get('formId');
-                    var id = {
-                        id: formId,
+                    form.ids.push({
+                        id: existingForms[0].formId,
                         source: 'NINDS'
-                    };
-                    stream.resume();
+                    });
+                    form.save(function(err) {
+                        if (err) throw err;
+                        stream.resume();
+                    });
                 } else {
-                    var sameId = existingForms[0].get('formId');
-                    for (var i = 0; i < existingForms.length; i++) {
-                        var f = existingForms[i];
-                        if (sameId != f.get('formId')) {
+                    var sameId = existingForms[0].formId;
+                    existingForms.forEach(function(nForm, i) {
+                        if (sameId != nForm.formId) {
                             console.log('found multiple different formId for form:' + formName);
                             console.log('form._id:' + form.get('_id'));
                             console.log('index: ' + i);
                             process.exit(1);
                         }
-                    }
+                    });
                     stream.resume();
                 }
             })
@@ -73,4 +71,4 @@ function a() {
     });
 }
 
-a();
+run();
