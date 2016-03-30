@@ -18,6 +18,7 @@
                ng-click="interruptEvent($event); quickBoard.add(elt)">
                 <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                    role="link"></i></a>
+            <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
         </h4>
