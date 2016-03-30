@@ -1,64 +1,69 @@
-<div ng-controller="BatchUploadCtrl" ng-blur="tabLostFocus()">
+<div class="col-xs-12" ng-controller="BatchUploadCtrl" ng-blur="tabLostFocus()">
+    <div class="row" ng-show="loading">
+        <h4 class="col-xs-12 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h4>
+    </div>
 
-    <div ng-show="loading"><h4 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h4></div>
-
-    <div ng-if="!loading">
-        <div ng-if="!currentBatch">
+    <div class="row" ng-if="!loading">
+        <div class="col-xs-12" ng-if="!currentBatch">
             <h4>No Batch in progress</h4>
-            <button class="btn btn-default" ng-click="initBatch('caDSR')"> Start caDSR Batch</button>
-        </div>
-        <div ng-if="currentBatch">
-            <button class="btn btn-default" ng-click="abortBatch()"> Abort Batch Process</button>
-
             <hr>
-
+            <div class="col-xs-4">
+                <label for="selectSource">Select Source:</label>
+                <select id="selectSource" ng-model="source" ng-options="source as source for source in sources"
+                        ng-change="selectSource(source)"></select>
+            </div>
+            <div class="col-xs-4">
+                <label for="selectCollection">Select Collection:</label>
+                <select id="selectCollection" ng-model="collection"
+                        ng-options="collection as collection for collection in collections"
+                        ng-change="selectCollection(collection)"></select>
+            </div>
+            <div class="col-xs-4">
+                <button class="btn btn-default" ng-click="initBatch()"> Start {{source}} Batch</button>
+            </div>
+        </div>
+        <div class="col-xs-12" ng-if="currentBatch">
+            <button class="btn btn-default" ng-click="abortBatch()"> Abort Batch Process</button>
+            <hr>
             <h4>{{currentBatch.batchProcess}} Batch in Progress</h4>
             <div><b>Start time: </b> {{currentBatch.startTime}}</div>
             <div><b>Current Step: </b> {{currentBatch.step}}</div>
-            <div>{{migrationCdeCount}} cdes in migration</div>
-
+            <div>{{migrationCdeCount}} elements in migration</div>
             <hr>
-
             <h4>Current Step: {{currentBatch.step}}</h4>
-
         </div>
     </div>
-
-
     <hr>
-
-    <div ng-switch="currentBatch.step">
-        <div ng-switch-when="initiated">
+    <div class="row" ng-switch="currentBatch.step">
+        <div class="col-xs-12" ng-switch-when="initiated">
             <h4> Next Step - Load Migration Org</h4>
             <textarea rows="12" cols="80" ng-model="input.migrationOrg" ng-change="setValid()"/>
             <uib-alert type="danger" ng-show="input.error">{{input.error}}</uib-alert>
             <button ng-disabled="!input.valid" class="btn btn-default" ng-click="loadOrg()"> Load Org</button>
         </div>
 
-        <div ng-switch-when="orgLoaded">
+        <div class="col-xs-12" ng-switch-when="orgLoaded">
             <h4>Next Step - Load a batch file</h4>
             <input type="file" name="file" id="fileToUpload"
                    onchange="angular.element(this).scope().uploadFile(this.files[0])"/>
             <div ng-bind="progressPercentage"></div>
         </div>
 
-        <div ng-switch-when="migrationCdesLoaded">
+        <div class="col-xs-12" ng-switch-when="migrationCdesLoaded">
             <h4>Next Step - Begin Migration</h4>
             <button class="btn btn-default" ng-click="beginMigration()"> Begin Migration</button>
         </div>
 
-        <div ng-switch-when="loadInProgress">
+        <div class="col-xs-12" ng-switch-when="loadInProgress">
             <h4>Next Step - Wait for load to complete</h4>
-            or <button class="btn btn-default" ng-click="haltMigration()"><i class="fa fa-stop"></i> Halt</button>
-            <div ng-bind="currentBatch.logs" style="white-space: pre;"></div>
+            or
+            <button class="btn btn-default" ng-click="haltMigration()"><i class="fa fa-stop"></i> Halt</button>
+            <div class="batchLoad" ng-bind="currentBatch.logs"></div>
         </div>
 
-        <div ng-switch-when="batchComplete">
+        <div class="col-xs-12" ng-switch-when="batchComplete">
             <h4>Batch Complete</h4>
-            <div ng-bind="currentBatch.logs" style="white-space: pre;"></div>
+            <div class="batchLoad" ng-bind="currentBatch.logs"></div>
         </div>
-
-
     </div>
-
 </div>
