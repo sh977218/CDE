@@ -14,13 +14,4 @@ public class CdeNamingTest extends NamingTest {
         goToCdeSearch();
     }
 
-    @Test(priority = -1)
-    public void addRemoveEdit() {
-        addRemoveEditTest();
-    }
-
-    @Test
-    public void cdeReorderNaming() {
-        reorderNamingTest("cde for test cde reorder detail tabs");
-    }
 }

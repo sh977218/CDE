@@ -36,7 +36,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
             hoverOverElement(findElement(By.linkText("CDEs")));
             hangon(1);
             hoverOverElement(findElement(By.id("classifications-text-AECC")));
-            checkTooltipText(By.id("classifications-text-AECC"), "Albert Einstein Cancer Center");
+            textPresent("Albert Einstein Cancer Center");
         }
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
