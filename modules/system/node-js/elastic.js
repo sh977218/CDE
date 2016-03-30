@@ -375,6 +375,11 @@ exports.elasticsearch = function (query, type, cb) {
                 cb("Server Error");
             }
         } else {
+            if (response.hits.total === 0) {
+                console.log("No response. QUERY: " + JSON.stringify(query));
+                console.log("----")
+            }
+
             var result = {
                 totalNumber: response.hits.total
                 , maxScore: response.hits.max_score
