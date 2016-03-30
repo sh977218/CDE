@@ -493,8 +493,16 @@ var cj = new CronJob({
 cj.start();
 
 DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
+
+var statusCdeTinyId;
+
 exports.upsertStatusCde = function(cde, cb){
-    DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, cde, {upsert: true}, function(err, cde){
+    var query = statusCdeTinyId
+        ?{"tinyId": statusCdeTinyId}
+        :{"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")};
+
+    DataElement.update(query, cde, {upsert: true}, function(err, cde){
+        statusCdeTinyId = cde.tinyId;
         if (cb) cb(err, cde);
     });
 };

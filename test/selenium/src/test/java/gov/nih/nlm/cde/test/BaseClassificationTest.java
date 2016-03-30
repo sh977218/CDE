@@ -116,7 +116,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         goToCdeSearch();
         fillOutBasicCreateFields(name, definition, org, classification, subclassification);
         clickElement(By.id("submit"));
-//        hangon(6);
+        waitForESUpdate();
     }
 
     public void openClassificationAudit(String name) {
