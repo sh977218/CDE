@@ -427,17 +427,21 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({archived: null}).eleMatch("ids", {"source": source, "id": id}).exec(function (err, cdes) {
-        if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
+    DataElement.find({
+        archived: null,
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    }).elemMatch("ids", {
+        source: source, id: id
+    }).exec(function (err, cdes) {
+        if (cdes.length > 1)
+            cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
 };
 
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {
-        source: source,
-        id: id,
-        version: version
+    DataElement.find({archived: null}).elemMatch("ids", {
+        source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);

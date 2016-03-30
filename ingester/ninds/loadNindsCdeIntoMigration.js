@@ -2,12 +2,15 @@ var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
     DataElementModel = require('./createConnection').DataElementModel,
     OrgModel = require('./createConnection').OrgModel,
-    classificationShared = require('../../modules/system/shared/classificationShared'),
-    logger = require('./log')
+    classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-var counter = 0;
 var nindsOrg = null;
+var newline = '<br>';
+
+function removeNewline(s) {
+    return s.replace(/\n/g, '  ').trim();
+}
 
 function checkExistingNaming(existingNaming, newCde, ninds) {
     var existCdeName, existQuestionText;
@@ -73,55 +76,43 @@ function checkExistingIds(existingIds, newCde, ninds) {
         console.log('ninds._id: ' + ninds._id);
     }
 }
-function checkExistingInstructions(existingInstructions, newCde, ninds) {
-    var existInstruction;
-    existingInstructions.forEach(function (existingInstruction) {
-        if (existingInstruction.Disease === ninds.diseaseName && existingInstruction.instruction.value === newCde.instruction && newCde.instruction != 'No instructions available')
-            existInstruction = true;
-    });
-    if (!existInstruction && newCde.instruction && newCde.instruction.length > 0 && newCde.instruction != 'No instructions available') {
-        var newInstruction = {Disease: ninds.diseaseName, instruction: {value: newCde.instruction}};
-        existingInstructions.push(newInstruction);
-        console.log('added new instruction: ' + newCde.cdeId);
-        console.log('newCde instruction: ' + newCde.instruction);
-        console.log('ninds._id: ' + ninds._id);
-    }
-}
 function checkExistingProperties(existingProperties, newCde, ninds) {
     var existPreviousTitleProperty, existGuidelinesProperty;
+    var existingGuidelinesProperties;
     existingProperties.forEach(function (existingProperty) {
         if (existingProperty.key === 'NINDS Previous Title' && existingProperty.value === newCde.previousTitle)
             existPreviousTitleProperty = true;
-        if (existingProperty.key === 'NINDS Guidelines' && existingProperty.value === newCde.crfModuleGuideline)
-            existGuidelinesProperty = true;
+        if (existingProperty.key === 'NINDS Guidelines') {
+            existingGuidelinesProperties = existingProperty;
+            if (existingGuidelinesProperties.value.indexOf(ninds.get('formId')) != -1)
+                existGuidelinesProperty = true;
+        }
     });
     if (!existPreviousTitleProperty && newCde.previousTitle && newCde.previousTitle.length > 0) {
         var newPreviousTitleProperty = {key: 'NINDS Previous Title', value: newCde.previousTitle};
         existingProperties.push(newPreviousTitleProperty);
         console.log('added new previous title property: ' + newCde.cdeId);
-        console.log('newCde crfModuleGuideline: ' + newCde.crfModuleGuideline);
+        console.log('newCde crfModuleGuideline: ' + newCde.previousTitle);
         console.log('ninds._id: ' + ninds._id);
     }
-    if (!existGuidelinesProperty && newCde.crfModuleGuideline && newCde.crfModuleGuideline.length > 0) {
-        var newGuidelinesProperty = {key: 'NINDS Guidelines', value: newCde.crfModuleGuideline};
-        existingProperties.push(newGuidelinesProperty);
+    if (!existGuidelinesProperty && newCde.instruction && newCde.instruction.length > 0) {
+        var newGuidelinesProperty = ninds.get('formId') + newline + newCde.instruction + newline;
+        existingGuidelinesProperties.value = existingGuidelinesProperties.value + newGuidelinesProperty;
         console.log('added new guideline property: ' + newCde.cdeId);
-        console.log('newCde crfModuleGuideline: ' + newCde.crfModuleGuideline);
+        console.log('newCde crfModuleGuideline: ' + newCde.instruction);
         console.log('ninds._id: ' + ninds._id);
     }
 }
 function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds) {
     var existReferenceDocument;
     existingReferenceDocuments.forEach(function (existingReferenceDocument) {
-        if (newCde.reference !== 'No references available') {
-            if (existingReferenceDocument.title === newCde.reference)
-                existReferenceDocument = true;
-        }
+        if (existingReferenceDocument.title === removeNewline(newCde.reference) && newCde.reference !== 'No references available')
+            existReferenceDocument = true;
     });
     if (!existReferenceDocument && newCde.reference && newCde.reference.length > 0 && newCde.reference != 'No references available') {
         var newReferenceDocument = {
-            title: newCde.reference,
-            uri: newCde.reference.indexOf('http://www.') != -1 ? newCde.reference : ''
+            title: removeNewline(newCde.reference),
+            uri: ''
         };
         existingReferenceDocuments.push(newReferenceDocument);
         console.log('added new reference document: ' + newCde.cdeId);
@@ -138,10 +129,6 @@ function transferCde(existingCde, newCde, ninds) {
     var existingIds = existingCde.get('ids');
     checkExistingIds(existingIds, newCde, ninds);
 
-    // add newCde instruction if no instruction existing
-    var existingInstructions = existingCde.get('instructions');
-    checkExistingInstructions(existingInstructions, newCde, ninds);
-
     // add newCde property if no property existing
     var existingProperties = existingCde.get('properties');
     checkExistingProperties(existingProperties, newCde, ninds);
@@ -150,8 +137,6 @@ function transferCde(existingCde, newCde, ninds) {
     var existingReferenceDocuments = existingCde.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
-    if (!newCde.classification.length || newCde.classification.length === 0)
-        console.log('x');
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
 }
 
@@ -192,23 +177,22 @@ function createCde(cde, ninds) {
     if (cde.aliasesForVariableName && cde.aliasesForVariableName.length > 0)
         ids.push(nindsVariableAliasId);
 
-    var instructions = [];
-    var instruction = {Disease: ninds.diseaseName, instruction: {value: cde.instruction}};
-    if (cde.instruction && cde.instruction.length > 0)
-        instructions.push(instruction);
-
     var properties = [];
     var previousTitleProperty = {key: 'NINDS Previous Title', value: cde.previousTitle};
-    var guidelinesProperty = {key: 'NINDS Guidelines', value: cde.crfModuleGuideline};
+    var guidelinesProperty = {
+        key: 'NINDS Guidelines',
+        value: ninds.get('formId') + newline + cde.instruction + newline,
+        valueFormat: 'html'
+    };
     if (cde.previousTitle && cde.previousTitle.length > 0)
         properties.push(previousTitleProperty);
-    if (cde.crfModuleGuideline && cde.crfModuleGuideline.length > 0)
+    if (cde.instruction && cde.instruction.length > 0)
         properties.push(guidelinesProperty);
 
     var referenceDocuments = [];
     var referenceDocument = {
-        title: cde.reference,
-        uri: cde.reference.indexOf('http://www.') != -1 ? cde.reference : ''
+        title: removeNewline(cde.reference),
+        uri: (cde.reference.indexOf('http://www.') != -1 || cde.reference.indexOf('https://www.') != -1) ? cde.reference : ''
     };
     if (referenceDocument.title && referenceDocument.title.length > 0 && referenceDocument.title != 'No references available')
         referenceDocuments.push(referenceDocument);
@@ -285,16 +269,57 @@ function createCde(cde, ninds) {
             }]
         }]
     };
-    var diseaseElement = {
-        name: 'Disease',
-        elements: [{
-            "name": ninds.get('diseaseName'),
-            "elements": [{
-                "name": ninds.get('subDiseaseName'),
-                "elements": []
+    var diseaseElement;
+    if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
+        diseaseElement = {
+            name: 'Disease',
+            elements: [{
+                "name": ninds.get('diseaseName'),
+                "elements": [{
+                    "name": ninds.get('subDiseaseName'),
+                    "elements": [{
+                        "name": 'Classification',
+                        "elements": [{
+                            "name": cde.classification,
+                            "elements": []
+                        }]
+                    }, {
+                        "name": 'Domain',
+                        "elements": [{
+                            "name": cde.domain,
+                            "elements": [{
+                                "name": cde.subDomain,
+                                "elements": []
+                            }]
+                        }]
+                    }]
+                }]
             }]
-        }]
-    };
+        };
+    } else {
+        diseaseElement = {
+            name: 'Disease',
+            elements: [{
+                "name": ninds.get('diseaseName'),
+                "elements": [{
+                    "name": 'Classification',
+                    "elements": [{
+                        "name": cde.classification,
+                        "elements": []
+                    }]
+                }, {
+                    "name": 'Domain',
+                    "elements": [{
+                        "name": cde.domain,
+                        "elements": [{
+                            "name": cde.subDomain,
+                            "elements": []
+                        }]
+                    }]
+                }]
+            }]
+        };
+    }
     elements.push(populationElement);
     elements.push(domainElement);
     elements.push(diseaseElement);
@@ -308,7 +333,6 @@ function createCde(cde, ninds) {
         naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,
-        instructions: instructions,
         properties: properties,
         valueDomain: valueDomain,
         classification: classification
@@ -358,7 +382,8 @@ function a(cb) {
 
                                 var newCde = createCde(cde, ninds);
                                 var newCdeObj = new DataElementModel(newCde);
-                                newCdeObj.save(function () {
+                                newCdeObj.save(function (err) {
+                                    if (err) throw err;
                                     doneOneCde();
                                 });
                             } else if (existingCdes.length === 1) {
