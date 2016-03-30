@@ -5,7 +5,7 @@ var fs = require('fs'),
     config = require('../modules/system/node-js/parseConfig'),
     form_schemas = require('../modules/form/node-js/schemas'),
     sys_schemas = require('../modules/system/node-js/schemas'),
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    mongo_form = require('../modules/form/node-js/mongo-form'),
     cdesvc = require('../modules/cde/node-js/cdesvc'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     updateShare = require('./updateShare')
@@ -37,8 +37,8 @@ migrationConn.once('open', function callback() {
 });
 
 
-var Form = conn.model('DataElement', form_schemas.formSchema);
-var MigrationForm = migrationConn.model('DataElement', form_schemas.formSchema);
+var Form = conn.model('Form', form_schemas.formSchema);
+var MigrationForm = migrationConn.model('Form', form_schemas.formSchema);
 
 var Org = conn.model('Org', sys_schemas.orgSchema);
 var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
@@ -86,9 +86,9 @@ var processForm = function (migrationForm, existingForm, orgName, processFormCb)
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
         newForm._id = existingForm._id;
         try {
-            mongo_cde.update(newForm, {username: "batchloader"}, function (err) {
+            mongo_form.update(newForm, {username: "batchloader"}, function (err) {
                 if (err) {
-                    console.log("Cannot save CDE.");
+                    console.log("Cannot save Form.");
                     console.log(newForm);
                     throw err;
                 }
