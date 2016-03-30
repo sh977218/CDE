@@ -133,7 +133,8 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
 
     mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
         setTimeout(function() {
-            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,""), function (error, response, bodyStr) {
+            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,""),
+                function (error, response, bodyStr) {
                 var errorToLog = {
                     origin: "cde.status.checkElasticUpdating"
                     , stack: new Error().stack

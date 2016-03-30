@@ -25,7 +25,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
             };
         }
         , generalSearchQuery: function(settings, type, cb) {
-            var elastic = this; 
+            var elastic = this;
             $http.post("/elasticSearch/" + type, settings)
                     .success(function (response) {
                         elastic.highlightResults(response[type + 's']);
