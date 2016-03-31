@@ -1,20 +1,7 @@
 angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval', '$upload',
     function($scope, $http, $interval, $upload)
 {
-
-    $scope.source;
-    $scope.sources = ['caDSR','NINDS'];
-    $scope.collection;
-    $scope.collections = ['DataElement','Form'];
-
     $scope.input = {};
-
-    $scope.selectSource = function(s){
-        $scope.source = s;
-    };
-    $scope.selectCollection = function(c){
-        $scope.collection = c;
-    };
 
     $scope.tabLostFocus = function() {
         console.log("lost foc");
