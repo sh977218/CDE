@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('UploadToMigrationCtrl', ['$scope', '$http', '$interval', '$upload',
+angular.module('systemModule').controller('UploadInToMigrationCtrl', ['$scope', '$http', '$interval', '$upload',
     function ($scope, $http, $interval, $upload) {
 
         $scope.collection = '';
@@ -11,7 +11,7 @@ angular.module('systemModule').controller('UploadToMigrationCtrl', ['$scope', '$
         $scope.uploadFile = function (file) {
             $upload.upload({
                 url: '/uploadInToMigration',
-                fields: {collection: collection},
+                fields: {collection: $scope.collection},
                 file: file,
                 fileFormDataName: "migrationBsonJson"
             }).progress(function (evt) {
