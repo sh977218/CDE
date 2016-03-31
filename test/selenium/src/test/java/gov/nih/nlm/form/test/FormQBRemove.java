@@ -9,12 +9,12 @@ public class FormQBRemove extends NlmCdeBaseTest {
     @Test
     public void formQuickBoardRemove() {
         addFormToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
-        addFormToQuickBoard("Hand Held Dynamometry");
+        addFormToQuickBoard("Grooved Pegboard Test");
         goToQuickBoardByModule("form");
         textPresent("Hamilton Anxiety Rating Scale (HAM-A)");
-        textPresent("Hand Held Dynamometry");
+        textPresent("Grooved Pegboard Test");
         findElement(By.id("remove_1"));
-        textNotPresent("Hand Held Dynamometry");
+        textNotPresent("Grooved Pegboard Test");
         textPresent("Hamilton Anxiety Rating Scale (HAM-A)");
     }
 
