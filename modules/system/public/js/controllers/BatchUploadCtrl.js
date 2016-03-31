@@ -1,6 +1,7 @@
 angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval', '$upload',
     function($scope, $http, $interval, $upload)
 {
+    
     $scope.input = {};
 
     $scope.tabLostFocus = function() {
@@ -52,8 +53,8 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
         initPage();
     });
 
-    $scope.initBatch = function() {
-        $http.post('/initBatch', {batchProcess: $scope.source}).then(function(response) {
+    $scope.initBatch = function(type) {
+        $http.post('/initBatch', {batchProcess: type}).then(function(response) {
             $scope.currentBatch = response.data;
         });
     };
