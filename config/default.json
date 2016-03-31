@@ -109,7 +109,6 @@
   },
   "modules": {
     "forms": {
-      "editable": true,
       "attachments": true,
       "comments": true,
       "sectionLevels": 10,

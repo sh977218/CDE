@@ -9,12 +9,6 @@ db.articles.remove({});
 db.fs.files.remove({});
 db.fs.chunks.remove({});
 
-var defaultBoard = {
-    name: "default"
-    , shareStatus: "Private"
-    , pins: []
-};
-
 var users = [
     {
         username: 'nlm',
@@ -24,10 +18,10 @@ var users = [
         viewHistory: [],
         email: "admin@email.com"
     }
-    , {username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
+    , {username: 'cabigAdmin', password: 'pass', orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'userToPromote', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'reguser', password: 'pass', quota: 1073741824, viewHistory: []}
-    , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
+    , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'ctepOnlyCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com",
@@ -44,7 +38,7 @@ var users = [
     , {username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []}
     , {username: 'classMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
     , {username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []}
-    , {username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: []}
+    , {username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'acrin', password: 'pass', orgCurator: ["ACRIN"], orgAdmin: [], quota: 1073741824, viewHistory: []}
     , {username: 'grdr', password: 'pass', orgCurator: [], orgAdmin: ["GRDR"], quota: 1073741824, viewHistory: []}
     , {username: 'eyegene', password: 'pass', orgCurator: [], orgAdmin: ["EyeGene"], quota: 1073741824, viewHistory: []}
@@ -59,16 +53,22 @@ var users = [
     , {username: 'CommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
     , {username: 'CommentUser2', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
     , {username: 'FormCommentUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
-    , {username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["CommentReviewer"], email: "admin@email.com"}
-    , {username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["AttachmentReviewer"], email: "admin@email.com"}
+    , {username: 'commentEditor', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
+        , roles: ["CommentReviewer"], email: "admin@email.com"}
+    , {username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
+        , roles: ["AttachmentReviewer"], email: "admin@email.com"}
     , {username: 'ctep_fileCurator', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'tableViewUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
-    , {username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
-    , {username: 'selenium', password: 'pass', orgAdmin: [], orgCurator: ["SeleniumOrg"], quota: 1073741824, viewHistory: []}
+    , {username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824
+        , viewHistory: []}
+    , {username: 'selenium', password: 'pass', orgAdmin: [], orgCurator: ["SeleniumOrg"], quota: 1073741824, viewHistory: []
+        , roles: ["FormEditor"]}
     , {username: 'pinAllBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []}
-    , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
+    , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []
+        , roles: ["BoardPublisher"]}
     , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: []}
-    , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
+    , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
+        , roles: ["OrgAuthority"]}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
     , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
 ];
