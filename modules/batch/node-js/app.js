@@ -138,4 +138,30 @@ exports.init = function(app) {
         });
     });
 
+
+
+
+
+    app.post("/uploadInToMigration", multer(), function(req, res) {
+        spawned = child_process.spawn('mongorestore', ['--username', config.database.migration.username
+            , "--password", config.database.migration.password
+            , "-d", config.database.migration.db
+            , "-c", req.body.collection, req.files.migrationBsonJson.path], {stdio: 'inherit'}
+        );
+
+        spawned.on('error', function(err) {
+            console.log('error: '+err);
+        });
+
+        spawned.on('data', function(data) {
+            console.log('data: '+data);
+        });
+
+        spawned.on('exit', function() {
+            fs.unlink(req.files.migrationBsonJson.path);
+        });
+        res.send("OK");
+    });
+
+
 };
