@@ -1,7 +1,6 @@
 angular.module('systemModule').controller('UploadInToMigrationCtrl', ['$scope', '$http', '$interval', '$upload',
     function ($scope, $http, $interval, $upload) {
 
-        $scope.collection = '';
         $scope.collections = ['NINDS', 'test'];
 
         $scope.selectCollection = function (c) {
@@ -9,6 +8,10 @@ angular.module('systemModule').controller('UploadInToMigrationCtrl', ['$scope', 
         };
 
         $scope.uploadFile = function (file) {
+            if (!$scope.collection) {
+                $scope.error = "unknown collection.";
+                return;
+            }
             $upload.upload({
                 url: '/uploadInToMigration',
                 fields: {collection: $scope.collection},
@@ -20,6 +23,16 @@ angular.module('systemModule').controller('UploadInToMigrationCtrl', ['$scope', 
                 delete $scope.progressPercentage;
                 $scope.addAlert("success", "Upload Complete");
             });
+            updateMigrationInfo($scope.collection);
         };
 
+        var migUpdatePromise;
+
+        function updateMigrationInfo(c) {
+            $scope.migrationCount = "...";
+            $http.get("/migrationCount/" + c).then(function (response) {
+                if ($scope.migrationCdeCount === response.data) $interval.cancel(migUpdatePromise);
+                $scope.migrationCount = response.data;
+            });
+        }
     }]);
