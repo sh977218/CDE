@@ -7,12 +7,11 @@ var async = require('async'),
     ;
 
 function checkExistingNaming(existingNaming, ninds) {
-    var crfModuleGuideline = ninds.get('crfModuleGuideline');
-    var description = ninds.get('description');
+    var crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
+    var description = ninds.get('description').trim();
     var existFormName;
     existingNaming.forEach(function (existingName) {
-        if (existingName.designation === crfModuleGuideline && crfModuleGuideline.length > 0
-            && existingName.definition === description && description.length > 0)
+        if (existingName.designation.trim() === crfModuleGuideline && existingName.definition.trim() === description)
             existFormName = true;
     });
     if (!existFormName && crfModuleGuideline.length > 0) {
@@ -24,14 +23,14 @@ function checkExistingNaming(existingNaming, ninds) {
         existingNaming.push(newFormName);
         console.log('added new form name to form id: ' + ninds.get('formId'));
         console.log('new formName: ' + crfModuleGuideline);
-        console.log('ninds._id: ' + ninds._id);
+        console.log('ninds._id: ' + ninds.id);
     }
 }
 function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
-    var downloadLink = ninds.get('downloadLink');
+    var downloadLink = ninds.get('downloadLink').trim();
     var existReferenceDocument;
     existingReferenceDocuments.forEach(function (existingReferenceDocument) {
-        if (existingReferenceDocument.uri === downloadLink)
+        if (existingReferenceDocument.uri.trim() === downloadLink)
             existReferenceDocument = true;
     });
     if (!existReferenceDocument && downloadLink && downloadLink.length > 0) {
@@ -41,7 +40,7 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
         existingReferenceDocuments.push(newReferenceDocument);
         console.log('added new reference document: ' + ninds.get('formId'));
         console.log('newCde reference: ' + downloadLink);
-        console.log('ninds._id: ' + ninds._id);
+        console.log('ninds._id: ' + ninds.id);
     }
 }
 function transferForm(existingForm, ninds) {
@@ -60,7 +59,7 @@ function createForm(ninds) {
     var formId = ninds.get('formId');
     var naming = [];
     var formName = {
-        designation: ninds.get('crfModuleGuideline'), definition: ninds.get('description'),
+        designation: ninds.get('crfModuleGuideline').trim(), definition: ninds.get('description').trim(),
         languageCode: "EN-US",
         context: {
             contextName: "Health",
