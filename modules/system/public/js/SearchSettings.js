@@ -1,5 +1,5 @@
 angular.module('ElasticSearchResource')
-    .factory('SearchSettings', function (localStorageService, $q, userResource) {
+    .factory('SearchSettings', function (localStorageService, $q, userResource, $timeout) {
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
 
