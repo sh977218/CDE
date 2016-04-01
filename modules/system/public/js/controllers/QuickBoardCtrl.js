@@ -8,11 +8,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.defaultQuickBoard = localStorageService.get("defaultQuickBoard");
             $scope.showSideBySideView = false;
 
-            $scope.removeElt = function (index, $event) {
-                $event.stopPropagation();
-                QuickBoard.remove(index);
-            };
-
             $scope.openCloseAll = function (elts, type) {
                 for (var i = 0; i < elts.length; i++) {
                     elts[i].isOpen = $scope.openCloseAllModel[type];
@@ -73,6 +68,12 @@ angular.module('cdeModule').controller('CdeQuickBoardCtrl',
             $scope.cdes = QuickBoard.elts;
             $scope.elts = $scope.cdes;
             $scope.includeInButton = [];
+
+            $scope.removeElt = function (index, $event) {
+                $event.stopPropagation();
+                QuickBoard.remove(index);
+            };
+
         }]);
 
 angular.module('cdeModule').controller('FormQuickBoardCtrl',
@@ -83,4 +84,10 @@ angular.module('cdeModule').controller('FormQuickBoardCtrl',
             $scope.forms = FormQuickBoard.elts;
             $scope.elts = $scope.forms;
             $scope.includeInButton = [];
+
+            $scope.removeElt = function (index, $event) {
+                $event.stopPropagation();
+                FormQuickBoard.remove(index);
+            };
+
         }]);

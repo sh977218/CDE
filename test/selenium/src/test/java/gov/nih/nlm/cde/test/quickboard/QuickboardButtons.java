@@ -40,4 +40,5 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
         textPresent("NCI Thesaurus");
-    }}
+    }
+}
