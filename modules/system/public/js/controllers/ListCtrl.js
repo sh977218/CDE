@@ -180,16 +180,16 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
-    $scope.reload = function (type) {
-        $log.debug("reloading search");
-        $log.debug($scope.searchSettings);
+    $scope.reload = function(type) {
+        userResource.getPromise().then(function () {
+            reload(type);
+        })
+    };
+
+    var reload = reload = function (type) {
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
-        if (!userResource.user) {
-            $log.debug("no user");
-            return;
-        }
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);

@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormQuickBoardTest1 extends NlmCdeBaseTest {
+public class FormSideBySide extends NlmCdeBaseTest {
 
     @Test
     public void formMoreElementsNoSideBySideCompare() {
@@ -27,7 +27,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
     }
 
     @Test
-    public void cdeLessElementsNoSideBySideCompare() {
+    public void formLessElementsNoSideBySideCompare() {
         mustBeLoggedOut();
         addFormToQuickBoard("Family History - SMA");
         textPresent("Quick Board (1)");
@@ -41,17 +41,6 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
         textPresent("You may only compare 2 elements side by side.");
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");
-    }
-
-    @Test
-    public void doubleElementedQuickboard(){
-        addFormToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
-        addFormToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
-        textPresent("Quick Board (2)");
-        goToQuickBoardByModule("form");
-        clickElement(By.id("qb_form_compare"));
-        textPresent("Baseline Attempt Time #1 Total Time");
-        textPresent("Contains data elements which rate the severity of the participant/subject's level of anxiety. (Examples of CDEs included: Anxious mood; Tension; Fears; etc.)");
     }
 
 }
