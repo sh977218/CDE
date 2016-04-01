@@ -100,7 +100,7 @@ public class NlmCdeBaseTest {
         }
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {
@@ -156,6 +156,11 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
+    }
+
+    @AfterMethod
+    public void endSession() {
+        driver.quit();
     }
 
     @AfterMethod
@@ -381,11 +386,6 @@ public class NlmCdeBaseTest {
                 findElement(by).click();
             }
         }
-    }
-
-    @AfterTest
-    public void endSession() {
-        driver.quit();
     }
 
     public void waitForESUpdate() {
