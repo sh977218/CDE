@@ -14,13 +14,9 @@ var migrationConn = connHelper.establishConnection(config.database.migration);
 
 var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
 var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
-var MigrationTest = migrationConn.model('Test', new mongoose.Schema({}, {
-    strict: false,
-    collection: 'test'
-}));
 
 var batchSchema = new mongoose.Schema({
-        batchProcess: {type: String, enum: ['caDSR', 'NINDS']},
+        batchProcess: {type: String, enum: ['caDSR']},
         step: {
             type: String
             , enum: ['initiated', 'orgLoaded', 'migrationCdesLoaded', 'loadInProgress', 'batchComplete']
@@ -144,32 +140,4 @@ exports.init = function (app) {
         });
     });
 
-
-    app.post("/uploadInToMigration", multer(), function (req, res) {
-        spawned = child_process.spawn('mongorestore', ['--username', config.database.migration.username
-            , "--password", config.database.migration.password
-            , "-d", config.database.migration.db
-            , "-c", req.body.collection, req.files.migrationBsonJson.path], {stdio: 'inherit'}
-        );
-
-        spawned.on('error', function (err) {
-            console.log('error: ' + err);
-        });
-
-        spawned.on('data', function (data) {
-            console.log('data: ' + data);
-        });
-
-        spawned.on('exit', function () {
-            fs.unlink(req.files.migrationBsonJson.path);
-        });
-        res.send("OK");
-    });
-
-    app.get("/migrationCount/:c", authorization.checkSiteAdmin, function (req, res) {
-        MigrationTest.count({}, function (err, count) {
-            if (err) return res.status(500).send(err);
-            return res.send("" + count);
-        })
-    });
 };
