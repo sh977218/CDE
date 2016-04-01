@@ -28,8 +28,8 @@ conn.once('open', function callback() {
 });
 
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
-migrationConn.on('error', console.error.bind(console, 'migration connection error:'));
-migrationConn.on('error', function () {
+migrationConn.on('error', function (err) {
+    console.log('migration connection error:' + err);
     process.exit(1);
 });
 migrationConn.once('open', function callback() {
@@ -47,12 +47,9 @@ var changed = 0;
 var created = 0;
 var createdForm = [];
 var same = 0;
+var source = 'NINDS';
 
-setInterval(function () {
-    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-}, 10000);
-
-var processForm = function (migrationForm, existingForm, orgName, processFormCb) {
+function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy
     var newForm = existingForm.toObject();
     delete newForm._id;
@@ -94,6 +91,7 @@ var processForm = function (migrationForm, existingForm, orgName, processFormCb)
                 }
                 else migrationForm.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
+                    console.log('------------------------------\n');
                     processFormCb();
                     changed++;
                 });
@@ -111,109 +109,66 @@ var processForm = function (migrationForm, existingForm, orgName, processFormCb)
 };
 
 
-var findForm = function (formId, migrationForm, source, orgName, idv, findFormDone) {
+function findForm(formId, migrationForm, source, orgName, idv, findFormDone) {
     var formCond = {
         archived: null,
-        source: source,
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: importDate}
     };
-    DataElement.find(formCond)
+    Form.find(formCond)
         .where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(formId);
     }).exec(function (err, existingForms) {
         if (err) throw err;
         if (existingForms.length === 0) {
-            console.log('not found: ' + formId);
             //delete migrationForm._id;
             var mForm = JSON.parse(JSON.stringify(migrationForm.toObject()));
             delete mForm._id; //use mForm below!!!
             var createForm = new Form(mForm);
             createForm.imported = importDate;
             createForm.created = importDate;
-            try {
-                createForm.save(function (err) {
+            createForm.save(function (err) {
+                if (err) {
+                    console.log("Unable to create Form." + mForm);
+                    process.exit(1);
+                }
+                console.log('\n------------------------------');
+                console.log('created new form with formId ' + formId);
+                created++;
+                createdForm.push(formId);
+                migrationForm.remove(function (err) {
                     if (err) {
-                        console.log("Unable to create Form.");
-                        console.log(mForm);
-                        console.log(createForm);
-                        throw err;
+                        console.log("unable to remove form from migration: " + err);
+                        process.exit(1);
                     }
-                    else {
-                        created++;
-                        createdForm.push(cdeId);
-                        migrationForm.remove(function (err) {
-                            if (err) console.log("unable to remove: " + err);
-                            else findFormDone();
-                        });
-                    }
+                    console.log('removed form from migration, formId ' + formId);
+                    console.log('------------------------------\n');
+                    findFormDone();
                 });
-            } catch (e) {
-                console.log(createForm);
-                console.log(mForm);
-                throw e;
-            }
-        } else if (existingForms.length > 1) {
-            //console.log("Too many Forms with Id = " + formId);
-            Form.find(formCond)
-                .where("ids").elemMatch(function (elem) {
-                elem.where("source").equals(source);
-                elem.where("id").equals(formId);
-                elem.where("version").equals(idv);
-            }).exec(function (err, existingForms) {
-                if (existingForms.length === 1) {
-                    processForm(migrationForm, existingForms[0], orgName, findFormDone);
-                }
-                else if (existingForms.length > 1) {
-                    console.log(formId);
-                    console.log(source);
-                    console.log(idv);
-                    throw "Too many Forms with the same ID/version.";
-                } else {
-                    throw "Too many Form with same ID but there is a new version. Need to implement this.";
-                }
             });
-
+        } else if (existingForms.length === 1) {
+            same++;
+            console.log('\n------------------------------');
+            console.log('found 1 form. process form, tinyId ' + existingForms[0].tinyId);
+            processForm(migrationForm, existingForms[0], orgName, findFormDone);
         } else {
+            same++;
+            console.log('\n------------------------------');
+            console.log('found ' + existingForms.length + ' forms. process first form, tinyId ' + existingForms[0].tinyId);
+            console.log('other forms tinyId are:');
+            for (var j = 1; j < existingForms.length; j++)
+                console.log(existingForms[j].tinyId);
             processForm(migrationForm, existingForms[0], orgName, findFormDone);
         }
     });
 };
-var migStream;
-
-var streamOnData = function (migrationForm) {
-    migStream.pause();
-    classificationShared.sortClassification(migrationForm);
-    var source = migrationForm.source;
-    var orgName = migrationForm.stewardOrg.name;
-    var formId = 0;
-    var version;
-    for (var i = 0; i < migrationForm.ids.length; i++) {
-        if (migrationForm.ids[i].source === source) {
-            formId = migrationForm.ids[i].id;
-            version = migrationForm.ids[i].version;
-        }
-    }
-
-    if (formId !== 0) {
-        findForm(formId, migrationForm, source, orgName, version, function () {
-            migStream.resume();
-        });
-    } else {
-        // No Form.
-        console.log("Form with no ID. !! tinyId: " + migrationForm.tinyId);
-        migStream.resume();
-    }
-};
-
-
-var streamOnClose = function () {
+function streamOnClose() {
 
     // Retire Missing CDEs
     Form.where({
         imported: {$ne: importDate},
-        source: cdeSource
+        'stewardOrg.name': source
     }).update({
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
@@ -228,6 +183,7 @@ var streamOnClose = function () {
                 theOrg.classifications = org.classifications;
                 theOrg.save(function (err) {
                     if (err) console.log("Error saving Org " + err);
+                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
                 });
             });
         });
@@ -241,10 +197,37 @@ var streamOnClose = function () {
 };
 
 
-var doStream = function () {
-    migStream = MigrationForm.find().stream();
+function run() {
+    var migStream = MigrationForm.find().stream();
+    migStream.on('data', function (migrationForm) {
+        migStream.pause();
+        classificationShared.sortClassification(migrationForm);
+        var orgName = migrationForm.stewardOrg.name;
+        var formIdCounter = 0;
+        var formId = 0;
+        var version;
+        for (var i = 0; i < migrationForm.ids.length; i++) {
+            if (migrationForm.ids[i].source === source) {
+                formId = migrationForm.ids[i].id;
+                version = migrationForm.ids[i].version;
+                formIdCounter++;
+            }
+        }
+        if (formIdCounter > 1) {
+            console.log('found multiple ID with source ' + source + ' in formId:' + formId);
+            process.exit(1);
+        }
 
-    migStream.on('data', streamOnData);
+        if (formId !== 0) {
+            findForm(formId, migrationForm, source, orgName, version, function () {
+                migStream.resume();
+            });
+        } else {
+            // No Form.
+            console.log('Form with no ID with source ' + source + '. tinyId: ' + migrationForm.tinyId);
+            process.exit(1);
+        }
+    });
 
     migStream.on('error', function () {
         console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
@@ -253,4 +236,4 @@ var doStream = function () {
     migStream.on('close', streamOnClose);
 };
 
-doStream();
+run();

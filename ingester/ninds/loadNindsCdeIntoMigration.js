@@ -338,7 +338,7 @@ function createCde(cde, ninds) {
         classification: classification
     };
 }
-function a(cb) {
+function run(cb) {
     async.series([
         function (cb) {
             DataElementModel.remove({}, function () {
@@ -420,4 +420,4 @@ function a(cb) {
     ]);
 }
 
-a();
+run();

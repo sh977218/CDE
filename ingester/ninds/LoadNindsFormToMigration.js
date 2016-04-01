@@ -70,7 +70,7 @@ function createForm(ninds) {
 
     var ids = [];
     var crfId = {
-        source: 'CRF Id',
+        source: 'NINDS',
         id: formId,
         'version': ninds.get('versionNum').length > 0 ? Number(ninds.get('versionNum')).toString() : ''
     };
@@ -143,7 +143,6 @@ function createForm(ninds) {
         isCopyrighted: ninds.get('copyRight'),
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
-        version: Number(ninds.get('versionNum')).toString(),
         naming: naming,
         referenceDocuments: referenceDocuments,
         ids: ids,
@@ -152,7 +151,7 @@ function createForm(ninds) {
     };
     return newForm;
 }
-function a(cb) {
+function run(cb) {
     FormModel.remove({}, function () {
         var stream = NindsModel.find({}).stream();
         stream.on('data', function (ninds) {
@@ -241,4 +240,4 @@ function a(cb) {
     })
 }
 
-a();
+run();

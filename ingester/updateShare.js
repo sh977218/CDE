@@ -1,4 +1,5 @@
-var cdesvc = require('../modules/cde/node-js/cdesvc')
+var cdesvc = require('../modules/cde/node-js/cdesvc'),
+    classificationShared = require('../modules/system/shared/classificationShared')
     ;
 
 exports.wipeUseless = function (toWipeForm) {
@@ -11,7 +12,8 @@ exports.wipeUseless = function (toWipeForm) {
     delete toWipeForm.comments;
     delete toWipeForm.registrationState;
     delete toWipeForm.tinyId;
-    delete toWipeForm.valueDomain.datatypeValueList;
+    if (toWipeForm.valueDomain)
+        delete toWipeForm.valueDomain.datatypeValueList;
 };
 
 

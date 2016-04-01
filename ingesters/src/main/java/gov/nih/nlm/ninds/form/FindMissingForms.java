@@ -21,9 +21,11 @@ public class FindMissingForms implements Runnable {
     String url;
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
+    String diseaseName;
 
-    FindMissingForms(String url, MongoOperations mongoOperation) {
+    FindMissingForms(String disease, String url, MongoOperations mongoOperation) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
+        this.diseaseName = disease;
         this.url = url;
         this.mongoOperation = mongoOperation;
     }
@@ -101,6 +103,7 @@ public class FindMissingForms implements Runnable {
                     getCdes(form, cdeLinks.get(0));
                 }
                 form.setCreateDate(new Date());
+                form.setDiseaseName(this.diseaseName);
                 log.info.add("found form on web:" + form);
                 log.info.add(formId);
                 mongoOperation.save(form);

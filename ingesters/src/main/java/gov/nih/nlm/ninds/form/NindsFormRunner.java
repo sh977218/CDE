@@ -50,7 +50,7 @@ public class NindsFormRunner {
         Iterator it = diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation);
+            Runnable worker = new FindMissingForms(pair.getKey().toString(), "https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation);
             executor.execute(worker);
         }
         executor.shutdown();
