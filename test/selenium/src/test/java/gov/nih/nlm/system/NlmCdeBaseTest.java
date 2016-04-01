@@ -170,6 +170,7 @@ public class NlmCdeBaseTest {
     }
 
     @BeforeMethod
+    @AfterMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
