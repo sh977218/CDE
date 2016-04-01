@@ -1,0 +1,24 @@
+<div class='col-xs-12' ng-controller="UploadInToMigrationCtrl">
+    <div class="col-xs-12">
+        <div class="col-xs-12" ng-bind="error"></div>
+        <h4 class="text-center">Load Bson/Json into Migration</h4>
+        <div class="col-xs-12">
+            <div class="col-xs-6">
+                <label for="selectCollection">Select Collection:</label>
+                <select id="selectCollection" ng-model="collection"
+                        ng-options="collection as collection for collection in collections"
+                        ng-change="selectCollection(collection)"></select>
+            </div>
+            <div class="col-xs-6">
+                <label for="migrationFileToUpload">Select File:</label>
+                <input type="file" name="file" id="migrationFileToUpload"
+                       onchange="angular.element(this).scope().uploadFile(this.files[0])"/>
+                <div ng-bind="progressPercentage">aaa</div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <label for="collectionCount">Count:</label>
+            <span id="collectionCount" ng-bind="migrationCount"></span>
+        </div>
+    </div>
+</div>
