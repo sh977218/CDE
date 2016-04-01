@@ -141,6 +141,7 @@ function createForm(ninds) {
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
         isCopyrighted: ninds.get('copyRight'),
+        noRenderAllowed: ninds.get('copyRight'),
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
         naming: naming,
@@ -166,6 +167,13 @@ function run(cb) {
                         var newForm = createForm(ninds);
                         console.log('start cde of form: ' + formId);
                         var cdes = ninds.get('cdes');
+                        if (cdes.length > 0)
+                            newForm.formElements.push({
+                                elementType: 'section',
+                                instructions: {value: ''},
+                                label: '',
+                                formElements: []
+                            });
                         async.forEachSeries(cdes, function (cde, doneOneCDE) {
                             var cdeId = cde.cdeId;
                             mongo_cde.byOtherId('NINDS', cdeId, function (err, existingCde) {
@@ -195,7 +203,7 @@ function run(cb) {
                                     question: question,
                                     formElements: []
                                 };
-                                newForm.formElements.push(formElement);
+                                newForm.formElements[0].formElements.push(formElement);
                                 doneOneCDE();
                             });
                         }, function doneAll() {
