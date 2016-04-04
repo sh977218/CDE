@@ -48,7 +48,6 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
