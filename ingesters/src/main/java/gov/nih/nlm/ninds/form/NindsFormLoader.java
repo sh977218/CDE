@@ -168,7 +168,7 @@ public class NindsFormLoader implements Runnable {
             }
             getDomainAndSubDomain(form);
 
-            Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId())
+            Query searchDuplicatedFormQuery = new Query(Criteria.where("formId").is(form.getFormId())
                     .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
                     .and("description").is(form.getDescription())
                     .and("copyRight").is(form.isCopyRight())
@@ -179,9 +179,9 @@ public class NindsFormLoader implements Runnable {
                     .and("subDiseaseName").is(form.getSubDiseaseName())
                     .and("domainName").is(form.getDomainName())
                     .and("subDomainName").is(form.getSubDomainName()));
-            MyForm existingForm = mongoOperation.findOne(searchUserQuery, MyForm.class);
+            MyForm existingForm = mongoOperation.findOne(searchDuplicatedFormQuery, MyForm.class);
             if (existingForm != null) {
-                this.log.info.add("search with query: " + searchUserQuery.toString());
+                this.log.info.add("search with query: " + searchDuplicatedFormQuery.toString());
                 this.log.info.add("found existing form in migration: " + existingForm);
                 this.log.info.add("found form on web:" + form);
             } else {

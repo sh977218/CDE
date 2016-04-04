@@ -4,13 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CDEUtility {
     public CDEUtility() {
-
     }
 
     public void checkDataQuality(MongoOperations mongoOperation, String url) {
@@ -22,6 +23,12 @@ public class CDEUtility {
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
         if (inputRestrictionsList.size() > 3) {
             System.out.println("inputRestrictionsList is not good. url:" + url);
+            System.exit(1);
+        }
+        Query searchEmptyDiseaseFormQuery = new Query(Criteria.where("formId").is(""));
+        MyForm emptyDiseaseForm = mongoOperation.findOne(searchEmptyDiseaseFormQuery, MyForm.class);
+        if (emptyDiseaseForm != null) {
+            System.out.println("some form has empty disease name.");
             System.exit(1);
         }
     }

@@ -23,9 +23,8 @@ public class FindMissingForms implements Runnable {
     CDEUtility cdeUtility = new CDEUtility();
     String diseaseName;
 
-    FindMissingForms(String disease, String url, MongoOperations mongoOperation) {
+    FindMissingForms(String url, MongoOperations mongoOperation) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        this.diseaseName = disease;
         this.url = url;
         this.mongoOperation = mongoOperation;
     }
@@ -37,6 +36,7 @@ public class FindMissingForms implements Runnable {
         wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();
         goToSite(url);
+        cdeUtility.checkDataQuality(mongoOperation, url);
         driver.close();
         long endTime = System.currentTimeMillis();
         long totalTimeInMillis = endTime - startTime;
@@ -44,12 +44,30 @@ public class FindMissingForms implements Runnable {
         long totalTimeInMinutes = totalTimeInSeconds / 60;
         log.setRunTime(totalTimeInMinutes);
         mongoOperation.save(log);
-        cdeUtility.checkDataQuality(mongoOperation, url);
     }
 
 
     public void goToSite(String url) {
         driver.get(url);
+        String diseaseNameOuterXPath = "//*[@id=\"bcrumbTab\"]/following-sibling::h2[1]";
+        String diseaseNameInnerXPath = "//*[@id=\"bcrumbTab\"]/following-sibling::h2[1]/p";
+        List<WebElement> diseaseNameOuterList = driver.findElements(By.xpath(diseaseNameOuterXPath));
+        List<WebElement> diseaseNameInnerList = driver.findElements(By.xpath(diseaseNameInnerXPath));
+        if (diseaseNameOuterList.size() == 1 && diseaseNameInnerList.size() == 1) {
+            String diseaseNameOuter = diseaseNameOuterList.get(0).getText();
+            String diseaseNameInner = diseaseNameInnerList.get(0).getText();
+            this.diseaseName = diseaseNameOuter.replace(diseaseNameInner, "").trim();
+        } else if (diseaseNameOuterList.size() == 1 && diseaseNameInnerList.size() == 0) {
+            String diseaseNameOuter = diseaseNameOuterList.get(0).getText();
+            this.diseaseName = diseaseNameOuter;
+        } else {
+            System.out.println("cannot find disease on the page. url:" + this.url);
+            System.out.println("diseaseNameOuterXPath size: " + diseaseNameOuterXPath);
+            System.out.println("diseaseNameOuterList size: " + diseaseNameOuterList.size());
+            System.out.println("diseaseNameInnerXPath size: " + diseaseNameInnerXPath);
+            System.out.println("diseaseNameInnerList size: " + diseaseNameInnerList.size());
+            System.exit(1);
+        }
         String formsXPathTh = "//*[@class='cdetable']/tbody/tr/th[@scope='row']";
         List<WebElement> formList = driver.findElements(By.xpath(formsXPathTh));
         int i = 1;
@@ -110,6 +128,7 @@ public class FindMissingForms implements Runnable {
             }
             i++;
         }
+
         log.info.add("total form on the web: " + i);
     }
 
