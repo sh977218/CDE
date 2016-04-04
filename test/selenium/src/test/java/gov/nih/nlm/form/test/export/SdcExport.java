@@ -22,7 +22,7 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcRender() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(reguser_username, password);
         goToFormByName("SDC Adrenal");
         findElement(By.id("export")).click();
         findElement(By.id("sdcExport")).click();
