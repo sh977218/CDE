@@ -25,7 +25,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         showAllTabs();
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
-        Assert.assertTrue(url.startsWith("/data/"));
+        Assert.assertTrue(url.startsWith("/data/"), "Actual Value: " + url);
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
