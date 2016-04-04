@@ -49,6 +49,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         System.out.println("**** URL: " + url);
         alert.sendKeys(url);
         alert.accept();
+        System.out.println(findElement(By.cssSelector("[id^='taTextElement'] img")).getAttribute("src"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         hangon(2);
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
