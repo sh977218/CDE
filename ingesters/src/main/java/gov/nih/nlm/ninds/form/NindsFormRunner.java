@@ -37,9 +37,9 @@ public class NindsFormRunner {
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
-        int nbOfThread = 1;
-        int startingPage = 3;
-        int endingPages = 3;
+        int nbOfThread = 5;
+        int startingPage = 11;
+        int endingPages = 15;
         ExecutorService executor = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {

@@ -98,6 +98,7 @@ public class NindsFormLoader implements Runnable {
     }
 
     private void findAndSaveToForms(int pageStart, int pageEnd) {
+        System.out.println("running page from " + pageStart + " to " + pageEnd);
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));

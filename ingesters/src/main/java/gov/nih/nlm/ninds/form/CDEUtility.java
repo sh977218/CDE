@@ -17,12 +17,17 @@ public class CDEUtility {
     public void checkDataQuality(MongoOperations mongoOperation, String url) {
         List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
         if (dataTypeList.size() > 4) {
-            System.out.println("data type is not good. url:" + url);
+            System.out.println("data type is not good. size: " + dataTypeList.size() + " url:" + url);
             System.exit(1);
         }
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
         if (inputRestrictionsList.size() > 3) {
-            System.out.println("inputRestrictionsList is not good. url:" + url);
+            System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
+            System.exit(1);
+        }
+        List diseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
+        if (diseaseNameList.size() > 19) {
+            System.out.println("diseaseName is not good. size: " + diseaseNameList.size() + " url:" + url);
             System.exit(1);
         }
         Query searchEmptyDiseaseFormQuery = new Query(Criteria.where("formId").is(""));
