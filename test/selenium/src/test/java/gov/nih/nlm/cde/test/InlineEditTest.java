@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,6 +25,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         showAllTabs();
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
+        Assert.assertTrue(url.startsWith("/data/"), "Actual Value: " + url);
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
@@ -45,6 +47,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
+
+        alert.sendKeys("\b\b\b\b\b\b\b");
+
         alert.sendKeys(url);
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
