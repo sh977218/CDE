@@ -30,30 +30,12 @@ public class NindsFormLoader implements Runnable {
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
 
-    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation) {
-        diseaseMap.put("General (For all diseases)", "General.aspx");
-        diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
-        diseaseMap.put("Epilepsy", "Epilepsy.aspx");
-        diseaseMap.put("Friedreich's Ataxia", "FA.aspx");
-        diseaseMap.put("Headache", "Headache.aspx");
-        diseaseMap.put("Huntington's Disease", "HD.aspx");
-        diseaseMap.put("Mitochondrial Disease", "MITO.aspx");
-        diseaseMap.put("Multiple Sclerosis", "MS.aspx");
-        diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
-        diseaseMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
-        diseaseMap.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "DMD.aspx");
-        diseaseMap.put("Facioscapulohumeral Muscular Dystrophy", "FSHD.aspx");
-        diseaseMap.put("Myasthenia Gravis", "MG.aspx");
-        diseaseMap.put("Myotonic Muscular Dystrophy", "MMD.aspx");
-        diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
-        diseaseMap.put("Parkinson's Disease", "PD.aspx");
-        diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
-        diseaseMap.put("Stroke", "Stroke.aspx");
-        diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
+    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.pageStart = ps;
         this.pageEnd = pe;
         this.mongoOperation = mongoOperation;
+        this.diseaseMap = diseaseMap;
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
 

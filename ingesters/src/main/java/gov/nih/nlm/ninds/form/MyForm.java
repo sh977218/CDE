@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Document(collection = "ninds")
 public class MyForm {
@@ -26,6 +28,33 @@ public class MyForm {
     private String domainName = "";
     private String subDomainName = "";
     private Date createDate;
+
+    private static Map<String, String> diseaseNameMap = new HashMap<String, String>();
+
+    static {
+        diseaseNameMap.put("Amyotrophic Lateral Sclerosis", "Amyotrophic Lateral Sclerosis");
+        diseaseNameMap.put("Congenital Muscular Dystrophy", "Congenital Muscular Dystrophy");
+        diseaseNameMap.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "Duchenne/Becker Muscular Dystrophy");
+        diseaseNameMap.put("Epilepsy", "Epilepsy");
+        diseaseNameMap.put("Facioscapulohumeral Muscular Dystrophy", "Facioscapulohumeral muscular dystrophy (FSHD)");
+        diseaseNameMap.put("Friedreich's Ataxia", "Friedreich's Ataxia");
+        diseaseNameMap.put("General (For all diseases)", "General (For all diseases)");
+        diseaseNameMap.put("Headache", "Headache");
+        diseaseNameMap.put("Huntington's Disease", "Huntington’s Disease");
+        diseaseNameMap.put("Mitochondrial Disease", "Mitochondrial Disease");
+        diseaseNameMap.put("Multiple Sclerosis", "Multiple Sclerosis");
+        diseaseNameMap.put("Myasthenia Gravis", "Myasthenia Gravis");
+        diseaseNameMap.put("Myotonic Muscular Dystrophy", "Myotonic Dystrophy");
+        diseaseNameMap.put("Neuromuscular Diseases", "Neuromuscular Diseases");
+        diseaseNameMap.put("Parkinson's Disease", "Parkinson's Disease");
+        diseaseNameMap.put("Spinal Cord Injury", "Spinal Cord Injury");
+        diseaseNameMap.put("Spinal Muscular Atrophy", "Spinal Muscular Atrophy");
+        diseaseNameMap.put("Stroke", "Stroke");
+        diseaseNameMap.put("Traumatic Brain Injury", "Traumatic Brain Injury");
+    }
+
+    public MyForm() {
+    }
 
     public Date getCreateDate() {
         return createDate;
@@ -128,7 +157,8 @@ public class MyForm {
     }
 
     public void setDiseaseName(String diseaseName) {
-        this.diseaseName = diseaseName;
+        String disease = this.diseaseNameMap.get(diseaseName);
+        this.diseaseName = disease;
     }
 
     public String getSubDiseaseName() {
