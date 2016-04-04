@@ -18,7 +18,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         String attachmentName = "nih-logo-color.png";
         showAllTabs();
         addAttachment(attachmentName);
-
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
@@ -47,8 +46,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
         alert.sendKeys(url);
-        System.out.println("+++++ Text in Alert: " + alert.getText());
-        System.out.println("+++++ Text in Prop: " + findElement(By.id("dd_prop_value_0")).getText());
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         hangon(2);
