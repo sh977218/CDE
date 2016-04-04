@@ -46,6 +46,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
+        System.out.println("**** URL: " + url);
         alert.sendKeys(url);
         alert.accept();
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
