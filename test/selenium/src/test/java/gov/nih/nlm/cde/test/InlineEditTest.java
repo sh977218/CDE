@@ -25,7 +25,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         showAllTabs();
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
-        Assert.assertTrue(url.startsWith("/data/"), "Actual Value: " + url);
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         textPresent("Rich Text");
@@ -47,9 +46,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
-
-        alert.sendKeys("\b\b\b\b\b\b\b");
-
         alert.sendKeys(url);
         System.out.println("+++++ Text in Alert: " + alert.getText());
         System.out.println("+++++ Text in Prop: " + findElement(By.id("dd_prop_value_0")).getText());
