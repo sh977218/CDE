@@ -34,7 +34,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.id("newOrgAdminSubmit"));
 
         logout();
-        loginAs(test_username, test_password);
+        loginAs(test_username, password);
 
         clickElement(By.linkText("Create"));
         clickElement(By.linkText("CDE"));
