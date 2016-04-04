@@ -174,7 +174,6 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
     }
 
-    @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
