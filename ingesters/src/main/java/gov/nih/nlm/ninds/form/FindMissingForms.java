@@ -117,18 +117,17 @@ public class FindMissingForms implements Runnable {
             String cdeLinkXPath = "//*[@class='cdetable']/tbody/tr[th[@id='form" + formId + "']]/td/a";
             List<WebElement> cdeLinks = driver.findElements(By.xpath(cdeLinkXPath));
             if (existingForm == null) {
+                form.setDiseaseName(this.diseaseName);
                 if (cdeLinks.size() > 0) {
                     getCdes(form, cdeLinks.get(0));
                 }
                 form.setCreateDate(new Date());
-                form.setDiseaseName(this.diseaseName);
                 log.info.add("found form on web:" + form);
                 log.info.add(formId);
                 mongoOperation.save(form);
             }
             i++;
         }
-
         log.info.add("total form on the web: " + i);
     }
 
@@ -137,21 +136,14 @@ public class FindMissingForms implements Runnable {
         a.click();
         hangon(5);
         cdeUtility.switchTab(driver, 1);
-        String diseaseName = "", subDiseaseName = "";
-        String diseaseXPath = "//td//div[contains(text(), 'Disease: ')]";
+        String subDiseaseName = "";
         String subDiseaseXPath = "//td//div[contains(text(), 'SubDisease: ')]";
-        List<WebElement> diseaseList = driver.findElements(By.xpath(diseaseXPath));
-        if (diseaseList.size() > 0) {
-            String diseaseNameText = diseaseList.get(0).getText();
-            diseaseName = diseaseNameText.replace("Disease:", "").trim();
-            form.setDiseaseName(diseaseName);
-        }
         List<WebElement> subDiseaseList = driver.findElements(By.xpath(subDiseaseXPath));
         if (subDiseaseList.size() > 0) {
             String subDiseaseNameText = subDiseaseList.get(0).getText();
             subDiseaseName = subDiseaseNameText.replace("SubDisease:", "").trim();
-            form.setSubDiseaseName(subDiseaseName);
         }
+        form.setSubDiseaseName(subDiseaseName);
         Query searchUserQuery = new Query(Criteria.where("formId").is(form.getFormId())
                 .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
                 .and("domainName").is(form.getDomainName())

@@ -228,7 +228,7 @@ public class NindsFormLoader implements Runnable {
     private void refreshSession() {
         cdeUtility.switchTab(driver, 0);
         findElement(By.id("ContentPlaceHolder1_lbDownload")).click();
-        hangon(10);
+        hangon(5);
         cdeUtility.switchTab(driver, 1);
     }
 

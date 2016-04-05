@@ -25,15 +25,27 @@ public class CDEUtility {
             System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
             System.exit(1);
         }
-        List diseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
-        if (diseaseNameList.size() > 19) {
-            System.out.println("diseaseName is not good. size: " + diseaseNameList.size() + " url:" + url);
+        List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
+        if (distinctDiseaseNameList.size() > 19) {
+            System.out.println("distinct diseaseName is not good. size: " + distinctDiseaseNameList.size() + " url:" + url);
             System.exit(1);
         }
-        Query searchEmptyDiseaseFormQuery = new Query(Criteria.where("formId").is(""));
-        MyForm emptyDiseaseForm = mongoOperation.findOne(searchEmptyDiseaseFormQuery, MyForm.class);
-        if (emptyDiseaseForm != null) {
-            System.out.println("some form has empty disease name.");
+        Query searchNoDiseaseExistFormQuery = new Query(Criteria.where("diseaseName").exists(false));
+        MyForm noDiseaseExistForm = mongoOperation.findOne(searchNoDiseaseExistFormQuery, MyForm.class);
+        if (noDiseaseExistForm != null) {
+            System.out.println("some form has do not disease name. form: " + noDiseaseExistForm);
+            System.exit(1);
+        }
+        Query searchNoDomainExistFormQuery = new Query(Criteria.where("domainName").exists(false));
+        MyForm noDomainExistForm = mongoOperation.findOne(searchNoDomainExistFormQuery, MyForm.class);
+        if (noDiseaseExistForm != null) {
+            System.out.println("some form has do not domain name. form: " + noDiseaseExistForm);
+            System.exit(1);
+        }
+        Query searchNoSubDomainExistFormQuery = new Query(Criteria.where("subDomainName").exists(false));
+        MyForm noSubDomainExistForm = mongoOperation.findOne(searchNoDiseaseExistFormQuery, MyForm.class);
+        if (noSubDomainExistForm != null) {
+            System.out.println("some form has do not subDomain name. form: " + noSubDomainExistForm);
             System.exit(1);
         }
     }

@@ -363,7 +363,7 @@ function run(cb) {
             stream.on('data', function (ninds) {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
-                     async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
+                    async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
                         DataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {

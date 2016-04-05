@@ -158,6 +158,10 @@ public class MyForm {
 
     public void setDiseaseName(String diseaseName) {
         String disease = this.diseaseNameMap.get(diseaseName);
+        if (disease == null || disease.length() == 0) {
+            System.out.println("form:" + this.toString() + "\n has error diseaseName:" + diseaseName);
+            System.exit(0);
+        }
         this.diseaseName = disease;
     }
 
