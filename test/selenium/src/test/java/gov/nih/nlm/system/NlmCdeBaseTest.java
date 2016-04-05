@@ -36,7 +36,8 @@ public class NlmCdeBaseTest {
     protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
-    protected static String downloadFolder = System.getProperty("downloadFolder");
+    protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
+    protected static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -116,7 +117,7 @@ public class NlmCdeBaseTest {
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
             Map<String, Object> prefs = new HashMap<String, Object>();
-            prefs.put("download.default_directory", "T:\\CDE\\downloads");
+            prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
             caps.setCapability(ChromeOptions.CAPABILITY, options);
@@ -148,7 +149,7 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 200);
         shortWait = new WebDriverWait(driver, 2);
 
-        resizeWindow(1280, 800);
+        resizeWindow(1600, 980);
 
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
@@ -388,7 +389,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForESUpdate() {
-        hangon(10);
+        hangon(8);
     }
 
     /*
@@ -403,14 +404,13 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector("button.close")).click();
-            driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
+            if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
+
 
     protected void newCdeVersion() {
         newCdeVersion(null);
@@ -456,13 +456,13 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-        // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
-
-        driver.get(baseUrl + "/#/home");
+//        // gonowhere gets rid of possible alert.
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
+//
+        driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
-        hangon(.5);
+//        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -509,14 +509,14 @@ public class NlmCdeBaseTest {
     public void addCdeToQuickBoard(String cdeName) {
         searchCde(cdeName);
         clickElement(By.id("addToCompare_0"));
-        hangon(2);
+        closeAlert();
         findElement(By.name("q")).clear();
     }
 
     public void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
-        hangon(.5);
+        closeAlert();
         findElement(By.name("q")).clear();
     }
 

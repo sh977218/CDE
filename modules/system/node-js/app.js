@@ -272,11 +272,11 @@ exports.init = function(app) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {
-            mongo_data_system.userById(req.user._id, function(err, user) {
+            mongo_data_system.userById(req.user._id, function (err, user) {
                 res.send(user);
             });
         }
-    });    
+    });
     
     app.post('/user/me', function(req, res) {
         if (!req.user) {
@@ -499,7 +499,7 @@ exports.init = function(app) {
             res.status(401).send();
             return;
         }      
-        classificationNode.classifyEntireSearch(req.body, function(err) {
+        classificationNode.classifyEntireSearch(req, function(err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
         });        

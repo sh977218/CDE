@@ -8,9 +8,10 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
             "/cde/public/html/accordion/addToQuickBoardActions.html"];
 
-        userResource.getPromise().then(function () {
+        $timeout(function() {
             $scope.search("cde");
-        });
+        }, 0);
+
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
@@ -114,6 +115,5 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.$on("$destroy", function handler() {
             TourContent.stop();
         });
-
 
     }]);

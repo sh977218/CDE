@@ -23,11 +23,12 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
+        clickElement(By.id("search.submit"));
         findElement(By.id("export")).click();
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
-        closeAlert();
         textPresent("Export downloaded.");
+        closeAlert();
         closeAlert();
 
         String[] expected = {
@@ -62,8 +63,8 @@ public class ExportTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         findElement(By.id("csvExport")).click();
         textPresent("export is being generated");
-        closeAlert();
         textPresent("Export downloaded.");
+        closeAlert();
         closeAlert();
 
         String[] expected2 = {
@@ -95,8 +96,8 @@ public class ExportTest extends NlmCdeBaseTest {
         findElement(By.id("export")).click();
         findElement(By.id("xmlExport")).click();
         textPresent("export is being generated");
-        closeAlert();
         textPresent("Export downloaded.");
+        closeAlert();
         closeAlert();
 
         String[] expected = {

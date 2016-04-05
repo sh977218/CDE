@@ -36,7 +36,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         new Select(findElement(By.cssSelector("select"))).selectByValue("caBIG");
         textPresent("gov.nih.nci.cananolab.domain.characterization.invitro");
         textNotPresent("Common Terminology Criteria for Adverse Events v3.0");
-        hangon(3);
+//        hangon(3);
         new Select(findElement(By.cssSelector("select"))).selectByValue("CTEP");
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
         textNotPresent("gov.nih.nci.cananolab.domain.characterization.invitro");

@@ -30,13 +30,15 @@ var users = [
     , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'ctepOnlyCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
-    , {username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com", roles: ["BoardPublisher", "CommentAuthor"]}
+    , {username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com",
+        roles: ["BoardPublisher", "CommentAuthor"]}
     , {username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boardsearchuser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boardexport', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'pinuser', password: 'pass', quota: 1073741824, viewHistory: []}
+    , {username: 'doublepinuser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []}
@@ -67,6 +69,8 @@ var users = [
     , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: []}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
+    , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
+    , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
 ];
 
 users.forEach(function(u) {

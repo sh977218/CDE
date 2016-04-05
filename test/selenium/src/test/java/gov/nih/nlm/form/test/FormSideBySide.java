@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormQuickBoardTest1 extends NlmCdeBaseTest {
+public class FormSideBySide extends NlmCdeBaseTest {
 
     @Test
     public void formMoreElementsNoSideBySideCompare() {
@@ -27,7 +27,7 @@ public class FormQuickBoardTest1 extends NlmCdeBaseTest {
     }
 
     @Test
-    public void cdeLessElementsNoSideBySideCompare() {
+    public void formLessElementsNoSideBySideCompare() {
         mustBeLoggedOut();
         addFormToQuickBoard("Family History - SMA");
         textPresent("Quick Board (1)");

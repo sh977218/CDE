@@ -4,7 +4,7 @@
         <h3>More results</h3>
         <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"
            ng-click="interruptEvent($event); quickBoard.add(elt)">
-            <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
+            <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                role="link"></i></a>
 
     </div>
@@ -16,8 +16,9 @@
             <small>{{elt.registrationState.registrationStatus}}</small>
             <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"
                ng-click="interruptEvent($event); quickBoard.add(elt)">
-                <i class="fa fa-plus hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
+                <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                    role="link"></i></a>
+            <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
         </h4>

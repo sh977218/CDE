@@ -638,8 +638,8 @@ button#selectDefault {
 .generalDetailsTable th, .generalDetailsTable td {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
-    padding-left: 2px!important;
-    padding-right: 2px!important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
     font-size: small;
 }
 
@@ -840,7 +840,8 @@ div + .questionPlaceholder {
     background-color: rgba(223, 240, 216, 0.79);
     */
 }
-.quickBoardContentCompareSame{
+
+.quickBoardContentCompareSame {
     background-color: rgba(223, 240, 216, 0.79);
 }
 
@@ -945,16 +946,16 @@ div + .questionPlaceholder {
 }
 
 .navbar-btn {
-    margin-top: 0px!important;
-    margin-bottom: 0px!important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 #searchDiv {
-    margin:  30px 0px 30px 0px;
+    margin: 30px 0px 30px 0px;
 }
 
 .navbar {
-    margin-bottom: 0px!important;
+    margin-bottom: 0px !important;
 }
 
 #searchInfoBar {
@@ -964,8 +965,8 @@ div + .questionPlaceholder {
 .singleSearchResult {
     padding-left: 10px;
     margin-bottom: 20px;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    border-left: 3px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
 }
 
 #advSearchForm {
@@ -974,4 +975,29 @@ div + .questionPlaceholder {
 
 #searchResult-buttons {
     margin: 5px;
+}
+
+.leftSeparator {
+    border-left: 5px solid black;
+}
+
+.codeCell {
+    word-wrap: break-word;
+    /*min-width: 8%;*/
+    /*max-width: 8%;*/
+    width: 8%;
+}
+
+.codeNameCell {
+    word-wrap: break-word;
+    width: 8%;
+}
+
+.codeSystemCell {
+    word-wrap: break-word;
+    width: 5%;
+}
+
+.extraCodeSystem {
+    border-left: 2px solid rgba(201, 200, 200, 0.88)!important;
 }
