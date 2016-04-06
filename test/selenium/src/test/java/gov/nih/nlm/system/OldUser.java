@@ -10,6 +10,7 @@ public class OldUser extends NlmCdeBaseTest {
 
     @Test
     public void loggedAfterVeryLongTime() {
+        mustBeLoggedInAs(oldUser_username, password);
         goToCdeSearch();
         findElement(By.id("browseOrg-NINDS")).click();
         textPresent("Used By");
