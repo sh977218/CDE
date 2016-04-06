@@ -193,6 +193,9 @@ angular.module('formModule').controller('FormViewCtrl',
             if ($scope.isSiteAdmin() || window.formEditable) {
                 isAllowedModel.setCanCurate($scope);
             }
+            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+                return c.tinyId;
+            });
             isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
             converter.convert('form/' + $scope.elt.tinyId, function (lfData) {

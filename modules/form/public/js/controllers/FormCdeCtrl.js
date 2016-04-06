@@ -6,11 +6,7 @@ angular.module('cdeModule').controller('FormCdeCtrl', ['$scope', 'CdeList',
 
 
         function getFormCdes() {
-            var formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
-                return c.tinyId;
-            });
-
-            CdeList.byTinyIdList(formCdeIds, function (cdes) {
+            CdeList.byTinyIdList($scope.formCdeIds, function (cdes) {
                 $scope.cdes = cdes;
             });
         }
