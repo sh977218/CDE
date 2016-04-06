@@ -1,7 +1,7 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', 'CdeList', '$log',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, CdeList, $log) {
+        '$http', '$timeout', 'userResource', '$log',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -63,7 +63,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                getFormCdes();
+                $timeout($scope.$broadcast('loadFormCdes'), 0);
             },
             show: false,
             hideable: true
@@ -184,7 +184,8 @@ angular.module('formModule').controller('FormViewCtrl',
     if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
-    var formCdeIds;
+
+    
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -193,9 +194,6 @@ angular.module('formModule').controller('FormViewCtrl',
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
-            formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
-                return c.tinyId;
-            });
             areDerivationRulesSatisfied();
             converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
                     $scope.lfData = new LFormsData(lfData);
@@ -212,12 +210,6 @@ angular.module('formModule').controller('FormViewCtrl',
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
     };
-
-    function getFormCdes() {
-        CdeList.byTinyIdList(formCdeIds, function (cdes) {
-            $scope.cdes = cdes;
-        });
-    }
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
