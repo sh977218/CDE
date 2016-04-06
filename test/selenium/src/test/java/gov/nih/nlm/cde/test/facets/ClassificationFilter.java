@@ -19,7 +19,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         findElement(By.id("li-blank-caBIG")).click();
         textPresent("Generic Image");
 
-        textPresent("8 results for");
+        textPresent("9 results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 8);
 
