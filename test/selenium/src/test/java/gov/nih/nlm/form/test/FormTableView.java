@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 public class FormTableView extends BaseFormTest {
 
     private void seeTableForms(){
+        goHome();
         findElement(By.id("menu_forms_link")).click();
         findElement(By.id("browseOrg-TEST")).click();
         findElement(By.id("form_gridView")).click();
@@ -18,10 +19,13 @@ public class FormTableView extends BaseFormTest {
         seeTableForms();
         textPresent("Other Names");
         textPresent("Steward");
-        textPresent("Used By");
-        textPresent("Registration Status");
+        textPresent("Used by");
         textPresent("Identifiers");
         textPresent("Questions");
+
+        textPresent("Alternate Name for a Table View Form!");
+        textPresent("TESTOrg");
+        textPresent("goodForTablesForm");
 
         findElement(By.id("searchSettings")).click();
         findElement(By.id("naming")).click();
@@ -37,12 +41,15 @@ public class FormTableView extends BaseFormTest {
         seeTableForms();
 
         textNotPresent("Other Names");
-        textPresent("Steward");
-        textPresent("Used By");
-        textPresent("Registration Status");
-        textPresent("Identifiers");
-        textPresent("Questions");
+        textNotPresent("Steward");
+        textNotPresent("Used by");
+        textNotPresent("Identifiers");
+        textNotPresent("Questions");
 
-        textPresent("Source");
+        textNotPresent("Alternate Name for a Table View Form!");
+        textNotPresent("TESTOrg");
+        textNotPresent("goodForTablesForm");
+        textPresent("To be deleted");
+        textPresent("testFormIssuingOrg");
     }
 }
