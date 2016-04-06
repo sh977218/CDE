@@ -1,3 +1,8 @@
+/*
+ this script do not update org
+ */
+
+
 var fs = require('fs'),
     util = require('util'),
     xml2js = require('xml2js'),

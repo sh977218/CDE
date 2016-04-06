@@ -3,10 +3,7 @@ package gov.nih.nlm.ninds.form;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Document(collection = "ninds")
 public class MyForm {
@@ -30,8 +27,29 @@ public class MyForm {
     private Date createDate;
 
     private static Map<String, String> diseaseNameMap = new HashMap<String, String>();
+    private static Set<String> diseaseNameSet = new HashSet<String>();
 
     static {
+        diseaseNameSet.add("Amyotrophic Lateral Sclerosis");
+        diseaseNameSet.add("Congenital Muscular Dystrophy");
+        diseaseNameSet.add("Duchenne/Becker Muscular Dystrophy");
+        diseaseNameSet.add("Epilepsy");
+        diseaseNameSet.add("Facioscapulohumeral muscular dystrophy (FSHD)");
+        diseaseNameSet.add("Friedreich's Ataxia");
+        diseaseNameSet.add("General (For all diseases)");
+        diseaseNameSet.add("Headache");
+        diseaseNameSet.add("Huntington’s Disease");
+        diseaseNameSet.add("Mitochondrial Disease");
+        diseaseNameSet.add("Multiple Sclerosis");
+        diseaseNameSet.add("Myasthenia Gravis");
+        diseaseNameSet.add("Myotonic Dystrophy");
+        diseaseNameSet.add("Neuromuscular Diseases");
+        diseaseNameSet.add("Parkinson's Disease");
+        diseaseNameSet.add("Spinal Cord Injury");
+        diseaseNameSet.add("Spinal Muscular Atrophy");
+        diseaseNameSet.add("Stroke");
+        diseaseNameSet.add("Traumatic Brain Injury");
+
         diseaseNameMap.put("Amyotrophic Lateral Sclerosis", "Amyotrophic Lateral Sclerosis");
         diseaseNameMap.put("Congenital Muscular Dystrophy", "Congenital Muscular Dystrophy");
         diseaseNameMap.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "Duchenne/Becker Muscular Dystrophy");
@@ -157,12 +175,16 @@ public class MyForm {
     }
 
     public void setDiseaseName(String diseaseName) {
-        String disease = this.diseaseNameMap.get(diseaseName);
-        if (disease == null || disease.length() == 0) {
-            System.out.println("form:" + this.toString() + "\n has error diseaseName:" + diseaseName);
-            System.exit(0);
+        if (diseaseNameSet.contains(diseaseName)) {
+            this.diseaseName = diseaseName;
+        } else {
+            String disease = this.diseaseNameMap.get(diseaseName);
+            if (disease == null || disease.length() == 0) {
+                System.out.println("form:" + this.toString() + "\n has error diseaseName:" + diseaseName);
+                System.exit(0);
+            }
+            this.diseaseName = disease;
         }
-        this.diseaseName = disease;
     }
 
     public String getSubDiseaseName() {

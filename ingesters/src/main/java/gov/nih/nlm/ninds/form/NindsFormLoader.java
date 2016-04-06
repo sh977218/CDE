@@ -176,6 +176,7 @@ public class NindsFormLoader implements Runnable {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
             findAndSaveToForms(pageStart + 1, pageEnd);
         }
+        System.out.println("finished page from " + pageStart + " to " + pageEnd);
     }
 
 
@@ -234,7 +235,12 @@ public class NindsFormLoader implements Runnable {
 
 
     private boolean textPresent(String text) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+        try {
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+        } catch (Exception e) {
+            System.out.println("tried once fail. try another. pageStart :" + pageStart);
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+        }
         return true;
     }
 

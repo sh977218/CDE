@@ -137,7 +137,7 @@ function transferCde(existingCde, newCde, ninds) {
     var existingReferenceDocuments = existingCde.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
-    classificationShared.transferClassifications(createCde(newCde, ninds), existingCde)
+    classificationShared.transferClassifications(createCde(newCde, ninds), existingCde);
 }
 
 function createCde(cde, ninds) {
@@ -367,19 +367,7 @@ function run(cb) {
                         DataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {
-                                var cls = ["Domain"];
-                                cls.push(ninds.get('domainName'));
-                                classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
-
-                                cls = ["Disease"];
-                                cls.push(ninds.get('diseaseName'));
-                                if (ninds.get('subDiseaseName').length > 0)
-                                    cls.push(ninds.get('subDiseaseName'));
-
-                                cls.push("Domain");
-                                cls.push(ninds.get('domainName'));
-                                classificationShared.addCategory({elements: nindsOrg.classifications}, cls);
-
+                                classificationShared.addClassificationToOrg(ninds, existingCdes[0], nindsOrg);
                                 var newCde = createCde(cde, ninds);
                                 var newCdeObj = new DataElementModel(newCde);
                                 newCdeObj.save(function (err) {

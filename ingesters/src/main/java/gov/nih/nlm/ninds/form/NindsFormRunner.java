@@ -15,7 +15,10 @@ public class NindsFormRunner {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
 
+
         Map<String, String> diseaseMap = new HashMap<String, String>();
+
+/*
         diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
         diseaseMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
         diseaseMap.put("Duchenne/Becker Muscular Dystrophy", "DMD.aspx");
@@ -31,14 +34,17 @@ public class NindsFormRunner {
         diseaseMap.put("Myotonic Dystrophy", "MMD.aspx");
         diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
         diseaseMap.put("Parkinson's Disease", "PD.aspx");
+*/
         diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
         diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
-        int nbOfThread = 5;
-        int startingPage = 24;
-        int endingPages = 24;
+
+        int nbOfThread = 4;
+/*
+        int startingPage = 27;
+        int endingPages = 27;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {
@@ -49,6 +55,7 @@ public class NindsFormRunner {
         while (!executor1.isTerminated()) {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
+*/
 
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
         Iterator it = diseaseMap.entrySet().iterator();
@@ -57,10 +64,12 @@ public class NindsFormRunner {
             Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation);
             executor2.execute(worker);
         }
-        executor1.shutdown();
-        while (!executor1.isTerminated()) {
+        executor2.shutdown();
+        while (!executor2.isTerminated()) {
         }
         System.out.println("Finished all forms in the map: " + diseaseMap);
+
+
         System.exit(0);
     }
 }
