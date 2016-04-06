@@ -18,7 +18,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         String attachmentName = "nih-logo-color.png";
         showAllTabs();
         addAttachment(attachmentName);
-
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);

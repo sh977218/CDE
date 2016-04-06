@@ -226,4 +226,5 @@
     "enabled": true
     , "url": "https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz"
   }
+  , "pmNodeProcess": "node"
 }

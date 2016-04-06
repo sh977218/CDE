@@ -13,4 +13,6 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', 'PriorForms',
 
         $scope.$on('loadPriorForms', loadPriorForms);
 
+        $scope.formHistoryCtrlLoadedPromise.resolve();
+
     }]);

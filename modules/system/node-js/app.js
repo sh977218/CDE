@@ -756,7 +756,7 @@ exports.init = function(app) {
     var loincUploadStatus;
     app.post('/uploadLoincCsv', multer(), function (req, res) {
         loincUploadStatus = [];
-        var load = spawn('node', ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
+        var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
             loincUploadStatus.push("Complete with Code: " + code);
             setTimeout(function( ) {loincUploadStatus = []}, 5 * 60 * 1000);
             fs.unlink(req.files.uploadedFiles.path);
