@@ -1,10 +1,14 @@
 <div ng-switch="elt.noRenderAllowed">
 
-    <div class="{{rightPanel}}" ng-switch-when="false" ng-switch="elt.formElements.length > 0">
-        <div ng-switch-when="true" ng-switch="renderWith">
+    <div ng-switch-when="true">
+        Rendering has been disabled for this form.
+    </div>
+
+    <div class="{{rightPanel}}" ng-switch-default="false" >
+        <div ng-if="elt.formElements.length > 0" ng-switch="renderWith">
             <a href="" ng-click="switchCollapse()">{{arrow}}</a>
 
-            <div ng-switch-default>
+            <div ng-if="renderWith !== 'native'">
                 <div>Rendering done via
                     <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by
                     <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.
@@ -15,20 +19,17 @@
                     format or in <a ng-href="/form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">SDC format.</a>
                 </small>
             </div>
-            <div ng-switch-when="native">
+            <div ng-if="renderWith === 'native'">
                 <div ng-include="'/form/public/html/formRender.html'"></div>
                 <small>You may also preview this form with <a href="" ng-click="setRenderFormat('lforms')">LForms</a>.
                 </small>
             </div>
         </div>
-        <div ng-switch-when="false">
+        <div ng-if="!(elt.formElements.length > 0)" id="warningNoCde">
             This form has no content. There is nothing to preview.
         </div>
     </div>
 
-    <div ng-switch-when="true">
-        Rendering has been disabled for this form.
-    </div>
 
 </div>
 
