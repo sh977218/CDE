@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -17,7 +18,6 @@ public class InlineEditTest extends BaseAttachmentTest {
         String attachmentName = "nih-logo-color.png";
         showAllTabs();
         addAttachment(attachmentName);
-
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
@@ -45,8 +45,10 @@ public class InlineEditTest extends BaseAttachmentTest {
         clickElement(By.cssSelector(".fa-picture-o"));
         shortWait.until(ExpectedConditions.alertIsPresent());
         alert = driver.switchTo().alert();
+        System.out.println("**** URL: " + url);
         alert.sendKeys(url);
         alert.accept();
+        System.out.println(findElement(By.cssSelector("[id^='taTextElement'] img")).getAttribute("src"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         hangon(2);
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
