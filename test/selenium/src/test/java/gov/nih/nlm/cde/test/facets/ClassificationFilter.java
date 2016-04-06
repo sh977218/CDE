@@ -15,7 +15,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
-        textPresent("caBIG (8)");
+        textPresent("caBIG (9)");
         findElement(By.id("li-blank-caBIG")).click();
         textPresent("Generic Image");
 
