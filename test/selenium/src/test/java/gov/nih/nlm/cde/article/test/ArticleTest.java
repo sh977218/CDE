@@ -41,7 +41,7 @@ public class ArticleTest extends NlmCdeBaseTest {
     
     @Test
     public void regularUserCantEdit() {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         driver.get(baseUrl + "#/help/testAdminCanEdit");
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editArticle")));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNewArticle")));
