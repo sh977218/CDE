@@ -13,7 +13,7 @@ public class NotFormEditorCantEdit extends NlmCdeBaseTest {
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         clickElement(By.id("description_tab"));
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.id("addSection")).size(), 0);
+        Assert.assertFalse(driver.findElement(By.id("addSection")).isDisplayed());
     }
 
 
