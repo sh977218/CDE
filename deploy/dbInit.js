@@ -57,7 +57,7 @@ var users = [
         , roles: ["CommentReviewer"], email: "admin@email.com"}
     , {username: 'attachmentReviewer', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
         , roles: ["AttachmentReviewer"], email: "admin@email.com"}
-    , {username: 'ctep_fileCurator', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
+    , {username: 'ctep_fileCurator', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'tableViewUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []}
     , {username: 'hiIamLongerThanSeventeenCharacters', password: 'pass', orgAdmin: [], orgCurator: ["CTEP"], quota: 1073741824
         , viewHistory: []}
@@ -66,7 +66,7 @@ var users = [
     , {username: 'pinAllBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []}
     , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []
         , roles: ["BoardPublisher"]}
-    , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: []}
+    , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
         , roles: ["OrgAuthority"]}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
