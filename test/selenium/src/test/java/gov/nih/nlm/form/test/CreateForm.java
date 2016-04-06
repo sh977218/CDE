@@ -29,9 +29,11 @@ public class CreateForm extends BaseFormTest {
         textPresent("Form created");
         closeAlert();
 
-        Assert.assertTrue(textPresent(formName));
-        Assert.assertTrue(textPresent(formDef));
-        Assert.assertTrue(textPresent(formV));
+        textPresent(formName);
+        textPresent(formDef);
+        textPresent(formV);
+
+        waitForESUpdate();
 
         goToFormByName(formName);
         textPresent(formDef);
