@@ -24,7 +24,7 @@ var users = [
     , {username: 'ctepCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'ctepOnlyCurator', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
     , {username: 'createUser', password: 'pass', orgCurator: ["CTEP"], quota: 1073741824, viewHistory: []}
-    , {username: 'testuser', password: 'Test123', quota: 1073741824, viewHistory: [], email: "test@example.com",
+    , {username: 'testuser', password: 'pass', quota: 1073741824, viewHistory: [], email: "test@example.com",
         roles: ["BoardPublisher", "CommentAuthor"]}
     , {username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}

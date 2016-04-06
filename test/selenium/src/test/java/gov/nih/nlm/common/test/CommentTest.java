@@ -15,7 +15,7 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void comments(String eltName) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
         addComment("My First Comment!");
         textPresent("My First Comment!");
@@ -30,7 +30,7 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void orgAdminCanRemoveComment(String eltName, String status) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         String commentText = "Inappropriate Comment";
         goToEltByName(eltName, status);
         addComment(commentText);
@@ -53,7 +53,7 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void siteAdminCanRemoveComment(String eltName, String status) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         String commentText = "Another Inappropriate Comment";
         goToEltByName(eltName, status);
         addComment(commentText);
