@@ -8,7 +8,6 @@ public class FormNamingReorder extends NlmCdeBaseTest {
 
     @Test
     public void formReorderNamingTest() {
-        setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("form for test cde reorder detail tabs");
         String tabName = "namingDiv";
