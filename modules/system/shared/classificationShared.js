@@ -174,27 +174,3 @@ exports.sortClassification = function (elt) {
         doRecurse(classif);
     });
 };
-
-
-exports.addClassificationToOrg = function (form, cde, org) {
-    if (form.toObject()) form = form.toObject();
-    if (cde.toObject()) cde = cde.toObject();
-    var domainClassification = ["Domain"];
-    domainClassification.push(cde.domainName);
-    domainClassification.push(cde.subDomainName);
-    exports.addCategory({elements: org.classifications}, domainClassification);
-
-    var populationClassification = ["Population"];
-    populationClassification.push(cde.population);
-    exports.addCategory({elements: org.classifications}, populationClassification);
-
-    var diseaseClassification1 = ["Disease"];
-    diseaseClassification1.push(form.diseaseName);
-    diseaseClassification1.concat(domainClassification);
-    var diseaseClassification2 = ["Disease"];
-    diseaseClassification2.push(form.diseaseName);
-    diseaseClassification2.concat(domainClassification);
-    if (form.diseaseName == 'Traumatic Brain Injury')
-        diseaseClassification.push(ninds.get('subDiseaseName'));
-
-};

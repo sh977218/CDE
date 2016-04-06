@@ -245,87 +245,7 @@ function createCde(cde, ninds) {
         process.exit(1);
     }
 
-    var elements = [];
-    var populationArray = cde.population.split(';');
-    var populationElement = {
-        name: 'Population',
-        elements: []
-    };
-    populationArray.forEach(function (p) {
-        if (p.length > 0) {
-            populationElement.elements.push({
-                "name": p,
-                "elements": []
-            })
-        }
-    });
-    var domainElement = {
-        name: 'Domain',
-        elements: [{
-            "name": cde.domain,
-            "elements": [{
-                "name": cde.subDomain,
-                "elements": []
-            }]
-        }]
-    };
-    var diseaseElement;
-    if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
-        diseaseElement = {
-            name: 'Disease',
-            elements: [{
-                "name": ninds.get('diseaseName'),
-                "elements": [{
-                    "name": ninds.get('subDiseaseName'),
-                    "elements": [{
-                        "name": 'Classification',
-                        "elements": [{
-                            "name": cde.classification,
-                            "elements": []
-                        }]
-                    }, {
-                        "name": 'Domain',
-                        "elements": [{
-                            "name": cde.domain,
-                            "elements": [{
-                                "name": cde.subDomain,
-                                "elements": []
-                            }]
-                        }]
-                    }]
-                }]
-            }]
-        };
-    } else {
-        diseaseElement = {
-            name: 'Disease',
-            elements: [{
-                "name": ninds.get('diseaseName'),
-                "elements": [{
-                    "name": 'Classification',
-                    "elements": [{
-                        "name": cde.classification,
-                        "elements": []
-                    }]
-                }, {
-                    "name": 'Domain',
-                    "elements": [{
-                        "name": cde.domain,
-                        "elements": [{
-                            "name": cde.subDomain,
-                            "elements": []
-                        }]
-                    }]
-                }]
-            }]
-        };
-    }
-    elements.push(populationElement);
-    elements.push(domainElement);
-    elements.push(diseaseElement);
-    var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
-
-    return {
+    var newCde = {
         stewardOrg: {name: "NINDS"},
         registrationState: {registrationStatus: "Qualified"},
         source: 'NINDS',
@@ -337,6 +257,49 @@ function createCde(cde, ninds) {
         valueDomain: valueDomain,
         classification: classification
     };
+
+    var classifToAdd = [
+        'Disease',
+        ninds.get('diseaseName')
+    ];
+    var subDomainToAdd = [
+        'Disease',
+        ninds.get('diseaseName')
+    ];
+
+    if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
+        classifToAdd.push(ninds.get('subDiseaseName'));
+        subDomainToAdd.push(ninds.get('subDiseaseName'));
+    }
+
+    classifToAdd.push('Domain');
+    subDomainToAdd.push('Domain');
+
+    classifToAdd.push(cde.domain);
+    subDomainToAdd.push(cde.domain);
+
+    classifToAdd.push(cde.subDomain);
+    subDomainToAdd.push(cde.subDomain);
+
+    classificationShared.classifyItem(newCde, "NINDS", classifToAdd);
+    classificationShared.addCategory({elements: nindsOrg.classifications}, classifToAdd);
+
+    classificationShared.classifyItem(newCde, "NINDS", subDomainToAdd);
+    classificationShared.addCategory({elements: nindsOrg.classifications}, subDomainToAdd);
+
+    var populationArray = cde.population.split(';');
+    populationArray.forEach(function (p) {
+        if (p.length > 0) {
+            classificationShared.classifyItem(newCde, "NINDS", ['Population', p]);
+            classificationShared.addCategory({elements: nindsOrg.classifications}, ['Population', p]);
+        }
+    });
+
+    var domainToAdd = ['Domain', cde.domain, cde.subDomain];
+    classificationShared.classifyItem(newCde, "NINDS", domainToAdd);
+    classificationShared.addCategory({elements: nindsOrg.classifications}, domainToAdd);
+
+    return newCde;
 }
 function run(cb) {
     async.series([
@@ -367,7 +330,6 @@ function run(cb) {
                         DataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {
-                                classificationShared.addClassificationToOrg(ninds, existingCdes[0], nindsOrg);
                                 var newCde = createCde(cde, ninds);
                                 var newCdeObj = new DataElementModel(newCde);
                                 newCdeObj.save(function (err) {
