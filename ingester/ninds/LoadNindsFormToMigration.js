@@ -6,6 +6,8 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+var importDate = new Date().toJSON();
+
 function checkExistingNaming(existingNaming, ninds) {
     var crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
     var description = ninds.get('description').trim();
@@ -52,6 +54,7 @@ function transferForm(existingForm, ninds) {
     var existingReferenceDocuments = existingForm.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, ninds);
 
+    existingForm.updated = importDate;
     classificationShared.transferClassifications(createForm(ninds), existingForm)
 };
 
@@ -140,6 +143,9 @@ function createForm(ninds) {
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
+        createdBy: {username: 'batchloader'},
+        created: importDate,
+        imported: importDate,
         isCopyrighted: ninds.get('copyRight'),
         noRenderAllowed: ninds.get('copyRight'),
         stewardOrg: {name: 'NINDS'},

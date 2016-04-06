@@ -114,11 +114,11 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
 };
 
 
-function findForm(formId, migrationForm, source, orgName, idv, findFormDone) {
+function findForm(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
         archived: null,
         "registrationState.registrationStatus": {$not: /Retired/},
-        imported: {$ne: importDate}
+        created: {$ne: importDate}
     };
     Form.find(formCond)
         .where("ids").elemMatch(function (elem) {
@@ -224,7 +224,7 @@ function run() {
         }
 
         if (formId !== 0) {
-            findForm(formId, migrationForm, source, orgName, version, function () {
+            findForm(formId, migrationForm, source, orgName, function () {
                 migStream.resume();
             });
         } else {

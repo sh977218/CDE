@@ -38,8 +38,8 @@ public class CDEUtility {
         }
         Query searchNoDomainExistFormQuery = new Query(Criteria.where("domainName").exists(false));
         MyForm noDomainExistForm = mongoOperation.findOne(searchNoDomainExistFormQuery, MyForm.class);
-        if (noDiseaseExistForm != null) {
-            System.out.println("some form has do not domain name. form: " + noDiseaseExistForm);
+        if (noDomainExistForm != null) {
+            System.out.println("some form has do not domain name. form: " + noDomainExistForm);
             System.exit(1);
         }
         Query searchNoSubDomainExistFormQuery = new Query(Criteria.where("subDomainName").exists(false));
@@ -51,7 +51,8 @@ public class CDEUtility {
     }
 
     public String cleanFormName(String s) {
-        String result = s.replace("\"", " ").replace(" - Paper version", " Paper version").replace("©", "").replace("™", "").trim();
+        //.replace(" - Paper version", " Paper version")
+        String result = s.replace("\"", " ").replace("©", "").replace("™", "").trim();
         String[] badStrings = {
                 "For additional information please visit NINDS-Coriell",
                 "Note: Also refer to Outcomes and End Points for additional measures recommended for assessing neurological impairment and functional status.",

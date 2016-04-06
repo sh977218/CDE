@@ -7,6 +7,7 @@ var async = require('async'),
 
 var nindsOrg = null;
 var newline = '<br>';
+var importDate = new Date().toJSON();
 
 function removeNewline(s) {
     return s.replace(/\n/g, '  ').trim();
@@ -137,6 +138,7 @@ function transferCde(existingCde, newCde, ninds) {
     var existingReferenceDocuments = existingCde.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
+    existingCde.created = importDate;
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde);
 }
 
@@ -247,6 +249,9 @@ function createCde(cde, ninds) {
 
     var newCde = {
         stewardOrg: {name: "NINDS"},
+        createdBy: {username: 'batchloader'},
+        created: importDate,
+        imported: importDate,
         registrationState: {registrationStatus: "Qualified"},
         source: 'NINDS',
         version: Number(cde.versionNum).toString(),
@@ -255,7 +260,7 @@ function createCde(cde, ninds) {
         ids: ids,
         properties: properties,
         valueDomain: valueDomain,
-        classification: classification
+        classification: []
     };
 
     var classifToAdd = [

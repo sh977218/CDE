@@ -97,13 +97,13 @@ public class FindMissingForms implements Runnable {
             List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
             if (subDomains.size() > 0)
                 subDomainName = cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim());
-            List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
-            if (domains.size() > 0)
-                domainName = domains.get(0).getText().trim();
+            List<WebElement> domainList = driver.findElements(By.xpath(domianSelector));
+            if (domainList.size() > 0)
+                domainName = domainList.get(0).getText().trim();
             else {
-                List<WebElement> domains1 = driver.findElements(By.xpath(domianSelector1));
-                if (domains1.size() > 0) {
-                    form.setDomainName(domains1.get(0).getText().trim());
+                List<WebElement> domainList1 = driver.findElements(By.xpath(domianSelector1));
+                if (domainList1.size() > 0) {
+                    domainName = domainList1.get(0).getText().trim();
                 } else
                     log.info.add("cannot find domainName, " + " url:" + url + " row:" + i + " formName:" + formName + " with xpath:" + domianSelector1);
             }
