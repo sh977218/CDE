@@ -153,12 +153,10 @@ function findForm(formId, migrationForm, source, orgName, findFormDone) {
                 });
             });
         } else if (existingForms.length === 1) {
-            same++;
             console.log('\n------------------------------');
             console.log('found 1 form. processing form, tinyId ' + existingForms[0].tinyId);
             processForm(migrationForm, existingForms[0], orgName, findFormDone);
         } else {
-            same++;
             console.log('\n------------------------------');
             console.log('found ' + existingForms.length + ' forms. processing first form, tinyId ' + existingForms[0].tinyId);
             console.log('other forms tinyId are:');
