@@ -48,7 +48,6 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
@@ -100,7 +99,7 @@ public class NlmCdeBaseTest {
         }
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {
@@ -159,6 +158,11 @@ public class NlmCdeBaseTest {
     }
 
     @AfterMethod
+    public void endSession() {
+        driver.quit();
+    }
+
+    @AfterMethod
     public void countTabs(Method method) {
         if (driver.getWindowHandles().size() > 1)
             System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
@@ -169,7 +173,6 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
     }
 
-    @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
@@ -381,11 +384,6 @@ public class NlmCdeBaseTest {
                 findElement(by).click();
             }
         }
-    }
-
-    @AfterTest
-    public void endSession() {
-        driver.quit();
     }
 
     public void waitForESUpdate() {

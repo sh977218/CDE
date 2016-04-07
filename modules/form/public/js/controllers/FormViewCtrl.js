@@ -1,7 +1,8 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', '$log',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log) {
+        '$http', '$timeout', 'userResource', '$log', '$q',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
+                  $http, $timeout, userResource, $log, $q) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -12,6 +13,8 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
+
+    $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     var converter = new LFormsConverter();
 
@@ -144,7 +147,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadPriorForms'), 0);
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms')});
             },
             show: false,
             hideable: true

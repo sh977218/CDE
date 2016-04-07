@@ -8,7 +8,7 @@ public class FormEditTest extends BaseFormTest {
 
     @Test
     public void formGetOutdated() {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         String formName = "Form that gets outdated";
         goToFormByName(formName);
         textPresent("Some CDEs in this form have newer version");

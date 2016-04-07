@@ -111,7 +111,7 @@ function updateElts(model, cb){
             }
         });
         if (!foundLoincProp) {
-            cde.properties.push({key: 'LOINC Fields', value: loinc.getPropertiesById(loincId)});
+            cde.properties.push({key: 'LOINC Fields', value: loinc.getPropertiesById(loincId), valueFormat: 'html'});
         }
         cde.save(function(err) {
             if (err) console.log(err);
