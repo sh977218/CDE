@@ -15,13 +15,13 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("Image");
         findElement(By.id("search.submit")).click();
-        textPresent("caBIG (8)");
+        textPresent("caBIG (9)");
         findElement(By.id("li-blank-caBIG")).click();
         textPresent("Generic Image");
 
-        textPresent("8 results for");
+        textPresent("9 results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
-        Assert.assertEquals(linkList.size(), 8);
+        Assert.assertEquals(linkList.size(), 9);
 
         // Check that CTEP classification with 0 items does not show
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("Radiograph Evidence Type"));
@@ -36,9 +36,9 @@ public class ClassificationFilter extends NlmCdeBaseTest {
 
         // Now test unclicking everything
         findElement(By.id("li-checked-Generic Image")).click();
-        textPresent("8 results for");
+        textPresent("9 results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
-        Assert.assertEquals(linkList.size(), 8);
+        Assert.assertEquals(linkList.size(), 9);
 
         textPresent("Generic Image (2)");
         findElement(By.id("li-blank-Generic Image")).click();
