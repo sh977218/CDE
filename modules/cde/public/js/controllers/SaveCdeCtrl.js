@@ -1,4 +1,91 @@
-angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', function($scope, $modal) {
+angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http', '$uibModal',
+    function($scope, $timeout, $http, $modal)
+{
+    // @TODO This controller should be renamed to PV Controller ?
+
+
+    var defaultSrcOptions = {
+        NCI: {displayAs: "NCI", termType: "PT", selected: false},
+        LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
+        SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
+    };
+
+    Object.keys(defaultSrcOptions).forEach(function(srcKey) {
+        $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
+            if ($scope.srcOptions[srcKey] && $scope.srcOptions[srcKey].selected) {
+                lookupAsSource(srcKey);
+            }
+        });
+    });
+
+
+    $scope.srcOptions = {};
+    $scope.containsUMLS = false;
+
+    function initSrcOptions() {
+        for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
+            if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
+                $scope.containsUMLS = true;
+                $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
+                i = $scope.elt.valueDomain.permissibleValues.length;
+            }
+        }
+    }
+
+    var lookupAsSource = function(src) {
+        $timeout(function() {
+            $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
+                if (pv.codeSystemName === 'UMLS') {
+                    var newCodes = [];
+                    pv[src] = {
+                        valueMeaningName: "Retrieving...",
+                        valueMeaningCode: "Retrieving..."
+                    };
+                    var todo = pv.valueMeaningCode.split(":").length;
+                    pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
+                        $http.get("/umlsAtomsBridge/" + pvCode + "/" + src).success(function (response) {
+                            var termFound = false;
+                            todo--;
+                            if (response.result) {
+                                response.result.forEach(function (atom) {
+                                    if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
+                                        var codeArr = atom.code.split('/');
+                                        newCodes[i] = {
+                                            valueMeaningName: atom.name,
+                                            valueMeaningCode: codeArr[codeArr.length - 1]
+                                        };
+                                        termFound = true;
+                                    }
+                                });
+                                if (!termFound) {
+                                    newCodes[i] = {
+                                        valueMeaningName: "N/A",
+                                        valueMeaningCode: "N/A"
+                                    };
+                                }
+                                if (todo === 0) {
+                                    pv[src] = {
+                                        valueMeaningName: newCodes.map(function(c) {return c.valueMeaningName;})
+                                            .join(" "),
+                                        valueMeaningCode: newCodes.map(function(c) {return c.valueMeaningCode;})
+                                            .join(":")
+                                    }
+                                }
+                            } else {
+                                pv[src] = {
+                                    valueMeaningName: "Not Found",
+                                    valueMeaningCode: "Not Found"
+                                }
+                            }
+                        })
+                    });
+                }
+            });
+        }, 0);
+    };
+
+    initSrcOptions();
+
     $scope.checkVsacId = function(elt) {
         $scope.loadValueSet();
         elt.unsaved = true;
@@ -23,11 +110,23 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', fu
         $scope.elt.valueDomain.permissibleValues.splice(index, 1);
         $scope.stageElt($scope.elt);
         $scope.runManualValidation();
-    };
-    $scope.addPv = function() {
-        $scope.elt.valueDomain.permissibleValues.push({permissibleValue: ""});
+        initSrcOptions();
     };
 
+    $scope.addPv = function() {
+        var modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/cde/public/html/AddPvModal.html',
+            controller: 'NewPvModalCtrl'
+        });
+
+        modalInstance.result.then(function (newPv) {
+            $scope.elt.valueDomain.permissibleValues.push(newPv);
+            $scope.stageElt($scope.elt);
+            initSrcOptions();
+            $scope.runManualValidation();
+        });
+    };
 
     $scope.canAddPv = function() {
         var result = true;
@@ -64,14 +163,13 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$uibModal', fu
     };    
     
     $scope.convertVsacValueToPv = function(vsacValue) {
-        var mongoPv = {
+        return {
             "permissibleValue": vsacValue.displayName,
             "valueMeaningName": vsacValue.displayName,
             "valueMeaningCode": vsacValue.code,
             "codeSystemName": vsacValue.codeSystemName,
             "codeSystemVersion": vsacValue.codeSystemVersion
         };        
-        return mongoPv;
     };
 
 }]);

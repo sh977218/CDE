@@ -21,20 +21,20 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         findElement(By.name("name")).sendKeys("DEC1");
         findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
         clickElement(By.id("createConcept"));
-        hangon(2);
+//        hangon(2);
         clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("OC1");
         findElement(By.name("codeId")).sendKeys("OC_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
         clickElement(By.id("createConcept"));
-        hangon(2);
+//        hangon(2);
 
         clickElement(By.id("addConcept"));
         findElement(By.name("name")).sendKeys("Prop1");
         findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
         clickElement(By.id("createConcept"));
-        hangon(2);
+//        hangon(2);
 
         newCdeVersion();
 

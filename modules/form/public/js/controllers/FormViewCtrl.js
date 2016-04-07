@@ -1,7 +1,8 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', 'CdeList', '$log',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, CdeList, $log) {
+        '$http', '$timeout', 'userResource', 'CdeList', '$log', '$q',
+        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
+                  $http, $timeout, userResource, CdeList, $log, $q) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -12,6 +13,8 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
+
+    $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     var converter = new LFormsConverter();
 
@@ -144,7 +147,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $timeout($scope.$broadcast('loadPriorForms'), 0);
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms')});
             },
             show: false,
             hideable: true
@@ -189,7 +192,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
-            if ($scope.isSiteAdmin() || window.formEditable) {
+            if (exports.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
@@ -252,9 +255,6 @@ angular.module('formModule').controller('FormViewCtrl',
             resolve: {
                 module: function () {
                     return $scope.module;
-                },
-                myOrgs: function () {
-                    return $scope.myOrgs;
                 },
                 orgName: function () {
                     return undefined;

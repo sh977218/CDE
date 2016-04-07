@@ -1,6 +1,5 @@
 var mongo_data_cde = require('../../cde/node-js/mongo-cde')
     , mongo_data_system = require('./mongo-data')
-    , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
     , adminItemSvc = require("./adminItemSvc")
@@ -86,15 +85,14 @@ exports.modifyOrgClassification = function(request, action, callback) {
                     query[key] = request.categories[i];
                 }
                 daoManager.getDaoList().forEach(function(dao) {
-                    dao.query(query, function(err, result) {
-                        for (var i = 0; i < result.length; i++) {
-                            var elt = result[i];
+                    dao.query(query, function (err, result) {
+                        result.forEach(function(elt) {
                             var steward = classificationShared.findSteward(elt, request.orgName);
                             classificationShared.modifyCategory(steward.object, request.categories,
-                                {type: action, newname: request.newname}, function() {
-                                classification.saveCdeClassif("", elt);
-                            });
-                        }
+                                {type: action, newname: request.newname}, function () {
+                                    classification.saveCdeClassif("", elt);
+                                });
+                        });
                         if (result.length > 0) {
                             mongo_data_system.addToClassifAudit({
                                 date: new Date()
@@ -128,27 +126,59 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-exports.classifyEntireSearch = function(req, cb) {
+exports.classifyCdesInBoard = function(req, cb) {
+    var boardId = req.body.boardId;
+    var newClassification = req.body.newClassification;
+
     var action = function(id, actionCallback) {
         var classifReq = {
-            orgName: req.newClassification.orgName
-            , categories: req.newClassification.categories
+            orgName: newClassification.orgName
+            , categories: newClassification.categories
             , cdeId: id
         };
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    var query = elastic.buildElasticSearchQuery(req.user, req.query);
-    elastic.elasticsearch(query, req.itemType, function(err, result) {
+    mongo_data_cde.boardById(boardId, function(err, board) {
+        if (err) return cb(err);
+        if (!board) return cb("No such board");
+        var tinyIds = board.pins.map(function(cde) {return cde.deTinyId});
+        mongo_data_cde.cdesByTinyIdList(tinyIds, function(err, cdes) {
+            var ids = cdes.map(function(cde) {return cde._id;});
+            adminItemSvc.bulkAction(ids, action, cb);
+            mongo_data_system.addToClassifAudit({
+                date: new Date()
+                , user: {
+                    username: req.user.username
+                }
+                , elements: cdes.map(function(e){return {tinyId: e.tinyId};})
+                , action: "reclassify"
+                , path: [newClassification.orgName].concat(newClassification.categories)
+            });
+        });
+    });
+};
+
+exports.classifyEntireSearch = function(req, cb) {
+    var action = function(id, actionCallback) {
+        var classifReq = {
+            orgName: req.body.newClassification.orgName
+            , categories: req.body.newClassification.categories
+            , cdeId: id
+        };
+        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+    };
+    var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
+    elastic.elasticsearch(query, req.body.itemType, function(err, result) {
         var ids = result.cdes.map(function(cde) {return cde._id;});
         adminItemSvc.bulkAction(ids, action, cb);
         mongo_data_system.addToClassifAudit({
             date: new Date()
             , user: {
-                username: "unknown"
+                username: req.user.username
             }
             , elements: result.cdes.map(function(e){return {tinyId: e.tinyId};})
             , action: "reclassify"
-            , path: [req.newClassification.orgName].concat(req.newClassification.categories)
+            , path: [req.body.newClassification.orgName].concat(req.body.newClassification.categories)
         });
     });
 };

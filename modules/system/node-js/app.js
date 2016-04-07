@@ -272,11 +272,11 @@ exports.init = function(app) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {
-            mongo_data_system.userById(req.user._id, function(err, user) {
+            mongo_data_system.userById(req.user._id, function (err, user) {
                 res.send(user);
             });
         }
-    });    
+    });
     
     app.post('/user/me', function(req, res) {
         if (!req.user) {
@@ -499,7 +499,7 @@ exports.init = function(app) {
             res.status(401).send();
             return;
         }      
-        classificationNode.classifyEntireSearch(req.body, function(err) {
+        classificationNode.classifyEntireSearch(req, function(err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
         });        
@@ -756,7 +756,7 @@ exports.init = function(app) {
     var loincUploadStatus;
     app.post('/uploadLoincCsv', multer(), function (req, res) {
         loincUploadStatus = [];
-        var load = spawn('node', ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
+        var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
             loincUploadStatus.push("Complete with Code: " + code);
             setTimeout(function( ) {loincUploadStatus = []}, 5 * 60 * 1000);
             fs.unlink(req.files.uploadedFiles.path);

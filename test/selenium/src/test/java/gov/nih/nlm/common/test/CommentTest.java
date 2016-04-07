@@ -5,36 +5,34 @@ import org.testng.Assert;
 
 public abstract class CommentTest extends CommonTest {
 
-    public void addComment(String text) {
+    private void addComment(String text) {
+        showAllTabs();
         clickElement(By.id("discussions_tab"));
         findElement(By.name("commentTextArea")).sendKeys(text);
         hangon(2);
-        clickElement(By.name("postComment"));
+        clickElement(By.id("postComment"));
         textPresent("Comment added");
     }
 
     public void comments(String eltName) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
-        showAllTabs();
         addComment("My First Comment!");
-        textPresent("testuser");
-        Assert.assertTrue(textPresent("My First Comment!"));
+        textPresent("My First Comment!");
         findElement(By.name("commentTextArea")).sendKeys("another comment");
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         // this effectively waits for the angular repeat to get reload and avoids stale elt reference.
         findElement(By.id("removeComment-1"));
         clickElement(By.id("removeComment-0"));
-        Assert.assertTrue(textPresent("Comment removed"));
+        textPresent("Comment removed");
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
     }
 
     public void orgAdminCanRemoveComment(String eltName, String status) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         String commentText = "Inappropriate Comment";
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment(commentText);
 
         logout();
@@ -55,10 +53,9 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void siteAdminCanRemoveComment(String eltName, String status) {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         String commentText = "Another Inappropriate Comment";
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment(commentText);
         logout();
         loginAs(nlm_username, nlm_password);
@@ -82,7 +79,6 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);
@@ -132,7 +128,6 @@ public abstract class CommentTest extends CommonTest {
 
         doLogin(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment("OK comment.");
         textNotPresent(censoredText);
         textPresent("OK comment.");
@@ -140,7 +135,6 @@ public abstract class CommentTest extends CommonTest {
         logout();
         doLogin(ninds_username, password);
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment("Curator's comment.");
         textNotPresent(censoredText);
         textPresent("Curator's comment.");
@@ -152,7 +146,6 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        showAllTabs();
         addComment(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);

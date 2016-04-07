@@ -62,8 +62,8 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         textPresent(oldClassification);
         textPresent(newClassification);
         findElement(By.xpath("//*[@id='addClassification-OldClassification']/button")).click();
-        hangon(3);
-        findElement(By.id("closeModal")).click();
+//        hangon(3);
+        clickElement(By.id("closeModal"));
         textNotPresent("by recently added");
 
         gotoClassificationMgt();
@@ -75,10 +75,10 @@ public class ClassificationMgt2Test extends BaseClassificationTest {
         findElement(By.id("selectClassificationOrg")).click();
         textPresent("NINDS");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        hangon(3);
+//        hangon(3);
         findElement(By.xpath("//*[@id='addClassification-NewClassification']/button")).click();
-        hangon(3);
-        findElement(By.id("closeModal")).click();
+//        hangon(3);
+        clickElement(By.id("closeModal"));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         findElement(By.id("username_link")).click();

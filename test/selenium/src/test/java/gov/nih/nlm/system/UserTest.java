@@ -21,7 +21,6 @@ public class UserTest extends NlmCdeBaseTest {
 
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
         enterUsernamePasswordSubmit(ctepCurator_username, password, "ctepCurator");
-
     }
 
     @Test
@@ -44,10 +43,11 @@ public class UserTest extends NlmCdeBaseTest {
 
     @Test
     public void userEmail() {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
-        Assert.assertEquals("test@example.com", findElement(By.id("user_email")).getText());
+        textPresent("test@example.com");
+        Assert.assertEquals(findElement(By.id("user_email")).getText(), "test@example.com");
         findElement(By.xpath("//div[@id='emailEdit']//i")).click();
         findElement(By.xpath("//div[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//div[@id='emailEdit']//input")).sendKeys("me@");

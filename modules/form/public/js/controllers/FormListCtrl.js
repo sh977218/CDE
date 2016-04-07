@@ -1,13 +1,13 @@
-angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource', 'FormQuickBoard'
-        , function($scope, $controller, userResource, QuickBoard)
+angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource', 'FormQuickBoard', '$timeout'
+        , function($scope, $controller, userResource, QuickBoard, $timeout)
 {
 
     $scope.quickBoard = QuickBoard;
     $scope.module = "form";
 
-    userResource.getPromise().then(function(){
+    $timeout(function() {
         $scope.search("form");
-    });
+    }, 0);
 
     var findFormQuestionNr = function (fe) {
         var n = 0;
