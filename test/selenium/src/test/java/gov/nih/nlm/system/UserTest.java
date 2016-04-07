@@ -43,7 +43,7 @@ public class UserTest extends NlmCdeBaseTest {
 
     @Test
     public void userEmail() {
-        mustBeLoggedInAs(test_username, test_password);
+        mustBeLoggedInAs(test_username, password);
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Profile")).click();
         textPresent("test@example.com");

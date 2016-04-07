@@ -48,7 +48,6 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
     protected static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
@@ -100,7 +99,7 @@ public class NlmCdeBaseTest {
         }
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void setBaseUrl() {
         hangon(new Random().nextInt(10));
         if (isWindows()) {
@@ -146,7 +145,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
-        wait = new WebDriverWait(driver, defaultTimeout, 200);
+        wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1600, 980);
@@ -156,6 +155,11 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
+    }
+
+    @AfterMethod
+    public void endSession() {
+        driver.quit();
     }
 
     @AfterMethod
@@ -169,7 +173,6 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
     }
 
-    @BeforeMethod
     public void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
@@ -381,11 +384,6 @@ public class NlmCdeBaseTest {
                 findElement(by).click();
             }
         }
-    }
-
-    @AfterTest
-    public void endSession() {
-        driver.quit();
     }
 
     public void waitForESUpdate() {
@@ -722,7 +720,7 @@ public class NlmCdeBaseTest {
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
-        scrollTo(1000);
+        hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
