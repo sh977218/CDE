@@ -212,7 +212,13 @@ angular.module('formModule').controller('FormViewCtrl',
             isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
 
-            if ($scope.formCdeIds.length < 21) renderPreview();
+            converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
+                    $scope.lfData = new LFormsData(lfData);
+                    $scope.$apply($scope.lfData);
+                },
+                function (err) {
+                    $scope.error = err;
+                });
 
             if (route.tab) {
                 $scope.tabs.more.select();
