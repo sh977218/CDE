@@ -52,11 +52,11 @@ schemas.userSchema = new mongoose.Schema({
     , knownIPs: [String]
     , roles: [{type: String, enum: authorizationShared.rolesEnum}]
     , searchSettings: {
-        defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
+        version: Number
+        , defaultSearchView: {type: String, enum: ["accordion", "table", "summary"]}
         , lowestRegistrationStatus: String
         , tableViewFields: {
-            version: Number
-            , name: Boolean
+            name: Boolean
             , naming: Boolean
             , permissibleValues: Boolean
             , uom: Boolean
@@ -67,7 +67,7 @@ schemas.userSchema = new mongoose.Schema({
             , ids: Boolean
             , source: Boolean
             , updated: Boolean
-            , numQuestions: Number
+            , numQuestions: Boolean
         }
     }
     , accessToken: String
