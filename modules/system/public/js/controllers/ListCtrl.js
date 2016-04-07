@@ -385,7 +385,7 @@ angular.module('systemModule').controller('ListCtrl',
             }, function () {
             });
         } else {
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/ifYouLogInModal.html'
             });
