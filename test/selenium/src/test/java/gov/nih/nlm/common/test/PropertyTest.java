@@ -77,7 +77,7 @@ public abstract class PropertyTest extends CommonTest {
         textPresent("Hello From Selenium");
     }
 
-    public void truncateRichText(String eltName, String status) {
+    public void truncateRichText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         showAllTabs();
@@ -91,7 +91,7 @@ public abstract class PropertyTest extends CommonTest {
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
-    public void truncatePlainText(String eltName, String status) {
+    public void truncatePlainText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
         showAllTabs();
