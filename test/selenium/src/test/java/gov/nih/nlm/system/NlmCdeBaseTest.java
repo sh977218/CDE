@@ -145,7 +145,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
-        wait = new WebDriverWait(driver, defaultTimeout, 200);
+        wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1600, 980);
