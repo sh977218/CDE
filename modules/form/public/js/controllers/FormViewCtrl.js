@@ -184,7 +184,17 @@ angular.module('formModule').controller('FormViewCtrl',
     if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
-
+    $scope.formPreviewRendered = false;
+    $scope.renderPreview = function () {
+        $scope.formPreviewRendered = true;
+        converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
+                $scope.lfData = new LFormsData(lfData);
+                $scope.$apply($scope.lfData);
+            },
+            function (err) {
+                $scope.error = err;
+            });
+    };
     
 
     $scope.reload = function () {
@@ -198,13 +208,9 @@ angular.module('formModule').controller('FormViewCtrl',
             });
             isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
-            converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
-                    $scope.lfData = new LFormsData(lfData);
-                    $scope.$apply($scope.lfData);
-                },
-                function (err) {
-                    $scope.error = err;
-                });
+
+            if ($scope.formCdeIds.length < 21) renderPreview();
+
             if (route.tab) {
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
