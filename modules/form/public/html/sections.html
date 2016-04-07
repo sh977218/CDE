@@ -1,20 +1,29 @@
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
-<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i>
+    Add Section
+</button>
+<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0"
+        ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
     <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
     <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
 </button>
 <div ng-show="canCurate"><br/></div>
 <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
-    <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a larger device.</div>
+    <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a
+        larger device.
+    </div>
 </div>
 <div ng-show="elt.formElements.length === 0">
     <i class="fa fa-exclamation-triangle"></i> There is no content yet.
 </div>
 <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions" id="sectionsDiv">
-    <div ng-repeat="(sectionIndex, formElement) in elt.formElements">
-        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement; parent = elt;"></div>
-        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="parent = elt; section = formElement; "></div>
+    <div ng-repeat="(sectionIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
+        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'"
+             ng-init="question = formElement; parent = elt;"></div>
+        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
+             ng-init="parent = elt; section = formElement; "></div>
     </div>
 </div>
-<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
+<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i
+        class="fa fa-plus"></i> Add Section
+</button>
 

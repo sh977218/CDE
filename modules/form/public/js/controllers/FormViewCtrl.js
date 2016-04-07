@@ -199,6 +199,14 @@ angular.module('formModule').controller('FormViewCtrl',
             });
     };
     
+    $scope.nbOfEltsLimit = 20;
+    $scope.raiseLimit = function() {
+        for (var i = 0; i < $scope.formCdeIds.length - $scope.nbOfEltsLimit; i++) {
+            $timeout(function() {
+                $scope.nbOfEltsLimit += 1;
+            }, 0);
+        }
+    };
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -212,13 +220,7 @@ angular.module('formModule').controller('FormViewCtrl',
             isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
 
-            converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
-                    $scope.lfData = new LFormsData(lfData);
-                    $scope.$apply($scope.lfData);
-                },
-                function (err) {
-                    $scope.error = err;
-                });
+            if ($scope.formCdeIds.length < 21) $scope.renderPreview();
 
             if (route.tab) {
                 $scope.tabs.more.select();
