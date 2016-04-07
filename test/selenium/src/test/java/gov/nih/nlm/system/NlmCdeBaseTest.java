@@ -720,7 +720,7 @@ public class NlmCdeBaseTest {
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
-        scrollTo(1000);
+        hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
