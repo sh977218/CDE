@@ -28,12 +28,12 @@ public class CdePropertyTest extends PropertyTest {
 
     @Test
     public void truncateRichText() {
-        truncateRichText("Skull fracture morphology findings type", null);
+        truncateRichText("Skull fracture morphology findings type");
     }
 
     @Test
     public void truncatePlainText() {
-        truncatePlainText("Skull fracture morphology findings type", null);
+        truncatePlainText("Skull fracture morphology findings type");
     }
 
     @Test
