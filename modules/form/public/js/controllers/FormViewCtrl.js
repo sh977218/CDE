@@ -192,7 +192,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
-            if ($scope.isSiteAdmin() || window.formEditable) {
+            if (exports.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
             isAllowedModel.setDisplayStatusWarning($scope);
