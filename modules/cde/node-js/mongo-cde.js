@@ -294,7 +294,7 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.newObject = function(obj) {
+exports.newObject = function (obj) {
     return new DataElement(obj);
 };
 
@@ -427,17 +427,16 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {"source": source, "id": id}).exec(function (err, cdes) {
-        if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
+    DataElement.find({archived: null}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+        if (cdes.length > 1)
+            cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
 };
 
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {
-        source: source,
-        id: id,
-        version: version
+    DataElement.find({archived: null}).elemMatch("ids", {
+        source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
@@ -456,8 +455,8 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function(doc, cb){
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
+var correctBoardPinsForCde = function (doc, cb) {
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
         if (err) throw err;
         if (cb) cb();
     });
@@ -507,6 +506,6 @@ exports.upsertStatusCde = function(cde, cb){
     });
 };
 
-exports.findModifiedElementsSince = function(date, cb){
-    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated:-1}).limit(5000).exec(cb);
+exports.findModifiedElementsSince = function (date, cb) {
+    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);
 };

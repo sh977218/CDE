@@ -1,7 +1,7 @@
 angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http', '$interval', '$upload',
     function($scope, $http, $interval, $upload)
 {
-
+    
     $scope.input = {};
 
     $scope.tabLostFocus = function() {
