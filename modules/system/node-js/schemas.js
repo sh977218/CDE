@@ -217,11 +217,11 @@ schemas.referenceDocumentSchema = {
     _id: false
 };
 schemas.dataSetSchema = {
-    variableName: String,
-    variableId: String,
-    variableDescripttion: String,
-    dbGapId: String,
-    uri: String
+    source: String,
+    id: String,
+    studyUri: String,
+    dataUri: String,
+    notes: String
 };
 schemas.classificationAudit = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true}

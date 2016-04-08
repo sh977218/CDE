@@ -1,25 +1,26 @@
 <div ng-if="elt.dataSets && elt.dataSets.length >0" id="dataSetsDiv">
-    <div>
-        <h5></h5>
+    <div class="col-xs-12">
+        <h4>Data sets using this CDE</h4>
         <table class="table-bordered table-condensed table-striped">
+
             <thead>
             <tr>
                 <th>#</th>
-                <th>Variable Name</th>
-                <th>Variable ID</th>
-                <th>Variable Description</th>
-                <th>URI</th>
-                <th>dbGap Id</th>
+                <th>Source</th>
+                <th>ID</th>
+                <th>Study</th>
+                <th>Data</th>
+                <th>Notes</th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="dataSet in elt.dataSets">
                 <td>{{$index+1}}</td>
-                <td>{{dataSet.variableName}}</td>
-                <td>{{dataSet.variableId}}</td>
-                <td>{{dataSet.variableDescripttion}}</td>
-                <td>{{dataSet.dbGapId}}</td>
-                <td><a id="dataSetUri{{$index}}" href="{{dataSet.uri}}">{{dataSet.uri}}</a></td>
+                <td>{{dataSet.source}}</td>
+                <td>{{dataSet.id}}</td>
+                <td><a id="dataSetStudyUri{{$index}}" href="{{dataSet.studyUri}}">Study</a></td>
+                <td><a id="dataSetDataUri{{$index}}" href="{{dataSet.dataUri}}">Data</a></td>
+                <td>{{dataSet.notes}}</td>
             </tr>
             </tbody>
         </table>

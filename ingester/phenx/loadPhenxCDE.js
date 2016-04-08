@@ -75,11 +75,11 @@ function run() {
                                 if (!existingDbGapMapping[JSON.stringify(dbGap)]) {
                                     existingDbGapMapping[JSON.stringify(dbGap)] = true;
                                     var dataSet = {};
-                                    dataSet.variableName = phenxVariableName;
-                                    dataSet.variableId = phenxVariableId;
-                                    dataSet.variableDescripttion = phenxVariableDescription;
-                                    dataSet.dbGapId = dbGap['dbGaP VARIABLE_ID'];
-                                    dataSet.uri = dbGapUrlPre + phenxVariableName + dbGapUrlPost + phenxVariableId;
+                                    dataSet.notes = "PhenX Variable ID: " + phenxVariableId;
+                                    dataSet.source = "dbGaP";
+                                    dataSet.id = dbGap['dbGaP VARIABLE_ID'];
+                                    dataSet.studyUri = "http://www.ncbi.nlm.nih.gov/gap/?term=" + dbGap['dbGaP VARIABLE_ID'];
+                                    dataSet.dataUri = "ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/" + dbGap['dbGaP STUDY_ID'].split('.')[0];
                                     dataSets.push(dataSet);
                                 }
                             });
