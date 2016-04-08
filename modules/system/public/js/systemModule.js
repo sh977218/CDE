@@ -203,7 +203,8 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
         if (userResource.user.siteAdmin) {
             return true;
         } else {
-            if (CuratedItem.registrationState.registrationStatus === "Standard" || CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
+            if (CuratedItem.registrationState.registrationStatus === "Standard" ||
+                CuratedItem.registrationState.registrationStatus === "Preferred Standard") {
                 return false;
             }
             if (userResource.userOrgs) {

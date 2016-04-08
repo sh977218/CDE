@@ -214,7 +214,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
-            if ($scope.isSiteAdmin() || window.formEditable) {
+            if (exports.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
             $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
@@ -227,7 +227,9 @@ angular.module('formModule').controller('FormViewCtrl',
 
             if (route.tab) {
                 $scope.tabs.more.select();
-                $scope.tabs[route.tab].active = true;
+                $timeout(function () {
+                    $scope.tabs[route.tab].active = true;
+                }, 0);
             }
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

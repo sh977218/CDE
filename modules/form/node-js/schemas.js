@@ -18,6 +18,12 @@ var questionSchema = {
         , maxValue: Number
         , precision: Number
     }
+    , datatypeText: {
+        minLength: Number
+        , maxLength: Number
+        , regex: String
+        , rule: String
+    }
     , uoms: [String]
     , required: {type: Boolean, default: false}
     , editable: {type: Boolean, default: true}
