@@ -1,5 +1,3 @@
-var timeStart = new Date().getTime();
-
 var fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('config'),
@@ -191,5 +189,3 @@ conn.on('error', function (err) {
 conn.once('open', function callback() {
     setTimeout(processFile(), 3000);
 });
-
-

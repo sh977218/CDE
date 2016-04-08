@@ -3,8 +3,8 @@
         <div uib-tab heading="Broadcast">
             <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
                 <div class="form-group long-field" ng-class="{error: form.version.$invalid}">
-                   <input class="form-control" name="message" type="text" ng-model="broadcast.message"
-                          placeholder="Broadcast a message to all users..."/>
+                    <input class="form-control" name="message" type="text" ng-model="broadcast.message"
+                           placeholder="Broadcast a message to all users..."/>
                 </div>
                 <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Broadcast</button>
             </form>
@@ -13,14 +13,15 @@
             <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
                 Make
                 <div class="form-group">
-                   <input class="form-control" name="message" type="text" ng-model="admin.username"
-                          placeholder="enter user name" uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
-                          uib-typeahead-min-length="3" required />
+                    <input class="form-control" name="message" type="text" ng-model="admin.username"
+                           placeholder="enter user name"
+                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
+                           uib-typeahead-min-length="3" required/>
                 </div>
                 a site admin
                 <button class="btn btn-warning" ng-click="addSiteAdmin()" id="saveMessage">Make Admin</button>
             </form>
-            
+
             <table class="table table-border table-responsive">
                 <tr>
                     <th>Site Admins:</th>
