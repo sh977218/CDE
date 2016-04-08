@@ -47,7 +47,11 @@ function run() {
             stream.on('data', function (de) {
                 totalDeCounter++;
                 stream.pause();
-                console.log('cde tinyId: ' + de.get('tinyId'));
+                var tinyId = de.get('tinyId');
+                if (tinyId === 'X1mJv5j3jx') {
+                    console.log('h');
+                }
+                console.log('cde tinyId: ' + tinyId);
                 var id = '';
                 de.get('ids').forEach(function (i) {
                     if (i.source === 'LOINC') id = i.id;
@@ -60,26 +64,31 @@ function run() {
                     if (err) throw err;
                     var trs = '';
                     var dataSets = [];
+                    var i = 0;
                     async.forEach(phenxVariableArray, function (phenxVariable, doneOnePhenxVariable) {
+                        i++;
                         var phenxVariableName = phenxVariable.get('VARNAME');
                         var phenxVariableId = phenxVariable.get('PhenX Variable');
                         var phenxVariableDescription = phenxVariable.get('VARDESC');
+                        var idTd = '<td>' + i + '</td>';
                         var phenxVariableNameTd = '<td>' + phenxVariableName + '</td>';
                         var phenxVariableIdTd = '<td>' + phenxVariableId + '</td>';
                         var phenxVariableDescriptionTd = '<td>' + phenxVariableDescription + '</td>';
-                        var tr = '<tr>' + phenxVariableNameTd + phenxVariableIdTd + phenxVariableDescriptionTd + '</tr>';
+                        var tr = '<tr>' + idTd + phenxVariableNameTd + phenxVariableIdTd + phenxVariableDescriptionTd + '</tr>';
                         trs = trs + tr;
-                        VariableCrossReferenceModel.find({'VARIABLE_ID': phenxVariableName}, function (err, dbGapArray) {
+                        VariableCrossReferenceModel.find({'VARIABLE_ID': phenxVariableId}, function (err, dbGapArray) {
                             if (err) throw err;
                             var existingDbGapMapping = {};
                             dbGapArray.forEach(function (dbGap) {
+                                var dbGap = dbGap.toObject();
+                                delete dbGap._id;
                                 if (existingDbGapMapping[JSON.stringify(dbGap)]) {
                                     var dataSet = {};
-                                    dataSet.variableName = phenxVariable['VARNAME'];
-                                    dataSet.variableId = phenxVariable['PhenX Variable'];
-                                    dataSet.variableDescripttion = phenxVariable['VARDESC'];
+                                    dataSet.variableName = phenxVariableName;
+                                    dataSet.variableId = phenxVariableId;
+                                    dataSet.variableDescripttion = phenxVariableDescription;
                                     dataSet.dbGapId = dbGap['dbGaP VARIABLE_ID'];
-                                    dataSet.uri = dbGapUrlPre + phenxVariable["VARNAME"] + dbGapUrlPost + phenxVariable["PhenX Variable"];
+                                    dataSet.uri = dbGapUrlPre + phenxVariableName + dbGapUrlPost + phenxVariableId;
                                     dataSets.push(dataSet);
                                 }
                                 else {
@@ -90,7 +99,7 @@ function run() {
                         })
                     }, function doneAllPhenxVariables() {
                         var property = {key: 'PhenX Variables', valueFormat: 'html'};
-                        var thead = '<thead><tr><th>Variable Name</th><th>Variable ID</th><th>Variable Description</th></tr></thead>';
+                        var thead = '<thead><tr><th>#</th></th><th>Variable Name</th><th>Variable ID</th><th>Variable Description</th></tr></thead>';
                         var tbody = '<tbody>' + trs + '</tbody>';
                         property.value = "<table class='table table-striped'>" + thead + tbody + "</table>";
                         de.get('properties').push(property);
