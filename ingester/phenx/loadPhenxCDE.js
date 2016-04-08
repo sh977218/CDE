@@ -38,9 +38,6 @@ function run() {
                 totalDeCounter++;
                 stream.pause();
                 var tinyId = de.get('tinyId');
-                if (tinyId === 'X1mJv5j3jx') {
-                    console.log('h');
-                }
                 console.log('cde tinyId: ' + tinyId);
                 var id = '';
                 de.get('ids').forEach(function (i) {
