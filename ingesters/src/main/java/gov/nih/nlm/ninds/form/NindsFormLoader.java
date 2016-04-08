@@ -1,230 +1,215 @@
 package gov.nih.nlm.ninds.form;
 
-import com.google.gson.Gson;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NindsFormLoader implements Runnable {
+    MongoOperations mongoOperation;
     Map<String, String> diseaseMap = new HashMap<String, String>();
-    String url = "http://www.commondataelements.ninds.nih.gov/CRF.aspx";
+    String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
     WebDriver driver;
+    WebDriver classifDriver;
     WebDriverWait wait;
-    Collection<MyForm> forms = new ArrayList<MyForm>();
     int pageStart;
     int pageEnd;
+    MyLog log = new MyLog();
+    CDEUtility cdeUtility = new CDEUtility();
 
-    public NindsFormLoader(int ps, int pe) {
-        diseaseMap.put("General (For all diseases)", "General.aspx");
-        diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
-        diseaseMap.put("Epilepsy", "Epilepsy.aspx");
-        diseaseMap.put("Friedreich's Ataxia", "FA.aspx");
-        diseaseMap.put("Headache", "Headache.aspx");
-        diseaseMap.put("Huntington's Disease", "HD.aspx");
-        diseaseMap.put("Mitochondrial Disease", "MITO.aspx");
-        diseaseMap.put("Multiple Sclerosis", "MS.aspx");
-        diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
-        diseaseMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
-        diseaseMap.put("Duchenne Muscular Dystrophy/Becker Muscular Dystrophy", "DMD.aspx");
-        diseaseMap.put("Facioscapulohumeral Muscular Dystrophy", "FSHD.aspx");
-        diseaseMap.put("Myasthenia Gravis", "MG.aspx");
-        diseaseMap.put("Myotonic Muscular Dystrophy", "MMD.aspx");
-        diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
-        diseaseMap.put("Parkinson's Disease", "PD.aspx");
-        diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
-        diseaseMap.put("Stroke", "Stroke.aspx");
-        diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
-
+    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 120);
         this.pageStart = ps;
         this.pageEnd = pe;
+        this.mongoOperation = mongoOperation;
+        this.diseaseMap = diseaseMap;
+        this.log.setPageStart(this.pageStart);
+        this.log.setPageEnd(this.pageEnd);
+
     }
 
     @Override
     public void run() {
-        System.out.println("running page: " + pageStart);
-        openTab();
+        this.driver = new ChromeDriver();
+        this.classifDriver = new ChromeDriver();
+        this.wait = new WebDriverWait(driver, 120);
+        long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(pageStart);
-        findAndSaveToForms(forms, pageStart, pageEnd);
-        saveToJson(forms);
-        driver.close();
+        findAndSaveToForms(pageStart, pageEnd);
+        cdeUtility.checkDataQuality(mongoOperation, "");
+        long endTime = System.currentTimeMillis();
+        long totalTimeInMillis = endTime - startTime;
+        long totalTimeInSeconds = totalTimeInMillis / 1000;
+        long totalTimeInMinutes = totalTimeInSeconds / 60;
+        this.log.setRunTime(totalTimeInMinutes);
+        this.log.info.add("finished " + pageStart + " to " + pageEnd);
+        mongoOperation.save(this.log);
+        this.driver.close();
+        this.classifDriver.close();
     }
 
-    void openTab() {
-        try {
-            Robot r = new Robot();
-            r.keyPress(KeyEvent.VK_CONTROL);
-            r.keyPress(KeyEvent.VK_T);
-            r.keyRelease(KeyEvent.VK_T);
-            r.keyRelease(KeyEvent.VK_CONTROL);
-            Thread.sleep(5000);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
-    }
-
-    void goToNindsSiteAndGoToPageOf(int pageStart) {
-        switchTab(1);
+    private void goToNindsSiteAndGoToPageOf(int pageStart) {
         driver.get(url);
-        textPresent("or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
+        textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
         hangon(10);
+        Select pageSizeSelect = new Select(findElement(By.id("ddlPageSize")));
+        pageSizeSelect.selectByVisibleText("100");
+        hangon(5);
         findElement(By.id("ContentPlaceHolder1_btnClear")).click();
-        textPresent("Page: 1 of 1");
-        hangon(10);
-        findElement(By.id("ddlPageSize")).click();
-        findElement(By.cssSelector("#ddlPageSize > option:nth-child(4)")).click();
-        textPresent("Page: 1 of 1");
-        hangon(10);
+        hangon(5);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
-        textPresent("2549 items found.");
-        textPresent("Page: 1 of 26");
-
-        String sortHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > a";
-        String imgHeadSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(1) > th:nth-child(1) > img";
-        findElement(By.cssSelector(sortHeadSelector)).click();
-
-        String sortImg = findElement(By.cssSelector(imgHeadSelector)).getAttribute("src");
-        while (!sortImg.contains("image/triangleup.gif")) {
-            findElement(By.cssSelector(sortHeadSelector)).click();
-            tableIsLoad();
-            hangon(5);
-            sortImg = findElement(By.cssSelector(imgHeadSelector)).getAttribute("src");
-        }
-        tableIsLoad();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(By.id("ContentPlaceHolder1_btnClear")));
+        textPresent("2605 items found.");
         if (pageStart > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
-            textPresent("Page: 26 of 26");
+            textPresent("Page: 27 of 27");
             goToPageFromLast(pageStart);
         } else {
             for (int i = 1; i < pageStart; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-                textPresent("Page: " + i + " of 26");
+                textPresent("Page: " + i + " of 27");
             }
         }
     }
 
-    void goToPageFromLast(int pageStart) {
-        for (int n = 26; n > pageStart; n--) {
+    private void goToPageFromLast(int pageStart) {
+        for (int n = 27; n > pageStart; n--) {
             findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
             int num = n - 1;
-            String s = "Page: " + num + " of 26";
+            String s = "Page: " + num + " of 27";
             textPresent(s);
         }
     }
 
-    void findAndSaveToForms(Collection<MyForm> forms, int pageStart, int pageEnd) {
-        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 26";
+    private void findAndSaveToForms(int pageStart, int pageEnd) {
+        System.out.println("running page from " + pageStart + " to " + pageEnd);
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
         textPresent(textToBePresent);
-        List<WebElement> trs = driver.findElements(By.cssSelector("#ContentPlaceHolder1_dgCRF > tbody > tr"));
+        List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
             MyForm form = new MyForm();
+            form.setPage(pageStart);
+            form.setRow(i);
             int index = 1;
-            boolean grabDomain = true;
-            for (int j = 0; j < tds.size(); j++) {
-                WebElement td = tds.get(j);
-                String text = td.getText().replace("\"", " ").trim();
-                if (index == 1)
-                    form.crfModuleGuideline = text;
-                if (index == 2)
-                    form.description = text;
-                if (index == 3) {
-                    List<WebElement> img = td.findElements(By.cssSelector("img"));
-                    if (img.size() > 0) {
-                        form.copyRight = "true";
-                    }
-                }
-                if (index == 4) {
+            for (WebElement td : tds) {
+                String text = td.getText();
+                if (index == 1) {
                     hangon(5);
-                    List<WebElement> a = td.findElements(By.cssSelector("a"));
-                    if (a.size() > 0) {
-                        String href = a.get(0).getAttribute("href");
-                        form.downloads = href;
-                        form.downloadsTitle = text;
+                    List<WebElement> aList = td.findElements(By.cssSelector("a"));
+                    if (aList.size() > 0) {
+                        String downloadLink = aList.get(0).getAttribute("href");
+                        form.setDownloadLink(downloadLink);
+                        String id = aList.get(0).getAttribute("title");
+                        if (id.length() > 0)
+                            form.setFormId(id.replace("NOC-", ""));
+                        else
+                            form.setFormId(downloadLink.split("CrfId=")[1]);
+                        List<WebElement> copyRightClass = td.findElements(By.className("copyright"));
+                        if (copyRightClass.size() > 0) {
+                            form.setCopyRight(true);
+                        }
                     }
+                    form.setCrfModuleGuideline(cdeUtility.cleanFormName(text));
                 }
-                if (index == 5) {
+                if (index == 2)
+                    form.setDescription(text);
+                if (index == 3) {
                     List<WebElement> as = td.findElements(By.cssSelector("a"));
                     if (as.size() > 0) {
-                        grabDomain = true;
                         WebElement a = as.get(0);
                         getCdes(form, a);
                     }
                 }
-                if (index == 6)
-                    form.versionNum = text;
-                if (index == 7)
-                    form.versionDate = text;
-                if (index == 8) {
-                    form.diseaseName = text;
+                if (index == 4)
+                    form.setVersionNum(text);
+                if (index == 5)
+                    form.setVersionDate(text);
+                if (index == 6) {
+                    form.setDiseaseName(text);
                 }
-                if (index == 9) {
-                    form.subDiseaseName = text;
+                if (index == 7) {
+                    form.setSubDiseaseName(text);
                 }
                 index++;
             }
-            if (grabDomain)
-                getDomainAndSubDomain(form);
-            forms.add(form);
+            getDomainAndSubDomain(form);
+
+            Query searchDuplicatedFormQuery = new Query(Criteria.where("formId").is(form.getFormId())
+                    .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
+                    .and("description").is(form.getDescription())
+                    .and("copyRight").is(form.isCopyRight())
+                    .and("downloadLink").is(form.getDownloadLink())
+                    .and("versionNum").is(form.getVersionNum())
+                    .and("versionDate").is(form.getVersionDate())
+                    .and("diseaseName").is(form.getDiseaseName())
+                    .and("subDiseaseName").is(form.getSubDiseaseName())
+                    .and("domainName").is(form.getDomainName())
+                    .and("subDomainName").is(form.getSubDomainName()));
+            MyForm existingForm = mongoOperation.findOne(searchDuplicatedFormQuery, MyForm.class);
+            if (existingForm != null) {
+                this.log.info.add("search with query: " + searchDuplicatedFormQuery.toString());
+                this.log.info.add("found existing form in migration: " + existingForm);
+                this.log.info.add("found form on web:" + form);
+            } else {
+                form.setCreateDate(new Date());
+                mongoOperation.save(form);
+            }
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-            findAndSaveToForms(forms, pageStart + 1, pageEnd);
+            findAndSaveToForms(pageStart + 1, pageEnd);
         }
+        System.out.println("finished page from " + pageStart + " to " + pageEnd);
     }
 
-    void getDomainAndSubDomain(MyForm form) {
-        switchTab(0);
-        driver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.diseaseName));
-        String subDomianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
-                + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())=\"" + form.crfModuleGuideline
-                + "\"]/ancestor::table/preceding-sibling::a[1]";
 
-        List<WebElement> subDomains = driver.findElements(By.xpath(subDomianSelector));
+    private void getDomainAndSubDomain(MyForm form) {
+        String crfModuleGuideline = form.getCrfModuleGuideline().trim();
+        classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.getDiseaseName()));
+        String subDomianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::a[1]";
+        String domianSelector1 = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
+        List<WebElement> subDomains = classifDriver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
-            form.subDomainName = subDomains.get(0).getText().trim();
-        List<WebElement> domains = driver.findElements(By.xpath(domianSelector));
-        if (domains.size() > 0)
-            form.domainName = domains.get(0).getText().trim();
-        switchTab(1);
-    }
-
-    boolean tableIsLoad() {
-        String tableSelector = "#ContentPlaceHolder1_dgCRF > tbody > tr:nth-child(2) > td:nth-child(1)";
-        Boolean tableIsPresent = false;
-        while (tableIsPresent == false) {
-            tableIsPresent = driver.findElements(By.cssSelector(tableSelector)).size() > 0;
-            if (tableIsPresent == true)
-                return true;
+            form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
+        else {
+            this.log.info.add("cannot find subDomainName of form: " + form + " of xpath: " + subDomianSelector);
         }
-        return false;
+        List<WebElement> domains = classifDriver.findElements(By.xpath(domianSelector));
+        if (domains.size() > 0) {
+            form.setDomainName(domains.get(0).getText().trim());
+        } else {
+            List<WebElement> domains1 = classifDriver.findElements(By.xpath(domianSelector1));
+            if (domains1.size() > 0) {
+                form.setDomainName(domains1.get(0).getText().trim());
+            } else {
+                this.log.info.add("cannot find domainName of form: " + form + " of xpath: " + domianSelector1);
+            }
+        }
     }
 
-    void getCdes(MyForm form, WebElement a) {
+    private void getCdes(MyForm form, WebElement a) {
         a.click();
         hangon(5);
-        switchTab(2);
-        getCdesList(form);
+        cdeUtility.switchTab(driver, 1);
+        cdeUtility.getCdesList(driver, form);
         String cdesTotalPageStr = findElement(By.id("viewer_ctl01_ctl01_ctl04")).getText();
         int cdesTotalPage = Integer.valueOf(cdesTotalPageStr);
         if (cdesTotalPage > 1) {
@@ -232,176 +217,50 @@ public class NindsFormLoader implements Runnable {
                 if (j == 5) {
                     refreshSession();
                 }
-                findElement(By.xpath("//*[@id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
-                hangon(5);
-                getCdesList(form);
+                findElement(By.xpath("//*[ @id=\"viewer_ctl01_ctl01_ctl05_ctl00\"]/tbody/tr/td/input")).click();
+                String temp = "Page " + (j + 1) + " of " + cdesTotalPage;
+                textPresent(temp);
+                cdeUtility.getCdesList(driver, form);
             }
         }
-        switchTabAndClose(1);
+        cdeUtility.switchTabAndClose(driver, 0);
     }
 
-    void refreshSession() {
-        switchTab(1);
+    private void refreshSession() {
+        cdeUtility.switchTab(driver, 0);
         findElement(By.id("ContentPlaceHolder1_lbDownload")).click();
-        hangon(10);
-        switchTab(2);
+        hangon(5);
+        cdeUtility.switchTab(driver, 1);
     }
 
-    void getCdesList(MyForm form) {
-        String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
-        List<WebElement> trs = driver.findElements(By.xpath(selector));
-        for (int i = 2; i < trs.size(); i++) {
-            WebElement tr = trs.get(i);
-            List<WebElement> tds = tr.findElements(By.cssSelector("td"));
-            int index = 1;
-            Cde cde = new Cde();
-            int noise = 0;
-            for (int j = 0; j < tds.size(); j++) {
-                WebElement td = tds.get(j);
-                String text = td.getText().replace("\"", " ").trim();
-                if (index == 1) {
-                    cde.cdeId = text;
-                }
-                if (index == 2) {
-                    cde.cdeName = text;
-                }
-                if (index == 3) {
-                    cde.varibleName = text;
-                }
-                if (index == 4) {
-                    cde.definitionDescription = text;
-                }
-                if (index == 5) {
-                    cde.questionText = text;
-                }
-                if (index == 6) {
-                    cde.permissibleValue = text;
-                }
-                if (index == 7) {
-                    cde.permissibleDescription = text;
-                }
-                if (index == 8) {
-                    cde.dataType = text;
-                }
-                if (index == 9) {
-                    cde.instructions = text;
-                }
-                if (index == 10) {
-                    cde.referrences = text;
-                }
-                if (index == 11) {
-                    cde.population = text;
-                }
-                if (index == 12) {
-                    cde.classification = text;
-                }
-                if (index == 13) {
-                    cde.versionNum = text;
-                }
-                if (index == 14) {
-                    cde.versionDate = text;
-                }
-                if (index == 15) {
-                    cde.aliasesForVariableName = text;
-                }
-                if (index == 16) {
-                    cde.crfModuleGuideline = text;
-                }
-                if (index == 17) {
-                    List<WebElement> table = td.findElements(By.cssSelector("table"));
-                    if (table.size() > 0) {
-                        cde.copyRight = "true";
-                        noise = 1;
-                    }
-                }
-                if (index == 18 + noise) {
-                    cde.subDomain = text;
-                    form.subDomainName = text;
-                }
-                if (index == 19 + noise) {
-                    cde.domain = text;
-                    form.domainName = text;
-                }
-                if (index == 20 + noise) {
-                    cde.previousTitle = text;
-                }
-                if (index == 21 + noise) {
-                    cde.size = text;
-                }
-                if (index == 22 + noise) {
-                    cde.inputRestrictions = text;
-                }
-                if (index == 23 + noise) {
-                    cde.minValue = text;
-                }
-                if (index == 24 + noise) {
-                    cde.maxValue = text;
-                }
-                if (index == 25 + noise) {
-                    cde.measurementType = text;
-                }
-                if (index == 26 + noise) {
-                    cde.loincID = text;
-                }
-                if (index == 27 + noise) {
-                    cde.snomed = text;
-                }
-                if (index == 28 + noise) {
-                    cde.cadsrID = text;
-                }
-                if (index == 29 + noise) {
-                    cde.cdiscID = text;
-                }
-                index++;
-            }
-            form.cdes.add(cde);
+
+    private boolean textPresent(String text) {
+        try {
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
+        } catch (Exception e) {
+            System.out.println("tried once fail. try another. pageStart :" + pageStart);
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         }
-    }
-
-    boolean textPresent(String text) {
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         return true;
     }
 
-    public void hangon(double i) {
+    private void hangon(double i) {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
-    void switchTabAndClose(int i) {
-        ArrayList<String> tabs = new ArrayList(driver.getWindowHandles());
-        driver.close();
-        driver.switchTo().window(tabs.get(i));
-    }
-
-    void switchTab(int i) {
-        ArrayList<String> tabs = new ArrayList(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(i));
-    }
-
-    WebElement findElement(By by) {
+    private WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
     }
 
-    public void saveToJson(Collection<MyForm> forms) {
-        String info = "forms size without info: " + forms.size();
-        MyForm myForm = new MyForm();
-        myForm.crfModuleGuideline = info;
-        forms.add(myForm);
-        Gson gson = new Gson();
-        String json = gson.toJson(forms);
-        try {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:\\NLMCDE\\nindsFormsChrist" + pageStart + ".json"), "UTF-8"));
-            out.write(json);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("exception of writing to file.");
-            e.printStackTrace();
-        } finally {
-            System.out.println("nindsFormsChrist" + pageStart + "-" + pageEnd + ".json done.");
-            System.out.println("forms size after info: " + forms.size());
-        }
+    @Override
+    public String toString() {
+        return "NindsFormLoader{" +
+                ", url='" + url + '\'' +
+                ", pageStart=" + pageStart +
+                ", pageEnd=" + pageEnd +
+                ", log=" + log +
+                ", cdeUtility=" + cdeUtility +
+                '}';
     }
-
 }

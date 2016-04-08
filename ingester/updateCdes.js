@@ -18,14 +18,18 @@ var mongoMigrationUri = config.mongoMigrationUri;
 
 var conn = mongoose.createConnection(mongoUri);
 conn.on('error', console.error.bind(console, 'appData connection error:'));
-conn.on('error', function() {process.exit(1);});
+conn.on('error', function () {
+    process.exit(1);
+});
 conn.once('open', function callback() {
     console.log('mongodb connection open');
 });
 
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
 migrationConn.on('error', console.error.bind(console, 'migration connection error:'));
-migrationConn.on('error', function() {process.exit(1);});
+migrationConn.on('error', function () {
+    process.exit(1);
+});
 migrationConn.once('open', function callback() {
     console.log('mongodb migration connection open');
 });
@@ -56,6 +60,7 @@ var removeClassificationTree = function (cde, org) {
 
 var changed = 0;
 var created = 0;
+var createdCDE = [];
 var same = 0;
 
 setInterval(function () {
@@ -76,7 +81,7 @@ var wipeUseless = function (toWipeCde) {
 };
 
 var compareCdes = function (existingCde, newCde) {
-    existingCde = JSON.parse(JSON.stringify(existingCde));
+    var existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
     for (var i = existingCde.classification.length - 1; i > 0; i--) {
         if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
@@ -167,65 +172,66 @@ var findCde = function (cdeId, migrationCde, source, orgName, idv, findCdeDone) 
     };
     DataElement.find(cdeCond)
         .where("ids").elemMatch(function (elem) {
-            elem.where("source").equals(source);
-            elem.where("id").equals(cdeId);
-        }).exec(function (err, existingCdes) {
-            if (existingCdes.length === 0) {
-                //delete migrationCde._id;
-                var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
-                delete mCde._id; //use mCde below!!!
-                var createDe = new DataElement(mCde);
-                createDe.imported = importDate;
-                createDe.created = importDate;
-                try {
-                    createDe.save(function (err) {
-                        if (err) {
-                            console.log("Unable to create CDE.");
-                            console.log(mCde);
-                            console.log(createDe);
-                            throw err;
-                        }
-                        else {
-                            created++;
-                            migrationCde.remove(function (err) {
-                                if (err) console.log("unable to remove: " + err);
-                                else findCdeDone();
-                            });
-                        }
-                    });
-                } catch (e) {
-                    console.log(createDe);
-                    console.log(mCde);
-                    throw e;
-                }
-            } else if (existingCdes.length > 1) {
-                //console.log("Too many CDEs with Id = " + cdeId);
-                //
-                DataElement.find(cdeCond)
-                    .where("ids").elemMatch(function (elem) {
-                        elem.where("source").equals(source);
-                        elem.where("id").equals(cdeId);
-                        elem.where("version").equals(idv);
-                    }).exec(function (err, existingCdes) {
-                        if (existingCdes.length === 1) {
-                            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
-                        }
-                        else if (existingCdes.length > 1) {
-                            console.log(cdeId);
-                            console.log(source);
-                            console.log(idv);
-                            throw "Too many CDEs with the same ID/version.";
-                        } else {
-                            throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
-                        }
-                    });
-
-            } else {
-                processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+        elem.where("source").equals(source);
+        elem.where("id").equals(cdeId);
+    }).exec(function (err, existingCdes) {
+        if (err) throw err;
+        if (existingCdes.length === 0) {
+            console.log('not found: ' + cdeId);
+            //delete migrationCde._id;
+            var mCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
+            delete mCde._id; //use mCde below!!!
+            var createDe = new DataElement(mCde);
+            createDe.imported = importDate;
+            createDe.created = importDate;
+            try {
+                createDe.save(function (err) {
+                    if (err) {
+                        console.log("Unable to create CDE.");
+                        console.log(mCde);
+                        console.log(createDe);
+                        throw err;
+                    }
+                    else {
+                        created++;
+                        createdCDE.push(cdeId);
+                        migrationCde.remove(function (err) {
+                            if (err) console.log("unable to remove: " + err);
+                            else findCdeDone();
+                        });
+                    }
+                });
+            } catch (e) {
+                console.log(createDe);
+                console.log(mCde);
+                throw e;
             }
-        });
-};
+        } else if (existingCdes.length > 1) {
+            //console.log("Too many CDEs with Id = " + cdeId);
+            DataElement.find(cdeCond)
+                .where("ids").elemMatch(function (elem) {
+                elem.where("source").equals(source);
+                elem.where("id").equals(cdeId);
+                elem.where("version").equals(idv);
+            }).exec(function (err, existingCdes) {
+                if (existingCdes.length === 1) {
+                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+                }
+                else if (existingCdes.length > 1) {
+                    console.log(cdeId);
+                    console.log(source);
+                    console.log(idv);
+                    throw "Too many CDEs with the same ID/version.";
+                } else {
+                    throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
+                }
+            });
 
+        } else {
+            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+        }
+    });
+};
 var migStream;
 
 var streamOnData = function (migrationCde) {
@@ -243,7 +249,7 @@ var streamOnData = function (migrationCde) {
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, version, function() {
+        findCde(cdeId, migrationCde, source, orgName, version, function () {
             migStream.resume();
         });
     } else {
@@ -280,6 +286,7 @@ var streamOnClose = function () {
 
     // give 5 secs for org to save.
     setTimeout(function () {
+        console.log(createdCDE);
         process.exit(0);
     }, 5000);
 };
