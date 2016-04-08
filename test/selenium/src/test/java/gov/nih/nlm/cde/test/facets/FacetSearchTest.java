@@ -31,7 +31,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         textPresent("Qualified (" + numOfLidcElts + ")");
     }
 
-    @Test(priority = 3)
+    @Test
     public void deepFacets() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
@@ -136,7 +136,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         waitForESUpdate();
         goToCdeSearch();
         clickElement(By.id("browseOrg-DCP"));
-        textNotPresent("Noncompliant Reason Text");
         textPresent("Preferred Standard (");
         clickElement(By.id("li-blank-Standard"));
         textNotPresent("Noncompliant Reason Text");

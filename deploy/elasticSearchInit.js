@@ -47,6 +47,17 @@ exports.createIndexJson = {
                 , "version": {"type": "string", "index": "no"}
             }
         }
+    }, settings: {
+        index: {
+            analysis: {
+                analyzer:{
+                    default: {
+                        type: 'snowball'
+                        , language: 'English'
+                    }
+                }
+            }
+        }
     }
 };
 
@@ -90,7 +101,11 @@ var riverFunction =
         ctx.document.stewardOrgCopy = ctx.document.stewardOrg;\
         ctx.document.steward = ctx.document.stewardOrg.name;\
         ctx.document.primaryNameCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].designation):'';\
-        ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
+        if (ctx.document.naming[0].definitionFormat === 'html') {\
+            ctx.document.primaryDefinitionCopy = ctx.document.naming[0].definition.replace(/<(?:.|\\n)*?>/gm, '')\
+        } else {\
+            ctx.document.primaryDefinitionCopy = ctx.document.naming?escapeHTML(ctx.document.naming[0].definition):'';\
+        }\
         var regStatusSortMap = {Retired: 6, Incomplete: 5, Candidate: 4, Recorded: 3, Qualified: 2, Standard: 1, \"Preferred Standard\": 0}; \
         ctx.document.registrationState.registrationStatusSortOrder = regStatusSortMap[ctx.document.registrationState.registrationStatus]; \
         if (ctx.document.classification) { \

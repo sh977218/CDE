@@ -2,14 +2,11 @@ var mongoose = require('mongoose'),
     fs = require('fs'),
     config = require('../../modules/system/node-js/parseConfig'),
     async = require('async'),
-    schemas = require('../../modules/cde/node-js/schemas'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde')
+    schemas = require('../../modules/cde/node-js/schemas')
     ;
 
-var mongoMigrationUri = config.mongoMigrationUri;
-var mongoUri = config.mongoUri;
-var migrationConn = mongoose.createConnection(mongoMigrationUri);
-var mongoConn = mongoose.createConnection(mongoUri);
+var migrationConn = mongoose.createConnection(config.mongoMigrationUri);
+var mongoConn = mongoose.createConnection(config.mongoUri);
 migrationConn.once('open', function callback() {
     console.log('mongodb ' + config.database.migration.db + ' connection open');
 });
@@ -17,168 +14,118 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-var DataElement = mongoConn.model('DataElement', schemas.dataElementSchema);
-var PhenxModel = migrationConn.model('Phenx', new mongoose.Schema({}, {strict: false, collection: 'phenx'}));
-var LoincModel = migrationConn.model('Loinc', new mongoose.Schema({}, {strict: false, collection: 'loinc'}));
-var PhenxInLoincModel = migrationConn.model('PhenxInLoinc', new mongoose.Schema({}, {
+var DataElementModel = mongoConn.model('DataElement', schemas.dataElementSchema);
+var PhenxToLoincMappingModel = migrationConn.model('PhenxToLoincMapping', new mongoose.Schema({}, {
     strict: false,
-    collection: 'phenxInLoinc'
+    collection: 'PhenxToLoincMapping'
 }));
-var PhenxNotInLoincModel = migrationConn.model('PhenxNotInLoinc', new mongoose.Schema({}, {
+var VariableCrossReferenceModel = migrationConn.model('VariableCrossReference', new mongoose.Schema({}, {
     strict: false,
-    collection: 'phenxNotInLoinc'
+    collection: 'VariableCrossReference'
 }));
-var MappingModel = migrationConn.model('Mapping', new mongoose.Schema({}, {
+var LogModel = migrationConn.model('Log', new mongoose.Schema({}, {
     strict: false,
-    collection: 'mapping'
-}));
-var PhenxInLoincInDbGapModel = migrationConn.model('PhenxInLoincInDbGap', new mongoose.Schema({}, {
-    strict: false,
-    collection: 'phenxInLoincInDbGap'
-}));
-var PhenxInLoincNotInDbGapModel = migrationConn.model('PhenxInLoincNotInDbGap', new mongoose.Schema({}, {
-    strict: false,
-    collection: 'phenxInLoincNotInDbGap'
-}));
-var DeprecatedLoincModel = migrationConn.model('DeprecatedLoinc', new mongoose.Schema({}, {
-    strict: false,
-    collection: 'deprecatedLoinc'
+    collection: 'log'
 }));
 
 var user = {username: 'batchloader'};
-var phenxCounter = 0;
-var phenxInLoinc = [];
-var phenxNotInLoinc = [];
-var phenxInLoincInDbGap = [];
-var phenxInLoincNotInDbGap = [];
-var deprecatedLoinc = [];
 
 var dbGapUrlPre = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.gapmapping&vname=';
 var dbGapUrlPost = '&vid=';
-
-function init(taskNum) {
+var modifiedDeCounter = 0;
+var totalDeCounter = 0;
+function run() {
     async.series([
-        function (cb) {
-            if (taskNum === 1) {
-                var stream = PhenxModel.find().stream();
-                stream.on('data', function (phenx) {
-                    phenxCounter++;
-                    stream.pause();
-                    var variableSrc = phenx.get('VARIABLE_SOURCE');
-                    var variableId = phenx.get('VARIABLE_TERM');
-                    LoincModel.find({
-                        'SURVEY_QUEST_SRC': variableId.replace('PX', 'PhenX.')
-                    }, function (err, data) {
-                        if (err) throw err;
-                        if (data && data.length > 0) {
-                            if (data && data.length > 1) {
-                                console.log('return duplicated loinc for ' + variableId);
-                            }
-                            phenxInLoinc.push({phenx: phenx, loinc: data});
-                        }
-                        else {
-                            phenxNotInLoinc.push(phenx);
-                        }
-                        stream.resume();
-                    })
-                });
-                stream.on('end', function () {
-                    console.log('finished all phenx.');
-                    console.log('found ' + phenxInLoinc.length + ' in loinc.');
-                    var obj1 = new PhenxInLoincModel({phenxInLoinc: phenxInLoinc});
-                    obj1.save(function () {
-                        console.log('phenxInLoinc saved.');
-                        var obj2 = new PhenxNotInLoincModel({phenxNotInLoinc: phenxNotInLoinc});
-                        obj2.save(function () {
-                            console.log('phenxNotInLoinc saved.');
-                            cb();
-                        });
-                    });
-                });
-            } else {
-                cb();
-            }
+        function (callback) {
+            LogModel.remove({}, function () {
+                callback();
+            })
         },
-        function (cb) {
-            if (taskNum === 2) {
-                var stream = PhenxInLoincModel.findOne({}).stream();
-                stream.on('data', function (data) {
-                    stream.pause();
-                    var phenxInLoincArray = data.get('phenxInLoinc');
-                    async.forEachSeries(phenxInLoincArray, function (one, doneOne) {
-                        var phenx = one.phenx;
-                        var loinc = one.loinc[0];
-                        var loincId = loinc.LOINC_NUM;
-                        mongo_cde.query({'archived': null, 'ids.id': loincId}, function (err, deArr) {
-                            if (err) throw err;
-                            if (!deArr || !deArr[0]) {
-                                var status = loinc.STATUS;
-                                if (status === 'DEPRECATED') {
-                                    deprecatedLoinc.push(phenx);
-                                }
-                                doneOne();
-                            }
-                            else {
-                                var de = deArr[0].toObject();
-                                MappingModel.findOne({'VARIABLE_NAME': phenx.VARNAME}).exec(function (err, m) {
-                                    if (err) throw err;
-                                    var mapping = m ? null : m.toObject();
-                                    if (mapping) {
-                                        var uri = dbGapUrlPre + mapping.VARIABLE_NAME + dbGapUrlPost + mapping.VARIABLE_ID;
-                                        var dataSets = de.dataSets;
-                                        var exist = false;
-                                        if (!dataSets) {
-                                            dataSets = [];
-                                            exist = true;
-                                        }
-                                        if (dataSets.length === 0)
-                                            exist = true;
-                                        dataSets.forEach(function (ds) {
-                                            if (ds.dbGapId === mapping.VARIABLE_ID && ds.uri === uri)
-                                                exist = true;
-                                        });
-                                        de.ids.push({source: 'phenx variable', id: phenx.VARIABLE_TERM});
-                                        var dataSet = {dbGapId: mapping.VARIABLE_ID, uri: uri};
-                                        if (exist)
-                                            dataSets.push(dataSet);
-                                        phenxInLoincInDbGap.push({phenx: phenx, loinc: loinc});
-                                        mongo_cde.update(de, user, function () {
-                                            doneOne();
-                                        })
-                                    }
-                                    else {
-                                        phenxInLoincNotInDbGap.push({phenx: phenx, loinc: loinc});
-                                        doneOne();
-                                    }
-                                });
-                            }
-                        });
-                    }, function doneAll() {
-                        stream.resume();
-                    })
+        function (callback) {
+            var deCond = {'stewardOrg.name': 'PhenX', archivedL: null};
+            var stream = DataElementModel.find(deCond).stream();
+            stream.on('data', function (de) {
+                totalDeCounter++;
+                stream.pause();
+                var tinyId = de.get('tinyId');
+                if (tinyId === 'X1mJv5j3jx') {
+                    console.log('h');
+                }
+                console.log('cde tinyId: ' + tinyId);
+                var id = '';
+                de.get('ids').forEach(function (i) {
+                    if (i.source === 'LOINC') id = i.id;
                 });
-                stream.on('end', function () {
-                    var obj1 = new PhenxInLoincInDbGapModel({phenxInLoincInDbGap: phenxInLoincInDbGap});
-                    obj1.save(function () {
-                        console.log('phenxInLoincInDbGap saved.');
-                        var obj2 = new PhenxInLoincNotInDbGapModel({phenxInLoincNotInDbGap: phenxInLoincNotInDbGap});
-                        obj2.save(function () {
-                            console.log('phenxInLoincNotInDbGap saved.');
-                            var obj3 = new DeprecatedLoincModel({deprecatedLoinc: deprecatedLoinc});
-                            obj3.save(function () {
-                                console.log('deprecatedLoinc saved.');
-                                cb();
-                            })
-                        });
+                if (id.length === 0) {
+                    console.log('can not found LOINC id in de: ' + de);
+                    process.exit(0);
+                }
+                PhenxToLoincMappingModel.find({'LOINC Code': id}, function (err, phenxVariableArray) {
+                    if (err) throw err;
+                    var trs = '';
+                    var dataSets = [];
+                    var i = 0;
+                    async.forEach(phenxVariableArray, function (phenxVariable, doneOnePhenxVariable) {
+                        i++;
+                        var phenxVariableName = phenxVariable.get('VARNAME');
+                        var phenxVariableId = phenxVariable.get('PhenX Variable');
+                        var phenxVariableDescription = phenxVariable.get('VARDESC');
+                        var idTd = '<td>' + i + '</td>';
+                        var phenxVariableNameTd = '<td>' + phenxVariableName + '</td>';
+                        var phenxVariableIdTd = '<td>' + phenxVariableId + '</td>';
+                        var phenxVariableDescriptionTd = '<td>' + phenxVariableDescription + '</td>';
+                        var tr = '<tr>' + idTd + phenxVariableNameTd + phenxVariableIdTd + phenxVariableDescriptionTd + '</tr>';
+                        trs = trs + tr;
+                        VariableCrossReferenceModel.find({'VARIABLE_ID': phenxVariableId}, function (err, dbGapArray) {
+                            if (err) throw err;
+                            var existingDbGapMapping = {};
+                            dbGapArray.forEach(function (dbGap) {
+                                var dbGap = dbGap.toObject();
+                                delete dbGap._id;
+                                if (existingDbGapMapping[JSON.stringify(dbGap)]) {
+                                    var dataSet = {};
+                                    dataSet.variableName = phenxVariableName;
+                                    dataSet.variableId = phenxVariableId;
+                                    dataSet.variableDescripttion = phenxVariableDescription;
+                                    dataSet.dbGapId = dbGap['dbGaP VARIABLE_ID'];
+                                    dataSet.uri = dbGapUrlPre + phenxVariableName + dbGapUrlPost + phenxVariableId;
+                                    dataSets.push(dataSet);
+                                }
+                                else {
+                                    existingDbGapMapping[JSON.stringify(dbGap)] = true;
+                                }
+                            });
+                            doneOnePhenxVariable();
+                        })
+                    }, function doneAllPhenxVariables() {
+                        var property = {key: 'PhenX Variables', valueFormat: 'html'};
+                        var thead = '<thead><tr><th>#</th></th><th>Variable Name</th><th>Variable ID</th><th>Variable Description</th></tr></thead>';
+                        var tbody = '<tbody>' + trs + '</tbody>';
+                        property.value = "<table class='table table-striped'>" + thead + tbody + "</table>";
+                        de.get('properties').push(property);
+                        de.dataSets = dataSets;
+                        de.save(function () {
+                            modifiedDeCounter++;
+                            console.log('modified de count: ' + modifiedDeCounter);
+                            stream.resume();
+                        })
                     });
-                })
-            } else {
-                cb();
-            }
-        }], function (err) {
-        if (err) console.log("ERROR: " + err);
-        process.exit(0);
-    });
-}
+                });
+            });
+            stream.on('end', function () {
+                console.log('end of stream');
+                callback();
+            });
+            stream.on('error', function () {
+                if (err) console.log("ERROR: " + err);
+                process.exit(0);
+            });
+        },
+        function () {
+            console.log('totalDeCounter: ' + totalDeCounter);
+            process.exit(0);
+        }
+    ])
+};
 
-init(2);
+run();

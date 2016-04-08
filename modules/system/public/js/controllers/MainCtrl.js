@@ -6,7 +6,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
-            $scope.formEnabled = window.formEnabled;
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
             // Global variables
@@ -29,7 +28,7 @@ angular.module('systemModule').controller('MainCtrl',
             };
 
             $scope.canCreateForms = function () {
-                return $scope.isOrgCurator() && window.formEnabled && (window.formEditable || $scope.isSiteAdmin());
+                return exports.hasRole(userResource.user, "FormEditor");
             };
 
             $scope.checkSystemAlert = function () {
