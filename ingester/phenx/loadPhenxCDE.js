@@ -23,26 +23,16 @@ var VariableCrossReferenceModel = migrationConn.model('VariableCrossReference', 
     strict: false,
     collection: 'VariableCrossReference'
 }));
-var LogModel = migrationConn.model('Log', new mongoose.Schema({}, {
-    strict: false,
-    collection: 'log'
-}));
-
-var user = {username: 'batchloader'};
 
 var dbGapUrlPre = 'https://www.phenxtoolkit.org/index.php?pageLink=browse.gapmapping&vname=';
 var dbGapUrlPost = '&vid=';
 var modifiedDeCounter = 0;
 var totalDeCounter = 0;
+
 function run() {
     async.series([
         function (callback) {
-            LogModel.remove({}, function () {
-                callback();
-            })
-        },
-        function (callback) {
-            var deCond = {'stewardOrg.name': 'PhenX', archivedL: null};
+            var deCond = {'stewardOrg.name': 'PhenX', archived: null};
             var stream = DataElementModel.find(deCond).stream();
             stream.on('data', function (de) {
                 totalDeCounter++;
@@ -80,9 +70,10 @@ function run() {
                             if (err) throw err;
                             var existingDbGapMapping = {};
                             dbGapArray.forEach(function (dbGap) {
-                                var dbGap = dbGap.toObject();
+                                dbGap = dbGap.toObject();
                                 delete dbGap._id;
-                                if (existingDbGapMapping[JSON.stringify(dbGap)]) {
+                                if (!existingDbGapMapping[JSON.stringify(dbGap)]) {
+                                    existingDbGapMapping[JSON.stringify(dbGap)] = true;
                                     var dataSet = {};
                                     dataSet.variableName = phenxVariableName;
                                     dataSet.variableId = phenxVariableId;
@@ -90,9 +81,6 @@ function run() {
                                     dataSet.dbGapId = dbGap['dbGaP VARIABLE_ID'];
                                     dataSet.uri = dbGapUrlPre + phenxVariableName + dbGapUrlPost + phenxVariableId;
                                     dataSets.push(dataSet);
-                                }
-                                else {
-                                    existingDbGapMapping[JSON.stringify(dbGap)] = true;
                                 }
                             });
                             doneOnePhenxVariable();
@@ -126,6 +114,6 @@ function run() {
             process.exit(0);
         }
     ])
-};
+}
 
 run();
