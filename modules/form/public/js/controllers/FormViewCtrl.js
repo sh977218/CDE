@@ -42,6 +42,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formDescription.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.nbOfEltsLimit = 5;
             },
             show: true
         },
@@ -66,6 +67,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                console.log("CDE LIST Selected");
                 $timeout($scope.$broadcast('loadFormCdes'), 0);
             },
             show: false,
@@ -190,21 +192,22 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.formPreviewRendered = false;
     $scope.renderPreview = function () {
         $scope.formPreviewRendered = true;
+        $scope.formPreviewLoading = true;
         converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
                 $scope.lfData = new LFormsData(lfData);
                 $scope.$apply($scope.lfData);
+                $scope.formPreviewLoading = false;
             },
             function (err) {
                 $scope.error = err;
             });
     };
-    
-    $scope.nbOfEltsLimit = 20;
+
     $scope.raiseLimit = function() {
-        for (var i = 0; i < $scope.formCdeIds.length - $scope.nbOfEltsLimit; i++) {
-            $timeout(function() {
-                $scope.nbOfEltsLimit += 1;
-            }, 0);
+        if ($scope.formCdeIds) {
+            if ($scope.nbOfEltsLimit < $scope.formCdeIds.length) {
+                $scope.nbOfEltsLimit += 5;
+            }
         }
     };
 
