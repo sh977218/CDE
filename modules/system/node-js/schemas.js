@@ -217,6 +217,9 @@ schemas.referenceDocumentSchema = {
     _id: false
 };
 schemas.dataSetSchema = {
+    variableName: String,
+    variableId: String,
+    variableDescripttion: String,
     dbGapId: String,
     uri: String
 };
