@@ -121,7 +121,6 @@ var processCde = function (migrationCde, existingCde, orgName, processCdeCb) {
             });
         });
     } else if (deepDiff.length > 0) {
-        newDe.dataSets = migrationCde.dataSets;
         newDe.naming = migrationCde.naming;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";

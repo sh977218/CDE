@@ -182,7 +182,7 @@ function run(cb) {
                             });
                         async.forEachSeries(cdes, function (cde, doneOneCDE) {
                             var cdeId = cde.cdeId;
-                            mongo_cde.byOtherId('NINDS', cdeId, function (err, existingCde) {
+                            mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
                                 if (err) {
                                     console.log(err + ' cdeId: ' + cdeId);
                                     throw err;

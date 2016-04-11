@@ -431,6 +431,18 @@ exports.byOtherId = function (source, id, cb) {
     });
 };
 
+exports.byOtherIdAndNotRetired = function (source, id, cb) {
+    DataElement.find({
+        archived: null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+        if (cdes.length > 1)
+            cb("Multiple results, returning first", cdes[0]);
+        else cb(err, cdes[0]);
+    });
+};
+
+
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
     DataElement.find({archived: null}).elemMatch("ids", {
         source: source, id: id, version: version
@@ -488,16 +500,17 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
+});
 
 var statusCdeTinyId;
 
-exports.upsertStatusCde = function(cde, cb){
+exports.upsertStatusCde = function (cde, cb) {
     var query = statusCdeTinyId
-        ?{"tinyId": statusCdeTinyId}
-        :{"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")};
+        ? {"tinyId": statusCdeTinyId}
+        : {"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")};
 
-    DataElement.update(query, cde, {upsert: true}, function(err, cde){
+    DataElement.update(query, cde, {upsert: true}, function (err, cde) {
         statusCdeTinyId = cde.tinyId;
         if (cb) cb(err, cde);
     });
