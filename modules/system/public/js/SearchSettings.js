@@ -1,5 +1,6 @@
 angular.module('ElasticSearchResource')
-    .factory('SearchSettings', function (localStorageService, $q, userResource, $timeout) {
+    .factory('SearchSettings', function (localStorageService, $q, userResource) {
+        var version = 20160329;
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
 
@@ -10,35 +11,34 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "defaultSearchView": "summary"
+                "version": version
+                , "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
-                    "cde": {
-                        "name": true,
-                        "naming": true,
-                        "permissibleValues": true,
-                        "nbOfPVs": true,
-                        "uom": false,
-                        "stewardOrg": true,
-                        "usedBy": true,
-                        "registrationStatus": true,
-                        "administrativeStatus": false,
-                        "ids": true,
-                        "source": false,
-                        "updated": false
-                    }
+                    "name": true,
+                    "naming": true,
+                    "permissibleValues": true,
+                    "nbOfPVs": true,
+                    "uom": false,
+                    "stewardOrg": true,
+                    "usedBy": true,
+                    "registrationStatus": true,
+                    "administrativeStatus": false,
+                    "ids": true,
+                    "source": false,
+                    "updated": false,
+                    "numQuestions": true
                 }
             };
         };
 
         var searchSettings = localStorageService.get("SearchSettings");
         if (!searchSettings) searchSettings = this.getDefault();
-        if (searchSettings.defaultSearchView === 'accordion') searchSettings.defaultSearchView = "summary";
 
-        this.getDefaultSearchView = function () {
+        this.getDefaultSearchView = function() {
             return searchSettings.defaultSearchView;
         };
-        this.getPromise = function () {
+        this.getPromise = function() {
             return searchSettingsFactory.deferred.promise;
         };
         this.getUserDefaultStatuses = function() {
@@ -51,16 +51,15 @@ angular.module('ElasticSearchResource')
         };
         userResource.getPromise().then(function(user){
             if (user === "Not logged in.") {
-                if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
-                searchSettingsFactory.deferred.resolve(searchSettings);
             }
             else {
-                if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
+                if (!user.searchSettings) {
+                    user.searchSettings = searchSettingsFactory.getDefault();
+                }
                 searchSettings = user.searchSettings;
-                if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
-                if (user.searchSettings.defaultSearchView === 'accordion') user.searchSettings.defaultSearchView = "summary";
-                searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
+            if (searchSettings.version !== version) searchSettings = searchSettingsFactory.getDefault();
+            searchSettingsFactory.deferred.resolve(searchSettings);
         });
         return this;
     });
