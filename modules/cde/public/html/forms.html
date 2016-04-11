@@ -2,8 +2,13 @@
 
 <div ng-controller="ListCtrl">
     <div ng-controller="LinkedFormsCtrl">
-        <p>There are {{forms.length}} forms that use this CDE.</p>
+        <p ng-bind="getFormText()"></p>
         <a id="seeAllLinkedFormsButton" ng-href="/form/search?q={{elt.tinyId}}" class="btn btn-default" target="_blank" ng-if="forms.length > 0">
             <i class="fa fa-file-text-o"></i> See all linked forms</a>
+
+        <hr/>
+        <h4>Preview: </h4>
+        <div id="accordionList" ng-include="module+'/public/html/'+module+'AccordionList.html'"></div>
+
     </div>
 </div>
