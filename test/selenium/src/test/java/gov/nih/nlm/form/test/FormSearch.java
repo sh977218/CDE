@@ -14,7 +14,12 @@ public class FormSearch extends BaseFormTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("forms_tab"));
-        textPresent(formName);
+        textPresent("There are 1 forms that use this CDE");
+        clickElement(By.id("seeAllLinkedFormsButton"));
+        switchTab(1);
+        textPresent("1 results for qz-W3XYk7jF");
+        textPresent("Find By CDE");
+        switchTabAndClose(0);
     }
 
     @Test
