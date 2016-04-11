@@ -11,13 +11,13 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
     public void infiniteScrollDescription() {
         goToFormByName("Food Frequency Questionnaire (FFQ)");
         clickElement(By.id("description_tab"));
-        textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+        textNotPresent("Not counting multi-vitamins, do you currently take Selenium?");
         String jsScroll = "scrollBy(0, 200);";
 
         for (int i = 0; i < 7; i++) {
             ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         }
-        textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+        textNotPresent("Not counting multi-vitamins, do you currently take Seleniumn?");
     }
 
 }
