@@ -9,6 +9,32 @@ db.articles.remove({});
 db.fs.files.remove({});
 db.fs.chunks.remove({});
 
+var defaultBoard = {
+    name: "default"
+    , shareStatus: "Private"
+    , pins: []
+};
+
+var oldSettings = {
+    "defaultSearchView" : "accordion",
+    "lowestRegistrationStatus" : "Incomplete",
+    "tableViewFields" : {
+        "cde" : {
+            "name" : true,
+            "naming" : true,
+            "permissibleValues" : true,
+            "uom" : false,
+            "stewardOrg" : true,
+            "usedBy" : true,
+            "registrationStatus" : true,
+            "administrativeStatus" : false,
+            "ids" : true,
+            "source" : false,
+            "updated" : false
+        }
+    }
+};
+
 var users = [
     {
         username: 'nlm',
@@ -75,26 +101,27 @@ var users = [
 
 users.forEach(function(u) {
     u.searchSettings = {
-        "defaultSearchView": "accordion"
+        "version": 20160329
+        , "defaultSearchView": "summary"
         , "lowestRegistrationStatus": "Incomplete"
         , "tableViewFields": {
-            "cde": {
-                "name": true,
-                "naming": true,
-                "permissibleValues": true,
-                "uom": false,
-                "stewardOrg": true,
-                "usedBy": true,
-                "registrationStatus": true,
-                "administrativeStatus": false,
-                "ids": true,
-                "source": false,
-                "updated": false
-            }
+            "name": true,
+            "naming": true,
+            "permissibleValues": true,
+            "uom": false,
+            "stewardOrg": true,
+            "usedBy": true,
+            "registrationStatus": true,
+            "administrativeStatus": false,
+            "ids": true,
+            "source": false,
+            "updated": false
         }
     };
     db.users.insert(u);
 });
+
+db.users.insert({username: 'oldUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: [], searchSettings: oldSettings});
 
 db.articles.insert({key: "testAdminCanEdit", body: "Admin can edit this."});
 db.articles.insert({key: "testEdits", body: "Testing edits"});
