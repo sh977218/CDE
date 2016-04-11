@@ -27,17 +27,17 @@ public class FormTableView extends BaseFormTest {
         textPresent("TESTOrg");
         textPresent("goodForTablesForm");
 
-        findElement(By.id("searchSettings")).click();
-        findElement(By.id("naming")).click();
-        findElement(By.id("stewardOrg")).click();
-        findElement(By.id("usedBy")).click();
-        findElement(By.id("registrationStatus")).click();
-        findElement(By.id("administrativeStatus")).click();
-        findElement(By.id("ids")).click();
-        findElement(By.id("source")).click();
-        findElement(By.id("updated")).click();
-        findElement(By.id("numQuestions")).click();
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("naming"));
+        clickElement(By.id("stewardOrg"));
+        clickElement(By.id("usedBy"));
+        clickElement(By.id("registrationStatus"));
+        clickElement(By.id("administrativeStatus"));
+        clickElement(By.id("ids"));
+        clickElement(By.id("source"));
+        clickElement(By.id("updated"));
+        clickElement(By.id("numQuestions"));
+        clickElement(By.id("saveSettings"));
         seeTableForms();
 
         textNotPresent("Other Names");
