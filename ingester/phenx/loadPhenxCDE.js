@@ -35,15 +35,21 @@ function run() {
             var deCond = {'stewardOrg.name': 'PhenX', archived: null};
             var stream = DataElementModel.find(deCond).stream();
             stream.on('data', function (de) {
-                totalDeCounter++;
                 stream.pause();
-                var tinyId = de.get('tinyId');
-                console.log('cde tinyId: ' + tinyId);
-                var id = '';
+                totalDeCounter++;
+                var id = 0;
+                var nbLoincId = 0;
                 de.get('ids').forEach(function (i) {
-                    if (i.source === 'LOINC') id = i.id;
+                    if (i.source === 'LOINC') {
+                        nbLoincId++;
+                        id = i.id;
+                    }
                 });
-                if (id.length === 0) {
+                if (nbLoincId > 1) {
+                    console.log('this cde has too many loinc id. cde tinyId:' + cde.get('tinyId'));
+                    process.exit(0);
+                }
+                if (id === 0) {
                     console.log('can not found LOINC id in de: ' + de);
                     process.exit(0);
                 }
@@ -52,6 +58,7 @@ function run() {
                     var trs = '';
                     var dataSets = [];
                     var i = 0;
+                    if (phenxVariableArray.length === 0) stream.resume();
                     async.forEach(phenxVariableArray, function (phenxVariable, doneOnePhenxVariable) {
                         i++;
                         var phenxVariableName = phenxVariable.get('VARNAME');
