@@ -13,6 +13,7 @@ public class DisallowRenderingTest extends BaseFormTest {
         findElement(By.id("disallowRendering")).click();
         textPresent("This form is large");
         clickElement(By.id("renderPreviewButton"));
+        hangon(10);
         textPresent("In general, would you say");
         saveForm();
         textPresent("In general, would you say");
