@@ -121,6 +121,9 @@ var processCde = function (migrationCde, existingCde, orgName, processCdeCb) {
             });
         });
     } else if (deepDiff.length > 0) {
+        console.log("DIFFERENT +++ ");
+        console.log(JSON.stringify(deepDiff));
+
         newDe.naming = migrationCde.naming;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
