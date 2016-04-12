@@ -93,7 +93,7 @@ function createForm(ninds) {
         elements: [{
             "name": ninds.get('domainName'),
             "elements": []
-            }
+        }
         ]
     };
     if (ninds.get('domainName') != ninds.get('subDomainName')) {
@@ -216,6 +216,7 @@ function run() {
                     var existingForm = existingForms[0];
                     mergeIntoForm(ninds, existingForm);
                     existingForm.markModified("classification");
+                    existingForm.markModified("formElements");
                     existingForm.save(function (err) {
                         if (err) {
                             console.log(err);
