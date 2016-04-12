@@ -2,6 +2,7 @@ var async = require('async'),
     NindsModel = require('./createConnection').NindsModel,
     DataElementModel = require('./createConnection').DataElementModel,
     OrgModel = require('./createConnection').OrgModel,
+    mongo_data = require('../../modules/system/node-js/mongo-data'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
@@ -248,6 +249,7 @@ function createCde(cde, ninds) {
     }
 
     var newCde = {
+        tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "NINDS"},
         createdBy: {username: 'batchloader'},
         created: importDate,
