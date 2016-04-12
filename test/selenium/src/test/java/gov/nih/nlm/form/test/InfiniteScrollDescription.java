@@ -17,7 +17,7 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
         for (int i = 0; i < 10; i++) {
             ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         }
-        textNotPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
+        textPresent("Not counting multi-vitamins, do you currently take Calcium or Dolomite (including Tums)?");
     }
 
 }
