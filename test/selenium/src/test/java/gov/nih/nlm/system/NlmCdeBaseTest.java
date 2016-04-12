@@ -72,6 +72,7 @@ public class NlmCdeBaseTest {
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
     protected static String testAdmin_username = "testAdmin";
+    protected static String oldUser_username = "oldUser";
 
     protected static String password = "pass";
 
@@ -145,7 +146,7 @@ public class NlmCdeBaseTest {
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
-        wait = new WebDriverWait(driver, defaultTimeout, 200);
+        wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
 
         resizeWindow(1600, 980);
@@ -720,7 +721,7 @@ public class NlmCdeBaseTest {
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
-        scrollTo(1000);
+        hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
