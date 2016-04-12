@@ -45,18 +45,18 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
         console.log('ninds._id: ' + ninds.id);
     }
 }
-function transferForm(existingForm, ninds) {
-    // add newForm naming if no name existing
+function mergeIntoForm(ninds, existingForm) {
+    // merges naming
     var existingNaming = existingForm.get('naming');
     checkExistingNaming(existingNaming, ninds);
 
-    // add newForm referenceDocument if no referenceDocument existing
+    // merges reference documents
     var existingReferenceDocuments = existingForm.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, ninds);
 
     existingForm.updated = importDate;
     classificationShared.transferClassifications(createForm(ninds), existingForm)
-};
+}
 
 function createForm(ninds) {
     var formId = ninds.get('formId');
@@ -88,17 +88,22 @@ function createForm(ninds) {
         referenceDocuments.push(referenceDocument);
     }
 
-    var elements = [];
-    var domainElement = {
-        name: 'Domain',
+    var domainSubDomain = {
+        "name": "Domain",
         elements: [{
             "name": ninds.get('domainName'),
-            "elements": [{
-                "name": ninds.get('subDomainName'),
-                "elements": []
-            }]
-        }]
+            "elements": []
+            }
+        ]
     };
+    if (ninds.get('domainName') != ninds.get('subDomainName')) {
+        domainSubDomain.elements[0].elements.push({
+            "name": ninds.get('subDomainName'),
+            "elements": []
+        });
+    }
+
+    var elements = [];
     var diseaseElement;
     if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
         diseaseElement = {
@@ -109,13 +114,7 @@ function createForm(ninds) {
                     "name": ninds.get('subDiseaseName'),
                     "elements": [{
                         "name": 'Domain',
-                        "elements": [{
-                            "name": ninds.get('domainName'),
-                            "elements": [{
-                                "name": ninds.get('subDomainName'),
-                                "elements": []
-                            }]
-                        }]
+                        "elements": [domainSubDomain]
                     }]
                 }]
             }]
@@ -125,23 +124,14 @@ function createForm(ninds) {
             name: 'Disease',
             elements: [{
                 "name": ninds.get('diseaseName'),
-                "elements": [{
-                    "name": 'Domain',
-                    "elements": [{
-                        "name": ninds.get('domainName'),
-                        "elements": [{
-                            "name": ninds.get('subDomainName'),
-                            "elements": []
-                        }]
-                    }]
-                }]
+                "elements": [domainSubDomain]
             }]
         };
     }
-    elements.push(domainElement);
+    elements.push(domainSubDomain);
     elements.push(diseaseElement);
     var classification = [{stewardOrg: {name: 'NINDS'}, elements: elements}];
-    var newForm = {
+    return {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'batchloader'},
         created: importDate,
@@ -156,98 +146,92 @@ function createForm(ninds) {
         classification: classification,
         formElements: []
     };
-    return newForm;
 }
-function run(cb) {
+function run() {
     FormModel.remove({}, function () {
         var stream = NindsModel.find({}).stream();
         stream.on('data', function (ninds) {
             stream.pause();
-            if (ninds) {
-                var formId = ninds.get('formId');
-                var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '').trim();
-                ninds.set('crfModuleGuideline', filterName);
-                FormModel.find({'ids.id': formId}, function (err, existingForms) {
-                    if (err) throw err;
-                    if (existingForms.length === 0) {
-                        var newForm = createForm(ninds);
-                        console.log('start cde of form: ' + formId);
-                        var cdes = ninds.get('cdes');
-                        if (cdes.length > 0)
-                            newForm.formElements.push({
-                                elementType: 'section',
-                                instructions: {value: ''},
-                                label: '',
-                                formElements: []
-                            });
-                        async.forEachSeries(cdes, function (cde, doneOneCDE) {
-                            var cdeId = cde.cdeId;
-                            mongo_cde.byOtherId('NINDS', cdeId, function (err, existingCde) {
-                                if (err) {
-                                    console.log(err + ' cdeId: ' + cdeId);
-                                    throw err;
-                                }
-                                var question = {
-                                    cde: {
-                                        tinyId: existingCde.tinyId,
-                                        name: existingCde.naming[0].designation,
-                                        version: existingCde.version,
-                                        permissibleValues: existingCde.valueDomain.permissibleValues,
-                                        ids: existingCde.ids
-                                    },
-                                    datatype: existingCde.valueDomain.datatype,
-                                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                                    datatypeText: existingCde.valueDomain.datatypeText,
-                                    uom: existingCde.valueDomain.uom,
-                                    answers: existingCde.valueDomain.permissibleValues,
-                                    multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected' ? true : false
-                                };
-                                var formElement = {
-                                    elementType: 'question',
-                                    instructions: {value: cde.instruction},
-                                    label: cde.questionText,
-                                    question: question,
-                                    formElements: []
-                                };
-                                newForm.formElements[0].formElements.push(formElement);
-                                doneOneCDE();
-                            });
-                        }, function doneAll() {
-                            console.log('finished all cdes in form ' + formId);
-                            var newFormObj = new FormModel(newForm);
-                            newFormObj.save(function (err) {
-                                if (err) {
-                                    console.log(err);
-                                    throw err;
-                                }
-                                stream.resume();
-                            });
+            var formId = ninds.get('formId');
+            var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '')
+                .trim();
+            ninds.set('crfModuleGuideline', filterName);
+            FormModel.find({'ids.id': formId}, function (err, existingForms) {
+                if (err) throw err;
+                if (existingForms.length === 0) {
+                    var newForm = createForm(ninds);
+                    console.log('start cde of form: ' + formId);
+                    var cdes = ninds.get('cdes');
+                    if (cdes.length > 0)
+                        newForm.formElements.push({
+                            elementType: 'section',
+                            instructions: {value: ''},
+                            label: '',
+                            formElements: []
                         });
-                    } else if (existingForms.length === 1) {
-                        var existingForm = existingForms[0];
-                        if (existingForm) {
-                            transferForm(existingForm, ninds);
-                            existingForm.save(function (err) {
-                                if (err) {
-                                    console.log(err);
-                                    throw err;
-                                }
-                                stream.resume();
-                            })
+                    async.forEachSeries(cdes, function (cde, doneOneCDE) {
+                        var cdeId = cde.cdeId;
+                        mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
+                            if (err) {
+                                console.log(err + ' cdeId: ' + cdeId);
+                                throw err;
+                            }
+                            var question = {
+                                cde: {
+                                    tinyId: existingCde.tinyId,
+                                    name: existingCde.naming[0].designation,
+                                    version: existingCde.version,
+                                    permissibleValues: existingCde.valueDomain.permissibleValues,
+                                    ids: existingCde.ids
+                                },
+                                datatype: existingCde.valueDomain.datatype,
+                                datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                                datatypeText: existingCde.valueDomain.datatypeText,
+                                uom: existingCde.valueDomain.uom,
+                                answers: existingCde.valueDomain.permissibleValues,
+                                multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected'
+                            };
+                            var formElement = {
+                                elementType: 'question',
+                                instructions: {value: cde.instruction},
+                                label: cde.questionText,
+                                question: question,
+                                formElements: []
+                            };
+                            newForm.formElements[0].formElements.push(formElement);
+                            doneOneCDE();
+                        });
+                    }, function doneAll() {
+                        console.log('finished all cdes in form ' + formId);
+                        var newFormObj = new FormModel(newForm);
+                        newFormObj.save(function (err) {
+                            if (err) {
+                                console.log(err);
+                                throw err;
+                            }
+                            stream.resume();
+                        });
+                    });
+                } else if (existingForms.length === 1) {
+                    var existingForm = existingForms[0];
+                    mergeIntoForm(ninds, existingForm);
+                    existingForm.markModified("classification");
+                    existingForm.save(function (err) {
+                        if (err) {
+                            console.log(err);
+                            throw err;
                         }
-                    } else {
-                        console.log(existingForms.length + ' forms found, ids.id:' + form.formId);
-                        process.exit(1);
-                    }
-                })
-            } else {
-                stream.resume();
-            }
+                        stream.resume();
+                    })
+                } else {
+                    console.log(existingForms.length + ' forms found, ids.id:' + form.formId);
+                    process.exit(1);
+                }
+            })
         });
 
         stream.on('end', function (err) {
             if (err) throw err;
-            if (cb) cb();
             console.log('finished');
             process.exit(0);
         });

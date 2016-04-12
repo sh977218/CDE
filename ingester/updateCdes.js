@@ -74,14 +74,29 @@ var wipeUseless = function (toWipeCde) {
     delete toWipeCde.created;
     delete toWipeCde.createdBy;
     delete toWipeCde.updated;
+    delete toWipeCde.updatedBy;
     delete toWipeCde.comments;
     delete toWipeCde.registrationState;
     delete toWipeCde.tinyId;
     delete toWipeCde.valueDomain.datatypeValueList;
+
+    Object.keys(toWipeCde).forEach(function(key) {
+        if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
+            delete toWipeCde[key];
+        }
+    });
+
 };
 
 var compareCdes = function (existingCde, newCde) {
-    var existingCde = JSON.parse(JSON.stringify(existingCde));
+    existingCde.ids.sort(function(a, b) {return a.source > b.source});
+    newCde.ids.sort(function(a, b) {return a.source > b.source});
+
+    existingCde.properties.sort(function(a, b) {return a.key > b.key});
+    newCde.properties.sort(function(a, b) {return a.key > b.key});
+
+
+    existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
     for (var i = existingCde.classification.length - 1; i > 0; i--) {
         if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
@@ -129,11 +144,13 @@ var processCde = function (migrationCde, existingCde, orgName, processCdeCb) {
         newDe.valueDomain = migrationCde.valueDomain;
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
+        newDe.ids = migrationCde.ids;
 
-        for (var j = 0; j < migrationCde.properties.length; j++) {
-            removeProperty(newDe, migrationCde.properties[j]);
-            newDe.properties.push(migrationCde.properties[j]);
-        }
+        newDe.properties = migrationCde.properties;
+        //for (var j = 0; j < migrationCde.properties.length; j++) {
+        //    removeProperty(newDe, migrationCde.properties[j]);
+        //    newDe.properties.push(migrationCde.properties[j]);
+        //}
 
         removeClassificationTree(newDe, orgName);
         if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);

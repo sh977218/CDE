@@ -345,6 +345,7 @@ function run(cb) {
                                 var existingCde = existingCdes[0];
                                 if (existingCde) {
                                     transferCde(existingCde, cde, ninds);
+                                    existingCde.markModified("classification");
                                     existingCde.save(function () {
                                         doneOneCde();
                                     })
