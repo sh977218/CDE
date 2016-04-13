@@ -418,7 +418,7 @@ public class NlmCdeBaseTest {
     protected void newCdeVersion(String changeNote) {
         scrollToEltByCss("#openSave");
         clickElement(By.id("openSave"));
-        hangon(1);
+        textPresent("has already been used");
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
             findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
@@ -427,8 +427,8 @@ public class NlmCdeBaseTest {
         textNotPresent("has already been used");
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         modalGone();
     }
 

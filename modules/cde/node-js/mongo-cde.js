@@ -21,6 +21,7 @@ var DataElement = conn.model('DataElement', schemas.dataElementSchema);
 var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
+exports.DataElement = DataElement;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
@@ -372,7 +373,9 @@ exports.allPropertiesKeys = function (callback) {
 };
 
 exports.query = function (query, callback) {
-    DataElement.find(query).exec(callback);
+    DataElement.find(query).exec(function (err, result) {
+        callback(err, result);
+    });
 };
 
 exports.transferSteward = function (from, to, callback) {
@@ -442,7 +445,6 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
     });
 };
 
-
 exports.byOtherIdAndVersion = function (source, id, version, cb) {
     DataElement.find({archived: null}).elemMatch("ids", {
         source: source, id: id, version: version
@@ -500,17 +502,16 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
-});
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
 
 var statusCdeTinyId;
 
-exports.upsertStatusCde = function (cde, cb) {
+exports.upsertStatusCde = function(cde, cb){
     var query = statusCdeTinyId
-        ? {"tinyId": statusCdeTinyId}
-        : {"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")};
+        ?{"tinyId": statusCdeTinyId}
+        :{"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")};
 
-    DataElement.update(query, cde, {upsert: true}, function (err, cde) {
+    DataElement.update(query, cde, {upsert: true}, function(err, cde){
         statusCdeTinyId = cde.tinyId;
         if (cb) cb(err, cde);
     });

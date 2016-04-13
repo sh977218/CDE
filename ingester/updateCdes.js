@@ -78,13 +78,33 @@ function wipeUseless(toWipeCde) {
     delete toWipeCde.comments;
     delete toWipeCde.registrationState;
     delete toWipeCde.tinyId;
-    delete toWipeCde.dataSets;
-    delete toWipeCde.changeNote;
     delete toWipeCde.valueDomain.datatypeValueList;
+
+    Object.keys(toWipeCde).forEach(function (key) {
+        if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
+            delete toWipeCde[key];
+        }
+    });
+
 };
 
 function compareCdes(existingCde, newCde) {
-    var existingCde = JSON.parse(JSON.stringify(existingCde));
+    existingCde.ids.sort(function (a, b) {
+        return a.source > b.source
+    });
+    newCde.ids.sort(function (a, b) {
+        return a.source > b.source
+    });
+
+    existingCde.properties.sort(function (a, b) {
+        return a.key > b.key
+    });
+    newCde.properties.sort(function (a, b) {
+        return a.key > b.key
+    });
+
+
+    existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
     for (var i = existingCde.classification.length - 1; i > 0; i--) {
         if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
@@ -124,9 +144,6 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
             });
         });
     } else if (deepDiff.length > 0) {
-        console.log("DIFFERENT +++ ");
-        console.log(JSON.stringify(deepDiff));
-
         newDe.naming = migrationCde.naming;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
@@ -135,11 +152,12 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.valueDomain = migrationCde.valueDomain;
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
-
-        for (var j = 0; j < migrationCde.properties.length; j++) {
-            removeProperty(newDe, migrationCde.properties[j]);
-            newDe.properties.push(migrationCde.properties[j]);
-        }
+        newDe.ids = migrationCde.ids;
+        newDe.properties = migrationCde.properties;
+        //for (var j = 0; j < migrationCde.properties.length; j++) {
+        //    removeProperty(newDe, migrationCde.properties[j]);
+        //    newDe.properties.push(migrationCde.properties[j]);
+        //}
 
         removeClassificationTree(newDe, orgName);
         if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
@@ -212,20 +230,18 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                 console.log(mCde);
                 throw e;
             }
-        } else if (existingCdes.length === 1) {
-            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
-        } else {
+        } else if (existingCdes.length > 1) {
             //console.log("Too many CDEs with Id = " + cdeId);
             DataElement.find(cdeCond)
                 .where("ids").elemMatch(function (elem) {
                 elem.where("source").equals(source);
                 elem.where("id").equals(cdeId);
                 elem.where("version").equals(idv);
-            }).exec(function (err, existingCdesWithV) {
-                if (existingCdesWithV.length === 1) {
-                    processCde(migrationCde, existingCdesWithV[0], orgName, findCdeDone);
+            }).exec(function (err, existingCdes) {
+                if (existingCdes.length === 1) {
+                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
                 }
-                else if (existingCdesWithV.length > 1) {
+                else if (existingCdes.length > 1) {
                     console.log(cdeId);
                     console.log(source);
                     console.log(idv);
@@ -234,6 +250,9 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
                 }
             });
+
+        } else {
+            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
         }
     });
 };
@@ -265,6 +284,7 @@ function streamOnData(migrationCde) {
 };
 
 function streamOnClose() {
+
     // Retire Missing CDEs
     DataElement.where({
         imported: {$ne: importDate},
@@ -294,7 +314,6 @@ function streamOnClose() {
         process.exit(0);
     }, 5000);
 };
-
 function doStream() {
     migStream = MigrationDataElement.find().stream();
 

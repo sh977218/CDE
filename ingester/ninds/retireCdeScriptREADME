@@ -17,12 +17,7 @@ db.dataelements.update({
 });
 
 db.dataelements.count({
-	"source" : "NINDS",
-	archived : null,
-	"registrationState.registrationStatus" : "Qualified",
-	imported : {
-		$lt : new ISODate($loadDay)
-	}
+	"source" : "NINDS",	archived : null,"registrationState.registrationStatus" : "Qualified",imported : {$lt : new ISODate($loadDay)	}
 });
 
 report:
