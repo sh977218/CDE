@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class PinTest extends BoardTest {
     
-    @Test(priority = -1)
+    @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
 
