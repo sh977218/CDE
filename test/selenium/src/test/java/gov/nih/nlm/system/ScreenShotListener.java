@@ -48,6 +48,7 @@ public class ScreenShotListener extends TestListenerAdapter {
     private void saveLogs(String methodName) {
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
+        sb.append("URL when failed: " + driver.getCurrentUrl());
         for (LogEntry entry : logEntries) {
             if (!entry.getMessage().contains("Range.detach"))
                 sb.append(new Date(entry.getTimestamp()));
