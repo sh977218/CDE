@@ -456,8 +456,8 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
 //        // gonowhere gets rid of possible alert.
-//        driver.get(baseUrl + "/gonowhere");
-//        textPresent("Nothing here");
+        driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
 //
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
