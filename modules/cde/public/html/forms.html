@@ -7,8 +7,10 @@
             <i class="fa fa-file-text-o"></i> See all linked forms</a>
 
         <hr/>
-        <h4>Preview: </h4>
-        <div id="accordionList" ng-include="module+'/public/html/'+module+'AccordionList.html'"></div>
+        <div ng-if="forms.length > 0">
+            <h4>Preview: </h4>
+            <div id="accordionList" ng-include="module+'/public/html/'+module+'AccordionList.html'"></div>
+        </div>
 
     </div>
 </div>
