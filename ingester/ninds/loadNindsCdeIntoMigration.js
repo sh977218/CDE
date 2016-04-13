@@ -1,7 +1,7 @@
 var async = require('async'),
-    NindsModel = require('./createConnection').NindsModel,
-    DataElementModel = require('./createConnection').DataElementModel,
-    OrgModel = require('./createConnection').OrgModel,
+    MigrationNindsModel = require('./../createConnection').MigrationNindsModel,
+    MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
     mongo_data = require('../../modules/system/node-js/mongo-data'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
@@ -318,11 +318,11 @@ function createCde(cde, ninds) {
 function run() {
     async.series([
         function (cb) {
-            DataElementModel.remove({}, function (err) {
+            MigrationDataElementModel.remove({}, function (err) {
                 if (err) throw err;
-                OrgModel.remove({}, function (er) {
+                MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new OrgModel({name: 'NINDS'}).save(function (e) {
+                    new MigrationOrgModel({name: 'NINDS'}).save(function (e) {
                         if (e) throw e;
                         cb();
                     });
@@ -330,22 +330,22 @@ function run() {
             });
         },
         function (cb) {
-            OrgModel.findOne({"name": 'NINDS'}).exec(function (error, org) {
+            MigrationOrgModel.findOne({"name": 'NINDS'}).exec(function (error, org) {
                 nindsOrg = org;
                 cb();
             });
         },
         function (cb) {
-            var stream = NindsModel.find({}).stream();
+            var stream = MigrationNindsModel.find({}).stream();
             stream.on('data', function (ninds) {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
                     async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
-                        DataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
+                        MigrationDataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {
                                 var newCde = createCde(cde, ninds);
-                                var newCdeObj = new DataElementModel(newCde);
+                                var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
                                     if (err) throw err;
                                     doneOneCde();
