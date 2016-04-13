@@ -153,7 +153,6 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-
         newDe.properties = migrationCde.properties;
         //for (var j = 0; j < migrationCde.properties.length; j++) {
         //    removeProperty(newDe, migrationCde.properties[j]);

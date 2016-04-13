@@ -8,7 +8,7 @@ var async = require('async'),
 
 var nindsOrg = null;
 var newline = '<br>';
-var importDate = new Date().toJSON();
+var today = new Date().toJSON();
 
 function removeNewline(s) {
     return s.replace(/\n/g, '  ').trim();
@@ -46,63 +46,72 @@ function checkExistingNaming(existingNaming, newCde, ninds) {
 function checkExistingIds(existingIds, newCde, ninds) {
     var existCaDSRId, existVariableName;
     existingIds.forEach(function (existingId) {
-        if (existingId.source === 'caDSR' && existingId.id === newCde.cadsrId)
-            existCaDSRId = true;
-        if (existingId.source === 'NINDS Variable Name' && existingId.id === newCde.variableName)
-            existVariableName = true;
+        if (existingId.source === 'caDSR') {
+            if (existingId.id === newCde.cadsrId) {
+                existCaDSRId = true;
+            } else {
+                console.log('newCde has different caDSR Id. newCde: ' + newCde.cdeId);
+                process.exit(0);
+            }
+        }
+        if (existingId.source === 'NINDS Variable Name') {
+            if (existingId.id === newCde.variableName) {
+                existVariableName = true;
+            } else {
+                console.log('newCde has different NINDS Variable Name. newCde: ' + newCde.cdeId);
+                process.exit(0);
+            }
+        }
     });
     if (!existCaDSRId && newCde.cadsrId && newCde.cadsrId.length > 0) {
         var newCaDSRId = {source: 'caDSR', id: newCde.cadsrId};
         existingIds.push(newCaDSRId);
-        console.log('added new cadsr id: ' + newCde.cdeId);
-        console.log('newCde cadsrId: ' + newCde.cadsrId);
-        console.log('ninds._id: ' + ninds._id);
     }
     if (!existVariableName && newCde.variableName && newCde.variableName.length > 0) {
         var newVariableName = {source: 'NINDS Variable Name', id: newCde.varibleName};
         existingIds.push(newVariableName);
-        console.log('added new ninds variable id: ' + newCde.cdeId);
-        console.log('newCde varibleName: ' + newCde.varibleName);
-        console.log('ninds._id: ' + ninds._id);
     }
 }
 function checkExistingProperties(existingProperties, newCde, ninds) {
     var existPreviousTitleProperty, existGuidelinesProperty, existAliasesForVariableNameProperty;
-    var existingGuidelinesProperties, existingAliasesForVariableNameProperties;
+    var existingGuidelinesProperties;
     existingProperties.forEach(function (existingProperty) {
-        if (existingProperty.key === 'NINDS Previous Title' && existingProperty.value === newCde.previousTitle)
-            existPreviousTitleProperty = true;
+        if (existingProperty.key === 'NINDS Previous Title') {
+            if (existingProperty.value === newCde.previousTitle) {
+                existPreviousTitleProperty = true;
+            } else {
+                console.log('newCde has different NINDS Previous Title. newCde: ' + newCde.cdeId);
+                process.exit(0);
+            }
+        }
         if (existingProperty.key === 'NINDS Guidelines') {
             existingGuidelinesProperties = existingProperty;
             if (existingGuidelinesProperties.value.indexOf(ninds.get('formId')) != -1)
                 existGuidelinesProperty = true;
         }
         if (existingProperty.key === 'Aliases for Variable Name') {
-            existingAliasesForVariableNameProperties = existingProperty;
-            if (existingAliasesForVariableNameProperties.value.indexOf(ninds.get('formId')) != -1)
+            if (existingProperty.value === newCde.aliasesForVariableName) {
                 existAliasesForVariableNameProperty = true;
+            } else {
+                console.log('newCde has different Aliases for Variable Name. newCde: ' + newCde.cdeId);
+                process.exit(0);
+            }
         }
     });
     if (!existPreviousTitleProperty && newCde.previousTitle && newCde.previousTitle.length > 0) {
         var newPreviousTitleProperty = {key: 'NINDS Previous Title', value: newCde.previousTitle};
         existingProperties.push(newPreviousTitleProperty);
-        console.log('added new previous title property: ' + newCde.cdeId);
-        console.log('newCde crfModuleGuideline: ' + newCde.previousTitle);
-        console.log('ninds._id: ' + ninds._id);
     }
     if (!existGuidelinesProperty && newCde.instruction && newCde.instruction.length > 0) {
         var newGuidelinesProperty = ninds.get('formId') + newline + newCde.instruction + newline;
         existingGuidelinesProperties.value = existingGuidelinesProperties.value + newGuidelinesProperty;
-        console.log('added new guideline property: ' + newCde.cdeId);
-        console.log('newCde crfModuleGuideline: ' + newCde.instruction);
-        console.log('ninds._id: ' + ninds._id);
     }
-    if (!existAliasesForVariableNameProperty && newCde.aliasesForVariableName && newCde.aliasesForVariableName.length > 0) {
-        var newAliasesForVariableNameProperty = ninds.get('formId') + newline + newCde.aliasesForVariableName + newline;
-        existingAliasesForVariableNameProperties.value = existingAliasesForVariableNameProperties.value + newAliasesForVariableNameProperty;
-        console.log('added new Aliases for Variable Name property: ' + newCde.cdeId);
-        console.log('newCde crfModuleGuideline: ' + newCde.aliasesForVariableName);
-        console.log('ninds._id: ' + ninds._id);
+    if (!existAliasesForVariableNameProperty && newCde.aliasesForVariableName && newCde.aliasesForVariableName.length > 0 && newCde.aliasesForVariableName != 'Aliases for variable name not defined') {
+        var newAliasesForVariableNameProperty = {
+            key: 'Aliases for Variable Name',
+            value: newCde.aliasesForVariableName
+        };
+        existingProperties.push(newAliasesForVariableNameProperty);
     }
 }
 function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds) {
@@ -117,29 +126,26 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, newCde, nin
             uri: ''
         };
         existingReferenceDocuments.push(newReferenceDocument);
-        console.log('added new reference document: ' + newCde.cdeId);
-        console.log('newCde reference: ' + newCde.reference);
-        console.log('ninds._id: ' + ninds._id);
     }
 }
 function transferCde(existingCde, newCde, ninds) {
-    // add newCde naming if no name existing
+    // merge naming
     var existingNaming = existingCde.get('naming');
     checkExistingNaming(existingNaming, newCde, ninds);
 
-    // add newCde ids if no id existing
+    // merge ids
     var existingIds = existingCde.get('ids');
     checkExistingIds(existingIds, newCde, ninds);
 
-    // add newCde property if no property existing
+    // merge property
     var existingProperties = existingCde.get('properties');
     checkExistingProperties(existingProperties, newCde, ninds);
 
-    // add newCde referenceDocument if no referenceDocument existing
+    // merge referenceDocument
     var existingReferenceDocuments = existingCde.get('referenceDocuments');
     checkExistingReferenceDocuments(existingReferenceDocuments, newCde, ninds);
 
-    existingCde.created = importDate;
+    existingCde.created = today;
     classificationShared.transferClassifications(createCde(newCde, ninds), existingCde);
 }
 
@@ -187,10 +193,9 @@ function createCde(cde, ninds) {
         properties.push(guidelinesProperty);
     var aliasesForVariableNameProperty = {
         key: 'Aliases for Variable Name',
-        value: ninds.get('formId') + newline + cde.aliasesForVariableName + newline,
-        valueFormat: 'html'
+        value: cde.aliasesForVariableName
     };
-    if (cde.aliasesForVariableName && cde.aliasesForVariableName.length > 0)
+    if (cde.aliasesForVariableName && cde.aliasesForVariableName.length > 0 && cde.aliasesForVariableName != 'Aliases for variable name not defined')
         properties.push(aliasesForVariableNameProperty);
 
     var referenceDocuments = [];
@@ -253,8 +258,8 @@ function createCde(cde, ninds) {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "NINDS"},
         createdBy: {username: 'batchloader'},
-        created: importDate,
-        imported: importDate,
+        created: today,
+        imported: today,
         registrationState: {registrationStatus: "Qualified"},
         source: 'NINDS',
         version: Number(cde.versionNum).toString(),
