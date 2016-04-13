@@ -1,8 +1,8 @@
 angular.module('formModule').controller('FormViewCtrl',
     ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', 'CdeList', '$log', '$q',
+        '$http', '$timeout', 'userResource', '$log', '$q',
         function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-                  $http, $timeout, userResource, CdeList, $log, $q) {
+                  $http, $timeout, userResource, $log, $q) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -42,6 +42,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formDescription.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.nbOfEltsLimit = 5;
             },
             show: true
         },
@@ -66,7 +67,8 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                getFormCdes();
+                console.log("CDE LIST Selected");
+                $timeout($scope.$broadcast('loadFormCdes'), 0);
             },
             show: false,
             hideable: true
@@ -187,7 +189,27 @@ angular.module('formModule').controller('FormViewCtrl',
     if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
 
-    var formCdeIds;
+    $scope.formPreviewRendered = false;
+    $scope.renderPreview = function () {
+        $scope.formPreviewRendered = true;
+        $scope.formPreviewLoading = true;
+        converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
+                $scope.lfData = new LFormsData(lfData);
+                $scope.$apply($scope.lfData);
+                $scope.formPreviewLoading = false;
+            },
+            function (err) {
+                $scope.error = err;
+            });
+    };
+
+    $scope.raiseLimit = function() {
+        if ($scope.formCdeIds) {
+            if ($scope.nbOfEltsLimit < $scope.formCdeIds.length) {
+                $scope.nbOfEltsLimit += 5;
+            }
+        }
+    };
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -195,18 +217,14 @@ angular.module('formModule').controller('FormViewCtrl',
             if (exports.hasRole(userResource.user, "FormEditor")) {
                 isAllowedModel.setCanCurate($scope);
             }
-            isAllowedModel.setDisplayStatusWarning($scope);
-            formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
                 return c.tinyId;
             });
+            isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
-            converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
-                    $scope.lfData = new LFormsData(lfData);
-                    $scope.$apply($scope.lfData);
-                },
-                function (err) {
-                    $scope.error = err;
-                });
+
+            if ($scope.formCdeIds.length < 21) $scope.renderPreview();
+
             if (route.tab) {
                 $scope.tabs.more.select();
                 $timeout(function () {
@@ -217,12 +235,6 @@ angular.module('formModule').controller('FormViewCtrl',
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
     };
-
-    function getFormCdes() {
-        CdeList.byTinyIdList(formCdeIds, function (cdes) {
-            $scope.cdes = cdes;
-        });
-    }
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
