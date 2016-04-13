@@ -72,6 +72,7 @@ public class NlmCdeBaseTest {
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
     protected static String testAdmin_username = "testAdmin";
+    protected static String oldUser_username = "oldUser";
 
     protected static String password = "pass";
 
@@ -455,8 +456,8 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
 //        // gonowhere gets rid of possible alert.
-//        driver.get(baseUrl + "/gonowhere");
-//        textPresent("Nothing here");
+        driver.get(baseUrl + "/gonowhere");
+        textPresent("Nothing here");
 //
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");

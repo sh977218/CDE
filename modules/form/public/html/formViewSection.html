@@ -75,12 +75,15 @@
     <div class="panel-body">
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
-            <div ng-repeat="(questionIndex, formElement) in section.formElements" id="question_{{$index}}">
+            <div ng-repeat="(questionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit" id="question_{{$index}}">
                 <div ng-if="formElement.elementType === 'question'"
                      ng-include="'/form/public/html/formViewQuestion.html'"
                      ng-init="parent = section; question = formElement;"></div>
                 <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
                      ng-init="parent = section; section = formElement;isSubSection = true;"></div>
+            </div>
+            <div ng-if="section.formElements.length > nbOfEltsLimit">
+                <i class="fa fa-2x">Scroll down to see more ...</i>
             </div>
         </div>
         <div ng-show="canCurate && section.formElements.length === 0">

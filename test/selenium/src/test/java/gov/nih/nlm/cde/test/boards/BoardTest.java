@@ -25,7 +25,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 return;
             }
         }
-        Assert.assertTrue(false);
+        Assert.fail();
     }
 
     public void gotoMyBoards() {
