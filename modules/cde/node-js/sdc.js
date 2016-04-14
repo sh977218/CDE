@@ -21,11 +21,21 @@ var sdcExport = function(req, res, cde) {
     };
     for (var i = 0; i < cde.naming.length; i++) {
         if (!sdcRecord.preferredQuestionText && cde.naming[i].context.contextName.toLowerCase() === "preferred question text") {
-            sdcRecord.preferredQuestionText = cde.naming[i].definition;
+            sdcRecord.preferredQuestionText = cde.naming[i].designation;
         }
         if (!sdcRecord.alternateQuestionText && cde.naming[i].context.contextName.toLowerCase() === "alternate question text") {
-            sdcRecord.alternateQuestionText = cde.naming[i].definition;
+            sdcRecord.alternateQuestionText = cde.naming[i].designation;
         }
+    }
+    if (!sdcRecord.preferredQuestionText) {
+        cde.naming.forEach(function(n) {
+            if (!sdcRecord.preferredQuestionText && n.context.contextName.toLowerCase() === "question text") {
+                sdcRecord.preferredQuestionText = n.designation;
+            }
+        });
+    }
+    if (!sdcRecord.preferredQuestionText) {
+        sdcRecord.preferredQuestionText = cde.naming[0].designation;
     }
     if (cde.dataElementConcept.concepts.length > 0) {
         sdcRecord.dataElementConcept = {concept: cde.dataElementConcept.concepts[0].name};
@@ -35,7 +45,7 @@ var sdcExport = function(req, res, cde) {
     }
     if (cde.valueDomain.datatype !== 'Value List') {
         sdcRecord.valueDomain.datatype = cde.valueDomain.datatype;
-        sdcRecord.valueDomain.type = 'non-enumerated';
+        sdcRecord.valueDomain.type = 'described';
     } else {
         sdcRecord.valueDomain.datatype = cde.valueDomain.datatypeValueList.datatype;
         sdcRecord.valueDomain.type = 'enumerated';
