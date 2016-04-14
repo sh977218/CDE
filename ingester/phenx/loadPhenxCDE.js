@@ -27,7 +27,7 @@ function run() {
                     }
                 });
                 if (nbLoincId > 1) {
-                    console.log('this cde has too many loinc id. cde tinyId:' + de.get('tinyId'));
+                    console.log('this cde has too many LOINC Id. cde tinyId:' + de.get('tinyId'));
                     //noinspection JSUnresolvedVariable
                     process.exit(0);
                 }
@@ -85,6 +85,7 @@ function run() {
                             de.dataSets = dataSets;
                             de.save(function () {
                                 modifiedCDE++;
+                                console.log('modified CDE: ' + modifiedCDE);
                                 stream.resume();
                             });
                         });
@@ -92,20 +93,15 @@ function run() {
                 });
             });
             stream.on('end', function () {
-                console.log('end of stream');
-                console.log('total CDE: ' + totalCDE);
-                console.log('modified CDE: ' + modifiedCDE);
-                console.log('same CDE: ' + sameCDE);
-                console.log('noLoincCode.length: ' + noLoincCode.length);
                 callback();
-            });
-            stream.on('error', function (err) {
-                if (err) console.log("ERROR: " + err);
-                //noinspection JSUnresolvedVariable
-                process.exit(0);
             });
         },
         function () {
+            console.log('-----------------------------------------');
+            console.log('total CDE: ' + totalCDE);
+            console.log('modified CDE: ' + modifiedCDE);
+            console.log('same CDE: ' + sameCDE);
+            console.log('noLoincCode.length: ' + noLoincCode.length);
             //noinspection JSUnresolvedVariable
             process.exit(0);
         }
