@@ -1,8 +1,7 @@
 /*
- this script do not update org
+ TODO
+ this script does not update org
  */
-
-
 var fs = require('fs'),
     util = require('util'),
     xml2js = require('xml2js'),
@@ -15,8 +14,6 @@ var fs = require('fs'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     updateShare = require('./updateShare')
     ;
-
-var cdeSource = process.argv[3];
 
 var importDate = new Date().toJSON();
 
@@ -111,10 +108,10 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         console.log("Something wrong with deepDiff");
         console.log(deepDiff);
     }
-};
+}
 
 
-function findForm(formId, migrationForm, source, orgName, findFormDone) {
+function doMigrationForm(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
         archived: null,
         "registrationState.registrationStatus": {$not: /Retired/},
@@ -165,7 +162,8 @@ function findForm(formId, migrationForm, source, orgName, findFormDone) {
             processForm(migrationForm, existingForms[0], orgName, findFormDone);
         }
     });
-};
+}
+
 function streamOnClose() {
 
     // Retire Missing CDEs
@@ -197,7 +195,7 @@ function streamOnClose() {
         console.log(createdForm);
         process.exit(0);
     }, 5000);
-};
+}
 
 
 function run() {
@@ -207,7 +205,7 @@ function run() {
         classificationShared.sortClassification(migrationForm);
         var orgName = migrationForm.stewardOrg.name;
         var formIdCounter = 0;
-        var formId = 0;
+        var formId;
         var version;
         for (var i = 0; i < migrationForm.ids.length; i++) {
             if (migrationForm.ids[i].source === source) {
@@ -221,8 +219,8 @@ function run() {
             process.exit(1);
         }
 
-        if (formId !== 0) {
-            findForm(formId, migrationForm, source, orgName, function () {
+        if (formId) {
+            doMigrationForm(formId, migrationForm, source, orgName, function () {
                 migStream.resume();
             });
         } else {
@@ -237,6 +235,6 @@ function run() {
     });
 
     migStream.on('close', streamOnClose);
-};
+}
 
 run();
