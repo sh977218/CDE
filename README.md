@@ -72,7 +72,6 @@ $> export NODE_ENV=my_env
 
 The application will automatically use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
 
-
 ### Configure Elastic Search
 
 **MongoDB** must run in **Replicate mode**. For example
