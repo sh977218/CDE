@@ -70,7 +70,7 @@ Secondly, specify the desired configuration by setting up NODE_ENV environment v
 $> export NODE_ENV=my_env
 ```
 
-The application will automaticaly use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
+The application will automatically use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
 
 
 ### Configure Elastic Search
