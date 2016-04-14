@@ -6,6 +6,11 @@ var async = require('async'),
 
 var studyUrlPre = "http://www.ncbi.nlm.nih.gov/gap/?term=";
 var dataUrlPre = "ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/";
+
+var batchUser = {username: 'batchLoader'};
+var today = new Date().toJSON();
+var changeNote = 'Bulk update from source';
+
 var modifiedCDE = 0;
 var sameCDE = 0;
 var totalCDE = 0;
@@ -83,6 +88,9 @@ function run() {
                             property.value = "<table class='table table-striped'>" + thead + tbody + "</table>";
                             de.get('properties').push(property);
                             de.dataSets = dataSets;
+                            de.usedBy = batchUser;
+                            de.changeNote = changeNote;
+                            de.updated = today;
                             de.save(function () {
                                 modifiedCDE++;
                                 console.log('modified CDE: ' + modifiedCDE);
