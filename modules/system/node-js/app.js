@@ -364,8 +364,7 @@ exports.init = function(app) {
     };
 
     app.get('/searchUsers/:username?', function(req, res) {
-        if (app.isLocalIp(getRealIp(req))
-                && req.user && req.user.siteAdmin) {
+        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
             });
@@ -387,8 +386,7 @@ exports.init = function(app) {
 
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
-        if (app.isLocalIp(getRealIp(req))
-            && req.user && req.user.siteAdmin) {
+        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
             res.status(401).send();
@@ -759,7 +757,9 @@ exports.init = function(app) {
         loincUploadStatus = [];
         var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
             loincUploadStatus.push("Complete with Code: " + code);
-            setTimeout(function( ) {loincUploadStatus = []}, 5 * 60 * 1000);
+            setTimeout(function () {
+                loincUploadStatus = [];
+            }, 5 * 60 * 1000);
             fs.unlink(req.files.uploadedFiles.path);
         });
         res.send();
@@ -774,5 +774,5 @@ exports.init = function(app) {
 
     app.get('/uploadLoincCsvStatus', function(req, res){
         res.send(loincUploadStatus);
-    })
+    });
 };
