@@ -53,7 +53,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("general_tab"));
         clickElement(By.linkText("SDC View"));
         switchTab(1);
-        textPresent("Genotype Directed Therapy Based on Mutation Testing?");
+        textPresent("Genotype Directed Therapy Bas?");
         textPresent("enumerated");
         switchTabAndClose(0);
     }
