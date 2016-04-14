@@ -40,7 +40,7 @@ var users = [
         username: 'nlm',
         password: 'nlm',
         siteAdmin: true,
-        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org"],
+        orgAdmin: ["caBIG", "CTEP", "NINDS", "ACRIN", "PS&CC", "org / or Org", "TEST"],
         viewHistory: [],
         email: "admin@email.com"
     }
