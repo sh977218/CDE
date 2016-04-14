@@ -32,7 +32,7 @@ public class ScreenShotListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        saveLogs(methodName);
+        saveLogs(methodName, "URL when failed: " + driver.getCurrentUrl());
         try {
             driver.get(NlmCdeBaseTest.baseUrl);
         } catch (Exception e) {
@@ -42,13 +42,15 @@ public class ScreenShotListener extends TestListenerAdapter {
     
     public void onTestSuccess(ITestResult itr) {
         String methodName = itr.getName();
-        saveLogs(methodName);
+        saveLogs(methodName, null);
     }
     
-    private void saveLogs(String methodName) {
+    private void saveLogs(String methodName, String extraText) {
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
-        sb.append("URL when failed: " + driver.getCurrentUrl());
+        if (extraText != null) {
+            sb.append("URL when failed: " + driver.getCurrentUrl());
+        }
         for (LogEntry entry : logEntries) {
             if (!entry.getMessage().contains("Range.detach"))
                 sb.append(new Date(entry.getTimestamp()));
