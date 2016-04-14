@@ -6,8 +6,10 @@ var async = require('async'),
 
 var studyUrlPre = "http://www.ncbi.nlm.nih.gov/gap/?term=";
 var dataUrlPre = "ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/";
-var modifiedDeCounter = 0;
-var totalDeCounter = 0;
+var modifiedCDE = 0;
+var sameCDE = 0;
+var totalCDE = 0;
+var noLoincCode = [];
 
 function run() {
     async.series([
@@ -15,8 +17,7 @@ function run() {
             var stream = DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).stream();
             stream.on('data', function (de) {
                 stream.pause();
-                totalDeCounter++;
-                console.log('totalDeCounter ' + totalDeCounter);
+                totalCDE++;
                 var loincId = 0;
                 var nbLoincId = 0;
                 de.get('ids').forEach(function (id) {
@@ -41,7 +42,8 @@ function run() {
                     var dataSets = [];
                     var i = 0;
                     if (phenxVariableArray.length === 0) {
-                        console.log('can not found loinc cde of ' + loincId);
+                        noLoincCode.push(loincId);
+                        sameCDE++;
                         stream.resume();
                     } else {
                         async.forEach(phenxVariableArray, function (phenxVariable, doneOnePhenxVariable) {
@@ -82,8 +84,7 @@ function run() {
                             de.get('properties').push(property);
                             de.dataSets = dataSets;
                             de.save(function () {
-                                modifiedDeCounter++;
-                                console.log('modified de count: ' + modifiedDeCounter);
+                                modifiedCDE++;
                                 stream.resume();
                             });
                         });
@@ -92,6 +93,10 @@ function run() {
             });
             stream.on('end', function () {
                 console.log('end of stream');
+                console.log('total CDE: ' + totalCDE);
+                console.log('modified CDE: ' + modifiedCDE);
+                console.log('same CDE: ' + sameCDE);
+                console.log('noLoincCode.length: ' + noLoincCode.length);
                 callback();
             });
             stream.on('error', function (err) {
@@ -101,7 +106,6 @@ function run() {
             });
         },
         function () {
-            console.log('totalDeCounter: ' + totalDeCounter);
             //noinspection JSUnresolvedVariable
             process.exit(0);
         }
