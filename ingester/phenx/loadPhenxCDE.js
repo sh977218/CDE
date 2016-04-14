@@ -17,9 +17,21 @@ var totalCDE = 0;
 var noLoincCode = [];
 
 
-var stream = DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).stream();
-stream.on('data', function (de) {
-    stream.pause();
+DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(function(err, allDes) {
+    async.each(allDes, function(de, cb) {
+        doDe(de, cb);
+    } ,function () {
+        console.log('-----------------------------------------');
+        console.log('total CDE: ' + totalCDE);
+        console.log('modified CDE: ' + modifiedCDE);
+        console.log('same CDE: ' + sameCDE);
+        console.log('noLoincCode.length: ' + noLoincCode.length);
+        //noinspection JSUnresolvedVariable
+        process.exit(0);
+    });
+});
+
+function doDe(de, cb) {
     totalCDE++;
     var loincId = 0;
     var nbLoincId = 0;
@@ -47,7 +59,7 @@ stream.on('data', function (de) {
         if (phenxVariableArray.length === 0) {
             noLoincCode.push(loincId);
             sameCDE++;
-            stream.resume();
+            cb();
         } else {
             async.forEach(phenxVariableArray, function (phenxVariable, doneOnePhenxVariable) {
                 i++;
@@ -92,20 +104,11 @@ stream.on('data', function (de) {
                 de.save(function () {
                     modifiedCDE++;
                     console.log('modified CDE: ' + modifiedCDE);
-                    stream.resume();
+                    cb();
                 });
             });
         }
     });
-});
+}
 
-stream.on('end', function () {
-    console.log('-----------------------------------------');
-    console.log('total CDE: ' + totalCDE);
-    console.log('modified CDE: ' + modifiedCDE);
-    console.log('same CDE: ' + sameCDE);
-    console.log('noLoincCode.length: ' + noLoincCode.length);
-    //noinspection JSUnresolvedVariable
-    process.exit(0);
-});
 
