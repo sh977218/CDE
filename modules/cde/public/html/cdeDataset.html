@@ -1,3 +1,6 @@
+<div ng-if="!elt.dataSets || elt.dataSets.length === 0" id="noDataSetsDiv">
+    <div class="col-xs-12"><h4>No Data sets using this CDE</h4></div>
+</div>
 <div ng-if="elt.dataSets && elt.dataSets.length >0" id="dataSetsDiv">
     <div class="col-xs-12">
         <h4>Data sets using this CDE</h4>
