@@ -8,14 +8,10 @@ public class UnpinTest extends BoardTest {
     public void unpin() {
         mustBeLoggedInAs(unpinUser, password);
         String cdeName = "Imaging volumetric result";
-        goToCdeSearch();
-        pinTo(cdeName, "Unpin Board");
         goToBoard("Unpin Board");
         textPresent(cdeName);
         findElement(By.id("unpin_0")).click();
         goToBoard("Unpin Board");
         textNotPresent(cdeName);
-
-        removeBoard("Unpin Board");
     }
 }
