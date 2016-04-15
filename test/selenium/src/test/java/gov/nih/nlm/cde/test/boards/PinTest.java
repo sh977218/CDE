@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PinTest extends BoardTest {
-    
+
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
@@ -28,6 +28,6 @@ public class PinTest extends BoardTest {
 
         goToBoard("Blood Board");
         textPresent("School special accommodation indicator");
-    }
 
+    }
 }
