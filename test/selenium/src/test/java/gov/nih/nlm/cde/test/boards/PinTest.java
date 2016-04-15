@@ -9,11 +9,6 @@ public class PinTest extends BoardTest {
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
-        pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
-        pinTo("Umbilical Cord Blood", "Blood Board");
-        pinTo("Smoking History Ind", "Smoking Board");
-        pinTo("Form Element End Date", "Smoking Board");
-        
         goToBoard("Smoking Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 2);
         textPresent("Smoking History");
@@ -33,10 +28,6 @@ public class PinTest extends BoardTest {
 
         goToBoard("Blood Board");
         textPresent("School special accommodation indicator");
-
-        removeBoard("Blood Board");
-        removeBoard("Smoking Board");
-
     }
 
 }
