@@ -91,7 +91,6 @@ var riverFunction =
             }\
         }\
     }\
-    ctx.document.test = 'abc';\
     function findFormQuestionNr (fe) {\
         var n = 0;\
         if (fe.formElements) {\
