@@ -13,7 +13,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -78,7 +81,7 @@ public class NlmCdeBaseTest {
 
     protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
 
-    protected int randomNb = (int)(Math.random()  * 1000);
+    protected int randomNb = (int) (Math.random() * 1000);
 
     @BeforeTest
     public void countElasticElements() {
@@ -274,8 +277,8 @@ public class NlmCdeBaseTest {
     protected void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "/?tinyId="
-                + tinyId);
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId="
+                    + tinyId);
             textPresent("More...");
             textPresent(name);
         } else {
@@ -740,14 +743,14 @@ public class NlmCdeBaseTest {
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
         findElement(By.xpath(prefix + "moveDown-0" + postfix));
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveUp-0" + postfix));
+        assertNoElt(By.xpath(prefix + "moveTop-0" + postfix));
 
         findElement(By.xpath(prefix + "moveDown-1" + postfix));
         findElement(By.xpath(prefix + "moveUp-1" + postfix));
         findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
