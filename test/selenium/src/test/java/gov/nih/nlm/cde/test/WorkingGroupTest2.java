@@ -1,40 +1,24 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.classification.ClassificationTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class WorkingGroupTest2  extends BaseClassificationTest {
+public class WorkingGroupTest2 extends BaseClassificationTest {
 
-    @Test(priority = -1)
+    @Test
     public void wgSeesOtherWg() {
-        mustBeLoggedInAs("nindsWg1User", "pass");
-        goToCdeByName("Brief Pain Inventory (BPI) - pain general activity interference scale");
-        findElement(By.linkText("Classification")).click();
-        new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-1", "WG1 Classif", "WG1 Sub Classif"});
-        textPresent("WG1 Sub Classif");
-        logout();
-        
-        mustBeLoggedInAs("nindsWg2User", "pass");
-        goToCdeByName("Urinary tract surgical procedure indicator");
-        findElement(By.linkText("Classification")).click();
-        new ClassificationTest().addClassificationMethod(new String[]{"NINDS-WG-2", "WG2 Classif", "WG2 Sub Classif"});
-        textPresent("WG2 Sub Classif");
-
-        waitForESUpdate();
-
         //ANONYMOUS
-        logout();           
+        mustBeLoggedOut();
         goToCdeSearch();
         textNotPresent("NINDS-WG-1");
         textNotPresent("NINDS-WG-2");
-        
+
         //CTEP
-        mustBeLoggedInAs("ctepCurator", "pass");        
-        goToCdeSearch();        
+        mustBeLoggedInAs("ctepCurator", "pass");
+        goToCdeSearch();
         textNotPresent("NINDS-WG-1");
-        textNotPresent("NINDS-WG-2");        
-        
+        textNotPresent("NINDS-WG-2");
+
         //NINDS-WG-1
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeSearch();
@@ -42,36 +26,36 @@ public class WorkingGroupTest2  extends BaseClassificationTest {
         textPresent("NINDS-WG-1");
         scrollToViewById("browseOrg-NINDS-WG-2");
         textPresent("NINDS-WG-2");
-        
+
         //NINDS-WG-2
         mustBeLoggedInAs("nindsWg2User", "pass");
-        goToCdeSearch();        
+        goToCdeSearch();
         textPresent("NINDS-WG-1");
-        textPresent("NINDS-WG-2");        
-        
+        textPresent("NINDS-WG-2");
+
         //DeView Wg1 sees Wg2
         mustBeLoggedInAs("nindsWg1User", "pass");
-        goToCdeByName("Urinary tract surgical procedure indicator");    
+        goToCdeByName("Urinary tract surgical procedure indicator");
         findElement(By.linkText("Classification")).click();
         textPresent("NINDS-WG-2");
         textPresent("WG2 Classif");
         textPresent("WG2 Sub Classif");
-        
+
         //DeView Ctep cannot see Wg2
-        mustBeLoggedInAs("ctepCurator", "pass"); 
-        goToCdeByName("Urinary tract surgical procedure indicator");    
+        mustBeLoggedInAs("ctepCurator", "pass");
+        goToCdeByName("Urinary tract surgical procedure indicator");
         findElement(By.linkText("Classification")).click();
         textNotPresent("NINDS-WG-2");
         textNotPresent("WG2 Classif");
-        textNotPresent("WG2 Sub Classif");   
-        
+        textNotPresent("WG2 Sub Classif");
+
         //DeView Anon cannot see Wg2
         logout();
-        goToCdeByName("Urinary tract surgical procedure indicator");    
+        goToCdeByName("Urinary tract surgical procedure indicator");
         findElement(By.linkText("Classification")).click();
         textNotPresent("NINDS-WG-2");
         textNotPresent("WG2 Classif");
-        textNotPresent("WG2 Sub Classif");         
+        textNotPresent("WG2 Sub Classif");
 
-    }           
+    }
 }
