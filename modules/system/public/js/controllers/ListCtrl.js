@@ -232,9 +232,9 @@ angular.module('systemModule').controller('ListCtrl',
 
             $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                if ($scope.localEltTransform) {
-                    $scope.localEltTransform(elt);
-                }
+                //if ($scope.localEltTransform) {
+                //    $scope.localEltTransform(elt);
+                //}
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope[type + 's'], "list");
