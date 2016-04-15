@@ -309,6 +309,11 @@ public class NlmCdeBaseTest {
         searchElt(formName, "form");
     }
 
+    public void assertNoElt(By by) {
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        Assert.assertEquals(driver.findElements(by).size(), 0);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+    }
 
     public void searchElt(String name, String type) {
         goToSearch(type);
