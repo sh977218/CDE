@@ -2,7 +2,6 @@ var config = require('../../system/node-js/parseConfig')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , logging = require('../../system/node-js/logging.js')
-    , regStatusShared = require('../../system/shared/regStatusShared')
     , elasticsearch = require('elasticsearch')
     ;
 
@@ -14,11 +13,15 @@ exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
-            if (!(field == "primaryNameCopy" || field == "primaryDefinitionCopy")) delete query.highlight.fields[field];
+            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {delete query.highlight.fields[field];}
         });
     }
-    dbLogger.storeQuery(settings);
-    sharedElastic.elasticsearch(query, 'cde', cb);
+    sharedElastic.elasticsearch(query, 'cde', function(err, result) {
+        if (result && result.length > 0) {
+            dbLogger.storeQuery(settings);
+        }
+        cb(err, result);
+    });
 };
 
 var mltConf = {
