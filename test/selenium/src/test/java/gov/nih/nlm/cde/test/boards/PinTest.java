@@ -9,15 +9,6 @@ public class PinTest extends BoardTest {
     @Test
     public void pin() {
         mustBeLoggedInAs(pinUser, password);
-
-        createBoard("Blood Board", "Collect blood related cdes here");
-        createBoard("Smoking Board", "Collect Smoking CDEs here");
-        
-        gotoMyBoards();
-        
-        textPresent("Collect blood");
-        textPresent("Smoking CDEs");
-
         pinTo("Laboratory Procedure Blood Urea Nitrogen", "Blood Board");
         pinTo("Umbilical Cord Blood", "Blood Board");
         pinTo("Smoking History Ind", "Smoking Board");
