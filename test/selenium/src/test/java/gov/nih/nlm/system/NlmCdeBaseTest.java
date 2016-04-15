@@ -506,10 +506,9 @@ public class NlmCdeBaseTest {
     }
 
     public void addCdeToQuickBoard(String cdeName) {
-        searchCde(cdeName);
-        clickElement(By.id("addToCompare_0"));
+        goToCdeByName(cdeName);
+        clickElement(By.id("addToQuickBoard"));
         closeAlert();
-        findElement(By.name("q")).clear();
     }
 
     public void addFormToQuickBoard(String formName) {
