@@ -95,6 +95,7 @@ var deJsonSchema = {
         {key: String, value: String, valueFormat: String, _id: false}
     ]
     , ids: [sharedSchemas.idSchema]
+    , dataSets: [sharedSchemas.dataSetSchema]
     , mappingSpecifications: [
         {content: String, spec_type: String, script: String, _id: false}
     ]

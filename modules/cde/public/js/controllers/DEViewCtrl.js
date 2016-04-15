@@ -188,6 +188,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
             show:false,
             hideable: true
         },
+        dataSet: {
+            heading: "Dataset",
+            includes: ['/cde/public/html/cdeDataset.html'],
+            select: function () {
+                setCurrentTab();
+            },
+            show: false,
+            hideable: true
+        },
         more: {
             heading: "More...",
             includes: [],

@@ -216,7 +216,13 @@ schemas.referenceDocumentSchema = {
     languageCode: String,
     _id: false
 };
-
+schemas.dataSetSchema = {
+    source: String,
+    id: String,
+    studyUri: String,
+    dataUri: String,
+    notes: String
+};
 schemas.classificationAudit = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true}
     , user: {
