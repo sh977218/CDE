@@ -1,6 +1,6 @@
 var config = require('../../modules/system/node-js/parseConfig'),
     mongoose = require('mongoose'),
-    NindsModel = require('./createConnection').NindsModel,
+    NindsModel = require('./../createConnection').MigrationNindsModel,
     form_schemas = require('../../modules/form/node-js/schemas')
     ;
 
