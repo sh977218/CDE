@@ -5,6 +5,10 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://repo.jenkins-ci.org/releases"
+    }
+
 }
 
 dependencies {
@@ -19,4 +23,6 @@ dependencies {
     compile "org.springframework.data:spring-data-commons:1.5.0.RELEASE"
     compile "org.springframework.data:spring-data-mongodb:1.8.4.RELEASE"
     compile "org.slf4j:slf4j-simple:1.6.1"
+    testCompile "org.monte:screen-recorder:0.7.7"
+
 }

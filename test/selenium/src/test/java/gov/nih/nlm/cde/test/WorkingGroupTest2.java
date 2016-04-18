@@ -1,12 +1,18 @@
 package gov.nih.nlm.cde.test;
 
+import org.monte.screenrecorder.ScreenRecorder;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class WorkingGroupTest2 extends BaseClassificationTest {
 
     @Test
-    public void wgSeesOtherWg() {
+    public void wgSeesOtherWg() throws IOException, AWTException {
+        ScreenRecorder screenRecorder = new ScreenRecorder(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+        screenRecorder.start();
         //ANONYMOUS
         mustBeLoggedOut();
         goToCdeSearch();
@@ -22,9 +28,7 @@ public class WorkingGroupTest2 extends BaseClassificationTest {
         //NINDS-WG-1
         mustBeLoggedInAs("nindsWg1User", "pass");
         goToCdeSearch();
-        scrollToViewById("browseOrg-NINDS-WG-1");
         textPresent("NINDS-WG-1");
-        scrollToViewById("browseOrg-NINDS-WG-2");
         textPresent("NINDS-WG-2");
 
         //NINDS-WG-2
@@ -56,6 +60,6 @@ public class WorkingGroupTest2 extends BaseClassificationTest {
         textNotPresent("NINDS-WG-2");
         textNotPresent("WG2 Classif");
         textNotPresent("WG2 Sub Classif");
-
+        screenRecorder.stop();
     }
 }

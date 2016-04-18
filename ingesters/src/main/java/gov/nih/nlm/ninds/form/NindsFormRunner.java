@@ -4,6 +4,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,14 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NindsFormRunner {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, AWTException {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
 
 
         Map<String, String> diseaseMap = new HashMap<String, String>();
-
-/*
         diseaseMap.put("Amyotrophic Lateral Sclerosis", "ALS.aspx");
         diseaseMap.put("Congenital Muscular Dystrophy", "CMD.aspx");
         diseaseMap.put("Duchenne/Becker Muscular Dystrophy", "DMD.aspx");
@@ -34,15 +34,13 @@ public class NindsFormRunner {
         diseaseMap.put("Myotonic Dystrophy", "MMD.aspx");
         diseaseMap.put("Neuromuscular Diseases", "NMD.aspx");
         diseaseMap.put("Parkinson's Disease", "PD.aspx");
-*/
         diseaseMap.put("Spinal Cord Injury", "SCI.aspx");
         diseaseMap.put("Spinal Muscular Atrophy", "SMA.aspx");
         diseaseMap.put("Stroke", "Stroke.aspx");
         diseaseMap.put("Traumatic Brain Injury", "TBI.aspx");
 
 
-        int nbOfThread = 4;
-/*
+        int nbOfThread = 1;
         int startingPage = 27;
         int endingPages = 27;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
@@ -55,8 +53,8 @@ public class NindsFormRunner {
         while (!executor1.isTerminated()) {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
-*/
 
+/*
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
         Iterator it = diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -69,6 +67,7 @@ public class NindsFormRunner {
         }
         System.out.println("Finished all forms in the map: " + diseaseMap);
 
+*/
 
         System.exit(0);
     }
