@@ -1,5 +1,6 @@
 package gov.nih.nlm.system;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.browserlaunchers.Sleeper;
@@ -19,13 +20,21 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,6 +102,7 @@ public class NlmCdeBaseTest {
         int waitTime = 0;
         for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
             hangon(waitTime);
+            System.out.println("trying to reach: " + baseUrl + "/elasticSearch/count");
             nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of cdes: " + nbOfRecords);
             waitTime = 10;
@@ -123,6 +133,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
+//            options.addExtensions(new File("S:/CDE/extension/1.17.5_0.crx"));
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
@@ -163,6 +174,23 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
+
+
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new Runnable() {
+
+            @Override
+            public void run() {
+                File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                try {
+                    FileUtils.copyFile(srcFile,
+                        new File("build/screenshots/1/" + new Date().getTime() +  ".png"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 300, TimeUnit.MICROSECONDS);
+
     }
 
     @AfterMethod
@@ -174,6 +202,27 @@ public class NlmCdeBaseTest {
     public void countTabs(Method method) {
         if (driver.getWindowHandles().size() > 1)
             System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+    }
+
+    @AfterMethod
+    public void generateGif() {
+
+        try {
+            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(new File("build/movies/myGif.gif")), 1, 300, false);
+
+            File[] fArr = new File("build/screenshots/1/").listFiles();
+
+            for (File f : fArr) {
+                writer.writeToSequence(ImageIO.read(f));
+            }
+
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @BeforeMethod

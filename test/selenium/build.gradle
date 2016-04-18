@@ -29,9 +29,9 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    systemProperty 'testUrl', System.getProperty('testUrl', 'http://130.14.160.5:3001')
+    systemProperty 'testUrl', System.getProperty('testUrl', 'http://localhost:3001')
     systemProperty 'timeout', System.getProperty('timeout', "20")
-    systemProperty 'hubUrl', System.getProperty('hubUrl', 'http://130.14.160.5:4444/wd/hub')
+    systemProperty 'hubUrl', System.getProperty('hubUrl', 'http://localhost:4444/wd/hub')
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
     systemProperty 'seleniumDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "/usr/nlm/selenium/cde/downloads/";
     systemProperty 'chromeDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "T:\\CDE\\downloads";
@@ -44,7 +44,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = 16
+    maxParallelForks = 1
 
     testLogging {
         events "standardOut", "standardError"
