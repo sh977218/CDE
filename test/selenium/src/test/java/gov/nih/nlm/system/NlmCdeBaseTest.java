@@ -167,22 +167,20 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
-
+        final String className = this.getClass().getCanonicalName();
+        System.out.println("**********" + className);
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 try {
-                    FileUtils.copyFile(srcFile,
-                            new File("build/screenshots/1/" + new Date().getTime() + ".png"));
+                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + new Date().getTime() + ".png"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }, 0, 300, TimeUnit.MICROSECONDS);
-
     }
 
     @AfterMethod
@@ -567,7 +565,7 @@ public class NlmCdeBaseTest {
         textPresent(quickBoardTabText);
     }
 
-    protected void emptyQuickBoardByModule(String module) {
+    public void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
@@ -623,7 +621,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    private void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    public void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
