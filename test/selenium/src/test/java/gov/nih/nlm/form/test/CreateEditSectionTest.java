@@ -32,7 +32,13 @@ public class CreateEditSectionTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
 
         clickElement(By.id("moveEltUp-1"));
+        hangon(1);
         clickElement(By.id("moveEltDown-1"));
+        hangon(1);
+
+        Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
+        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
+        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
 
         saveForm();
         clickElement(By.id("description_tab"));
