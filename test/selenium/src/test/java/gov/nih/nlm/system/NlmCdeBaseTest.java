@@ -2,7 +2,6 @@ package gov.nih.nlm.system;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -22,17 +21,12 @@ import org.testng.annotations.Listeners;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,11 +42,11 @@ public class NlmCdeBaseTest {
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
-    protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
+    private static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
-    protected static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
+    private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -92,9 +86,9 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
+    private Set<PosixFilePermission> filePerms = new HashSet<>();
 
-    protected int randomNb = (int) (Math.random() * 1000);
+    private int randomNb = (int) (Math.random() * 1000);
 
     @BeforeTest
     public void countElasticElements() {
@@ -133,7 +127,6 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
-//            options.addExtensions(new File("S:/CDE/extension/1.17.5_0.crx"));
             Map<String, Object> prefs = new HashMap<String, Object>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
@@ -175,7 +168,6 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
 
-
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(new Runnable() {
 
@@ -184,7 +176,7 @@ public class NlmCdeBaseTest {
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 try {
                     FileUtils.copyFile(srcFile,
-                        new File("build/screenshots/1/" + new Date().getTime() +  ".png"));
+                            new File("build/screenshots/1/" + new Date().getTime() + ".png"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -206,23 +198,16 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void generateGif() {
-
         try {
             GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(new File("build/movies/myGif.gif")), 1, 300, false);
-
             File[] fArr = new File("build/screenshots/1/").listFiles();
-
             for (File f : fArr) {
                 writer.writeToSequence(ImageIO.read(f));
             }
-
             writer.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @BeforeMethod
@@ -230,7 +215,7 @@ public class NlmCdeBaseTest {
         System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
     }
 
-    public void clearStorage() {
+    protected void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
@@ -357,10 +342,6 @@ public class NlmCdeBaseTest {
         openEltInList(name, "cde");
     }
 
-    public void searchCde(String cdeName) {
-        searchElt(cdeName, "cde");
-    }
-
     public void searchForm(String formName) {
         searchElt(formName, "form");
     }
@@ -404,7 +385,7 @@ public class NlmCdeBaseTest {
         textPresent(name, By.id("searchResult_0"));
     }
 
-    public void checkTooltipText(By by, String text) {
+    protected void checkTooltipText(By by, String text) {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
@@ -566,13 +547,13 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addCdeToQuickBoard(String cdeName) {
+    protected void addCdeToQuickBoard(String cdeName) {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
         closeAlert();
     }
 
-    public void addFormToQuickBoard(String formName) {
+    protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
         closeAlert();
@@ -586,7 +567,7 @@ public class NlmCdeBaseTest {
         textPresent(quickBoardTabText);
     }
 
-    public void emptyQuickBoardByModule(String module) {
+    protected void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
@@ -595,7 +576,7 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
 
-    public void addToCompare(String cdeName1, String cdeName2) {
+    protected void addToCompare(String cdeName1, String cdeName2) {
         goToCdeSearch();
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
@@ -618,31 +599,31 @@ public class NlmCdeBaseTest {
         return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
-    public void scrollTo(Integer y) {
+    protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    public void scrollToEltByCss(String css) {
+    private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
 
-    public void scrollToViewById(String id) {
+    protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.id(id));
         je.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
-    public void hoverOverElement(WebElement ele) {
+    protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    private void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -674,7 +655,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -682,7 +663,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
@@ -737,16 +718,16 @@ public class NlmCdeBaseTest {
         confirmNewValue(newValue);
     }
 
-    protected void confirmFieldName(String fieldName) {
+    private void confirmFieldName(String fieldName) {
         textPresent(fieldName, By.cssSelector("#modificationsList"));
     }
 
-    protected void confirmPreviousValue(String value) {
+    private void confirmPreviousValue(String value) {
         textPresent(value, By.cssSelector("#modificationsList"));
 
     }
 
-    protected void confirmNewValue(String value) {
+    private void confirmNewValue(String value) {
         textPresent(value, By.cssSelector("#modificationsList"));
     }
 
