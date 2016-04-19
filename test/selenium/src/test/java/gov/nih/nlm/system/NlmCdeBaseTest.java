@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -50,8 +51,6 @@ public class NlmCdeBaseTest {
     protected static WebDriver driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
-
-    private static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
 
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
@@ -95,7 +94,7 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-    private Set<PosixFilePermission> filePerms = new HashSet<>();
+    private Set<PosixFilePermission> filePerms = new HashSet();
 
     private int randomNb = (int) (Math.random() * 1000);
     SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
@@ -124,8 +123,9 @@ public class NlmCdeBaseTest {
     }
 
     @BeforeMethod
-    public void setBaseUrl() {
+    public void setBaseUrl(ITestResult itr) {
         hangon(new Random().nextInt(10));
+        String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -184,7 +184,7 @@ public class NlmCdeBaseTest {
             public void run() {
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 try {
-                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + className + "_" + new Date().getTime() + ".png"));
+                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + itr.getMethod().getMethodName() + "_" + new Date().getTime() + ".png"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -204,41 +204,28 @@ public class NlmCdeBaseTest {
     }
 
     @AfterMethod
-    public void generateGif() {
-        try {
-            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
-            File gif = new File("build/screenshots/" + className + "/gif/" + className + new Date().getTime() + ".gif");
-            File srcFile = new File(className + "_gif");
-            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, 300, false);
-            for (File screenshotFile : inputScreenshotsArray) {
-                writer.writeToSequence(ImageIO.read(screenshotFile));
-            }
-            FileUtils.copyFile(srcFile, gif);
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @AfterMethod
-    public void generateVideo() {
-        String outputFilename = "build/screenshots/" + className + "/" + className + new Date().getTime() + ".mp4";
+    public void generateVideo(ITestResult itr) {
+        String outputFilename = "build/screenshots/" + className + "/" + itr.getMethod().getMethodName() + ".mp4";
         final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
         java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
         File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
         try {
-            int i = 0;
-            for (File screenshotFile : inputScreenshotsArray) {
-                i++;
-                BufferedImage image = ImageIO.read(screenshotFile);
+            for (int i = 0; i < inputScreenshotsArray.length; i++) {
+                BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
                 writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
             }
+            writer.close();
+
+
+            FileUtils.copyFile(new File(outputFilename),
+                    new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         // tell the writer to close and write the trailer if needed
-        writer.close();
+
         System.out.println("Video Created");
     }
 
@@ -691,7 +678,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -699,7 +686,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
