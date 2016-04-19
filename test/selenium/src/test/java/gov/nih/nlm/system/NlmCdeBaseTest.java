@@ -2,6 +2,7 @@ package gov.nih.nlm.system;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -21,19 +22,25 @@ import org.testng.annotations.Listeners;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.xuggle.mediatool.IMediaWriter;
 
 import static com.jayway.restassured.RestAssured.get;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -89,6 +96,9 @@ public class NlmCdeBaseTest {
     private Set<PosixFilePermission> filePerms = new HashSet<>();
 
     private int randomNb = (int) (Math.random() * 1000);
+    SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+    Calendar calendar = Calendar.getInstance();
+    final String className = this.getClass().getSimpleName();
 
     @BeforeTest
     public void countElasticElements() {
@@ -160,22 +170,19 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
 
-        resizeWindow(1600, 980);
+        maximizeWindow();
 
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
-
-        final String className = this.getClass().getCanonicalName();
-        System.out.println("**********" + className);
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 try {
-                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + new Date().getTime() + ".png"));
+                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/" + className + "_" + new Date().getTime() + ".png"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -197,15 +204,54 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateGif() {
         try {
-            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(new File("build/movies/myGif.gif")), 1, 300, false);
-            File[] fArr = new File("build/screenshots/1/").listFiles();
+            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(new File("build/movies/" + className + "/myGif.gif")), TYPE_INT_RGB, 300, false);
+            File[] fArr = new File("build/screenshots/" + className + "/").listFiles();
             for (File f : fArr) {
+                System.out.println("File: " + f);
                 writer.writeToSequence(ImageIO.read(f));
             }
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterMethod
+    public void generateVideo(){
+
+        // let's make a IMediaWriter to write the file.
+        final IMediaWriter writer = ToolFactory.makeWriter("build/movies/" + className + "/myGif.gif");
+
+        screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // We tell it we're going to add one video stream, with id 0,
+        // at position 0, and that it will have a fixed frame rate of FRAME_RATE.
+        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4,
+                screenBounds.width/2, screenBounds.height/2);
+
+        long startTime = System.nanoTime();
+
+        for (int index = 0; index < SECONDS_TO_RUN_FOR * FRAME_RATE; index++) {
+
+            // take the screen shot
+            BufferedImage screen = getDesktopScreenshot();
+
+            // encode the image to stream #0
+            writer.encodeVideo(0, bgrScreen, System.nanoTime() - startTime,
+                    TimeUnit.NANOSECONDS);
+
+            // sleep for frame rate milliseconds
+            try {
+                Thread.sleep((long) (1000 / FRAME_RATE));
+            }
+            catch (InterruptedException e) {
+                // ignore
+            }
+
+        }
+
+        // tell the writer to close and write the trailer if  needed
+        writer.close();
     }
 
     @BeforeMethod
@@ -222,6 +268,10 @@ public class NlmCdeBaseTest {
 
     protected void resizeWindow(int width, int height) {
         driver.manage().window().setSize(new Dimension(width, height));
+    }
+
+    protected void maximizeWindow() {
+        driver.manage().window().maximize();
     }
 
     protected Dimension getWindowSize() {
