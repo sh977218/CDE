@@ -184,7 +184,7 @@ public class NlmCdeBaseTest {
             public void run() {
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 try {
-                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/" + className + "_" + new Date().getTime() + ".png"));
+                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + className + "_" + new Date().getTime() + ".png"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -206,12 +206,14 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateGif() {
         try {
-            File gif = new File("build/screenshots/" + className + "/myGif.gif");
-            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(gif), TYPE_INT_RGB, 300, false);
-            File[] fArr = new File("build/screenshots/" + className + "/").listFiles();
-            for (File f : fArr) {
-                writer.writeToSequence(ImageIO.read(f));
+            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
+            File gif = new File("build/screenshots/" + className + "/gif/" + className + new Date().getTime() + ".gif");
+            File srcFile = new File(className + "_gif");
+            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, 300, false);
+            for (File screenshotFile : inputScreenshotsArray) {
+                writer.writeToSequence(ImageIO.read(screenshotFile));
             }
+            FileUtils.copyFile(srcFile, gif);
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -220,27 +222,16 @@ public class NlmCdeBaseTest {
 
     @AfterMethod
     public void generateVideo() {
-        double FRAME_RATE = 20;
-
-        int SECONDS_TO_RUN_FOR = 20;
-
-        String outputFilename = "build/screenshots/" + className + "/myVideo.mp4";
-
-        Map<String, File> imageMap = new HashMap<String, File>();
-
+        String outputFilename = "build/screenshots/" + className + "/" + className + new Date().getTime() + ".mp4";
         final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
-
         java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
-
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
-
-        File[] listOfFiles = new File("build/screenshots/" + className + "/").listFiles();
-
+        File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
         try {
             int i = 0;
-            for (File file : listOfFiles) {
+            for (File screenshotFile : inputScreenshotsArray) {
                 i++;
-                BufferedImage image = ImageIO.read(file);
+                BufferedImage image = ImageIO.read(screenshotFile);
                 writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e) {
