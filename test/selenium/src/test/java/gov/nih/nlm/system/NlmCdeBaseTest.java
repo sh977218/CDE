@@ -18,7 +18,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.IInvokedMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -26,11 +25,9 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,7 +42,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.jayway.restassured.RestAssured.get;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -141,7 +137,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
-            Map<String, Object> prefs = new HashMap<String, Object>();
+            Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
@@ -173,7 +169,6 @@ public class NlmCdeBaseTest {
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
-
         maximizeWindow();
 
         filePerms.add(PosixFilePermission.OWNER_READ);
@@ -181,6 +176,7 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
+        final String methodName = itr.getMethod().getMethodName();
         if (m.getAnnotation(RecordVideo.class) != null) {
             ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
             exec.scheduleAtFixedRate(new Runnable() {
@@ -188,7 +184,8 @@ public class NlmCdeBaseTest {
                 public void run() {
                     File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                     try {
-                        FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + itr.getMethod().getMethodName() + "_" + new Date().getTime() + ".png"));
+                        String dest = "build/screenshots/" + className + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
+                        FileUtils.copyFile(srcFile, new File(dest));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -211,29 +208,24 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateVideo(Method m, ITestResult itr) {
         if (m.getAnnotation(RecordVideo.class) != null) {
-
-            String outputFilename = "build/screenshots/" + className + "/" + itr.getMethod().getMethodName() + ".mp4";
+            String methodName = itr.getMethod().getMethodName();
+            String outputFilename = "build/screenshots/" + className + "/" + methodName + ".mp4";
             final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
             java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
             writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
-            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
+            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/" + methodName + "/").listFiles();
             try {
                 for (int i = 0; i < inputScreenshotsArray.length; i++) {
                     BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
                     writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
                 }
                 writer.close();
-
-
-                FileUtils.copyFile(new File(outputFilename),
-                        new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
-
+                FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            // tell the writer to close and write the trailer if needed
+            } finally {
 
-            System.out.println("Video Created");
+            }
         }
     }
 
@@ -346,8 +338,7 @@ public class NlmCdeBaseTest {
     protected void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId="
-                    + tinyId);
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
             textPresent("More...");
             textPresent(name);
         } else {
@@ -528,13 +519,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-//        // gonowhere gets rid of possible alert.
+        // gonowhere gets rid of possible alert.
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-//
+
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
-//        hangon(.5);
     }
 
     protected void goToCdeSearch() {
