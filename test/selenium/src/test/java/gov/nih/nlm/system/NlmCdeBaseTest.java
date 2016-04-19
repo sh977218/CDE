@@ -1,5 +1,8 @@
 package gov.nih.nlm.system;
 
+import com.xuggle.mediatool.IMediaWriter;
+import com.xuggle.mediatool.ToolFactory;
+import com.xuggle.xuggler.ICodec;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
@@ -37,7 +40,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.xuggle.mediatool.IMediaWriter;
 
 import static com.jayway.restassured.RestAssured.get;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -204,10 +206,10 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateGif() {
         try {
-            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(new File("build/movies/" + className + "/myGif.gif")), TYPE_INT_RGB, 300, false);
+            File gif = new File("build/screenshots/" + className + "/myGif.gif");
+            GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(gif), TYPE_INT_RGB, 300, false);
             File[] fArr = new File("build/screenshots/" + className + "/").listFiles();
             for (File f : fArr) {
-                System.out.println("File: " + f);
                 writer.writeToSequence(ImageIO.read(f));
             }
             writer.close();
@@ -217,41 +219,36 @@ public class NlmCdeBaseTest {
     }
 
     @AfterMethod
-    public void generateVideo(){
+    public void generateVideo() {
+        double FRAME_RATE = 20;
 
-        // let's make a IMediaWriter to write the file.
-        final IMediaWriter writer = ToolFactory.makeWriter("build/movies/" + className + "/myGif.gif");
+        int SECONDS_TO_RUN_FOR = 20;
 
-        screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
+        String outputFilename = "build/screenshots/" + className + "/myVideo.mp4";
 
-        // We tell it we're going to add one video stream, with id 0,
-        // at position 0, and that it will have a fixed frame rate of FRAME_RATE.
-        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4,
-                screenBounds.width/2, screenBounds.height/2);
+        Map<String, File> imageMap = new HashMap<String, File>();
 
-        long startTime = System.nanoTime();
+        final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
 
-        for (int index = 0; index < SECONDS_TO_RUN_FOR * FRAME_RATE; index++) {
+        java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
 
-            // take the screen shot
-            BufferedImage screen = getDesktopScreenshot();
+        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
 
-            // encode the image to stream #0
-            writer.encodeVideo(0, bgrScreen, System.nanoTime() - startTime,
-                    TimeUnit.NANOSECONDS);
+        File[] listOfFiles = new File("build/screenshots/" + className + "/").listFiles();
 
-            // sleep for frame rate milliseconds
-            try {
-                Thread.sleep((long) (1000 / FRAME_RATE));
+        try {
+            int i = 0;
+            for (File file : listOfFiles) {
+                i++;
+                BufferedImage image = ImageIO.read(file);
+                writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
             }
-            catch (InterruptedException e) {
-                // ignore
-            }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // tell the writer to close and write the trailer if  needed
+        // tell the writer to close and write the trailer if needed
         writer.close();
+        System.out.println("Video Created");
     }
 
     @BeforeMethod
