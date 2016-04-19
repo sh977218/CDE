@@ -1,14 +1,15 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class CompareTest extends NlmCdeBaseTest {
 
     @Test
+    @RecordVideo(enabled = true)
     public void noElementCompareList() {
         mustBeLoggedOut();
         goToCdeSearch();
