@@ -12,7 +12,10 @@ public class ScoreTest extends NlmCdeBaseTest {
 
     @Test
     public void cannotScoreAsAnonymous(){
-
+        mustBeLoggedOut();
+        goToCdeByName("Head and Neck Lymph Node Left Removed Type");
+        clickElement(By.id("derivationRules_tab"));
+        textNotPresent("Add Score");
     }
 
     @Test
