@@ -5,7 +5,6 @@ import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -176,15 +175,16 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
 
-        final String methodName = itr.getMethod().getMethodName();
         if (m.getAnnotation(RecordVideo.class) != null) {
+            final String methodName = m.getName();
+            System.out.println("methodName in setBaseUrl: " + methodName);
             ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
             exec.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                     try {
-                        String dest = "build/screenshots/" + className + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
+                        File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                        String dest = "build/screenshots/" + className + "/" + methodName + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
                         FileUtils.copyFile(srcFile, new File(dest));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -208,23 +208,24 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateVideo(Method m, ITestResult itr) {
         if (m.getAnnotation(RecordVideo.class) != null) {
-            String methodName = itr.getMethod().getMethodName();
-            String outputFilename = "build/screenshots/" + className + "/" + methodName + ".mp4";
-            final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
-            java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
-            writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
-            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/" + methodName + "/").listFiles();
             try {
+                String methodName = m.getName();
+                System.out.println("methodName in generateVideo: " + methodName);
+                String outputFilename = "build/screenshots/" + className + "/" + methodName + ".mp4";
+                final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
+                java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
+                writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
+                File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/" + methodName + "/screenshots/").listFiles();
                 for (int i = 0; i < inputScreenshotsArray.length; i++) {
                     BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
                     writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
                 }
                 writer.close();
-                FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
+                FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "/" + methodName + ".mp4"));
+                FileUtils.deleteDirectory(new File("build/screenshots/" + className + "/" + methodName + "/screenshots"));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-
             }
         }
     }
@@ -241,16 +242,8 @@ public class NlmCdeBaseTest {
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
     }
 
-    protected void resizeWindow(int width, int height) {
-        driver.manage().window().setSize(new Dimension(width, height));
-    }
-
     protected void maximizeWindow() {
         driver.manage().window().maximize();
-    }
-
-    protected Dimension getWindowSize() {
-        return driver.manage().window().getSize();
     }
 
     private boolean isUsernameMatch(String username) {
