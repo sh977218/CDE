@@ -8,5 +8,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD) //on class level
 public @interface RecordVideo {
-    boolean enabled() default false;
 }

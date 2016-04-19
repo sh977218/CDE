@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class CompareTest extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo(enabled = true)
+    @RecordVideo
     public void noElementCompareList() {
         mustBeLoggedOut();
         goToCdeSearch();

@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.IInvokedMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -29,6 +30,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -123,7 +125,7 @@ public class NlmCdeBaseTest {
     }
 
     @BeforeMethod
-    public void setBaseUrl(ITestResult itr) {
+    public void setBaseUrl(Method m, ITestResult itr) {
         hangon(new Random().nextInt(10));
         String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
@@ -178,18 +180,21 @@ public class NlmCdeBaseTest {
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
-        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                try {
-                    FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + itr.getMethod().getMethodName() + "_" + new Date().getTime() + ".png"));
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+        if (m.getAnnotation(RecordVideo.class) != null) {
+            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+            exec.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                    try {
+                        FileUtils.copyFile(srcFile, new File("build/screenshots/" + className + "/screenshots/" + itr.getMethod().getMethodName() + "_" + new Date().getTime() + ".png"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }, 0, 300, TimeUnit.MICROSECONDS);
+            }, 0, 300, TimeUnit.MICROSECONDS);
+        }
     }
 
     @AfterMethod
@@ -204,29 +209,32 @@ public class NlmCdeBaseTest {
     }
 
     @AfterMethod
-    public void generateVideo(ITestResult itr) {
-        String outputFilename = "build/screenshots/" + className + "/" + itr.getMethod().getMethodName() + ".mp4";
-        final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
-        java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
-        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
-        File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
-        try {
-            for (int i = 0; i < inputScreenshotsArray.length; i++) {
-                BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
-                writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
+    public void generateVideo(Method m, ITestResult itr) {
+        if (m.getAnnotation(RecordVideo.class) != null) {
+
+            String outputFilename = "build/screenshots/" + className + "/" + itr.getMethod().getMethodName() + ".mp4";
+            final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
+            java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
+            writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
+            File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/screenshots/").listFiles();
+            try {
+                for (int i = 0; i < inputScreenshotsArray.length; i++) {
+                    BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
+                    writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
+                }
+                writer.close();
+
+
+                FileUtils.copyFile(new File(outputFilename),
+                        new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            writer.close();
+            // tell the writer to close and write the trailer if needed
 
-
-            FileUtils.copyFile(new File(outputFilename),
-                    new File("build/movies/" + className + "_" + itr.getMethod().getMethodName() + ".mp4"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Video Created");
         }
-        // tell the writer to close and write the trailer if needed
-
-        System.out.println("Video Created");
     }
 
     @BeforeMethod
