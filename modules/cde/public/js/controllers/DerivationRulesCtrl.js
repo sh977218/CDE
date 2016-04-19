@@ -68,6 +68,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
     };
 
     $scope.canAddScore = function() {
+        if (!$scope.isOrgCurator($scope.user)) return false;
         if ($scope.elt.derivationRules) {
             return $scope.elt.derivationRules.filter(function(derRule) {return derRule.ruleType === 'score'}).length < 1;
         } else {
