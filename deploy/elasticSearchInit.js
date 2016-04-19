@@ -45,6 +45,8 @@ exports.createIndexJson = {
                 , "naming.languageCode": {"type": "string", "index": "no"}
                 , "naming.context.contextName": {"type": "string", "index": "no"}
                 , "version": {"type": "string", "index": "no"}
+                , "numQuestions": {"type":"integer"}
+
             }
         }
     }, settings: {
@@ -89,6 +91,18 @@ var riverFunction =
             }\
         }\
     }\
+    function findFormQuestionNr (fe) {\
+        var n = 0;\
+        if (fe.formElements) {\
+            for (var i = 0; i<fe.formElements.length; i++) {\
+                var e = fe.formElements[i];\
+                if (e.elementType && e.elementType === 'question') n++;\
+                else n = n + findFormQuestionNr(e);\
+            }\
+        }\
+        return n;\
+    }\
+    ctx.document.numQuestions = findFormQuestionNr(ctx.document);\
     if (ctx.document.archived) {ctx.deleted = true;}  else {\
         flattenClassification(ctx.document); \
         if (ctx.document.valueDomain && ctx.document.valueDomain.permissibleValues) {\

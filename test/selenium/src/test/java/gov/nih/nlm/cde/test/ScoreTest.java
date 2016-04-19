@@ -11,6 +11,15 @@ public class ScoreTest extends NlmCdeBaseTest {
     private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
 
     @Test
+    public void cannotScoreAsAnonymous(){
+        mustBeLoggedOut();
+        goToCdeByName("Head and Neck Lymph Node Left Removed Type");
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
+        textNotPresent("Add Score");
+    }
+
+    @Test
     public void cannotCreateWithZeroCdes() {
         mustBeLoggedInAs(testAdmin_username, password);
         qbTest.emptyQuickBoardByModule("cde");
