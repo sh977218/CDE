@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -94,9 +93,7 @@ public class NlmCdeBaseTest {
     private Set<PosixFilePermission> filePerms = new HashSet();
 
     private int randomNb = (int) (Math.random() * 1000);
-    SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
-    Calendar calendar = Calendar.getInstance();
-    final String className = this.getClass().getSimpleName();
+    String className = this.getClass().getSimpleName();
 
     @BeforeTest
     public void countElasticElements() {
@@ -225,14 +222,13 @@ public class NlmCdeBaseTest {
                 FileUtils.deleteDirectory(new File("build/screenshots/" + className + "/" + methodName + "/screenshots"));
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
             }
         }
     }
 
     @BeforeMethod
-    public void printRandomNb(Method method) {
-        System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
+    public void printRandomNb(Method m) {
+        System.out.println("Starting " + m.getName() + " in Fork: " + randomNb);
     }
 
     protected void clearStorage() {
