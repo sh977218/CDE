@@ -42,7 +42,6 @@ DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(functio
         console.log('total CDE: ' + totalCDE);
         console.log('modified CDE: ' + modifiedCDE);
         console.log('same CDE: ' + sameCDE);
-        console.log('noLoincCode.length: ' + noLoincCode.length);
         //noinspection JSUnresolvedVariable
         process.exit(0);
     });
