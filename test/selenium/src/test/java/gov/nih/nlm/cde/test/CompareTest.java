@@ -28,6 +28,7 @@ public class CompareTest extends NlmCdeBaseTest {
     }
 
     @Test
+    @RecordVideo
     public void compare3Then2Elements() {
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";

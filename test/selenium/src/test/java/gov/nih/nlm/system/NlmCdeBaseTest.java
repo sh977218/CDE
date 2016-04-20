@@ -17,6 +17,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -196,10 +197,14 @@ public class NlmCdeBaseTest {
         }
     }
 
+    @AfterClass
+    public void shutDownVideo() {
+        videoExec.shutdown();
+    }
+
     @AfterMethod
     public void generateVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
-            videoExec.shutdown();
             try {
                 String methodName = m.getName();
                 System.out.println("methodName in generateVideo: " + methodName);
@@ -214,7 +219,8 @@ public class NlmCdeBaseTest {
                 }
                 writer.close();
                 FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "/" + methodName + ".mp4"));
-                FileUtils.deleteDirectory(new File("build/screenshots/" + className + "/" + methodName + "/screenshots"));
+                FileUtils.deleteDirectory(new File("build/screenshots/" + className));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
