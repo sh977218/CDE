@@ -220,7 +220,6 @@ schemas.dataSetSchema = {
     source: String,
     id: String,
     studyUri: String,
-    dataUri: String,
     notes: String
 };
 schemas.classificationAudit = new mongoose.Schema({
