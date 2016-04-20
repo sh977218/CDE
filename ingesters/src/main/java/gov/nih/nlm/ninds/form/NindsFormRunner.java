@@ -53,8 +53,6 @@ public class NindsFormRunner {
         while (!executor1.isTerminated()) {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
-
-/*
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
         Iterator it = diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -66,9 +64,6 @@ public class NindsFormRunner {
         while (!executor2.isTerminated()) {
         }
         System.out.println("Finished all forms in the map: " + diseaseMap);
-
-*/
-
         System.exit(0);
     }
 }

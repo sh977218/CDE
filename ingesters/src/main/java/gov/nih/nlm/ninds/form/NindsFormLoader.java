@@ -1,6 +1,5 @@
 package gov.nih.nlm.ninds.form;
 
-import org.monte.screenrecorder.ScreenRecorder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -32,8 +31,6 @@ public class NindsFormLoader implements Runnable {
     int pageEnd;
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
-    GraphicsConfiguration gc;
-    ScreenRecorder screenRecorder;
 
     public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) throws IOException, AWTException {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -43,34 +40,26 @@ public class NindsFormLoader implements Runnable {
         this.diseaseMap = diseaseMap;
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
-        gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        screenRecorder = new ScreenRecorder(gc);
     }
 
     @Override
     public void run() {
-        try {
-            screenRecorder.start();
-            this.driver = new ChromeDriver();
-            this.classifDriver = new ChromeDriver();
-            this.wait = new WebDriverWait(driver, 120);
-            long startTime = System.currentTimeMillis();
-            goToNindsSiteAndGoToPageOf(pageStart);
-            findAndSaveToForms(pageStart, pageEnd);
-            cdeUtility.checkDataQuality(mongoOperation, "");
-            long endTime = System.currentTimeMillis();
-            long totalTimeInMillis = endTime - startTime;
-            long totalTimeInSeconds = totalTimeInMillis / 1000;
-            long totalTimeInMinutes = totalTimeInSeconds / 60;
-            this.log.setRunTime(totalTimeInMinutes);
-            this.log.info.add("finished " + pageStart + " to " + pageEnd);
-            mongoOperation.save(this.log);
-            this.driver.close();
-            this.classifDriver.close();
-            screenRecorder.stop();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.driver = new ChromeDriver();
+        this.classifDriver = new ChromeDriver();
+        this.wait = new WebDriverWait(driver, 120);
+        long startTime = System.currentTimeMillis();
+        goToNindsSiteAndGoToPageOf(pageStart);
+        findAndSaveToForms(pageStart, pageEnd);
+        cdeUtility.checkDataQuality(mongoOperation, "");
+        long endTime = System.currentTimeMillis();
+        long totalTimeInMillis = endTime - startTime;
+        long totalTimeInSeconds = totalTimeInMillis / 1000;
+        long totalTimeInMinutes = totalTimeInSeconds / 60;
+        this.log.setRunTime(totalTimeInMinutes);
+        this.log.info.add("finished " + pageStart + " to " + pageEnd);
+        mongoOperation.save(this.log);
+        this.driver.close();
+        this.classifDriver.close();
     }
 
 
