@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 public class CompareTest extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo
     public void noElementCompareList() {
         mustBeLoggedOut();
         goToCdeSearch();
@@ -18,7 +17,6 @@ public class CompareTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     public void compare2Elements() {
         emptyQuickBoardByModule("cde");
         addToCompare("Person Gender Text Type", "Patient Gender Category");
@@ -28,7 +26,6 @@ public class CompareTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     public void compare3Then2Elements() {
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";
