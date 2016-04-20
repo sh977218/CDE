@@ -587,7 +587,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void addToCompare(String cdeName1, String cdeName2) {
-        goToCdeSearch();
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
         textPresent("Quick Board (1)");
