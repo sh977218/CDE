@@ -1,5 +1,4 @@
-var mongoose = require('mongoose')
-    , config = require('../../system/node-js/parseConfig')
+var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
@@ -7,7 +6,6 @@ var mongoose = require('mongoose')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , cdesvc = require("./cdesvc")
-    , deValidator = require("../shared/deValidator.js").deValidator
     , async = require('async')
     , CronJob = require('cron').CronJob
     ;
@@ -29,7 +27,11 @@ exports.DataElement = DataElement;
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
         callback(err, result > 0);
-    })
+    });
+};
+
+exports.getStream = function(condition) {
+    return DataElement.find(condition).stream();
 };
 
 exports.boardsByUserId = function (userId, callback) {
@@ -157,8 +159,6 @@ exports.priorCdes = function (cdeId, callback) {
                 .where("_id").in(dataElement.history).exec(function (err, cdes) {
                     callback(err, cdes);
                 });
-        } else {
-
         }
     });
 };
@@ -506,12 +506,12 @@ DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostna
 
 var statusCdeTinyId;
 
-exports.upsertStatusCde = function(cde, cb){
-    var query = statusCdeTinyId
-        ?{"tinyId": statusCdeTinyId}
-        :{"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")};
+exports.upsertStatusCde = function (cde, cb) {
+    var query = statusCdeTinyId ?
+    {"tinyId": statusCdeTinyId} :
+    {"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")};
 
-    DataElement.update(query, cde, {upsert: true}, function(err, cde){
+    DataElement.update(query, cde, {upsert: true}, function (err, cde) {
         statusCdeTinyId = cde.tinyId;
         if (cb) cb(err, cde);
     });

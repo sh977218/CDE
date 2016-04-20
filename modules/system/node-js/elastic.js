@@ -1,11 +1,11 @@
 var config = require('./parseConfig')
-    , logging = require('../../system/node-js/logging')
-    , trim = require("trim")
-    , regStatusShared = require('../../system/shared/regStatusShared')
+    , logging = require('./logging')
+    , regStatusShared = require('../shared/regStatusShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
+    , mongo_cde = require("../../cde/node-js/mongo-cde")
     ;
 
 var esClient = new elasticsearch.Client({
@@ -37,9 +37,48 @@ exports.nbOfForms = function (cb) {
     });
 };
 
+function EsInjector(esClient, indexName, documentType) {
+    var _esInjector = this;
+    this.buffer = [];
+    this.injectThreshold = 250;
+    this.documentType = documentType;
+    this.indexName = indexName;
+    this.queueDocument = function (doc, cb) {
+        if (!doc) return;
+        _esInjector.buffer.push(doc);
+        if (_esInjector.buffer.length >= _esInjector.injectThreshold) {
+            _esInjector.inject(cb);
+        } else {
+            cb();
+        }
+    };
+    this.inject = function (cb) {
+        var request = {
+            body: []
+        };
+        _esInjector.buffer.forEach(function (elt) {
+            request.body.push({index: {_index: _esInjector.indexName, _type: _esInjector.documentType, _id: elt._id}});
+            request.body.push(elt);
+        });
+        _esInjector.buffer = [];
+        esClient.bulk(request, function (err) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log("ingested: " + request.body.length / 2);
+            }
+            if (cb) {
+                cb();
+            }
+                //logger.logStatus(err, res,
+                //    "Successfully injected to ElasticSearch. " + JSON.stringify(res),
+                //    "Error injecting to ElasticSearch!\n" + JSON.stringify(request));
+        });
+    };
+}
 
 exports.initEs = function () {
-    var createIndex = function (indexName, indexMapping, river) {
+    var createIndex = function (indexName, indexMapping, dao, riverFunction) {
         esClient.indices.exists({index: indexName}, function (error, doesIt) {
             if (!doesIt) {
                 console.log("creating index: " + indexName);
@@ -52,33 +91,32 @@ exports.initEs = function () {
                         if (error) {
                             console.log("error creating index. " + error);
                         } else {
-                            console.log("deleting old river: " + indexName);
-                            river.index.name = indexName;
-                            request.del(config.elastic.hosts[0] + "/_river/" + indexName,
-                                function () {
-                                    console.log("re-creating river: " + indexName);
-                                    request.post(config.elastic.hosts[0] + "/_river/" + indexName + "/_meta",
-                                        {
-                                            json: true,
-                                            body: river
-                                        },
-                                        function (error) {
-                                            if (error) console.log("could not create river. " + error);
-                                            else {
-                                                console.log("created river");
-                                            }
-                                        });
+                            var startTime = new Date().getTime();
+                            var indexType = Object.keys(indexMapping.mappings)[0];
+                            // start re-index all
+                            var injector = new EsInjector(esClient, indexName, indexType);
+                            var stream = dao.getStream({archived: null});
+                            stream.on('data', function(elt) {
+                                stream.pause();
+                                injector.queueDocument(riverFunction(elt.toObject()), function() {
+                                    stream.resume();
                                 });
+                            });
+                            stream.on('end', function() {
+                                injector.inject(function() {
+                                    console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                                });
+                            });
                         }
                     });
             }
         });
     };
 
-    createIndex(config.elastic.index.name, esInit.createIndexJson, esInit.createRiverJson);
-    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
-    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
-    createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
+    createIndex(config.elastic.index.name, esInit.createIndexJson, mongo_cde, esInit.riverFunction);
+    //createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
+    //createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
+    //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
 
 };
 
@@ -377,7 +415,7 @@ exports.elasticsearch = function (query, type, cb) {
         } else {
             if (response.hits.total === 0 && config.name.indexOf("Production") === -1) {
                 console.log("No response. QUERY: " + JSON.stringify(query));
-                console.log("----")
+                console.log("----");
             }
 
             var result = {
@@ -451,7 +489,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                    details: "body " + body + ", query: " + query
+                    details: ", query: " + query
                 });
             dataCb("ES Error");
         } else {
