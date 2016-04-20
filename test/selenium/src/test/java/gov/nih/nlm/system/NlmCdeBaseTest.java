@@ -17,10 +17,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 import javax.imageio.ImageIO;
@@ -44,7 +42,7 @@ import static com.jayway.restassured.RestAssured.get;
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
 
-    protected static WebDriver driver;
+    public static WebDriver driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
@@ -92,32 +90,32 @@ public class NlmCdeBaseTest {
 
     private Set<PosixFilePermission> filePerms = new HashSet();
 
-    private int randomNb = (int) (Math.random() * 1000);
     String className = this.getClass().getSimpleName();
+    private ScheduledExecutorService videoExec = Executors.newSingleThreadScheduledExecutor();
 
-    @BeforeTest
-    public void countElasticElements() {
-        int nbOfRecords = 0;
-        int waitTime = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
-            hangon(waitTime);
+    int videoRate = 300;
+    int totalCdes = 11700;
+    int totalForms = 815;
+
+    private void countElasticElements(Method m) {
+        int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
+        for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
+            hangon(waitTimeCdes);
             System.out.println("trying to reach: " + baseUrl + "/elasticSearch/count");
-            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of cdes: " + nbOfRecords);
-            waitTime = 10;
+            nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
+            System.out.println("nb of cdes: " + nbOfCde);
+            waitTimeCdes = 10;
         }
-        waitTime = 0;
-        nbOfRecords = 0;
-        for (int i = 0; i < 5 && nbOfRecords < 815; i++) {
-            hangon(waitTime);
-            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
-            System.out.println("nb of forms: " + nbOfRecords);
-            waitTime = 10;
+        for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
+            hangon(waitTimeForms);
+            nbOfForms = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
+            System.out.println("nb of forms: " + nbOfForms);
+            waitTimeForms = 10;
         }
+        System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
     }
 
-    @BeforeMethod
-    public void setBaseUrl(Method m, ITestResult itr) {
+    private void setDriver() {
         hangon(new Random().nextInt(10));
         String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
@@ -165,18 +163,25 @@ public class NlmCdeBaseTest {
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
-        maximizeWindow();
+        driver.manage().window().maximize();
+    }
 
+    @BeforeMethod
+    public void setUp(Method m) {
+        countElasticElements(m);
+        setDriver();
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
+        takeScreenshotsRecordVideo(m);
+    }
 
+    private void takeScreenshotsRecordVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
             final String methodName = m.getName();
             System.out.println("methodName in setBaseUrl: " + methodName);
-            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-            exec.scheduleAtFixedRate(new Runnable() {
+            videoExec.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -187,24 +192,14 @@ public class NlmCdeBaseTest {
                         e.printStackTrace();
                     }
                 }
-            }, 0, 300, TimeUnit.MICROSECONDS);
+            }, 0, videoRate, TimeUnit.MICROSECONDS);
         }
     }
 
     @AfterMethod
-    public void endSession() {
-        driver.quit();
-    }
-
-    @AfterMethod
-    public void countTabs(Method method) {
-        if (driver.getWindowHandles().size() > 1)
-            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
-    }
-
-    @AfterMethod
-    public void generateVideo(Method m, ITestResult itr) {
+    public void generateVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
+            videoExec.shutdown();
             try {
                 String methodName = m.getName();
                 System.out.println("methodName in generateVideo: " + methodName);
@@ -215,7 +210,7 @@ public class NlmCdeBaseTest {
                 File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/" + methodName + "/screenshots/").listFiles();
                 for (int i = 0; i < inputScreenshotsArray.length; i++) {
                     BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
-                    writer.encodeVideo(0, image, 300 * i, TimeUnit.MILLISECONDS);
+                    writer.encodeVideo(0, image, videoRate * i, TimeUnit.MILLISECONDS);
                 }
                 writer.close();
                 FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "/" + methodName + ".mp4"));
@@ -224,11 +219,9 @@ public class NlmCdeBaseTest {
                 e.printStackTrace();
             }
         }
-    }
-
-    @BeforeMethod
-    public void printRandomNb(Method m) {
-        System.out.println("Starting " + m.getName() + " in Fork: " + randomNb);
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+        driver.quit();
     }
 
     protected void clearStorage() {
@@ -236,10 +229,6 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
-    }
-
-    protected void maximizeWindow() {
-        driver.manage().window().maximize();
     }
 
     private boolean isUsernameMatch(String username) {
