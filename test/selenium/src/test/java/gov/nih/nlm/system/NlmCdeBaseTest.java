@@ -17,7 +17,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -92,7 +91,7 @@ public class NlmCdeBaseTest {
     private Set<PosixFilePermission> filePerms = new HashSet();
 
     String className = this.getClass().getSimpleName();
-    private ScheduledExecutorService videoExec = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService videoExec;
 
     int videoRate = 300;
     int totalCdes = 11700;
@@ -180,6 +179,7 @@ public class NlmCdeBaseTest {
 
     private void takeScreenshotsRecordVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
+            videoExec = Executors.newSingleThreadScheduledExecutor();
             final String methodName = m.getName();
             System.out.println("methodName in setBaseUrl: " + methodName);
             videoExec.scheduleAtFixedRate(new Runnable() {
@@ -197,14 +197,10 @@ public class NlmCdeBaseTest {
         }
     }
 
-    @AfterClass
-    public void shutDownVideo() {
-        videoExec.shutdown();
-    }
-
     @AfterMethod
     public void generateVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
+            videoExec.shutdown();
             try {
                 String methodName = m.getName();
                 System.out.println("methodName in generateVideo: " + methodName);
