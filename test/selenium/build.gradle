@@ -1,6 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'application'
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -45,7 +43,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = 1
+    maxParallelForks = 16
 
     testLogging {
         events "standardOut", "standardError"
