@@ -15,7 +15,6 @@ import static com.jayway.restassured.RestAssured.get;
 public class MiscTests extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo
     public void gridView() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-AECC"));

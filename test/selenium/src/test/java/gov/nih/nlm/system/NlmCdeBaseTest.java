@@ -203,7 +203,6 @@ public class NlmCdeBaseTest {
             videoExec.shutdown();
             try {
                 String methodName = m.getName();
-                System.out.println("methodName in generateVideo: " + methodName);
                 String outputFilename = "build/screenshots/" + className + "/" + methodName + ".mp4";
                 final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
                 java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();

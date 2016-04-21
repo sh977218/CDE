@@ -25,13 +25,20 @@ dependencies {
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
     testCompile "net.lingala.zip4j:zip4j:1.3.2"
 
-    compile "xuggle:xuggle-xuggler:5.4"
+    testCompile "xuggle:xuggle-xuggler:5.4"
 }
 
 tasks.withType(Test) {
+    def testUrl;
+    def hubUrl;
+    def timeout;
+    if (System.getProperty('testUrl')) testUrl = System.getProperty('testUrl');
+    if (System.getProperty('hubUrl')) hubUrl = System.getProperty('hubUrl')
+    if (System.getProperty('timeout')) timeout = System.getProperty('timeout')
+
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
-    systemProperty 'timeout', System.getProperty('timeout', "20")
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
+    systemProperty 'timeout', System.getProperty('timeout', timeout)
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
     systemProperty 'seleniumDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "/usr/nlm/selenium/cde/downloads/";
     systemProperty 'chromeDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "T:\\CDE\\downloads";
