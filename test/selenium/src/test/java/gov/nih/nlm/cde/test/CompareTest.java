@@ -31,7 +31,6 @@ public class CompareTest extends NlmCdeBaseTest {
         String cde2 = "EuroQOL Complete Indicator";
         String cde3 = "Administration Route of Administration java.lang.String";
 
-        goToCdeSearch();
         addCdeToQuickBoard(cde1);
         addCdeToQuickBoard(cde2);
         addCdeToQuickBoard(cde3);
