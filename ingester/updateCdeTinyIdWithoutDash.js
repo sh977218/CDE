@@ -1,10 +1,10 @@
-var mongoose = require('mongoose'),
-    config = require('../modules/system/node-js/parseConfig'),
-    schemas = require('../modules/system/node-js/schemas.js'),
-    cde_schemas = require('../modules/cde/node-js/schemas'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    async = require('async');
+var async = require('async'),
+    DataElementModel = require('./createConnection').DataElementModel,
+    FormModel = require('./createConnection').FormModel,
+    BoardModel = require('./createConnection').BoardModel
+    ;
 
+var cdeCount = 0;
 
 function updateFormCdeWithTinyId(form, oldTinyId, newTinyId) {
     var getCdes = function (fe) {
@@ -13,111 +13,81 @@ function updateFormCdeWithTinyId(form, oldTinyId, newTinyId) {
                 var cde = e.question.cde;
                 if (cde.tinyId === oldTinyId)
                     cde.tinyId = newTinyId;
-            }
-            else getCdes(e);
+            } else getCdes(e);
         });
     };
     return getCdes(form);
 }
-function updateBoardCdeWithTinyId(board, oldTinyId, newTinyId) {
-    board.pins.forEach(function (pin) {
-        if (pin.deTinyId === oldTinyId)
-            pin.deTinyId = newTinyId;
-    });
-}
 
-var allOldCdeTinyId, conn, DataElement, Form, Board;
-var cdeCond = {tinyId: {$regex: '-'}};
-
-async.series([
-    function setUp(doneSetup) {
-        allOldCdeTinyId = [];
-        conn = mongoose.createConnection(config.mongoUri);
-        conn.on('error', console.error.bind(console, 'connection error:'));
-        conn.once('open', function callback() {
-            console.log('mongodb connection open');
-            DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
-            Form = conn.model('Form', form_schemas.formSchema);
-            Board = conn.model('Board', cde_schemas.pinningBoardSchema);
-            doneSetup();
-        });
-    },
-    function findCde() {
-        DataElement.find(cdeCond).exec(function (err, existingCdes) {
-            if (err) throw err;
-            var oldTinyId, newTinyId;
-            async.eachSeries(existingCdes, function iterator(existingCde, doneOneCde) {
+function run() {
+    DataElementModel.find({tinyId: {$regex: '-'}}).exec(function (err, existingCdes) {
+        if (err) throw err;
+        cdeCount++;
+        if (existingCdes && existingCdes.length === 0) {
+            console.log('no more cde with tinyId contains "-".');
+            //noinspection JSUnresolvedVariable
+            process.exit(0);
+        } else if (existingCdes && existingCdes.length > 0) {
+            async.eachSeries(existingCdes, function (existingCde, doneOneCde) {
+                var oldTinyId = existingCde.get('tinyId');
+                var newTinyId = oldTinyId.replace(/-/g, 'A');
                 async.series([
-                    function updateCde(doneUpdateCde) {
-                        oldTinyId = existingCde.get('tinyId');
-                        allOldCdeTinyId.push({
-                            tinyId: existingCde.get('tinyId'),
-                            archived: existingCde.get('archived'),
-                            status: existingCde.get('registrationState').registrationStatus
+                    function updateForm(doneUpdateForm) {
+                        FormModel.find({'formElements.formElements.question.cde.tinyId': oldTinyId}).exec(function (err, existingForms) {
+                            if (err) throw err;
+                            if (existingForms && existingForms.length === 0) doneUpdateForm();
+                            else if (existingForms && existingForms.length > 0) {
+                                async.eachSeries(existingForms, function (existingForm, doneOneForm) {
+                                    updateFormCdeWithTinyId(existingForm, oldTinyId, newTinyId);
+                                    existingForm.markModified('formElements');
+                                    existingForm.save(function () {
+                                        doneOneForm();
+                                    });
+                                }, function doneAllForms() {
+                                    doneUpdateForm();
+                                });
+                            } else doneUpdateForm();
                         });
-                        newTinyId = oldTinyId.replace(/-/g, 'A');
+                    },
+                    function updateBoard(doneUpdateBoard) {
+                        BoardModel.find({'pins.deTinyId': oldTinyId}).exec(function (err, existingBoards) {
+                            if (err) throw err;
+                            if (existingBoards && existingBoards.length === 0) doneUpdateBoard();
+                            else if (existingBoards && existingBoards.length > 0) {
+                                async.eachSeries(existingBoards, function iterator(existingBoard, doneOneBoard) {
+                                    existingBoard.get('pins').forEach(function (pin) {
+                                        if (pin.deTinyId === oldTinyId)
+                                            pin.deTinyId = newTinyId;
+                                    });
+                                    existingBoard.markModified('pins');
+                                    existingBoard.save(function () {
+                                        doneOneBoard();
+                                    });
+                                }, function doneAllBoards() {
+                                    doneUpdateBoard();
+                                });
+                            } else doneUpdateBoard();
+                        });
+                    },
+                    function updateCde() {
                         existingCde.set('tinyId', newTinyId);
                         existingCde.markModified('tinyId');
                         existingCde.save(function () {
                             console.log('CDE ' + oldTinyId + ' update to ' + newTinyId);
-                            doneUpdateCde();
+                            console.log('CDE count: ' + cdeCount);
+                            doneOneCde();
                         });
-                    },
-                    function updateForm(doneUpdateForm) {
-                        var formCond = {'formElements.formElements.question.cde.tinyId': oldTinyId};
-                        Form.find(formCond).exec(function (err, existingForms) {
-                            if (err) throw err;
-                            var allFormWithThisCde = [];
-                            async.eachSeries(existingForms, function iterator(existingForm, doneOneForm) {
-                                allFormWithThisCde.push({
-                                    tinyId: existingForm.get('tinyId'),
-                                    archived: existingForm.get('archived'),
-                                    status: existingForm.get('registrationState').registrationStatus
-                                });
-                                updateFormCdeWithTinyId(existingForm, oldTinyId, newTinyId);
-                                existingForm.save(function () {
-                                    doneOneForm();
-                                });
-                            }, function doneAllForms() {
-                                console.log(allFormWithThisCde.length + ' forms:' + JSON.stringify(allFormWithThisCde));
-                                doneUpdateForm();
-                            });
-                        });
-                    },
-                    function updateBoard(doneUpdateBoard) {
-                        var boardCond = {'pins.deTinyId': oldTinyId};
-                        Board.find(boardCond).exec(function (err, existingBoards) {
-                            if (err) {
-                                console.log(err);
-                                process.exit(1);
-                            }
-                            var allBoardWithThisCde = [];
-                            async.eachSeries(existingBoards, function iterator(existingBoard, doneOneBoard) {
-                                allBoardWithThisCde.push({
-                                    _id: existingBoard.get('_id')
-                                });
-                                updateBoardCdeWithTinyId(existingBoard, oldTinyId, newTinyId);
-                                existingBoard.save(function () {
-                                    doneOneBoard();
-                                });
-                            }, function doneAllBoards() {
-                                console.log(allBoardWithThisCde.length + ' boards: ' + JSON.stringify(allBoardWithThisCde));
-                                doneUpdateBoard();
-                            });
-                        });
-                    },
-                    function () {
-                        doneOneCde();
                     }
                 ]);
-
             }, function doneAllCdes() {
-                console.log('done ' + allOldCdeTinyId.length + ' CDEs with tinyId contains "-"');
-                console.log('all old CDE tinyId:\n' + JSON.stringify(allOldCdeTinyId));
+                console.log('finished all cdes.');
                 //noinspection JSUnresolvedVariable
                 process.exit(0);
             });
-        });
-    }
-]);
+        } else { //noinspection JSUnresolvedVariable
+            process.exit(0);
+        }
+    });
+}
 
+run();
