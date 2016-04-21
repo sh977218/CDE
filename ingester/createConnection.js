@@ -37,3 +37,4 @@ exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVar
 }));
 
 exports.DataElementModel = mongoConn.model('DataElement', cde_schemas.dataElementSchema);
+exports.FormModel = mongoConn.model('DataElement', form_schemas.formSchema);
