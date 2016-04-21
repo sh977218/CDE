@@ -11,9 +11,9 @@ FormModel.find({'stewardOrg.name': 'NINDS', archived: null}).exec(function (err,
         doForm(form, cb);
     }, function () {
         console.log('-----------------------------------------');
-        console.log('total CDE: ' + totalForm);
-        console.log('modified CDE: ' + modifiedCDE);
-        console.log('same CDE: ' + sameCDE);
+        console.log('total Form: ' + totalForm);
+        console.log('modified Form: ' + modifiedForm);
+        console.log('same Form: ' + sameForm);
         //noinspection JSUnresolvedVariable
         process.exit(0);
     });
