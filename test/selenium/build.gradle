@@ -29,13 +29,6 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    def testUrl;
-    def hubUrl;
-    def timeout;
-    if (System.getProperty('testUrl')) testUrl = System.getProperty('testUrl');
-    if (System.getProperty('hubUrl')) hubUrl = System.getProperty('hubUrl')
-    if (System.getProperty('timeout')) timeout = System.getProperty('timeout')
-
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
     systemProperty 'timeout', System.getProperty('timeout', timeout)
