@@ -17,7 +17,7 @@ var noLoincCode = [];
 
 
 DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(function(err, allDes) {
-    async.each(allDes, function(de, cb) {
+    async.eachSeries(allDes, function(de, cb) {
         doDe(de, cb);
     } ,function () {
         console.log('-----------------------------------------');
