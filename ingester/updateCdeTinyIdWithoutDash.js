@@ -80,11 +80,12 @@ function run() {
                     }
                 ]);
             }, function doneAllCdes() {
-                console.log('finished all cdes.');
+                console.log('finished all cdes. cdeCount: ' + cdeCount);
                 //noinspection JSUnresolvedVariable
                 process.exit(0);
             });
-        } else { //noinspection JSUnresolvedVariable
+        } else {
+            //noinspection JSUnresolvedVariable
             process.exit(0);
         }
     });
