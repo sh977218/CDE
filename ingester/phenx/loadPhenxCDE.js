@@ -5,7 +5,6 @@ var async = require('async'),
     ;
 
 var studyUrlPre = "http://www.ncbi.nlm.nih.gov/gap/?term=";
-var dataUrlPre = "ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/";
 
 var batchUser = {username: 'batchLoader'};
 var today = new Date().toJSON();
@@ -85,7 +84,6 @@ function doDe(de, cb) {
                             dataSet.source = "dbGaP";
                             dataSet.id = dbGap['dbGaP VARIABLE_ID'];
                             dataSet.studyUri = studyUrlPre + dbGap['dbGaP VARIABLE_ID'];
-                            dataSet.dataUri = dataUrlPre + dbGap['dbGaP STUDY_ID'].split('.')[0];
                             dataSets.push(dataSet);
                         }
                     });
