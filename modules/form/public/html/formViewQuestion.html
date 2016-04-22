@@ -8,7 +8,7 @@
                 <div class="col-sm-9">
                     <span ng-if="question.question.isScore"><strong>Score: </strong></span>
                     <span ng-if="question.hideLabel">
-                        <i class="fa fa-question-circle" uib-tooltip="This question does not have label"></i>
+                        <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
                         <s ng-bind="question.question.cde.name"></s>
                     </span>
                     <span ng-if="!question.hideLabel" ng-bind-html="question.label | placeHoldEmpty"
