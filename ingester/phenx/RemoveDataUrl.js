@@ -25,6 +25,7 @@ DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(functio
             de.usedBy = batchUser;
             de.changeNote = changeNote;
             de.updated = today;
+            de.markModified('dataSets');
             de.save(function (err) {
                 if (err) throw err;
                 modifiedCDE++;

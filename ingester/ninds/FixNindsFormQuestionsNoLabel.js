@@ -35,6 +35,7 @@ function doForm(form, cb) {
         });
         form.save(function (err) {
             if (err) throw err;
+            console.log(totalForm);
             cb();
         });
     } else {
