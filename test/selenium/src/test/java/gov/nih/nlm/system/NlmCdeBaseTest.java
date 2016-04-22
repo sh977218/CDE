@@ -180,7 +180,7 @@ public class NlmCdeBaseTest {
             videoExec.scheduleAtFixedRate(() -> {
                 try {
                     File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                    String dest = "build/screenshots/" + className + "/" + methodName + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
+                    String dest = "build/tmp/screenshots/" + className + "/" + methodName + "/" + methodName + "_" + new Date().getTime() + ".png";
                     FileUtils.copyFile(srcFile, new File(dest));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -194,20 +194,22 @@ public class NlmCdeBaseTest {
         if (m.getAnnotation(RecordVideo.class) != null) {
             String methodName = m.getName();
             try {
-                File inputScreenshots = new File("build/screenshots/" + className + "/" + methodName + "/screenshots/");
+                File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
                 File[] inputScreenshotsArray = inputScreenshots.listFiles();
-                File gif = new File("build/screenshots/" + className + "/" + methodName + ".gif");
+                File gif = new File("build/gif/" + className + "/" + methodName + ".gif");
                 File srcFile = new File(className + "_" + methodName + ".gif");
                 GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, 300, false);
                 for (File screenshotFile : inputScreenshotsArray) {
                     writer.writeToSequence(ImageIO.read(screenshotFile));
                 }
+                writer.close();
                 FileUtils.copyFile(srcFile, gif);
                 FileUtils.deleteQuietly(srcFile);
                 FileUtils.deleteDirectory(inputScreenshots);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            videoExec.shutdown();
         }
         if (driver.getWindowHandles().size() > 1)
             System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
