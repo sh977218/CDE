@@ -32,6 +32,7 @@ function doForm(form, cb) {
                 q.hideLabel = true;
             }
         });
+        form.markModified('formElements');
         form.save(function (err) {
             if (err) throw err;
             cb();

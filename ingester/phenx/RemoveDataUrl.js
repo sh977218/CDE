@@ -9,41 +9,44 @@ var changeNote = 'Bulk update from source';
 var modifiedCDE = 0;
 var sameCDE = 0;
 var totalCDE = 0;
-
-DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(function (err, allDes) {
-    async.each(allDes, function (de, cb) {
-        totalCDE++;
-        var dataSets = de.get('dataSets');
-        if (dataSets && dataSets.length === 0) {
-            sameCDE++;
-            cb();
-        }
-        else if (dataSets && dataSets.length > 0) {
-            dataSets.forEach(function (ds) {
-                delete ds.dataUri;
-            });
-            de.usedBy = batchUser;
-            de.changeNote = changeNote;
-            de.updated = today;
-            de.markModified('dataSets');
-            de.save(function (err) {
-                if (err) throw err;
-                modifiedCDE++;
+function run() {
+    DataElementModel.find({'stewardOrg.name': 'PhenX', archived: null}).exec(function (err, allDes) {
+        async.each(allDes, function (de, cb) {
+            totalCDE++;
+            var dataSets = de.get('dataSets');
+            if (dataSets && dataSets.length === 0) {
+                sameCDE++;
                 cb();
-            });
-        }
-        else {
-            console.log('something wrong with this cde.');
-            console.log('cde Id: ' + de.get('tinyId'));
-            console.log('dataSets.length: ' + dataSets.length);
+            }
+            else if (dataSets && dataSets.length > 0) {
+                dataSets.forEach(function (ds, i) {
+                    var dsObj = ds.toObject();
+                    delete dsObj.dataUri;
+                    dataSets[i] = dsObj;
+                });
+                de.usedBy = batchUser;
+                de.changeNote = changeNote;
+                de.updated = today;
+                de.save(function (err) {
+                    if (err) throw err;
+                    modifiedCDE++;
+                    cb();
+                });
+            }
+            else {
+                console.log('something wrong with this cde.');
+                console.log('cde Id: ' + de.get('tinyId'));
+                console.log('dataSets.length: ' + dataSets.length);
+                process.exit(0);
+            }
+        }, function () {
+            console.log('-----------------------------------------');
+            console.log('total CDE: ' + totalCDE);
+            console.log('modified CDE: ' + modifiedCDE);
+            console.log('same CDE: ' + sameCDE);
+            //noinspection JSUnresolvedVariable
             process.exit(0);
-        }
-    }, function () {
-        console.log('-----------------------------------------');
-        console.log('total CDE: ' + totalCDE);
-        console.log('modified CDE: ' + modifiedCDE);
-        console.log('same CDE: ' + sameCDE);
-        //noinspection JSUnresolvedVariable
-        process.exit(0);
+        });
     });
-});
+}
+run();
