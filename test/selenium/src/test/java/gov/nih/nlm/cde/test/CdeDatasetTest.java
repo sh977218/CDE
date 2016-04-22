@@ -8,7 +8,7 @@ public class CdeDatasetTest extends BaseClassificationTest {
 
     @Test
     @RecordVideo
-    public void CdeCheckDatasetExistTest() {
+    public void cdeCheckDatasetExistTest() {
         String cdeName = "Immunology Gonorrhea Assay Laboratory Finding Result";
         goToCdeByName(cdeName);
         showAllTabs();

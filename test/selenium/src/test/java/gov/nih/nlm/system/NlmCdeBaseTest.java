@@ -18,6 +18,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -31,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.jayway.restassured.RestAssured.get;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
@@ -187,8 +190,24 @@ public class NlmCdeBaseTest {
     }
 
     @AfterMethod
-    public void generateVideo(Method m) {
+    public void generateGif(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
+            String methodName = m.getName();
+            try {
+                File inputScreenshots = new File("build/screenshots/" + className + "/" + methodName + "/screenshots/");
+                File[] inputScreenshotsArray = inputScreenshots.listFiles();
+                File gif = new File("build/screenshots/" + className + "/" + methodName + ".gif");
+                File srcFile = new File(className + "_" + methodName + ".gif");
+                GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, 300, false);
+                for (File screenshotFile : inputScreenshotsArray) {
+                    writer.writeToSequence(ImageIO.read(screenshotFile));
+                }
+                FileUtils.copyFile(srcFile, gif);
+                FileUtils.deleteQuietly(srcFile);
+                FileUtils.deleteDirectory(inputScreenshots);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (driver.getWindowHandles().size() > 1)
             System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");

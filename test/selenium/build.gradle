@@ -9,9 +9,6 @@ if (!hasProperty('mainClass')) {
 
 repositories {
     mavenCentral()
-    maven {
-        url "http://xuggle.googlecode.com/svn/trunk/repo/share/java/"
-    }
 }
 
 dependencies {
