@@ -8,6 +8,7 @@ var config = require('../../system/node-js/parseConfig')
     , cdesvc = require("./cdesvc")
     , async = require('async')
     , CronJob = require('cron').CronJob
+    , elastic = require('./elastic')
     ;
 
 exports.type = "cde";
@@ -24,6 +25,12 @@ exports.DataElement = DataElement;
 var mongo_data = this;
 exports.DataElement = DataElement;
 
+schemas.dataElementSchema.pre('save', function(next) {
+    var self = this;
+    elastic.updateOrInsert(self);
+    next();
+});
+
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
         callback(err, result > 0);
@@ -31,7 +38,13 @@ exports.exists = function (condition, callback) {
 };
 
 exports.getStream = function(condition) {
-    return DataElement.find(condition).stream();
+    return DataElement.find(condition).sort({_id: -1}).stream();
+};
+
+exports.boardsDao = {
+    getStream: function() {
+        return PinningBoard.find({}).sort({_id: -1}).stream();
+    }
 };
 
 exports.boardsByUserId = function (userId, callback) {

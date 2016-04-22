@@ -3,11 +3,25 @@ var config = require('../../system/node-js/parseConfig')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , logging = require('../../system/node-js/logging.js')
     , elasticsearch = require('elasticsearch')
+    , esInit = require('../../../deploy/elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+
+exports.updateOrInsert = function(elt) {
+    var doc = esInit.riverFunction(elt.toObject());
+    if (doc) {
+        console.log(JSON.stringify(doc));
+        esClient.index({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: doc._id,
+            body: doc
+        });
+    }
+};
 
 exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);

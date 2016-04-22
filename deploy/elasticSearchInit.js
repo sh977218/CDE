@@ -67,6 +67,8 @@ var storedQueryRiverFunction =
     "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];} ctx.document.search_suggest = ctx.document.searchTerm";
 
 exports.riverFunction = function (elt) {
+    if (elt.archived) return null;
+
     function escapeHTML(s) {
         return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }

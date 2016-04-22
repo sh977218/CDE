@@ -6,6 +6,7 @@ var config = require('./parseConfig')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
     , mongo_cde = require("../../cde/node-js/mongo-cde")
+    , mongo_form = require("../../form/node-js/mongo-form")
     ;
 
 var esClient = new elasticsearch.Client({
@@ -57,7 +58,7 @@ function EsInjector(esClient, indexName, documentType) {
             body: []
         };
         _esInjector.buffer.forEach(function (elt) {
-            request.body.push({index: {_index: _esInjector.indexName, _type: _esInjector.documentType, _id: elt._id}});
+            request.body.push({index: {index: _esInjector.indexName, type: _esInjector.documentType, id: elt._id}});
             request.body.push(elt);
         });
         _esInjector.buffer = [];
@@ -114,8 +115,8 @@ exports.initEs = function () {
     };
 
     createIndex(config.elastic.index.name, esInit.createIndexJson, mongo_cde, esInit.riverFunction);
-    //createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
-    //createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
+    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, mongo_form, esInit.riverFunction);
+    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, mongo_cde.boardsDao, function(e) {return e;});
     //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
 
 };

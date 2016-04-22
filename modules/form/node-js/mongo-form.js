@@ -21,6 +21,10 @@ exports.idExists = function (id, callback) {
     });
 };
 
+exports.getStream = function(condition) {
+    return Form.find(condition).sort({_id: -1}).stream();
+};
+
 exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {
