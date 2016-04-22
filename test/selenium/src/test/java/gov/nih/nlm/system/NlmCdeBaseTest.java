@@ -1,8 +1,5 @@
 package gov.nih.nlm.system;
 
-import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.ToolFactory;
-import com.xuggle.xuggler.ICodec;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Sleeper;
@@ -21,16 +18,12 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -181,16 +174,13 @@ public class NlmCdeBaseTest {
             videoExec = Executors.newSingleThreadScheduledExecutor();
             final String methodName = m.getName();
             System.out.println("methodName in setBaseUrl: " + methodName);
-            videoExec.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                        String dest = "build/screenshots/" + className + "/" + methodName + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
-                        FileUtils.copyFile(srcFile, new File(dest));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            videoExec.scheduleAtFixedRate(() -> {
+                try {
+                    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                    String dest = "build/screenshots/" + className + "/" + methodName + "/screenshots/" + methodName + "_" + new Date().getTime() + ".png";
+                    FileUtils.copyFile(srcFile, new File(dest));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }, 0, videoRate, TimeUnit.MICROSECONDS);
         }
@@ -199,25 +189,6 @@ public class NlmCdeBaseTest {
     @AfterMethod
     public void generateVideo(Method m) {
         if (m.getAnnotation(RecordVideo.class) != null) {
-            videoExec.shutdown();
-            try {
-                String methodName = m.getName();
-                String outputFilename = "build/screenshots/" + className + "/" + methodName + ".mp4";
-                final IMediaWriter writer = ToolFactory.makeWriter(outputFilename);
-                java.awt.Dimension screenBounds = Toolkit.getDefaultToolkit().getScreenSize();
-                writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, screenBounds.width / 2, screenBounds.height / 2);
-                File[] inputScreenshotsArray = new File("build/screenshots/" + className + "/" + methodName + "/screenshots/").listFiles();
-                for (int i = 0; i < inputScreenshotsArray.length; i++) {
-                    BufferedImage image = ImageIO.read(inputScreenshotsArray[i]);
-                    writer.encodeVideo(0, image, videoRate * i, TimeUnit.MILLISECONDS);
-                }
-                writer.close();
-                FileUtils.copyFile(new File(outputFilename), new File("build/movies/" + className + "/" + methodName + ".mp4"));
-                FileUtils.deleteDirectory(new File("build/screenshots/" + className));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         if (driver.getWindowHandles().size() > 1)
             System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
