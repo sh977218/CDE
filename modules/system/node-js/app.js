@@ -9,21 +9,22 @@ var passport = require('passport')
     , path = require('path')
     , classificationShared = require('../shared/classificationShared.js')
     , classificationNode = require('./classificationNode')
-    , adminItemSvc = require("./adminItemSvc")       
-    , auth = require( './authorization' )
+    , adminItemSvc = require("./adminItemSvc")
+    , auth = require('./authorization')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , request = require('request')
     , fs = require('fs')
-    , multer  = require('multer')
+    , multer = require('multer')
     , exportShared = require('../../system/shared/exportShared')
     , tar = require('tar-fs')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
     , elastic = require('./createIndexes')
     , authorization = require('../../system/node-js/authorization')
-;
+    , esInit = require('../../../deploy/elasticSearchInit')
+    ;
 
 exports.init = function(app) {
 
@@ -77,7 +78,7 @@ exports.init = function(app) {
     app.get('/serverStatuses', function(req, res) {
         if (app.isLocalIp(getRealIp(req))) {
             mongo_data_system.getClusterHostStatuses(function(err, statuses) {
-                res.send(statuses);
+                res.send({esIndices: esInit.indices, statuses: statuses});
             });
         } else {
             res.status(401).send();

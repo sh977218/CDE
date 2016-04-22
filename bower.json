@@ -1,7 +1,7 @@
 {
   "name": "sample",
   "version": "0.0.0",
-  "directory": "modules/system/public/components",
+  "directory": "modules/components",
   "dependencies": {
     "angular": "1.5.3",
     "angular-route": "1.5.3",
@@ -21,7 +21,6 @@
     "textAngular": "1.3.x",
     "bootstrap-tour": "0.10.1",
     "ng-grid": "2.0.14",
-    "angular-timeago": "0.1.9",
     "angularjs-camelCase-human": "*",
     "angular-send-feedback": "https://github.com/sh977218/angular-feedback.git#7c057dd44088080e42acbc46368466aef95f5a86",
     "html2canvas": "*",

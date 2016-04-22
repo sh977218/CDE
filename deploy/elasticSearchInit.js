@@ -253,19 +253,22 @@ exports.createStoredQueryRiverJson = {
     }
 };
 
-exports.indices = {
-    "cdes": {
-        name: config.elastic.index.name,
-        index: exports.createIndexJson,
+exports.indices = [
+    {
+        name: "cde",
+        indexName: config.elastic.index.name,
+        indexJson: exports.createIndexJson,
         filter: exports.riverFunction
     },
-    forms: {
-        name: config.elastic.formIndex.name,
-        index: exports.createFormIndexJson,
+    {
+        name: "form",
+        indexName: config.elastic.formIndex.name,
+        indexJson: exports.createFormIndexJson,
         filter: exports.riverFunction
     },
-    boards: {
-        name: config.elastic.formIndex.name,
-        index: exports.createFormIndexJson
+    {
+        name: "board",
+        indexName: config.elastic.formIndex.name,
+        indexJson: exports.createFormIndexJson
     }
-};
+];

@@ -1,18 +1,45 @@
 <div class="container-fluid" ng-controller="ServerStatusesCtrl" id="serverStatuses">
     <div class="row">
-        <button class="btn btn-default" type="button" id="refreshServerStatus" ng-click="refreshStatus()">Refresh</button>
+        <button class="btn btn-default" type="button" id="refreshServerStatus" ng-click="refreshStatus()">Refresh
+        </button>
     </div>
 
     <div class="row">
+        <div class="pull-left boxed-div">
+            <h4>Elastic Search</h4>
+            <hr/>
+            <div ng-repeat="i in esIndices">
+                <button class="btn btn-default" ng-click="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b> /
+                    {{i.indexName}}</button>
+            </div>
+        </div>
+
+        <script type="text/ng-template" id="confirmReindex.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Are you sure you want to re-index?</h3>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="okReIndex(i)">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="$dismiss()">Cancel</button>
+            </div>
+        </script>
+
         <div ng-repeat="status in statuses" class="pull-left boxed-div">
             <h4>{{status.hostname}}:{{status.port}}</h4>
             <div class="boxed-div">
                 <dl class="dl-horizontal">
-                    <dt>Status: </dt><dd ng-bind="getNodeStatus(status)"></dd>
-                    <dt>Last Up: </dt><dd>{{status.lastUpdate | timeAgo}}</dd>
-                    <dt>UpTime: </dt><dd>{{status.startupDate | timeAgo}}</dd>
-                    <dt>PM Port: </dt><dd>{{status.pmPort}}</dd>
-                    <dt>Version Number: </dt><dd><span ng-include="'/system/public/html/version.html'"></span></dd>
+                    <dt>Status:</dt>
+                    <dd ng-bind="getNodeStatus(status)"></dd>
+                    <dt>Last Up:</dt>
+                    <dd>{{status.lastUpdate | timeAgo}}</dd>
+                    <dt>UpTime:</dt>
+                    <dd>{{status.startupDate | timeAgo}}</dd>
+                    <dt>PM Port:</dt>
+                    <dd>{{status.pmPort}}</dd>
+                    <dt>Version Number:</dt>
+                    <dd><span ng-include="'/system/public/html/version.html'"></span></dd>
                 </dl>
                 <a type="button" class="btn btn-danger fa fa-power-off"
                    ng-click="sendStop(status)" ng-if="status.nodeStatus === 'Running'"> Stop</a>
@@ -20,24 +47,29 @@
                 <hr/>
                 <h5>ElasticSearch</h5>
                 <dl class="dl-horizontal">
-                    <dt>Up: </dt><dd>
+                    <dt>Up:</dt>
+                    <dd>
                         <a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'">
-                        <i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"/></a>
+                            <i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"></i></a>
                     </dd>
                     <dt>Returns Results:</dt>
                     <dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-success':'btn-danger'">
-                        <i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"/></a>
+                        <i class="fa" ng-class="status.elastic.results?'fa-check':'fa-times'"></i></a>
                     </dd>
                     <dt>Syncing:</dt>
                     <dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-success':'btn-danger'">
-                        <i class="fa"ng-class="status.elastic.sync?'fa-check':'fa-times'"/></a>
+                        <i class="fa" ng-class="status.elastic.sync?'fa-check':'fa-times'"></i></a>
                     </dd>
-                    <dt>Updating:</dt><dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'">
-                        <i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"/></a></dd>
+                    <dt>Updating:</dt>
+                    <dd><a class="btn btn-xs" ng-class="status.elastic.updating?'btn-success':'btn-danger'">
+                        <i class="fa" ng-class="status.elastic.updating?'fa-check':'fa-times'"></i></a></dd>
                 </dl>
                 <hr/>
-                <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false" ng-accept="'*.gpg'"
-                     tabindex="0" ng-file-change="upload(status.hostname, status.pmPort, $files)">Deploy File </div>{{progressPercentage}}<br>
+                <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false"
+                     ng-accept="'*.gpg'"
+                     tabindex="0" ng-file-change="upload(status.hostname, status.pmPort, $files)">Deploy File
+                </div>
+                {{progressPercentage}}<br>
             </div>
         </div>
     </div>

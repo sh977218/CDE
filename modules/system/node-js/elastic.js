@@ -5,8 +5,6 @@ var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
     , request = require('request')
-    , mongo_cde = require("../../cde/node-js/mongo-cde")
-    , mongo_form = require("../../form/node-js/mongo-form")
     ;
 
 var esClient = new elasticsearch.Client({
@@ -116,21 +114,28 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
 }
 
 var daos = {
-
-}
-exports.initEs = function () {
-    esInit.indices.forEach(function(i) {
-        createIndex(i.name, i.index, )
-    });
-    createIndex(config.elastic.index.name, esInit.createIndexJson, mongo_cde, esInit.riverFunction);
-    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, mongo_form, esInit.riverFunction);
-    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, mongo_cde.boardsDao, function(e) {return e;});
-    //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
-
+    "cde": require("../../cde/node-js/mongo-cde"),
+    "form": require("../../form/node-js/mongo-form"),
+    "board": require("../../cde/node-js/mongo-cde").boardsDao
 };
 
-exports.reIndex = function() {
+exports.initEs = function () {
+    esInit.indices.forEach(function(i) {
+        createIndex(i.indexName, i.indexJson, daos[i.name], i.filter);
+    });
 
+    // TODO
+    //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
+};
+
+// pass index as defined in elasticSearchInit.indices
+exports.reIndex = function(index) {
+    request.del(config.elastic.hosts[0] + "/" + index.name, {}, function(err) {
+        if (err) console.log("unable to delete index");
+        else {
+            createIndex(index.indexName, index.indexJson, daos[index.name], index.filter);
+        }
+    });
 };
 
 exports.completionSuggest = function (term, cb) {
