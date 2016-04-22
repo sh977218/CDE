@@ -78,46 +78,58 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-exports.initEs = function () {
-    var createIndex = function (indexName, indexMapping, dao, riverFunction) {
-        esClient.indices.exists({index: indexName}, function (error, doesIt) {
-            if (!doesIt) {
-                console.log("creating index: " + indexName);
-                request.post(config.elastic.hosts[0] + "/" + indexName,
-                    {
-                        json: true,
-                        body: indexMapping
-                    },
-                    function (error) {
-                        if (error) {
-                            console.log("error creating index. " + error);
-                        } else {
-                            var startTime = new Date().getTime();
-                            var indexType = Object.keys(indexMapping.mappings)[0];
-                            // start re-index all
-                            var injector = new EsInjector(esClient, indexName, indexType);
-                            var stream = dao.getStream({archived: null});
-                            stream.on('data', function(elt) {
-                                stream.pause();
-                                injector.queueDocument(riverFunction(elt.toObject()), function() {
-                                    stream.resume();
-                                });
-                            });
-                            stream.on('end', function() {
-                                injector.inject(function() {
-                                    console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-                                });
-                            });
-                        }
-                    });
-            }
-        });
-    };
 
+
+function createIndex(indexName, indexMapping, dao, riverFunction) {
+    esClient.indices.exists({index: indexName}, function (error, doesIt) {
+        if (!doesIt) {
+            console.log("creating index: " + indexName);
+            request.post(config.elastic.hosts[0] + "/" + indexName,
+                {
+                    json: true,
+                    body: indexMapping
+                },
+                function (error) {
+                    if (error) {
+                        console.log("error creating index. " + error);
+                    } else {
+                        var startTime = new Date().getTime();
+                        var indexType = Object.keys(indexMapping.mappings)[0];
+                        // start re-index all
+                        var injector = new EsInjector(esClient, indexName, indexType);
+                        var stream = dao.getStream({archived: null});
+                        stream.on('data', function(elt) {
+                            stream.pause();
+                            injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
+                                stream.resume();
+                            });
+                        });
+                        stream.on('end', function() {
+                            injector.inject(function() {
+                                console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                            });
+                        });
+                    }
+                });
+        }
+    });
+}
+
+var daos = {
+
+}
+exports.initEs = function () {
+    esInit.indices.forEach(function(i) {
+        createIndex(i.name, i.index, )
+    });
     createIndex(config.elastic.index.name, esInit.createIndexJson, mongo_cde, esInit.riverFunction);
     createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, mongo_form, esInit.riverFunction);
     createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, mongo_cde.boardsDao, function(e) {return e;});
     //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
+
+};
+
+exports.reIndex = function() {
 
 };
 

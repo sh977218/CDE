@@ -209,21 +209,6 @@ exports.createBoardIndexJson = {
     }
 };
 
-exports.createBoardRiverJson = {
-    "type": "mongodb"
-    , "mongodb": {
-        "servers": config.database.servers
-        , "credentials": [
-            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
-        ]
-        , "db": config.database.appData.db
-        , "collection": "pinningBoards"
-    }
-    , "index": {
-        "name": config.elastic.boardIndex.name
-        , "type": "board"
-    }
-};
 
 exports.createStoredQueryIndexJson = {
     "mappings": {
@@ -265,5 +250,22 @@ exports.createStoredQueryRiverJson = {
     , "index": {
         "name": config.elastic.storedQueryIndex.name
         , "type": "storedquery"
+    }
+};
+
+exports.indices = {
+    "cdes": {
+        name: config.elastic.index.name,
+        index: exports.createIndexJson,
+        filter: exports.riverFunction
+    },
+    forms: {
+        name: config.elastic.formIndex.name,
+        index: exports.createFormIndexJson,
+        filter: exports.riverFunction
+    },
+    boards: {
+        name: config.elastic.formIndex.name,
+        index: exports.createFormIndexJson
     }
 };
