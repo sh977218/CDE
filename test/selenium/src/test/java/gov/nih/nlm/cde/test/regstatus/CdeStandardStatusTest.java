@@ -19,7 +19,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         assertNoElt(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']"));
         assertNoElt(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']"));
         assertNoElt(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']"));
-        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         // Can't edit Value Type or add / remove pv
         String prefix = "//div[@id='permissibleValueDiv']//div//*[@id='";

@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 
 import com.jayway.restassured.http.ContentType;
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
