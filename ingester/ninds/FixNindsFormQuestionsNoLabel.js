@@ -5,7 +5,12 @@ var async = require('async'),
 var totalForm = 0;
 var modifiedForm = 0;
 var sameForm = 0;
-FormModel.find({'stewardOrg.name': 'NINDS', archived: null}).exec(function (err, allForms) {
+FormModel.find({
+    'stewardOrg.name': 'NINDS',
+    archived: null,
+    'formElements': {$size: 1},
+    'formElements.formElements.label': ''
+}).exec(function (err, allForms) {
     if (err) throw err;
     async.each(allForms, function (form, cb) {
         doForm(form, cb);
