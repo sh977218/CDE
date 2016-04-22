@@ -19,10 +19,12 @@ function run() {
                 cb();
             }
             else if (dataSets && dataSets.length > 0) {
-                dataSets.forEach(function (ds, i) {
+                var oldArr = dataSets;
+                de.dataSets = [];
+                oldArr.forEach(function (ds) {
                     var dsObj = ds.toObject();
                     delete dsObj.dataUri;
-                    dataSets[i] = dsObj;
+                    de.dataSets.push(dsObj);
                 });
                 de.usedBy = batchUser;
                 de.changeNote = changeNote;
