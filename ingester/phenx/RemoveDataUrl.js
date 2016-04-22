@@ -27,6 +27,7 @@ function run() {
                 de.usedBy = batchUser;
                 de.changeNote = changeNote;
                 de.updated = today;
+                de.markModified('dataSets');
                 de.save(function (err) {
                     if (err) throw err;
                     modifiedCDE++;
