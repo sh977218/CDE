@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test.score;
 
 import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -11,6 +12,7 @@ import java.util.List;
 public class FormTotalScoreTest extends BaseFormTest {
 
     @Test
+    @RecordVideo
     public void FormToalScore() {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Apathy Scale (AS)";
