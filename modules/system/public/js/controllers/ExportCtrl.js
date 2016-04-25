@@ -1,7 +1,6 @@
 angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic','$http', 'SearchSettings',
     function ($scope, $http, Elastic, SearchSettings)
 {
-    var JSZip = require("jszip");
     $scope.feedbackClass = ["fa-download"];
     $scope.csvDownloadState = "none";
 
@@ -57,6 +56,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic','$h
                     });
                     var content = zip.generate({type:"blob"});
                     saveAs(content, "SearchExport_ODM.zip");
+                },
+                'redCap':function(result){
+                    
                 }
             };
             if (result) {
