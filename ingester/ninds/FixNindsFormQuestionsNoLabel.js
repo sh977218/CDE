@@ -7,7 +7,7 @@ FormModel.find({
     'stewardOrg.name': 'NINDS',
     archived: null,
     'formElements': {$size: 1},
-    $or: [{'formElements.formElements.label': ''}, {'formElements.formElements.label': ''}]
+    $or: [{'formElements.formElements.label': ''}, {'formElements.formElements.label': 'N/A'}]
 }).exec(function (err, allForms) {
     if (err) throw err;
     async.each(allForms, function (form, cb) {
