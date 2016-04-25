@@ -18,7 +18,6 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-ie-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
-    testCompile "javax.media:jmf:2.1.1e"
 
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
     testCompile "net.lingala.zip4j:zip4j:1.3.2"

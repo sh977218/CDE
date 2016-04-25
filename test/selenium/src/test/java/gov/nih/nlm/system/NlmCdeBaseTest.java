@@ -198,7 +198,7 @@ public class NlmCdeBaseTest {
                 File[] inputScreenshotsArray = inputScreenshots.listFiles();
                 File gif = new File("build/gif/" + className + "/" + methodName + ".gif");
                 File srcFile = new File(className + "_" + methodName + ".gif");
-                GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, 300, false);
+                GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, videoRate, false);
                 for (File screenshotFile : inputScreenshotsArray) {
                     writer.writeToSequence(ImageIO.read(screenshotFile));
                 }
