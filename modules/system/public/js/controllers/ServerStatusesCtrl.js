@@ -11,10 +11,11 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         };
 
         $scope.reIndex = function(i) {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 animation: false,
                 templateUrl: 'confirmReindex.html',
                 controller: function(i) {
+                    $scope.i = i;
                     $scope.okReIndex = function() {
                         console.log("ok, I'll reindex: " + i);
                     };
@@ -23,9 +24,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                     i: function() {return i;}
                 },
                 scope: $scope
-            });
-
-            modalInstance.result.then(function () {
+            }).result.then(function () {
                 console.log("done");
             }, function () {
 

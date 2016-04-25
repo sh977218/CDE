@@ -8,10 +8,10 @@ exports.recreateIndexes = function(){
 
     [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
         config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
-            timeoutCount++;
-            setTimeout(function() {
+            //timeoutCount++;
+            //setTimeout(function() {
                 request.del(uri);
-            }, timeoutCount * 1000);
+            //}, timeoutCount * 1000);
         });
 
     //[
