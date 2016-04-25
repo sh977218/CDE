@@ -20,7 +20,7 @@ function updateFormCdeWithTinyId(form, oldTinyId, newTinyId) {
 }
 
 function run() {
-    DataElementModel.find({tinyId: {$regex: '-'}}).exec(function (err, existingCdes) {
+    DataElementModel.find({tinyId: {$regex: '-'}}).limit(2000).exec(function (err, existingCdes) {
         if (err) throw err;
         if (existingCdes && existingCdes.length === 0) {
             console.log('no more cde with tinyId contains "-".');
