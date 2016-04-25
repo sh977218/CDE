@@ -90,13 +90,13 @@ status.checkElasticUp = function(error, response, statusReport) {
 };
 
 status.checkElasticResults = function(body, statusReport) {
-    if (!body.hits.hits.length>0) {
-        statusReport.elastic.results = false; 
-        statusReport.elastic.sync = false; 
-        statusReport.elastic.updating = false;             
+    if (body.hits.hits.length>0) {
+        statusReport.elastic.results = true;
     } else {
-        statusReport.elastic.results = true; 
-    }    
+        statusReport.elastic.results = false;
+        statusReport.elastic.sync = false;
+        statusReport.elastic.updating = false;
+    }
 };
 
 status.checkElasticSync = function(body, statusReport) {
@@ -110,11 +110,10 @@ status.checkElasticSync = function(body, statusReport) {
                 // +1 to allow elements that gets created for the check. 
                 statusReport.elastic.sync = response.count  >= deCount - 5 && response.count <= deCount + 5 ;
                 if (!statusReport.elastic.sync) {
-                    console.log("Setting status sync to false because deCount = " + deCount +
-                    "and esCount = " + response.count);
+                    console.log("Setting status sync to false because deCount = " + deCount + " and esCount = " + response.count);
                 }
             }
-        )
+        );
     });
 };
 
@@ -131,7 +130,7 @@ status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoColl
         , version: stamp
     };
 
-    mongoCollection.upsertStatusCde(fakeCde, function(err, mongoCde) {
+    mongoCollection.upsertStatusCde(fakeCde, function() {
         setTimeout(function() {
             request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,""),
                 function (error, response, bodyStr) {
