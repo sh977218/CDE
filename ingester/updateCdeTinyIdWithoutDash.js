@@ -22,7 +22,6 @@ function updateFormCdeWithTinyId(form, oldTinyId, newTinyId) {
 function run() {
     DataElementModel.find({tinyId: {$regex: '-'}}).exec(function (err, existingCdes) {
         if (err) throw err;
-        cdeCount++;
         if (existingCdes && existingCdes.length === 0) {
             console.log('no more cde with tinyId contains "-".');
             //noinspection JSUnresolvedVariable
@@ -73,6 +72,7 @@ function run() {
                         existingCde.set('tinyId', newTinyId);
                         existingCde.markModified('tinyId');
                         existingCde.save(function () {
+                            cdeCount++;
                             console.log('CDE ' + oldTinyId + ' update to ' + newTinyId);
                             console.log('CDE count: ' + cdeCount);
                             doneOneCde();
