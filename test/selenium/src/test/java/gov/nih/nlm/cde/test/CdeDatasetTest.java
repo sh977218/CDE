@@ -1,13 +1,11 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class CdeDatasetTest extends BaseClassificationTest {
 
     @Test
-    @RecordVideo
     public void cdeCheckDatasetExistTest() {
         String cdeName = "Immunology Gonorrhea Assay Laboratory Finding Result";
         goToCdeByName(cdeName);
