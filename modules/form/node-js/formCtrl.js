@@ -1,10 +1,12 @@
-var mongo_data_form = require('./mongo-form')
-    , mongo_data_cde = require('../../cde/node-js/mongo-cde')
-    , adminSvc = require('../../system/node-js/adminItemSvc.js')
-    , formShared = require('../shared/formShared')
-    , JXON = require('jxon')
-    , sdc = require('./sdcForm')
-    , redCap = require('./redCapForm')
+var fs = require('fs'),
+    mongo_data_form = require('./mongo-form'),
+    mongo_data_cde = require('../../cde/node-js/mongo-cde'),
+    adminSvc = require('../../system/node-js/adminItemSvc.js'),
+    formShared = require('../shared/formShared'),
+    JXON = require('jxon'),
+    sdc = require('./sdcForm'),
+    redCap = require('./redCapForm'),
+    JSZip = require('jszip')
     ;
 
 exports.findForms = function (req, res) {
@@ -94,6 +96,11 @@ exports.formById = function (req, res) {
     });
 };
 
+var getFormSdc = function (form, req, res) {
+    res.setHeader("Content-Type", "application/xml");
+    res.send(sdc.formToSDC(form));
+};
+
 var getFormRedCap = function (form, req, res) {
     if (form.stewardOrg.name === 'PhenX') {
         res.send('warning', 'You can download PhenX RedCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.');
@@ -102,15 +109,12 @@ var getFormRedCap = function (form, req, res) {
         res.send('warning', 'You can download PROMIS / Neuro-QOL RedCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.');
     }
     res.setHeader("Content-Type", "text/csv");
-    res.send(redCap.formToRedCap(form));
+    var zip = new JSZip();
+    zip.file('AuthorID.txt', 'NLM');
+    zip.file('InstrumentID.txt', form.tinyId);
+    zip.file('instrument.csv', redCap.formToRedCap(form));
+    res.send(zip);
 };
-
-
-var getFormSdc = function (form, req, res) {
-    res.setHeader("Content-Type", "application/xml");
-    res.send(sdc.formToSDC(form));
-};
-
 
 exports.priorForms = function (req, res) {
     var formId = req.params.id;
