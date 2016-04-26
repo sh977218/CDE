@@ -19,4 +19,6 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
 
     //$scope.quickBoard = formQuickBoard;
 
+    $scope.cutoffIndex = 20;
+
 }]);
