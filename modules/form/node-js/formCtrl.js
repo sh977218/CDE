@@ -1,12 +1,11 @@
-var fs = require('fs'),
+var Archiver = require('archiver'),
     mongo_data_form = require('./mongo-form'),
     mongo_data_cde = require('../../cde/node-js/mongo-cde'),
     adminSvc = require('../../system/node-js/adminItemSvc.js'),
     formShared = require('../shared/formShared'),
     JXON = require('jxon'),
     sdc = require('./sdcForm'),
-    redCap = require('./redCapForm'),
-    JSZip = require('jszip')
+    redCap = require('./redCapForm')
     ;
 
 exports.findForms = function (req, res) {
@@ -108,12 +107,17 @@ var getFormRedCap = function (form, req, res) {
     if (form.stewardOrg.name === 'PROMIS / Neuro-QOL') {
         res.send('warning', 'You can download PROMIS / Neuro-QOL RedCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.');
     }
-    res.setHeader("Content-Type", "text/csv");
-    var zip = new JSZip();
-    zip.file('AuthorID.txt', 'NLM');
-    zip.file('InstrumentID.txt', form.tinyId);
-    zip.file('instrument.csv', redCap.formToRedCap(form));
-    res.send(zip);
+
+    res.writeHead(200, {
+        'Content-Type': 'application/zip',
+        'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
+    });
+    var zip = Archiver('zip');
+    zip.append('NLM', {name: 'AuthorID.txt'})
+        .append(form.tinyId, {name: 'InstrumentID.txt'})
+        .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
+        .finalize();
+    zip.pipe(res);
 };
 
 exports.priorForms = function (req, res) {
