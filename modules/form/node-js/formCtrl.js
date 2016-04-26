@@ -4,8 +4,8 @@ var mongo_data_form = require('./mongo-form')
     , formShared = require('../shared/formShared')
     , JXON = require('jxon')
     , sdc = require('./sdcForm')
-    , util = require('util')
-;
+    , redCap = require('./redCapForm')
+    ;
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
@@ -89,9 +89,22 @@ exports.formById = function (req, res) {
         }
         else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+        else if (req.query.type === 'redCap') getFormRedCap(form, req, res);
         else getFormJson(form, req, res);
     });
 };
+
+var getFormRedCap = function (form, req, res) {
+    if (form.stewardOrg.name === 'PhenX') {
+        res.send('warning', 'You can download PhenX RedCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.');
+    }
+    if (form.stewardOrg.name === 'PROMIS / Neuro-QOL') {
+        res.send('warning', 'You can download PROMIS / Neuro-QOL RedCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.');
+    }
+    res.setHeader("Content-Type", "text/csv");
+    res.send(redCap.formToRedCap(form));
+};
+
 
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
