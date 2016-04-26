@@ -1,12 +1,14 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class TwoLabelsNoVersion extends NlmCdeBaseTest {
 
     @Test
+    @RecordVideo
     public void twoLabelsNoVersion() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("NoVersionCdeFormTest");

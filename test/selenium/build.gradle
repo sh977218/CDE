@@ -20,14 +20,13 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
     testCompile "com.jayway.restassured:rest-assured:2.3.2"
-
     testCompile "net.lingala.zip4j:zip4j:1.3.2"
 }
 
 tasks.withType(Test) {
     systemProperty 'testUrl', System.getProperty('testUrl', testUrl)
-    systemProperty 'timeout', System.getProperty('timeout', "20")
     systemProperty 'hubUrl', System.getProperty('hubUrl', hubUrl)
+    systemProperty 'timeout', System.getProperty('timeout', timeout)
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
     systemProperty 'seleniumDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "/usr/nlm/selenium/cde/downloads/";
     systemProperty 'chromeDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "T:\\CDE\\downloads";
