@@ -45,7 +45,6 @@ exports.createIndexJson = {
                 , "naming.languageCode": {"type": "string", "index": "no"}
                 , "naming.context.contextName": {"type": "string", "index": "no"}
                 , "version": {"type": "string", "index": "no"}
-                , "numQuestions": {"type":"integer"}
 
             }
         }
@@ -186,6 +185,7 @@ exports.createFormIndexJson = {
                         "version": {"type": "string"}
                     }
                 }, "views": {"type": "integer"}
+                , "numQuestions": {"type":"integer"}
             }
         }
     }
