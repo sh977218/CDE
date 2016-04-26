@@ -46,7 +46,7 @@
                 <li ng-if="user._id">
                     <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a>
                 </li>
-                <li ng-if="user._id">
+                <li ng-if="user._id" ng-controller="ExportCtrl">
                     <a id='nihRedCap' ng-click="exportSearchResults('redCap')">Excel File, Red Cap Schema</a>
                 </li>
                 <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
