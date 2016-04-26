@@ -34,7 +34,7 @@ var getFormJson = function (form, req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);
         var ids = cdes.map(function (cde) {
-            return cde.tinyId
+            return cde.tinyId;
         });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
             cdes.forEach(function (formCde) {
