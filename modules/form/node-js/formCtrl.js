@@ -1,11 +1,11 @@
-var Archiver = require('archiver'),
-    mongo_data_form = require('./mongo-form'),
+var mongo_data_form = require('./mongo-form'),
     mongo_data_cde = require('../../cde/node-js/mongo-cde'),
     adminSvc = require('../../system/node-js/adminItemSvc.js'),
     formShared = require('../shared/formShared'),
     JXON = require('jxon'),
     sdc = require('./sdcForm'),
-    redCap = require('./redCapForm')
+    redCap = require('./redCapForm'),
+    Archiver = require('archiver')
     ;
 
 exports.findForms = function (req, res) {
