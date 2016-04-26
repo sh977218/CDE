@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', '$http', 'SearchSettings',
-    function ($scope, $http, Elastic, SearchSettings) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings',
+    function ($scope, Elastic, SearchSettings) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
