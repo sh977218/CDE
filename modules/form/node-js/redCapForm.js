@@ -1,3 +1,17 @@
+var label_variable_map = {};
+var field_type_map = {
+    "Text": "text",
+    "Value List": "radio",
+    "Number": "text",
+    "Date": "text"
+};
+var text_validation_type_map = {
+    "Text": "",
+    "Value List": "",
+    "Number": "number",
+    "Date": "date"
+};
+
 function formatSkipLogic(text, map) {
     if (text) {
         text = text.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
@@ -11,36 +25,21 @@ function formatSkipLogic(text, map) {
 }
 
 function getRedCap(form, instrumentResult) {
-    var label_variable_map = {};
-    var field_type_map = {
-        "Text": "text",
-        "Value List": "radio",
-        "Number": "text",
-        "Date": "text"
-    };
-    var text_validation_type_map = {
-        "Text": "",
-        "Value List": "",
-        "Number": "number",
-        "Date": "date"
-    };
-    var loopFormElements = function (fe) {
+    function loopFormElements(fe) {
         fe.formElements.forEach(function (e) {
             if (e.elementType === 'question') {
                 var q = e.question;
-                var cdeSkipLogic;
+                var questionSkipLogic;
                 if (e.skipLogic)
-                    cdeSkipLogic = e.skipLogic.condition;
-                var variableName = 'nlmcde_' + q.cde.tinyId.toLowerCase() + '_' + form.version;
-                var labelName = e.label;
-                label_variable_map[labelName] = variableName;
-                var redCapSkipLogic = formatSkipLogic(cdeSkipLogic, label_variable_map);
-                var row = {
-                    'Variable / Field Name': variableName,
+                    questionSkipLogic = e.skipLogic.condition;
+                var questionVariableName = 'nlmcde_' + q.cde.tinyId.toLowerCase() + '_' + form.version;
+                label_variable_map[e.label] = questionVariableName;
+                var questionRow = {
+                    'Variable / Field Name': questionVariableName,
                     'Form Name': form.naming[0].designation,
                     'Section Header': '',
                     'Field Type': field_type_map[q.datatype],
-                    'Field Label': labelName,
+                    'Field Label': e.label,
                     'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
                         return a.permissibleValue + ',' + a.valueMeaningName;
                     }).join('|'),
@@ -49,52 +48,49 @@ function getRedCap(form, instrumentResult) {
                     'Text Validation Min': '',
                     'Text Validation Max': '',
                     'Identifier?': '',
-                    'Branching Logic (Show field only if...)': redCapSkipLogic,
+                    'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variable_map),
                     'Required Field?': q.required,
                     'Custom Alignment': '',
                     'Question Number (surveys only)': '',
                     'Matrix Group Name': '',
                     'Matrix Ranking?': ''
                 };
-                instrumentResult += exports.convertToCsv(row) + '\n';
+                instrumentResult += exports.convertToCsv(questionRow) + '\n';
             }
             else if (e.elementType === 'section') {
-                /*                var q = e.question;
-                 var cdeSkipLogic;
-                 if (e.skipLogic)
-                 cdeSkipLogic = e.skipLogic.condition;
-                 var variableName = 'nlmcde_' + q.cde.tinyId.toLowerCase() + '_' + form.version;
-                 var labelName = e.label;
-                 label_variable_map[labelName] = variableName;
-                 var redCapSkipLogic = formatSkipLogic(cdeSkipLogic, label_variable_map);
-                 var row = {
-                 'Variable / Field Name': variableName,
-                 'Form Name': form.naming[0].designation,
-                 'Section Header': '',
-                 'Field Type': field_type_map[q.datatype],
-                 'Field Label': labelName,
-                 'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
-                 return a.permissibleValue + ',' + a.valueMeaningName;
-                 }).join('|'),
-                 'Field Note': '',
-                 'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
-                 'Text Validation Min': '',
-                 'Text Validation Max': '',
-                 'Identifier?': '',
-                 'Branching Logic (Show field only if...)': redCapSkipLogic,
-                 'Required Field?': q.required,
-                 'Custom Alignment': '',
-                 'Question Number (surveys only)': '',
-                 'Matrix Group Name': '',
-                 'Matrix Ranking?': ''
-                 };
-                 instrumentResult += exports.convertToCsv(row) + '\n';*/
+                var sectionSkipLogic;
+                if (e.skipLogic)
+                    sectionSkipLogic = e.skipLogic.condition;
+                var sectionVariableName = 'nlmcde_' + '@TODO' + '_' + form.version;
+                label_variable_map[e.label] = sectionVariableName;
+                var sectionRow = {
+                        'Variable / Field Name': sectionVariableName,
+                        'Form Name': form.naming[0].designation,
+                        'Section Header': '',
+                        'Field Type': '',
+                        'Field Label': e.label,
+                        'Choices, Calculations, OR Slider Labels': '',
+                        'Field Note': '',
+                        'Text Validation Type OR Show Slider Number': '',
+                        'Text Validation Min': '',
+                        'Text Validation Max': '',
+                        'Identifier?': '',
+                        'Branching Logic (Show field only if...)': formatSkipLogic(sectionSkipLogic, label_variable_map),
+                        'Required Field?': '',
+                        'Custom Alignment': '',
+                        'Question Number (surveys only)': '',
+                        'Matrix Group Name': '',
+                        'Matrix Ranking?': ''
+                    }
+                    ;
+                instrumentResult += exports.convertToCsv(sectionRow) + '\n';
             }
             else {
                 console.log('unknown elementType');
             }
         });
-    };
+    }
+
     return loopFormElements(form);
 }
 
