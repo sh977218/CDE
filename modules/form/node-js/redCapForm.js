@@ -60,14 +60,11 @@ exports.formToRedCap = function (form) {
             'Matrix Group Name': '',
             'Matrix Ranking?': ''
         };
-        instrumentResult += exports.convertToCsv(row, projectFormToRedCap) + '\n';
+        instrumentResult += exports.convertToCsv(row) + '\n';
     });
     var zip = new JSZip();
     zip.file('AuthorID.txt', 'NLM');
     zip.file('InstrumentID.txt', form.tinyId);
     zip.file('instrument.csv', instrumentResult);
-    var content = zip.generate({type: 'blob'});
-    saveAs(content, 'redCap.zip');
-    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" +
-        JXON.jsToString(root);
+    return zip.generate({type: 'blob'});
 };
