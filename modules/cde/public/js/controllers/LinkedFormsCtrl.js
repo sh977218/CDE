@@ -17,8 +17,6 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
 
     $scope.formsCtrlLoadedPromise.resolve();
 
-    //$scope.quickBoard = formQuickBoard;
-
     $scope.cutoffIndex = 20;
 
 }]);
