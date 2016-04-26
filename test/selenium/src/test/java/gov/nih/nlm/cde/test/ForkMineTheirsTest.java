@@ -12,7 +12,7 @@ public class ForkMineTheirsTest extends ForkTest {
         goToCdeByName("Adverse Event Ongoing Event Indicator");
 
         // can't edit.
-        Assert.assertEquals(driver.findElements(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']")).size(), 0);
+        assertNoElt(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']"));
 
         showAllTabs();
         clickElement(By.id("forks_tab"));

@@ -111,14 +111,6 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         addClassificationMethod(new String[]{org, classification, subClassification});
     }
 
-
-    public void createBasicCde(String name, String definition, String org, String classification, String subclassification) {
-        goToCdeSearch();
-        fillOutBasicCreateFields(name, definition, org, classification, subclassification);
-        clickElement(By.id("submit"));
-        waitForESUpdate();
-    }
-
     public void openClassificationAudit(String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));

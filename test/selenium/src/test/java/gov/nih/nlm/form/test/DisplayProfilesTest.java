@@ -38,7 +38,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("Display Profile:");
 
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
-        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 0);
+        assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textPresent("1");
         textPresent("2");
         textPresent("3");
@@ -48,11 +48,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
         hangon(1);
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
-        Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 0);
+        assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 0);
+        assertNoElt(By.xpath("//table//input[@type='radio']"));
         Assert.assertEquals(driver.findElements(By.xpath("//select[@ng-model='question.question.answer']")).size(), 5);
 
         showAllTabs();

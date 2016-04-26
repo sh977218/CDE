@@ -14,7 +14,7 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
     @Test
     public void wgRegStatus() {
         mustBeLoggedInAs(wguser_username, password);
-        new CdeCreateTest().createBasicCde("WG Test CDE", "Def", "WG-TEST", "WG Classif", "WG Sub Classif");
+        goToCdeByName("WG Test CDE");
         showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");

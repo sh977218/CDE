@@ -37,7 +37,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
-        clickElement(By.id("compareMe"));
+        clickElement(By.id("addToQuickBoard"));
         showAllTabs();
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
@@ -51,7 +51,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         qbTest.emptyQuickBoardByModule("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
-        clickElement(By.id("compareMe"));
+        clickElement(By.id("addToQuickBoard"));
         textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         showAllTabs();
