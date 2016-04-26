@@ -8,8 +8,6 @@ public class QuestionLayoutTest extends BaseFormTest {
 
     @Test
     public void questionsLayoutTest() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1524, 1150);
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Question Layout Test Form";
         goToFormByName(formName);
@@ -47,7 +45,6 @@ public class QuestionLayoutTest extends BaseFormTest {
 
         textNotPresent("Show Filters");
         textNotPresent("results for");
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 
 }

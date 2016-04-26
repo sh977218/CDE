@@ -13,8 +13,6 @@ public class SectionInSectionTest extends BaseFormTest {
 
     //@Test
     public void sectionInSection() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1524, 1150);
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Section in Section Form";
         goToFormByName(formName);
@@ -44,8 +42,6 @@ public class SectionInSectionTest extends BaseFormTest {
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()='Treatment Details']")).size() == 1);
         clickElement(By.xpath("//*[text()=' Add One']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[text()='Treatment Details']")).size() == 2);
-
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 
 
