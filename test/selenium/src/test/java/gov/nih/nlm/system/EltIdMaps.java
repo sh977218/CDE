@@ -36,6 +36,7 @@ public class EltIdMaps {
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Psychiatric history clinical depression past year indicator", "ryD6agS7yuQ");
 
 
         // Forms
