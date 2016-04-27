@@ -95,13 +95,13 @@ function createForm(ninds) {
             "elements": []
         }]
     };
-    var classificationInDisease = {
+/*    var classificationInDisease = {
         "name": "Classification",
         elements: [{
             "name": ninds.get('classification'),
             "elements": []
         }]
-    };
+    };*/
     if (ninds.get('domainName') !== ninds.get('subDomainName')) {
         domainSubDomain.elements[0].elements.push({
             "name": ninds.get('subDomainName'),
