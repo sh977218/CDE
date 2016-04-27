@@ -354,7 +354,6 @@ function run() {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
                     async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
-                        cdeCounter++;
                         MigrationDataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {
@@ -362,6 +361,7 @@ function run() {
                                 var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
                                     if (err) throw err;
+                                    cdeCounter++;
                                     console.log('cdeCounter: ' + cdeCounter);
                                     doneOneCde();
                                 });
@@ -371,7 +371,6 @@ function run() {
                                     transferCde(existingCde, cde, ninds);
                                     existingCde.markModified("classification");
                                     existingCde.save(function () {
-                                        console.log('cdeCounter: ' + cdeCounter);
                                         doneOneCde();
                                     });
                                 }
