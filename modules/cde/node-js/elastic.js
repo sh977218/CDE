@@ -13,11 +13,10 @@ var esClient = new elasticsearch.Client({
 exports.updateOrInsert = function(elt) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
-        console.log(JSON.stringify(doc));
         esClient.index({
             index: config.elastic.index.name,
             type: "dataelement",
-            id: doc._id,
+            id: doc.tinyId,
             body: doc
         });
     }

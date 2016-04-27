@@ -4,7 +4,6 @@ var config = require('./parseConfig')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
-    , request = require('request')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -56,13 +55,22 @@ function EsInjector(esClient, indexName, documentType) {
             body: []
         };
         _esInjector.buffer.forEach(function (elt) {
-            request.body.push({index: {index: _esInjector.indexName, type: _esInjector.documentType, id: elt._id}});
+            request.body.push({
+                index: {
+                    _index: _esInjector.indexName,
+                    _type: _esInjector.documentType,
+                    _id: elt.tinyId ? elt.tinyId : elt._id
+                }
+            });
+            delete elt._id;
             request.body.push(elt);
         });
         _esInjector.buffer = [];
         esClient.bulk(request, function (err) {
             if (err) {
-                console.log(err);
+                console.log("Error in Bulk Request: " + err);
+                // TODO Remove
+                process.exit(1);
             } else {
                 console.log("ingested: " + request.body.length / 2);
             }
@@ -80,22 +88,21 @@ function EsInjector(esClient, indexName, documentType) {
 
 function createIndex(indexName, indexMapping, dao, riverFunction) {
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
+        if (doesIt) {
+            console.log("index already exists.");
+        }
         if (!doesIt) {
             console.log("creating index: " + indexName);
-            // TODO replace with ES Client
-            request.post(config.elastic.hosts[0] + "/" + indexName,
-                {
-                    json: true,
-                    body: indexMapping
-                },
+            esClient.indices.create({index: indexName, timeout: "10s", body: indexMapping},
                 function (error) {
                     if (error) {
                         console.log("error creating index. " + error);
                     } else {
-                        esClient.cluster.health({index: indexName, waitForStatus: "green", timeout: 10}, function(err) {
-                             if (err) {
-                                 console.log("Unable to confirm that index was created");
-                             } else {
+                        //esClient.cluster.health({index: indexName, waitForStatus: "green", timeout: "10s"}, function(err) {
+                        //     if (err) {
+                        //         console.log("Unable to confirm that index was created - " + err);
+                        //     } else {
+                                 console.log("index Created");
                                  var startTime = new Date().getTime();
                                  var indexType = Object.keys(indexMapping.mappings)[0];
                                  // start re-index all
@@ -112,8 +119,8 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
                                          console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                                      });
                                  });
-                             }
-                        });
+                        //     }
+                        //});
                     }
                 });
         }
@@ -137,8 +144,8 @@ exports.initEs = function () {
 
 // pass index as defined in elasticSearchInit.indices
 exports.reIndex = function(index) {
-    request.del(config.elastic.hosts[0] + "/" + index.name, {}, function(err) {
-        if (err) console.log("unable to delete index");
+    esClient.indices.delete({index: index.indexName}, function(err) {
+        if (err) console.log("unable to delete index: " + index.indexName + " " + err);
         else {
             createIndex(index.indexName, index.indexJson, daos[index.name], index.filter);
         }
@@ -278,12 +285,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
     var flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
     if (flatSelectionAlt !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
     if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
@@ -336,28 +343,28 @@ exports.buildElasticSearchQuery = function (user, settings) {
         //queryStuff.aggregations.statuses.aggregations = {};
 
         var flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
-            var flatClassification = {
+            var flatClassifications = {
                 "terms": {
                     "size": 500,
-                    "field": "flatClassification"
+                    "field": "flatClassifications"
                 }
             };
             if (selectionString === "") {
-                flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ";[^;]+";
             } else {
-                flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
                 "aggs": {}
             };
-            queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+            queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
         };
         if (settings.selectedOrg !== undefined) {
-            flattenClassificationAggregations('flatClassification', 'selectedOrg', flatSelection);
+            flattenClassificationAggregations('flatClassifications', 'selectedOrg', flatSelection);
         }
         if (settings.selectedOrgAlt !== undefined) {
-            flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt', flatSelectionAlt);
+            flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
     }
 

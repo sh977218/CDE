@@ -9,12 +9,32 @@ exports.createIndexJson = {
                         "name": {"type": "string", "index": "not_analyzed"}
                     }
                 }
-                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
-                , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
+                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
+                , "classification": {
+                    properties: {
+                        "stewardOrg": {
+                            properties: {
+                                "name": {"type": "string", "index": "not_analyzed"}
+                            }
+                        }
+                    }
+                }
+                , "registrationState": {
+                    properties: {
+                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                    }
+                }
                 , "source": {"type": "string", "index": "not_analyzed"}
                 , "origin": {"type": "string", "index": "not_analyzed"}
-                , "valueDomain.permissibleValues.codeSystemName": {"type": "string", "index": "not_analyzed"}
+                , "valueDomain": {
+                    properties: {
+                        "permissibleValues": {
+                            properties: {
+                                "codeSystemName": {"type": "string", "index": "not_analyzed"}
+                            }
+                        }
+                    }
+                }
                 , "properties": {
                     "type": "nested",
                     "include_in_parent": true,
@@ -33,20 +53,34 @@ exports.createIndexJson = {
                 }
                 , "tinyId": {"type": "string", "index": "not_analyzed"}
                 , "updated": {"type": "date", "index": "no"}
-                , "updatedBy.username": {"type": "string", "index": "no"}
+                , "updatedBy": {properties: {"username": {"type": "string", "index": "no"}}}
                 , "changeNote": {"type": "string", "index": "no"}
-                , "attachments.fileid": {"type": "string", "index": "no"}
-                , "attachments.filename": {"type": "string", "index": "no"}
-                , "_id": {"type": "string", "index": "no"}
-                , "comments.text": {"type": "string", "index": "no"}
-                , "comments.user": {"type": "string", "index": "no"}
+                , "attachments": {
+                    properties: {
+                        "fileid": {"type": "string", "index": "no"},
+                        "filename": {"type": "string", "index": "no"}
+                    }
+                }
+                , "comments": {
+                    properties: {
+                        "text": {"type": "string", "index": "no"}
+                        , "user": {"type": "string", "index": "no"}
+                    }
+                }
                 , "history": {"type": "string", "index": "no"}
                 , "imported": {"type": "date", "index": "no"}
-                , "naming.languageCode": {"type": "string", "index": "no"}
-                , "naming.context.contextName": {"type": "string", "index": "no"}
+                , "naming": {
+                    properties: {
+                        "languageCode": {"type": "string", "index": "no"},
+                        "context": {
+                            properties: {
+                                "contextName": {"type": "string", "index": "no"}
+                            }
+                        }
+                    }
+                }
                 , "version": {"type": "string", "index": "no"}
-                , "numQuestions": {"type":"integer"}
-
+                , "numQuestions": {"type": "integer"}
             }
         }
     }, settings: {
@@ -62,6 +96,51 @@ exports.createIndexJson = {
         }
     }
 };
+
+
+exports.createFormIndexJson = {
+    "mappings": {
+        "form": {
+            "properties": {
+                "stewardOrg": {properties: {"name": {"type": "string", "index": "not_analyzed"}}}
+                , "flatClassifications": {"type": "string", "index": "not_analyzed"}
+                , "classification": {
+                    properties: {
+                        "stewardOrg": {
+                            "properties" : {
+                                "name": {"type": "string", "index": "not_analyzed"}
+                            }
+                        }
+                    }
+                }
+                , "registrationState": {
+                    properties: {
+                        "registrationStatus": {"type": "string", "index": "not_analyzed"}
+                    }
+                }
+                , "source": {"type": "string", "index": "not_analyzed"}
+                , "origin": {"type": "string", "index": "not_analyzed"}
+                , "properties": {
+                    "type": "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "key": {"type": "string"},
+                        "value": {"type": "string"}
+                    }
+                }, "ids": {
+                    "type": "nested",
+                    "include_in_parent": true,
+                    "properties": {
+                        "source": {"type": "string"},
+                        "id": {"type": "string"},
+                        "version": {"type": "string"}
+                    }
+                }, "views": {"type": "integer"}
+            }
+        }
+    }
+};
+
 
 var storedQueryRiverFunction =
     "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];} ctx.document.search_suggest = ctx.document.searchTerm";
@@ -171,38 +250,6 @@ exports.riverFunction = function (elt) {
 
 };
 
-
-exports.createFormIndexJson = {
-    "mappings": {
-        "form": {
-            "properties": {
-                "stewardOrg.name": {"type": "string", "index": "not_analyzed"}
-                , "flatClassifications": {"type": "string", "index": "not_analyzed", "index_name": "flatClassification"}
-                , "classification.stewardOrg.name": {"type": "string", "index": "not_analyzed"}
-                , "registrationState.registrationStatus": {"type": "string", "index": "not_analyzed"}
-                , "source": {"type": "string", "index": "not_analyzed"}
-                , "origin": {"type": "string", "index": "not_analyzed"}
-                , "properties": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "key": {"type": "string"},
-                        "value": {"type": "string"}
-                    }
-                }, "ids": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "source": {"type": "string"},
-                        "id": {"type": "string"},
-                        "version": {"type": "string"}
-                    }
-                }, "views": {"type": "integer"}
-            }
-        }
-    }
-};
-
 exports.createBoardIndexJson = {
     "mappings": {
         "board": {}
@@ -268,7 +315,7 @@ exports.indices = [
     },
     {
         name: "board",
-        indexName: config.elastic.formIndex.name,
-        indexJson: exports.createFormIndexJson
+        indexName: config.elastic.boardIndex.name,
+        indexJson: exports.createBoardIndexJson
     }
 ];

@@ -17,7 +17,9 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                 controller: function(i) {
                     $scope.i = i;
                     $scope.okReIndex = function() {
-                        console.log("ok, I'll reindex: " + i);
+                        $http.post("/reindex/" + i).success(function() {
+                            console.log("done");
+                        });
                     };
                 },
                 resolve: {
