@@ -39,12 +39,12 @@ public class ScreenShotListener extends TestListenerAdapter {
             e.printStackTrace();
         }
     }
-    
+
     public void onTestSuccess(ITestResult itr) {
         String methodName = itr.getName();
         saveLogs(methodName, null);
     }
-    
+
     private void saveLogs(String methodName, String extraText) {
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         StringBuilder sb = new StringBuilder();
@@ -54,11 +54,11 @@ public class ScreenShotListener extends TestListenerAdapter {
         for (LogEntry entry : logEntries) {
             if (!entry.getMessage().contains("Range.detach"))
                 sb.append(new Date(entry.getTimestamp()));
-                sb.append(" ");
-                sb.append(entry.getLevel());
-                sb.append(" ");
-                sb.append(entry.getMessage());
-                sb.append("\n");
+            sb.append(" ");
+            sb.append(entry.getLevel());
+            sb.append(" ");
+            sb.append(entry.getMessage());
+            sb.append("\n");
         }
         if (sb.length() > 0) {
             try {
@@ -67,7 +67,7 @@ public class ScreenShotListener extends TestListenerAdapter {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        }        
+        }
     }
-    
+
 }

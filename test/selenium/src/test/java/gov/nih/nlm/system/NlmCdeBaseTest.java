@@ -1,5 +1,6 @@
 package gov.nih.nlm.system;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,31 +14,37 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.jayway.restassured.RestAssured.get;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
 
-    protected static WebDriver driver;
+    public static WebDriver driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
-    protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
-
     protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
-    protected static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
+    private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -58,6 +65,7 @@ public class NlmCdeBaseTest {
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
     protected static String pinUser = "pinuser";
+    protected static String unpinUser = "unpinuser";
     protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
@@ -76,33 +84,35 @@ public class NlmCdeBaseTest {
 
     protected static String password = "pass";
 
-    protected Set<PosixFilePermission> filePerms = new HashSet<PosixFilePermission>();
+    private Set<PosixFilePermission> filePerms = new HashSet();
 
-    protected int randomNb = (int)(Math.random()  * 1000);
+    String className = this.getClass().getSimpleName();
+    private ScheduledExecutorService videoExec;
 
-    @BeforeTest
-    public void countElasticElements() {
-        int nbOfRecords = 0;
-        int waitTime = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11700; i++) {
-            hangon(waitTime);
-            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of cdes: " + nbOfRecords);
-            waitTime = 10;
+    int videoRate = 300;
+    int totalCdes = 11700;
+    int totalForms = 815;
+
+    private void countElasticElements(Method m) {
+        int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
+        for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
+            hangon(waitTimeCdes);
+            nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
+            System.out.println("nb of cdes: " + nbOfCde);
+            waitTimeCdes = 10;
         }
-        waitTime = 0;
-        nbOfRecords = 0;
-        for (int i = 0; i < 5 && nbOfRecords < 815; i++) {
-            hangon(waitTime);
-            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
-            System.out.println("nb of forms: " + nbOfRecords);
-            waitTime = 10;
+        for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
+            hangon(waitTimeForms);
+            nbOfForms = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
+            System.out.println("nb of forms: " + nbOfForms);
+            waitTimeForms = 10;
         }
+        System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
     }
 
-    @BeforeMethod
-    public void setBaseUrl() {
+    private void setDriver() {
         hangon(new Random().nextInt(10));
+        String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -116,7 +126,7 @@ public class NlmCdeBaseTest {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
             ChromeOptions options = new ChromeOptions();
-            Map<String, Object> prefs = new HashMap<String, Object>();
+            Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
@@ -148,45 +158,69 @@ public class NlmCdeBaseTest {
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
+        driver.manage().window().maximize();
+    }
 
-        resizeWindow(1600, 980);
-
+    @BeforeMethod
+    public void setUp(Method m) {
+        countElasticElements(m);
+        setDriver();
         filePerms.add(PosixFilePermission.OWNER_READ);
         filePerms.add(PosixFilePermission.OWNER_WRITE);
         filePerms.add(PosixFilePermission.OTHERS_READ);
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
+        takeScreenshotsRecordVideo(m);
+    }
 
+    private void takeScreenshotsRecordVideo(Method m) {
+        if (m.getAnnotation(RecordVideo.class) != null) {
+            videoExec = Executors.newSingleThreadScheduledExecutor();
+            final String methodName = m.getName();
+            System.out.println("methodName in setBaseUrl: " + methodName);
+            videoExec.scheduleAtFixedRate(() -> {
+                try {
+                    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                    String dest = "build/tmp/screenshots/" + className + "/" + methodName + "/" + methodName + "_" + new Date().getTime() + ".png";
+                    FileUtils.copyFile(srcFile, new File(dest));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, 0, videoRate, TimeUnit.MICROSECONDS);
+        }
     }
 
     @AfterMethod
-    public void endSession() {
+    public void generateGif(Method m) {
+        if (m.getAnnotation(RecordVideo.class) != null) {
+            String methodName = m.getName();
+            try {
+                File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
+                File[] inputScreenshotsArray = inputScreenshots.listFiles();
+                File gif = new File("build/gif/" + className + "/" + methodName + ".gif");
+                File srcFile = new File(className + "_" + methodName + ".gif");
+                GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, videoRate, false);
+                for (File screenshotFile : inputScreenshotsArray) {
+                    writer.writeToSequence(ImageIO.read(screenshotFile));
+                }
+                writer.close();
+                FileUtils.copyFile(srcFile, gif);
+                FileUtils.deleteQuietly(srcFile);
+                FileUtils.deleteDirectory(inputScreenshots);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            videoExec.shutdown();
+        }
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
         driver.quit();
     }
 
-    @AfterMethod
-    public void countTabs(Method method) {
-        if (driver.getWindowHandles().size() > 1)
-            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
-    }
-
-    @BeforeMethod
-    public void printRandomNb(Method method) {
-        System.out.println("Starting " + method.getName() + " in Fork: " + randomNb);
-    }
-
-    public void clearStorage() {
+    protected void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
-    }
-
-    protected void resizeWindow(int width, int height) {
-        driver.manage().window().setSize(new Dimension(width, height));
-    }
-
-    protected Dimension getWindowSize() {
-        return driver.manage().window().getSize();
     }
 
     private boolean isUsernameMatch(String username) {
@@ -274,8 +308,7 @@ public class NlmCdeBaseTest {
     protected void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
-            driver.get(baseUrl + "/" + ("cde".equals(type)?"deview":"formView") + "/?tinyId="
-                + tinyId);
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
             textPresent("More...");
             textPresent(name);
         } else {
@@ -301,14 +334,15 @@ public class NlmCdeBaseTest {
         openEltInList(name, "cde");
     }
 
-    public void searchCde(String cdeName) {
-        searchElt(cdeName, "cde");
-    }
-
     public void searchForm(String formName) {
         searchElt(formName, "form");
     }
 
+    public void assertNoElt(By by) {
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        Assert.assertEquals(driver.findElements(by).size(), 0);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+    }
 
     public void searchElt(String name, String type) {
         goToSearch(type);
@@ -343,7 +377,7 @@ public class NlmCdeBaseTest {
         textPresent(name, By.id("searchResult_0"));
     }
 
-    public void checkTooltipText(By by, String text) {
+    protected void checkTooltipText(By by, String text) {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
@@ -455,13 +489,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-//        // gonowhere gets rid of possible alert.
+        // gonowhere gets rid of possible alert.
         driver.get(baseUrl + "/gonowhere");
         textPresent("Nothing here");
-//
+
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
-//        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -505,14 +538,13 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addCdeToQuickBoard(String cdeName) {
-        searchCde(cdeName);
-        clickElement(By.id("addToCompare_0"));
+    protected void addCdeToQuickBoard(String cdeName) {
+        goToCdeByName(cdeName);
+        clickElement(By.id("addToQuickBoard"));
         closeAlert();
-        findElement(By.name("q")).clear();
     }
 
-    public void addFormToQuickBoard(String formName) {
+    protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
         clickElement(By.id("addToCompare_0"));
         closeAlert();
@@ -535,8 +567,7 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
 
-    public void addToCompare(String cdeName1, String cdeName2) {
-        goToCdeSearch();
+    protected void addToCompare(String cdeName1, String cdeName2) {
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
         textPresent("Quick Board (1)");
@@ -558,31 +589,31 @@ public class NlmCdeBaseTest {
         return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
-    public void scrollTo(Integer y) {
+    protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    public void scrollToEltByCss(String css) {
+    private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
 
-    public void scrollToViewById(String id) {
+    protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.id(id));
         je.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
-    public void hoverOverElement(WebElement ele) {
+    protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    public void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -614,7 +645,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -622,7 +653,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
@@ -677,16 +708,16 @@ public class NlmCdeBaseTest {
         confirmNewValue(newValue);
     }
 
-    protected void confirmFieldName(String fieldName) {
+    private void confirmFieldName(String fieldName) {
         textPresent(fieldName, By.cssSelector("#modificationsList"));
     }
 
-    protected void confirmPreviousValue(String value) {
+    private void confirmPreviousValue(String value) {
         textPresent(value, By.cssSelector("#modificationsList"));
 
     }
 
-    protected void confirmNewValue(String value) {
+    private void confirmNewValue(String value) {
         textPresent(value, By.cssSelector("#modificationsList"));
     }
 
@@ -736,14 +767,14 @@ public class NlmCdeBaseTest {
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
         findElement(By.xpath(prefix + "moveDown-0" + postfix));
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveUp-0" + postfix));
+        assertNoElt(By.xpath(prefix + "moveTop-0" + postfix));
 
         findElement(By.xpath(prefix + "moveDown-1" + postfix));
         findElement(By.xpath(prefix + "moveUp-1" + postfix));
         findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }

@@ -12,8 +12,8 @@ public class Compare2Test extends NlmCdeBaseTest {
         goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
         showAllTabs();
         clickElement(By.id("mlt_tab"));
-        clickElement(By.id("compareMe"));
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compareMe")));
+        clickElement(By.id("addToQuickBoard"));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addToQuickBoard")));
         clickElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         // accordion expands

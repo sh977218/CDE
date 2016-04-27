@@ -21,7 +21,6 @@ var passport = require('passport')
     , tar = require('tar-fs')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
-    , createIndices = require('./createIndexes')
     , authorization = require('../../system/node-js/authorization')
     , esInit = require('../../../deploy/elasticSearchInit')
     , elastic = require('./elastic.js')
@@ -382,9 +381,8 @@ exports.init = function (app) {
         return ip.indexOf("127.0") !== -1 || ip === "::1" || ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
-    app.get('/searchUsers/:username?', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) &&
-            req.user && req.user.siteAdmin) {
+    app.get('/searchUsers/:username?', function(req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
             });
@@ -405,9 +403,8 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) &&
-            req.user && req.user.siteAdmin) {
+    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
             res.status(401).send();
@@ -760,11 +757,10 @@ exports.init = function (app) {
         var untar = tar.extract(target);
         request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
-
-            spawn('rm', [target + '/system*']).on('exit', function () {
-                var restore = spawn('mongorestore', ['-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
-                restore.on('exit', function () {
-                    createIndices.recreateIndexes();
+            spawn('rm', [target + '/system*']).on('exit', function(){
+                var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
+                restore.on('exit', function() {
+                    elastic.recreateIndexes();
                     var rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {
                         res.send();

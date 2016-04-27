@@ -21,8 +21,6 @@ public class OrgAdmin2Test extends BaseClassificationTest {
 
     @Test
     public void cdesTransferSteward() {
-        Dimension currentWindowSize = getWindowSize();
-        resizeWindow(1524, 1150);
         mustBeLoggedInAs(transferStewardUser_username, password);
 
         String org1 = "PS&CC";
@@ -50,7 +48,6 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         clickElement(By.id("transferStewardButton"));
         textPresent("10 CDEs transferred.");
         textPresent("4 forms transferred.");
-        resizeWindow(currentWindowSize.getWidth(), currentWindowSize.getHeight());
     }
 
     @Test

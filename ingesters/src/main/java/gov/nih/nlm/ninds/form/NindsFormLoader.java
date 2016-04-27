@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,7 @@ public class NindsFormLoader implements Runnable {
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
 
-    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) {
+    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) throws IOException, AWTException {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.pageStart = ps;
         this.pageEnd = pe;
@@ -38,7 +40,6 @@ public class NindsFormLoader implements Runnable {
         this.diseaseMap = diseaseMap;
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
-
     }
 
     @Override

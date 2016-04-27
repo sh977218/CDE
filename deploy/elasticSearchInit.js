@@ -80,7 +80,6 @@ exports.createIndexJson = {
                     }
                 }
                 , "version": {"type": "string", "index": "no"}
-                , "numQuestions": {"type": "integer"}
             }
         }
     }, settings: {
@@ -136,6 +135,7 @@ exports.createFormIndexJson = {
                         "version": {"type": "string"}
                     }
                 }, "views": {"type": "integer"}
+                , "numQuestions": {"type":"integer"}
             }
         }
     }
