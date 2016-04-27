@@ -121,22 +121,18 @@ exports.convertToCsv = function (ele) {
     var sanitize = function (v) {
         return v.trim ? v.trim().replace(/\"/g, "\"\"") : v;
     };
-    var length = Object.keys(ele).length;
     var row = "";
-    Object.keys(ele).forEach(function (key, i) {
+    Object.keys(ele).forEach(function (key) {
+        row += "\"";
         var value = ele[key];
-        var type = typeof value;
         if (Array.isArray(value)) {
             row += value.map(function (value) {
                 return sanitize(value);
             }).join("; ");
-        } else if (type === 'string') {
-            row += "\"" + sanitize(value) + "\"";
-        } else if (type === 'number') {
-            row += value + ",";
-        } else row += "\"" + sanitize(value) + "\"";
-
-        if (i !== length)row += ",";
+        } else if (value) {
+            row += sanitize(value);
+        }
+        row += "\",";
     });
     return row + "\n";
 };
