@@ -6,6 +6,7 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+var cdeCounter = 0;
 var nindsOrg = null;
 var newline = '<br>';
 var today = new Date().toJSON();
@@ -274,7 +275,7 @@ function createCde(cde, ninds) {
         classification: []
     };
 
-    var classificationToAdd = [
+    var diseaseToAdd = [
         'Disease',
         ninds.get('diseaseName')
     ];
@@ -283,25 +284,37 @@ function createCde(cde, ninds) {
         ninds.get('diseaseName')
     ];
 
+    var classificationToAdd = [
+        'Disease',
+        ninds.get('diseaseName')
+    ];
+
     if (ninds.get('diseaseName') === 'Traumatic Brain Injury') {
+        diseaseToAdd.push(ninds.get('subDiseaseName'));
         classificationToAdd.push(ninds.get('subDiseaseName'));
         subDomainToAdd.push(ninds.get('subDiseaseName'));
     }
 
-    classificationToAdd.push('Domain');
+    classificationToAdd.push('Classification');
+    classificationToAdd.push(cde.classification);
+
+    diseaseToAdd.push('Domain');
     subDomainToAdd.push('Domain');
 
-    classificationToAdd.push(cde.domain);
+    diseaseToAdd.push(cde.domain);
     subDomainToAdd.push(cde.domain);
 
-    classificationToAdd.push(cde.subDomain);
+    diseaseToAdd.push(cde.subDomain);
     subDomainToAdd.push(cde.subDomain);
 
-    classificationShared.classifyItem(newCde, "NINDS", classificationToAdd);
-    classificationShared.addCategory({elements: nindsOrg.classifications}, classificationToAdd);
+    classificationShared.classifyItem(newCde, "NINDS", diseaseToAdd);
+    classificationShared.addCategory({elements: nindsOrg.classifications}, diseaseToAdd);
 
     classificationShared.classifyItem(newCde, "NINDS", subDomainToAdd);
     classificationShared.addCategory({elements: nindsOrg.classifications}, subDomainToAdd);
+
+    classificationShared.classifyItem(newCde, "NINDS", classificationToAdd);
+    classificationShared.addCategory({elements: nindsOrg.classifications}, classificationToAdd);
 
     var populationArray = cde.population.split(';');
     populationArray.forEach(function (p) {
@@ -348,6 +361,8 @@ function run() {
                                 var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
                                     if (err) throw err;
+                                    cdeCounter++;
+                                    console.log('cdeCounter: ' + cdeCounter);
                                     doneOneCde();
                                 });
                             } else if (existingCdes.length === 1) {
