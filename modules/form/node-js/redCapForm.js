@@ -26,7 +26,7 @@ function formatSkipLogic(text, map) {
     }
 }
 
-function getRedCap(form, i) {
+function getRedCap(form) {
     var loopFormElements = function (fe) {
         var instrumentResult = '';
         fe.formElements.forEach(function (e) {
@@ -48,8 +48,8 @@ function getRedCap(form, i) {
                     }).join('|'),
                     'Field Note': '',
                     'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
-                    'Text Validation Min': '',
-                    'Text Validation Max': '',
+                    'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
+                    'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
                     'Identifier?': '',
                     'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variable_map),
                     'Required Field?': q.required,
