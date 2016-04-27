@@ -6,6 +6,7 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+var cdeCounter = 0;
 var nindsOrg = null;
 var newline = '<br>';
 var today = new Date().toJSON();
@@ -353,6 +354,7 @@ function run() {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
                     async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
+                        cdeCounter++;
                         MigrationDataElementModel.find({'ids.id': cde.cdeId}, function (err, existingCdes) {
                             if (err) throw err;
                             if (existingCdes.length === 0) {
@@ -360,6 +362,7 @@ function run() {
                                 var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
                                     if (err) throw err;
+                                    console.log('cdeCounter: ' + cdeCounter);
                                     doneOneCde();
                                 });
                             } else if (existingCdes.length === 1) {
@@ -368,6 +371,7 @@ function run() {
                                     transferCde(existingCde, cde, ninds);
                                     existingCde.markModified("classification");
                                     existingCde.save(function () {
+                                        console.log('cdeCounter: ' + cdeCounter);
                                         doneOneCde();
                                     });
                                 }
