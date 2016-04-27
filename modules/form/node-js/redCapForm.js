@@ -1,3 +1,5 @@
+var exportShared = require('../../system/shared/exportShared');
+
 var label_variable_map = {};
 var field_type_map = {
     "Text": "text",
@@ -24,8 +26,9 @@ function formatSkipLogic(text, map) {
     }
 }
 
-function getRedCap(form, instrumentResult) {
-    function loopFormElements(fe) {
+function getRedCap(form, i) {
+    var loopFormElements = function (fe) {
+        var instrumentResult = '';
         fe.formElements.forEach(function (e) {
             if (e.elementType === 'question') {
                 var q = e.question;
@@ -55,7 +58,7 @@ function getRedCap(form, instrumentResult) {
                     'Matrix Group Name': '',
                     'Matrix Ranking?': ''
                 };
-                instrumentResult += exports.convertToCsv(questionRow) + '\n';
+                instrumentResult += exportShared.convertToCsv(questionRow);
             }
             else if (e.elementType === 'section') {
                 var sectionSkipLogic;
@@ -64,38 +67,40 @@ function getRedCap(form, instrumentResult) {
                 var sectionVariableName = 'nlmcde_' + '@TODO' + '_' + form.version;
                 label_variable_map[e.label] = sectionVariableName;
                 var sectionRow = {
-                        'Variable / Field Name': sectionVariableName,
-                        'Form Name': form.naming[0].designation,
-                        'Section Header': '',
-                        'Field Type': '',
-                        'Field Label': e.label,
-                        'Choices, Calculations, OR Slider Labels': '',
-                        'Field Note': '',
-                        'Text Validation Type OR Show Slider Number': '',
-                        'Text Validation Min': '',
-                        'Text Validation Max': '',
-                        'Identifier?': '',
-                        'Branching Logic (Show field only if...)': formatSkipLogic(sectionSkipLogic, label_variable_map),
-                        'Required Field?': '',
-                        'Custom Alignment': '',
-                        'Question Number (surveys only)': '',
-                        'Matrix Group Name': '',
-                        'Matrix Ranking?': ''
-                    }
-                    ;
-                instrumentResult += exports.convertToCsv(sectionRow) + '\n';
+                    'Variable / Field Name': sectionVariableName,
+                    'Form Name': form.naming[0].designation,
+                    'Section Header': '',
+                    'Field Type': '',
+                    'Field Label': e.label,
+                    'Choices, Calculations, OR Slider Labels': '',
+                    'Field Note': '',
+                    'Text Validation Type OR Show Slider Number': '',
+                    'Text Validation Min': '',
+                    'Text Validation Max': '',
+                    'Identifier?': '',
+                    'Branching Logic (Show field only if...)': formatSkipLogic(sectionSkipLogic, label_variable_map),
+                    'Required Field?': '',
+                    'Custom Alignment': '',
+                    'Question Number (surveys only)': '',
+                    'Matrix Group Name': '',
+                    'Matrix Ranking?': ''
+                };
+                instrumentResult += exportShared.convertToCsv(sectionRow);
+                instrumentResult += loopFormElements(e);
             }
             else {
                 console.log('unknown elementType');
             }
         });
-    }
+        return instrumentResult;
+    };
 
     return loopFormElements(form);
 }
 
 exports.formToRedCap = function (form) {
-    var instrumentResult = 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,Choices Calculations OR Slider Labels,Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?\n';
-    getRedCap(form, instrumentResult);
-    return instrumentResult;
+    if (form.toObject()) form = form.toObject();
+    var redCapHeader = 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,Choices Calculations OR Slider Labels,Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?\n';
+    var instrumentResult = getRedCap(form);
+    return redCapHeader + instrumentResult;
 };
