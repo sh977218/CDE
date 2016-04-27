@@ -294,7 +294,7 @@ function createCde(cde, ninds) {
         subDomainToAdd.push(ninds.get('subDiseaseName'));
     }
 
-    classificationToAdd.push('classification');
+    classificationToAdd.push('Classification');
     classificationToAdd.push(cde.classification);
 
     diseaseToAdd.push('Domain');

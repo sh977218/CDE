@@ -37,7 +37,7 @@ function checkExistingReferenceDocuments(existingReferenceDocuments, ninds) {
     });
     if (!existReferenceDocument && downloadLink && downloadLink.length > 0) {
         var newReferenceDocument = {
-            uri: (downloadLink.indexOf('http://') != -1 || downloadLink.indexOf('https://') != -1) ? downloadLink : ''
+            uri: (downloadLink.indexOf('http://') !== -1 || downloadLink.indexOf('https://') !== -1) ? downloadLink : ''
         };
         existingReferenceDocuments.push(newReferenceDocument);
         console.log('added new reference document: ' + ninds.get('formId'));
@@ -55,7 +55,7 @@ function mergeIntoForm(ninds, existingForm) {
     checkExistingReferenceDocuments(existingReferenceDocuments, ninds);
 
     existingForm.updated = importDate;
-    classificationShared.transferClassifications(createForm(ninds), existingForm)
+    classificationShared.transferClassifications(createForm(ninds), existingForm);
 }
 
 function createForm(ninds) {
@@ -82,7 +82,7 @@ function createForm(ninds) {
 
     var referenceDocuments = [];
     var referenceDocument = {
-        uri: (ninds.get('downloadLink').indexOf('http://') != -1 || ninds.get('downloadLink').indexOf('https://') != -1) ? ninds.get('downloadLink') : ''
+        uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : ''
     };
     if (referenceDocument.uri.length > 0) {
         referenceDocuments.push(referenceDocument);
@@ -93,10 +93,16 @@ function createForm(ninds) {
         elements: [{
             "name": ninds.get('domainName'),
             "elements": []
-        }
-        ]
+        }]
     };
-    if (ninds.get('domainName') != ninds.get('subDomainName')) {
+    var classificationInDisease = {
+        "name": "Classification",
+        elements: [{
+            "name": ninds.get('classification'),
+            "elements": []
+        }]
+    };
+    if (ninds.get('domainName') !== ninds.get('subDomainName')) {
         domainSubDomain.elements[0].elements.push({
             "name": ninds.get('subDomainName'),
             "elements": []
@@ -223,12 +229,12 @@ function run() {
                             throw err;
                         }
                         stream.resume();
-                    })
+                    });
                 } else {
-                    console.log(existingForms.length + ' forms found, ids.id:' + form.formId);
+                    console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
                     process.exit(1);
                 }
-            })
+            });
         });
 
         stream.on('end', function (err) {
@@ -236,7 +242,7 @@ function run() {
             console.log('finished');
             process.exit(0);
         });
-    })
+    });
 }
 
 run();
