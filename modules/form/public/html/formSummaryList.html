@@ -10,7 +10,7 @@
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <a href tabindex="0" class="nonLinkAnchor" ng-if="formQuickBoard.canAddElt(elt)"
-               ng-click="interruptEvent($event); formQuickBoard.add(elt)">
+               ng-click="formQuickBoard.add(elt)">
                 <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                    role="link"></i></a>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
