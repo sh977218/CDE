@@ -98,29 +98,23 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
                     if (error) {
                         console.log("error creating index. " + error);
                     } else {
-                        //esClient.cluster.health({index: indexName, waitForStatus: "green", timeout: "10s"}, function(err) {
-                        //     if (err) {
-                        //         console.log("Unable to confirm that index was created - " + err);
-                        //     } else {
-                                 console.log("index Created");
-                                 var startTime = new Date().getTime();
-                                 var indexType = Object.keys(indexMapping.mappings)[0];
-                                 // start re-index all
-                                 var injector = new EsInjector(esClient, indexName, indexType);
-                                 var stream = dao.getStream({archived: null});
-                                 stream.on('data', function(elt) {
-                                     stream.pause();
-                                     injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
-                                         stream.resume();
-                                     });
-                                 });
-                                 stream.on('end', function() {
-                                     injector.inject(function() {
-                                         console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-                                     });
-                                 });
-                        //     }
-                        //});
+                         console.log("index Created");
+                         var startTime = new Date().getTime();
+                         var indexType = Object.keys(indexMapping.mappings)[0];
+                         // start re-index all
+                         var injector = new EsInjector(esClient, indexName, indexType);
+                         var stream = dao.getStream({archived: null});
+                         stream.on('data', function(elt) {
+                             stream.pause();
+                             injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
+                                 stream.resume();
+                             });
+                         });
+                         stream.on('end', function() {
+                             injector.inject(function() {
+                                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                             });
+                         });
                     }
                 });
         }

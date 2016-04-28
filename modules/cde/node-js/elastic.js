@@ -13,11 +13,14 @@ var esClient = new elasticsearch.Client({
 exports.updateOrInsert = function(elt) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
+        delete doc._id;
         esClient.index({
             index: config.elastic.index.name,
             type: "dataelement",
             id: doc.tinyId,
             body: doc
+        }, function (err) {
+            if (err) console.log("Error Re-indexing Document: " + err);
         });
     }
 };
