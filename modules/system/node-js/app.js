@@ -153,20 +153,53 @@ exports.init = function(app) {
         res.render("loginText", "system", {csrftoken: token});
     });
 
+    // TODO do 3 fails instead of 1 fail
+    var failedIps = [];
+
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
-        res.send(req.csrfToken());
+        var resp = {csrf: req.csrfToken()};
+        var failedIpIndex = failedIps.indexOf(getRealIp(req));
+        if (failedIpIndex > -1) {
+            console.log("showCaptcha");
+            resp.showCaptcha = true;
+        }
+        res.send(resp);
     });
 
     app.post('/login', csrf(), function(req, res, next) {
+        var failedIpIndex = failedIps.indexOf(getRealIp(req));
+        console.log(failedIps);
+        if (failedIpIndex > -1) {
+            if (req.body.reCaptcha) {
+                // TODO put secret in config
+                request.post("https://www.google.com/recaptcha/api/siteverify",
+                    {form: {
+                        secret: "",
+                        response: req.body['g-recaptcha-response'],
+                        remoteip: getRealIp(req)
+                    }}, function(err, resp, body) {
+                        if (!body.success) {
+                            return res.status(403).send("incorrect recaptcha");
+                        }
+                    });
+            } else {
+                return res.status(403).send("missing re-captcha");
+            }
+        }
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function() {
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
-                if (!user) { 
+                if (!user) {
+                    failedIps.unshift(getRealIp(req));
+                    failedIps.length = 50;
                     return res.status(403).send();
                 }
                 req.logIn(user, function(err) {
+                    if (failedIpIndex > -1) {
+                        failedIps.splice(failedIpIndex, 1);
+                    }
                     if (err) { return res.status(403).end(); }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");

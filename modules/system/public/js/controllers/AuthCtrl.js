@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location',
+angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
+    ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location',
     function($scope, Auth, $window, $http, LoginRedirect, $location)
 {
 
@@ -6,7 +7,8 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
         delete $scope.csrf;
 
         $http.get('/csrf').then(function (res) {
-            $scope.csrf = res.data;
+            $scope.csrf = res.data.csrf;
+            $scope.showCaptcha = res.data.showCaptcha;
         });
 
     };
@@ -14,9 +16,14 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
     $scope.getCsrf();
 
     $scope.login = function () {
+        var recaptcha;
+        try {
+            recaptcha = grecaptcha.getResponse(); // jshint ignore:line
+        } catch (e) {}
         Auth.login({
                 username: $scope.username,
                 password: $scope.password,
+                reCaptcha: recaptcha,
                 _csrf: $scope.csrf
             },
             function (res) {
@@ -44,7 +51,7 @@ angular.module('systemModule').controller('AuthCtrl', ['$scope', 'Auth', '$windo
         $http.post("/logout", {}).then(function() {
             $window.location.href = "/login";
         });
-    }
+    };
 
 }
 ]);
