@@ -1,10 +1,9 @@
 if (typeof(exports) === "undefined") exports = {};
 
 exports.exportHeader = {
-    cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n"
+    cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n",
+    redCapHeader: 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation\n'
 };
-
-exports.redCapHeader = "Variable / Field Name,Form Name,Section Header,Field Type,Field Label,Choices, Calculations, OR Slider Labels,Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation";
 
 
 exports.getCdeCsvHeader = function (settings) {
@@ -129,7 +128,7 @@ exports.convertToCsv = function (ele) {
             row += value.map(function (value) {
                 return sanitize(value);
             }).join("; ");
-        } else if (value) {
+        } else if (value !== undefined) {
             row += sanitize(value);
         }
         row += "\",";

@@ -1,6 +1,7 @@
 var exportShared = require('../../system/shared/exportShared');
 
-var label_variable_map = {};
+var existingVariables = {};
+var label_variables_map = {};
 var field_type_map = {
     "Text": "text",
     "Value List": "radio",
@@ -27,20 +28,35 @@ function formatSkipLogic(text, map) {
 }
 
 function getRedCap(form) {
+    var instrumentResult = '';
     var loopFormElements = function (fe) {
-        var instrumentResult = '';
-        fe.formElements.forEach(function (e) {
+        var sectionHeader = '';
+        if (fe.elementType === 'section') {
+            sectionHeader = fe.label;
+            if (fe.formElements.length === 0) throw "Red Cap cannot support empty section";
+        }
+        fe.formElements.forEach(function (e, i) {
             if (e.elementType === 'question') {
                 var q = e.question;
-                var questionSkipLogic;
+                var questionSkipLogic = '';
                 if (e.skipLogic)
                     questionSkipLogic = e.skipLogic.condition;
-                var questionVariableName = 'nlmcde_' + q.cde.tinyId.toLowerCase() + '_' + form.version;
-                label_variable_map[e.label] = questionVariableName;
+                var variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
+                if (existingVariables[variableName]) {
+                    var index = existingVariables[variableName];
+                    var newVariableName = variableName + "_" + index;
+                    existingVariables[variableName] = index++;
+                    existingVariables[newVariableName] = 1;
+                    label_variables_map[e.label] = variableName;
+                    variableName = newVariableName;
+                } else {
+                    existingVariables[variableName] = 1;
+                    label_variables_map[e.label] = variableName;
+                }
                 var questionRow = {
-                    'Variable / Field Name': questionVariableName,
+                    'Variable / Field Name': variableName,
                     'Form Name': form.naming[0].designation,
-                    'Section Header': '',
+                    'Section Header': i === 0 ? sectionHeader : '',
                     'Field Type': field_type_map[q.datatype],
                     'Field Label': e.label,
                     'Choices, Calculations, OR Slider Labels': q.answers.map(function (a) {
@@ -51,7 +67,7 @@ function getRedCap(form) {
                     'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
                     'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
                     'Identifier?': '',
-                    'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variable_map),
+                    'Branching Logic (Show field only if...)': formatSkipLogic(questionSkipLogic, label_variables_map),
                     'Required Field?': q.required,
                     'Custom Alignment': '',
                     'Question Number (surveys only)': '',
@@ -61,35 +77,10 @@ function getRedCap(form) {
                 instrumentResult += exportShared.convertToCsv(questionRow);
             }
             else if (e.elementType === 'section') {
-                var sectionSkipLogic;
-                if (e.skipLogic)
-                    sectionSkipLogic = e.skipLogic.condition;
-                var sectionVariableName = 'nlmcde_' + '@TODO' + '_' + form.version;
-                label_variable_map[e.label] = sectionVariableName;
-                var sectionRow = {
-                    'Variable / Field Name': sectionVariableName,
-                    'Form Name': form.naming[0].designation,
-                    'Section Header': '',
-                    'Field Type': '',
-                    'Field Label': e.label,
-                    'Choices, Calculations, OR Slider Labels': '',
-                    'Field Note': '',
-                    'Text Validation Type OR Show Slider Number': '',
-                    'Text Validation Min': '',
-                    'Text Validation Max': '',
-                    'Identifier?': '',
-                    'Branching Logic (Show field only if...)': formatSkipLogic(sectionSkipLogic, label_variable_map),
-                    'Required Field?': '',
-                    'Custom Alignment': '',
-                    'Question Number (surveys only)': '',
-                    'Matrix Group Name': '',
-                    'Matrix Ranking?': ''
-                };
-                instrumentResult += exportShared.convertToCsv(sectionRow);
-                instrumentResult += loopFormElements(e);
+                loopFormElements(e);
             }
             else {
-                console.log('unknown elementType');
+                throw "unknown elementType";
             }
         });
         return instrumentResult;
@@ -101,5 +92,5 @@ function getRedCap(form) {
 exports.formToRedCap = function (form) {
     if (form.toObject()) form = form.toObject();
     var instrumentResult = getRedCap(form);
-    return exportShared.redCapHeader + instrumentResult;
+    return exportShared.exportHeader.redCapHeader + instrumentResult;
 };
