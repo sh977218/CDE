@@ -47,8 +47,7 @@ var mltConf = {
         "valueDomain.permissibleValues.permissibleValue",
         "valueDomain.permissibleValues.valueMeaningName",
         "valueDomain.permissibleValues.valueMeaningCode",
-        "property.concepts.name",
-        "property.concepts.originId"
+        "property.concepts.name"
     ]
 };
 

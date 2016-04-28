@@ -371,8 +371,8 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/moreLikeCde/:cdeId', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.morelike(req.params.cdeId, function (result) {
+    app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.morelike(req.params.tinyId, function (result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
         });
