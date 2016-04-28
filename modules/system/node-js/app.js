@@ -154,12 +154,25 @@ exports.init = function(app) {
     });
 
     // TODO do 3 fails instead of 1 fail
+
+    function tupleSearch(array, target){
+        var l = array.length;
+        var i = 0;
+        while (i < l){
+            if (array[i][0] === target){
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     var failedIps = [];
 
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
         var resp = {csrf: req.csrfToken()};
-        var failedIpIndex = failedIps.indexOf(getRealIp(req));
+        var failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
         if (failedIpIndex > -1) {
             console.log("showCaptcha");
             resp.showCaptcha = true;
@@ -167,15 +180,35 @@ exports.init = function(app) {
         res.send(resp);
     });
 
+
     app.post('/login', csrf(), function(req, res, next) {
-        var failedIpIndex = failedIps.indexOf(getRealIp(req));
+        var failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
         console.log(failedIps);
-        if (failedIpIndex > -1) {
+        if ((failedIpIndex > -1) && (failedIps[failedIpIndex][1] <3)) {
+
+            /*IF YOU CAN'T FIGURE THIS OUT IN THE MORNING, CUT IT.
+
+            //THE GOAL HERE IS TO CREATE A BUNCH OF TUPLES, WHICH WILL KEEP TRACK OF HOW MANY TIMES THAT IP ADDRESS HAS FAILED
+
+
+            var newFailedIP = failedIps[tupleSearch(failedIps,(getRealIp(req)))];
+            failedIps.splice(failedIpIndex, 1);
+
+            newFailedIP[1] = (newFailedIP[1] + 1);
+            failedIps.unshift([newFailedIP[0],newFailedIP[1]]);
+
+
+             console.log(failedIps[tupleSearch(failedIps,newFailedIP[0])]);
+             console.log("ASSSSSSSSSSSSDFASDFADFSGAQEASDHTGBGRS%THDFGTHT0");
+            */
+        }
+        else if ((failedIpIndex > -1)) {
+
             if (req.body.reCaptcha) {
                 // TODO put secret in config
                 request.post("https://www.google.com/recaptcha/api/siteverify",
                     {form: {
-                        secret: "",
+                        secret: "", //Weird, it still worked without the secret (Or did it?)
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
@@ -187,12 +220,17 @@ exports.init = function(app) {
                 return res.status(403).send("missing re-captcha");
             }
         }
+
+
+
         // Regenerate is used so appscan won't complain
         req.session.regenerate(function() {
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) {
-                    failedIps.unshift(getRealIp(req));
+                    failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
+                    console.log(failedIps);
+                    failedIps.unshift([getRealIp(req),0]);
                     failedIps.length = 50;
                     return res.status(403).send();
                 }
