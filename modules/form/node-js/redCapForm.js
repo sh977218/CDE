@@ -30,10 +30,19 @@ function formatSkipLogic(text, map) {
 function getRedCap(form) {
     var instrumentResult = '';
     var loopFormElements = function (fe) {
+        var sectionsAsMatrix = form.displayProfiles[0].sectionsAsMatrix;
         var sectionHeader = '';
         if (fe.elementType === 'section') {
             sectionHeader = fe.label;
             if (fe.formElements.length === 0) throw "Red Cap cannot support empty section";
+        }
+        if (sectionsAsMatrix) {
+            var answers = JSON.stringify(fe.formElements[0].question.answers);
+            fe.formElements.forEach(function (e) {
+                if (answers !== JSON.stringify(e.question.answers) || e.question.answers.length === 0) {
+                    sectionsAsMatrix = false;
+                }
+            });
         }
         fe.formElements.forEach(function (e, i) {
             if (e.elementType === 'question') {
@@ -71,7 +80,7 @@ function getRedCap(form) {
                     'Required Field?': q.required,
                     'Custom Alignment': '',
                     'Question Number (surveys only)': '',
-                    'Matrix Group Name': '',
+                    'Matrix Group Name': sectionsAsMatrix ? sectionHeader : '',
                     'Matrix Ranking?': ''
                 };
                 instrumentResult += exportShared.convertToCsv(questionRow);
