@@ -161,7 +161,6 @@ exports.init = function(app) {
         var resp = {csrf: req.csrfToken()};
         var failedIpIndex = failedIps.indexOf(getRealIp(req));
         if (failedIpIndex > -1) {
-            console.log("showCaptcha");
             resp.showCaptcha = true;
         }
         res.send(resp);
@@ -175,7 +174,7 @@ exports.init = function(app) {
                 // TODO put secret in config
                 request.post("https://www.google.com/recaptcha/api/siteverify",
                     {form: {
-                        secret: "",
+                        secret: "6LdAmh4TAAAAAI21xMRb8ocrnSmmGJ0QaKM_jmMY",
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
