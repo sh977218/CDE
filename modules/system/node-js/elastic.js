@@ -4,11 +4,13 @@ var config = require('./parseConfig')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
+    , dbLogger = require('../../system/node-js/dbLogger.js')
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+
 exports.esClient = esClient;
 
 exports.removeElasticFields = function(elt) {
@@ -68,9 +70,12 @@ function EsInjector(esClient, indexName, documentType) {
         _esInjector.buffer = [];
         esClient.bulk(request, function (err) {
             if (err) {
-                console.log("Error in Bulk Request: " + err);
-                // TODO Remove
-                process.exit(1);
+                dbLogger.logError({
+                    message: "Unable to Index in bulk",
+                    origin: "system.elastic.inject",
+                    stack: err,
+                    details: ""
+                });
             } else {
                 console.log("ingested: " + request.body.length / 2);
             }

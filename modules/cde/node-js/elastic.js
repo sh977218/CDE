@@ -21,13 +21,12 @@ exports.updateOrInsert = function(elt) {
             body: doc
         }, function (err) {
             if (err) {
-                var message = {
+                dbLogger.logError({
                     message: "Unable to Re-Index document: " + doc.tinyId,
                     origin: "cde.elastic.updateOrInsert",
                     stack: err,
                     details: ""
-                };
-                dbLogger.logError(message);
+                });
             }
         });
     }
