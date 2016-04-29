@@ -26,35 +26,30 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                 csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             var blob = new Blob([csv], {type: "text/csv"});
-                            saveAs(blob, 'SearchExport.csv');
+                            saveAs(blob, 'SearchExport.csv');  // jshint ignore:line
                         });
                     },
                     'json': function (result) {
                         var blob = new Blob([result], {type: "application/json"});
-                        saveAs(blob, "SearchExport.json");
+                        saveAs(blob, "SearchExport.json");  // jshint ignore:line
                     },
                     'xml': function (result) {
-                        var zip = new JSZip();
+                        var zip = new JSZip();  // jshint ignore:line
                         JSON.parse(result).forEach(function (oneElt) {
-                            zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}))
+                            zip.file(oneElt.tinyId + ".xml", JXON.jsToString({element: oneElt}));  // jshint ignore:line
                         });
                         var content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_XML.zip");
+                        saveAs(content, "SearchExport_XML.zip");  // jshint ignore:line
                     },
                     'odm': function (result) {
-                        var zip = new JSZip();
+                        var zip = new JSZip();  // jshint ignore:line
                         JSON.parse(result).forEach(function (oneElt) {
                             exports.getFormOdm(oneElt, function (err, odmElt) {
-                                if (err) {
-                                    // @TODO
-                                }
-                                else {
-                                    zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));
-                                }
+                                if (!err) zip.file(oneElt.tinyId + ".xml", JXON.jsToString({ODM: odmElt}));  // jshint ignore:line
                             });
                         });
                         var content = zip.generate({type: "blob"});
-                        saveAs(content, "SearchExport_ODM.zip");
+                        saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
                     }
                 };
                 if (result) {
@@ -83,7 +78,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     var blob = new Blob([result], {
                         type: "text/csv"
                     });
-                    saveAs(blob, 'QuickBoardExport' + '.csv');
+                    saveAs(blob, 'QuickBoardExport' + '.csv'); // jshint ignore:line
                     $scope.addAlert("success", "Export downloaded.");
                     $scope.feedbackClass = ["fa-download"];
                 } else {

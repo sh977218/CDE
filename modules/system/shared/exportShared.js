@@ -82,7 +82,7 @@ exports.projectCdeForExport = function (ele, settings) {
     }
     if (settings.nbOfPVs) {
         if (ele.valueDomain.permissibleValues)
-            cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;
+            cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;  // jshint ignore:line
     }
     if (settings.uom) {
         cde.uom = ele.valueDomain.uom;

@@ -30,11 +30,11 @@ function formatSkipLogic(text, map) {
 function getRedCap(form) {
     var instrumentResult = '';
     var loopFormElements = function (fe) {
-        var sectionsAsMatrix = form.displayProfiles[0].sectionsAsMatrix;
+        var sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
         var sectionHeader = '';
         if (fe.elementType === 'section') {
             sectionHeader = fe.label;
-            if (fe.formElements.length === 0) throw "Red Cap cannot support empty section";
+            if (fe.formElements.length === 0) throw "REDCap cannot support empty section";
         }
         if (sectionsAsMatrix) {
             var answers = JSON.stringify(fe.formElements[0].question.answers);

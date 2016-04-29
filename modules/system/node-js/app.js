@@ -627,13 +627,13 @@ exports.init = function(app) {
     
     app.get('/triggerServerErrorExpress', function(req, res) {
         res.send("received");
-        trigger.error();
+        trigger.error(); // jshint ignore:line
     });   
     
     app.get('/triggerServerErrorMongoose', function(req, res) {
         mongo_data_system.orgByName("none", function () {
             res.send("received");
-            trigger.error();
+            trigger.error(); // jshint ignore:line
         });
     });   
     

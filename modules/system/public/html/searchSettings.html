@@ -107,6 +107,13 @@
             </div>
         </div>
     </div>
+
+    <div class="btn-group" data-toggle="buttons">
+        <label class="btn btn-default" ng-click="enableBeta(!$root.enableButton)"> <i class="fa fa-flask"></i> Enable Beta Features (resets on page refresh)</label>
+        <button class="btn" ng-class="{'btn-success':$root.enableBeta}" ng-click="enableBeta(true)" > On</button>
+        <button class="btn" ng-class="{'btn-danger':!$root.enableBeta}" ng-click="enableBeta(false)" > Off</button>
+    </div>
+
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
     <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i> Cancel</button>
     <button type="button" id="loadDefaultSettings" class="btn btn-info pull-right" ng-click="loadDefault()"><i class="fa fa-undo"></i> Load Default</button>

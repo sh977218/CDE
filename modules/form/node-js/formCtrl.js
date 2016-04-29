@@ -100,12 +100,13 @@ var getFormSdc = function (form, req, res) {
     res.send(sdc.formToSDC(form));
 };
 
+var exportWarnings = {
+    'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
+    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.'
+};
 var getFormRedCap = function (form, req, res) {
-    if (form.stewardOrg.name === 'PhenX') {
-        res.send('warning', 'You can download PhenX RedCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.');
-    }
-    if (form.stewardOrg.name === 'PROMIS / Neuro-QOL') {
-        res.send('warning', 'You can download PROMIS / Neuro-QOL RedCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.');
+    if (exportWarnings[form.stewardOrg.name]) {
+        res.send('warning', exportWarnings[form.stewardOrg.name]);
     }
 
     res.writeHead(200, {
