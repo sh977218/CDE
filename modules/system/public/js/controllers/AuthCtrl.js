@@ -33,10 +33,15 @@ angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
+
                 }
             },
-            function () {
-                $scope.addAlert("danger", "Failed to log in.");
+            function (err, statusCode) {
+                if (statusCode === 412) {
+                    $scope.addAlert("danger", "Please fill out the Captcha before login in.");
+                } else {
+                    $scope.addAlert("danger", "Failed to log in.");
+                }
                 $scope.getCsrf();
             });
     };

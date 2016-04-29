@@ -153,51 +153,65 @@ exports.init = function(app) {
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    // TODO do 3 fails instead of 1 fail
     var failedIps = [];
+    failedIps[0] = ["Placeholder", -1];
 
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
         var resp = {csrf: req.csrfToken()};
-        var failedIpIndex = failedIps.indexOf(getRealIp(req));
-        if (failedIpIndex > -1) {
+        var failedIp = findFailedIp(getRealIp(req));
+        if (failedIp && failedIp.nb > 2) {
             resp.showCaptcha = true;
         }
         res.send(resp);
     });
 
+    function findFailedIp(ip) {
+        return failedIps.filter(function(f) {
+            return f.ip === ip;
+        })[0];
+    }
+
     app.post('/login', csrf(), function(req, res, next) {
-        var failedIpIndex = failedIps.indexOf(getRealIp(req));
-        console.log(failedIps);
-        if (failedIpIndex > -1) {
+        var failedIp = findFailedIp(getRealIp(req));
+        var err;
+        if (failedIp && failedIp.nb > 2){
             if (req.body.reCaptcha) {
                 // TODO put secret in config
                 request.post("https://www.google.com/recaptcha/api/siteverify",
                     {form: {
-                        secret: "6LdAmh4TAAAAAI21xMRb8ocrnSmmGJ0QaKM_jmMY",
+                        secret: config.captchaCode, //Including the config.captchaCode screws up how the crsf tokens get sent in the even of a logout. That's the next problem I guess.
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
                         if (!body.success) {
-                            return res.status(403).send("incorrect recaptcha");
+                            err = "incorrect recaptcha";
                         }
                     });
             } else {
-                return res.status(403).send("missing re-captcha");
+                err = "missing re-captcha";
             }
         }
+
+        if (err) {
+            return res.status(412).send(err);
+        }
+
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function() {
+        req.session.regenerate(function() { //This is not used before every submit, which leads to problems. Figure out how it works.
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) {
-                    failedIps.unshift(getRealIp(req));
-                    failedIps.length = 50;
+                    if (failedIp) failedIp.nb++;
+                    else {
+                        failedIps.unshift({ip: getRealIp(req), nb: 1});
+                        failedIps.length = 50; // simon doesn't like because what if more than 50 people do this
+                    }
                     return res.status(403).send();
                 }
                 req.logIn(user, function(err) {
-                    if (failedIpIndex > -1) {
-                        failedIps.splice(failedIpIndex, 1);
+                    if (failedIp) {
+                        failedIp.nb = 0;
                     }
                     if (err) { return res.status(403).end(); }
                     req.session.passport = {user: req.user._id};
