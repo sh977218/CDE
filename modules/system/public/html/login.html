@@ -14,7 +14,7 @@
 
         <button ng-disabled="!csrf" class="btn btn-lg btn-primary btn-block" type="submit" id="login_button">Log In
          <!--For some reason, on Success, then log-out, this isn't getting it's CSRF token -->
-
+        <p ng-show="!csrf">WHERE'S THE CSRF!!!!!!!</p>
         </button>
         <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
             <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword"

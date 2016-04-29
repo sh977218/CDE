@@ -199,6 +199,7 @@ exports.init = function(app) {
 
     ///////////////////////////////
     var failedIps = [];
+    failedIps[0] = ["Placeholder", -1];
 
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
@@ -224,6 +225,8 @@ exports.init = function(app) {
         console.log("#####################################");
         console.log(tupleArray);
         console.log("#####################################");
+        console.log(resp);
+        console.log("#####################################");
 
 
         res.send(resp);
@@ -240,7 +243,7 @@ exports.init = function(app) {
                 request.post("https://www.google.com/recaptcha/api/siteverify",
 
                     {form: {
-                        secret: "",// config.captchaCode, //Including the config.captchaCode screws up how the crsf tokens get sent in the even of a logout. That's the next problem I guess.
+                        secret: config.captchaCode, //Including the config.captchaCode screws up how the crsf tokens get sent in the even of a logout. That's the next problem I guess.
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
@@ -256,8 +259,13 @@ exports.init = function(app) {
 
 
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function() {
+        req.session.regenerate(function() { //This is not used before every submit, which leads to problems. Figure out how it works.
+            console.log('\n\n' + "DID WE REGENERATE?"  + '\n\n');
+
             passport.authenticate('local', function(err, user) {
+                console.log(err);
+                console.log('\n\n\n\n' + "We are examining the Captcha to determine whether or not something or other:"  + '\n\n\n\n');
+
                 if (err) { return res.status(403).end(); }
                 if (!user) {
                   /*  failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
