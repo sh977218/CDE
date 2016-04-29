@@ -1,15 +1,20 @@
 var async = require('async'),
+    mongo_data = require('../../modules/system/node-js/mongo-data'),
     MigrationEyeGeneLoincModel = require('./../createConnection').MigrationEyeGeneLoincModel,
     MigrationEyeGeneAnswerListModel = require('./../createConnection').MigrationEyeGeneAnswerListModel,
     MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('./../createConnection').MigrationOrgModel
+    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
+    classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
 
 var cdeCounter = 0;
 var eyeGeneOrg = null;
-var newline = '<br>';
 var today = new Date().toJSON();
+
+var uom_datatype_map = {
+    'cm': 'number'
+};
 
 function createCde(eyeGene) {
     var naming = [{
@@ -21,97 +26,34 @@ function createCde(eyeGene) {
             acceptability: "preferred"
         }
     }];
-
     var ids = [{source: 'EyeGene', id: eyeGene.LOINC_NUM}];
-
-    var properties = [];
-    if (cde.previousTitle && cde.previousTitle.length > 0)
-        properties.push({key: 'NINDS Previous Title', value: cde.previousTitle});
-    if (cde.instruction && cde.instruction.length > 0)
-        properties.push({
-            key: 'NINDS Guidelines',
-            value: ninds.get('formId') + newline + cde.instruction + newline,
-            valueFormat: 'html'
-        });
-    if (cde.aliasesForVariableName && cde.aliasesForVariableName.length > 0 && cde.aliasesForVariableName !== 'Aliases for variable name not defined')
-        properties.push({
-            key: 'Aliases for Variable Name',
-            value: cde.aliasesForVariableName
-        });
-
-    var referenceDocuments = [];
-    if (removeNewline(cde.reference) && removeNewline(cde.reference).length > 0 && removeNewline(cde.reference) !== 'No references available')
-        referenceDocuments.push({
-            title: removeNewline(cde.reference),
-            uri: (cde.reference.indexOf('http://www.') !== -1 || cde.reference.indexOf('https://www.') !== -1) ? cde.reference : ''
-        });
-
-
-    var valueDomain = {
-        uom: cde.measurementType
-    };
-    var permissibleValues = [];
-    var pvsArray = cde.permissibleValue.split(';');
-    var pdsArray = cde.permissibleDescription.split(';');
-    if (pvsArray.length !== pdsArray.length) {
-        console.log('*******************permissibleValue and permissibleDescription do not match.');
-        console.log('*******************ninds:\n' + ninds);
-        console.log('*******************cde:\n' + cde);
-        //noinspection JSUnresolvedVariable
-        process.exit(1);
-    }
-    for (var i = 0; i < pvsArray.length; i++) {
-        if (pvsArray[i].length > 0)
-            permissibleValues.push({
-                permissibleValue: pvsArray[i],
-                valueMeaningName: pvsArray[i],
-                valueMeaningDefinition: pdsArray[i]
-            });
-    }
-    if (cde.dataType === 'Alphanumeric') {
-        if (cde.inputRestrictions === 'Free-Form Entry') {
-            valueDomain.datatypeText = {maxLength: Number(cde.size)};
-            valueDomain.datatype = 'Text';
-        } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
-            valueDomain.permissibleValues = permissibleValues;
-            valueDomain.datatype = 'Value List';
-        } else {
-            console.log('unknown cde.inputRestrictions found:' + cde.inputRestrictions);
-            console.log('*******************ninds:\n' + ninds);
-            console.log('*******************cde:\n' + cde);
-            //noinspection JSUnresolvedVariable
-            process.exit(1);
-        }
-    }
-    else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
-        valueDomain.datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
-        valueDomain.datatype = 'Number';
-    } else if (cde.dataType === 'Date or Date & Time') {
-        valueDomain.datatype = 'Date';
-    } else {
-        console.log('unknown cde.dataType found:' + cde.dataType);
-        console.log('*******************ninds:\n' + ninds);
-        console.log('*******************cde:\n' + cde);
-        //noinspection JSUnresolvedVariable
-        process.exit(1);
-    }
-
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
-        stewardOrg: {name: "NINDS"},
+        stewardOrg: {name: "EyeGene"},
         createdBy: {username: 'batchloader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
-        source: 'NINDS',
-        version: Number(cde.versionNum).toString(),
+        source: 'EyeGene',
         naming: naming,
-        referenceDocuments: referenceDocuments,
         ids: ids,
-        properties: properties,
-        valueDomain: valueDomain,
         classification: []
     };
+    var componentToAdd = ['COMPONENT'];
+    var componentArray = eyeGene.COMPONENT.split('^');
+    componentArray.forEach(function (component) {
+        componentToAdd.push(component);
+    });
+    classificationShared.classifyItem(newCde, "EyeGene", componentToAdd);
+    classificationShared.addCategory({elements: eyeGeneOrg.classifications}, componentToAdd);
+    var classificationToAdd = ['Classification'];
+    var classificationArray = eyeGene.CLASS.split('^');
+    classificationArray.forEach(function (classification) {
+        classificationToAdd.push(classification);
+    });
+    classificationShared.classifyItem(newCde, "EyeGene", classificationToAdd);
+    classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
+
     return newCde;
 }
 function run() {
@@ -121,7 +63,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: 'NINDS'}).save(function (e) {
+                    new MigrationOrgModel({name: 'EyeGene'}).save(function (e) {
                         if (e) throw e;
                         cb();
                     });
@@ -142,12 +84,47 @@ function run() {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
                         var newCde = createCde(eyeGene);
-                        var newCdeObj = new MigrationDataElementModel(newCde);
-                        newCdeObj.save(function (err) {
-                            if (err) throw err;
-                            cdeCounter++;
-                            console.log('cdeCounter: ' + cdeCounter);
-                        });
+                        var valueDomain = {};
+                        if (eyeGene.AnswerListId.length === 0) {
+                            valueDomain.uom = eyeGene.EXAMPLE_UNITS;
+                            valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
+                        } else {
+                            valueDomain.uom = eyeGene.EXAMPLE_UNITS;
+                            valueDomain.datatype = 'Value List';
+                            MigrationEyeGeneAnswerListModel.find({AnswerListId: eyeGene.AnswerListId}).sort({Sequence: 1}).exec(function (err, existingAnswerLists) {
+                                if (err) throw err;
+                                if (existingAnswerLists && existingAnswerLists.length === 0) {
+                                    console.log('cannot find answer list of ' + eyeGene.AnswerListId);
+                                    var newCdeObj = new MigrationDataElementModel(newCde);
+                                    newCdeObj.save(function (err) {
+                                        if (err) throw err;
+                                        cdeCounter++;
+                                        console.log('cdeCounter: ' + cdeCounter);
+                                        stream.resume();
+                                    });
+                                } else if (existingAnswerLists && existingAnswerLists.length > 0) {
+                                    valueDomain.permissibleValues = [];
+                                    existingAnswerLists.forEach(function (existingAnswerList) {
+                                        valueDomain.permissibleValues.push({
+                                            permissibleValue: existingAnswerList.AnswerString,
+                                            valueMeaningName: existingAnswerList.AnswerString,
+                                            valueMeaningDefinition: ''
+                                        });
+                                    });
+                                    newCde.valueDomain = valueDomain;
+                                    var newCdeObj = new MigrationDataElementModel(newCde);
+                                    newCdeObj.save(function (err) {
+                                        if (err) throw err;
+                                        cdeCounter++;
+                                        console.log('cdeCounter: ' + cdeCounter);
+                                        stream.resume();
+                                    });
+                                } else {
+                                    console.log('answer list error.');
+                                    process.exit(0);
+                                }
+                            });
+                        }
                     } else {
                         console.log('duplicated id: ' + eyeGene.LOINC_NUM);
                         process.exit(1);
