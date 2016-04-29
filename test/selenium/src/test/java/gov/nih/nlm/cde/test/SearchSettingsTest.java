@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.*;
 import org.testng.annotations.Test;
 
@@ -61,6 +62,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
     }
 
     @Test
+    @RecordVideo
     void loggedUserSetsFields() {
         mustBeLoggedInAs(tableViewUser_username, password);
         goToCdeSearch();
