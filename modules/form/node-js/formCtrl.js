@@ -99,26 +99,54 @@ var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     res.send(sdc.formToSDC(form));
 };
-
 var exportWarnings = {
     'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
-    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.'
+    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
+    'emptySection': 'REDCap cannot support empty section.',
+    'nestedSection': 'REDCap cannot support nested section.'
 };
+function loopForm(form, res) {
+    var insideSection = false;
+    var loopFormElements = function (fe, res) {
+        fe.formElements.forEach(function (e) {
+            if (e.elementType === 'section') {
+                if (insideSection === true) {
+                    res.status(500).send(exportWarnings['nestedSection']);
+                    return false;
+                }
+                insideSection = true;
+                if (e.formElements.length === 0) {
+                    res.status(500).send(exportWarnings['emptySection']);
+                    return false;
+                }
+                else {
+                    loopFormElements(e, res);
+                }
+                insideSection = false;
+            }
+        });
+        return true;
+    };
+    var result = loopFormElements(form, res);
+    return result;
+}
 var getFormRedCap = function (form, req, res) {
     if (exportWarnings[form.stewardOrg.name]) {
-        res.send('warning', exportWarnings[form.stewardOrg.name]);
+        res.status(500).send(exportWarnings[form.stewardOrg.name]);
     }
-
-    res.writeHead(200, {
-        'Content-Type': 'application/zip',
-        'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
-    });
-    var zip = Archiver('zip');
-    zip.append('NLM', {name: 'AuthorID.txt'})
-        .append(form.tinyId, {name: 'InstrumentID.txt'})
-        .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
-        .finalize();
-    zip.pipe(res);
+    var validatedRedCapForm = loopForm(form.toObject(), res);
+    if (validatedRedCapForm) {
+        res.writeHead(200, {
+            'Content-Type': 'application/zip',
+            'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
+        });
+        var zip = Archiver('zip');
+        zip.append('NLM', {name: 'AuthorID.txt'})
+            .append(form.tinyId, {name: 'InstrumentID.txt'})
+            .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
+            .finalize();
+        zip.pipe(res);
+    }
 };
 
 exports.priorForms = function (req, res) {

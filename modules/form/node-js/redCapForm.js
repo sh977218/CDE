@@ -34,7 +34,6 @@ function getRedCap(form) {
         var sectionHeader = '';
         if (fe.elementType === 'section') {
             sectionHeader = fe.label;
-            if (fe.formElements.length === 0) throw "REDCap cannot support empty section";
         }
         if (sectionsAsMatrix) {
             var answers = JSON.stringify(fe.formElements[0].question.answers);
