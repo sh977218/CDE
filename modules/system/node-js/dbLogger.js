@@ -117,8 +117,7 @@ exports.storeQuery = function(settings, callback) {
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
-    } else {
+    if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === "")) {
         StoredQueryModel.findOneAndUpdate(
             {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
             storedQuery,
@@ -149,7 +148,7 @@ exports.logError = function(message, callback) {
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: ");
-        callback(err); 
+        if (callback) callback(err);
     });
 };
 
@@ -187,8 +186,14 @@ exports.getLogs = function(inQuery, callback) {
 };
 
 exports.getServerErrors = function(params, callback) {
+    if (!params.limit) params.limit = 20;
+    if (!params.skip) params.skip = 0;
+    var filter = {};
+    if (params.excludeOrigin && params.excludeOrigin.length > 0) {
+        filter.origin = {$nin: params.excludeOrigin};
+    }
     LogErrorModel
-            .find()
+            .find(filter)
             .sort('-date')
             .skip(params.skip)
             .limit(params.limit)
@@ -224,7 +229,7 @@ exports.usageByDay = function(callback) {
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration
     LogModel.aggregate(
-        {$match: {date: {$exists: true}, date: {$gte: d}}}
+        {$match: {date: {$exists: true}, date: {$gte: d}}} // jshint ignore:line
         , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
         , function (err, result) {
             if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});
@@ -251,7 +256,7 @@ exports.saveFeedback = function(req, cb) {
         , body: report.note
     };
     mongo_data_system.siteadmins(function(err, users) {
-        email.emailUsers(emailContent, users, function(err) {
+        email.emailUsers(emailContent, users, function() {
         });
     });
 };

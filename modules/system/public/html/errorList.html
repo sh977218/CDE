@@ -1,5 +1,7 @@
-<input placeholder="loggerToExclude" title="loggerToExclude" type="text" ng-model="excludeFilterToAdd" size="80"/>
-<button class="btn btn-default fa fa-plus" ng-click="addExcludeFilter(excludeFilterToAdd)"> Add Exclude Filter {{excludeFilterToAdd}}</button>
+<form class="form-search">
+    <input placeholder="loggerToExclude" title="loggerToExclude" type="text" ng-model="excludeFilterToAdd" size="80"/>
+    <button class="btn btn-default fa fa-plus" ng-click="addExcludeFilter(excludeFilterToAdd)"> Add Exclude Filter </button>
+</form>
 
 Excluding: {{excludeFilters}}
 

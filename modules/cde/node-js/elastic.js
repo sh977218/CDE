@@ -20,7 +20,15 @@ exports.updateOrInsert = function(elt) {
             id: doc.tinyId,
             body: doc
         }, function (err) {
-            if (err) console.log("Error Re-indexing Document: " + err);
+            if (err) {
+                var message = {
+                    message: "Unable to Re-Index document: " + doc.tinyId,
+                    origin: "cde.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                };
+                dbLogger.logError(message);
+            }
         });
     }
 };
