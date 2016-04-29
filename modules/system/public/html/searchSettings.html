@@ -109,9 +109,10 @@
     </div>
 
     <div class="btn-group" data-toggle="buttons">
-        <label class="btn btn-default" ng-click="enableBeta(!$root.enableButton)"> <i class="fa fa-flask"></i> Enable Beta Features (resets on page refresh)</label>
-        <button class="btn" ng-class="{'btn-success':$root.enableBeta}" ng-click="enableBeta(true)" > On</button>
-        <button class="btn" ng-class="{'btn-danger':!$root.enableBeta}" ng-click="enableBeta(false)" > Off</button>
+        <button class="btn btn-default" ng-click="enableBeta(!$root.enableBeta)">
+            <i class="fa fa-flask"></i> Enable Beta Features (resets on page refresh)</button>
+        <button class="btn" ng-class="{'btn-success':$root.enableBeta}"> On</button>
+        <button class="btn" ng-class="{'btn-danger':!$root.enableBeta}"> Off</button>
     </div>
 
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
