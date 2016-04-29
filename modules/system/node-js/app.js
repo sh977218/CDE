@@ -158,6 +158,9 @@ exports.init = function(app) {
     function tupleSearch(array, target){
         var l = array.length;
         var i = 0;
+        if (l === 0){
+            return -1;
+        }
         while (i < l){
             if (array[i][0] === target){
                 return i;
@@ -167,48 +170,76 @@ exports.init = function(app) {
         return -1;
     }
 
+
+    ///////////////////////Playing around with tuples
+    var tupleArray = [];
+    var tupleA = ["A", 0];
+    tupleArray.unshift((tupleA));
+    var tupleB = ["B", 0];
+    tupleArray.unshift((tupleB));
+    var tupleC = ["C", 0];
+    tupleArray.unshift((tupleC));
+    var tupleD = ["D", 0];
+    tupleArray.unshift((tupleD));
+    console.log(tupleArray);
+    var indexOfA = tupleSearch(tupleArray, "A");
+    console.log(indexOfA);
+    console.log(tupleArray[indexOfA][1] +1 );
+    console.log("!!!!!!!!!!!!!!!");
+    tupleArray[indexOfA][1] = tupleArray[indexOfA][1] +1;
+    tupleArray[indexOfA][1] = tupleArray[indexOfA][1] +1;
+    tupleArray[indexOfA][1] = tupleArray[indexOfA][1] +1;
+    tupleArray[indexOfA][1] = tupleArray[indexOfA][1] +1;
+    var indexOfB = tupleSearch(tupleArray, "B");
+
+    tupleArray.splice(indexOfB, 1);
+
+
+    console.log(tupleArray);
+
+    ///////////////////////////////
     var failedIps = [];
 
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
         var resp = {csrf: req.csrfToken()};
-        var failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
+        var failedIpIndex = tupleSearch(failedIps,getRealIp(req));//failedIps.indexOf(getRealIp(req));
         if (failedIpIndex > -1) {
             console.log("showCaptcha");
             resp.showCaptcha = true;
         }
+        var isFound = tupleSearch(tupleArray, getRealIp(req));
+        if (isFound > -1){
+            var newCount = tupleArray[isFound][1];
+            console.log("Mr. Brown");
+            console.log(newCount);
+            newCount = newCount + 1;
+            tupleArray[isFound] = [getRealIp(req), newCount];
+        }
+        else{
+            console.log("Mr. Pink");
+            tupleArray.unshift([getRealIp(req),0]);
+
+        }
+        console.log("#####################################");
+        console.log(tupleArray);
+        console.log("#####################################");
+
+
         res.send(resp);
     });
 
 
     app.post('/login', csrf(), function(req, res, next) {
-        var failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
+        var failedIpIndex = tupleSearch(failedIps,getRealIp(req));// failedIps.indexOf(getRealIp(req));
         console.log(failedIps);
-        if ((failedIpIndex > -1) && (failedIps[failedIpIndex][1] <3)) {
-
-            /*IF YOU CAN'T FIGURE THIS OUT IN THE MORNING, CUT IT.
-
-            //THE GOAL HERE IS TO CREATE A BUNCH OF TUPLES, WHICH WILL KEEP TRACK OF HOW MANY TIMES THAT IP ADDRESS HAS FAILED
-
-
-            var newFailedIP = failedIps[tupleSearch(failedIps,(getRealIp(req)))];
-            failedIps.splice(failedIpIndex, 1);
-
-            newFailedIP[1] = (newFailedIP[1] + 1);
-            failedIps.unshift([newFailedIP[0],newFailedIP[1]]);
-
-
-             console.log(failedIps[tupleSearch(failedIps,newFailedIP[0])]);
-             console.log("ASSSSSSSSSSSSDFASDFADFSGAQEASDHTGBGRS%THDFGTHT0");
-            */
-        }
-        else if ((failedIpIndex > -1)) {
+        if (failedIpIndex > -1){
 
             if (req.body.reCaptcha) {
                 // TODO put secret in config
                 request.post("https://www.google.com/recaptcha/api/siteverify",
                     {form: {
-                        secret: "", //Weird, it still worked without the secret (Or did it?)
+                        secret: config.captchaCode, //Weird, it still worked without the secret (Or did it?)
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
@@ -228,11 +259,17 @@ exports.init = function(app) {
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) {
-                    failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
+                  /*  failedIpIndex = tupleSearch(failedIps,(getRealIp(req)));//failedIps.indexOf(getRealIp(req));
                     console.log(failedIps);
                     failedIps.unshift([getRealIp(req),0]);
                     failedIps.length = 50;
+                    return res.status(403).send();*/
+                    failedIps.unshift([getRealIp(req),0]);
+                    failedIps.length = 50;
+
                     return res.status(403).send();
+
+
                 }
                 req.logIn(user, function(err) {
                     if (failedIpIndex > -1) {

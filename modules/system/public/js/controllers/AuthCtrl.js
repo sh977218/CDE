@@ -19,6 +19,8 @@ angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
         var recaptcha;
         try {
             recaptcha = grecaptcha.getResponse(); // jshint ignore:line
+
+
         } catch (e) {}
         Auth.login({
                 username: $scope.username,
@@ -33,6 +35,7 @@ angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
                 } else {
                     $scope.addAlert("danger", res.data);
                     $scope.getCsrf();
+
                 }
             },
             function () {
