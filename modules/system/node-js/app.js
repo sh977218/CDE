@@ -238,8 +238,9 @@ exports.init = function(app) {
             if (req.body.reCaptcha) {
                 // TODO put secret in config
                 request.post("https://www.google.com/recaptcha/api/siteverify",
+
                     {form: {
-                        secret: config.captchaCode, //Weird, it still worked without the secret (Or did it?)
+                        secret: "",// config.captchaCode, //Including the config.captchaCode screws up how the crsf tokens get sent in the even of a logout. That's the next problem I guess.
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
