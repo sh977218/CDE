@@ -24,6 +24,15 @@ exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose
     strict: false,
     collection: 'ninds'
 }));
+exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'EyeGENE_LOINC'
+}));
+exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'EyeGENE_AnswerList'
+}));
+
 exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
 exports.MigrationFormModel = migrationConn.model('MigrationForm', form_schemas.formSchema);
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
