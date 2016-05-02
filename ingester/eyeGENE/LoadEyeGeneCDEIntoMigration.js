@@ -80,6 +80,7 @@ function run() {
             var stream = MigrationEyeGeneLoincModel.find({}).stream();
             stream.on('data', function (eyeGene) {
                 stream.pause();
+                if (eyeGene.toObject) eyeGene = eyeGene.toObject();
                 MigrationDataElementModel.find({'ids.id': eyeGene.LOINC_NUM}, function (err, existingCdes) {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
@@ -88,6 +89,7 @@ function run() {
                         if (eyeGene.AnswerListId.length === 0) {
                             valueDomain.uom = eyeGene.EXAMPLE_UNITS;
                             valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
+                            stream.resume();
                         } else {
                             valueDomain.uom = eyeGene.EXAMPLE_UNITS;
                             valueDomain.datatype = 'Value List';
@@ -130,7 +132,6 @@ function run() {
                         process.exit(1);
                     }
                 });
-                stream.resume();
             });
 
             stream.on('end', function (err) {
