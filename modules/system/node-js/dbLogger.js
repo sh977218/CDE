@@ -148,7 +148,6 @@ exports.storeQuery = function(settings, callback) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
             function(err, theOne) {
                 if (theOne) {
-                    console.log("updating");
                     StoredQueryModel.findOneAndUpdate(
                             {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                             storedQuery,
