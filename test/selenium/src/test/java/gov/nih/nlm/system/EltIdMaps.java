@@ -41,7 +41,8 @@ public class EltIdMaps {
 
         // Forms
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
-
+        eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
 
     }
 
