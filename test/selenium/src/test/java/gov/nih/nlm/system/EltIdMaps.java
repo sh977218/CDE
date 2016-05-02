@@ -45,6 +45,7 @@ public class EltIdMaps {
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("Empty Section Form", "XyRAtkqsZ");
         eltMap.put("Section Inside Section Form", "QyQtcJcsW");
+        eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
 
     }
 
