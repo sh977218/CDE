@@ -1,6 +1,6 @@
-angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
-    ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location',
-    function($scope, Auth, $window, $http, LoginRedirect, $location)
+angular.module('systemModule').controller('AuthCtrl',
+    ['$scope', 'Auth', '$window', '$http', 'LoginRedirect', '$location', 'Alert',
+    function($scope, Auth, $window, $http, LoginRedirect, $location, Alert)
 {
 
     $scope.getCsrf = function () {
@@ -23,7 +23,7 @@ angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
         Auth.login({
                 username: $scope.username,
                 password: $scope.password,
-                reCaptcha: recaptcha,
+                recaptcha: recaptcha,
                 _csrf: $scope.csrf
             },
             function (res) {
@@ -31,22 +31,24 @@ angular.module('systemModule').controller('AuthCtrl', // jshint ignore:line
                     if (LoginRedirect.getPreviousRoute()) $window.location.href = LoginRedirect.getPreviousRoute();
                     else $window.location.href = "/";
                 } else {
-                    $scope.addAlert("danger", res.data);
+                    Alert.addAlert("danger", res.data);
                     $scope.getCsrf();
 
                 }
             },
             function (err, statusCode) {
                 if (statusCode === 412) {
-                    $scope.addAlert("danger", "Please fill out the Captcha before login in.");
+                    Alert.addAlert("danger", "Please fill out the Captcha before login in.");
                 } else {
-                    $scope.addAlert("danger", "Failed to log in.");
+                    Alert.addAlert("danger", "Failed to log in.");
                 }
                 $scope.getCsrf();
             });
     };
 
     $scope.oauthEnabled = window.oauthEnabled;
+    $scope.siteKey = window.siteKey;
+
 
     $scope.goToLogin = function () {
         LoginRedirect.storeRoute($location.$$url);

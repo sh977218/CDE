@@ -10,24 +10,18 @@ public class captchaTest extends NlmCdeBaseTest {
 
     @Test
     public void repeatFailure() {
-        goHome();
-		int i = 0;
+        mustBeLoggedOut();
 		try {
             findElement(By.linkText("Log In")).click();
         } catch (TimeoutException e) {
             logout();
             findElement(By.linkText("Log In")).click();
         }
+		int i = 0;
 		while (i <3){
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
 		i++;
 		}
         enterUsernamePasswordSubmit("bad-username", "bad-password", "Please fill out the Captcha before login in.");
-
-
-		
-
-		
     }
-
 }

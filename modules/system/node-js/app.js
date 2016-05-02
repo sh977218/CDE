@@ -154,7 +154,6 @@ exports.init = function(app) {
     });
 
     var failedIps = [];
-    failedIps[0] = ["Placeholder", -1];
 
     app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
@@ -176,11 +175,10 @@ exports.init = function(app) {
         var failedIp = findFailedIp(getRealIp(req));
         var err;
         if (failedIp && failedIp.nb > 2){
-            if (req.body.reCaptcha) {
-                // TODO put secret in config
+            if (req.body.recaptcha) {
                 request.post("https://www.google.com/recaptcha/api/siteverify",
                     {form: {
-                        secret: config.captchaCode, //Including the config.captchaCode screws up how the crsf tokens get sent in the even of a logout. That's the next problem I guess.
+                        secret: config.captchaCode,
                         response: req.body['g-recaptcha-response'],
                         remoteip: getRealIp(req)
                     }}, function(err, resp, body) {
@@ -189,7 +187,7 @@ exports.init = function(app) {
                         }
                     });
             } else {
-                err = "missing re-captcha";
+                err = "missing reCaptcha";
             }
         }
 
@@ -198,7 +196,7 @@ exports.init = function(app) {
         }
 
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function() { //This is not used before every submit, which leads to problems. Figure out how it works.
+        req.session.regenerate(function() {
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) {
