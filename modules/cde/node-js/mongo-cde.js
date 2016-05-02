@@ -31,6 +31,12 @@ schemas.dataElementSchema.pre('save', function(next) {
     next();
 });
 
+schemas.pinningBoardSchema.pre('save', function(next) {
+    var self = this;
+    elastic.boardUpdateOrInsert(self);
+    next();
+});
+
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
         callback(err, result > 0);

@@ -141,9 +141,13 @@ exports.createFormIndexJson = {
     }
 };
 
-
-var storedQueryRiverFunction =
-    "for (var i = 0; i < ctx.document.selectedElements1.length && i < 4; i++) {ctx.document['classifLevel' + i] = ctx.document.selectedElements1[i];} ctx.document.search_suggest = ctx.document.searchTerm";
+exports.storedQueryRiverFunction = function (elt) {
+    elt.selectedElements1.forEach(function (se, i) {
+        elt['classifLevel' + i] = se;
+    });
+    elt.search_suggest = elt.searchTerm;
+    return elt;
+};
 
 exports.riverFunction = function (elt) {
     if (elt.archived) return null;
@@ -274,29 +278,12 @@ exports.createStoredQueryIndexJson = {
                 , "searchTerm": {"type": "string", "analyzer": "stop"}
                 , "search_suggest": {
                     "type": "completion",
-                    "index_analyzer": "simple",
+                    "analyzer": "simple",
                     "search_analyzer": "simple",
                     "payloads": true
                 }
             }
         }
-    }
-};
-
-exports.createStoredQueryRiverJson = {
-    "type": "mongodb"
-    , "mongodb": {
-        "servers": config.database.servers
-        , "credentials": [
-            {"db": "admin", "user": config.database.local.username, "password": config.database.local.password}
-        ]
-        , "db": config.database.log.db
-        , "collection": "storedqueries"
-        , "script": storedQueryRiverFunction
-    }
-    , "index": {
-        "name": config.elastic.storedQueryIndex.name
-        , "type": "storedquery"
     }
 };
 
@@ -317,5 +304,13 @@ exports.indices = [
         name: "board",
         indexName: config.elastic.boardIndex.name,
         indexJson: exports.createBoardIndexJson
+    },
+    {
+        name: "storedQuery",
+        indexName: config.elastic.storedQueryIndex.name,
+        indexJson: exports.createStoredQueryIndexJson,
+        filter: exports.storedQueryRiverFunction
+
     }
 ];
+

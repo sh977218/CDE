@@ -22,8 +22,30 @@ exports.updateOrInsert = function(elt) {
         }, function (err) {
             if (err) {
                 dbLogger.logError({
-                    message: "Unable to Re-Index document: " + doc.tinyId,
+                    message: "Unable to Index document: " + doc.tinyId,
                     origin: "cde.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.boardUpdateOrInsert = function(elt) {
+    if (elt) {
+        var doc = elt.toObject();
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.boardIndex.name,
+            type: "board",
+            id: elt._id.toString(),
+            body: doc
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to index board: " + doc.tinyId,
+                    origin: "cde.elastic.boardUpdateOrInsert",
                     stack: err,
                     details: ""
                 });
@@ -40,7 +62,7 @@ exports.elasticsearch = function (user, settings, cb) {
         });
     }
     sharedElastic.elasticsearch(query, 'cde', function(err, result) {
-        if (result && result.length > 0) {
+        if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
         cb(err, result);

@@ -82,9 +82,6 @@ function EsInjector(esClient, indexName, documentType) {
             if (cb) {
                 cb();
             }
-                //logger.logStatus(err, res,
-                //    "Successfully injected to ElasticSearch. " + JSON.stringify(res),
-                //    "Error injecting to ElasticSearch!\n" + JSON.stringify(request));
         });
     };
 }
@@ -129,16 +126,14 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
 var daos = {
     "cde": require("../../cde/node-js/mongo-cde"),
     "form": require("../../form/node-js/mongo-form"),
-    "board": require("../../cde/node-js/mongo-cde").boardsDao
+    "board": require("../../cde/node-js/mongo-cde").boardsDao,
+    "storedQuery": require("./dbLogger").storedQueriesDao
 };
 
 exports.initEs = function () {
     esInit.indices.forEach(function(i) {
         createIndex(i.indexName, i.indexJson, daos[i.name], i.filter);
     });
-
-    // TODO
-    //createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
 };
 
 // pass index as defined in elasticSearchInit.indices
@@ -240,8 +235,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.sort = {"views": {order: "desc"}};
     }
 
-
-
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
@@ -338,8 +331,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 }
             }
         };
-
-        //queryStuff.aggregations.statuses.aggregations = {};
 
         var flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
             var flatClassifications = {
