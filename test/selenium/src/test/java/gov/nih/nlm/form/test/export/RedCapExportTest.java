@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.form.test.BaseFormTest;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -18,6 +19,6 @@ public class RedCapExportTest extends BaseFormTest {
         System.out.println("downloadFolder:" + downloadFolder);
         long aa = new File(downloadFolder + "Frontal Behavioral Inventory (FBI).zip").length();
         System.out.println("time:" + aa);
-        hangon(10);
+        Assert.assertEquals(aa, 111111111);
     }
 }
