@@ -36,10 +36,6 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
         }
-
-        //Object.keys($scope.srcOptions).forEach(function(k){
-        //    if ($scope.srcOptions[k].selected) lookupAsSource(k);
-        //})
     }
 
     var lookupAsSource = function(src) {
