@@ -18,6 +18,12 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         });
     });
 
+    $scope.$on('elementReloaded', function(){
+        Object.keys($scope.srcOptions).forEach(function(k){
+            if ($scope.srcOptions[k].selected) lookupAsSource(k);
+        });
+    });
+
 
     $scope.srcOptions = {};
     $scope.containsUMLS = false;
@@ -31,9 +37,9 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
             }
         }
 
-        Object.keys($scope.srcOptions).forEach(function(k){
-            if ($scope.srcOptions[k].selected) lookupAsSource(k);
-        })
+        //Object.keys($scope.srcOptions).forEach(function(k){
+        //    if ($scope.srcOptions[k].selected) lookupAsSource(k);
+        //})
     }
 
     var lookupAsSource = function(src) {
