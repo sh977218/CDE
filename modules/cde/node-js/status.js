@@ -4,7 +4,7 @@ var request = require('request')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
-    , logging = require('../../system/node-js/logging.js')
+    //, logging = require('../../system/node-js/logging.js')
 ;
 
 var status = this;
@@ -26,7 +26,7 @@ exports.assembleErrorMessage = function(statusReport) {
     if (!statusReport.elastic.up) return "ElasticSearch service is not responding. ES service might be not running.";
     if (!statusReport.elastic.results) return "ElasticSearch service is not returning any results. Index might be empty.";
     if (!statusReport.elastic.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
-    if (!statusReport.elastic.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
+    //if (!statusReport.elastic.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
     return "";
 };
 
@@ -70,7 +70,7 @@ status.checkElastic = function(elasticUrl, mongoCollection) {
             body = JSON.parse(bodyStr);  
             if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
             if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
-            if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);            
+            //if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
         } catch(e) {
             
         }
@@ -114,53 +114,6 @@ status.checkElasticSync = function(body, statusReport) {
                 }
             }
         );
-    });
-};
-
-status.checkElasticUpdating = function(body, statusReport, elasticUrl, mongoCollection) {
-    var stamp = Math.round((Math.random() * 100000000)).toString();
-
-    var fakeCde = {
-        stewardOrg: {name: "FAKE"}
-        , naming: [{
-            designation: "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g,"")
-            , definition: "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g,"")
-        }]
-        , registrationState: {registrationStatus: "Retired"}
-        , version: stamp
-    };
-
-    mongoCollection.upsertStatusCde(fakeCde, function() {
-        setTimeout(function() {
-            request.get(elasticUrl + "_search?q=" + "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,""),
-                function (error, response, bodyStr) {
-                var errorToLog = {
-                    origin: "cde.status.checkElasticUpdating"
-                    , stack: new Error().stack
-                    , details: {}
-                };
-                if (error || response.statusCode !== 200) {
-                    errorToLog.details = {bodyStr: bodyStr, error: error, nodeName: config.name};
-                    logging.errorLogger.error("Error in STATUS: Negative response from ElasticSearch", errorToLog);
-                }
-                var body = JSON.parse(bodyStr);
-                if (body.hits.hits.length <= 0) {
-                    statusReport.elastic.sync = false;
-                    errorToLog.details = {bodyStr: bodyStr, nodeName: config.name};
-                    logging.errorLogger.error("Error in STATUS: No data elements received from ElasticSearch", errorToLog);
-                } else {
-                    statusReport.elastic.updating = true;
-                    var elasticCde = body.hits.hits[0]._source;
-                    if (stamp !== elasticCde.version) {
-                        statusReport.elastic.updating = false;
-                        errorToLog.details = {elasticCde: elasticCde,  nodeName: config.name};
-                        logging.errorLogger.error("Error in STATUS: CDE do not match", errorToLog);
-                    } else {
-                        statusReport.elastic.updating = true;
-                    }
-                }
-            });
-        }, config.status.timeouts.dummyElementCheck);
     });
 };
 
