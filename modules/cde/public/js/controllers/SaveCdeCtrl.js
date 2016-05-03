@@ -21,15 +21,19 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
 
     $scope.srcOptions = {};
     $scope.containsUMLS = false;
-
+    $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
     function initSrcOptions() {
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
             if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
                 $scope.containsUMLS = true;
-                $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
+
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
         }
+
+        Object.keys($scope.srcOptions).forEach(function(k){
+            if ($scope.srcOptions[k].selected) lookupAsSource(k);
+        })
     }
 
     var lookupAsSource = function(src) {
@@ -125,6 +129,8 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
             $scope.stageElt($scope.elt);
             initSrcOptions();
             $scope.runManualValidation();
+
+
         });
     };
 
