@@ -14,6 +14,7 @@
             <th ng-if="searchViewSettings.tableViewFields.ids" class="ids">Identifiers</th>
             <th ng-if="searchViewSettings.tableViewFields.source" class="source">Source</th>
             <th ng-if="searchViewSettings.tableViewFields.updated" class="updated">Updated</th>
+            <th ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">NLM ID</th>
         </tr>
         </thead>
         <tbody>
@@ -67,6 +68,9 @@
                 </td>
                 <td ng-if="searchViewSettings.tableViewFields.updated" class="updated">
                     {{c.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                </td>
+                <td ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">
+                    {{c.tinyId}}
                 </td>
             </tr>
         </tbody>
