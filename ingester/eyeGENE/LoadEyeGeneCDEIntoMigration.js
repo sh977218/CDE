@@ -103,11 +103,12 @@ function run() {
                                     console.log('cannot find answer list of ' + eyeGene.AnswerListId);
                                 } else if (existingAnswerLists && existingAnswerLists.length > 0) {
                                     valueDomain.permissibleValues = [];
+                                    valueDomain.identifiers.push({source: 'LOINC', id: eyeGene.AnswerListId});
                                     existingAnswerLists.forEach(function (existingAnswerList) {
                                         valueDomain.permissibleValues.push({
-                                            permissibleValue: existingAnswerList.AnswerString,
                                             valueMeaningName: existingAnswerList.AnswerString,
-                                            valueMeaningDefinition: ''
+                                            permissibleValue: existingAnswerList.AnswerStringId,
+                                            codeSystemName: 'LOINC'
                                         });
                                     });
                                     newCde.valueDomain = valueDomain;

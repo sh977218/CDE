@@ -55,6 +55,7 @@ var deJsonSchema = {
     , property: {concepts: [conceptSchema]}
     , valueDomain: {
         name: String
+        , identifiers: [sharedSchemas.idSchema]
         , ids: [sharedSchemas.idSchema]
         , definition: String
         , uom: String
