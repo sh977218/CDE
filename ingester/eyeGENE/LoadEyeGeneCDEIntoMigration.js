@@ -85,25 +85,22 @@ function run() {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
                         var newCde = createCde(eyeGene);
-                        var valueDomain = {};
+                        var valueDomain = {uom: eyeGene.EXAMPLE_UNITS};
                         if (eyeGene.AnswerListId.length === 0) {
-                            valueDomain.uom = eyeGene.EXAMPLE_UNITS;
                             valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
-                            stream.resume();
+                            var newCdeObj = new MigrationDataElementModel(newCde);
+                            newCdeObj.save(function (err) {
+                                if (err) throw err;
+                                cdeCounter++;
+                                console.log('cdeCounter: ' + cdeCounter);
+                                stream.resume();
+                            });
                         } else {
-                            valueDomain.uom = eyeGene.EXAMPLE_UNITS;
                             valueDomain.datatype = 'Value List';
                             MigrationEyeGeneAnswerListModel.find({AnswerListId: eyeGene.AnswerListId}).sort({Sequence: 1}).exec(function (err, existingAnswerLists) {
                                 if (err) throw err;
                                 if (existingAnswerLists && existingAnswerLists.length === 0) {
                                     console.log('cannot find answer list of ' + eyeGene.AnswerListId);
-                                    var newCdeObj = new MigrationDataElementModel(newCde);
-                                    newCdeObj.save(function (err) {
-                                        if (err) throw err;
-                                        cdeCounter++;
-                                        console.log('cdeCounter: ' + cdeCounter);
-                                        stream.resume();
-                                    });
                                 } else if (existingAnswerLists && existingAnswerLists.length > 0) {
                                     valueDomain.permissibleValues = [];
                                     existingAnswerLists.forEach(function (existingAnswerList) {
@@ -114,17 +111,17 @@ function run() {
                                         });
                                     });
                                     newCde.valueDomain = valueDomain;
-                                    var newCdeObj = new MigrationDataElementModel(newCde);
-                                    newCdeObj.save(function (err) {
-                                        if (err) throw err;
-                                        cdeCounter++;
-                                        console.log('cdeCounter: ' + cdeCounter);
-                                        stream.resume();
-                                    });
                                 } else {
                                     console.log('answer list error.');
                                     process.exit(0);
                                 }
+                                var newCdeObj = new MigrationDataElementModel(newCde);
+                                newCdeObj.save(function (err) {
+                                    if (err) throw err;
+                                    cdeCounter++;
+                                    console.log('cdeCounter: ' + cdeCounter);
+                                    stream.resume();
+                                });
                             });
                         }
                     } else {
