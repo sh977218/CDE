@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,7 +13,9 @@ import static com.jayway.restassured.RestAssured.given;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class BoardExportTest extends BoardTest {
+
     @Test
+    @RecordVideo
     public void boardExport() {
         mustBeLoggedOut();
         loadDefaultSettings();

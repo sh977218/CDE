@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
-    
+
     @Test
     public void showGridViewInCdeQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
