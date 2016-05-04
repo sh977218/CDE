@@ -41,9 +41,6 @@ exports.getCdeCsvHeader = function(settings) {
     if (settings.updated) {
         cdeHeader += ", Updated";
     }
-    if (settings.tinyId) {
-        cdeHeader += ", NLM ID";
-    }
     cdeHeader += "\n";
     return cdeHeader;
 };
@@ -112,9 +109,6 @@ exports.projectCdeForExport = function (ele, settings) {
     }
     if (settings.updated) {
         cde.updated = ele.updated;
-    }
-    if (settings.tinyId) {
-        cde.tinyId = ele.tinyId;
     }
 
     return cde;

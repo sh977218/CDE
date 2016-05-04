@@ -27,8 +27,7 @@ angular.module('ElasticSearchResource')
                     "ids": true,
                     "source": false,
                     "updated": false,
-                    "numQuestions": true,
-                    "tinyId": false
+                    "numQuestions": true
                 }
             };
         };
