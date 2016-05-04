@@ -8,7 +8,6 @@ var gulp = require('gulp'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
-    request = require('request'),
     tar = require('tar'),
     zlib = require('zlib'),
     fs = require('fs'),
@@ -123,7 +122,7 @@ gulp.task('usemin', ['copyCode'], function() {
         });
 });
 
-gulp.task('es', elastic.recreateIndexes);
+gulp.task('es', elastic.deleteIndices);
 
 gulp.task('tarCode', function () {
     //var done = this.async();
