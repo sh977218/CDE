@@ -7,9 +7,8 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.recreateIndexes = function() {
+exports.recreateIndexes = function(cb) {
     esInit.indices.forEach(function(i) {
-        esClient.indices.delete({index: i.indexName}, function() {
-        });
+        esClient.indices.delete({index: i.indexName}, cb);
     });
 };

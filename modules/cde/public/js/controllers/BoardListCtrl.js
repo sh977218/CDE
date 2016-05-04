@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('BoardListCtrl', ['$scope', 'ElasticBoard', '$http', function ($scope, ElasticBoard, $http) {
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', 'ElasticBoard', '$http', function ($scope, ElasticBoard) {
     $scope.search = {name: ""};
     $scope.boards = [];
     $scope.reload = function () {
