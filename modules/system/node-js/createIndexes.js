@@ -1,12 +1,15 @@
 var config = require('./parseConfig')
-    , request = require('request')
+    , elasticsearch = require('elasticsearch')
+    , esInit = require('../../../deploy/elasticSearchInit')
     ;
 
-exports.recreateIndexes = function(){
+var esClient = new elasticsearch.Client({
+    hosts: config.elastic.hosts
+});
 
-    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
-        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
-                request.del(uri);
+exports.recreateIndexes = function() {
+    esInit.indices.forEach(function(i) {
+        esClient.indices.delete({index: i.indexName}, function() {
         });
-
+    });
 };
