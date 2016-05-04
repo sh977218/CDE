@@ -75,9 +75,9 @@ exports.init = function (app) {
         res.send(token);
     });
 
-    app.post('/reindex/:i', function (req, res) {
+    app.post('/reindex/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
-            elastic.reIndex(esInit.indices[req.params.i]);
+            elastic.reIndex(esInit.indices[req.params.indexPosition]);
             res.send();
         } else {
             res.status(401).send();
