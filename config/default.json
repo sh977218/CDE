@@ -226,4 +226,6 @@
     , "url": "https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz"
   }
   , "pmNodeProcess": "node"
+  , "captchaCode" : "Override actual here."
+  , "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV"
 }
