@@ -8,8 +8,9 @@ bower_components
 modules/system/views/version.html
 
 ## Secret Config Files
-config.js
-config/test.js
+config.json
+config/test.json
+config/simon.json
 views/version.html
 modules/system/public/html/version.html
 

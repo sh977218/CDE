@@ -12,7 +12,6 @@
             <th ng-if="searchViewSettings.tableViewFields.numQuestions" tabindex="0" class="numQuestions">Questions</th>
             <th ng-if="searchViewSettings.tableViewFields.source" tabindex="0" class="source">Source</th>
             <th ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">NLM ID</th>
-
         </tr>
         </thead>
         <tbody>
@@ -48,7 +47,7 @@
             <td ng-if="searchViewSettings.tableViewFields.source" class="source">
                 {{c.source}}
             </td>
-            <td ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">
+            <td ng-if="searchViewSettings.tableViewFields.tinyId">
                 {{c.tinyId}}
             </td>
         </tr>
