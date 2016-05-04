@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public abstract class RegStatusTest extends CommonTest {
-    
+
     public void cancelRegStatus(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
