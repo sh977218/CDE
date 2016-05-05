@@ -8,7 +8,6 @@ var cdesvc = require('./cdesvc')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
     , elastic = require('./elastic')
-    , helper = require('../../system/node-js/helper.js')
     , logging = require('../../system/node-js/logging.js')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , path = require('path')
@@ -16,7 +15,6 @@ var cdesvc = require('./cdesvc')
     , sdc = require("./sdc.js")
     , status = require('./status')
     , authorizationShared = require("../../system/shared/authorizationShared")
-    , async = require("async")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
@@ -26,7 +24,6 @@ var cdesvc = require('./cdesvc')
 
 
 exports.init = function (app, daoManager) {
-
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     daoManager.registerDao(mongo_data);
@@ -189,7 +186,7 @@ exports.init = function (app, daoManager) {
     app.post('/board', function (req, res) {
         var boardQuota = config.boardQuota || 50;
         var checkUnauthorizedPublishing = function (user, shareStatus) {
-            return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher")
+            return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
         };
         if (req.isAuthenticated()) {
             var board = req.body;
@@ -371,8 +368,8 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/moreLikeCde/:cdeId', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.morelike(req.params.cdeId, function (result) {
+    app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.morelike(req.params.tinyId, function (result) {
             result.cdes = cdesvc.hideProprietaryPvs(result.cdes, req.user);
             res.send(result);
         });
@@ -452,7 +449,9 @@ exports.init = function (app, daoManager) {
         req.params.type = "received";
         mongo_data.byId(req.body._id, function (err, cde) {
             if (err) res.status(404).send(err);
-            if (!cde.registrationState.administrativeStatus === "Retire Candidate") return res.status(409).send("CDE is not a Retire Candidate");
+            // TODO JSHint: Thanks, looks like we wanted this rule but messed it up. Do we want the rule?
+            //if (!cde.registrationState.administrativeStatus === "Retire Candidate")
+            //    return res.status(409).send("CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";
             delete cde.registrationState.administrativeStatus;
             cde.save(function () {
@@ -569,7 +568,7 @@ exports.init = function (app, daoManager) {
                 });
             }
             res.send(result);
-        })
+        });
     });
 
     app.get('/api/cde/modifiedElements', function(req, res){

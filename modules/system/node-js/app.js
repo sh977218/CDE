@@ -9,25 +9,26 @@ var passport = require('passport')
     , path = require('path')
     , classificationShared = require('../shared/classificationShared.js')
     , classificationNode = require('./classificationNode')
-    , adminItemSvc = require("./adminItemSvc")       
-    , auth = require( './authorization' )
+    , adminItemSvc = require("./adminItemSvc")
+    , auth = require('./authorization')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , request = require('request')
     , fs = require('fs')
-    , multer  = require('multer')
+    , multer = require('multer')
     , exportShared = require('../../system/shared/exportShared')
     , tar = require('tar-fs')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
-    , elastic = require('./createIndexes')
     , authorization = require('../../system/node-js/authorization')
-;
+    , esInit = require('../../../deploy/elasticSearchInit')
+    , elastic = require('./elastic.js')
+    ;
 
-exports.init = function(app) {
+exports.init = function (app) {
 
-    var getRealIp = function(req) {
+    var getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
@@ -37,18 +38,18 @@ exports.init = function(app) {
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function(path) {
-        app.get(path, function(req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
+        app.get(path, function (req, res) {
+            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
         });
     });
 
     var token = mongo_data_system.generateTinyId();
-    setInterval(function() {
+    setInterval(function () {
         token = mongo_data_system.generateTinyId();
     }, (config.pm.tokenInterval || 5) * 60 * 1000);
 
-    app.post('/deploy', multer(), function(req, res) {
+    app.post('/deploy', multer(), function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             if (!token) {
                 return res.status(500).send("No valid token");
@@ -70,34 +71,47 @@ exports.init = function(app) {
         }
     });
 
-    app.get('/statusToken', function(req, res) {
+    app.get('/statusToken', function (req, res) {
         res.send(token);
     });
 
-    app.get('/serverStatuses', function(req, res) {
+    app.post('/reindex/:indexPosition', function (req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            elastic.reIndex(esInit.indices[req.params.indexPosition]);
+            res.send();
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/serverStatuses', function (req, res) {
         if (app.isLocalIp(getRealIp(req))) {
-            mongo_data_system.getClusterHostStatuses(function(err, statuses) {
-                res.send(statuses);
+            mongo_data_system.getClusterHostStatuses(function (err, statuses) {
+                res.send({esIndices: esInit.indices, statuses: statuses});
             });
         } else {
             res.status(401).send();
         }
     });
-    
-    app.post('/serverState', function(req, res) {
+
+    app.post('/serverState', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             req.body.nodeStatus = "Stopped";
-            mongo_data_system.updateClusterHostStatus(req.body, function(err) {
-                if (err){
+            mongo_data_system.updateClusterHostStatus(req.body, function (err) {
+                if (err) {
                     res.status(500).send("Unable to update cluster status");
                 }
                 request.post('http://' + req.body.hostname + ':' + req.body.pmPort + '/' + req.body.action,
-                    {json: true,
+                    {
+                        json: true,
                         body: {
                             token: token,
                             port: req.body.port,
-                            requester: {host: config.hostname, port: config.port
-                            }}},
+                            requester: {
+                                host: config.hostname, port: config.port
+                            }
+                        }
+                    },
                     function (err, response) {
                         if (err) {
                             console.log("err: " + err);
@@ -115,70 +129,74 @@ exports.init = function(app) {
         }
     });
 
-    app.get("/supportedBrowsers", function(req, res) {
-       res.render('supportedBrowsers', 'system'); 
-    });
-    
-    app.get('/', function(req, res) {
-        res.render('index', 'system', {config: config, loggedIn: req.user?true:false});
+    app.get("/supportedBrowsers", function (req, res) {
+        res.render('supportedBrowsers', 'system');
     });
 
-    app.get('/gonowhere', function(req, res) {
+    app.get('/', function (req, res) {
+        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+    });
+
+    app.get('/gonowhere', function (req, res) {
         res.send("<html><body>Nothing here</body></html>");
     });
 
-    app.get('/listOrgs', exportShared.nocacheMiddleware, function(req, res) {
-        mongo_data_system.listOrgs(function(err, orgs) {
+    app.get('/listOrgs', exportShared.nocacheMiddleware, function (req, res) {
+        mongo_data_system.listOrgs(function (err, orgs) {
             if (err) {
                 res.send("ERROR");
             } else {
                 res.send(orgs);
-            }   
-        });        
+            }
+        });
     });
 
-    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function(req, res) {
-        mongo_data_system.listOrgsDetailedInfo(function(err, orgs) {
+    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, function (req, res) {
+        mongo_data_system.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}));
                 res.status(403).send('Failed to get list of orgs detailed info.');
             } else {
                 res.send(orgs);
-            }   
+            }
         });
     });
 
-    app.get('/loginText', csrf(), function(req, res) {
+    app.get('/loginText', csrf(), function (req, res) {
         var token = req.csrfToken();
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    app.get('/csrf', csrf(), function(req, res) {
+    app.get('/csrf', csrf(), function (req, res) {
         exportShared.nocacheMiddleware(req, res);
         res.send(req.csrfToken());
     });
 
-    app.post('/login', csrf(), function(req, res, next) {
+    app.post('/login', csrf(), function (req, res, next) {
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function() {
-            passport.authenticate('local', function(err, user) {
-                if (err) { return res.status(403).end(); }
-                if (!user) { 
+        req.session.regenerate(function () {
+            passport.authenticate('local', function (err, user) {
+                if (err) {
+                    return res.status(403).end();
+                }
+                if (!user) {
                     return res.status(403).send();
                 }
-                req.logIn(user, function(err) {
-                    if (err) { return res.status(403).end(); }
+                req.logIn(user, function (err) {
+                    if (err) {
+                        return res.status(403).end();
+                    }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
             })(req, res, next);
         });
     });
-    
-    app.post('/logout', function(req, res) {
+
+    app.post('/logout', function (req, res) {
         if (!req.session) {
             return res.status(403).end();
-        } 
+        }
         req.session.destroy(function () {
             req.logout();
             res.clearCookie('connect.sid');
@@ -187,18 +205,18 @@ exports.init = function(app) {
     });
 
     app.get('/nlmoauth/callback',
-        passport.authenticate('oauth2', { failureRedirect: '/login' }),
-        function(req, res) {
+        passport.authenticate('oauth2', {failureRedirect: '/login'}),
+        function (req, res) {
             // Successful authentication, redirect home.
             res.redirect('/');
         });
 
     app.get('/nlmoauth',
-        passport.authenticate('oauth2', { scope: 'personaldata' }));
+        passport.authenticate('oauth2', {scope: 'personaldata'}));
 
     app.post('/logs', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getLogs(req.body.query, function(err, result) {
+            dbLogger.getLogs(req.body.query, function (err, result) {
                 if (err) {
                     res.send({error: err});
                 } else {
@@ -209,22 +227,22 @@ exports.init = function(app) {
             res.status(401).send();
         }
     });
-    
-    app.get('/logUsageDailyReport', function(req, res) {
+
+    app.get('/logUsageDailyReport', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             dbLogger.usageByDay(function (result) {
                 res.send(result);
             });
         } else {
             res.status(401).send();
-        }        
+        }
     });
 
 
-    app.get('/org/:name', exportShared.nocacheMiddleware, function(req, res) {
-       return mongo_data_system.orgByName(req.params.name, function (result) {
-           res.send(result);
-       });
+    app.get('/org/:name', exportShared.nocacheMiddleware, function (req, res) {
+        return mongo_data_system.orgByName(req.params.name, function (result) {
+            res.send(result);
+        });
     });
 
     app.get('/usernamesByIp/:ip', function (req, res) {
@@ -234,25 +252,25 @@ exports.init = function(app) {
             });
         } else {
             res.status(401).send();
-        }         
+        }
     });
 
 
-    app.get('/siteadmins', function(req, res) {
+    app.get('/siteadmins', function (req, res) {
         if (app.isLocalIp(getRealIp(req))) {
-            mongo_data_system.siteadmins(function(err, users) {
+            mongo_data_system.siteadmins(function (err, users) {
                 res.send(users);
             });
         } else {
             res.status(401).send();
         }
-    }); 
+    });
 
-    app.get('/managedOrgs', function(req, res) {
+    app.get('/managedOrgs', function (req, res) {
         orgsvc.managedOrgs(req, res);
     });
 
-    app.post('/addOrg', function(req, res) {
+    app.post('/addOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             orgsvc.addOrg(req, res);
         } else {
@@ -260,15 +278,15 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/updateOrg', function(req, res) {
+    app.post('/updateOrg', function (req, res) {
         if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             orgsvc.updateOrg(req, res);
         } else {
             res.status(401).send();
         }
     });
-    
-    app.get('/user/me', exportShared.nocacheMiddleware, function(req, res) {
+
+    app.get('/user/me', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("Not logged in.");
         } else {
@@ -277,17 +295,17 @@ exports.init = function(app) {
             });
         }
     });
-    
-    app.post('/user/me', function(req, res) {
+
+    app.post('/user/me', function (req, res) {
         if (!req.user) {
             res.status(401).send();
         } else {
             if (req.user._id.toString() !== req.body._id) {
                 res.status(401).send();
             } else {
-                mongo_data_system.userById(req.user._id, function(err, user) {
+                mongo_data_system.userById(req.user._id, function (err, user) {
                     user.email = req.body.email;
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err) res.status(500).send("Unable to save");
                         res.send("OK");
                     });
@@ -296,7 +314,7 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/addSiteAdmin', function(req, res) {
+    app.post('/addSiteAdmin', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
         } else {
@@ -304,7 +322,7 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/removeSiteAdmin', function(req, res) {
+    app.post('/removeSiteAdmin', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.removeSiteAdmin(req, res);
         } else {
@@ -312,20 +330,20 @@ exports.init = function(app) {
         }
     });
 
-    app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function(req, res) {
+    app.get('/myOrgsAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.myOrgsAdmins(req, res);
     });
 
 
-    app.get('/orgAdmins', exportShared.nocacheMiddleware, function(req, res) {
+    app.get('/orgAdmins', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.orgAdmins(req, res);
     });
 
-    app.get('/orgCurators', exportShared.nocacheMiddleware, function(req, res) {
+    app.get('/orgCurators', exportShared.nocacheMiddleware, function (req, res) {
         usersrvc.orgCurators(req, res);
     });
 
-    app.post('/addOrgAdmin', function(req, res) {
+    app.post('/addOrgAdmin', function (req, res) {
         if (req.isAuthenticated() &&
             (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgAdmin(req, res);
@@ -334,7 +352,7 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/removeOrgAdmin', function(req, res) {
+    app.post('/removeOrgAdmin', function (req, res) {
         if (req.isAuthenticated() &&
             (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
             usersrvc.removeOrgAdmin(req, res);
@@ -343,7 +361,7 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/addOrgCurator', function(req, res) {
+    app.post('/addOrgCurator', function (req, res) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
             usersrvc.addOrgCurator(req, res);
         } else {
@@ -351,7 +369,7 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/removeOrgCurator', function(req, res) {
+    app.post('/removeOrgCurator', function (req, res) {
         if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
             usersrvc.removeOrgCurator(req, res);
         } else {
@@ -360,7 +378,7 @@ exports.init = function(app) {
     });
 
     app.isLocalIp = function (ip) {
-        return ip.indexOf("127.0") !== -1 || ip === "::1" ||  ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
+        return ip.indexOf("127.0") !== -1 || ip === "::1" || ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
     app.get('/searchUsers/:username?', function(req, res) {
@@ -373,9 +391,9 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/updateUserRoles', function(req, res) {  
+    app.post('/updateUserRoles', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            usersrvc.updateUserRoles(req.body, function(err) {
+            usersrvc.updateUserRoles(req.body, function (err) {
                 if (err) res.status(500).end();
                 else res.status(200).end();
             });
@@ -393,29 +411,29 @@ exports.init = function(app) {
         }
     });
 
-    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
+    app.get('/orgaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         res.render('orgAccountManagement', "system");
-    });    
+    });
 
-    app.get('/data/:imgtag', function(req, res) {
+    app.get('/data/:imgtag', function (req, res) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
-    });    
+    });
 
-    app.get('/data/status/:imgtag', function(req, res) {
-        mongo_data_system.getFileStatus(req.params.imgtag, function(err, status) {
+    app.get('/data/status/:imgtag', function (req, res) {
+        mongo_data_system.getFileStatus(req.params.imgtag, function (err, status) {
             if (err) res.status(404).send();
             res.send(status);
         });
-    });        
+    });
 
-    app.post('/classification/elt', function(req, res) {
+    app.post('/classification/elt', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.status(401).send();
             return;
-        }      
-        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function(err) {
-            if (!err) { 
-                res.send({ code: 200, msg: "Classification Added"});
+        }
+        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
                 mongo_data_system.addToClassifAudit({
                     date: new Date()
                     , user: {
@@ -428,19 +446,19 @@ exports.init = function(app) {
                     , path: [req.body.orgName].concat(req.body.categories)
                 });
             } else {
-                res.send({ code: 403, msg: "Classification Already Exists"}); 
+                res.send({code: 403, msg: "Classification Already Exists"});
             }
 
         });
     });
-    
-    app.delete('/classification/elt', function(req, res) {
+
+    app.delete('/classification/elt', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             res.status(401).send();
             return;
         }
-        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function(err) {
-            if (!err) { 
+        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function (err) {
+            if (!err) {
                 res.end();
                 mongo_data_system.addToClassifAudit({
                     date: new Date()
@@ -457,75 +475,75 @@ exports.init = function(app) {
                 res.status(202).send({error: {message: "Classification does not exists."}});
             }
         });
-    });  
-    
-    app.delete('/classification/org', function(req, res) {
+    });
+
+    app.delete('/classification/org', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             res.status(403).end();
             return;
-        }  
-        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function(err, org) {
+        }
+        classificationNode.modifyOrgClassification(req.query, classificationShared.actions.delete, function (err, org) {
             res.send(org);
         });
     });
 
-    app.post('/classification/org', function(req, res) {
+    app.post('/classification/org', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.status(403).end();
             return;
-        }      
-        classificationNode.addOrgClassification(req.body, function(err, org) {
+        }
+        classificationNode.addOrgClassification(req.body, function (err, org) {
             res.send(org);
         });
     });
 
-    app.post('/classification/rename', function(req, res) {
+    app.post('/classification/rename', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
             res.status(401).send();
             return;
-        }      
-        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function(err, org) {
+        }
+        classificationNode.modifyOrgClassification(req.body, classificationShared.actions.rename, function (err, org) {
             if (!err) {
                 res.send(org);
             }
             else res.status(202).send({error: {message: "Classification does not exists."}});
         });
-    });    
- 
-    app.post('/classifyEntireSearch', function(req, res) {
+    });
+
+    app.post('/classifyEntireSearch', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
             res.status(401).send();
             return;
-        }      
-        classificationNode.classifyEntireSearch(req, function(err) {
+        }
+        classificationNode.classifyEntireSearch(req, function (err) {
             if (!err) res.end();
             else res.status(202).send({error: {message: err}});
-        });        
+        });
     });
 
-    app.post('/transferSteward', function(req, res) {
+    app.post('/transferSteward', function (req, res) {
         orgsvc.transferSteward(req, res);
     });
-    
-    app.post('/classification/bulk/tinyid', function(req, res) {
+
+    app.post('/classification/bulk/tinyid', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.classification.orgName)) {
             res.status(403).send("Not Authorized");
             return;
-        }        
-        var action = function(elt, actionCallback) {
+        }
+        var action = function (elt, actionCallback) {
             var classifReq = {
                 orgName: req.body.classification.orgName
                 , categories: req.body.classification.categories
                 , tinyId: elt.id || elt
                 , version: elt.version || null
-            };          
-            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);  
-        };        
-        adminItemSvc.bulkAction(req.body.elements, action, function() {
-            var elts = req.body.elements.map(function(e){ 
+            };
+            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+        };
+        adminItemSvc.bulkAction(req.body.elements, action, function () {
+            var elts = req.body.elements.map(function (e) {
                 return e.id;
             });
-            adminItemSvc.bulkAction(elts, action, function(err) {
+            adminItemSvc.bulkAction(elts, action, function (err) {
                 if (!err) {
                     res.send();
                     mongo_data_system.addToClassifAudit({
@@ -533,34 +551,36 @@ exports.init = function(app) {
                         , user: {
                             username: req.user.username
                         }
-                        , elements: req.body.elements.map(function(e){return {tinyId: e.id};})
+                        , elements: req.body.elements.map(function (e) {
+                            return {tinyId: e.id};
+                        })
                         , action: "add"
                         , path: [req.body.classification.orgName].concat(req.body.classification.categories)
                     });
                 }
                 else res.status(202).send({error: {message: err}});
-            });                
-        });        
-    });    
+            });
+        });
+    });
 
-    app.get('/rsStatus', function(req, res) {
-        mongo_data_system.rsStatus(function(err, st) {
+    app.get('/rsStatus', function (req, res) {
+        mongo_data_system.rsStatus(function (err, st) {
             if (err) res.status(500).send(err);
             else res.send(st);
         });
     });
 
-    app.get('/rsConf', function(req, res) {
-        mongo_data_system.rsConf(function(err, doc) {
+    app.get('/rsConf', function (req, res) {
+        mongo_data_system.rsConf(function (err, doc) {
             if (err) res.status(500).send(err);
             else res.send(doc);
         });
     });
 
-    app.post('/nccsPrimary', function(req, res) {
+    app.post('/nccsPrimary', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             var force = req.body.force === true;
-            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function(err, doc) {
+            mongo_data_system.switchToReplSet(config.nccsPrimaryRepl, force, function (err, doc) {
                 if (err) res.status(500).send(err);
                 else res.send(doc);
             });
@@ -569,9 +589,9 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/occsPrimary', function(req, res) {
+    app.post('/occsPrimary', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function(err, doc) {
+            mongo_data_system.switchToReplSet(config.occsPrimaryRepl, false, function (err, doc) {
                 if (err) res.status(500).send(err);
                 else res.send(doc);
             });
@@ -579,82 +599,82 @@ exports.init = function(app) {
             res.status(401).send();
         }
     });
-    
-    app.get('/getAllUsernames', function(req, res) {
-        if(auth.isSiteOrgAdmin(req)) {
+
+    app.get('/getAllUsernames', function (req, res) {
+        if (auth.isSiteOrgAdmin(req)) {
             usersrvc.getAllUsernames(req, res);
         } else {
             res.status(401).send();
         }
     });
-    
-    app.post('/getServerErrors', function(req, res) {
-        if(req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getServerErrors(req.body, function(err, result) {
-                res.send(result);                
-            });
-        } else {
-            res.status(401).send();
-        }
-    }); 
-    
-    app.post('/getClientErrors', function(req, res) {
-        if(req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getClientErrors(req.body, function(err, result) {
-                res.send(result);                
-            });
-        } else {
-            res.status(401).send();
-        }
-    });
 
-
-    app.post('/getFeedbackIssues', function(req, res) {
-        if(req.isAuthenticated() && req.user.siteAdmin) {
-            dbLogger.getFeedbackIssues(req.body, function(err, result) {
+    app.post('/getServerErrors', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getServerErrors(req.body, function (err, result) {
                 res.send(result);
             });
         } else {
             res.status(401).send();
         }
     });
-    
-    app.post('/logClientException', function(req, res) {
-        dbLogger.logClientError(req, function(err, result) {
-            res.send(result);                
-        });
-    });  
-    
-    app.get('/triggerServerErrorExpress', function(req, res) {
-        res.send("received");
-        trigger.error();
-    });   
-    
-    app.get('/triggerServerErrorMongoose', function(req, res) {
-        mongo_data_system.orgByName("none", function () {
-            res.send("received");
-            trigger.error();
-        });
-    });   
-    
-    app.post('/mail/messages/new', function(req, res) {
-        if (req.isAuthenticated()) {
-            var message = req.body;
-            if (message.author.authorType === "user") {
-                message.author.name = req.user.username;
-            }
-            message.date = new Date();
-            mongo_data_system.createMessage(message, function() {
-              res.send();
+
+    app.post('/getClientErrors', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getClientErrors(req.body, function (err, result) {
+                res.send(result);
             });
         } else {
             res.status(401).send();
         }
     });
 
-    app.post('/mail/messages/update', function(req, res) {
+
+    app.post('/getFeedbackIssues', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            dbLogger.getFeedbackIssues(req.body, function (err, result) {
+                res.send(result);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.post('/logClientException', function (req, res) {
+        dbLogger.logClientError(req, function (err, result) {
+            res.send(result);
+        });
+    });
+
+    app.get('/triggerServerErrorExpress', function (req, res) {
+        res.send("received");
+        trigger.error(); // jshint ignore:line
+    });
+
+    app.get('/triggerServerErrorMongoose', function (req, res) {
+        mongo_data_system.orgByName("none", function () {
+            res.send("received");
+            trigger.error(); // jshint ignore:line
+        });
+    });
+
+    app.post('/mail/messages/new', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_data_system.updateMessage(req.body, function(err) {
+            var message = req.body;
+            if (message.author.authorType === "user") {
+                message.author.name = req.user.username;
+            }
+            message.date = new Date();
+            mongo_data_system.createMessage(message, function () {
+                res.send();
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.post('/mail/messages/update', function (req, res) {
+        if (req.isAuthenticated()) {
+            mongo_data_system.updateMessage(req.body, function (err) {
                 if (err) {
                     res.statusCode = 404;
                     res.send("Error while updating the message");
@@ -667,50 +687,50 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/mail/messages/:type', function(req, res) {
-        mongo_data_system.getMessages(req, function(err, messages) {
+    app.post('/mail/messages/:type', function (req, res) {
+        mongo_data_system.getMessages(req, function (err, messages) {
             if (err) res.status(404).send(err);
             else res.send(messages);
         });
-    });    
-    
-    app.post('/addUserRole', function(req, res) {
+    });
+
+    app.post('/addUserRole', function (req, res) {
         if (authorizationShared.hasRole(req.user, "CommentReviewer")) {
-            mongo_data_system.addUserRole(req.body, function(err) {
+            mongo_data_system.addUserRole(req.body, function (err) {
                 if (err) res.status(404).send(err);
                 else res.send("Role added.");
             });
         }
-    });       
-    
-    app.get('/mailStatus', exportShared.nocacheMiddleware, function(req, res){
+    });
+
+    app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) return res.status(401).send();
-        mongo_data_system.mailStatus(req.user, function(err, result){
+        mongo_data_system.mailStatus(req.user, function (err, result) {
             res.send({count: result});
         });
     });
 
     // @TODO this should be POST
-    app.get('/attachment/approve/:id', function(req, res){
-        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
-        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function(err){
+    app.get('/attachment/approve/:id', function (req, res) {
+        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
+        mongo_data_system.alterAttachmentStatus(req.params.id, "approved", function (err) {
             if (err) res.status(500).send("Unable to approve attachment");
             else res.send("Attachment approved.");
         });
-    });   
+    });
 
-    app.get('/attachment/decline/:id', function(req, res){
-        if (!authorizationShared.hasRole(req.user,"AttachmentReviewer")) return res.status(401).send();
-        daoManager.getDaoList().forEach(function(dao) {
+    app.get('/attachment/decline/:id', function (req, res) {
+        if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
+        daoManager.getDaoList().forEach(function (dao) {
             dao.removeAttachmentLinks(req.params.id);
         });
         mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");
     });
 
-    app.post('/getClassificationAuditLog', function(req, res) {
-        if(req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data_system.getClassificationAuditLog(req.body, function(err, result) {
+    app.post('/getClassificationAuditLog', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            mongo_data_system.getClassificationAuditLog(req.body, function (err, result) {
                 res.send(result);
             });
         } else {
@@ -718,32 +738,31 @@ exports.init = function(app) {
         }
     });
 
-    app.post('/user/update/searchSettings', function(req, res) {
-        usersrvc.updateSearchSettings(req.user.username, req.body, function(err) {
+    app.post('/user/update/searchSettings', function (req, res) {
+        usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
             if (err) res.status(500).send(err);
             else res.send("Search settings updated.");
         });
     });
 
-    app.post('/feedback/report', function(req, res) {
-        dbLogger.saveFeedback(req, function(){
+    app.post('/feedback/report', function (req, res) {
+        dbLogger.saveFeedback(req, function () {
             res.send({});
         });
     });
 
-    app.post('/api/reloadProd', authorization.checkSiteAdmin, function(req, res){
+    app.post('/api/reloadProd', authorization.checkSiteAdmin, function (req, res) {
         if (!config.prodDump.enabled) return res.status(401).send();
         var target = './prodDump';
         var untar = tar.extract(target);
-        request(req.body.url, {rejectUnauthorized:false}).pipe(zlib.createGunzip()).pipe(untar);
+        request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
-
             spawn('rm', [target + '/system*']).on('exit', function(){
                 var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
                 restore.on('exit', function() {
                     elastic.recreateIndexes();
                     var rm = spawn('rm', [target + '/*']);
-                    rm.on('exit', function(){
+                    rm.on('exit', function () {
                         res.send();
                     });
                 });
@@ -755,7 +774,7 @@ exports.init = function(app) {
     var loincUploadStatus;
     app.post('/uploadLoincCsv', multer(), function (req, res) {
         loincUploadStatus = [];
-        var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function(code){
+        var load = spawn(config.pmNodeProcess, ['./ingester/loinc/loadLoincFields.js', req.files.uploadedFiles.path]).on('exit', function (code) {
             loincUploadStatus.push("Complete with Code: " + code);
             setTimeout(function () {
                 loincUploadStatus = [];
@@ -764,15 +783,15 @@ exports.init = function(app) {
         });
         res.send();
 
-        load.stdout.on('data', function(data) {
+        load.stdout.on('data', function (data) {
             loincUploadStatus.push("" + data);
         });
-        load.stderr.on('data', function(data) {
+        load.stderr.on('data', function (data) {
             loincUploadStatus.push("" + data);
         });
     });
 
-    app.get('/uploadLoincCsvStatus', function(req, res){
+    app.get('/uploadLoincCsvStatus', function (req, res) {
         res.send(loincUploadStatus);
     });
 };

@@ -7,19 +7,6 @@ import org.testng.Assert;
 
 public abstract class RegStatusTest extends CommonTest {
 
-    public void changeRegistrationStatus(String eltName, String user, String from, String to) {
-        mustBeLoggedInAs(user, password);
-        goToEltByName(eltName, from);
-        textPresent(from);
-        showAllTabs();
-        clickElement(By.id("status_tab"));
-        textPresent("Effective Date");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText(to);
-        clickElement(By.id("saveRegStatus"));
-        closeAlert();
-    }
-
     public void cancelRegStatus(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);

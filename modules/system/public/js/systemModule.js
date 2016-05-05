@@ -11,7 +11,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         $routeProvider.when('/', {
             redirectTo: function () {
                 if (!window.loggedIn) return "/home";
-                return "/cde/search"
+                return "/cde/search";
             }
         }).when('/home', {
             controller: 'HomeCtrl',
