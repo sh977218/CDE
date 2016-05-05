@@ -126,9 +126,9 @@ gulp.task('es', function() {
     elastic.deleteIndices();
 
     // dont know why but gulp wont exit this. Kill it.
-    //setTimeout(function() {
-    //    process.exit(0);
-    //}, 3000);
+    setTimeout(function() {
+        process.exit(0);
+    }, 3000);
 });
 
 gulp.task('tarCode', function () {
