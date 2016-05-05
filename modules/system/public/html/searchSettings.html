@@ -108,11 +108,15 @@
         </div>
     </div>
 
-    <div class="btn-group" data-toggle="buttons">
-        <button id="enableBetaBtn" class="btn btn-default" ng-click="enableBeta(!$root.enableBeta)">
-            <i class="fa fa-flask"></i> Enable Beta Features (resets on page refresh)</button>
-        <button id="betaEnabled" class="btn" ng-class="{'btn-success':$root.enableBeta}"> On</button>
-        <button id="betaDisabled" class="btn" ng-class="{'btn-danger':!$root.enableBeta}"> Off</button>
+    <h2><i class="fa fa-flask"></i> Beta Features</h2>
+    <!--<input type="checkbox" id="enableBetaCb" ng-model="$root.enableBeta">-->
+    <label for="betaEnabled">
+         Enabled </label>
+    <div class="btn-group">
+        <button id="betaEnabled" class="btn btn-sm" ng-class="{'btn-success':$root.enableBeta}"
+                ng-click="enableBeta(true)"> On</button>
+        <button id="betaDisabled" class="btn btn-sm" ng-class="{'btn-danger':!$root.enableBeta}"
+                ng-click="enableBeta(false)"> Off</button>
     </div>
 
     <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>

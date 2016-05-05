@@ -776,7 +776,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("searchSettings"));
         classNotPresent("btn-success", By.id("betaEnabled"));
         classPresent("btn-danger", By.id("betaDisabled"));
-        clickElement(By.id("enableBetaBtn"));
+        clickElement(By.id("betaEnabled"));
         classPresent("btn-success", By.id("betaEnabled"));
         classNotPresent("btn-danger", By.id("betaDisabled"));
         driver.navigate().back();
