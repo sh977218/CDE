@@ -44,7 +44,7 @@
     "clamav.js": "0.11.0",
     "config": "*",
     "cron": "1.0.9",
-    "elasticsearch": "11.1.0",
+    "elasticsearch": "11.0.1",
     "log-buffer": "0.0.3",
     "chalk": "*",
     "xmlbuilder": "2.6.2",
