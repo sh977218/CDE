@@ -122,7 +122,14 @@ gulp.task('usemin', ['copyCode'], function() {
         });
 });
 
-gulp.task('es', elastic.deleteIndices);
+gulp.task('es', function() {
+    elastic.deleteIndices();
+
+    // dont know why but gulp wont exit this. Kill it. 
+    setTimeout(function() {
+        process.exit(0);
+    }, 3000);
+});
 
 gulp.task('tarCode', function () {
     //var done = this.async();
