@@ -154,12 +154,12 @@ public class NlmCdeBaseTest {
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
-        textPresent("has been designed to provide access");
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
         driver.manage().window().maximize();
+        textPresent("has been designed to provide access");
     }
 
     @BeforeMethod
