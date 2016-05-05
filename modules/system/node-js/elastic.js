@@ -1,16 +1,16 @@
 var config = require('./parseConfig')
-    , logging = require('../../system/node-js/logging')
-    , trim = require("trim")
-    , regStatusShared = require('../../system/shared/regStatusShared')
+    , logging = require('./logging')
+    , regStatusShared = require('../shared/regStatusShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../../deploy/elasticSearchInit')
-    , request = require('request')
+    , dbLogger = require('../../system/node-js/dbLogger.js')
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+
 exports.esClient = esClient;
 
 exports.removeElasticFields = function(elt) {
@@ -37,49 +37,113 @@ exports.nbOfForms = function (cb) {
     });
 };
 
-
-exports.initEs = function () {
-    var createIndex = function (indexName, indexMapping, river) {
-        esClient.indices.exists({index: indexName}, function (error, doesIt) {
-            if (!doesIt) {
-                console.log("creating index: " + indexName);
-                request.post(config.elastic.hosts[0] + "/" + indexName,
-                    {
-                        json: true,
-                        body: indexMapping
-                    },
-                    function (error) {
-                        if (error) {
-                            console.log("error creating index. " + error);
-                        } else {
-                            console.log("deleting old river: " + indexName);
-                            river.index.name = indexName;
-                            request.del(config.elastic.hosts[0] + "/_river/" + indexName,
-                                function () {
-                                    console.log("re-creating river: " + indexName);
-                                    request.post(config.elastic.hosts[0] + "/_river/" + indexName + "/_meta",
-                                        {
-                                            json: true,
-                                            body: river
-                                        },
-                                        function (error) {
-                                            if (error) console.log("could not create river. " + error);
-                                            else {
-                                                console.log("created river");
-                                            }
-                                        });
-                                });
-                        }
-                    });
+function EsInjector(esClient, indexName, documentType) {
+    var _esInjector = this;
+    this.buffer = [];
+    this.injectThreshold = 250;
+    this.documentType = documentType;
+    this.indexName = indexName;
+    this.queueDocument = function (doc, cb) {
+        if (!doc) return;
+        _esInjector.buffer.push(doc);
+        if (_esInjector.buffer.length >= _esInjector.injectThreshold) {
+            _esInjector.inject(cb);
+        } else {
+            cb();
+        }
+    };
+    this.inject = function (cb) {
+        var request = {
+            body: []
+        };
+        _esInjector.buffer.forEach(function (elt) {
+            request.body.push({
+                index: {
+                    _index: _esInjector.indexName,
+                    _type: _esInjector.documentType,
+                    _id: elt.tinyId ? elt.tinyId : elt._id
+                }
+            });
+            delete elt._id;
+            request.body.push(elt);
+        });
+        _esInjector.buffer = [];
+        esClient.bulk(request, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to Index in bulk",
+                    origin: "system.elastic.inject",
+                    stack: err,
+                    details: ""
+                });
+            } else {
+                console.log("ingested: " + request.body.length / 2);
+            }
+            if (cb) {
+                cb();
             }
         });
     };
+}
 
-    createIndex(config.elastic.index.name, esInit.createIndexJson, esInit.createRiverJson);
-    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
-    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
-    createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
 
+
+function createIndex(indexName, indexMapping, dao, riverFunction) {
+    esClient.indices.exists({index: indexName}, function (error, doesIt) {
+        if (doesIt) {
+            console.log("index already exists.");
+        }
+        if (!doesIt) {
+            console.log("creating index: " + indexName);
+            esClient.indices.create({index: indexName, timeout: "10s", body: indexMapping},
+                function (error) {
+                    if (error) {
+                        console.log("error creating index. " + error);
+                    } else {
+                         console.log("index Created");
+                         var startTime = new Date().getTime();
+                         var indexType = Object.keys(indexMapping.mappings)[0];
+                         // start re-index all
+                         var injector = new EsInjector(esClient, indexName, indexType);
+                         var stream = dao.getStream({archived: null});
+                         stream.on('data', function(elt) {
+                             stream.pause();
+                             injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
+                                 stream.resume();
+                             });
+                         });
+                         stream.on('end', function() {
+                             injector.inject(function() {
+                                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                             });
+                         });
+                    }
+                });
+        }
+    });
+}
+
+var daos = {
+    "cde": require("../../cde/node-js/mongo-cde"),
+    "form": require("../../form/node-js/mongo-form"),
+    "board": require("../../cde/node-js/mongo-cde").boardsDao,
+    "storedQuery": require("./dbLogger").storedQueriesDao
+};
+
+exports.initEs = function () {
+    esInit.indices.forEach(function(i) {
+        createIndex(i.indexName, i.indexJson, daos[i.name], i.filter);
+    });
+};
+
+// pass index as defined in elasticSearchInit.indices
+exports.reIndex = function(index) {
+    esClient.indices.delete({index: index.indexName}, function(err) {
+        if (err) console.log("unable to delete index: " + index.indexName + " " + err);
+        else {
+            createIndex(index.indexName, index.indexJson, daos[index.name], index.filter);
+        }
+    });
 };
 
 exports.completionSuggest = function (term, cb) {
@@ -171,8 +235,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.sort = {"views": {order: "desc"}};
     }
 
-
-
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
@@ -215,12 +277,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
     var flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
     if (flatSelectionAlt !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
     if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
@@ -270,31 +332,29 @@ exports.buildElasticSearchQuery = function (user, settings) {
             }
         };
 
-        //queryStuff.aggregations.statuses.aggregations = {};
-
         var flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
-            var flatClassification = {
+            var flatClassifications = {
                 "terms": {
                     "size": 500,
-                    "field": "flatClassification"
+                    "field": "flatClassifications"
                 }
             };
             if (selectionString === "") {
-                flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ";[^;]+";
             } else {
-                flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
                 "aggs": {}
             };
-            queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+            queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
         };
         if (settings.selectedOrg !== undefined) {
-            flattenClassificationAggregations('flatClassification', 'selectedOrg', flatSelection);
+            flattenClassificationAggregations('flatClassifications', 'selectedOrg', flatSelection);
         }
         if (settings.selectedOrgAlt !== undefined) {
-            flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt', flatSelectionAlt);
+            flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
     }
 
@@ -377,7 +437,7 @@ exports.elasticsearch = function (query, type, cb) {
         } else {
             if (response.hits.total === 0 && config.name.indexOf("Production") === -1) {
                 console.log("No response. QUERY: " + JSON.stringify(query));
-                console.log("----")
+                console.log("----");
             }
 
             var result = {
@@ -451,7 +511,7 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                    details: "body " + body + ", query: " + query
+                    details: ", query: " + query
                 });
             dataCb("ES Error");
         } else {

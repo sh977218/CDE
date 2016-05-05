@@ -3,11 +3,56 @@ var config = require('../../system/node-js/parseConfig')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , logging = require('../../system/node-js/logging.js')
     , elasticsearch = require('elasticsearch')
+    , esInit = require('../../../deploy/elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+
+exports.updateOrInsert = function(elt) {
+    var doc = esInit.riverFunction(elt.toObject());
+    if (doc) {
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: doc.tinyId,
+            body: doc
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to Index document: " + doc.tinyId,
+                    origin: "cde.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.boardUpdateOrInsert = function(elt) {
+    if (elt) {
+        var doc = elt.toObject();
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.boardIndex.name,
+            type: "board",
+            id: elt._id.toString(),
+            body: doc
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to index board: " + doc.tinyId,
+                    origin: "cde.elastic.boardUpdateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
 
 exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
@@ -17,7 +62,7 @@ exports.elasticsearch = function (user, settings, cb) {
         });
     }
     sharedElastic.elasticsearch(query, 'cde', function(err, result) {
-        if (result && result.length > 0) {
+        if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
         cb(err, result);
@@ -31,8 +76,7 @@ var mltConf = {
         "valueDomain.permissibleValues.permissibleValue",
         "valueDomain.permissibleValues.valueMeaningName",
         "valueDomain.permissibleValues.valueMeaningCode",
-        "property.concepts.name",
-        "property.concepts.originId"
+        "property.concepts.name"
     ]
 };
 

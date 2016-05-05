@@ -159,6 +159,7 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
         driver.manage().window().maximize();
+//        textPresent("has been designed to provide access");
     }
 
     @BeforeMethod
@@ -422,7 +423,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForESUpdate() {
-        hangon(8);
+        hangon(10);
     }
 
     /*
@@ -498,8 +499,8 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
 
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
@@ -514,8 +515,8 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToSearch(String type) {
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
         driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");

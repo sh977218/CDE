@@ -1,31 +1,16 @@
 var config = require('./parseConfig')
-    , request = require('request')
-    , elastic = require('../../../deploy/elasticSearchInit.js')
+    , elasticsearch = require('elasticsearch')
+    , esInit = require('../../../deploy/elasticSearchInit')
     ;
 
-exports.recreateIndexes = function(){
-    var timeoutCount = 0;
+var esClient = new elasticsearch.Client({
+    hosts: config.elastic.hosts
+});
 
-    [config.elasticRiverUri, config.elasticUri, config.elasticFormRiverUri, config.elasticFormUri,
-        config.elasticBoardRiverUri, config.elasticBoardIndexUri, config.elasticStoredQueryUri].forEach(function(uri) {
-            timeoutCount++;
-            setTimeout(function() {
-                request.del(uri);
-            }, timeoutCount * 1000);
+exports.deleteIndices = function() {
+    esInit.indices.forEach(function(i) {
+        console.log("deleting: " + i.indexName);
+        esClient.indices.delete({index: i.indexName, timeout: "2s"}, function() {
         });
-
-    [
-        {uri: config.elasticUri, data: elastic.createIndexJson},
-        {uri: config.elasticRiverUri + "/_meta", data: elastic.createRiverJson},
-        {uri: config.elasticFormUri, data: elastic.createFormIndexJson},
-        {uri: config.elasticFormRiverUri + "/_meta", data: elastic.createFormRiverJson},
-        {uri: config.elasticBoardIndexUri, data: elastic.createBoardIndexJson},
-        {uri: config.elasticBoardRiverUri + "/_meta", data: elastic.createBoardRiverJson},
-        {uri: config.elasticStoredQueryUri, data: elastic.createStoredQueryIndexJson}
-    ].forEach(function (item) {
-            timeoutCount++;
-            setTimeout(function() {
-                request.post(item.uri, {json: true, body: item.data});
-            }, timeoutCount * 1000);
-        });
+    });
 };
