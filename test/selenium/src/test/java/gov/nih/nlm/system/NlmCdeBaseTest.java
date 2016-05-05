@@ -154,6 +154,7 @@ public class NlmCdeBaseTest {
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
+        textPresent("has been designed to provide access");
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
@@ -490,8 +491,8 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
 
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
@@ -506,8 +507,8 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToSearch(String type) {
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
         driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
