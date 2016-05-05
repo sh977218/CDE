@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -8,6 +9,7 @@ import org.testng.annotations.Test;
 public class ForkMineMineTest extends ForkTest {
 
     @Test
+    @RecordVideo
     public void forkMineMine() {
         System.out.println("Number of tabs before forkMineMine" + driver.getWindowHandles().size());
         mustBeLoggedInAs(ctepCurator_username, password);

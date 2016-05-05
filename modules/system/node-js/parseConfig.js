@@ -35,17 +35,6 @@ if (config.elastic.storedQueryIndex.name === "auto") {
     config.elastic.storedQueryIndex.name = "sq_" + shortHash(esInit.createStoredQueryIndexJson);
 }
 
-
-// TODO Remove these
-config.elasticUri = config.elastic.hosts[0] + "/" + config.elastic.index.name + "/";
-config.elasticRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.index.name;
-config.elasticFormUri = config.elastic.hosts[0] + "/" + config.elastic.formIndex.name + "/";
-config.elasticFormRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.formIndex.name;
-config.elasticBoardIndexUri = config.elastic.hosts[0] + "/" + config.elastic.boardIndex.name + "/";
-config.elasticBoardRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.boardIndex.name;
-config.elasticStoredQueryUri = config.elastic.hosts[0] + "/" + config.elastic.storedQueryIndex.name + "/";
-config.elasticStoredQueryRiverUri = config.elastic.hosts[0] + "/_river/" + config.elastic.storedQueryIndex.name;
-
 config.mongoMigrationUri = "mongodb://" + config.database.migration.username + ":" + config.database.migration.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;

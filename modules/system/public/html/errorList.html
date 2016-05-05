@@ -1,3 +1,10 @@
+<form class="form-search">
+    <input placeholder="loggerToExclude" title="loggerToExclude" type="text" ng-model="excludeFilterToAdd" size="80"/>
+    <button class="btn btn-default fa fa-plus" ng-click="addExcludeFilter(excludeFilterToAdd)"> Add Exclude Filter </button>
+</form>
+
+Excluding: {{excludeFilters}}
+
 <table class="table">
     <thead>
     <tr>
@@ -5,9 +12,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="err in records"  ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
+    <tr ng-repeat="err in records" ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
     </tr>
     </tbody>
 </table>
 
-<uib-pagination total-items="1000" ng-model="currentPage" ng-change="gotoPage(currentPage)" max-size="10"></uib-pagination>
+<uib-pagination total-items="1000" ng-model="currentPage" ng-change="gotoPage(currentPage)"
+                max-size="10"></uib-pagination>

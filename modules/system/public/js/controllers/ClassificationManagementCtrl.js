@@ -147,7 +147,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {
         var settings = {
-            resultPerPage: 1000000
+            resultPerPage: 10000
             , searchTerm: ""
             , selectedOrg: oldClassification.orgName
             , selectedElements: oldClassification.classifications
