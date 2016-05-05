@@ -1,5 +1,4 @@
 var mongo_data = require('./mongo-cde')
-    , elastic = require('./elastic')
     ;
 
 exports.pinToBoard = function(req, res) {
@@ -24,7 +23,7 @@ exports.pinToBoard = function(req, res) {
                     }
                 }
                 board.pins.push(pin);
-                mongo_data.save(board, function(err, b) {
+                mongo_data.save(board, function() {
                     return res.send("Added to Board");
                 });
             }
@@ -39,15 +38,18 @@ exports.removePinFromBoard = function(req, res) {
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");
         } else {
+            var modified;
             for (var i = 0; i < board.pins.length; i++) {
                 if (JSON.stringify(board.pins[i]._id) === JSON.stringify(pinId)) {
                     board.pins.splice(i, 1);
-                    return board.save(function (err, b) {
-                        res.send("Removed");
-                    });
+                    modified = true;
                 }
             }
-            res.send("Nothing removed");
+            if (modified) {
+                board.save(function () {
+                    res.send("Removed");
+                });
+            } else res.send("Nothing removed");
         }
     });
 };
@@ -72,7 +74,7 @@ exports.pinAllToBoard = function(req, cdes, res) {
                 }
                 board.pins.push(pin);
             });
-            mongo_data.save(board, function(err, b) {
+            mongo_data.save(board, function() {
                 return res.send("Added to Board");
             });
         }

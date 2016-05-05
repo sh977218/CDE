@@ -42,7 +42,6 @@ public class UserTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     public void userEmail() {
         mustBeLoggedInAs(test_username, password);
         findElement(By.id("username_link")).click();

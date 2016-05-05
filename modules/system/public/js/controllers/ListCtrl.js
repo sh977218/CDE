@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ListCtrl',
+angular.module('systemModule').controller('ListCtrl', // jshint ignore:line
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
@@ -41,7 +41,7 @@ angular.module('systemModule').controller('ListCtrl',
 
      var focusClassification = function(){
         //any good angular way to do this?
-        $('#classif_filter_title').focus();
+        $('#classif_filter_title').focus(); // jshint ignore:line
     };
 
     $timeout(function(){
@@ -103,13 +103,17 @@ angular.module('systemModule').controller('ListCtrl',
         var classifToAlter = $scope.getCurrentSelectedClassification();
 
         if (orgToAlter === undefined) {
-            $scope.altClassificationFilterMode
-                ?$scope.searchSettings.selectedOrgAlt = orgName:
+            if($scope.altClassificationFilterMode) {
+                $scope.searchSettings.selectedOrgAlt = orgName;
+            } else {
                 $scope.searchSettings.selectedOrg = orgName;
+            }
         } else {
-            $scope.altClassificationFilterMode
-                ?$scope.searchSettings.selectedOrgAlt = undefined:
+            if ($scope.altClassificationFilterMode) {
+                $scope.searchSettings.selectedOrgAlt = undefined;
+            } else {
                 $scope.searchSettings.selectedOrg = undefined;
+            }
             classifToAlter.length = 0;
         }
         delete $scope.aggregations.groups;
@@ -183,10 +187,10 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.reload = function(type) {
         userResource.getPromise().then(function () {
             reload(type);
-        })
+        });
     };
 
-    var reload = reload = function (type) {
+    var reload = function (type) {
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
@@ -212,7 +216,7 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.elts = result[type + 's'];
             $scope.took = result.took;
 
-            if ($scope.searchSettings.page == 1 && result.totalNumber > 0) {
+            if ($scope.searchSettings.page === 1 && result.totalNumber > 0) {
                 var maxJump = 0;
                 var maxJumpIndex = 100;
                 $scope.elts.map(function(e, i) {
@@ -237,20 +241,20 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.openCloseAll($scope[type + 's'], "list");
             $scope.aggregations = result.aggregations;
 
-            if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
+            if (result.aggregations !== undefined && result.aggregations.flatClassifications !== undefined) {
+                $scope.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
                     return {name: c.key.split(';').pop(), count: c.doc_count};
                 });
             } else {
-                $scope.aggregations.flatClassification = [];
+                $scope.aggregations.flatClassifications = [];
             }
 
-            if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-                $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
+            if (result.aggregations !== undefined && result.aggregations.flatClassificationsAlt !== undefined) {
+                $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
                     return {name: c.key.split(';').pop(), count: c.doc_count};
                 });
             } else {
-                $scope.aggregations.flatClassificationAlt = [];
+                $scope.aggregations.flatClassificationsAlt = [];
             }
 
             filterOutWorkingGroups($scope.aggregations);
@@ -391,7 +395,7 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.getRegStatusHelp = function(key) {
         var result = "";
-        regStatusShared.statusList.forEach(function(s) {
+        regStatusShared.statusList.forEach(function(s) { // jshint ignore:line
             if (s.name === key) result = s.help;
         });
         return result;
