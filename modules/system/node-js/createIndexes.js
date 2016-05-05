@@ -9,7 +9,9 @@ var esClient = new elasticsearch.Client({
 
 exports.deleteIndices = function() {
     esInit.indices.forEach(function(i) {
+        console.log("deleting: " + i.indexName);
         esClient.indices.delete({index: i.indexName, timeout: "2s"}, function() {
+            console.log("done deleting " + i.indexName);
         });
     });
 };
