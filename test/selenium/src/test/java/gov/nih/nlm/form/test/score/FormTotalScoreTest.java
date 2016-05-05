@@ -12,8 +12,7 @@ import java.util.List;
 public class FormTotalScoreTest extends BaseFormTest {
 
     @Test
-    @RecordVideo
-    public void FormToalScore() {
+    public void formTotalScore() {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Apathy Scale (AS)";
         goToFormByName(formName);

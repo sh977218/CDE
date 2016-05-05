@@ -141,7 +141,7 @@ exports.classifyCdesInBoard = function(req, cb) {
     mongo_data_cde.boardById(boardId, function(err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
-        var tinyIds = board.pins.map(function(cde) {return cde.deTinyId});
+        var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
         mongo_data_cde.cdesByTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
@@ -163,13 +163,13 @@ exports.classifyEntireSearch = function(req, cb) {
         var classifReq = {
             orgName: req.body.newClassification.orgName
             , categories: req.body.newClassification.categories
-            , cdeId: id
+            , tinyId: id
         };
         classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
     var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
     elastic.elasticsearch(query, req.body.itemType, function(err, result) {
-        var ids = result.cdes.map(function(cde) {return cde._id;});
+        var ids = result.cdes.map(function(cde) {return cde.tinyId;});
         adminItemSvc.bulkAction(ids, action, cb);
         mongo_data_system.addToClassifAudit({
             date: new Date()
