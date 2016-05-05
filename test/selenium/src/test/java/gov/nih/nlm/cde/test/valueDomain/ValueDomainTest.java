@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 public class ValueDomainTest extends NlmCdeBaseTest {
     
     @Test
-    @RecordVideo
     public void randomDatatype() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "CTC Adverse Event Apnea Grade";
