@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope, userResource)
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope)
 {
     $scope.module = "form";
 
@@ -16,5 +16,7 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
     };
 
     $scope.formsCtrlLoadedPromise.resolve();
+
+    $scope.cutoffIndex = 20;
 
 }]);

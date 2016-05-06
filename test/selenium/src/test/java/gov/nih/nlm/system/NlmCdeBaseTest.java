@@ -159,6 +159,7 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 2);
         driver.manage().window().maximize();
+//        textPresent("has been designed to provide access");
     }
 
     @BeforeMethod
@@ -422,7 +423,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForESUpdate() {
-        hangon(8);
+        hangon(10);
     }
 
     /*
@@ -490,8 +491,8 @@ public class NlmCdeBaseTest {
 
     protected void goHome() {
         // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
 
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
@@ -506,8 +507,8 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToSearch(String type) {
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+//        driver.get(baseUrl + "/gonowhere");
+//        textPresent("Nothing here");
         driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
         textPresent("Browse by classification");
@@ -701,32 +702,12 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
     }
 
-    protected void confirmCdeModification(String field, String oldValue,
-                                          String newValue) {
-        confirmFieldName(field);
-        confirmPreviousValue(oldValue);
-        confirmNewValue(newValue);
-    }
-
-    private void confirmFieldName(String fieldName) {
-        textPresent(fieldName, By.cssSelector("#modificationsList"));
-    }
-
-    private void confirmPreviousValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
-
-    }
-
-    private void confirmNewValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
-    }
-
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        scrollToTop();
         clickElement(By.id("history_tab"));
-        hangon(1);
-        showHistoryDiff(0);
-        confirmCdeModification(field, oldValue, newValue);
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
+        textPresent(field, By.cssSelector("#modificationsList"));
+        textPresent(oldValue, By.cssSelector("#modificationsList"));
+        textPresent(newValue, By.cssSelector("#modificationsList"));
     }
 
     protected void openCdeAudit(String cdeName) {

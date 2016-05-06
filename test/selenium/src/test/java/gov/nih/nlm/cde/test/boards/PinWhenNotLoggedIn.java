@@ -1,12 +1,14 @@
 package gov.nih.nlm.cde.test.boards;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
 
     @Test
+    @RecordVideo
     public void pinWhenNotLoggedIn() {
         mustBeLoggedOut();
         goToCdeSearch();
