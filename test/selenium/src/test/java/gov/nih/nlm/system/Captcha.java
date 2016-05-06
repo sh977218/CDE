@@ -8,7 +8,7 @@ public class Captcha extends NlmCdeBaseTest {
     @Test
     public void loginFailureCaptcha() {
         mustBeLoggedOut();
-            clickElement(By.linkText("Log In"));
+        clickElement(By.linkText("Log In"));
 
         for (int i = 0; i < 3; i++) {
             enterUsernamePasswordSubmit("bad-username", "bad-password", "Failed to log in.");
