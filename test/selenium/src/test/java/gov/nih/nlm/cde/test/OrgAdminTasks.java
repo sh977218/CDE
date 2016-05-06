@@ -37,7 +37,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         }
         textPresent("Organization Curator Removed");
         closeAlert();
-        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("userToPromote"));
+        textNotPresent("userToPromote");
 
         findElement(By.linkText("Organizations Admins")).click();
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
@@ -62,7 +62,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
             }
         }
         textPresent("Organization Administrator Removed");
-        Assert.assertTrue(!findElement(By.cssSelector("BODY")).getText().contains("userToPromote"));
+        textNotPresent("userToPromote");
     }
     
 }

@@ -1,12 +1,7 @@
-<div ng-repeat="elt in forms track by elt._id" ng-init="acc_index = $index">
+<div ng-repeat="elt in forms track by elt.tinyId" ng-init="acc_index = $index">
 
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
-        <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"
-           ng-click="interruptEvent($event); quickBoard.add(elt)">
-            <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
-               role="link"></i></a>
-
     </div>
 
     <div class="singleSearchResult" id="searchResult_{{$index}}">
@@ -14,8 +9,8 @@
             <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy" id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
-            <a href tabindex="0" class="nonLinkAnchor" ng-if="quickBoard.canAddElt(elt)"
-               ng-click="interruptEvent($event); quickBoard.add(elt)">
+            <a href tabindex="0" class="nonLinkAnchor" ng-if="formQuickBoard.canAddElt(elt)"
+               ng-click="formQuickBoard.add(elt)">
                 <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
                    role="link"></i></a>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>

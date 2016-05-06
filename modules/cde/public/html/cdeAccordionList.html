@@ -1,6 +1,6 @@
 <uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
-        <uib-accordion-group ng-repeat="elt in cdes track by elt._id" is-open="elt.isOpen"
+        <uib-accordion-group ng-repeat="elt in cdes track by elt.tinyId" is-open="elt.isOpen"
                              ng-init="acc_index = $index">
             <uib-accordion-heading template-url="template/accordion/accordion-group.html" ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addCdeMode"></a>
@@ -49,7 +49,7 @@
                         <i class="fa fa-thumb-tack fa-rotate-90" title="unPin"></i> Remove from Board</a>
                     <a tabindex="0" ng-if="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
                        ng-click="quickBoard.add(elt)" id="compare_{{$index}}">
-                        <i class="fa fa-plus"></i> Add to Quick Board</a>
+                        <i class="fa fa-plus-square-o"></i> Add to Quick Board</a>
                     <a class="pull-right" ng-href="/#/sdcview/?cdeId={{elt._id}}" aria-label="SDC View"
                        id="sdcView_{{$index}}">
                         <i class="fa fa-share-square-o"></i> SDC View</a>

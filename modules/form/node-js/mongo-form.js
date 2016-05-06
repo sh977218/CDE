@@ -1,10 +1,10 @@
-var mongoose = require('mongoose')
-    , config = require('../../system/node-js/parseConfig')
+var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
-    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , connHelper = require('../../system/node-js/connections')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
+    , logging = require('../../system/node-js/logging')
+    , elastic = require('./elastic')
     ;
 
 exports.type = "form";
@@ -15,10 +15,20 @@ var Form = conn.model('Form', schemas.formSchema);
 
 exports.Form = Form;
 
+schemas.formSchema.pre('save', function(next) {
+    var self = this;
+    elastic.updateOrInsert(self);
+    next();
+});
+
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
         callback(result === 0);
     });
+};
+
+exports.getStream = function(condition) {
+    return Form.find(condition).sort({_id: -1}).stream();
 };
 
 exports.priorForms = function (formId, callback) {
@@ -28,11 +38,9 @@ exports.priorForms = function (formId, callback) {
                 .where("_id").in(form.history).exec(function (err, forms) {
                     callback(err, forms);
                 });
-        } else {
         }
     });
 };
-
 
 exports.findForms = function (request, callback) {
     var criteria = {};

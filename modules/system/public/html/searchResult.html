@@ -145,7 +145,7 @@
                             </span>
                     </a>
                     <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)"
-                       ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationAlt:aggregations.flatClassification) | orderBy:'name'"
+                       ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications) | orderBy:'name'"
                        style="margin-left:{{(getCurrentSelectedClassification().length + 1) * 10}}px;">
                             <span class="hand-cursor"
                                   ng-switch="getCurrentSelectedClassification().length.indexOf(b.name) > -1">

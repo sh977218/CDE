@@ -1,51 +1,59 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
 <head>
-    <title>NIH Common Data Elements (CDE) Repository</title>
-    <meta name="site-version" content="<% include ../public/html/version.html %>"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <meta name="description"
-          content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
-    <meta name="keywords"
-          content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
-    <meta name=viewport content="width=device-width, initial-scale=1">
+	<title>NIH Common Data Elements (CDE) Repository</title>
+	<meta name="site-version" content="<% include ../public/html/version.html %>"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta name="description"
+	      content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms."/>
+	<meta name="keywords"
+	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
+	<meta name=viewport content="width=device-width, initial-scale=1">
 
-    <!--[if lt IE 9]>
-    <script type="text/javascript">
-        window.location = "/supportedBrowsers";
-        document.createElement("inline-edit");
-        document.createElement("inline-area-edit");
-    </script>
-    <![endif]-->
+	<!--[if lt IE 9]>
+	<script type="text/javascript">
+		window.location = "/supportedBrowsers";
+		document.createElement("inline-edit");
+		document.createElement("inline-area-edit");
+	</script>
+	<![endif]-->
 
-    <!-- build:css /cde/public/css/style.concat.min.css -->
-    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
+	<!-- build:css /cde/public/css/style.concat.min.css -->
+	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+	<!-- endbuild -->
 
-    <!-- build:css /system/public/assets/css/vendor.css -->
-    <!-- bower:css -->
-    <link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css' />
-    <link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
-    <link rel='stylesheet' href='/components/select2/select2.css' />
-    <link rel='stylesheet' href='/components/selectize/dist/css/selectize.css' />
-    <link rel='stylesheet' href='/components/angular-ui-select/dist/select.css' />
-    <link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css' />
-    <link rel='stylesheet' href='/components/textAngular/src/textAngular.css' />
-    <link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css' />
-    <link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css' />
-    <link rel='stylesheet' href='/components/ng-grid/ng-grid.css' />
-    <link rel='stylesheet' href='/components/autocomplete-lhc/source/auto_completion.css' />
-    <link rel='stylesheet' href='/components/lforms/app/styles/lforms.css' />
-    <!-- endbower -->
+	<!--[if IE]><!-->
+	<style>
+		.ieFix {
+			margin-right: 5px !important;
+		}
+	</style>
+	<!--<![endif]-->
 
-    <link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css' />
-    <!-- endbuild -->
+	<!-- build:css /system/public/assets/css/vendor.css -->
+	<!-- bower:css -->
+	<link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css'/>
+	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css'/>
+	<link rel='stylesheet' href='/components/select2/select2.css'/>
+	<link rel='stylesheet' href='/components/selectize/dist/css/selectize.css'/>
+	<link rel='stylesheet' href='/components/angular-ui-select/dist/select.css'/>
+	<link rel='stylesheet' href='/components/bootstrap-css-only/css/bootstrap.css'/>
+	<link rel='stylesheet' href='/components/textAngular/src/textAngular.css'/>
+	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour.css'/>
+	<link rel='stylesheet' href='/components/bootstrap-tour/build/css/bootstrap-tour-standalone.css'/>
+	<link rel='stylesheet' href='/components/ng-grid/ng-grid.css'/>
+	<link rel='stylesheet' href='/components/autocomplete-lhc/source/auto_completion.css'/>
+	<link rel='stylesheet' href='/components/lforms/app/styles/lforms.css'/>
+	<!-- endbower -->
 
-    <!-- include config -->
-    <%- include config.html %>
+	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
+	<!-- endbuild -->
 
-    <!-- include google analytics -->
-    <%- include googleAnalytics.html %>
+	<!-- include config -->
+	<%- include config.html %>
+
+	<!-- include google analytics -->
+	<%- include googleAnalytics.html %>
 </head>
 
 <body role="application" id="top">
@@ -100,7 +108,7 @@
 <script src="/components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
 <script src="/components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
 <script src="/components/ng-grid/build/ng-grid.js"></script>
-<script src="/components/angularjs-camelCase-human/camelCaseToHuman.js"></script>
+<script src="/components/angularjs-camelCase-human/camelcase-browser.js"></script>
 <script src="/components/html2canvas/build/html2canvas.js"></script>
 <script src="/components/angular-send-feedback/dist/angular-send-feedback.js"></script>
 <script src="/components/ng-file-upload/angular-file-upload.js"></script>
@@ -176,6 +184,8 @@
           "url": "https://cde.nlm.nih.gov",
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
+
+
 </script>
 
 <script type="application/ld+json">
@@ -186,6 +196,8 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
+
+
 </script>
 
 </body>
