@@ -11,6 +11,7 @@ modules/system/views/version.html
 ## Secret Config Files
 views/version.html
 modules/system/public/html/version.html
+config/simon.json
 
 ## Local Files
 my-*
