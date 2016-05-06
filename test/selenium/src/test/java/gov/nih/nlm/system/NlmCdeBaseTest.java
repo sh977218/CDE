@@ -704,7 +704,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         clickElement(By.id("history_tab"));
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[0]//td[4]/a"));
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));
