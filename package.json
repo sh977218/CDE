@@ -55,7 +55,7 @@
     "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484",
     "csv": "0.4.6",
     "byline": "4.2.1",
-    "archiver": "1.0.0"
+    "archiver": "git://github.com/ludetc/node-archiver.git#360649a2886e9a3b28c38625227a10484de84d60"
   },
   "devDependencies": {
     "tar": "2.1.0",

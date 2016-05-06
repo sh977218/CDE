@@ -90,7 +90,7 @@ exports.formById = function (req, res) {
         }
         else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-        else if (req.query.type === 'redCap') getFormRedCap(form, req, res);
+        else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, req, res);
         else getFormJson(form, req, res);
     });
 };
@@ -105,59 +105,55 @@ var exportWarnings = {
     'emptySection': 'REDCap cannot support empty section.',
     'nestedSection': 'REDCap cannot support nested section.'
 };
-function loopForm(form, res) {
+function loopForm(form) {
     var insideSection = false;
-    var loopFormElements = function (fe, res) {
+    var loopFormElements = function (fe) {
         fe.formElements.forEach(function (e) {
             if (e.elementType === 'section') {
                 if (insideSection === true) {
-                    return {
-                        status: "invalid",
-                        err: 'nestedSection'
-                    };
+                    return 'nestedSection';
                 }
                 insideSection = true;
                 if (e.formElements.length === 0) {
-                    return {
-                        status: "invalid",
-                        err: 'emptySection'
-                    };
+                    return 'emptySection';
                 }
                 else {
-                    loopFormElements(e, res);
+                    loopFormElements(e);
                 }
                 insideSection = false;
             }
         });
-        return {
-            status: "valid",
-            err: ''
-        };
+        return;
     };
-    var result = loopFormElements(form, res);
-    return result;
+    return loopFormElements(form);
 }
 var getFormRedCap = function (form, req, res) {
     if (exportWarnings[form.stewardOrg.name]) {
         res.status(500).send(exportWarnings[form.stewardOrg.name]);
         return;
     }
-    var validatedRedCapForm = loopForm(form.toObject());
-    if (validatedRedCapForm.status === "valid") {
-        var zip = Archiver('zip');
-        zip.append('NLM', {name: 'AuthorID.txt'})
-            .append(form.tinyId, {name: 'InstrumentID.txt'})
-            .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
-            .finalize();
+    var validationErr = loopForm(form.toObject());
+    if (validationErr) {
+        var zip = Archiver.create('zip', {});
+        zip.on('error', function (err) {
+            res.status(500).send({error: err.message});
+        });
+
+        //on stream closed we can end the request
+        zip.on('end', function () {
+            res.send();
+        });
         res.writeHead(200, {
             'Content-Type': 'application/zip',
             'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
         });
         zip.pipe(res);
-    } else if (validatedRedCapForm.status === "invalid") {
-        res.status(500).send(exportWarnings[validatedRedCapForm.err]);
+        zip.append('NLM', {name: 'AuthorID.txt'})
+            .append(form.tinyId, {name: 'InstrumentID.txt'})
+            .append(redCap.formToRedCap(form), {name: 'instrument.csv'});
+        zip.finalize();
     } else {
-        res.status(500).send('unknown err');
+        res.status(500).send(exportWarnings[validationErr]);
     }
 };
 
