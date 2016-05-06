@@ -111,13 +111,17 @@ function loopForm(form, res) {
         fe.formElements.forEach(function (e) {
             if (e.elementType === 'section') {
                 if (insideSection === true) {
-                    res.status(500).send(exportWarnings['nestedSection']);
-                    return false;
+                    return {
+                        status: "invalid",
+                        err: 'nestedSection'
+                    };
                 }
                 insideSection = true;
                 if (e.formElements.length === 0) {
-                    res.status(500).send(exportWarnings['emptySection']);
-                    return false;
+                    return {
+                        status: "invalid",
+                        err: 'emptySection'
+                    };
                 }
                 else {
                     loopFormElements(e, res);
@@ -125,7 +129,10 @@ function loopForm(form, res) {
                 insideSection = false;
             }
         });
-        return true;
+        return {
+            status: "valid",
+            err: ''
+        };
     };
     var result = loopFormElements(form, res);
     return result;
@@ -133,19 +140,24 @@ function loopForm(form, res) {
 var getFormRedCap = function (form, req, res) {
     if (exportWarnings[form.stewardOrg.name]) {
         res.status(500).send(exportWarnings[form.stewardOrg.name]);
+        return;
     }
-    var validatedRedCapForm = loopForm(form.toObject(), res);
-    if (validatedRedCapForm) {
-        res.writeHead(200, {
-            'Content-Type': 'application/zip',
-            'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
-        });
+    var validatedRedCapForm = loopForm(form.toObject());
+    if (validatedRedCapForm.status === "valid") {
         var zip = Archiver('zip');
         zip.append('NLM', {name: 'AuthorID.txt'})
             .append(form.tinyId, {name: 'InstrumentID.txt'})
             .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
             .finalize();
+        res.writeHead(200, {
+            'Content-Type': 'application/zip',
+            'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
+        });
         zip.pipe(res);
+    } else if (validatedRedCapForm.status === "invalid") {
+        res.status(500).send(exportWarnings[validatedRedCapForm.err]);
+    } else {
+        res.status(500).send('unknown err');
     }
 };
 
