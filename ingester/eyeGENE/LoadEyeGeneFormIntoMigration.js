@@ -87,50 +87,59 @@ function run() {
                     if (err) throw err;
                     if (existingForms.length === 0) {
                         var newForm = createForm(eyeGene);
+                        newForm.formElements.push({
+                            elementType: 'section',
+                            instructions: {value: ''},
+                            label: '',
+                            formElements: []
+                        });
                         driver.get(loincURL_pre + eyeGene.LOINC_NUM + loincURL_post);
                         driver.findElements(webdriver.By.xpath("//*[@class='Section1']/table[2]/tbody[1]/tr")).then(function (trs) {
                             var index = 1;
-                            async.forEach(trs, function (tr, doneOneTr) {
+                            async.forEachSeries(trs, function (tr, doneOneTr) {
                                 if (index === 1 || index === 2 || index === trs.length) {
                                     index++;
                                     doneOneTr();
                                 } else {
                                     tr.findElements(webdriver.By.css('td')).then(function (tds) {
-                                        tds[1].getText().then(function (loincId) {
-                                            newForm.formElements.push({
-                                                elementType: 'section',
-                                                instructions: {value: ''},
-                                                label: '',
-                                                formElements: []
-                                            });
+                                        tds[1].getText().then(function (text) {
+                                            var loincId = text.trim();
+                                            console.log(index);
+                                            console.log(loincId);
                                             mongo_cde.byOtherIdAndNotRetired('EyeGene', loincId, function (err, existingCde) {
                                                 if (err) {
                                                     console.log(err + ' cdeId: ' + loincId);
                                                     throw err;
                                                 }
-                                                var question = {
-                                                    cde: {
-                                                        tinyId: existingCde.tinyId,
-                                                        name: existingCde.naming[0].designation,
-                                                        version: existingCde.version,
-                                                        permissibleValues: existingCde.valueDomain.permissibleValues,
-                                                        ids: existingCde.ids
-                                                    },
-                                                    datatype: existingCde.valueDomain.datatype,
-                                                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                                                    datatypeText: existingCde.valueDomain.datatypeText,
-                                                    uom: existingCde.valueDomain.uom,
-                                                    answers: existingCde.valueDomain.permissibleValues
-                                                };
-                                                var formElement = {
-                                                    elementType: 'question',
-                                                    label: '',
-                                                    question: question,
-                                                    formElements: []
-                                                };
-                                                newForm.formElements[0].formElements.push(formElement);
-                                                index++;
-                                                doneOneTr();
+                                                if (!existingCde) {
+                                                    console.log('cannot find this cde with loincId: ' + loincId);
+                                                    console.log('formId: ' + eyeGene.LOINC_NUM);
+                                                    process.exit(1);
+                                                } else {
+                                                    var question = {
+                                                        cde: {
+                                                            tinyId: existingCde.tinyId,
+                                                            name: existingCde.naming[0].designation,
+                                                            version: existingCde.version,
+                                                            permissibleValues: existingCde.valueDomain.permissibleValues,
+                                                            ids: existingCde.ids
+                                                        },
+                                                        datatype: existingCde.valueDomain.datatype,
+                                                        datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                                                        datatypeText: existingCde.valueDomain.datatypeText,
+                                                        uom: existingCde.valueDomain.uom,
+                                                        answers: existingCde.valueDomain.permissibleValues
+                                                    };
+                                                    var formElement = {
+                                                        elementType: 'question',
+                                                        label: '',
+                                                        question: question,
+                                                        formElements: []
+                                                    };
+                                                    newForm.formElements[0].formElements.push(formElement);
+                                                    index++;
+                                                    doneOneTr();
+                                                }
                                             });
                                         });
                                     });
