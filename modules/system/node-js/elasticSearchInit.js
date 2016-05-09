@@ -1,4 +1,6 @@
-var config = require('config');
+var config = require('config'),
+    hash = require("crypto");
+
 
 exports.createIndexJson = {
     "mappings": {
@@ -287,6 +289,12 @@ exports.createStoredQueryIndexJson = {
     }
 };
 
+var shortHash = function (content) {
+    return hash.createHash('md5')
+        .update(JSON.stringify(content)).digest("hex")
+        .substr(0, 5).toLowerCase();
+};
+
 exports.indices = [
     {
         name: "cde",
@@ -314,3 +322,15 @@ exports.indices = [
     }
 ];
 
+if (config.elastic.index.name === "auto") {
+    exports.indices[0].indexName = "cde_" + shortHash(exports.createIndexJson);
+}
+if (config.elastic.formIndex.name === "auto") {
+    exports.indices[1].indexName = "form_" + shortHash(exports.createFormIndexJson);
+}
+if (config.elastic.boardIndex.name === "auto") {
+    exports.indices[2].indexName = "board_" + shortHash(exports.createBoardIndexJson);
+}
+if (config.elastic.storedQueryIndex.name === "auto") {
+    exports.indices[3].indexName = "sq_" + shortHash(exports.createStoredQueryIndexJson);
+}

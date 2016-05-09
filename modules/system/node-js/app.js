@@ -22,7 +22,7 @@ var passport = require('passport')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
     , authorization = require('../../system/node-js/authorization')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     ;
 
