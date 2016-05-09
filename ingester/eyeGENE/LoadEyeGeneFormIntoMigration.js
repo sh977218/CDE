@@ -146,6 +146,7 @@ function run() {
                                 }
 
                             }, function doneAllTrs() {
+                                driver.findElements(webdriver.By.xpath("Section20000000"))
                                 var newFormObj = new MigrationFormModel(newForm);
                                 newFormObj.save(function (err) {
                                     if (err) throw err;
