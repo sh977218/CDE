@@ -702,32 +702,12 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
     }
 
-    protected void confirmCdeModification(String field, String oldValue,
-                                          String newValue) {
-        confirmFieldName(field);
-        confirmPreviousValue(oldValue);
-        confirmNewValue(newValue);
-    }
-
-    private void confirmFieldName(String fieldName) {
-        textPresent(fieldName, By.cssSelector("#modificationsList"));
-    }
-
-    private void confirmPreviousValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
-
-    }
-
-    private void confirmNewValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
-    }
-
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        scrollToTop();
         clickElement(By.id("history_tab"));
-        hangon(1);
-        showHistoryDiff(0);
-        confirmCdeModification(field, oldValue, newValue);
+        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
+        textPresent(field, By.cssSelector("#modificationsList"));
+        textPresent(oldValue, By.cssSelector("#modificationsList"));
+        textPresent(newValue, By.cssSelector("#modificationsList"));
     }
 
     protected void openCdeAudit(String cdeName) {
