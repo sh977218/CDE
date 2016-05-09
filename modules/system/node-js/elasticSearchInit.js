@@ -295,6 +295,19 @@ var shortHash = function (content) {
         .substr(0, 5).toLowerCase();
 };
 
+if (config.elastic.index.name === "auto") {
+    config.elastic.index.name = "cde_" + shortHash(exports.createIndexJson);
+}
+if (config.elastic.formIndex.name === "auto") {
+    config.elastic.formIndex.name = "form_" + shortHash(exports.createFormIndexJson);
+}
+if (config.elastic.boardIndex.name === "auto") {
+    config.elastic.boardIndex.name = "board_" + shortHash(exports.createBoardIndexJson);
+}
+if (config.elastic.storedQueryIndex.name === "auto") {
+    config.elastic.storedQueryIndex.name = "sq_" + shortHash(exports.createStoredQueryIndexJson);
+}
+
 exports.indices = [
     {
         name: "cde",
@@ -322,15 +335,3 @@ exports.indices = [
     }
 ];
 
-if (config.elastic.index.name === "auto") {
-    exports.indices[0].indexName = "cde_" + shortHash(exports.createIndexJson);
-}
-if (config.elastic.formIndex.name === "auto") {
-    exports.indices[1].indexName = "form_" + shortHash(exports.createFormIndexJson);
-}
-if (config.elastic.boardIndex.name === "auto") {
-    exports.indices[2].indexName = "board_" + shortHash(exports.createBoardIndexJson);
-}
-if (config.elastic.storedQueryIndex.name === "auto") {
-    exports.indices[3].indexName = "sq_" + shortHash(exports.createStoredQueryIndexJson);
-}
