@@ -11,19 +11,6 @@ import java.util.List;
 public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
-    public void emptyCdeQuickBoardTest() {
-        addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("Quick Board (5)");
-        goToQuickBoardByModule("cde");
-        clickElement(By.id("qb_cde_empty"));
-        textPresent("CDE QuickBoard (0)");
-    }
-
-    @Test
     public void showGridViewInCdeQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         textPresent("Quick Board (1)");
@@ -47,7 +34,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textPresent("CDE QuickBoard (0)");
     }
 
-    @Test(priority = 5)
+    @Test
     public void removeOneFromCdeQuickBoard() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-OHSU Knight"));
@@ -78,7 +65,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         textNotPresent(toRemove);
     }
 
-    @Test(priority = 5)
+    @Test
     public void goToEmptyQuickBoard() {
         goHome();
         textPresent("Quick Board (0)");

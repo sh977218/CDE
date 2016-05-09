@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.common.test.PropertyTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.testng.annotations.Test;
 
 public class FormPropertyTest extends PropertyTest {
@@ -21,6 +22,7 @@ public class FormPropertyTest extends PropertyTest {
     }
 
     @Test
+    @RecordVideo
     public void addRemoveFormProperty() {
         addRemoveProperty("Form Property Test", "Recorded");
     }

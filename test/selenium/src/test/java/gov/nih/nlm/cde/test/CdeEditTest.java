@@ -10,6 +10,13 @@ import static com.jayway.restassured.RestAssured.get;
 @Test(groups="CdeEditTest")
 public class CdeEditTest extends NlmCdeBaseTest {
 
+    private void confirmCdeModification(String field, String oldValue,
+                                          String newValue) {
+        textPresent(field, By.cssSelector("#modificationsList"));
+        textPresent(oldValue, By.cssSelector("#modificationsList"));
+        textPresent(newValue, By.cssSelector("#modificationsList"));
+    }
+
     @Test
     public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, password);
