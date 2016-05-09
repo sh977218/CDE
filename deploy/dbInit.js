@@ -63,7 +63,7 @@ var users = [
     , {username: 'boarduserEdit', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'historyuser', password: 'pass', quota: 1073741824, viewHistory: []}
     , {username: 'appScan', password: 'I@mA88Scan', quota: 1073741824, viewHistory: []}
-    , {username: 'classMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
+    , {username: 'classMgtUser', password: 'pass', orgCurator: ["CTEP","NINDS", "PS&CC", "ACRIN"], orgAdmin: ["caBIG"], quota: 1073741824, viewHistory: []}
     , {username: 'phri', password: 'pass', orgCurator: ["PHRI"], orgAdmin: ["PHRI"], quota: 1073741824, viewHistory: []}
     , {username: 'ninds', password: 'pass', orgCurator: [], orgAdmin: ["NINDS"], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
     , {username: 'acrin', password: 'pass', orgCurator: ["ACRIN"], orgAdmin: [], quota: 1073741824, viewHistory: []}
