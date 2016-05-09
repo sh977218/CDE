@@ -214,9 +214,9 @@ exports.riverFunction = function (elt) {
         elt.primaryDefinitionCopy = elt.naming ? escapeHTML(elt.naming[0].definition) : '';
     }
     var regStatusSortMap = {
-        Retired: 6,
+        Candidate: 6,
         Incomplete: 5,
-        Candidate: 4,
+        Retired: 4,
         Recorded: 3,
         Qualified: 2,
         Standard: 1,
