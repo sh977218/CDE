@@ -40,3 +40,5 @@ regStatusShared.statusList = [
 ];
 
 if (exports) exports.statusList = regStatusShared.statusList.map(function(e){return e.name});
+
+regStatusShared.orderedList = regStatusShared.statusList.map(function(e){return e.name});
