@@ -1,12 +1,14 @@
 package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.form.test.BaseFormTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class RedCapExportErrorTest extends BaseFormTest {
 
     @Test
+    @RecordVideo
     public void promisCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PROMIS SF v2.0 - Instrumental Support 8a");
@@ -19,6 +21,7 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
+    @RecordVideo
     public void phenxCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PhenX Form RedCAP Export");
@@ -31,6 +34,7 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
+    @RecordVideo
     public void canNotExportRedCapOfEmptySectionForm() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Empty Section Form");
@@ -43,6 +47,7 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
+    @RecordVideo
     public void canNotExportRedCapOfSectionInsideSectionForm() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Section Inside Section Form");
