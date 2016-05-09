@@ -77,7 +77,7 @@ function run() {
             });
         },
         function (cb) {
-            var stream = MigrationEyeGeneLoincModel.find({}).stream();
+            var stream = MigrationEyeGeneLoincModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).stream();
             stream.on('data', function (eyeGene) {
                 stream.pause();
                 if (eyeGene.toObject) eyeGene = eyeGene.toObject();
@@ -103,6 +103,7 @@ function run() {
                                     console.log('cannot find answer list of ' + eyeGene.AnswerListId);
                                 } else if (existingAnswerLists && existingAnswerLists.length > 0) {
                                     valueDomain.permissibleValues = [];
+                                    valueDomain.identifiers = [];
                                     valueDomain.identifiers.push({source: 'LOINC', id: eyeGene.AnswerListId});
                                     existingAnswerLists.forEach(function (existingAnswerList) {
                                         valueDomain.permissibleValues.push({
