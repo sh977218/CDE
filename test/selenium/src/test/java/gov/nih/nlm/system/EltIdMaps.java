@@ -44,8 +44,8 @@ public class EltIdMaps {
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
-        eltMap.put("Empty Section Form", "XyRAtkqsZ");
-        eltMap.put("Section Inside Section Form", "QyQtcJcsW");
+        eltMap.put("Empty Section Form", "Q1CSvNQhW");
+        eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
 
     }
