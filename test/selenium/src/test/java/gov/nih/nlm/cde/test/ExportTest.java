@@ -50,12 +50,13 @@ public class ExportTest extends NlmCdeBaseTest {
         } catch (IOException e) {
             Assert.fail("Exception reading SearchExport.csv");
         }
-
+// TODO Change this
         clickElement(By.id("searchSettings"));
         findElement(By.id("uom")).click();
         findElement(By.id("administrativeStatus")).click();
         findElement(By.id("source")).click();
         findElement(By.id("updated")).click();
+        findElement(By.id("tinyId")).click();
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
         closeAlert();
@@ -68,9 +69,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected2 = {
-                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",\"NINDS\",\"\",",
-                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\",\"NINDS\",\"\","
+                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated, NLM ID",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",\"NINDS\",\"\",\"hP7Onn6rACw\",",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\",\"NINDS\",\"\",\"faEJq9G70j3\","
         };
 
         try {
