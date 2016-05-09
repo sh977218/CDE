@@ -760,7 +760,7 @@ exports.init = function (app) {
             spawn('rm', [target + '/system*']).on('exit', function(){
                 var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
                 restore.on('exit', function() {
-                    elastic.recreateIndexes();
+                    esInit.indices.forEach(elastic.reIndex);
                     var rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {
                         res.send();
