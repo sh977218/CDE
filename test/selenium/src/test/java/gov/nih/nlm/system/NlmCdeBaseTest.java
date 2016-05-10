@@ -205,8 +205,10 @@ public class NlmCdeBaseTest {
                 }
                 writer.close();
                 FileUtils.copyFile(srcFile, gif);
+/*
                 FileUtils.deleteQuietly(srcFile);
                 FileUtils.deleteDirectory(inputScreenshots);
+*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
