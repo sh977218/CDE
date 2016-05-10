@@ -214,14 +214,13 @@ exports.riverFunction = function (elt) {
         elt.primaryDefinitionCopy = elt.naming ? escapeHTML(elt.naming[0].definition) : '';
     }
     var regStatusSortMap = {
-        Candidate: 6,
+        Retired: 6,
         Incomplete: 5,
-        Retired: 4,
+        Candidate: 4,
         Recorded: 3,
         Qualified: 2,
         Standard: 1,
         "Preferred Standard": 0
-        //TODO: Reorder these
     };
     elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
     if (elt.classification) {
