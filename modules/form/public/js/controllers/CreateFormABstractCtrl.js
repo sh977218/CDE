@@ -1,10 +1,7 @@
 angular.module('formModule').controller('CreateFormAbstractCtrl',
-    ['$scope', '$location', '$timeout', '$uibModal', 'Form', 'Elastic', 'userResource',
-        function($scope, $location, $timeout, $modal, Form, Elastic, userResource) {
+    ['$scope', '$location', '$uibModal', 'Form', 'userResource',
+        function ($scope, $location, $modal, Form, userResource) {
             $scope.openCdeInNewTab = true;
-            $scope.currentPage = 1;
-            $scope.totalItems = 0;
-            $scope.resultPerPage = 20;
             $scope.module = "form";
             $scope.searchForm = {};
             $scope.classifSubEltPage = '/form/public/html/classif-elt-createForm.html';
@@ -13,7 +10,7 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 $scope.elt.stewardOrg.name = userResource.userOrgs[0];
             }
 
-            $scope.$on('$locationChangeStart', function( event ) {
+            $scope.$on('$locationChangeStart', function (event) {
                 if (!$scope.saving) {
                     var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
                     if (!answer) {
@@ -22,7 +19,7 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 }
             });
 
-            $scope.validationErrors = function() {
+            $scope.validationErrors = function () {
                 if (!$scope.elt.naming[0].designation) {
                     return "Please enter a name for the new Form";
                 } else if (!$scope.elt.naming[0].definition) {
@@ -46,18 +43,18 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 return null;
             };
 
-            $scope.classificationToFilter = function() {
+            $scope.classificationToFilter = function () {
                 if ($scope.elt) {
                     return $scope.elt.classification;
                 }
             };
 
-            $scope.removeClassification = function(orgName, elts) {
+            $scope.removeClassification = function (orgName, elts) {
                 var steward = exports.findSteward($scope.elt, orgName);
                 exports.modifyCategory(steward.object, elts, {type: exports.actions.delete});
                 if (steward.object.elements.length === 0) {
-                    for (var i=0; i<$scope.elt.classification.length; i++) {
-                        if ($scope.elt.classification[i].stewardOrg.name === orgName) $scope.elt.classification.splice(i,1);
+                    for (var i = 0; i < $scope.elt.classification.length; i++) {
+                        if ($scope.elt.classification[i].stewardOrg.name === orgName) $scope.elt.classification.splice(i, 1);
                     }
                 }
             };
@@ -69,24 +66,24 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                     templateUrl: '/system/public/html/classifyElt.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
-                        module: function() {
+                        module: function () {
                             return $scope.module;
-                        }
-                        , cde: function() {
+                        },
+                        cde: function () {
                             return $scope.elt;
-                        }
-                        , orgName: function() {
+                        },
+                        orgName: function () {
                             return undefined;
-                        }
-                        , pathArray: function() {
+                        },
+                        pathArray: function () {
                             return undefined;
-                        }
-                        , addAlert: function() {
+                        },
+                        addAlert: function () {
                             return $scope.addAlert;
-                        }
-                        , addClassification: function() {
+                        },
+                        addClassification: function () {
                             return {
-                                addClassification: function(newClassification) {
+                                addClassification: function (newClassification) {
                                     exports.classifyItem($scope.elt, newClassification.orgName, newClassification.categories);
                                 }
                             };
@@ -98,16 +95,18 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 });
             };
 
-            $scope.showRemoveClassificationModal = function(orgName, pathArray) {
+            $scope.showRemoveClassificationModal = function (orgName, pathArray) {
                 var modalInstance = $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/removeClassificationModal.html',
                     controller: 'RemoveClassificationModalCtrl',
                     resolve: {
-                        classifName: function() {
-                            return pathArray[pathArray.length-1];
+                        classifName: function () {
+                            return pathArray[pathArray.length - 1];
+                        },
+                        pathArray: function () {
+                            return pathArray;
                         }
-                        , pathArray: function() {return pathArray;}
                     }
                 });
 
@@ -116,10 +115,10 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 });
             };
 
-            $scope.save = function() {
+            $scope.save = function () {
                 $scope.saving = true;
-                Form.save($scope.elt, function(cde) {
-                    $location.url("deview?tinyId=" + cde.tinyId);
+                Form.save($scope.elt, function (form) {
+                    $location.url("formView?tinyId=" + form.tinyId);
                 });
             };
 
