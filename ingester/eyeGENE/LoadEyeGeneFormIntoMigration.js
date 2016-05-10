@@ -134,6 +134,7 @@ function run() {
                                                         elementType: 'question',
                                                         label: '',
                                                         question: question,
+                                                        hideLabel: true,
                                                         formElements: []
                                                     };
                                                     newForm.formElements[0].formElements.push(formElement);
