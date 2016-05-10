@@ -57,7 +57,7 @@ var clientErrorSchema= new mongoose.Schema(
 
 var storedQuerySchema = new mongoose.Schema(
     {
-        searchTerm: String
+        searchTerm: {type: String, lowercase: true, trim: true}
         , date: {type: Date, default: Date.now}
         , searchToken: String
         , username: String
