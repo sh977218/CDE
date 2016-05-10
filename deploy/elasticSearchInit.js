@@ -221,7 +221,6 @@ exports.riverFunction = function (elt) {
         Qualified: 2,
         Standard: 1,
         "Preferred Standard": 0
-        //TODO: Reorder these
     };
     elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
     if (elt.classification) {
