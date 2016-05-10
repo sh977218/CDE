@@ -401,11 +401,4 @@ angular.module('systemModule').controller('ListCtrl',
         return result;
     };
 
-<<<<<<< HEAD
-=======
-    $scope.getRegStatusIndex = function(rg) {
-        return regStatusShared.orderedList.indexOf(rg.key);
-    };
->>>>>>> 2387c969b39292ac1983c04b0fe82fa3532efc3e
-
 }]);

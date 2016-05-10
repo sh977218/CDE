@@ -3,11 +3,8 @@ angular.module('systemModule').controller('RegistrationModalCtrl',
         function ($scope, $modalInstance, $http, elt, siteAdmin)
 {
     $scope.elt = elt;
-<<<<<<< HEAD
-    $scope.validRegStatuses = ['Candidate', 'Incomplete', 'Retired' ];
-=======
-    $scope.validRegStatuses = ['Retired', 'Incomplete', 'Candidate' ];
->>>>>>> 2387c969b39292ac1983c04b0fe82fa3532efc3e
+    $scope.validRegStatuses = ['Incomplete', 'Candidate', 'Retired' ];
+
 
     $http.get('/org/' + encodeURIComponent($scope.elt.stewardOrg.name)).then(function(res) {
        if (!res.data.workingGroupOf || res.data.workingGroupOf.length < 1) {
@@ -16,7 +13,6 @@ angular.module('systemModule').controller('RegistrationModalCtrl',
                $scope.validRegStatuses = $scope.validRegStatuses.concat(['Standard', 'Preferred Standard']);
            }
        }
-        $scope.validRegStatuses.reverse();
     });
 
     $scope.setHelpMessage = function() {
