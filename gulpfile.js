@@ -95,7 +95,7 @@ gulp.task('copyCode', ['wiredep'], function() {
 gulp.task('prepareVersion', ['copyCode'], function() {
     setTimeout(function() {
         git.revParse({args:'--short HEAD'}, function(err, hash) {
-            fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash);
+            fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash, function() {});
         });
     }, 15000);
 });
