@@ -12,7 +12,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void addClassificationToNewCdeMethod(String[] categories) {
-        clickElement(By.id("addClassification-createCde"));
+        clickElement(By.id("addClassification-createElt"));
         addClassificationMethodDo(categories);
     }
 
@@ -57,7 +57,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     public void checkRecentlyUsedClassificationsForNewCde(String[] categories) {
-        clickElement(By.id("addClassification-createCde"));
+        clickElement(By.id("addClassification-createElt"));
         clickElement(By.id("addClass.byRecentlyAdded"));
         for (String category : categories) {
             textPresent(category, By.id("addClassificationModalBody"));

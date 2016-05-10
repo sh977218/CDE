@@ -21,14 +21,14 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
 
             $scope.validationErrors = function () {
                 if (!$scope.elt.naming[0].designation) {
-                    return "Please enter a name for the new Form";
+                    return "Please enter a name for the new form.";
                 } else if (!$scope.elt.naming[0].definition) {
-                    return "Please enter a definition for the new Form";
+                    return "Please enter a definition for the new form.";
                 } else if (!$scope.elt.stewardOrg.name) {
-                    return "Please select a steward for the new Form";
+                    return "Please select a steward for the new form.";
                 }
                 if ($scope.elt.classification.length === 0) {
-                    return "Please select at least one classification";
+                    return "Please select at least one classification.";
                 } else {
                     var found = false;
                     for (var i = 0; i < $scope.elt.classification.length; i++) {

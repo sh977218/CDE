@@ -40,4 +40,4 @@ gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pfor
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *gridVi* &
 export NODE_ENV=test
-/c/nodejs/node -prof $NODE_LOC/app > test-console.o
+/c/tools/Node/4.1.2/node -prof $NODE_LOC/app > test-console.o
