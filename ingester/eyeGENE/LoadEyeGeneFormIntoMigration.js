@@ -26,7 +26,7 @@ function createForm(eyeGene) {
             acceptability: "preferred"
         }
     }];
-    var ids = [{source: 'EyeGene', id: eyeGene.LOINC_NUM}];
+    var ids = [{source: 'LOINC', id: eyeGene.LOINC_NUM}];
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "EyeGene"},
@@ -40,7 +40,7 @@ function createForm(eyeGene) {
         formElements: [],
         classification: []
     };
-    var componentToAdd = ['COMPONENT'];
+    var componentToAdd = ['Component'];
     var componentArray = eyeGene.COMPONENT.split('^');
     componentArray.forEach(function (component) {
         componentToAdd.push(component);

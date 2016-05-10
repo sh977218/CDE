@@ -17,7 +17,7 @@ var changed = 0;
 var created = 0;
 var createdForm = [];
 var same = 0;
-var source = 'EyeGene';
+var source = 'LOINC';
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy

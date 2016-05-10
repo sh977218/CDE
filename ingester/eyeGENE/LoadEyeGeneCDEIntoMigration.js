@@ -13,7 +13,20 @@ var eyeGeneOrg = null;
 var today = new Date().toJSON();
 
 var uom_datatype_map = {
-    'cm': 'number'
+    'cm': 'number',
+    'years': 'date',
+    'mm': 'number',
+    'ratio': '',
+    'mv': '',
+    'ms': '',
+    'Diopter': '',
+    'um': '',
+    'log': 'text',
+    'deg': '',
+    'logMAR': '',
+    'ft/ft': 'number',
+    'cells': '',
+    'mm Hg': ''
 };
 
 function createCde(eyeGene) {
@@ -26,7 +39,7 @@ function createCde(eyeGene) {
             acceptability: "preferred"
         }
     }];
-    var ids = [{source: 'EyeGene', id: eyeGene.LOINC_NUM}];
+    var ids = [{source: 'LOINC', id: eyeGene.LOINC_NUM}];
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "EyeGene"},
@@ -39,7 +52,7 @@ function createCde(eyeGene) {
         ids: ids,
         classification: []
     };
-    var componentToAdd = ['COMPONENT'];
+    var componentToAdd = ['Component'];
     var componentArray = eyeGene.COMPONENT.split('^');
     componentArray.forEach(function (component) {
         componentToAdd.push(component);
