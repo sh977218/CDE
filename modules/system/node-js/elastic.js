@@ -3,7 +3,7 @@ var config = require('./parseConfig')
     , regStatusShared = require('../shared/regStatusShared')
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     ;
 
