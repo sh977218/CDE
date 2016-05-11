@@ -43,5 +43,8 @@
     "storedQueryIndex": {"name": "storedquerytest"},
     "storedQueryRiver": {"name": "storedquerytest"}
   }
+,"captchaCode": "6LdAmh4TAAAAAI21xMRb8ocrnSmmGJ0QaKM_jmMY"
+, "useCaptcha" : true
+
 }
 

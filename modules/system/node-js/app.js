@@ -173,7 +173,7 @@ exports.init = function (app) {
         exportShared.nocacheMiddleware(req, res);
         var resp = {csrf: req.csrfToken()};
         var failedIp = findFailedIp(getRealIp(req));
-        if (failedIp && failedIp.nb > 2) {
+        if ((failedIp && failedIp.nb > 2) ){
             resp.showCaptcha = true;
         }
         res.send(resp);
@@ -214,7 +214,7 @@ exports.init = function (app) {
             passport.authenticate('local', function(err, user) {
                 if (err) { return res.status(403).end(); }
                 if (!user) {
-                    if (failedIp) failedIp.nb++;
+                    if (failedIp && config.useCaptcha) failedIp.nb++;
                     else {
                         failedIps.unshift({ip: getRealIp(req), nb: 1});
                         failedIps.length = 50; // simon doesn't like because what if more than 50 people do this
