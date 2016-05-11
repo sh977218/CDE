@@ -34,7 +34,6 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
-    @RecordVideo
     public void canNotExportRedCapOfEmptySectionForm() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Empty Section Form");
@@ -47,7 +46,6 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
-    @RecordVideo
     public void canNotExportRedCapOfSectionInsideSectionForm() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Section Inside Section Form");
