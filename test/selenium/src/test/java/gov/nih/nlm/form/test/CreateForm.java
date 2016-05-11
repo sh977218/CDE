@@ -1,15 +1,15 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CreateForm extends BaseFormTest {
+public class CreateForm extends BaseClassificationTest {
 
     @Test
     public void createForm() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         String formName = "Create Form Test Name";
         String formDef = "Fill out carefully!";
         String formV = "0.1alpha";
@@ -20,18 +20,18 @@ public class CreateForm extends BaseFormTest {
         clickElement(By.id("createFormLink"));
         textPresent("Please enter a name for the new form.");
 
-        findElement(By.id("formName")).sendKeys(formName);
-        findElement(By.id("formDefinition")).sendKeys(formDef);
+        findElement(By.id("eltName")).sendKeys(formName);
+        findElement(By.id("eltDefinition")).sendKeys(formDef);
         fillInput("Version", formV);
 
-        new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(formOrg);
-        clickElement(By.id("createForm"));
-        textPresent("Form created");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(formOrg);
+        addClassificationToNewCdeMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
+        modalGone();
+        clickElement(By.id("submit"));
         closeAlert();
 
         textPresent(formName);
         textPresent(formDef);
-        textPresent(formV);
 
         waitForESUpdate();
 
