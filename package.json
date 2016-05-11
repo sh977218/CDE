@@ -73,6 +73,6 @@
     "gulp-git": "1.7.0",
     "json-beautify": "1.0.1",
     "entities": "1.1.1",
-    "selenium-webdriver": "*"
+    "selenium-webdriver": "2.53.2"
   }
 }

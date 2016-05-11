@@ -9,41 +9,45 @@ var url_prefix = 'http://r.details.loinc.org/LOINC/';
 var url_postfix = '.html';
 var url_postfix_para = '?sections=Comprehensive';
 
-var driver;
 function parsingHtml(driver, cb) {
     var obj = {};
     driver.findElements(webdriver.By.xpath());
     cb(obj);
 }
-function goToLoinc(loinc, cb) {
-    var url = url_prefix + loinc.trim() + url_postfix + url_postfix_para;
-    driver.get(url);
-    parsingHtml(driver, function (obj) {
-        cb(obj);
-    });
-}
-function cleanMigrationLoincCollection(cb) {
-    MigrationLoincModal.remove({}, function (err) {
-        if (err) throw err;
-        if (cb) cb();
-    });
-}
+
 function run(loincArray) {
-    cleanMigrationLoincCollection(function () {
-        driver = new webdriver.Builder().forBrowser('firefox').build();
-        async.each(loincArray, function (loinc, doneOneLoinc) {
-            goToLoinc(loinc, function (obj) {
-                var loincObj = new MigrationLoincModal(obj);
-                loincObj.save(function () {
-                    doneOneLoinc();
-                });
+    async.series([
+        function (cb) {
+            MigrationLoincModal.remove({}, function (err) {
+                if (err) throw err;
+                console.log('removed migration loinc collection.');
+                cb();
             });
-        }, function doneAllLoinc() {
-            console.log('finished all');
+        },
+        function (cb) {
+            var driver = new webdriver.Builder().forBrowser('firefox').build();
+            driver.get('https://www.google.com');
             driver.quit();
+            cb();
+/*
+            async.forEach(loincArray, function (loinc, doneOneLoinc) {
+                var url = url_prefix + loinc.trim() + url_postfix + url_postfix_para;
+                driver.get(url);
+                parsingHtml(driver, function (obj) {
+                    new MigrationLoincModal(obj).save(function (error) {
+                        if (error) throw error;
+                        doneOneLoinc();
+                    });
+                });
+            }, function doneAllLoinc() {
+            });
+*/
+        },
+        function () {
+            console.log('finished all');
             process.exit(1);
-        });
-    });
+        }
+    ]);
 }
 
 run(testArray);
