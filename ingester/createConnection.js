@@ -19,7 +19,10 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-
+exports.MigrationLoincModal = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'loinc'
+}));
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
     strict: false,
     collection: 'ninds'
