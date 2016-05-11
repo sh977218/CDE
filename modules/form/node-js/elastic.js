@@ -1,7 +1,7 @@
 var config = require('../../system/node-js/parseConfig')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('../../system/node-js/elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({

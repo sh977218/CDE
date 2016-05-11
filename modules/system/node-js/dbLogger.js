@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({
