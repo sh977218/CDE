@@ -33,6 +33,11 @@ exports.init = function (app) {
         if (req.ip) return req.ip;
     };
 
+    var version = "local-dev";
+    try {
+        version = require('./version.js').version;
+    } catch (e) {}
+
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
@@ -40,7 +45,7 @@ exports.init = function (app) {
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
     });
 
@@ -134,7 +139,7 @@ exports.init = function (app) {
     });
 
     app.get('/', function (req, res) {
-        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     });
 
     app.get('/gonowhere', function (req, res) {
