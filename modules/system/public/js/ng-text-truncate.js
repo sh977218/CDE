@@ -11,29 +11,30 @@
                         customMoreLabel: "@ngTtMoreLabel",
                         customLessLabel: "@ngTtLessLabel"
                     },
-                    controller: function ($scope, $element, $attrs) {
+                    controller: function ($scope, $element) {
+                        $scope.threshold = $scope.threshold || 500;
                         $scope.toggleShow = function () {
                             $scope.open = !$scope.open;
                             $element.empty();
-                            ($scope.class === "collapseText") ? ($scope.class = "expandText") : ($scope.class = "collapseText");
+                            $scope.class = ($scope.class === "collapseText")?"expandText":"collapseText";
                             var THRESHOLD = parseInt($scope.threshold);
                             Truncation.applyTruncation(THRESHOLD, $scope, $element);
                             if ($scope.textType === 'plainText')
-                                $($element.find('span')[0]).text($scope.text);
+                                $($element.find('span')[0]).text($scope.text); //jshint ignore:line
                         };
                     },
                     link: function ($scope, $element, $attrs) {
                         $scope.open = false;
                         $scope.class = 'collapseText';
                         $scope.textType = undefined;
-                        ($attrs.ngBindHtml != null) ? ($scope.textType = 'html') : ($scope.textType = 'plainText');
+                        $scope.textType = $attrs.ngBindHtml?'html':'plainText';
                         var THRESHOLD = parseInt($scope.threshold);
                         $scope.$watch("text", function () {
                             $element.empty();
                             Truncation.applyTruncation(THRESHOLD, $scope, $element);
                             if ($scope.textType === 'plainText' && $scope.text && $scope.text.length >= THRESHOLD)
-                                $($element.find('span')[0]).text($scope.text);
-                        })
+                                $($element.find('span')[0]).text($scope.text); //jshint ignore:line
+                        });
                     }
                 };
             }])
@@ -84,5 +85,5 @@
                     }
                 }
             };
-        }])
+        }]);
 }());

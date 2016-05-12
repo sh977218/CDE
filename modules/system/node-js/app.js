@@ -33,6 +33,11 @@ exports.init = function (app) {
         if (req.ip) return req.ip;
     };
 
+    var version = "local-dev";
+    try {
+        version = require('./version.js').version;
+    } catch (e) {}
+
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
@@ -40,7 +45,7 @@ exports.init = function (app) {
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
     });
 
@@ -134,7 +139,7 @@ exports.init = function (app) {
     });
 
     app.get('/', function (req, res) {
-        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     });
 
     app.get('/gonowhere', function (req, res) {
@@ -167,25 +172,65 @@ exports.init = function (app) {
         res.render("loginText", "system", {csrftoken: token});
     });
 
-    app.get('/csrf', csrf(), function (req, res) {
+    var failedIps = [];
+
+    app.get('/csrf', csrf(), function(req, res) {
         exportShared.nocacheMiddleware(req, res);
-        res.send(req.csrfToken());
+        var resp = {csrf: req.csrfToken()};
+        var failedIp = findFailedIp(getRealIp(req));
+        if ((failedIp && failedIp.nb > 2) ){
+            resp.showCaptcha = true;
+        }
+        res.send(resp);
     });
 
-    app.post('/login', csrf(), function (req, res, next) {
+    function findFailedIp(ip) {
+        return failedIps.filter(function(f) {
+            return f.ip === ip;
+        })[0];
+    }
+
+    app.post('/login', csrf(), function(req, res, next) {
+        var failedIp = findFailedIp(getRealIp(req));
+        var err;
+        if (failedIp && failedIp.nb > 2){
+            if (req.body.recaptcha) {
+                request.post("https://www.google.com/recaptcha/api/siteverify",
+                    {form: {
+                        secret: config.captchaCode,
+                        response: req.body['g-recaptcha-response'],
+                        remoteip: getRealIp(req)
+                    }}, function(err, resp, body) {
+                        if (!body.success) {
+                            err = "incorrect recaptcha";
+                        }
+                    });
+            } else {
+                err = "missing reCaptcha";
+            }
+        }
+
+        if (err) {
+            return res.status(412).send(err);
+        }
+
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function () {
-            passport.authenticate('local', function (err, user) {
-                if (err) {
-                    return res.status(403).end();
-                }
+        req.session.regenerate(function() {
+            passport.authenticate('local', function(err, user) {
+                if (err) { return res.status(403).end(); }
                 if (!user) {
+                    if (failedIp && config.useCaptcha) failedIp.nb++;
+                    else {
+                        failedIps.unshift({ip: getRealIp(req), nb: 1});
+                        failedIps.length = 50; // simon doesn't like because what if more than 50 people do this
+                    }
                     return res.status(403).send();
                 }
-                req.logIn(user, function (err) {
-                    if (err) {
-                        return res.status(403).end();
+                req.logIn(user, function(err) {
+                    if (failedIp) {
+                        failedIp.nb = 0;
                     }
+                    if (err) { return res.status(403).end(); }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
