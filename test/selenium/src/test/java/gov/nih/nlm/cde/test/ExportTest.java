@@ -81,7 +81,7 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/SearchExport (1).csv"),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s +  "-----\nActual Export: " + actual); //I added this in to better log in. Hope it doesn't break anything
+                    Assert.fail("missing line in export : " + s +  "\n" + "-----\nActual Export: " + actual); //I added this in to better log in. Hope it doesn't break anything
                 }
             }
         } catch (IOException e) {
