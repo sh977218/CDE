@@ -6,20 +6,17 @@ test/selenium/*.png
 test-console.out
 test-console.o
 bower_components
+modules/components/
 modules/system/views/version.html
 modules/components/
 
 
 ## Secret Config Files
-config.json
-config/test.json
-config/simon.json
 views/version.html
 modules/system/public/html/version.html
+config/simon.json
 
 ## Local Files
-seed
-scripts/elasticsearch/my*
 my-*
 
 ## Logs
