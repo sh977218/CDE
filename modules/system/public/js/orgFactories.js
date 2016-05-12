@@ -70,11 +70,14 @@ angular.module('OrgFactories', ['ngResource'])
             return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
         }
         , getUsedBy: function(elt, user) {
-            if (elt.classification)
-                return elt.classification.filter(function(c) {
+            if (elt.classification) {
+                var arr = elt.classification.filter(function (c) {
                     return orgHelpers.showWorkingGroup(c.stewardOrg.name, user);
-                }).map(function(e) {return e.stewardOrg.name;});
-            else return [];
+                }).map(function (e) {
+                    return e.stewardOrg.name;
+                });
+                return arr.filter(function (item, pos) {return arr.indexOf(item) === pos;});
+            } else return [];
         }
     };
     orgHelpers.getOrgsDetailedInfoAPI();
