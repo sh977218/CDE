@@ -32,22 +32,26 @@
                 <i class="fa fa-download"></i>
                 Export <span class="caret"></span>
             </button>
-                <ul class="dropdown-menu">
-                    <li ng-if="user._id">
-                        <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
-                    </li>
-                    <li ng-if="user._id">
-                        <a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a>
-                    </li>
-                    <li ng-if="user._id">
-                        <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
-                            XML File, SDC Schema</a>
-                    </li>
-                    <li ng-if="user._id">
-                        <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a>
-                    </li>
-                    <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
-                </ul>
+            <ul class="dropdown-menu">
+                <li ng-if="user._id">
+                    <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
+                        XML File, SDC Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a>
+                </li>
+                <li ng-if="user._id && enableBeta">
+                    <a id='nihRedCap' ng-href="form/{{elt.tinyId}}?type=REDCap" target="_blank">
+                        REDCap <sup class="betaFeature">beta</sup></a>
+                </li>
+                <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
+            </ul>
         </div>
 
         <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"

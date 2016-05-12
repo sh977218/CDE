@@ -1,6 +1,6 @@
 var config = require('./parseConfig')
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({
