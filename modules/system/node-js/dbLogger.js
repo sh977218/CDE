@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -57,7 +57,7 @@ var clientErrorSchema= new mongoose.Schema(
 
 var storedQuerySchema = new mongoose.Schema(
     {
-        searchTerm: String
+        searchTerm: {type: String, lowercase: true, trim: true}
         , date: {type: Date, default: Date.now}
         , searchToken: String
         , username: String

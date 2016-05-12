@@ -102,9 +102,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-            "</definition><languageCode>EN-US</languageCode><context><contextName>Health",
-            "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name><datatype>Value List</datatype>",
-            "<registrationStatus>Qualified</registrationStatus></registrationState></element>"
+                "</definition><languageCode>EN-US</languageCode><context><contextName>Health",
+                "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name><datatype>Value List</datatype>",
+                "<registrationStatus>Qualified</registrationStatus></registrationState></element>"
         };
 
         try {
@@ -157,7 +157,7 @@ public class ExportTest extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/QuickBoardExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-quickBoardExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s +  "-----\nActual Export: " + actual);
+                    Assert.fail("missing line in export : " + s + "-----\nActual Export: " + actual);
                 }
             }
         } catch (IOException e) {
@@ -166,4 +166,5 @@ public class ExportTest extends NlmCdeBaseTest {
         }
 
     }
+
 }

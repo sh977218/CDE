@@ -2,19 +2,19 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.RecordVideo;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class SearchSettingsTest extends NlmCdeBaseTest {
 
-    void setAndCheckFields(){
-        findElement(By.id("browseOrg-NINDS")).click();
+    void setAndCheckFields() {
+        clickElement(By.id("browseOrg-NINDS"));
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
@@ -22,20 +22,19 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
 
-        // TODO edit this
+
         findElement(By.id("searchSettings")).click();
         textPresent("Search Results View");
         textPresent("Table View Fields");
         textPresent("Search Results View");
         findElement(By.id("registrationStatus")).click();
         findElement(By.id("administrativeStatus")).click();
-        findElement(By.id("tinyId")).click();
-
+        findElement(By.id("tinyId")).click();         
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
@@ -47,7 +46,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
 
 
     @Test
-    void unloggedUserSetsFields (){
+    void unloggedUserSetsFields() {
         mustBeLoggedOut();
         goToCdeSearch();
         setAndCheckFields();
@@ -55,8 +54,8 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         //The following just tests that clearStorage() works
         clearStorage();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
@@ -73,8 +72,8 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         setAndCheckFields();
         clearStorage();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
