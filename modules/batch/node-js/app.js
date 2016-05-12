@@ -4,7 +4,6 @@ var cde_schemas = require('../../cde/node-js/schemas')
     , config = require('../../system/node-js/parseConfig')
     , mongoose = require('mongoose')
     , multer = require('multer')
-    , async = require('async')
     , fs = require('fs')
     , child_process = require('child_process')
     , authorization = require('../../system/node-js/authorization')
@@ -48,7 +47,7 @@ exports.init = function (app) {
                 Batch.remove({}, function (err) {
                     if (err) return res.status(500).send(err);
                     res.send();
-                })
+                });
             } else {
                 res.send(results[0]);
             }
@@ -66,8 +65,8 @@ exports.init = function (app) {
                         if (err) return res.status(500).send(err);
                         res.send(newBatch);
                     });
-                })
-            })
+                });
+            });
         });
     });
 
@@ -75,7 +74,7 @@ exports.init = function (app) {
         MigrationDataElement.count({}, function (err, count) {
             if (err) return res.status(500).send(err);
             return res.send("" + count);
-        })
+        });
     });
 
     app.post("/migrationOrg", authorization.checkSiteAdmin, function (req, res) {
@@ -120,8 +119,9 @@ exports.init = function (app) {
                 logs = logs + data;
             });
 
-            intervalObj = setInterval(function () {
+            var intervalObj = setInterval(function () {
                 Batch.update({}, {logs: logs}, {}, function (err) {
+                    if(err) throw err;
                 });
             }, 1000);
 
@@ -130,7 +130,7 @@ exports.init = function (app) {
                 clearTimeout(intervalObj);
                 Batch.update({}, {logs: logs, step: "batchComplete"}, {});
             });
-        })
+        });
     });
 
     app.post("/haltMigration", authorization.checkSiteAdmin, function (req, res) {

@@ -469,6 +469,10 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
+    public boolean classPresent(String text, By by) {
+        return findElement(by).getAttribute("class").contains(text);
+    }
+
     public boolean textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
         return true;
@@ -485,6 +489,10 @@ public class NlmCdeBaseTest {
     public boolean textNotPresent(String text, By by) {
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
+    }
+
+    public boolean classNotPresent(String text, By by) {
+        return !findElement(by).getAttribute("class").contains(text);
     }
 
     protected void goHome() {
@@ -740,6 +748,16 @@ public class NlmCdeBaseTest {
 
     protected void setLowStatusesVisible() {
         setVisibleStatus("minStatus-Incomplete");
+    }
+
+    protected void enableBetaFeature() {
+        clickElement(By.id("searchSettings"));
+        classNotPresent("btn-success", By.id("betaEnabled"));
+        classPresent("btn-danger", By.id("betaDisabled"));
+        clickElement(By.id("betaEnabled"));
+        classPresent("btn-success", By.id("betaEnabled"));
+        classNotPresent("btn-danger", By.id("betaDisabled"));
+        driver.navigate().back();
     }
 
     protected void reorderIconTest(String tabName) {
