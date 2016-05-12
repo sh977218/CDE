@@ -23,7 +23,7 @@ exports.getFormQuestions = function(form){
 };
 
 exports.getFormCdes = function(form){
-    return exports.getFormQuestions(form).map(function(q){return q.cde});
+    return exports.getFormQuestions(form).map(function(q){return q.cde;});
 };
 
 
@@ -150,7 +150,7 @@ exports.getFormOdm = function(form, cb) {
                 var codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
                     var codeListInHouse = cl.CodeListItem.map(function (i) {
-                        return i.Decode.TranslatedText.keyValue
+                        return i.Decode.TranslatedText.keyValue;
                     }).sort();
                     var codeListToAdd = q1.question.answers.map(function (a) {
                         return a.valueMeaningName;
@@ -215,8 +215,8 @@ exports.getFormOdm = function(form, cb) {
             })
         });
     });
-    sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
-    questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
-    codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
+    sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);});
+    questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);});
+    codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);});
     cb(null, odmJsonForm);
 };

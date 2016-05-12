@@ -1,13 +1,11 @@
 var mongoose = require('mongoose'),
     config = require('../modules/system/node-js/parseConfig'),
-    schemas = require('../modules/system/node-js/schemas.js'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     mongo_cde = require('../modules/cde/node-js/mongo-cde'),
     async = require('async');
 
 var mongoUrl = config.mongoUri;
-var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
-Org = conn.model('Org', schemas.orgSchema);
+var conn = mongoose.createConnection(mongoUrl);
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 
 var counter = 0;
@@ -55,18 +53,19 @@ async.series([
                             console.log('deleted ' + cdes[0]._id + '\n');
                             doneOneResult();
                         });
-                    })
+                    });
                 }, function doneAllResult() {
                     console.log('finished remove all duplicated cdes');
                     console.log('duplicated cde id: ' + duplicatedCdeId);
                     cb();
-                })
+                });
             }
             else {
                 console.log('no duplicate found');
                 cb();
             }
-        })
+        });
     }, function () {
+        //noinspection JSUnresolvedVariable
         process.exit(0);
     }]);

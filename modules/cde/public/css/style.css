@@ -1001,3 +1001,7 @@ div + .questionPlaceholder {
 .extraCodeSystem {
     border-left: 2px solid rgba(201, 200, 200, 0.88) !important;
 }
+
+.betaFeature {
+    color: green
+}
