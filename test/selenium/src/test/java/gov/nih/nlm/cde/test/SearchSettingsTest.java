@@ -29,8 +29,9 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Search Results View");
         findElement(By.id("registrationStatus")).click();
         findElement(By.id("administrativeStatus")).click();
-        findElement(By.id("tinyId")).click();         
-        clickElement(By.id("saveSettings"));
+        findElement(By.id("tinyId")).click();
+        hangon(1);
+            clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
