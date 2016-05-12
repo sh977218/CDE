@@ -21,7 +21,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Used by");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
-
+        textNotPresent("NLM ID");
 
         findElement(By.id("searchSettings")).click();
         textPresent("Search Results View");
@@ -31,7 +31,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         findElement(By.id("administrativeStatus")).click();
         findElement(By.id("tinyId")).click();
         hangon(1);
-            clickElement(By.id("saveSettings"));
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
@@ -66,7 +66,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     void loggedUserSetsFields() {
         mustBeLoggedInAs(tableViewUser_username, password);
         goToCdeSearch();
