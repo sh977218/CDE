@@ -1,11 +1,12 @@
-var mongo_data_form = require('./mongo-form')
-    , mongo_data_cde = require('../../cde/node-js/mongo-cde')
-    , adminSvc = require('../../system/node-js/adminItemSvc.js')
-    , formShared = require('../shared/formShared')
-    , JXON = require('jxon')
-    , sdc = require('./sdcForm')
-    , util = require('util')
-;
+var mongo_data_form = require('./mongo-form'),
+    mongo_data_cde = require('../../cde/node-js/mongo-cde'),
+    adminSvc = require('../../system/node-js/adminItemSvc.js'),
+    formShared = require('../shared/formShared'),
+    JXON = require('jxon'),
+    sdc = require('./sdcForm'),
+    redCap = require('./redCapForm'),
+    archiver = require('archiver')
+    ;
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
@@ -34,7 +35,7 @@ var getFormJson = function (form, req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);
         var ids = cdes.map(function (cde) {
-            return cde.tinyId
+            return cde.tinyId;
         });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
             cdes.forEach(function (formCde) {
@@ -89,6 +90,7 @@ exports.formById = function (req, res) {
         }
         else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+        else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
         else getFormJson(form, req, res);
     });
 };
@@ -97,7 +99,68 @@ var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     res.send(sdc.formToSDC(form));
 };
+var exportWarnings = {
+    'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
+    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
+    'emptySection': 'REDCap cannot support empty section.',
+    'nestedSection': 'REDCap cannot support nested section.',
+    'unknownElementType': 'This form has error.'
+};
+function loopForm(form) {
+    function loopFormElements(fe, insideSection) {
+        for (var i = 0; i < fe.formElements.length; i++) {
+            var e = fe.formElements[i];
+            if (e.elementType === 'section') {
+                if (insideSection === true) {
+                    return 'nestedSection';
+                }
+                else if (e.formElements.length === 0) {
+                    return 'emptySection';
+                }
+                else {
+                    return loopFormElements(e, true);
+                }
+            } else if (e.elementType === 'question') {
+                continue;
+            } else {
+                console.log('unknown element type in form: ' + form);
+                return 'unknownElementType';
+            }
+        }
+        return false;
+    }
 
+    return loopFormElements(form, false);
+}
+var getFormRedCap = function (form, response) {
+    if (exportWarnings[form.stewardOrg.name]) {
+        response.status(500).send(exportWarnings[form.stewardOrg.name]);
+        return;
+    }
+    var validationErr = loopForm(form.toObject());
+    if (validationErr) {
+        response.status(500).send(exportWarnings[validationErr]);
+    } else {
+        response.writeHead(200, {
+            'Content-Type': 'application/zip',
+            'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
+        });
+        var zip = archiver('zip', {});
+        zip.on('error', function (err) {
+            response.status(500).send({error: err.message});
+        });
+
+        //on stream closed we can end the request
+        zip.on('end', function () {
+            console.log('Archive wrote %d bytes', zip.pointer());
+        });
+        zip.pipe(response);
+        zip.append('NLM', {name: 'AuthorID.txt'})
+            .append(form.get('tinyId'), {name: 'InstrumentID.txt'})
+            .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
+            .finalize();
+    }
+};
 
 exports.priorForms = function (req, res) {
     var formId = req.params.id;

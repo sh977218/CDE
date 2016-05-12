@@ -22,7 +22,7 @@ var passport = require('passport')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
     , authorization = require('../../system/node-js/authorization')
-    , esInit = require('../../../deploy/elasticSearchInit')
+    , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     ;
 
@@ -33,6 +33,11 @@ exports.init = function (app) {
         if (req.ip) return req.ip;
     };
 
+    var version = "local-dev";
+    try {
+        version = require('./version.js').version;
+    } catch (e) {}
+
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
@@ -40,7 +45,7 @@ exports.init = function (app) {
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
-            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+            res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
     });
 
@@ -134,7 +139,7 @@ exports.init = function (app) {
     });
 
     app.get('/', function (req, res) {
-        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false});
+        res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
     });
 
     app.get('/gonowhere', function (req, res) {
@@ -760,7 +765,7 @@ exports.init = function (app) {
             spawn('rm', [target + '/system*']).on('exit', function(){
                 var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
                 restore.on('exit', function() {
-                    elastic.recreateIndexes();
+                    esInit.indices.forEach(elastic.reIndex);
                     var rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {
                         res.send();

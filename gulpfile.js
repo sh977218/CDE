@@ -95,7 +95,10 @@ gulp.task('copyCode', ['wiredep'], function() {
 gulp.task('prepareVersion', ['copyCode'], function() {
     setTimeout(function() {
         git.revParse({args:'--short HEAD'}, function(err, hash) {
-            fs.writeFile(config.node.buildDir + "/modules/system/public/html/version.html", hash);
+            fs.writeFile(config.node.buildDir + "/modules/system/node-js/version.js", "exports.version = '" + hash + "';", function(err) {
+                if (err)  console.log("ERROR generating version.html: " + err);
+                else console.log("generated " + config.node.buildDir + "/modules/system/node-js/version.js");
+            });
         });
     }, 15000);
 });
@@ -137,9 +140,8 @@ gulp.task('tarCode', function () {
     writeS.on('close', function () {
         // tar done, now sign with gpg
         var gpg = spawn('gpg', ["-s", "./code.tar.gz"]);
-        gpg.on('close', function (code) {
+        gpg.on('close', function () {
             fs.unlinkSync("./code.tar.gz");
-            //done();
         });
     });
     var fixupDirs = function (entry) {

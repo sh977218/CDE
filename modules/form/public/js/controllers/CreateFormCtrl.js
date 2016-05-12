@@ -1,40 +1,16 @@
-angular.module('formModule').controller('CreateFormCtrl', ['$scope', 'Form', '$location',
-    function($scope, Form, $location)
-{
-    $scope.newForm = {stewardOrg:{}, naming: []};
-    $scope.validationErrors = function() {
-        if (!$scope.newForm.designation) {
-            return "Please enter a name for the new form.";
-        } else if (!$scope.newForm.definition) {
-            return "Please enter form description.";
-        } else if (!$scope.newForm.stewardOrg.name) {
-            return "Please select a steward for the new form.";
-        }
-        return null;
-    };
+angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', '$timeout', '$uibModal', 'Form', '$location', '$controller',
+    function ($scope, $window, $timeout, $modal, Form, $location, $controller) {
 
-    $scope.$on('$locationChangeStart', function( event ) {
-        if (!$scope.saving) {
-            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
-            if (!answer) {
-                event.preventDefault();
-            }
-        }
-    });
+        $scope.elt = {
+            classification: [], stewardOrg: {}, naming: [{
+                designation: "", definition: "", context: {
+                    contextName: "Health"
+                    , acceptability: "preferred"
+                }
+            }]
+        };
 
-    $scope.save = function() {
-        $scope.saving = true;
-        $scope.newForm.naming.push({
-           designation: $scope.newForm.designation
-           , definition: $scope.newForm.definition
-           , context: {
-               contextName: "Health"
-               , acceptability: "preferred"
-           }
-        });
-        Form.save($scope.newForm, function(form) {
-            $location.url("formView?tinyId=" + form.tinyId);
-            $scope.addAlert("success", "Form created.");
-        });
-    };
-}]);
+        $controller('CreateFormAbstractCtrl', {$scope: $scope});
+        $scope.openFormInNewTab = true;
+        
+    }]);
