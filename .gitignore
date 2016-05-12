@@ -5,17 +5,15 @@ test/selenium/.gradle
 test/selenium/*.png
 test-console.out
 bower_components
+modules/components/
 modules/system/views/version.html
 
 ## Secret Config Files
-config.js
-config/test.js
 views/version.html
 modules/system/public/html/version.html
+config/simon.json
 
 ## Local Files
-seed
-scripts/elasticsearch/my*
 my-*
 
 ## Logs
