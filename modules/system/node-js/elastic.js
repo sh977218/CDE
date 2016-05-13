@@ -23,6 +23,7 @@ exports.removeElasticFields = function(elt) {
     delete elt.primaryDefinitionCopy;
     delete elt.flatIds;
     delete elt.usedByOrgs;
+    delete elt.registrationState.registrationStatusSortOrder;
     return elt;
 };
 
