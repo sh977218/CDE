@@ -1,15 +1,14 @@
-regStatusShared = {};
+regStatusShared = {}; //jshint ignore:line
 // @TODO refactor this to = {"pref standard": {help: "", curHelp: ""}}
 regStatusShared.statusList = [
     {
         name: 'Preferred Standard'
-        , help: "Preferred Standard elements are managed by the CDE Working Group and described by Meaninful Use terminology. <br/>\n\
-             Preferred Standard elements can only be editied by the CDE Working Group"
+        , help: "Preferred Standard elements are managed by the CDE Working Group and described by Meaninful Use terminology. <br/>Preferred Standard elements can only be editied by the CDE Working Group"
         , curHelp: "Preferred Standard elements cannot be edited by their stewards"
     }
     , {
         name: 'Standard'
-        ,help: "Standard elements are managed by the CDE Working Group. Standard elements can only be editied by the CDE Working Group." 
+        ,help: "Standard elements are managed by the CDE Working Group. Standard elements can only be editied by the CDE Working Group."
         , curHelp: "Standard elements cannot be edited by their stewards"
     }
     , {
@@ -41,3 +40,4 @@ regStatusShared.statusList = [
 
 if (exports) exports.statusList = regStatusShared.statusList.map(function(e){return e.name});
 
+regStatusShared.orderedList = regStatusShared.statusList.map(function(e){return e.name});
