@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('ListCtrl', // jshint ignore:line
+angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
         'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
@@ -399,6 +399,10 @@ angular.module('systemModule').controller('ListCtrl', // jshint ignore:line
             if (s.name === key) result = s.help;
         });
         return result;
+    };
+
+    $scope.getRegStatusIndex = function(rg) {
+        return regStatusShared.orderedList.indexOf(rg.key);
     };
 
 }]);
