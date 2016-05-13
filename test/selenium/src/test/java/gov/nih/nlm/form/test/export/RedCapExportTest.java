@@ -11,7 +11,6 @@ import java.io.File;
 public class RedCapExportTest extends BaseFormTest {
 
     @Test
-    @RecordVideo
     public void checkRedCapExportZipFileSize() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Frontal Behavioral Inventory (FBI)");

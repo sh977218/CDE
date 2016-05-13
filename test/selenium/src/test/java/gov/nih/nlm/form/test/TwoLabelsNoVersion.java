@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 public class TwoLabelsNoVersion extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo
     public void twoLabelsNoVersion() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("NoVersionCdeFormTest");
