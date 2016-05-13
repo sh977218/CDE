@@ -13,7 +13,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("description_tab"));
         clickElement(By.id("question_accordion_0_0"));
-        new Select(findElement(By.name("q_default_answer_0"))).selectByVisibleText("Brother");
+        new Select(findElement(By.id("q_default_answer_0"))).selectByVisibleText("Brother");
 
         clickElement(By.id("question_accordion_0_1"));
         clickElement(By.cssSelector("#q_defaultAnswer_text_1 i"));
