@@ -100,7 +100,7 @@ function createCde(eyeGene, loinc) {
     }
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
-        stewardOrg: {name: "EyeGene"},
+        stewardOrg: {name: "LOINC"},
         createdBy: {username: 'batchloader'},
         created: today,
         imported: today,
@@ -186,7 +186,8 @@ function run() {
                                             existingAnswerLists.forEach(function (existingAnswerList) {
                                                 valueDomain.permissibleValues.push({
                                                     valueMeaningName: existingAnswerList.get('AnswerString'),
-                                                    permissibleValue: existingAnswerList.get('AnswerStringId'),
+                                                    valueMeaningCode: existingAnswerList.get('AnswerStringId'),
+                                                    permissibleValue: existingAnswerList.get('AnswerString'),
                                                     codeSystemName: 'LOINC'
                                                 });
                                             });

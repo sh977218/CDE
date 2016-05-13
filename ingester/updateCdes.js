@@ -25,10 +25,6 @@ var created = 0;
 var createdCDE = [];
 var same = 0;
 
-setInterval(function () {
-    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-}, 10000);
-
 function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;
@@ -258,6 +254,7 @@ function streamOnClose() {
                 theOrg.classifications = org.classifications;
                 theOrg.save(function (err) {
                     if (err) console.log("Error saving Org " + err);
+                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
                 });
             });
         });
@@ -265,7 +262,7 @@ function streamOnClose() {
 
     // give 5 secs for org to save.
     setTimeout(function () {
-        console.log(createdCDE);
+        console.log(" changed: " + changed + " same: " + same + " created: " + created);
         process.exit(0);
     }, 5000);
 }
@@ -282,3 +279,6 @@ function doStream() {
 }
 
 doStream();
+setInterval(function () {
+    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+}, 10000);

@@ -7,16 +7,15 @@ var async = require('async'),
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
 DataElement.find({
-    'classification.stewardOrg.name': 'EyeGene',
+    'classification.stewardOrg.name': 'PhenX',
     archived: null,
     'registrationState.registrationStatus': {$ne: "Retired"}
 }, function (err, DEs) {
     if (err) throw err;
     async.forEach(DEs, function (de, doneOneDe) {
-        de.get('registrationState').registrationStatus = 'Retired';
+        de.source = 'LOINC';
         de.updatedBy = user;
         de.updated = new Date().toJSON();
-        de.markModified('registrationState');
         de.save(function () {
             elastic.updateOrInsert(de, function () {
                 deCounter++;
