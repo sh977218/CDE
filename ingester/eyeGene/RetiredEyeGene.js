@@ -1,6 +1,6 @@
 var async = require('async'),
-    DataElement = require('./../createConnection').DataElementModel,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
+    DataElement = mongo_cde.DataElement,
     elastic = require('../../modules/cde/node-js/elastic')
     ;
 
@@ -23,13 +23,13 @@ DataElement.find({
             console.log('deCounter: ' + deCounter);
             doneOneDe();
         });
-/*
-        mongo_cde.update(de.toObject(), user, function () {
-            deCounter++;
-            console.log('deCounter: ' + deCounter);
-            doneOneDe();
-        });
-*/
+        /*
+         mongo_cde.update(de.toObject(), user, function () {
+         deCounter++;
+         console.log('deCounter: ' + deCounter);
+         doneOneDe();
+         });
+         */
     }, function doneAllDes() {
         console.log('finished all. de count:' + deCounter);
         process.exit(1);
