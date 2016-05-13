@@ -21,6 +21,13 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope', function($s
         $scope.reload();
     };
 
+    $scope.addStatusFilter = function(status) {
+        var index = $scope.searchSettings.regStatuses.indexOf(status);
+        if (index > -1) $scope.searchSettings.regStatuses.splice(index, 1);
+        else $scope.searchSettings.regStatuses.push(status);
+        $scope.reload();
+    };
+
     $scope.alterOrgFilter = function(orgName) {
         $scope._alterOrgFiler(orgName);
         $scope.reload();
