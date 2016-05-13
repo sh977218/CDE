@@ -14,7 +14,8 @@ var gulp = require('gulp'),
     fstream = require('fstream'),
     spawn = require('child_process').spawn,
     elastic = require('./modules/system/node-js/createIndexes'),
-    git = require('gulp-git')
+    git = require('gulp-git'),
+    templateCache = require('gulp-angular-templatecache')
 ;
 
 require('es6-promise').polyfill();
@@ -90,6 +91,12 @@ gulp.task('copyCode', ['wiredep'], function() {
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
 
+});
+
+gulp.task('angularTemplates', function() {
+    return gulp.src('templates/**/*.html')
+        .pipe(templateCache())
+        .pipe(gulp.dest(config.node.buildDir + "/modules/cde/public/js/cdeTemplates.js"));
 });
 
 gulp.task('prepareVersion', ['copyCode'], function() {
