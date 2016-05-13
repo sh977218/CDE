@@ -4,7 +4,6 @@ var request = require('request')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
-    //, logging = require('../../system/node-js/logging.js')
 ;
 
 var status = this;
@@ -48,7 +47,7 @@ status.delayReports = function() {
 
 exports.evaluateResult = function() {
     if (process.uptime() < config.status.timeouts.minUptime) return;
-    if (status.statusReport.elastic.updating) return;
+    if (status.statusReport.elastic.sync) return;
     if (status.reportSent) return;    
     var emailContent = {
         subject: "Urgent: ElasticSearch issue on " + config.name

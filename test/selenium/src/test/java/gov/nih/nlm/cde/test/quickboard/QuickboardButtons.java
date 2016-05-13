@@ -11,6 +11,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
+        textPresent("Prostate Cancer American Joint Committee");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_cde_compare"));
