@@ -35,6 +35,12 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("248152002", By.id("codeAsSCT-5"));
 
         newCdeVersion();
+        textPresent("Female", By.id("nameAsNCI-5"));
+        textPresent("C16576", By.id("codeAsNCI-5"));
+        textPresent("Female", By.id("nameAsLNC-5"));
+        textPresent("LA3-6", By.id("codeAsLNC-5"));
+        textPresent("Female", By.id("nameAsSCT-5"));
+        textPresent("248152002", By.id("codeAsSCT-5"));
 
         mustBeLoggedOut();
         goToCdeByName("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator");
