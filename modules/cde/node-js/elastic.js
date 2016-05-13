@@ -28,7 +28,7 @@ exports.updateOrInsert = function (elt, cb) {
                     details: ""
                 });
             }
-            if (cb) cb();
+            if (cb) cb(err);
         });
     }
 };
