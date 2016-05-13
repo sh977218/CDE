@@ -32,32 +32,35 @@ var uom_datatype_map = {
 
 function createCde(eyeGene, loinc) {
     var naming = [];
-    if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
-        loinc['PART DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
-            var name = {
-                designation: eyeGene.LONG_COMMON_NAME,
-                definition: defintion.Description,
-                languageCode: "EN-US",
-                context: {
-                    contextName: "Health",
-                    acceptability: "preferred"
-                }
-            };
-            naming.push(name);
-        });
-    } else if (loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0) {
-        loinc['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
-            var name = {
-                designation: eyeGene.LONG_COMMON_NAME,
-                definition: defintion.Description,
-                languageCode: "EN-US",
-                context: {
-                    contextName: "Health",
-                    acceptability: "preferred"
-                }
-            };
-            naming.push(name);
-        });
+    if ((loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0 ) || ( loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0)) {
+        if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
+            loinc['PART DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
+                var name = {
+                    designation: eyeGene.LONG_COMMON_NAME,
+                    definition: defintion.Description,
+                    languageCode: "EN-US",
+                    context: {
+                        contextName: "Health",
+                        acceptability: "preferred"
+                    }
+                };
+                naming.push(name);
+            });
+        }
+        if (loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0) {
+            loinc['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
+                var name = {
+                    designation: eyeGene.LONG_COMMON_NAME,
+                    definition: defintion.Description,
+                    languageCode: "EN-US",
+                    context: {
+                        contextName: "Health",
+                        acceptability: "preferred"
+                    }
+                };
+                naming.push(name);
+            });
+        }
     } else {
         naming.push({
             designation: eyeGene.LONG_COMMON_NAME,
