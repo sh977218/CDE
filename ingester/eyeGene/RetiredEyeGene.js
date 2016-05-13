@@ -18,10 +18,11 @@ DataElement.find({
         de.updated = new Date().toJSON();
         de.markModified('registrationState');
         de.save(function () {
-            elastic.updateOrInsert(de);
-            deCounter++;
-            console.log('deCounter: ' + deCounter);
-            doneOneDe();
+            elastic.updateOrInsert(de, function() {
+                deCounter++;
+                console.log('deCounter: ' + deCounter);
+                doneOneDe();
+            });
         });
         /*
          mongo_cde.update(de.toObject(), user, function () {

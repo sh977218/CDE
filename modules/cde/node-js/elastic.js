@@ -10,7 +10,7 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.updateOrInsert = function(elt) {
+exports.updateOrInsert = function(elt, cb) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
         delete doc._id;
@@ -28,6 +28,7 @@ exports.updateOrInsert = function(elt) {
                     details: ""
                 });
             }
+            if (cb) cb(err);
         });
     }
 };
