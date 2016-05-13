@@ -164,7 +164,7 @@
                 Status</strong>
 
             <div class="pl5" id="registrationStatusListHolder">
-                    <span class="hand-cursor" ng-repeat="t in aggregations.statuses.statuses.buckets"
+                    <span class="hand-cursor" ng-repeat="t in aggregations.statuses.statuses.buckets | orderBy : getRegStatusIndex"
                           uib-tooltip-html-unsafe="{{getRegStatusHelp(t.key)}}"
                           tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.doc_count > 0"
