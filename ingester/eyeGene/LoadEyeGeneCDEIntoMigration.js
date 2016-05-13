@@ -40,25 +40,22 @@ function createCde(eyeGene, loinc) {
                     definition: defintion.Description,
                     languageCode: "EN-US",
                     context: {
-                        contextName: "Health",
+                        contextName: "Long Common Name",
                         acceptability: "preferred"
                     }
                 };
                 naming.push(name);
             });
         }
-        if (loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0) {
-            loinc['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
-                var name = {
-                    designation: eyeGene.LONG_COMMON_NAME,
-                    definition: defintion.Description,
-                    languageCode: "EN-US",
-                    context: {
-                        contextName: "Health",
-                        acceptability: "preferred"
-                    }
-                };
-                naming.push(name);
+        if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
+            naming.push({
+                designation: eyeGene.LONG_COMMON_NAME,
+                definition: loinc['TERM DEFINITION/DESCRIPTION(S)'].Description,
+                languageCode: "EN-US",
+                context: {
+                    contextName: "Long Common Name",
+                    acceptability: "preferred"
+                }
             });
         }
     } else {
@@ -67,7 +64,7 @@ function createCde(eyeGene, loinc) {
             definition: '',
             languageCode: "EN-US",
             context: {
-                contextName: "Health",
+                contextName: "Long Common Name",
                 acceptability: 'preferred'
             }
         });
@@ -77,8 +74,8 @@ function createCde(eyeGene, loinc) {
         definition: '',
         languageCode: "EN-US",
         context: {
-            contextName: "Health",
-            acceptability: 'Shortname'
+            contextName: "Shortname",
+            acceptability: 'preferred'
         }
     });
     var ids = [{source: 'LOINC', id: eyeGene.LOINC_NUM}];
@@ -99,7 +96,7 @@ function createCde(eyeGene, loinc) {
             }
         });
         table = table + '</table>';
-        properties.push({key: 'RELATED NAMES', value: table, valueFormat: 'html'});
+        properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     var newCde = {
         tinyId: mongo_data.generateTinyId(),

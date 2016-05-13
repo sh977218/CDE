@@ -93,9 +93,7 @@ var deJsonSchema = {
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
-    , properties: [
-        {key: String, value: String, valueFormat: String, _id: false}
-    ]
+    , properties: [sharedSchemas.propertySchema]
     , ids: [sharedSchemas.idSchema]
     , dataSets: [sharedSchemas.dataSetSchema]
     , mappingSpecifications: [

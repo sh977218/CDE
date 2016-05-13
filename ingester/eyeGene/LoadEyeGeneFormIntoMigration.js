@@ -29,12 +29,12 @@ function createForm(eyeGene) {
     var ids = [{source: 'LOINC', id: eyeGene.LOINC_NUM}];
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
-        stewardOrg: {name: "EyeGene"},
+        stewardOrg: {name: "LOINC"},
         createdBy: {username: 'batchloader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
-        source: 'EyeGene',
+        source: 'LOINC',
         naming: naming,
         ids: ids,
         formElements: [],
@@ -132,9 +132,8 @@ function run() {
                                                     };
                                                     var formElement = {
                                                         elementType: 'question',
-                                                        label: '',
+                                                        label: existingCde.naming[0].designation,
                                                         question: question,
-                                                        hideLabel: true,
                                                         formElements: []
                                                     };
                                                     newForm.formElements[0].formElements.push(formElement);

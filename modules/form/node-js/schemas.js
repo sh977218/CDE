@@ -84,11 +84,10 @@ exports.formSchema = new Schema({
     , stewardOrg: {
         name: String
     }
+    , source: String
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
-    , properties: [
-        {key: String, value: String, valueFormat: String, _id: false}
-    ]
+    , properties: [sharedSchemas.propertySchema]
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]

@@ -17,6 +17,7 @@ var changed = 0;
 var created = 0;
 var createdForm = [];
 var same = 0;
+
 var source = 'LOINC';
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
@@ -43,11 +44,8 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         newForm.imported = importDate;
         newForm.referenceDocuments = migrationForm.referenceDocuments;
         newForm.formElements = migrationForm.formElements;
-
-        for (var j = 0; j < migrationForm.properties.length; j++) {
-            updateShare.removeProperty(newForm, migrationForm.properties[j]);
-            newForm.properties.push(migrationForm.properties[j]);
-        }
+        updateShare.removePropertiesOfSource(newForm.properties, migrationForm.source);
+        newForm.properties = newForm.properties.concat(migrationForm.properties);
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
@@ -172,6 +170,7 @@ function run() {
         migStream.pause();
         classificationShared.sortClassification(migrationForm);
         var orgName = migrationForm.stewardOrg.name;
+        var source = migrationForm.source;
         var formIdCounter = 0;
         var formId;
         var version;

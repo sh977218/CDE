@@ -4,7 +4,8 @@ var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
     MigrationDataElement = require('./createConnection').MigrationDataElementModel,
     DataElement = require('./createConnection').DataElementModel,
     MigrationOrg = require('./createConnection').MigrationOrgModel,
-    Org = require('./createConnection').OrgModel
+    Org = require('./createConnection').OrgModel,
+    updateShare = require('./updateShare')
     ;
 
 var cdeSource = process.argv[3];
@@ -24,6 +25,7 @@ var changed = 0;
 var created = 0;
 var createdCDE = [];
 var same = 0;
+
 
 function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
@@ -110,7 +112,8 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        newDe.properties = migrationCde.properties;
+        updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
+        newDe.properties = newDe.properties.concat(migrationCde.properties);
 
         removeClassificationTree(newDe, orgName);
         if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
