@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 public class RedCapExportErrorTest extends BaseFormTest {
 
     @Test
-    @RecordVideo
     public void promisCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PROMIS SF v2.0 - Instrumental Support 8a");
@@ -21,7 +20,6 @@ public class RedCapExportErrorTest extends BaseFormTest {
     }
 
     @Test
-    @RecordVideo
     public void phenxCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("PhenX Form RedCAP Export");

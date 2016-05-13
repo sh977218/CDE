@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -7,6 +8,7 @@ import org.testng.annotations.Test;
 public class NoDoublePinTest extends BoardTest {
 
     @Test
+    @RecordVideo
     public void noDoublePin() {
         mustBeLoggedInAs("doublepinuser", password);
         goToCdeSearch();
