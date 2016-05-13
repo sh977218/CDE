@@ -106,7 +106,7 @@ function run() {
                                             var loincId = text.trim();
                                             console.log(index);
                                             console.log(loincId);
-                                            mongo_cde.byOtherIdAndNotRetired('EyeGene', loincId, function (err, existingCde) {
+                                            mongo_cde.byOtherIdAndNotRetired('LOINC', loincId, function (err, existingCde) {
                                                 if (err) {
                                                     console.log(err + ' cdeId: ' + loincId);
                                                     throw err;
