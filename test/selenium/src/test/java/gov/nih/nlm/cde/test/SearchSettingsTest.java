@@ -62,7 +62,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
     }
 
     @Test
-    @RecordVideo
     void loggedUserSetsFields() {
         mustBeLoggedInAs(tableViewUser_username, password);
         goToCdeSearch();
