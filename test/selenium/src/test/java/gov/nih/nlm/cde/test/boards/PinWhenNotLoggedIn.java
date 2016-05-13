@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo
     public void pinWhenNotLoggedIn() {
         mustBeLoggedOut();
         goToCdeSearch();
