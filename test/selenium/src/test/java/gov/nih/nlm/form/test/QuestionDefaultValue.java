@@ -13,7 +13,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("description_tab"));
         clickElement(By.id("question_accordion_0_0"));
-        new Select(findElement(By.id("q_default_answer_0"))).selectByVisibleText("Brother");
+        new Select(driver.findElement(By.id("q_default_answer_0"))).selectByVisibleText("Brother");
 
         clickElement(By.id("question_accordion_0_1"));
         clickElement(By.cssSelector("#q_defaultAnswer_text_1 i"));
@@ -25,10 +25,10 @@ public class QuestionDefaultValue extends BaseFormTest {
         goToFormByName("History Data Source and Reliability");
         clickElement(By.linkText("native"));
 
-        Assert.assertEquals(new Select(findElements(By.cssSelector("select")).get(0)).getFirstSelectedOption().getText(),
+        Assert.assertEquals(new Select(driver.findElements(By.cssSelector("select")).get(0)).getFirstSelectedOption().getText(),
                 "Brother");
 
-        Assert.assertEquals(findElements(By.tagName("input")).get(0).getText(), "A default answer!");
+        Assert.assertEquals(driver.findElements(By.tagName("input")).get(0).getText(), "A default answer!");
 
     }
 
