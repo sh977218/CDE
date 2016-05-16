@@ -16,7 +16,7 @@ angular.module('systemModule').controller('RegistrationModalCtrl',
     });
 
     $scope.setHelpMessage = function() {
-        regStatusShared.statusList.forEach(function(status) {
+        regStatusShared.statusList.forEach(function(status) { // jshint ignore:line
             if (status.name === $scope.elt.registrationState.registrationStatus)
                 $scope.helpMessage = status.curHelp;
         });
