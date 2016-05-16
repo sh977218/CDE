@@ -43,8 +43,11 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/searchSettings', {
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
-        })
+        });
     })
+    .run(["$templateCache", function ($templateCache) {
+        $templateCache.put("/cde/public/templates/template1.html", "HELLO TEMPLATE");
+    }])
     .directive('inlineEdit', function () {
         return {
             restrict: 'AE',
@@ -145,7 +148,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.moveBottom = function () {
                     $scope.array.push($scope.array.shift());
                     $scope.cb();
-                }
+                };
             }
         };
     });
@@ -335,7 +338,7 @@ angular.module('systemModule').config(function ($provide) {
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix('nlmcde')
+    localStorageServiceProvider.setPrefix('nlmcde');
 });
 
 angular.module('systemModule').run(function ($rootScope) {

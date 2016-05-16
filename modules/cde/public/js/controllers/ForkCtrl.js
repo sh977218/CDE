@@ -35,7 +35,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModa
     $scope.openAddFork = function() {
         var modalInstance = $modal.open({
             animation: false,
-            templateUrl: '/cde/public/html/addFork.html',
+            templateUrl: '/cde/public/templates/addFork.html',
             controller: 'AddForkModalCtrl',
             resolve: {
                 userResource: function() {return userResource}

@@ -49,7 +49,7 @@ gulp.task('copyCode', ['wiredep'], function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
-        gulp.src('./modules/' + module + '/**/*.html')
+        gulp.src('./modules/' + module + '/html/**/*.html')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
@@ -94,9 +94,13 @@ gulp.task('copyCode', ['wiredep'], function() {
 });
 
 gulp.task('angularTemplates', function() {
-    return gulp.src('templates/**/*.html')
-        .pipe(templateCache())
-        .pipe(gulp.dest(config.node.buildDir + "/modules/cde/public/js/cdeTemplates.js"));
+    ['cde', 'form'].forEach(function(module) {
+        return gulp.src("modules/" + module + "/public/templates/*.html")
+            .pipe(templateCache({root: "/"  + module + "/public/templates", filename: "angularTemplates.js", module: module + "Module"}))
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
+        //.pipe(gulp.dest("modules/cde/public/js/cdeTemplates.js"));
+    });
+
 });
 
 gulp.task('prepareVersion', ['copyCode'], function() {
@@ -164,6 +168,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin']);
 
 
