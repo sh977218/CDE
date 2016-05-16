@@ -25,7 +25,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         goToFormByName("History Data Source and Reliability");
         clickElement(By.linkText("native"));
 
-        Assert.assertEquals(new Select(findElements(By.tagName("select")).get(0)).getFirstSelectedOption().getText(),
+        Assert.assertEquals(new Select(findElements(By.cssSelector("select")).get(0)).getFirstSelectedOption().getText(),
                 "Brother");
 
         Assert.assertEquals(findElements(By.tagName("input")).get(0).getText(), "A default answer!");
