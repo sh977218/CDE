@@ -5,11 +5,11 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
             accordion: {
                 url: '/' + $scope.module + '/public/html/' + $scope.module + 'AccordionList.html'
             }, table: {
-                url : '/' + $scope.module + '/public/templates/' + $scope.module + 'GridList.html'
+                url : '/' + $scope.module + '/public/html/' + $scope.module + 'GridList.html'
             }, sideBySide: {
                 url: '/system/public/html/eltsCompare.html'
             }, summary: {
-                url: "/" + $scope.module + "/public/templates/cdeSummaryList.html"
+                url: "/" + $scope.module + "/public/html/cdeSummaryList.html"
             }
         };
 

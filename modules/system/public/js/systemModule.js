@@ -60,7 +60,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , onOk: '&'
                 , typeaheadSource: '='
             },
-            templateUrl: '/system/public/js/systemTemplate/inlineEdit.html',
+            templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
             }
@@ -122,7 +122,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.editMode = false;
                 };
             },
-            templateUrl: '/system/public/js/systemTemplate/inlineAreaEdit.html'
+            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
         };
     })
     .directive('sortableArray', function () {
@@ -133,7 +133,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , index: '=index'
                 , cb: '&'
             },
-            templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
+            templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: function ($scope) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);

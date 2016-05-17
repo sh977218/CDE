@@ -96,21 +96,16 @@ gulp.task('copyCode', ['wiredep'], function() {
 });
 
 gulp.task('angularTemplates', function() {
-    //['cde', 'form'].forEach(function(module) {
-    //    return gulp.src("modules/" + module + "/public/templates/*.html")
-    //        .pipe(templateCache({root: "/"  + module + "/public/templates", filename: "angularTemplates.js", module: module + "Module"}))
-    //        .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
-    //    //.pipe(gulp.dest("modules/cde/public/js/cdeTemplates.js"));
-    //});
-
     ['cde', 'form', 'system'].forEach(function(module) {
         return gulp.src("modules/" + module + "/public/html/**/*.html")
-            .pipe(templateCache({root: "/"  + module + "/public/html", filename: "angularTemplates.js", module: modules + "Templates"}))
+            .pipe(templateCache({
+                root: "/" + module + "/public/html",
+                filename: "angularTemplates.js",
+                module: module + "Templates",
+                standalone: true
+            }))
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
-        //.pipe(gulp.dest("modules/cde/public/js/cdeTemplates.js"));
     });
-
-
 });
 
 gulp.task('prepareVersion', ['copyCode'], function() {
