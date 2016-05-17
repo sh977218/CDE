@@ -27,9 +27,7 @@ public class QuestionDefaultValue extends BaseFormTest {
 
         // this find ensures option Brother is selected.
         findElement(By.xpath("//div[./div/label[text()='From whom/ what were the medical history data obtained']]//select/option[@label='Brother'][@selected='selected']"));
-
-        Assert.assertEquals(driver.findElements(By.tagName("input")).get(0).getText(), "A default answer!");
-
+        
     }
 
 }
