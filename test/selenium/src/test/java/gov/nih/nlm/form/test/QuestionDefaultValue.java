@@ -25,8 +25,8 @@ public class QuestionDefaultValue extends BaseFormTest {
         goToFormByName("History Data Source and Reliability");
         clickElement(By.linkText("native"));
 
-        Assert.assertEquals(new Select(driver.findElements(By.cssSelector("select")).get(0)).getFirstSelectedOption().getText(),
-                "Brother");
+        // this find ensures option Brother is selected.
+        findElement(By.xpath("//div[./div/label[text()='From whom/ what were the medical history data obtained']]//select/option[@label='Brother'][@selected='selected']"));
 
         Assert.assertEquals(driver.findElements(By.tagName("input")).get(0).getText(), "A default answer!");
 

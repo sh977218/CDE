@@ -136,6 +136,7 @@
                          id="dd_q_defaultAnswer_{{$index}}">
                         <div ng-switch-when="true">
                             <select ng-model="question.question.defaultAnswer" id="q_default_answer_{{$index}}"
+                                    ng-disabled="!canCurate" ng-change="stageElt()"
                                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
                         </div>
                         <div ng-switch-default>
