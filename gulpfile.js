@@ -49,14 +49,16 @@ gulp.task('copyCode', ['wiredep'], function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
-        gulp.src('./modules/' + module + '/html/**/*.html')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        //gulp.src('./modules/' + module + '/html/**/*.html')
+        //    .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.ico')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.gif')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        gulp.src('./modules/' + module + '/views/**/*.html')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs', 'webtrends.ejs'].forEach(function(file) {
@@ -94,12 +96,20 @@ gulp.task('copyCode', ['wiredep'], function() {
 });
 
 gulp.task('angularTemplates', function() {
-    ['cde', 'form'].forEach(function(module) {
-        return gulp.src("modules/" + module + "/public/templates/*.html")
-            .pipe(templateCache({root: "/"  + module + "/public/templates", filename: "angularTemplates.js", module: module + "Module"}))
+    //['cde', 'form'].forEach(function(module) {
+    //    return gulp.src("modules/" + module + "/public/templates/*.html")
+    //        .pipe(templateCache({root: "/"  + module + "/public/templates", filename: "angularTemplates.js", module: module + "Module"}))
+    //        .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
+    //    //.pipe(gulp.dest("modules/cde/public/js/cdeTemplates.js"));
+    //});
+
+    ['cde', 'form', 'system'].forEach(function(module) {
+        return gulp.src("modules/" + module + "/public/html/**/*.html")
+            .pipe(templateCache({root: "/"  + module + "/public/html", filename: "angularTemplates.js", module: modules + "Templates"}))
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
         //.pipe(gulp.dest("modules/cde/public/js/cdeTemplates.js"));
     });
+
 
 });
 

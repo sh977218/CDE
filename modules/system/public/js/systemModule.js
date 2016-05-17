@@ -1,5 +1,5 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-        'OrgFactories', 'classification', 'ngGrid',
+        'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
         'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
         'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
         , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
@@ -19,7 +19,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/login', {
             controller: 'AuthCtrl',
             templateUrl: '/system/public/html/login.html'
-        }).when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).when('/inbox', {
+        }).when('/siteAudit', {
+            templateUrl: '/system/public/html/siteAudit.html'
+        }).when('/inbox', {
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/siteaccountmanagement', {
