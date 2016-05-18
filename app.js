@@ -1,24 +1,23 @@
 var path = require('path');
 
 var express = require('express')
-  , http = require('http')
-  , flash = require('connect-flash')
-  , mongo_data_system = require('./modules/system/node-js/mongo-data')
-  , config = require('config')
-  , session = require('express-session')
-  , favicon = require('serve-favicon')
-  , auth = require( './modules/system/node-js/authentication' )
-  , logging = require('./modules/system/node-js/logging.js')
-  , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
-  , domain = require('domain').create()
-  , ipfilter = require('express-ipfilter')
-  , bodyParser = require('body-parser')
-  , cookieParser = require('cookie-parser')
-  , methodOverride = require('method-override')
-  , morganLogger = require('morgan')
-    , async = require('async')
+    , http = require('http')
+    , flash = require('connect-flash')
+    , mongo_data_system = require('./modules/system/node-js/mongo-data')
+    , config = require('config')
+    , session = require('express-session')
+    , favicon = require('serve-favicon')
+    , auth = require('./modules/system/node-js/authentication')
+    , logging = require('./modules/system/node-js/logging.js')
+    , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
+    , domain = require('domain').create()
+    , ipfilter = require('express-ipfilter')
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
+    , methodOverride = require('method-override')
+    , morganLogger = require('morgan')
     , compress = require('compression')
-;
+    ;
 
 require('./modules/system/node-js/elastic').initEs();
 
@@ -31,7 +30,7 @@ app.use(compress());
 
 var request = require('request');
 app.use('/kibana/', function(req, res) {
-    req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500)}).pipe(res);
+    req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500);}).pipe(res);
 });
 
 process.on('uncaughtException', function (err) {
@@ -77,21 +76,35 @@ var getRealIp = function(req) {
   if (req.ip) return req.ip;
 };
 
-
 var blackIps = [];
-app.use(ipfilter(blackIps));
+var timedBlackIps = [];
+app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
 var banEndsWith = config.banEndsWith || [];
 var banStartsWith = config.banStartsWith || [];
 
+var releaseHackersFrequency = 3 * 60 * 1000;
+setInterval(function releaseHackers () {
+    blackIps.length = 0;
+    timedBlackIps = timedBlackIps.filter(function (rec) {
+        if ((Date.now() - rec.date) < releaseHackersFrequency) {
+            blackIps.push(rec.ip);
+            return rec;
+        }
+    });
+}, releaseHackersFrequency);
+
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(function(ban) {
-        if(req.originalUrl.slice(-(ban.length))  === ban) {
+        if(req.originalUrl.slice(-(ban.length)) === ban) {
             blackIps.push(getRealIp(req));
+            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
+            console.log("banned: " + getRealIp(req));
         }
     });
     banStartsWith.forEach(function(ban) {
         if(req.originalUrl.substr(0, ban.length) === ban) {
             blackIps.push(getRealIp(req));
+            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
         }
     });
     next();
