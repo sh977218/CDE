@@ -98,7 +98,6 @@ app.use(function banHackers(req, res, next) {
         if(req.originalUrl.slice(-(ban.length)) === ban) {
             blackIps.push(getRealIp(req));
             timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
-            console.log("banned: " + getRealIp(req));
         }
     });
     banStartsWith.forEach(function(ban) {
