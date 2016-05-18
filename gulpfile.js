@@ -96,7 +96,7 @@ gulp.task('copyCode', ['wiredep'], function() {
 });
 
 gulp.task('angularTemplates', function() {
-    ['cde', 'form', 'system'].forEach(function(module) {
+    ['cde', 'form', 'system', 'article'].forEach(function(module) {
         return gulp.src("modules/" + module + "/public/html/**/*.html")
             .pipe(templateCache({
                 root: "/" + module + "/public/html",
