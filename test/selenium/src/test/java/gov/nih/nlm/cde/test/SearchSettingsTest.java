@@ -21,13 +21,16 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Used by");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
+        textNotPresent("NLM ID");
 
-        clickElement(By.id("searchSettings"));
+        findElement(By.id("searchSettings")).click();
         textPresent("Search Results View");
         textPresent("Table View Fields");
         textPresent("Search Results View");
+        clickElement(By.id("tinyId"));
         clickElement(By.id("registrationStatus"));
         clickElement(By.id("administrativeStatus"));
+        hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
@@ -37,10 +40,10 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by");
+        textPresent("NLM ID");
         textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }
-
 
     @Test
     void unloggedUserSetsFields() {
