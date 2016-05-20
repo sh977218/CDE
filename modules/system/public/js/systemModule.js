@@ -47,9 +47,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             templateUrl: '/system/public/html/searchSettings.html'
         });
     })
-    .run(["$templateCache", function ($templateCache) {
-        $templateCache.put("/cde/public/templates/template1.html", "HELLO TEMPLATE");
-    }])
     .directive('inlineEdit', function () {
         return {
             restrict: 'AE',

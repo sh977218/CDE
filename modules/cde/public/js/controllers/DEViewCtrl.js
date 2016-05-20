@@ -208,7 +208,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     Object.keys($scope.tabs).forEach(function(key) {
                         if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
                     });
-                }, 0)
+                }, 0);
             },
             show: true,
             class: "gray"
@@ -372,7 +372,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.validateVsacWithPv = function() {
         $scope.vsacValueSet.forEach(function(vsItem) {
             vsItem.isValid = $scope.isVsInPv(vsItem);
-        })
+        });
     };
 
     $scope.allVsacMatch = function () {
@@ -384,8 +384,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     };
 
     $scope.vsacMappingExists = function() {
-        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined"
-            && typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
+        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
+            typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
     };
 
     $scope.loadValueSet = function() {
@@ -403,9 +403,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }
              }).
              success(function(data) {
-                if (data.error) {
-                } else if (data === "") {
-                } else {
+                if (!data.error && data.length > 0) {
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
