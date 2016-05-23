@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class BoardViewTest extends BoardTest {
 
-    @Test(priority = 3)
+    @Test
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
