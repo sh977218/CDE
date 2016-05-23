@@ -43,12 +43,14 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             $scope.loadMyBoards();
         });
     };
+/*
 
     $http.get('/listLabelsFromBoard').success(function (reponse) {
         $scope.boards = reponse.data;
     }).error(function (response) {
 
     });
+*/
 
 
     $scope.openNewBoard = function () {
