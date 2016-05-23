@@ -1,4 +1,4 @@
-angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'systemModule']).config(function($routeProvider)
+angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute']).config(function($routeProvider)
 {
     $routeProvider.
         when('/cde/search', {
