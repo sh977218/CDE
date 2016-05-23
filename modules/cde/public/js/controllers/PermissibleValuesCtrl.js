@@ -9,8 +9,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     };
 
     var displayAsArray = [];
+
     Object.keys(defaultSrcOptions).forEach(function(srcKey) {
-        displayAsArray.push(defaultSrcOptions[srcKey].displayAs);
         $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
             if ($scope.srcOptions[srcKey] && $scope.srcOptions[srcKey].selected) {
                 lookupAsSource(srcKey);
