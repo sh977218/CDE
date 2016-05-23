@@ -22,7 +22,7 @@
     "bootstrap-tour": "0.10.1",
     "ng-grid": "2.0.14",
     "angularjs-camelCase-human": "1.0.0",
-    "angular-send-feedback": "1.0.2",
+    "angular-send-feedback": "https://github.com/jacobscarter/angular-feedback/commit/83c2009549b2cc7b123fc61417950be878b3bcd7",
     "html2canvas": "*",
     "ng-file-upload": "3.3.3",
     "jszip": "2.5.0",
