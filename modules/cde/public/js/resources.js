@@ -46,7 +46,7 @@ angular.module('resourcesCde', ['ngResource'])
     .factory('CdesForApproval', function ($resource) {
         return $resource('/cdesforapproval');
     })
-    .factory('Board', function ($resource) {
+    .factory(+'Board', function ($resource) {
         return $resource('/board/:id/:start', {id: '@id', start: '@start'},
             {'getCdes': {method: 'GET', isArray: true}});
     })

@@ -10,7 +10,7 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.updateOrInsert = function(elt) {
+exports.updateOrInsert = function (elt) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
         delete doc._id;
@@ -32,7 +32,7 @@ exports.updateOrInsert = function(elt) {
     }
 };
 
-exports.boardUpdateOrInsert = function(elt) {
+exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();
         delete doc._id;
@@ -58,10 +58,12 @@ exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
-            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {delete query.highlight.fields[field];}
+            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
+                delete query.highlight.fields[field];
+            }
         });
     }
-    sharedElastic.elasticsearch(query, 'cde', function(err, result) {
+    sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
@@ -170,6 +172,38 @@ exports.DataElementDistinct = function (field, cb) {
         if (error) {
             logging.errorLogger.error("Error DataElementDistinct", {
                 origin: "cde.elastic.DataElementDistinct",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+            });
+        } else {
+            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
+                return b.key;
+            });
+            cb(list);
+        }
+    });
+};
+
+exports.BoardDistinct = function (field, cb) {
+    var distinctQuery = {
+        "size": 0
+        , "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": field
+                    , "size": 1000
+                }
+            }
+        }
+    };
+    esClient.search({
+        index: config.elastic.index.name,
+        type: "board",
+        body: distinctQuery
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.BoardDistinct",
                 stack: new Error().stack,
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
             });

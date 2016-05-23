@@ -45,6 +45,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get('/listLabelsFromBoard/:username', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.BoardDistinct("board.labels", function (result) {
+            res.send(result);
+        });
+    });
+
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.priorCdes(req, res);
     });

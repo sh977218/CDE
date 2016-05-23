@@ -87,7 +87,7 @@ exports.createIndexJson = {
     }, settings: {
         index: {
             analysis: {
-                analyzer:{
+                analyzer: {
                     default: {
                         type: 'snowball'
                         , language: 'English'
@@ -108,7 +108,7 @@ exports.createFormIndexJson = {
                 , "classification": {
                     properties: {
                         "stewardOrg": {
-                            "properties" : {
+                            "properties": {
                                 "name": {"type": "string", "index": "not_analyzed"}
                             }
                         }
@@ -137,7 +137,7 @@ exports.createFormIndexJson = {
                         "version": {"type": "string"}
                     }
                 }, "views": {"type": "integer"}
-                , "numQuestions": {"type":"integer"}
+                , "numQuestions": {"type": "integer"}
             }
         }
     }
@@ -244,7 +244,7 @@ exports.riverFunction = function (elt) {
     }
     elt.flatProperties = [];
     if (elt.properties) {
-        elt.properties.forEach(function(p) {
+        elt.properties.forEach(function (p) {
             elt.flatProperties.push(p.key + ' ' + p.value);
         });
     }
@@ -258,7 +258,11 @@ exports.riverFunction = function (elt) {
 
 exports.createBoardIndexJson = {
     "mappings": {
-        "board": {}
+        "board": {
+            "properties": {
+                "labels": {"type": "string", "index": "not_analyzed"}
+            }
+        }
     }
 };
 
