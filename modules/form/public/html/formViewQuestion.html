@@ -131,6 +131,21 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
+                    <div class="col-sm-7" ng-switch="question.question.datatype === 'Value List'"
+                         id="dd_q_defaultAnswer_{{$index}}">
+                        <div ng-switch-when="true">
+                            <select ng-model="question.question.defaultAnswer" id="q_default_answer_{{$index}}"
+                                    ng-disabled="!canCurate" ng-change="stageElt()"
+                                    ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
+                        </div>
+                        <div ng-switch-default>
+                            <div id="q_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate" on-ok="stageElt()"
+                                 model="question.question.defaultAnswer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
                     <div class="col-sm-7" id="dd_d_cde_{{$index}}">
                         <a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}"

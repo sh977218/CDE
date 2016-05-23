@@ -29,31 +29,26 @@ public class RenameOrg extends NlmCdeBaseTest {
         addOrg(testOrg, null, null);
         closeAlert();
 
-        scrollToTop();
         clickElement(By.xpath("//div[@id = 'orgLongName-" + testOrg + "']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgRenamed);
         clickElement(By.xpath("//div[@id = 'orgLongName-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        scrollToViewById("orgMailAddress-" + testOrg);
         clickElement(By.xpath("//div[@id = 'orgMailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddress);
         clickElement(By.xpath("//div[@id = 'orgMailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        scrollToViewById("orgEmailAddress-" + testOrg);
         clickElement(By.xpath("//div[@id = 'orgEmailAddress-" + testOrg + "']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddress);
         clickElement(By.xpath("//div[@id = 'orgEmailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        scrollToViewById("orgPhoneNumber-" + testOrg);
         clickElement(By.xpath("//div[@id = 'orgPhoneNumber-" + testOrg + "']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumber);
         clickElement(By.xpath("//div[@id = 'orgPhoneNumber-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        scrollToViewById("orgUri-" + testOrg);
         clickElement(By.xpath("//div[@id = 'orgUri-" + testOrg + "']//i[@class='fa fa-edit']"));
         findElement(By.xpath("//div[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUri);
         clickElement(By.xpath("//div[@id = 'orgUri-" + testOrg + "']//button[contains(text(),'Confirm')]"));
