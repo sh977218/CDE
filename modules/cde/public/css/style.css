@@ -1013,3 +1013,11 @@ div + .questionPlaceholder {
     padding-right: 15px;
     padding-left: 15px;
 }
+
+.my-board-card {
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    word-wrap: break-word;
+}

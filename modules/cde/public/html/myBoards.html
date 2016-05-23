@@ -1,27 +1,29 @@
 <div class="container-fluid">
     <hr/>
-    <div class="col-xs-1 ">
+    <div class="col-xs-2 noLeftRightPadding">
         <div id="sidebar-wrapper">
-            <div class="checkbox">
+            <div ng-repeat="label in labels" class="checkbox">
                 <label>
-                    <input type="checkbox"> Check me out This is a long test. I want to see how it appears.
+                    <input type="checkbox"> {{label}}
                 </label>
             </div>
         </div>
     </div>
-    <div class="col-xs-11" ui-sortable="sortableOptions" ng-model="boards">
-        <div ng-repeat="board in boards" class="col-md-3 boxed-div">
+    <div class="col-xs-10" ui-sortable="sortableOptions" ng-model="boards">
+        <div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 my-board-card">
             <div class="" data-id="boardDiv_{{board.name}}">
                 <div class="row">
-                    <i class="fa fa-arrows"> </i>
+                    <div class="col-xs-1 text-left">
+                        <i class="fa fa-arrows"> </i>
+                    </div>
                     <div class="text-right">
                         <span ng-show="showDelete">Confirm Delete
                             <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)"
                                id="confirmRemove-{{$index}}"></i>
                             <i class="fa fa-times" ng-click="showDelete = false"></i>
                         </span>
-                            <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                               id="removeBoard-{{$index}}"></i>
+                        <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                           id="removeBoard-{{$index}}"></i>
                         <span ng-show="showChangeStatus">Change Status?
                             <i class="fa fa-check" ng-click="changeStatus($index)"
                                id="confirmChangeStatus_{{$index}}"></i>
@@ -42,57 +44,62 @@
                         </span>
                     </div>
                 </div>
-                    <div class="row">
-                        <div tabindex="0" class="col-md-3 text-right text_label">Name:</div>
-                        <div tabindex="0" class="col-md-9" id="board_name_{{$index}}">
-                            <div ng-switch="board.editMode">
-                                <div ng-switch-when="true">
-                                    <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
-                                </div>
-                                <div ng-switch-default>
-                                    <a href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}" ng-bind-html="board.name"></a>
-                                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">
+                        Name:
+                    </div>
+                    <div tabindex="0" class="col-lg-9 col-md-9 col-xs-9" id="board_name_{{$index}}">
+                        <div ng-switch="board.editMode">
+                            <div ng-switch-when="true">
+                                <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
+                            </div>
+                            <div ng-switch-default>
+                                <a href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank"
+                                   ng-bind="board.name"></a>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div tabindex="0" class="col-md-3 text-right text_label">Desc:</div>
-                        <div tabindex="0" class="col-md-9" id="board_def_{{$index}}">
-                            <div ng-switch="board.editMode">
-                                <div ng-switch-when="true">
-                                    <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
-                                </div>
-                                <div ng-switch-default>
-                                    <span ng-bind-html="board.description"></span>
-                                </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">
+                        Desc:
+                    </div>
+                    <div tabindex="0" class="col-md-9" id="board_def_{{$index}}">
+                        <div ng-switch="board.editMode">
+                            <div ng-switch-when="true">
+                                <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
+                            </div>
+                            <div ng-switch-default>
+                                <span ng-bind-html="board.description"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div tabindex="0" class="col-md-3 text-right text_label">Labels:</div>
-                        <div tabindex="0" class="col-md-9" id="board_label_{{$index}}">
-                            <span ng-bind-html="board.labels"></span>
-                            <div ng-show="board.editMode===true">
-                                <input ng-model="newLabel">
-                                <i class="fa fa-plus-square hand-cursor" ng-click="addNewLabel(newLabel,board)"></i>
-                            </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">Labels:
+                    </div>
+                    <div tabindex="0" class="col-md-9" id="board_label_{{$index}}">
+                        <span ng-bind-html="board.labels"></span>
+                        <div ng-show="board.editMode===true">
+                            <input ng-model="newLabel">
+                            <i class="fa fa-plus-square hand-cursor" ng-click="addNewLabel(newLabel,board)"></i>
                         </div>
                     </div>
-                    <div class="row">
-                        <div tabindex="0" class="col-md-3 text-right text_label">CDEs:</div>
-                        <div tabindex="0" class="col-md-9" id="board_num_cdes_{{$index}}">{{board.pins.length}}
-                        </div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">
+                        CDEs:
                     </div>
-                    <div class="row">
-                        <div tabindex="0" class="col-md-3 text-right text_label">Modified:</div>
-                        <div tabindex="0" class="col-md-9" id="board_mod_{{$index}}">
-                            {{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}
-                        </div>
+                    <div tabindex="0" class="col-md-9" id="board_num_cdes_{{$index}}">{{board.pins.length}}</div>
+                </div>
+                <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">
+                        Modified:
                     </div>
-                    <!--<div class="row">-->
-                        <!--<a class="btn btn-default" href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}">-->
-                            <!--<i class="fa fa-eye"></i> View Board</a>-->
-                    <!--</div>-->
+                    <div tabindex="0" class="col-md-9" id="board_mod_{{$index}}">
+                        {{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
