@@ -25,13 +25,13 @@ exports.DataElement = DataElement;
 var mongo_data = this;
 exports.DataElement = DataElement;
 
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     elastic.updateOrInsert(self);
     next();
 });
 
-schemas.pinningBoardSchema.pre('save', function(next) {
+schemas.pinningBoardSchema.pre('save', function (next) {
     var self = this;
     elastic.boardUpdateOrInsert(self);
     next();
@@ -43,12 +43,12 @@ exports.exists = function (condition, callback) {
     });
 };
 
-exports.getStream = function(condition) {
+exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
 exports.boardsDao = {
-    getStream: function() {
+    getStream: function () {
         return PinningBoard.find({}).sort({_id: -1}).stream();
     }
 };
@@ -276,6 +276,7 @@ exports.addToViewHistory = function (cde, user) {
 
 exports.newBoard = function (board, callback) {
     var newBoard = new PinningBoard(board);
+    board.markModified("labels");
     newBoard.save(function (err) {
         callback(err, newBoard);
     });
@@ -521,7 +522,8 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
+});
 
 var statusCdeTinyId;
 

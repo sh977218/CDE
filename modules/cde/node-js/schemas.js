@@ -109,23 +109,24 @@ var deJsonSchema = {
 };
 
 var pinSchema = new mongoose.Schema({
-    name: String
-    , pinnedDate: Date
-    , deTinyId: String
-    , deName: String
+    name: String,
+    pinnedDate: Date,
+    deTinyId: String,
+    deName: String
 });
 
 schemas.pinningBoardSchema = new mongoose.Schema({
-    name: String
-    , description: String
-    , shareStatus: String
-    , createdDate: Date
-    , updatedDate: Date
-    , owner: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , pins: [pinSchema]
+    name: String,
+    description: String,
+    labels: [String],
+    shareStatus: String,
+    createdDate: Date,
+    updatedDate: Date,
+    owner: {
+        userId: mongoose.Schema.Types.ObjectId,
+        username: String
+    },
+    pins: [pinSchema]
 });
 
 schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);

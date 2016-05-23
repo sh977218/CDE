@@ -83,11 +83,11 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
-        function sendNativeJson(cde, res){
+        function sendNativeJson(cde, res) {
             res.send(cde);
         }
 
-        function sendNativeXml(cde, res){
+        function sendNativeXml(cde, res) {
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
             exportCde = exportShared.stripBsonIds(exportCde);
@@ -98,9 +98,9 @@ exports.init = function (app, daoManager) {
             if (!cde) return res.status(404).send();
             adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryPvs(cde, req.user);
-            if(!req.query.type) sendNativeJson(cde, res);
-            else if (req.query.type==='json') sendNativeJson(cde, res);
-            else if (req.query.type==='xml') sendNativeXml(cde, res);
+            if (!req.query.type) sendNativeJson(cde, res);
+            else if (req.query.type === 'json') sendNativeJson(cde, res);
+            else if (req.query.type === 'xml') sendNativeXml(cde, res);
             else return res.status(404).send("Cannot recognize export type.");
 
             if (req.isAuthenticated()) {
@@ -223,6 +223,7 @@ exports.init = function (app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
+                    b.labels = board.labels;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
                         return res.status(403).send("You don't have permission to make boards public!");
                     }
@@ -264,7 +265,7 @@ exports.init = function (app, daoManager) {
             res.status(401).send();
             return;
         }
-        classificationNode_system.classifyCdesInBoard(req, function(err) {
+        classificationNode_system.classifyCdesInBoard(req, function (err) {
             if (!err) res.end();
             else res.status(500).send(err);
         });
@@ -375,8 +376,8 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get("/cde/derivationOutputs/:inputCdeTinyId", function(req, res) {
-        mongo_data.derivationOutputs(req.params.inputCdeTinyId, function(err, cdes) {
+    app.get("/cde/derivationOutputs/:inputCdeTinyId", function (req, res) {
+        mongo_data.derivationOutputs(req.params.inputCdeTinyId, function (err, cdes) {
             if (err) res.status(500).send();
             else {
                 res.send(cdes);
@@ -426,8 +427,8 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/umlsAtomsBridge/:cui/:source', function(req, res) {
-        if(!config.umls.sourceOptions[req.params.source]) {
+    app.get('/umlsAtomsBridge/:cui/:source', function (req, res) {
+        if (!config.umls.sourceOptions[req.params.source]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
         }
         if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
@@ -436,7 +437,7 @@ exports.init = function (app, daoManager) {
         vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
     });
 
-    app.get('/searchUmls', function(req, res) {
+    app.get('/searchUmls', function (req, res) {
         if (!req.user) return res.status(403).send();
         return vsac.searchUmls(req.query.searchTerm, res);
     });
@@ -535,7 +536,7 @@ exports.init = function (app, daoManager) {
         var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
         var exporters = {
             json: {
-                export: function(res) {
+                export: function (res) {
                     var firstElt = true;
                     res.type('application/json');
                     res.write("[");
@@ -571,19 +572,21 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/api/cde/modifiedElements', function(req, res){
+    app.get('/api/cde/modifiedElements', function (req, res) {
         var dstring = req.query.from;
-        function badDate(){
+
+        function badDate() {
             res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
         }
+
         if (!dstring) badDate();
-        if (dstring[4]!=='-' || dstring[7]!=='-') badDate();
-        if (dstring.indexOf('20')!==0) badDate();
-        if (dstring[5]!=="0" && dstring[5]!=="1") badDate();
-        if (dstring[8]!=="0" && dstring[8]!=="1" && dstring[8]!=="2" && dstring[8]!=="3") badDate();
+        if (dstring[4] !== '-' || dstring[7] !== '-') badDate();
+        if (dstring.indexOf('20') !== 0) badDate();
+        if (dstring[5] !== "0" && dstring[5] !== "1") badDate();
+        if (dstring[8] !== "0" && dstring[8] !== "1" && dstring[8] !== "2" && dstring[8] !== "3") badDate();
 
         var date = new Date(dstring);
-        mongo_data.findModifiedElementsSince(date, function(err, elts){
+        mongo_data.findModifiedElementsSince(date, function (err, elts) {
             res.send(elts);
         });
     });

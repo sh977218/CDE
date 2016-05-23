@@ -1,67 +1,110 @@
 <div class="container-fluid">
-
     <hr/>
-
-    <div ng-repeat="board in boards">
-        <div class="row" data-id="boardDiv_{{board.name}}">
-            <div class="col-md-3 text-right">
-                <div class="row">
-                    <span ng-show="showDelete">
-                        Confirm Delete <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)" id="confirmRemove-{{$index}}"></i>
-                        <i class="fa fa-times" ng-click="showDelete = false"></i>
-                    </span>
-                    <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o" id="removeBoard-{{$index}}"></i></dd>
-                </div>
-                <div class="row">
-                    <span ng-show="showChangeStatus">
-                        Change Status? <i class="fa fa-check" ng-click="changeStatus($index)" id="confirmChangeStatus_{{$index}}"></i>
-                        <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
-                    </span>
-                    <span ng-hide="showChangeStatus">
-                        <i class="fa fa-unlock" ng-show="board.shareStatus === 'Public'" ng-click="showChangeStatus = true" id="publicIcon_{{$index}}"> </i>
-                        <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'" ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"> </i>
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <dl class="dl-horizontal">
-                    <dt>Name: </dt> 
-                    <dd id="dd_name_{{$index}}">
-                        <div ng-switch="board.editMode">
-                            <div ng-switch-when="true">
-                                <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
-                                <i class="fa fa-check" ng-click="save(board)" id="name_confirm_{{$index}}"></i>
-                                <i class="fa fa-times" ng-click="cancelSave(board)"></i>
-                            </div>
-                            <div ng-switch-default>
-                                <i class="fa fa-pencil" ng-click="board.editMode = true" id="name_edit_{{$index}}"></i>  <span ng-bind-html="board.name"></span>
-                            </div>
-                        </div>
-                    </dd>
-                    <dt>Description: </dt>
-                    <dd id="dd_def_{{$index}}">
-                        <div ng-switch="board.editMode"> 
-                            <div ng-switch-when="true">
-                               <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
-                               <i class="fa fa-check" ng-click="save(board)" id="desc_confirm_{{$index}}"></i>
-                               <i class="fa fa-times" ng-click="cancelSave(board)"></i>
-                            </div>
-                            <div ng-switch-default>
-                                <i class="fa fa-pencil" ng-click="board.editMode = true" id="desc_edit_{{$index}}"></i> <span ng-bind-html="board.description"></span>
-                            </div>
-                        </div>
-                    </dd>
-                    <dt>Number of CDEs: </dt><dd id="dd_numb_{{$index}}">{{board.pins.length}}</dd>
-                    <dt>Modified: </dt><dd id="dd_mod">{{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                </dl>
-                <a class="btn btn-default" href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}">View Board</a>
+    <div class="col-xs-2 ">
+        <div id="sidebar-wrapper">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Check me out This is a long test. I want to see how it appears.
+                </label>
             </div>
         </div>
-        <hr/>
     </div>
-
-    <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i class="fa fa-plus"> </i> Add Board</button>
-
+    <div class="col-xs-10">
+        <div ng-repeat="board in boards">
+            <div class="row" data-id="boardDiv_{{board.name}}">
+                <div class="col-md-2 text-right">
+                    <div class="row">
+                    <span ng-show="showDelete">Confirm Delete
+                        <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)"
+                           id="confirmRemove-{{$index}}"></i>
+                        <i class="fa fa-times" ng-click="showDelete = false"></i>
+                    </span>
+                        <i ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                           id="removeBoard-{{$index}}"></i>
+                    </div>
+                    <div class="row">
+                        <span ng-show="showChangeStatus">Change Status?
+                            <i class="fa fa-check" ng-click="changeStatus($index)"
+                               id="confirmChangeStatus_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
+                        </span>
+                        <span ng-hide="showChangeStatus">
+                            <i class="fa fa-unlock" ng-show="board.shareStatus === 'Public'"
+                               ng-click="showChangeStatus = true" id="publicIcon_{{$index}}"></i>
+                            <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"
+                               ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span ng-show="board.editMode">Save?
+                            <i class="fa fa-check" ng-click="save(board)" id="confirmEdit_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="cancelSave(board)"></i>
+                        </span>
+                        <span ng-hide="board.editMode">
+                            <i class="fa fa-pencil" ng-click="board.editMode = true" id="edit_board_{{$index}}"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div tabindex="0" class="col-md-2 text-right text_label">Name:</div>
+                        <div tabindex="0" class="col-md-10" id="board_name_{{$index}}">
+                            <div ng-switch="board.editMode">
+                                <div ng-switch-when="true">
+                                    <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
+                                </div>
+                                <div ng-switch-default>
+                                    <span ng-bind-html="board.name"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div tabindex="0" class="col-md-2 text-right text_label">Description:</div>
+                        <div tabindex="0" class="col-md-10" id="board_def_{{$index}}">
+                            <div ng-switch="board.editMode">
+                                <div ng-switch-when="true">
+                                    <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
+                                </div>
+                                <div ng-switch-default>
+                                    <span ng-bind-html="board.description"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div tabindex="0" class="col-md-2 text-right text_label">Labels:</div>
+                        <div tabindex="0" class="col-md-10" id="board_label_{{$index}}">
+                            <span ng-bind-html="board.labels"></span>
+                            <div ng-show="board.editMode===true">
+                                <input ng-model="newLabel">
+                                <i class="fa fa-plus-square hand-cursor" ng-click="addNewLabel(newLabel,board)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div tabindex="0" class="col-md-2 text-right text_label">Number of CDEs:</div>
+                        <div tabindex="0" class="col-md-10" id="board_num_cdes_{{$index}}">{{board.pins.length}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div tabindex="0" class="col-md-2 text-right text_label">Modified:</div>
+                        <div tabindex="0" class="col-md-10" id="board_mod_{{$index}}">
+                            {{board.updatedDate | date: 'MM/dd/yyyy @ h:mma'}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-default" href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}">
+                            View Board</a>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        </div>
+    </div>
+    <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i
+            class="fa fa-plus"> </i> Add Board
+    </button>
     <script type="text/ng-template" id="newBoardModalContent.html">
         <div ng-include="'/cde/public/html/newBoardModal.html'"></div>
     </script>
