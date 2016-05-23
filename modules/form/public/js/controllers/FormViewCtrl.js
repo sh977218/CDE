@@ -16,7 +16,7 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
-    var converter = new LFormsConverter();
+    var converter = new LFormsConverter(); // jshint ignore:line
 
     $scope.lfOptions = {showCodingInstruction: true};
 
@@ -149,7 +149,7 @@ angular.module('formModule').controller('FormViewCtrl',
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms')});
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms');});
             },
             show: false,
             hideable: true
@@ -165,7 +165,7 @@ angular.module('formModule').controller('FormViewCtrl',
                     Object.keys($scope.tabs).forEach(function (key) {
                         if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
                     });
-                }, 0)
+                }, 0);
             },
             show: true,
             class: "gray"
@@ -194,7 +194,7 @@ angular.module('formModule').controller('FormViewCtrl',
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
         converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
-                $scope.lfData = new LFormsData(lfData);
+                $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
             },
@@ -211,6 +211,12 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
+    //function setDefaultValues() {
+    //    $scope.elt.questions.forEach(function(q) {
+    //        q.question.value = q.question.defaultAnswer;
+    //    });
+    //}
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             $scope.elt = form;
@@ -222,7 +228,7 @@ angular.module('formModule').controller('FormViewCtrl',
             });
             isAllowedModel.setDisplayStatusWarning($scope);
             areDerivationRulesSatisfied();
-
+            //setDefaultValues();
             if ($scope.formCdeIds.length < 21) $scope.renderPreview();
 
             if (route.tab) {
@@ -373,17 +379,17 @@ angular.module('formModule').controller('FormViewCtrl',
 
     $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode == 'question') return previousLevel.filter(function (q, i) {
+        if (languageMode === 'question') return previousLevel.filter(function (q, i) {
             //Will assemble a list of questions
-            if (i == index) return false; //Exclude myself
+            if (i === index) return false; //Exclude myself
             if (q.elementType !== "question") return false; //This element is not a question, ignore
             if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
             return true;
         }).map(function (q) {
             return '"' + q.label + '" ';
         });
-        if (languageMode == 'operator') return ["= ", "< ", "> "];
-        if (languageMode == 'answer') {
+        if (languageMode === 'operator') return ["= ", "< ", "> "];
+        if (languageMode === 'answer') {
             var questions = previousLevel.filter(function (q) {
                 if (q.label && questionName)
                     return q.label.trim() === questionName.trim();
@@ -400,7 +406,7 @@ angular.module('formModule').controller('FormViewCtrl',
                 });
             } else return [];
         }
-        if (languageMode == 'conjuction') return ["AND", "OR"];
+        if (languageMode === 'conjuction') return ["AND", "OR"];
         return [];
     };
 

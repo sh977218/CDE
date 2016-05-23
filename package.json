@@ -2,7 +2,7 @@
   "name": "ludetc-cdes",
   "version": "0.0.1",
   "scripts": {
-    "start": "node --harmony app.js"
+    "start": "node app.js"
   },
   "engines": {
     "node": "0.12.x",
@@ -30,7 +30,7 @@
     "trim": "0.0.1",
     "gridfs-stream": "1.1.0",
     "serve-favicon": "2.2.0",
-    "connect-mongo": "0.7.0",
+    "connect-mongo": "1.2.0",
     "morgan": "1.5.1",
     "csurf": "1.6.6",
     "shortid": "2.1.3",
