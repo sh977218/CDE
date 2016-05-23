@@ -51,6 +51,7 @@ public class BoardViewTest extends BoardTest {
         textPresent("Generalized Activities of Daily Living Pain");
         textPresent("Platinum free");
         textPresent("3535434");
+        textPresent("CODE_FOR_1");
     }
 
     public void attachToBoard(String cdeName, String boardName) {
