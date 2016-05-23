@@ -45,7 +45,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/listLabelsFromBoard/:username', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/listLabelsFromBoard', exportShared.nocacheMiddleware, function (req, res) {
         elastic.BoardDistinct("board.labels", function (result) {
             res.send(result);
         });
