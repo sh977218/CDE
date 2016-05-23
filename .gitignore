@@ -4,9 +4,12 @@ node_modules
 test/selenium/.gradle
 test/selenium/*.png
 test-console.out
+test-console.o
 bower_components
 modules/components/
 modules/system/views/version.html
+modules/components/
+
 
 ## Secret Config Files
 views/version.html

@@ -47,6 +47,7 @@ public class EltIdMaps {
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
+        eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
 
     }
 

@@ -68,6 +68,7 @@ schemas.userSchema = new mongoose.Schema({
             , source: Boolean
             , updated: Boolean
             , numQuestions: Boolean
+            , tinyId: Boolean
         }
     }
     , accessToken: String
