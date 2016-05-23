@@ -45,10 +45,14 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/listLabelsFromBoard', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.BoardDistinct("board.labels", function (result) {
-            res.send(result);
-        });
+    app.get('/myBoardLabels', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            return res.status(403).send();
+        } else {
+            elastic.myBoardLabels(req.user, function (result) {
+                res.send(result);
+            });
+        }
     });
 
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, function (req, res) {

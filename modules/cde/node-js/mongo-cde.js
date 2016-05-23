@@ -276,7 +276,6 @@ exports.addToViewHistory = function (cde, user) {
 
 exports.newBoard = function (board, callback) {
     var newBoard = new PinningBoard(board);
-    board.markModified("labels");
     newBoard.save(function (err) {
         callback(err, newBoard);
     });

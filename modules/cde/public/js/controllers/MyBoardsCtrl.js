@@ -1,4 +1,9 @@
 angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', function ($scope, $modal, $http, Board) {
+
+    $scope.sortableOptions = {
+        handle: '.fa.fa-arrows'
+    };
+
     $scope.removeBoard = function (index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
             $scope.addAlert("success", "Board removed");
@@ -44,9 +49,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         });
     };
 
-    $http.get('/listLabelsFromBoard').success(function (reponse) {
-        $scope.boards = reponse.data;
-    }).error(function (response) {
+    $http.get('/myBoardLabels').success(function (response) {
+        $scope.labels = response.data;
+    }).error(function () {
 
     });
 

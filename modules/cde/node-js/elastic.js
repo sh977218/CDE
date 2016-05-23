@@ -184,20 +184,32 @@ exports.DataElementDistinct = function (field, cb) {
     });
 };
 
-exports.BoardDistinct = function (field, cb) {
+exports.myBoardLabels = function (user, cb) {
+    if (!user) return cb("no user provided");
     var distinctQuery = {
         "size": 0
+        , "query": {
+            "bool": {
+                "must": {
+                    "term": {
+                        "owner.username": {
+                            value: user.username
+                        }
+                    }
+                }
+            }
+        }
         , "aggs": {
             "aggregationsName": {
                 "terms": {
-                    "field": field
+                    "field": "labels"
                     , "size": 1000
                 }
             }
         }
     };
     esClient.search({
-        index: config.elastic.index.name,
+        index: config.elastic.boardIndex.name,
         type: "board",
         body: distinctQuery
     }, function (error, response) {
