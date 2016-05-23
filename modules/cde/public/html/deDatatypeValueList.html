@@ -15,7 +15,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div ng-if="containsUMLS">The list below includes UMLS codes, you can also view them as:<br>
+        <div ng-if="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
             <span ng-repeat="(key, value) in srcOptions" style="margin-left: 50px">
                 <input ng-model="value.selected" type="checkbox" ng-disabled="value.disabled"
                        id="display{{key}}Codes">{{value.displayAs}} Codes

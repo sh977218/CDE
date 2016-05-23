@@ -208,7 +208,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     Object.keys($scope.tabs).forEach(function(key) {
                         if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
                     });
-                }, 0)
+                }, 0);
             },
             show: true,
             class: "gray"
@@ -372,7 +372,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.validateVsacWithPv = function() {
         $scope.vsacValueSet.forEach(function(vsItem) {
             vsItem.isValid = $scope.isVsInPv(vsItem);
-        })
+        });
     };
 
     $scope.allVsacMatch = function () {

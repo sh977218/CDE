@@ -1,16 +1,16 @@
-angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$http', '$uibModal',
+angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$timeout', '$http', '$uibModal',
     function($scope, $timeout, $http, $modal)
 {
-    // @TODO This controller should be renamed to PV Controller ?
-
-
     var defaultSrcOptions = {
         NCI: {displayAs: "NCI", termType: "PT", selected: false},
+        UMLS: {displayAs: "UMLS", termType: "PT", selected: false},
         LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
         SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
     };
 
+    var displayAsArray = [];
     Object.keys(defaultSrcOptions).forEach(function(srcKey) {
+        displayAsArray.push(defaultSrcOptions[srcKey].displayAs);
         $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
             if ($scope.srcOptions[srcKey] && $scope.srcOptions[srcKey].selected) {
                 lookupAsSource(srcKey);
@@ -24,15 +24,13 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         });
     });
 
-
     $scope.srcOptions = {};
-    $scope.containsUMLS = false;
+    $scope.containsKnownSystem = false;
     $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
     function initSrcOptions() {
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
-            if ($scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
-                $scope.containsUMLS = true;
-
+            if (displayAsArray.indexOf($scope.elt.valueDomain.permissibleValues[i].codeSystemName) > -1) {
+                $scope.containsKnownSystem = true;
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
         }
@@ -75,15 +73,15 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
                                             .join(" "),
                                         valueMeaningCode: newCodes.map(function(c) {return c.valueMeaningCode;})
                                             .join(":")
-                                    }
+                                    };
                                 }
                             } else {
                                 pv[src] = {
                                     valueMeaningName: "Not Found",
                                     valueMeaningCode: "Not Found"
-                                }
+                                };
                             }
-                        })
+                        });
                     });
                 }
             });
