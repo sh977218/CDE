@@ -1,3 +1,9 @@
+angular.module("systemModule").controller('ClassLeafCtrl', ['$scope', function($scope){
+    var j = JSON.parse(JSON.stringify($scope.pathArray));
+    j.push($scope.elt.name);
+    $scope.pathArray = j;
+}]);
+
 angular.module('systemModule').controller('ClassificationCtrl',
     ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
         function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
