@@ -129,9 +129,9 @@ exports.getValueSet = function(vs_id, cb) {
     });
 };
 
-exports.getAtomsFromAnyUMLSSrc = function(ir, source, res) {
+exports.getAtomsFromAnyUMLSSrc = function(id, source, res) {
     this.getTicket(function(oneTimeTicket) {
-        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
+        var url = config.umls.wsHost + "/rest/content/current/source/" + source + '/' + id + "/atoms?sabs=" + source +
             "&pageSize=500&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function(err, response, body) {
             if (!err && response.statusCode === 200) res.send(body);
