@@ -426,24 +426,20 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/anySourceUmlsAtomsBridge/:id/:source', function(req, res) {
-        if(!config.umls.sourceOptions[req.params.source]) {
-            return res.send("Source cannot be looked up, use UTS Instead.");
-        }
-        if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
-            return res.send(403);
-        }
-        vsac.getAtomsFromAnyUMLSSrc(req.params.id, req.params.source, res);
-    });
-
     app.get('/umlsAtomsBridge/:cui/:fromSrc/:toSrc', function(req, res) {
-        if(!config.umls.sourceOptions[req.params.source]) {
+        if(!config.umls.sourceOptions[req.params.fromSrc] ||
+            !config.umls.sourceOptions[req.params.toSrc] ) {
             return res.send("Source cannot be looked up, use UTS Instead.");
         }
-        if (config.umls.sourceOptions[req.params.source].requiresLogin && !req.user) {
-            return res.send(403);
+        if ((config.umls.sourceOptions[req.params.fromSrc].requiresLogin ||
+            config.umls.sourceOptions[req.params.toSrc].requiresLogin) && !req.user) {
+            return res.status(403).send();
         }
-        vsac.getAtomsFromUMLS(req.params.cui, req.params.source, res);
+        if (req.params.fromSrc === 'UMLS') {
+            vsac.getAtomsFromUMLS(req.params.cui, req.params.toSrc, res);
+        } else {
+            vsac.getAtomsFromAnyUMLSSrc(req.params.id, req.params.fromSrc, req.params.toSrc, res);
+        }
     });
 
     app.get('/searchUmls', function(req, res) {
