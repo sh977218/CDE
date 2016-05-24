@@ -202,7 +202,7 @@ exports.myBoardTags = function (user, cb) {
             "aggregationsName": {
                 "terms": {
                     "field": "tags",
-                    "size": 1000
+                    "size": 50
                 }
             }
         }
@@ -241,6 +241,14 @@ exports.myTaggedBoards = function (user, tagValues, cb) {
                         }
                     }
                 ]
+            }
+        },
+        "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
             }
         }
     };
