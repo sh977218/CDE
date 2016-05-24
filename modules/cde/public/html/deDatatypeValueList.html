@@ -30,6 +30,8 @@
                 <th tabindex="0" id="codeName">Code Name</th>
                 <th tabindex="0" id="code" >Code</th>
                 <th tabindex="0" id="codeSystem">Code System</th>
+                <th tabindex="0" id="UMLSCode" ng-if="srcOptions.UMLS.selected" colspan="2"
+                    class="codeHeader extraCodeSystem">UMLS</th>
                 <th tabindex="0" id="NCICode" ng-if="srcOptions.NCI.selected" colspan="2"
                     class="codeHeader extraCodeSystem">NCI Thesaurus</th>
                 <th tabindex="0" id="LNCCode" ng-if="srcOptions.LNC.selected" colspan="2"
@@ -56,6 +58,14 @@
                 </td>
                 <td tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}" class="codeSystemCell">
                     {{pv.codeSystemName}}
+                </td>
+                <td tabindex="0" headers="UMLSCode" id="nameAsUMLS-{{$index}}" ng-if="srcOptions.UMLS.selected"
+                    class="codeNameCell extraCodeSystem">
+                    {{pv.UMLS.valueMeaningName}}
+                </td>
+                <td tabindex="0" headers="UMLSCode" id="codeAsUMLS-{{$index}}" ng-if="srcOptions.UMLS.selected"
+                    class="codeCell">
+                    {{pv.UMLS.valueMeaningCode}}
                 </td>
                 <td tabindex="0" headers="NCICode" id="nameAsNCI-{{$index}}" ng-if="srcOptions.NCI.selected"
                     class="codeNameCell extraCodeSystem">

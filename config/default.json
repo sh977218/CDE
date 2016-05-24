@@ -8,6 +8,7 @@
     "wsHost": "https://uts-ws.nlm.nih.gov",
     "sourceOptions": {
       "NCI": {},
+      "UMLS": {},
       "LNC": {"requiresLogin": true},
       "SNOMEDCT_US": {"requiresLogin": true}
     }

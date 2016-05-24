@@ -426,7 +426,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/umlsAtomsBridge/:cui/:fromSrc/:toSrc', function(req, res) {
+    app.get('/umlsAtomsBridge/:id/:fromSrc/:toSrc', function(req, res) {
         if(!config.umls.sourceOptions[req.params.fromSrc] ||
             !config.umls.sourceOptions[req.params.toSrc] ) {
             return res.send("Source cannot be looked up, use UTS Instead.");
@@ -436,7 +436,7 @@ exports.init = function (app, daoManager) {
             return res.status(403).send();
         }
         if (req.params.fromSrc === 'UMLS') {
-            vsac.getAtomsFromUMLS(req.params.cui, req.params.toSrc, res);
+            vsac.getAtomsFromUMLS(req.params.id, req.params.toSrc, res);
         } else {
             vsac.getAtomsFromAnyUMLSSrc(req.params.id, req.params.fromSrc, req.params.toSrc, res);
         }
