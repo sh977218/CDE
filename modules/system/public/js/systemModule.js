@@ -6,6 +6,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
+    .config(['$rootScopeProvider', function($rootScopeProvider){
+        $rootScopeProvider.digestTtl(20);
+    }])
     .config(function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({enabled: true, requireBase: false});
         $routeProvider.when('/', {
