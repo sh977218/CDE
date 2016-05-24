@@ -99,6 +99,7 @@ exports.createIndexJson = {
 };
 
 
+//noinspection JSAnnotator
 exports.createFormIndexJson = {
     "mappings": {
         "form": {
@@ -260,7 +261,7 @@ exports.createBoardIndexJson = {
     "mappings": {
         "board": {
             "properties": {
-                "labels": {"type": "string", "index": "not_analyzed"}
+                "tags": {"type": "string", "index": "not_analyzed"}
             }
         }
     }

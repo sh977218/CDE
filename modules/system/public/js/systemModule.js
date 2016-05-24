@@ -1,8 +1,7 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-        'OrgFactories', 'classification', 'ngGrid',
-        'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-        'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-        , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
+    'OrgFactories', 'classification', 'ngGrid', 'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'checklist-model', 'ngTextTruncate',
+    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -312,26 +311,26 @@ angular.module('systemModule').config(function ($provide) {
     var http;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
         function ($delegate, $injector) {
-        return function (exception, cause) {
-            $delegate(exception, cause);
-            if (previousException && exception.toString() === previousException.toString()) return;
-            previousException = exception;
-            if (!http) {
-                http = $injector.get('$http');
-            }
-            try {
-                if (exception.message.indexOf("[$compile:tpload]") > -1) return;
-                http.post('/logClientException', {
-                    stack: exception.stack,
-                    message: exception.message,
-                    name: exception.name,
-                    url: window.location.pathname
-                });
-            } catch (e) {
+            return function (exception, cause) {
+                $delegate(exception, cause);
+                if (previousException && exception.toString() === previousException.toString()) return;
+                previousException = exception;
+                if (!http) {
+                    http = $injector.get('$http');
+                }
+                try {
+                    if (exception.message.indexOf("[$compile:tpload]") > -1) return;
+                    http.post('/logClientException', {
+                        stack: exception.stack,
+                        message: exception.message,
+                        name: exception.name,
+                        url: window.location.pathname
+                    });
+                } catch (e) {
 
-            }
-        };
-    }]);
+                }
+            };
+        }]);
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {

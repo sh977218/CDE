@@ -184,11 +184,11 @@ exports.DataElementDistinct = function (field, cb) {
     });
 };
 
-exports.myBoardLabels = function (user, cb) {
+exports.myBoardTags = function (user, cb) {
     if (!user) return cb("no user provided");
     var distinctQuery = {
-        "size": 0
-        , "query": {
+        "size": 0,
+        "query": {
             "bool": {
                 "must": {
                     "term": {
@@ -198,12 +198,12 @@ exports.myBoardLabels = function (user, cb) {
                     }
                 }
             }
-        }
-        , "aggs": {
+        },
+        "aggs": {
             "aggregationsName": {
                 "terms": {
-                    "field": "labels"
-                    , "size": 1000
+                    "field": "tags",
+                    "size": 1000
                 }
             }
         }
@@ -218,6 +218,49 @@ exports.myBoardLabels = function (user, cb) {
                 origin: "cde.elastic.BoardDistinct",
                 stack: new Error().stack,
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+            });
+        } else {
+            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
+                return b.key;
+            });
+            cb(list);
+        }
+    });
+};
+
+exports.myTaggedBoards = function (user, tagValue, cb) {
+    if (!user) return cb("no user provided");
+    var query = {
+        "size": 0,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "owner.username": {
+                                value: user.username
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "tags": tagValue
+                        }
+                    }
+                ]
+            }
+        }
+    };
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: query
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.myTaggedBoards",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
             });
         } else {
             var list = response.aggregations.aggregationsName.buckets.map(function (b) {

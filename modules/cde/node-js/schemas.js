@@ -118,7 +118,7 @@ var pinSchema = new mongoose.Schema({
 schemas.pinningBoardSchema = new mongoose.Schema({
     name: String,
     description: String,
-    labels: [String],
+    tags: [String],
     shareStatus: String,
     createdDate: Date,
     updatedDate: Date,

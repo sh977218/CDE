@@ -45,16 +45,25 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/myBoardLabels', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/myBoardTags', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
         } else {
-            elastic.myBoardLabels(req.user, function (result) {
+            elastic.myBoardTags(req.user, function (result) {
                 res.send(result);
             });
         }
     });
 
+    app.get('/getMyTaggedBoards/:tagValue', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            return res.status(403).send();
+        } else {
+            elastic.myTaggedBoards(req.user, req.params.tagValue, function (result) {
+                res.send(result);
+            });
+        }
+    });
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, function (req, res) {
         cdesvc.priorCdes(req, res);
     });

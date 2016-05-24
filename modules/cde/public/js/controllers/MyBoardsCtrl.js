@@ -51,12 +51,32 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
 
     $http({
         method: 'GET',
-        url: '/myBoardLabels'
+        url: '/myBoardTags'
     }).success(function (data) {
-        $scope.labels = ["All"].concat(data);
+        var array = data.map(function (d) {
+            return {tagName: d, tagValue: d};
+        });
+        $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(array);
     }).error(function () {
         if (err) throw err;
     });
+
+
+    $scope.compareFn = function (obj1, obj2) {
+        return obj1.id === obj2.id;
+    };
+
+    $scope.updateMyBoardWithTag = function (tagValue) {
+        $http({
+            method: 'GET',
+            url: '/getMyTaggedBoards/' + tagValue
+        }).success(function (data) {
+            $scope.boards = data;
+        }).error(function (err) {
+            if (err) throw err;
+        });
+    };
+
 
     $scope.openNewBoard = function () {
         var modalInstance = $modal.open({

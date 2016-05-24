@@ -2,11 +2,11 @@
     <hr/>
     <div class="col-xs-2 noLeftRightPadding">
         <div id="sidebar-wrapper">
-            <div ng-repeat="label in labels" class="checkbox">
-                <label>
-                    <input type="checkbox"> {{label}}
-                </label>
-            </div>
+            <label ng-repeat="tag in tags" class="my-board-tag">
+                <input type="checkbox" data-checklist-model="tags" data-checklist-value="tag.tagValue"
+                       checklist-comparator="compareFn" checklist-change="updateMyBoardWithTag(tag.tagValue)">
+                {{tag.tagName}}
+            </label>
         </div>
     </div>
     <div class="col-xs-10" ui-sortable="sortableOptions" ng-model="boards">
@@ -76,13 +76,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">Labels:
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">Tags:
                     </div>
-                    <div tabindex="0" class="col-md-9" id="board_label_{{$index}}">
-                        <span ng-bind-html="board.labels"></span>
-                        <div ng-show="board.editMode===true">
-                            <input ng-model="newLabel">
-                            <i class="fa fa-plus-square hand-cursor" ng-click="addNewLabel(newLabel,board)"></i>
+                    <div tabindex="0" class="col-md-9" id="board_tag_{{$index}}">
+                        <span ng-bind-html="board.tags"></span>
+                        <div ng-show="board.editMode === true">
+                            <input ng-model="newTag">
+                            <i class="fa fa-plus-square hand-cursor" ng-click="addNewTag(newTag,board)"></i>
                         </div>
                     </div>
                 </div>
