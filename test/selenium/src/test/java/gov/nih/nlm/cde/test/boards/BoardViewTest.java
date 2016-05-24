@@ -39,7 +39,10 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
+        textPresent("CODE_FOR_1");
+
         clickElement(By.id("cde_gridView"));
+
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");
@@ -51,7 +54,6 @@ public class BoardViewTest extends BoardTest {
         textPresent("Generalized Activities of Daily Living Pain");
         textPresent("Platinum free");
         textPresent("3535434");
-        textPresent("CODE_FOR_1");
     }
 
     public void attachToBoard(String cdeName, String boardName) {
