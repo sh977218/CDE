@@ -1,8 +1,15 @@
 angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', function ($scope, $modal, $http, Board) {
 
     $scope.sortableOptions = {
-        handle: '.fa.fa-arrows'
+        handle: '.fa.fa-arrows',
+        appendTo: "body",
+        revert: true,
+        start: function (event, ui) {
+            console.log('a');
+        }
     };
+
+    $scope.selectedTags = ['All'];
 
     $scope.removeBoard = function (index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
@@ -16,15 +23,15 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         board.showEdit = false;
     };
 
-    $scope.addNewLabel = function (newLabel, board) {
-        if (!board.labels) board.lables = [];
-        if (!newLabel || newLabel.length === 0) {
-            $scope.addAlert("danger", "Label can not be empty.");
+    $scope.addNewTag = function (newTag, board) {
+        if (!board.tags) board.tags = [];
+        if (!newTag || newTag.length === 0) {
+            $scope.addAlert("danger", "Tag can not be empty.");
             return;
         }
-        if (board.labels.indexOf(newLabel) === -1)
-            board.labels.push(newLabel);
-        else $scope.addAlert("danger", "There is already a label for this board.");
+        if (board.tags.indexOf(newTag) === -1)
+            board.tags.push(newTag);
+        else $scope.addAlert("danger", "There is already a same tag for this board.");
     };
 
     $scope.changeStatus = function (index) {
@@ -42,39 +49,59 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         delete board.editMode;
         $http.post("/board", board).success(function (response) {
             $scope.addAlert("success", "Saved");
-            $scope.loadMyBoards();
+            $scope.updateMyBoardWithTag();
+            $scope.getAllMyBoardTags()
         }).error(function (response) {
             $scope.addAlert("danger", response);
-            $scope.loadMyBoards();
+            $scope.selectedTags = ['All'];
+            $scope.updateMyBoardWithTag();
         });
     };
 
-    $http({
-        method: 'GET',
-        url: '/myBoardTags'
-    }).success(function (data) {
-        var array = data.map(function (d) {
-            return {tagName: d, tagValue: d};
-        });
-        $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(array);
-    }).error(function () {
-        if (err) throw err;
-    });
-
-
-    $scope.compareFn = function (obj1, obj2) {
-        return obj1.id === obj2.id;
-    };
-
-    $scope.updateMyBoardWithTag = function (tagValue) {
+    $scope.getAllMyBoardTags = function () {
         $http({
             method: 'GET',
-            url: '/getMyTaggedBoards/' + tagValue
+            url: '/myBoardTags'
         }).success(function (data) {
-            $scope.boards = data;
-        }).error(function (err) {
+            var array = data.map(function (d) {
+                return {tagName: d, tagValue: d};
+            });
+            $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(array);
+        }).error(function () {
             if (err) throw err;
         });
+    };
+
+    $scope.getMyBoardSuggestTags = function (s) {
+        $http({
+            method: 'GET',
+            url: '/myBoardTags'
+        }).success(function (data) {
+            var array = data.map(function (d) {
+                return d;
+            });
+            return array;
+        }).error(function () {
+            if (err) throw err;
+            return [];
+        });
+    };
+
+    $scope.compareFn = function (obj1, obj2) {
+        return obj1 === obj2;
+    };
+
+    $scope.updateMyBoardWithTag = function () {
+        if ($scope.selectedTags.length > 0)
+            $http({
+                method: 'GET',
+                url: '/getMyTaggedBoards/' + $scope.selectedTags
+            }).success(function (data) {
+                $scope.boards = data;
+            }).error(function (err) {
+                if (err) throw err;
+            });
+        else $scope.boards = [];
     };
 
 

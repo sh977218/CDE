@@ -1029,3 +1029,11 @@ div + .questionPlaceholder {
 .my-board-tag {
     display: block;
 }
+
+#my-board-container {
+    min-height: inherit;
+}
+
+.fa.fa-arrows {
+    cursor: move;
+}

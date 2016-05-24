@@ -187,7 +187,6 @@ exports.DataElementDistinct = function (field, cb) {
 exports.myBoardTags = function (user, cb) {
     if (!user) return cb("no user provided");
     var distinctQuery = {
-        "size": 0,
         "query": {
             "bool": {
                 "must": {
@@ -228,10 +227,9 @@ exports.myBoardTags = function (user, cb) {
     });
 };
 
-exports.myTaggedBoards = function (user, tagValue, cb) {
+exports.myTaggedBoards = function (user, tagValues, cb) {
     if (!user) return cb("no user provided");
     var query = {
-        "size": 0,
         "query": {
             "bool": {
                 "must": [
@@ -241,16 +239,22 @@ exports.myTaggedBoards = function (user, tagValue, cb) {
                                 value: user.username
                             }
                         }
-                    },
-                    {
-                        "match": {
-                            "tags": tagValue
-                        }
                     }
                 ]
             }
         }
     };
+    tagValues.split(',').forEach(function (t) {
+        if (t !== 'All')
+            query.query.bool.must.push(
+                {
+                    "term": {
+                        "tags": {
+                            value: t
+                        }
+                    }
+                })
+    });
     esClient.search({
         index: config.elastic.boardIndex.name,
         type: "board",
@@ -263,8 +267,8 @@ exports.myTaggedBoards = function (user, tagValue, cb) {
                 details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
             });
         } else {
-            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
-                return b.key;
+            var list = response.hits.hits.map(function (h) {
+                return h._source;
             });
             cb(list);
         }

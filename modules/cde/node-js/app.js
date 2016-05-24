@@ -54,12 +54,11 @@ exports.init = function (app, daoManager) {
             });
         }
     });
-
-    app.get('/getMyTaggedBoards/:tagValue', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/getMyTaggedBoards/:tagValues', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
         } else {
-            elastic.myTaggedBoards(req.user, req.params.tagValue, function (result) {
+            elastic.myTaggedBoards(req.user, req.params.tagValues, function (result) {
                 res.send(result);
             });
         }
@@ -242,7 +241,7 @@ exports.init = function (app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
-                    b.labels = board.labels;
+                    b.tags = board.tags;
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
                         return res.status(403).send("You don't have permission to make boards public!");
                     }
