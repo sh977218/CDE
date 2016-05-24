@@ -219,15 +219,13 @@ exports.myBoardTags = function (user, cb) {
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
             });
         } else {
-            var list = response.aggregations.aggregationsName.buckets.map(function (b) {
-                return b.key;
-            });
+            var list = response.aggregations.aggregationsName.buckets;
             cb(list);
         }
     });
 };
 
-exports.myTaggedBoards = function (user, tagValues, cb) {
+exports.myTaggedBoards = function (user, tags, cb) {
     if (!user) return cb("no user provided");
     var query = {
         "query": {
@@ -252,7 +250,7 @@ exports.myTaggedBoards = function (user, tagValues, cb) {
             }
         }
     };
-    tagValues.split(',').forEach(function (t) {
+    tags.split(',').forEach(function (t) {
         if (t !== 'All')
             query.query.bool.must.push(
                 {
@@ -275,10 +273,7 @@ exports.myTaggedBoards = function (user, tagValues, cb) {
                 details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
             });
         } else {
-            var list = response.hits.hits.map(function (h) {
-                return h._source;
-            });
-            cb(list);
+            cb(response);
         }
     });
 };

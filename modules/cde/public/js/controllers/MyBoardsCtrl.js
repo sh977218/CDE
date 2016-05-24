@@ -9,7 +9,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         }
     };
 
-    $scope.selectedTags = ['All'];
+    $scope.selectedTags = [];
 
     $scope.removeBoard = function (index) {
         $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
@@ -49,12 +49,12 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         delete board.editMode;
         $http.post("/board", board).success(function (response) {
             $scope.addAlert("success", "Saved");
-            $scope.updateMyBoardWithTag();
+            $scope.updateMyBoardWithTags();
             $scope.getAllMyBoardTags()
         }).error(function (response) {
             $scope.addAlert("danger", response);
             $scope.selectedTags = ['All'];
-            $scope.updateMyBoardWithTag();
+            $scope.updateMyBoardWithTags();
         });
     };
 
@@ -62,14 +62,8 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $http({
             method: 'GET',
             url: '/myBoardTags'
-        }).success(function (data) {
-            var suggestTags = data.map(function (d) {
-                return {tagName: d, tagValue: d};
-            });
-            $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(suggestTags);
-            $scope.suggestTags = suggestTags.map(function (t) {
-                return t.tagValue;
-            });
+        }).success(function (response) {
+            $scope.tags = response;
         }).error(function () {
             if (err) throw err;
             $scope.suggestTags = [];
@@ -80,17 +74,20 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         return obj1 === obj2;
     };
 
-    $scope.updateMyBoardWithTag = function () {
-        if ($scope.selectedTags.length > 0)
-            $http({
-                method: 'GET',
-                url: '/getMyTaggedBoards/' + $scope.selectedTags
-            }).success(function (data) {
-                $scope.boards = data;
-            }).error(function (err) {
-                if (err) throw err;
+    $scope.updateMyBoardWithTags = function () {
+        if ($scope.selectedTags.length === 0)
+            $scope.selectedTags = ['All'];
+        $http({
+            method: 'GET',
+            url: '/getMyTaggedBoards/' + $scope.selectedTags
+        }).success(function (response) {
+            $scope.boards = response.hits.hits.map(function (h) {
+                return h._source;
             });
-        else $scope.boards = [];
+            $scope.tags = response.aggregations.aggregationsName.buckets;
+        }).error(function (err) {
+            if (err) throw err;
+        });
     };
 
 
