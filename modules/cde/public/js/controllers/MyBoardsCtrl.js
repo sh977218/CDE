@@ -23,14 +23,14 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         board.showEdit = false;
     };
 
-    $scope.addNewTag = function (newTag, board) {
+    $scope.updateTags = function (t, board) {
         if (!board.tags) board.tags = [];
-        if (!newTag || newTag.length === 0) {
+        if (!t || t.length === 0) {
             $scope.addAlert("danger", "Tag can not be empty.");
             return;
         }
-        if (board.tags.indexOf(newTag) === -1)
-            board.tags.push(newTag);
+        if (board.tags.indexOf(t) === -1)
+            board.tags.push(t);
         else $scope.addAlert("danger", "There is already a same tag for this board.");
     };
 
@@ -63,27 +63,16 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             method: 'GET',
             url: '/myBoardTags'
         }).success(function (data) {
-            var array = data.map(function (d) {
+            var suggestTags = data.map(function (d) {
                 return {tagName: d, tagValue: d};
             });
-            $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(array);
-        }).error(function () {
-            if (err) throw err;
-        });
-    };
-
-    $scope.getMyBoardSuggestTags = function (s) {
-        $http({
-            method: 'GET',
-            url: '/myBoardTags'
-        }).success(function (data) {
-            var array = data.map(function (d) {
-                return d;
+            $scope.tags = [{tagName: 'All', tagValue: 'All'}].concat(suggestTags);
+            $scope.suggestTags = suggestTags.map(function (t) {
+                return t.tagValue;
             });
-            return array;
         }).error(function () {
             if (err) throw err;
-            return [];
+            $scope.suggestTags = [];
         });
     };
 

@@ -1037,3 +1037,11 @@ div + .questionPlaceholder {
 .fa.fa-arrows {
     cursor: move;
 }
+
+.select2-search-field input {
+    width: 100% !important;
+}
+
+.select2-search-field {
+    width: 100% !important;
+}
