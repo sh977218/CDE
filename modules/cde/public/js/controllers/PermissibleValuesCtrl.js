@@ -8,7 +8,7 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
     };
 
-    var displayAsArray = [];
+    var displayAsArray = ['NCI Thesaurus', 'LOINC'];
 
     Object.keys(defaultSrcOptions).forEach(function(srcKey) {
         $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
