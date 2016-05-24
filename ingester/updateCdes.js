@@ -1,53 +1,16 @@
-var fs = require('fs')
-    , util = require('util')
-    , xml2js = require('xml2js')
-    , mongoose = require('mongoose')
-    , config = require('../modules/system/node-js/parseConfig')
-    , cde_schemas = require('../modules/cde/node-js/schemas')
-    , sys_schemas = require('../modules/system/node-js/schemas')
-    , mongo_cde = require('../modules/cde/node-js/mongo-cde')
-    , cdesvc = require('../modules/cde/node-js/cdesvc')
-    , classificationShared = require('../modules/system/shared/classificationShared');
+var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    cdesvc = require('../modules/cde/node-js/cdesvc'),
+    classificationShared = require('../modules/system/shared/classificationShared'),
+    MigrationDataElement = require('./createConnection').MigrationDataElementModel,
+    DataElement = require('./createConnection').DataElementModel,
+    MigrationOrg = require('./createConnection').MigrationOrgModel,
+    Org = require('./createConnection').OrgModel,
+    updateShare = require('./updateShare')
+    ;
 
 var cdeSource = process.argv[3];
 
 var importDate = new Date().toJSON();
-
-var mongoUri = config.mongoUri;
-var mongoMigrationUri = config.mongoMigrationUri;
-
-var conn = mongoose.createConnection(mongoUri);
-conn.on('error', console.error.bind(console, 'appData connection error:'));
-conn.on('error', function () {
-    process.exit(1);
-});
-conn.once('open', function callback() {
-    console.log('mongodb connection open');
-});
-
-var migrationConn = mongoose.createConnection(mongoMigrationUri);
-migrationConn.on('error', console.error.bind(console, 'migration connection error:'));
-migrationConn.on('error', function () {
-    process.exit(1);
-});
-migrationConn.once('open', function callback() {
-    console.log('mongodb migration connection open');
-});
-
-var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
-var MigrationDataElement = migrationConn.model('DataElement', cde_schemas.dataElementSchema);
-
-var Org = conn.model('Org', sys_schemas.orgSchema);
-var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
-
-function removeProperty(cde, property) {
-    for (var i = 0; i < cde.properties.length; i++) {
-        if (property.key === cde.properties[i].key) {
-            cde.properties.splice(i, 1);
-            return;
-        }
-    }
-};
 
 function removeClassificationTree(cde, org) {
     for (var i = 0; i < cde.classification.length; i++) {
@@ -56,16 +19,13 @@ function removeClassificationTree(cde, org) {
             return;
         }
     }
-};
+}
 
 var changed = 0;
 var created = 0;
 var createdCDE = [];
 var same = 0;
 
-setInterval(function () {
-    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-}, 10000);
 
 function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
@@ -85,22 +45,21 @@ function wipeUseless(toWipeCde) {
             delete toWipeCde[key];
         }
     });
-
-};
+}
 
 function compareCdes(existingCde, newCde) {
     existingCde.ids.sort(function (a, b) {
-        return a.source > b.source
+        return a.source > b.source;
     });
     newCde.ids.sort(function (a, b) {
-        return a.source > b.source
+        return a.source > b.source;
     });
 
     existingCde.properties.sort(function (a, b) {
-        return a.key > b.key
+        return a.key > b.key;
     });
     newCde.properties.sort(function (a, b) {
-        return a.key > b.key
+        return a.key > b.key;
     });
 
 
@@ -111,7 +70,7 @@ function compareCdes(existingCde, newCde) {
             existingCde.classification.splice(i, 1);
         }
     }
-    if (existingCde.classification == [null]) existingCde.classification = [];
+    if (existingCde.classification === [null]) existingCde.classification = [];
     try {
         if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
     } catch (e) {
@@ -124,7 +83,7 @@ function compareCdes(existingCde, newCde) {
     wipeUseless(newCde);
 
     return cdesvc.diff(existingCde, newCde);
-};
+}
 
 function processCde(migrationCde, existingCde, orgName, processCdeCb) {
     // deep copy
@@ -153,11 +112,8 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        newDe.properties = migrationCde.properties;
-        //for (var j = 0; j < migrationCde.properties.length; j++) {
-        //    removeProperty(newDe, migrationCde.properties[j]);
-        //    newDe.properties.push(migrationCde.properties[j]);
-        //}
+        updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
+        newDe.properties = newDe.properties.concat(migrationCde.properties);
 
         removeClassificationTree(newDe, orgName);
         if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
@@ -185,7 +141,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         console.log("Something wrong with deepDiff");
         console.log(deepDiff);
     }
-};
+}
 
 function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
     var cdeCond = {
@@ -194,8 +150,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: importDate}
     };
-    DataElement.find(cdeCond)
-        .where("ids").elemMatch(function (elem) {
+    DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(cdeId);
     }).exec(function (err, existingCdes) {
@@ -232,8 +187,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
             }
         } else if (existingCdes.length > 1) {
             //console.log("Too many CDEs with Id = " + cdeId);
-            DataElement.find(cdeCond)
-                .where("ids").elemMatch(function (elem) {
+            DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
                 elem.where("source").equals(source);
                 elem.where("id").equals(cdeId);
                 elem.where("version").equals(idv);
@@ -255,7 +209,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
             processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
         }
     });
-};
+}
 var migStream;
 
 function streamOnData(migrationCde) {
@@ -281,7 +235,7 @@ function streamOnData(migrationCde) {
         console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
         migStream.resume();
     }
-};
+}
 
 function streamOnClose() {
 
@@ -303,6 +257,7 @@ function streamOnClose() {
                 theOrg.classifications = org.classifications;
                 theOrg.save(function (err) {
                     if (err) console.log("Error saving Org " + err);
+                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
                 });
             });
         });
@@ -310,10 +265,10 @@ function streamOnClose() {
 
     // give 5 secs for org to save.
     setTimeout(function () {
-        console.log(createdCDE);
+        console.log(" changed: " + changed + " same: " + same + " created: " + created);
         process.exit(0);
     }, 5000);
-};
+}
 function doStream() {
     migStream = MigrationDataElement.find().stream();
 
@@ -324,6 +279,9 @@ function doStream() {
     });
 
     migStream.on('close', streamOnClose);
-};
+}
 
 doStream();
+setInterval(function () {
+    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+}, 10000);
