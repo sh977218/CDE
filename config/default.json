@@ -69,14 +69,6 @@
         "port": 27017
       }
     ],
-    "local": {
-      "db": "local",
-      "username": "siteRootAdmin",
-      "password": "password",
-      "options": {
-        "auth": {"authdb": "admin"}
-      }
-    },
     "appData": {
       "db": "test",
       "username": "cdeuser",
