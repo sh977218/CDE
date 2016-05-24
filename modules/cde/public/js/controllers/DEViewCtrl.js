@@ -403,7 +403,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }
              }).
              success(function(data) {
-                if (!data.error && data.length > 0) {
+                if (!data.error && data["ns0:RetrieveValueSetResponse"]) {
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
@@ -416,6 +416,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                         $scope.showValidateButton = true;
                     }
                     $scope.getPVTypeheadVsacNameList();
+                } else {
+                    $scope.addAlert("Error: No data retrieved from VSAC.");
                 }
              })
              ;
