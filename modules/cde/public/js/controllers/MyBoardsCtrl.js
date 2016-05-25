@@ -1,10 +1,25 @@
 angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', '$timeout', 'Board', 'userResource', function ($scope, $modal, $http, $timeout, Board, userResource) {
 
     $scope.myBoardSortBy = ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'];
+    $scope.myBoardSortDir = ['asc', 'desc'];
 
-    $scope.sortMyBoard = function (item, model) {
+    $scope.sortMyBoardBy = function (item, model) {
         var user = userResource.user;
         user.searchSettings.myBoard.sortBy = item;
+        $timeout(function () {
+            $http.post('/user/me', user).then(function (res) {
+                if (res.status === 200) {
+                    $scope.addAlert("success", "User updated");
+                    $scope.updateMyBoardWithTagsAndSort()
+                } else {
+                    $scope.addAlert("danger", "Error, unable to save");
+                }
+            });
+        }, 0);
+    };
+    $scope.sortMyBoardDir = function (item, model) {
+        var user = userResource.user;
+        user.searchSettings.myBoard.sortDir = item;
         $timeout(function () {
             $http.post('/user/me', user).then(function (res) {
                 if (res.status === 200) {

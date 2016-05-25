@@ -71,7 +71,8 @@ schemas.userSchema = new mongoose.Schema({
             , tinyId: Boolean
         }
         , myBoard: {
-            sortBy: {type: String, default: 'updatedDate'}
+            sortBy: {type: String, default: 'updatedDate'},
+            sortDir: {type: String, default: 'asc'}
         }
     }
     , accessToken: String

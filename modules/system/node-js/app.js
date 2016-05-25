@@ -36,7 +36,8 @@ exports.init = function (app) {
     var version = "local-dev";
     try {
         version = require('./version.js').version;
-    } catch (e) {}
+    } catch (e) {
+    }
 
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
@@ -174,33 +175,35 @@ exports.init = function (app) {
 
     var failedIps = [];
 
-    app.get('/csrf', csrf(), function(req, res) {
+    app.get('/csrf', csrf(), function (req, res) {
         exportShared.nocacheMiddleware(req, res);
         var resp = {csrf: req.csrfToken()};
         var failedIp = findFailedIp(getRealIp(req));
-        if ((failedIp && failedIp.nb > 2) ){
+        if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
         res.send(resp);
     });
 
     function findFailedIp(ip) {
-        return failedIps.filter(function(f) {
+        return failedIps.filter(function (f) {
             return f.ip === ip;
         })[0];
     }
 
-    app.post('/login', csrf(), function(req, res, next) {
+    app.post('/login', csrf(), function (req, res, next) {
         var failedIp = findFailedIp(getRealIp(req));
         var err;
-        if (failedIp && failedIp.nb > 2){
+        if (failedIp && failedIp.nb > 2) {
             if (req.body.recaptcha) {
                 request.post("https://www.google.com/recaptcha/api/siteverify",
-                    {form: {
-                        secret: config.captchaCode,
-                        response: req.body['g-recaptcha-response'],
-                        remoteip: getRealIp(req)
-                    }}, function(err, resp, body) {
+                    {
+                        form: {
+                            secret: config.captchaCode,
+                            response: req.body['g-recaptcha-response'],
+                            remoteip: getRealIp(req)
+                        }
+                    }, function (err, resp, body) {
                         if (!body.success) {
                             err = "incorrect recaptcha";
                         }
@@ -215,9 +218,11 @@ exports.init = function (app) {
         }
 
         // Regenerate is used so appscan won't complain
-        req.session.regenerate(function() {
-            passport.authenticate('local', function(err, user) {
-                if (err) { return res.status(403).end(); }
+        req.session.regenerate(function () {
+            passport.authenticate('local', function (err, user) {
+                if (err) {
+                    return res.status(403).end();
+                }
                 if (!user) {
                     if (failedIp && config.useCaptcha) failedIp.nb++;
                     else {
@@ -226,11 +231,13 @@ exports.init = function (app) {
                     }
                     return res.status(403).send();
                 }
-                req.logIn(user, function(err) {
+                req.logIn(user, function (err) {
                     if (failedIp) {
                         failedIp.nb = 0;
                     }
-                    if (err) { return res.status(403).end(); }
+                    if (err) {
+                        return res.status(403).end();
+                    }
                     req.session.passport = {user: req.user._id};
                     return res.send("OK");
                 });
@@ -350,6 +357,8 @@ exports.init = function (app) {
             } else {
                 mongo_data_system.userById(req.user._id, function (err, user) {
                     user.email = req.body.email;
+                    user.searchSettings.myBoard.sortBy = req.body.searchSettings.myBoard.sortBy;
+                    user.searchSettings.myBoard.sortDir = req.body.searchSettings.myBoard.sortDir;
                     user.save(function (err) {
                         if (err) res.status(500).send("Unable to save");
                         res.send("OK");
@@ -426,7 +435,7 @@ exports.init = function (app) {
         return ip.indexOf("127.0") !== -1 || ip === "::1" || ip.indexOf(config.internalIP) === 0 || ip.indexOf("ffff:" + config.internalIP) > -1;
     };
 
-    app.get('/searchUsers/:username?', function(req, res) {
+    app.get('/searchUsers/:username?', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
@@ -448,7 +457,7 @@ exports.init = function (app) {
     });
 
 
-    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function(req, res) {
+    app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");
         } else {
@@ -802,9 +811,9 @@ exports.init = function (app) {
         var untar = tar.extract(target);
         request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
-            spawn('rm', [target + '/system*']).on('exit', function(){
+            spawn('rm', [target + '/system*']).on('exit', function () {
                 var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.local.username, '-p', config.database.local.password, '--authenticationDatabase', config.database.local.options.auth.authdb, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
-                restore.on('exit', function() {
+                restore.on('exit', function () {
                     esInit.indices.forEach(elastic.reIndex);
                     var rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {

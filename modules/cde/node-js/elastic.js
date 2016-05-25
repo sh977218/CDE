@@ -255,8 +255,8 @@ exports.myTaggedBoards = function (user, tags, cb) {
         "sort": []
     };
     var sort = {};
-    if (user.searchSettings.myBoard && user.searchSettings.myBoard.sortBy) {
-        sort[user.searchSettings.myBoard.sortBy] = {"order": "asc"}
+    if (user.searchSettings.myBoard && user.searchSettings.myBoard.sortBy && user.searchSettings.myBoard && user.searchSettings.myBoard.sortDir) {
+        sort[user.searchSettings.myBoard.sortBy] = {"order": user.searchSettings.myBoard.sortDir}
     }
     else {
         sort['updatedDate'] = {"order": "asc"};

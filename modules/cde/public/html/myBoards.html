@@ -1,12 +1,21 @@
 <div class="container-fluid">
     <h3 class="text-center">My Board. (Sort By
         <ui-select ng-model="searchSettings.myBoard.sortBy" theme="select2" style="min-width: 25%"
-                   on-select="sortMyBoard($item, $model)">
+                   on-select="sortMyBoardBy($item, $model)">
             <ui-select-match placeholder="sort my board by:">
                 {{$select.selected}}
             </ui-select-match>
             <ui-select-choices repeat="sortBy in myBoardSortBy | filter: $select.search">
                 <div ng-bind-html="sortBy | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+        <ui-select ng-model="searchSettings.myBoard.sortDir" theme="select2" style="min-width: 5%"
+                   on-select="sortMyBoardDir($item, $model)">
+            <ui-select-match placeholder="sort my board dir:">
+                {{$select.selected}}
+            </ui-select-match>
+            <ui-select-choices repeat="sortDir in myBoardSortDir | filter: $select.search">
+                <div ng-bind-html="sortDir | highlight: $select.search"></div>
             </ui-select-choices>
         </ui-select>
         )
