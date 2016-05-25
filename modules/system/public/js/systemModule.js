@@ -297,20 +297,6 @@ angular.module('systemModule').config(['$compileProvider', function ($compilePro
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-angular.module('systemModule').config(function ($provide) {
-    $provide.decorator('uiSortableDirective', function ($delegate) {
-        var directive = $delegate[0];
-        var link = directive.link;
-        directive.compile = function () {
-            return function (scope, element, attrs, ngModel) {
-                if (scope.dragEnabled) {
-                    link(scope, element, attrs, ngModel);
-                }
-            };
-        };
-        return $delegate;
-    });
-});
 
 angular.module('systemModule').config(function ($provide) {
     var previousException;

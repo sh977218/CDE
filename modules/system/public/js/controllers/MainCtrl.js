@@ -56,7 +56,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.boards = [];
 
-
             userResource.getPromise().then(function () {
                 $scope.loadMyBoards();
             });

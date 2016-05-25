@@ -8,7 +8,6 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
-    $scope.dragEnabled = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
@@ -210,12 +209,6 @@ angular.module('formModule').controller('FormViewCtrl',
             }
         }
     };
-
-    //function setDefaultValues() {
-    //    $scope.elt.questions.forEach(function(q) {
-    //        q.question.value = q.question.defaultAnswer;
-    //    });
-    //}
 
     $scope.reload = function () {
         Form.get(query, function (form) {
