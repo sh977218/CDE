@@ -13,7 +13,7 @@ var cdesvc = require('./cdesvc')
     , path = require('path')
     , express = require('express')
     , sdc = require("./sdc.js")
-    , status = require('./status')
+    , appStatus = require('./status')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
@@ -22,15 +22,12 @@ var cdesvc = require('./cdesvc')
     , usersrvc = require('../../system/node-js/usersrvc')
     ;
 
-
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     daoManager.registerDao(mongo_data);
 
-    app.post('/boardSearch', function (req, res) {
-        boardsvc.boardSearch(req, res);
-    });
+    app.post('/boardSearch',boardsvc.boardSearch);
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_data.cdesByTinyIdList(req.body, function (err, cdes) {
@@ -45,13 +42,9 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/priorcdes/:id', exportShared.nocacheMiddleware, function (req, res) {
-        cdesvc.priorCdes(req, res);
-    });
+    app.get('/priorcdes/:id', exportShared.nocacheMiddleware, cdesvc.priorCdes);
 
-    app.get('/forks/:id', exportShared.nocacheMiddleware, function (req, res) {
-        cdesvc.forks(req, res);
-    });
+    app.get('/forks/:id', exportShared.nocacheMiddleware,cdesvc.forks);
 
     app.post('/dataelement/fork', function (req, res) {
         adminItemSvc.fork(req, res, mongo_data);
@@ -115,14 +108,9 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/debytinyid/:tinyId/:version?', function (req, res) {
-        return cdesvc.save(req, res);
-    });
+    app.post('/debytinyid/:tinyId/:version?', cdesvc.save);
 
-    app.post('/dataelement', function (req, res) {
-        return cdesvc.save(req, res);
-    });
-
+    app.post('/dataelement', cdesvc.save);
 
     app.get('/viewingHistory/:start', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
@@ -150,7 +138,6 @@ exports.init = function (app, daoManager) {
             res.send(result);
         });
     });
-
 
     app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
         var size = 20;
@@ -443,8 +430,7 @@ exports.init = function (app, daoManager) {
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
     });
 
-    app.get('/searchUmls', function(req, res) {
-        if (!req.user) return res.status(403).send();
+    app.get('/searchUmls', function(req, res) { if (!req.user) return res.status(403).send();
         return vsac.searchUmls(req.query.searchTerm, res);
     });
 
@@ -489,7 +475,7 @@ exports.init = function (app, daoManager) {
         sdc.byId(req, res);
     });
 
-    app.get('/status/cde', status.status);
+    app.get('/status/cde', appStatus.status);
 
     app.post('/pinEntireSearchToBoard', function (req, res) {
         if (req.isAuthenticated()) {
