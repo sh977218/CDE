@@ -1,4 +1,4 @@
-<span ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)">
+<div ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements)">
     <div ng-if="displayInstruction" class="row">
         <div class="col-md-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
@@ -14,7 +14,7 @@
         </div>
         <div ng-switch="question.question.isScore">
             <div ng-switch-when="true">
-                Score: <span type="number" ng-disabled="true" ng-bind="score(question)"></span>
+                Score: <span ng-disabled="true" ng-bind="score(question)"></span>
             </div>
             <div ng-switch-default>
                 <div ng-switch="question.question.datatype" class="col-md-9">
@@ -30,13 +30,13 @@
                            min="{{question.question.datatypeNumber.minValue}}"
                            max="{{question.question.datatypeNumber.maxValue}}"/>
                     <span ng-switch-default class="form-group">
-                      <input type="text" class="form-control" ng-required="question.question.required"
-                             ng-model="question.question.answer" name=""/>
-                      <select class="form-control" ng-if="question.question.uoms.length > 0"
-                              ng-model="question.question.answerUom"
-                              ng-init="question.question.answerUom = question.question.uoms[0]">
-                          <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
-                      </select>
+                          <input type="text" class="form-control" ng-required="question.question.required"
+                                 ng-model="question.question.answer" name=""/>
+                          <select class="form-control" ng-if="question.question.uoms.length > 0"
+                                  ng-model="question.question.answerUom"
+                                  ng-init="question.question.answerUom = question.question.uoms[0]">
+                              <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
+                          </select>
                     </span>
 
                     <div>
@@ -47,4 +47,4 @@
             </div>
         </div>
     </div>
-    </span>
+    </div>

@@ -1,4 +1,4 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute']).config(function($routeProvider)
+angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates']).config(function($routeProvider)
 {
     $routeProvider.
         when('/form/search', {

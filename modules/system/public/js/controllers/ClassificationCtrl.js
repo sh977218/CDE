@@ -68,3 +68,9 @@ angular.module('systemModule').controller('ClassificationCtrl',
         });
     };
  }]);
+
+angular.module("systemModule").controller('ClassLeafCtrl', ['$scope', function($scope){
+    var j = JSON.parse(JSON.stringify($scope.pathArray));
+    j.push($scope.elt.name);
+    $scope.pathArray = j;
+}]);

@@ -26,7 +26,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 $('.dragQuestions').css('border', '');
             }
             , helper: function () {
-                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>');
             }
         };
 

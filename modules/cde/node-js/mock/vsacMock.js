@@ -2,8 +2,6 @@ var path = require('path');
 
 var express = require('express')
     , https = require('https')
-    , util = require('util')
-    , crypto = require('crypto')
     , fs = require('fs')
     , config = require('../../../system/node-js/parseConfig')
     , bodyParser = require('body-parser')
@@ -103,11 +101,11 @@ app.post('/cas/serviceValidate', function(req, res) {
     } else if( req.query.ticket === 'timeout4' ) {
         // Return after 4 sec, ticket validation times out after 2 sec, ticket validation doesn't pass
         setTimeout(function() {
-            res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\
-	<cas:authenticationSuccess>\n\
-		<cas:user>ninds</cas:user>\n\
-	</cas:authenticationSuccess>\n\
-</cas:serviceResponse>");
+            res.send("<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n" +
+	            "<cas:authenticationSuccess>\n" +
+		        "<cas:user>ninds</cas:user>\n" +
+	            "</cas:authenticationSuccess>\n" +
+                "</cas:serviceResponse>");
         }, 4000);
     }
 });
