@@ -7,7 +7,8 @@ var spawn = require('child_process').spawn,
     fs = require('fs'),
     multer = require('multer'),
     tar = require('tar-fs'),
-    zlib = require('zlib')
+    zlib = require('zlib'),
+    templateCache = require('gulp-angular-templatecache')
     ;
 
 var allHosts = [];

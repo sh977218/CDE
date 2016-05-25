@@ -1,5 +1,5 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-        'OrgFactories', 'classification', 'ngGrid',
+        'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
         'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
         'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
         , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
@@ -22,7 +22,9 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/login', {
             controller: 'AuthCtrl',
             templateUrl: '/system/public/html/login.html'
-        }).when('/siteAudit', {templateUrl: '/system/public/html/siteAudit.html'}).when('/inbox', {
+        }).when('/siteAudit', {
+            templateUrl: '/system/public/html/siteAudit.html'
+        }).when('/inbox', {
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
         }).when('/siteaccountmanagement', {
@@ -46,7 +48,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/searchSettings', {
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
-        })
+        });
     })
     .directive('inlineEdit', function () {
         return {
@@ -58,7 +60,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , onOk: '&'
                 , typeaheadSource: '='
             },
-            templateUrl: '/system/public/js/systemTemplate/inlineEdit.html',
+            templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
             }
@@ -120,7 +122,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.editMode = false;
                 };
             },
-            templateUrl: '/system/public/js/systemTemplate/inlineAreaEdit.html'
+            templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
         };
     })
     .directive('sortableArray', function () {
@@ -131,7 +133,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , index: '=index'
                 , cb: '&'
             },
-            templateUrl: '/system/public/js/systemTemplate/sortableArray.html',
+            templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
             controller: function ($scope) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
@@ -148,7 +150,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.moveBottom = function () {
                     $scope.array.push($scope.array.shift());
                     $scope.cb();
-                }
+                };
             }
         };
     });
@@ -338,7 +340,7 @@ angular.module('systemModule').config(function ($provide) {
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix('nlmcde')
+    localStorageServiceProvider.setPrefix('nlmcde');
 });
 
 angular.module('systemModule').run(function ($rootScope) {
