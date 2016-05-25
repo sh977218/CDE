@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardManagement4Test extends BoardTest {
-    
+
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
@@ -16,22 +16,22 @@ public class BoardManagement4Test extends BoardTest {
         gotoMyBoards();
         Assert.assertTrue(textNotPresent("Not a very useful"));
     }
-    
+
     @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
         goToCdeSearch();
         createBoard(boardName, "Number Increment Definition");
-        gotoMyBoards(); 
+        gotoMyBoards();
         WebElement numElt = null;
         int length = driver.findElements(By.linkText("View Board")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("viewBoard_" + i)).getText();
             if (boardName.equals(name)) {
-                numElt = findElement(By.id("dd_numb_" + i));
+                numElt = findElement(By.id("board_num_cdes_" + i));
             }
-        }        
+        }
         int num = new Integer(numElt.getText());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);

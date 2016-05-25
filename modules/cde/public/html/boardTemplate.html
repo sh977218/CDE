@@ -8,7 +8,7 @@
                 <input type="text" ng-model="board.name" id="name_input_{{$index}}"/>
             </div>
             <div ng-switch-default>
-                <a href="/#/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank"
+                <a href="/#/board/{{board._id}}" id="viewBoard_{{$index}}" target="_blank"
                    ng-bind="board.name"></a>
             </div>
         </div>

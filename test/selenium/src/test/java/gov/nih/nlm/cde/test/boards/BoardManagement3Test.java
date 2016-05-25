@@ -11,32 +11,24 @@ public class BoardManagement3Test extends BoardTest {
         mustBeLoggedInAs(boarduserEdit_username, password);
         createBoard("Edit Board", "Test");
         gotoMyBoards();
-        String modified = findElement(By.id("dd_mod")).getText();
-        findElement(By.id("name_edit_0")).click();
+        String modified = findElement(By.id("board_mod_0")).getText();
+        clickElement(By.id("edit_board_0"));
         findElement(By.id("name_input_0")).sendKeys(" -- Name Edited");
-        findElement(By.id("name_confirm_0")).click();
 
-        textPresent("Saved");
-        closeAlert();
-        textPresent("Edit Board -- Name Edited");
-        
-        hangon(1);
-        
-        findElement(By.id("desc_edit_0")).click();
+        clickElement(By.id("desc_edit_0"));
         findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
-        hangon(.5);
-        findElement(By.id("desc_confirm_0")).click();
-        
+        clickElement(By.id("confirmEdit_0"));
+
         goToCdeSearch();
         gotoMyBoards();
         textPresent("-- Name Edited");
         textPresent("-- Desc Edited");
-        
+
         Assert.assertNotEquals(modified + " --- " + findElement(By.id("dd_mod")).getText(), modified, findElement(By.id("dd_mod")).getText());
-        
+
         removeBoard("Edit Board -- Name Edited");
     }
-    
+
     @Test
     public void searchBoard() {
         mustBeLoggedInAs(boardSearchUser_username, password);
@@ -47,25 +39,25 @@ public class BoardManagement3Test extends BoardTest {
         createBoard(pubBlood, "");
         createBoard(privBlood, "");
         createBoard(pubSmoking, "");
-        
+
         makePublic(pubBlood);
         makePublic(pubSmoking);
 
         modalGone();
         gotoPublicBoards();
-        
+
         findElement(By.name("search")).sendKeys("Blood");
         findElement(By.id("search.submit")).click();
-        
+
         textPresent(pubBlood);
 
         textNotPresent("Smoking");
         textNotPresent("Private");
-        
+
         removeBoard(pubBlood);
         removeBoard(privBlood);
         removeBoard(pubSmoking);
-        
+
     }
-    
+
 }
