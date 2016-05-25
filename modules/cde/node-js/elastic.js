@@ -10,7 +10,7 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.updateOrInsert = function(elt) {
+exports.updateOrInsert = function (elt) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
         delete doc._id;
@@ -32,7 +32,7 @@ exports.updateOrInsert = function(elt) {
     }
 };
 
-exports.boardUpdateOrInsert = function(elt) {
+exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();
         delete doc._id;
@@ -58,10 +58,12 @@ exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
-            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {delete query.highlight.fields[field];}
+            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
+                delete query.highlight.fields[field];
+            }
         });
     }
-    sharedElastic.elasticsearch(query, 'cde', function(err, result) {
+    sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
@@ -178,6 +180,113 @@ exports.DataElementDistinct = function (field, cb) {
                 return b.key;
             });
             cb(list);
+        }
+    });
+};
+
+exports.myBoardTags = function (user, cb) {
+    if (!user) return cb("no user provided");
+    var distinctQuery = {
+        "query": {
+            "bool": {
+                "must": {
+                    "term": {
+                        "owner.username": {
+                            value: user.username
+                        }
+                    }
+                }
+            }
+        },
+        "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
+            }
+        },
+        "sort": [
+            {"updatedDate": {"order": "asc"}}
+        ]
+    };
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: distinctQuery
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.BoardDistinct",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+            });
+        } else {
+            var list = response.aggregations.aggregationsName.buckets;
+            cb(list);
+        }
+    });
+};
+
+exports.myTaggedBoards = function (user, tags, cb) {
+    if (!user) return cb("no user provided");
+    var query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "owner.username": {
+                                value: user.username
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
+            }
+        },
+        "sort": []
+    };
+    var sort = {};
+    if (user.searchSettings.myBoard && user.searchSettings.myBoard.sortBy) {
+        sort[user.searchSettings.myBoard.sortBy] = {"order": "asc"}
+    }
+    else {
+        sort['updatedDate'] = {"order": "asc"};
+        query.sort.push(sort);
+    }
+    query.sort.push(sort);
+    tags.split(',').forEach(function (t) {
+        if (t !== 'All')
+            query.query.bool.must.push(
+                {
+                    "term": {
+                        "tags": {
+                            value: t
+                        }
+                    }
+                })
+    });
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: query
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.myTaggedBoards",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
+            });
+        } else {
+            cb(response);
         }
     });
 };

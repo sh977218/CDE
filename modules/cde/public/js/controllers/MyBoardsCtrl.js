@@ -1,5 +1,21 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', function ($scope, $modal, $http, Board) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', '$timeout', 'Board', 'userResource', function ($scope, $modal, $http, $timeout, Board, userResource) {
 
+    $scope.myBoardSortBy = ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'];
+
+    $scope.sortMyBoard = function (item, model) {
+        var user = userResource.user;
+        user.searchSettings.myBoard.sortBy = item;
+        $timeout(function () {
+            $http.post('/user/me', user).then(function (res) {
+                if (res.status === 200) {
+                    $scope.addAlert("success", "User updated");
+                    $scope.updateMyBoardWithTagsAndSort()
+                } else {
+                    $scope.addAlert("danger", "Error, unable to save");
+                }
+            });
+        }, 0);
+    };
     $scope.selectedTags = [];
 
     $scope.removeBoard = function (index) {
@@ -40,12 +56,11 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         delete board.editMode;
         $http.post("/board", board).success(function () {
             $scope.addAlert("success", "Saved");
-            $scope.updateMyBoardWithTags();
-            getAllMyBoardTags();
+            $scope.updateMyBoardWithTagsAndSort();
         }).error(function (response) {
             $scope.addAlert("danger", response);
             $scope.selectedTags = ['All'];
-            $scope.updateMyBoardWithTags();
+            $scope.updateMyBoardWithTagsAndSort();
         });
     };
 
@@ -76,7 +91,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
     };
     getAllMyBoardTags();
 
-    $scope.updateMyBoardWithTags = function () {
+    $scope.updateMyBoardWithTagsAndSort = function () {
         if ($scope.selectedTags.length === 0)
             $scope.selectedTags = ['All'];
         $http({

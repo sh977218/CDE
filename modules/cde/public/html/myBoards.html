@@ -1,11 +1,22 @@
 <div class="container-fluid">
-    <h3 class="text-center">My Board</h3>
+    <h3 class="text-center">My Board. (Sort By
+        <ui-select ng-model="searchSettings.myBoard.sortBy" theme="select2" style="min-width: 25%"
+                   on-select="sortMyBoard($item, $model)">
+            <ui-select-match placeholder="sort my board by:">
+                {{$select.selected}}
+            </ui-select-match>
+            <ui-select-choices repeat="sortBy in myBoardSortBy | filter: $select.search">
+                <div ng-bind-html="sortBy | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+        )
+    </h3>
     <hr/>
     <div class="col-xs-2 noLeftRightPadding">
         <div id="sidebar-wrapper">
             <label ng-repeat="tag in tags" class="my-board-tag">
                 <input type="checkbox" data-checklist-model="selectedTags" data-checklist-value="tag.key"
-                       checklist-change="updateMyBoardWithTags()">
+                       checklist-change="updateMyBoardWithTagsAndSort()">
                 {{tag.key}} ({{tag.doc_count}})
             </label>
         </div>
@@ -77,6 +88,14 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">
+                        Share Status:
+                    </div>
+                    <div tabindex="0" class="col-md-9" id="board_shareStatus_{{$index}}">
+                        {{board.shareStatus }}
+                    </div>
+                </div>
+                <div class="row">
                     <div tabindex="0" class="col-lg-3 col-md-3 col-xs-3 text-right text_label noRightPadding">Tags:
                     </div>
                     <div class="col-md-9" id="board_tag_{{$index}}">
@@ -86,7 +105,8 @@
                             <ui-select-match placeholder="type or select a tag">
                                 {{$item}}
                             </ui-select-match>
-                            <ui-select-choices repeat="suggestTag in getSuggestedTags($select.search) | filter: $select.search">
+                            <ui-select-choices
+                                    repeat="suggestTag in getSuggestedTags($select.search) | filter: $select.search">
                                 <div ng-bind-html="suggestTag | highlight: $select.search"></div>
                             </ui-select-choices>
 
