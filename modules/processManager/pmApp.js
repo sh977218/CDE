@@ -16,7 +16,7 @@ var getHosts = function() {
     request("http://localhost:" + config.port + "/serverStatuses", function(err, res, body) {
         if (err) return console.log("Error getting server status: " + err);
         try {
-            allHosts = JSON.parse(body).map(function (server) {
+            allHosts = JSON.parse(body).statuses.map(function (server) {
                 return {hostname: server.hostname, port: server.port};
             });
         } catch (e) {
@@ -33,7 +33,7 @@ var spawnChild = function() {
     spawned = spawn(nodeProcess, ['--harmony', 'app'], opts);
     setTimeout(function() {
         getHosts();
-    }, 10 * 1000)
+    }, 10 * 1000);
 };
 
 spawnChild();
@@ -79,7 +79,7 @@ app.use(bodyParser.json());
 var verifyToken = function(req, cb) {
     var found = false;
     allHosts.forEach(function(host) {
-        if (host.hostname === req.body.requester.host && host.port == req.body.requester.port) {
+        if (host.hostname === req.body.requester.host && host.port == req.body.requester.port) { // jshint ignore:line
             found = true;
             var url = "http://" + host.hostname;
             if (host.hostname === 'localhost') url += ":" + host.port;
@@ -140,7 +140,7 @@ app.post('/deploy', multer(), function(req, res) {
                         fs.unlink(req.files.deployFile.path);
                     });
                 }
-            })
+            });
         } else {
             return res.status(403).send();
         }
