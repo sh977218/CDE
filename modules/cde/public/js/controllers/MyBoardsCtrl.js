@@ -64,6 +64,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             url: '/myBoardTags'
         }).success(function (response) {
             $scope.tags = response;
+            $scope.suggestTags = response.map(function (h) {
+                return h.key;
+            })
         }).error(function () {
             if (err) throw err;
             $scope.suggestTags = [];

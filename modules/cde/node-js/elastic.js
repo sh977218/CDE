@@ -205,7 +205,10 @@ exports.myBoardTags = function (user, cb) {
                     "size": 50
                 }
             }
-        }
+        },
+        "sort": [
+            {"name": {"order": "asc"}}
+        ]
     };
     esClient.search({
         index: config.elastic.boardIndex.name,
@@ -248,7 +251,10 @@ exports.myTaggedBoards = function (user, tags, cb) {
                     "size": 50
                 }
             }
-        }
+        },
+        "sort": [
+            {"name": {"order": "asc"}}
+        ]
     };
     tags.split(',').forEach(function (t) {
         if (t !== 'All')

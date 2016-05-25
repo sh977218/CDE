@@ -1,4 +1,4 @@
-<div class="container-fluid" id="my-board-container" data-ng-init="getAllMyBoardTags()">
+<div class="container-fluid" data-ng-init="getAllMyBoardTags()">
     <h3 class="text-center">My Board</h3>
     <hr/>
     <div class="col-xs-2 noLeftRightPadding">
@@ -10,7 +10,7 @@
             </label>
         </div>
     </div>
-    <div class="col-xs-10" ui-sortable="sortableOptions" ng-model="boards">
+    <div class="col-xs-10" id="my-board-container" ui-sortable="sortableOptions" ng-model="boards">
         <div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
             <div class="my-board-card" data-id="boardDiv_{{board.name}}">
                 <div class="row">
@@ -83,12 +83,16 @@
                         <span ng-if="!board.editMode" ng-bind="board.tags"></span>
                         <ui-select multiple ng-show="board.editMode" sortable="true" close-on-select="false"
                                    ng-model="board.tags" theme="select2" style="width: 100%">
+                            <ui-select-no-choice>
+                                Dang! We couldn't find any choices...
+                            </ui-select-no-choice>
                             <ui-select-match placeholder="type or select a tag">
-                                {{$item}} ,
+                                {{$item}}
                             </ui-select-match>
                             <ui-select-choices repeat="suggestTag in suggestTags | filter: $select.search">
                                 <div ng-bind-html="suggestTag | highlight: $select.search"></div>
                             </ui-select-choices>
+
                         </ui-select>
                     </div>
                 </div>

@@ -1035,7 +1035,7 @@ div + .questionPlaceholder {
 }
 
 #my-board-container {
-    min-height: inherit;
+    min-height: 450px;
 }
 
 .fa.fa-arrows {
