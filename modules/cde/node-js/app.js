@@ -46,6 +46,13 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/myBoardTags', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.publicBoardTags(function (result) {
+            res.send(result);
+        });
+    });
+
+
+    app.get('/myBoardTags', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
         } else {

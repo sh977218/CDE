@@ -185,6 +185,46 @@ exports.DataElementDistinct = function (field, cb) {
 };
 
 exports.myBoardTags = function (user, cb) {
+    var distinctQuery = {
+        "query": {
+            "bool": {
+                "must": {
+                    "term": {
+                    }
+                }
+            }
+        },
+        "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
+            }
+        },
+        "sort": [
+            {"updatedDate": {"order": "asc"}}
+        ]
+    };
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: distinctQuery
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.BoardDistinct",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+            });
+        } else {
+            var list = response.aggregations.aggregationsName.buckets;
+            cb(list);
+        }
+    });
+};
+
+exports.myBoardTags = function (user, cb) {
     if (!user) return cb("no user provided");
     var distinctQuery = {
         "query": {
