@@ -59,7 +59,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
                                             var atomArr = atom.concept.split('/');
                                             code = atomArr[atomArr.length - 1];
                                         } else {
-                                            code = atom.ui;
+                                            var srcConceptArr = atom.sourceConcept.split('/');
+                                            code = srcConceptArr[srcConceptArr.length - 1];
                                         }
                                         newCodes[i] = {
                                             valueMeaningName: atom.name,
