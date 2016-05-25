@@ -24,8 +24,6 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
         });
     });
 
-
-    $scope.srcOptions = {};
     $scope.containsUMLS = false;
     $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
     function initSrcOptions() {
@@ -75,15 +73,15 @@ angular.module('cdeModule').controller('SaveCdeCtrl', ['$scope', '$timeout', '$h
                                             .join(" "),
                                         valueMeaningCode: newCodes.map(function(c) {return c.valueMeaningCode;})
                                             .join(":")
-                                    }
+                                    };
                                 }
                             } else {
                                 pv[src] = {
                                     valueMeaningName: "Not Found",
                                     valueMeaningCode: "Not Found"
-                                }
+                                };
                             }
-                        })
+                        });
                     });
                 }
             });
