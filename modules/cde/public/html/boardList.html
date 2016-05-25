@@ -12,9 +12,9 @@
     <div class="row">
         <div class="col-xs-2 noLeftRightPadding">
             <div id="sidebar-wrapper">
-                <label ng-repeat="publicBoardTag in publicBoardTags" class="public-board-tag">
+                <label ng-repeat="tag in publicBoardTags" class="public-board-tag">
                     <input type="checkbox" data-checklist-model="selectedTags" data-checklist-value="tag.key"
-                           checklist-change="updatePublicBoardWithTags">
+                           checklist-change="updatePublicBoardWithTags()">
                     {{tag.key}} ({{tag.doc_count}})
                 </label>
             </div>

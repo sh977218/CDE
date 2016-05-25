@@ -1034,6 +1034,10 @@ div + .questionPlaceholder {
     display: block;
 }
 
+.public-board-tag {
+    display: block;
+}
+
 #my-board-container {
     min-height: 450px;
 }
