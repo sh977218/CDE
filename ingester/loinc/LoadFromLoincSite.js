@@ -202,6 +202,8 @@ function parsingPartDefinitionDescriptionsTable(obj, sectionName, table, cb) {
                     });
                 },
                 function (cb) {
+                    if (!definition.Source) return cb();
+
                     definition.Source.getText().then(function (text) {
                         partDefinitionDescriptionsObj['Source'] = text.trim();
                         cb();

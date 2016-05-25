@@ -36,7 +36,7 @@ function createCde(eyeGene, loinc) {
         if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
             loinc['PART DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
                 var name = {
-                    designation: eyeGene.LONG_COMMON_NAME,
+                    designation: loinc['LOINC NAME'],
                     definition: defintion.Description,
                     languageCode: "EN-US",
                     context: {
@@ -49,7 +49,7 @@ function createCde(eyeGene, loinc) {
         }
         if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
             naming.push({
-                designation: eyeGene.LONG_COMMON_NAME,
+                designation: loinc['LOINC NAME'],
                 definition: loinc['TERM DEFINITION/DESCRIPTION(S)'].Description,
                 languageCode: "EN-US",
                 context: {
@@ -60,7 +60,7 @@ function createCde(eyeGene, loinc) {
         }
     } else {
         naming.push({
-            designation: eyeGene.LONG_COMMON_NAME,
+            designation: loinc['LOINC NAME'],
             definition: '',
             languageCode: "EN-US",
             context: {
@@ -68,6 +68,10 @@ function createCde(eyeGene, loinc) {
                 acceptability: 'preferred'
             }
         });
+    }
+    if (!loinc.NAME) {
+        console.log(loinc);
+        throw "no NAME";
     }
     naming.push({
         designation: loinc.NAME.Shortname,
@@ -78,7 +82,7 @@ function createCde(eyeGene, loinc) {
             acceptability: 'preferred'
         }
     });
-    var ids = [{source: 'LOINC', id: eyeGene.LOINC_NUM}];
+    var ids = [{source: 'LOINC', id: loinc.loincId}];
     var properties = [];
     if (loinc['RELATED NAMES'] && loinc['RELATED NAMES'].length > 0) {
         var table = '<table class="table table-striped">';
@@ -151,12 +155,13 @@ function run() {
         function (cb) {
             var stream = MigrationEyeGeneLoincModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).stream();
             stream.on('data', function (eyeGene) {
+                console.log("doing eyegene");
                 stream.pause();
                 if (eyeGene.toObject) eyeGene = eyeGene.toObject();
                 MigrationDataElementModel.find({'ids.id': eyeGene.LOINC_NUM}, function (err, existingCdes) {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
-                        MigrationLoincModal.find({loincId: eyeGene.LOINC_NUM}, function (er, existingLoinc) {
+                        MigrationLoincModal.find({loincId: eyeGene.LOINC_NUM, info: {$not:/^no loinc name/i}}, function (er, existingLoinc) {
                             if (er) throw er;
                             if (existingLoinc.length === 0) {
                                 process.exit(1);
@@ -164,7 +169,7 @@ function run() {
                                 var loinc = existingLoinc[0].toObject();
                                 var newCde = createCde(eyeGene, loinc);
                                 var valueDomain = {uom: eyeGene.EXAMPLE_UNITS};
-                                if (eyeGene.AnswerListId.length === 0) {
+                                if (eyeGene.AnswerListId && eyeGene.AnswerListId.length === 0) {
                                     valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
                                     var newCdeObj = new MigrationDataElementModel(newCde);
                                     newCdeObj.save(function (err) {
@@ -193,8 +198,9 @@ function run() {
                                             });
                                             newCde.valueDomain = valueDomain;
                                         } else {
-                                            console.log('answer list error.');
-                                            process.exit(0);
+                                            throw "answer list error";
+                                            //console.log('answer list error.');
+                                            //process.exit(0);
                                         }
                                         var newCdeObj = new MigrationDataElementModel(newCde);
                                         newCdeObj.save(function (err) {
@@ -209,12 +215,14 @@ function run() {
                         });
                     } else {
                         console.log('duplicated id: ' + eyeGene.LOINC_NUM);
-                        process.exit(1);
+                        //process.exit(1);
+                        throw 'duplicated id: ' + eyeGene.LOINC_NUM;
                     }
                 });
             });
 
             stream.on('end', function (err) {
+                console.log("End of EyeGene stream.");
                 if (err) throw err;
                 eyeGeneOrg.markModified('classifications');
                 eyeGeneOrg.save(function (e) {
