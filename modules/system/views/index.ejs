@@ -62,10 +62,8 @@
 	<!-- Navigation bar -->
 	<%- include navigation.html %>
 
-
 	<!-- Main content area -->
 	<div ng-view></div>
-
 
 	<!-- Alerts area -->
 	<%- include alert.html %>
@@ -162,11 +160,15 @@
 <script src="/article/public/js/articleConfig.js"></script>
 <!-- endbuild -->
 
+<script src="/article/public/js/angularTemplates.js"></script>
+<script src="/cde/public/js/angularTemplates.js"></script>
+<script src="/form/public/js/angularTemplates.js"></script>
+<script src="/system/public/js/angularTemplates.js"></script>
+
 <%- include includeFrontEndJS.ejs %>
 <%- include ../../cde/views/includeCdeFrontEndJS.ejs %>
 <%- include ../../form/views/includeFormFrontEndJS.ejs %>
 <%- include webtrends.ejs %>
-
 
 <script type="application/ld+json">
         {

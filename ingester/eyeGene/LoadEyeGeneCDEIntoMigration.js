@@ -36,7 +36,6 @@ function createCde(eyeGene, loinc) {
         if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
             loinc['PART DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
                 var name = {
-                    designation: loinc['LOINC NAME'],
                     definition: defintion.Description,
                     languageCode: "EN-US",
                     context: {
@@ -44,30 +43,38 @@ function createCde(eyeGene, loinc) {
                         acceptability: "preferred"
                     }
                 };
+                if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
+                else name.designation = loinc['LOINC NAME'];
                 naming.push(name);
             });
         }
         if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
-            naming.push({
-                designation: loinc['LOINC NAME'],
+
+            var name = {
                 definition: loinc['TERM DEFINITION/DESCRIPTION(S)'].Description,
                 languageCode: "EN-US",
                 context: {
                     contextName: "Long Common Name",
                     acceptability: "preferred"
                 }
-            });
+            };
+            if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
+            else name.designation = loinc['LOINC NAME'];
+            naming.push(name);
         }
     } else {
-        naming.push({
-            designation: loinc['LOINC NAME'],
+        var name = {
+            designation: loinc.NAME['LOINC NAME'],
             definition: '',
             languageCode: "EN-US",
             context: {
                 contextName: "Long Common Name",
                 acceptability: 'preferred'
             }
-        });
+        };
+        if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
+        else name.designation = loinc['LOINC NAME'];
+        naming.push(name);
     }
     if (!loinc.NAME) {
         console.log(loinc);

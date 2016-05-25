@@ -1,4 +1,4 @@
-angular.module('articleModule', ['ngRoute']).config(
+angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(
   function($routeProvider) {
     $routeProvider
       .when('/help/:helpPage', {
