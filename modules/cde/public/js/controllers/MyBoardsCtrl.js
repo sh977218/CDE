@@ -1,7 +1,5 @@
 angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', function ($scope, $modal, $http, Board) {
 
-    $scope.sortableOptions = {};
-
     $scope.selectedTags = [];
 
     $scope.removeBoard = function (index) {
@@ -99,6 +97,23 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                 $scope.addAlert("danger", message.data);
             });
         });
+    };
+
+    $scope.sortableOptions = {
+        handle: '.fa.fa-arrows',
+        appendTo: "body",
+        revert: true,
+        start: function (event, ui) {
+            $('.dragDiv').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        },
+        stop: function (e, ui) {
+            $scope.save($scope.boards);
+            $('.dragDiv').css('border', '');
+        },
+        helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+        }
     };
 }
 ]);

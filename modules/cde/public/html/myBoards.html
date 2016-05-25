@@ -10,7 +10,7 @@
             </label>
         </div>
     </div>
-    <div class="col-xs-10" id="my-board-container" ui-sortable="sortableOptions" ng-model="boards">
+    <div class="col-xs-10 dragDiv" id="my-board-container" ui-sortable="sortableOptions" ng-model="boards">
         <div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
             <div class="my-board-card" data-id="boardDiv_{{board.name}}">
                 <div class="row">
