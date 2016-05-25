@@ -5,7 +5,7 @@
         <div id="sidebar-wrapper">
             <label ng-repeat="tag in tags" class="my-board-tag">
                 <input type="checkbox" data-checklist-model="selectedTags" data-checklist-value="tag.key"
-                       checklist-change="updateMyBoardWithTags()" checklist-comparator="compareFn">
+                       checklist-change="updateMyBoardWithTags()">
                 {{tag.key}} ({{tag.doc_count}})
             </label>
         </div>

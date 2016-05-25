@@ -1,13 +1,6 @@
 angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', function ($scope, $modal, $http, Board) {
 
-    $scope.sortableOptions = {
-        handle: '.fa.fa-arrows',
-        appendTo: "body",
-        revert: true,
-        start: function (event, ui) {
-            console.log('a');
-        }
-    };
+    $scope.sortableOptions = {};
 
     $scope.selectedTags = [];
 
@@ -47,7 +40,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
 
     $scope.save = function (board) {
         delete board.editMode;
-        $http.post("/board", board).success(function (response) {
+        $http.post("/board", board).success(function () {
             $scope.addAlert("success", "Saved");
             $scope.updateMyBoardWithTags();
             $scope.getAllMyBoardTags()
@@ -71,10 +64,6 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             if (err) throw err;
             $scope.suggestTags = [];
         });
-    };
-
-    $scope.compareFn = function (obj1, obj2) {
-        return obj1 === obj2;
     };
 
     $scope.updateMyBoardWithTags = function () {
@@ -103,7 +92,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         });
         modalInstance.result.then(function (newBoard) {
             newBoard.shareStatus = "Private";
-            Board.save(newBoard, function (res) {
+            Board.save(newBoard, function () {
                 $scope.addAlert("success", "Board created.");
                 $scope.loadMyBoards();
             }, function (message) {
