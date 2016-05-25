@@ -43,7 +43,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $http.post("/board", board).success(function () {
             $scope.addAlert("success", "Saved");
             $scope.updateMyBoardWithTags();
-            $scope.getAllMyBoardTags()
+            getAllMyBoardTags();
         }).error(function (response) {
             $scope.addAlert("danger", response);
             $scope.selectedTags = ['All'];
@@ -51,7 +51,18 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         });
     };
 
-    $scope.getAllMyBoardTags = function () {
+
+    $scope.getSuggestedTags = function (search) {
+        if ($scope.suggestTags) {
+            var newSuggs = $scope.suggestTags.slice();
+            if (search && newSuggs.indexOf(search) === -1) {
+                newSuggs.unshift(search);
+            }
+            return newSuggs;
+        }
+    };
+
+    var getAllMyBoardTags = function () {
         $http({
             method: 'GET',
             url: '/myBoardTags'
@@ -59,12 +70,13 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             $scope.tags = response;
             $scope.suggestTags = response.map(function (h) {
                 return h.key;
-            })
-        }).error(function () {
+            });
+        }).error(function (err) {
             if (err) throw err;
             $scope.suggestTags = [];
         });
     };
+    getAllMyBoardTags();
 
     $scope.updateMyBoardWithTags = function () {
         if ($scope.selectedTags.length === 0)

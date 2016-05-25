@@ -1,4 +1,4 @@
-<div class="container-fluid" data-ng-init="getAllMyBoardTags()">
+<div class="container-fluid">
     <h3 class="text-center">My Board</h3>
     <hr/>
     <div class="col-xs-2 noLeftRightPadding">
@@ -71,7 +71,7 @@
                                 <textarea ng-model="board.description" id="desc_input_{{$index}}"></textarea>
                             </div>
                             <div ng-switch-default>
-                                <span ng-bind-html="board.description"></span>
+                                <span ng-text-truncate="board.description" ng-tt-threshold="200"></span>
                             </div>
                         </div>
                     </div>
@@ -83,13 +83,10 @@
                         <span ng-if="!board.editMode" ng-bind="board.tags"></span>
                         <ui-select multiple ng-show="board.editMode" sortable="true" close-on-select="false"
                                    ng-model="board.tags" theme="select2" style="width: 100%">
-                            <ui-select-no-choice>
-                                Dang! We couldn't find any choices...
-                            </ui-select-no-choice>
                             <ui-select-match placeholder="type or select a tag">
                                 {{$item}}
                             </ui-select-match>
-                            <ui-select-choices repeat="suggestTag in suggestTags | filter: $select.search">
+                            <ui-select-choices repeat="suggestTag in getSuggestedTags($select.search) | filter: $select.search">
                                 <div ng-bind-html="suggestTag | highlight: $select.search"></div>
                             </ui-select-choices>
 
