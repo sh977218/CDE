@@ -24,31 +24,29 @@ In order to run this application, you need to edit the Elasticsearch.yml.  This 
     * script.engine.groovy.inline.aggs: on
 
 ## Create & Configure Application Environment
-The NLM CDE application can run on a single computer in different configurations. 
 
-First of all create and setup a configuration file for your local instance:
+Next, navigate to your CDE folder, and run 
 
-```sh
-$> cp ./configure/config.sample.js ./configure/my-env.js
-```
-
-Secondly, specify the desired configuration by setting up NODE_ENV environment variable:
 
 ```sh
-$> export NODE_ENV=my_env
+$> export NODE_ENV=test
 ```
 
-The application will automatically use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
+This will establish your config environment
 
 ### Configure Elastic Search
 
-**MongoDB** must run in **Replicate mode**. For example
+**MongoDB** must run in **Replicate mode**. 
+In a separate terminal, run  
+
 
 ```sh
 $> mongod --replSet rs0
 ```
 
-Initiate MongoDB replica set:
+Then, initiate MongoDB replica set:
+
+In another terminal, open up mongo. 
 
 ```javascript
 rs.initiate()
