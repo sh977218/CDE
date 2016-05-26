@@ -2,7 +2,7 @@
 
 ## Install
 
-##Prerequisites
+### Prerequisites
 
  * Java -1.8
  * Node.js - 4.5
@@ -11,7 +11,7 @@
  * ElasticSearch 2.3
 
 
-## configure **elascticsearch.yml** 
+## Configure **elascticsearch.yml** 
 
 In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch. Add the following lines to the end of the .yml file
 
