@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$timeout', '$http', '$uibModal',
-    function($scope, $timeout, $http, $modal)
+angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$timeout', '$http', '$uibModal', '$q',
+    function($scope, $timeout, $http, $modal, $q)
 {
     var defaultSrcOptions = {
         NCI: {displayAs: "NCI", termType: "PT", selected: false},
@@ -7,6 +7,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
         SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
     };
+
+    var externalSources = ['NCI', 'LNC']
 
     var displayAsArray = [];
 
@@ -37,6 +39,50 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         }
     }
 
+    var umlsFromOther = function(code, system, cb) {
+        var cuis = [];
+        $http.get("/umlsCuiFromSrc/" + code + "/" + system).success(function (response) {
+            if (response.result && response.result.results) {
+                response.result.results.forEach(function (result) {
+                    cuis.push({
+                        valueMeaningName: result.name,
+                        valueMeaningCode: result.ui
+                    });
+                });
+            }
+            cb(null, cuis);
+        });
+    };
+
+
+    var umlsLookup = function(code, targetSystem, cb) {
+        function joinAll(cuisArrs) {
+            cuisArrs.map(function(a) {
+                return a.join(":");
+            }).join(":");
+        }
+
+        $timeout(function () {
+            $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+                if (pv.codeSystemName !==)
+                var funcArray = [];
+                pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
+                    funcArray[i] = $q.defer();
+                    umlsFromOther(pvCode, pv.codeSystemName, function(err, cuis) {
+                        funcArray[i].resolve(cuis);
+                    });
+                });
+                $q.all(funcArray.map(function (d) {return d.promise;})).then(function(arrRes) {
+                    cb(null, joinAll(arrRes));
+                });
+            });
+        }, 0);
+    };
+
+    umlsLookup('NCI', function(err, codes) {
+        console.log(codes);
+    });
+
     var lookupAsSource = function(src) {
         $timeout(function() {
             $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
@@ -48,53 +94,61 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
                     };
                     var todo = pv.valueMeaningCode.split(":").length;
                     pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
-                        $http.get("/umlsAtomsBridge/" + pvCode + "/" + pv.codeSystemName + "/" + src).success(function (response) {
-                            var termFound = false;
-                            todo--;
-                            if (response.result) {
-                                response.result.forEach(function (atom) {
-                                    if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
-                                        var code;
-                                        if (src === 'UMLS') {
-                                            var atomArr = atom.concept.split('/');
-                                            code = atomArr[atomArr.length - 1];
-                                        } else {
+                        if (pv.codeSystemName === 'UMLS') {
+                            $http.get("/umlsAtomsBridge/" + pvCode + "/" + src).success(function (response) {
+                                var termFound = false;
+                                todo--;
+                                if (response.result) {
+                                    response.result.forEach(function (atom) {
+                                        if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
                                             var srcConceptArr = atom.sourceConcept.split('/');
-                                            code = srcConceptArr[srcConceptArr.length - 1];
+                                            var code = srcConceptArr[srcConceptArr.length - 1];
+                                            newCodes[i] = {
+                                                valueMeaningName: atom.name,
+                                                valueMeaningCode: code
+                                            };
+                                            termFound = true;
                                         }
+                                    });
+                                    if (!termFound) {
                                         newCodes[i] = {
-                                            valueMeaningName: atom.name,
-                                            //valueMeaningCode: codeArr[codeArr.length - 1]
-                                            valueMeaningCode: code
+                                            valueMeaningName: "N/A",
+                                            valueMeaningCode: "N/A"
                                         };
-                                        termFound = true;
                                     }
-                                });
-                                if (!termFound) {
-                                    newCodes[i] = {
-                                        valueMeaningName: "N/A",
-                                        valueMeaningCode: "N/A"
-                                    };
-                                }
-                                if (todo === 0) {
+                                    if (todo === 0) {
+                                        pv[src] = {
+                                            valueMeaningName: newCodes.map(function (c) {
+                                                    return c.valueMeaningName;
+                                                })
+                                                .join(" "),
+                                            valueMeaningCode: newCodes.map(function (c) {
+                                                    return c.valueMeaningCode;
+                                                })
+                                                .join(":")
+                                        };
+                                    }
+                                } else {
                                     pv[src] = {
-                                        valueMeaningName: newCodes.map(function (c) {
-                                                return c.valueMeaningName;
-                                            })
-                                            .join(" "),
-                                        valueMeaningCode: newCodes.map(function (c) {
-                                                return c.valueMeaningCode;
-                                            })
-                                            .join(":")
+                                        valueMeaningName: "Not Found",
+                                        valueMeaningCode: "Not Found"
                                     };
                                 }
-                            } else {
-                                pv[src] = {
-                                    valueMeaningName: "Not Found",
-                                    valueMeaningCode: "Not Found"
-                                };
-                            }
-                        });
+                            });
+                        }
+                         else if (src === "UMLS") {
+                            $http.get("/umlsCuiFromSrc/" + pvCode + "/" + pv.codeSystemName).success(function (response) {
+                                if (response.result && response.result.results) {
+                                    todo--;
+                                    response.result.results.forEach(function (result) {
+                                            newCodes.push({
+                                                valueMeaningName: result.name,
+                                                valueMeaningCode: result.ui
+                                            });
+                                    });
+                                }
+                            });
+                        }
                     });
                 }
             });
