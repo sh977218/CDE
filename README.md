@@ -79,7 +79,7 @@ use migration;
 db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
 ```
 
-##Preparing to run
+## Preparing to run
 
 Before running the app, run 
 
@@ -104,12 +104,12 @@ Next, you need to set up the various angular files used in the project.
 $/cde/> gulp bower wiredep
 ```
 
-(if you get an error message here, complaining that you don’t have gulp, run 
+If you get an error message here, complaining that you don’t have gulp, run 
 
 ```sh
 $/cde/>  npm -install -g gulp
 ```
-)
+
 
 ## Run Node from the cde project directory
 
