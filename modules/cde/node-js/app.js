@@ -54,12 +54,13 @@ exports.init = function (app, daoManager) {
             });
         }
     });
-    app.get('/getMyTaggedBoards/:tags', exportShared.nocacheMiddleware, function (req, res) {
+    app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
         } else {
-            elastic.myTaggedBoards(req.user, req.params.tags, function (result) {
-                res.send(result);
+            elastic.myTaggedBoards(req.user, req.body.tags, function (err, result) {
+                if (err) return res.status(500).send(err);
+                return res.send(result);
             });
         }
     });

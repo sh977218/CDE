@@ -1,4 +1,8 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', '$timeout', 'Board', 'userResource', function ($scope, $modal, $http, $timeout, Board, userResource) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', '$timeout', 'Board', 'userResource', 'ElasticBoard',
+    function ($scope, $modal, $http, $timeout, Board, userResource, ElasticBoard) {
+
+
+        ElasticBoard.loadMyBoards($scope);
 
     $scope.myBoardSortBy = ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'];
     $scope.myBoardSortDir = ['asc', 'desc'];
@@ -10,7 +14,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             $http.post('/user/me', user).then(function (res) {
                 if (res.status === 200) {
                     $scope.addAlert("success", "User updated");
-                    $scope.updateMyBoardWithTagsAndSort()
+                    ElasticBoard.loadMyBoards($scope);
                 } else {
                     $scope.addAlert("danger", "Error, unable to save");
                 }
@@ -24,7 +28,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             $http.post('/user/me', user).then(function (res) {
                 if (res.status === 200) {
                     $scope.addAlert("success", "User updated");
-                    $scope.updateMyBoardWithTagsAndSort()
+                    ElasticBoard.loadMyBoards($scope);
                 } else {
                     $scope.addAlert("danger", "Error, unable to save");
                 }
@@ -71,14 +75,13 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         delete board.editMode;
         $http.post("/board", board).success(function () {
             $scope.addAlert("success", "Saved");
-            $scope.updateMyBoardWithTagsAndSort();
+            getAllMyBoardTags();
         }).error(function (response) {
             $scope.addAlert("danger", response);
             $scope.selectedTags = ['All'];
             $scope.updateMyBoardWithTagsAndSort();
         });
     };
-
 
     $scope.getSuggestedTags = function (search) {
         if ($scope.suggestTags) {
@@ -91,10 +94,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
     };
 
     var getAllMyBoardTags = function () {
-        $http({
-            method: 'GET',
-            url: '/myBoardTags'
-        }).success(function (response) {
+        $http.get('/myBoardTags').success(function (response) {
             $scope.tags = response;
             $scope.suggestTags = response.map(function (h) {
                 return h.key;
@@ -105,23 +105,6 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         });
     };
     getAllMyBoardTags();
-
-    $scope.updateMyBoardWithTagsAndSort = function () {
-        if ($scope.selectedTags.length === 0)
-            $scope.selectedTags = ['All'];
-        $http({
-            method: 'GET',
-            url: '/getMyTaggedBoards/' + $scope.selectedTags
-        }).success(function (response) {
-            $scope.boards = response.hits.hits.map(function (h) {
-                return h._source;
-            });
-            $scope.tags = response.aggregations.aggregationsName.buckets;
-        }).error(function (err) {
-            if (err) throw err;
-        });
-    };
-
 
     $scope.openNewBoard = function () {
         var modalInstance = $modal.open({
