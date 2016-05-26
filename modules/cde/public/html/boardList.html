@@ -2,19 +2,21 @@
 <div class="container">
     <form id="searchBoardsForm">
         <div class="input-group input-group-lg">
-            <input ng-model="search.name" name="search" ng-change="onchangeSearch()" class="form-control search-query"
+            <input ng-model="filter.search" name="search" class="form-control search-query"
                    id="searchDescriptorsFormInput" placeholder="Search Boards...">
             <div class="input-group-btn">
-                <button ng-click="reload()" type="submit" class="btn btn-default" id="search.submit">Search</button>
+                <button ng-click="loadPublicBoards()" type="submit" class="btn btn-default" id="search.submit">
+                    Search
+                </button>
             </div>
         </div>
     </form>
     <div class="row">
         <div class="col-xs-2 noLeftRightPadding">
             <div id="sidebar-wrapper">
-                <label ng-repeat="tag in publicBoardTags" class="public-board-tag">
-                    <input type="checkbox" data-checklist-model="selectedTags" data-checklist-value="tag.key"
-                           checklist-change="updatePublicBoardWithTags()">
+                <label ng-repeat="tag in filter.tags" class="public-board-tag">
+                    <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
+                           checklist-change="loadPublicBoards()">
                     {{tag.key}} ({{tag.doc_count}})
                 </label>
             </div>

@@ -1,144 +1,111 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', '$timeout', 'Board', 'userResource', 'ElasticBoard',
-    function ($scope, $modal, $http, $timeout, Board, userResource, ElasticBoard) {
-
-
-        ElasticBoard.loadMyBoards($scope);
-
-    $scope.myBoardSortBy = ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'];
-    $scope.myBoardSortDir = ['asc', 'desc'];
-
-    $scope.sortMyBoardBy = function (item, model) {
-        var user = userResource.user;
-        user.searchSettings.myBoard.sortBy = item;
-        $timeout(function () {
-            $http.post('/user/me', user).then(function (res) {
-                if (res.status === 200) {
-                    $scope.addAlert("success", "User updated");
-                    ElasticBoard.loadMyBoards($scope);
-                } else {
-                    $scope.addAlert("danger", "Error, unable to save");
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', 'SearchSettings', 'ElasticBoard',
+    function ($scope, $modal, $http, Board, SearchSettings, ElasticBoard) {
+        $scope.filter = {
+            sortByOptions: ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'],
+            sortDirectionOptions: ['asc', 'desc'],
+            tags: [],
+            reset: function () {
+                this.selectedTags = [];
+                this.sortBy = 'updatedDate';
+                this.sortDirection = 'desc';
+            },
+            getSuggestedTags: function (search) {
+                var newSuggestTags = this.suggestTags.slice();
+                if (search && newSuggestTags.indexOf(search) === -1) {
+                    newSuggestTags.unshift(search);
                 }
+                return this.suggestTags = newSuggestTags;
+            },
+            sortBy: '',
+            sortDirection: '',
+            selectedTags: [],
+            suggestTags: []
+        };
+
+        $scope.loadMyBoards = function () {
+            ElasticBoard.loadMyBoards($scope.filter, function (response) {
+                $scope.boards = response.hits.hits.map(function (h) {
+                    h._source._id = h._id;
+                    return h._source;
+                });
+                $scope.filter.tags = response.aggregations.aggregationsName.buckets;
+                $scope.filter.suggestTags = response.aggregations.aggregationsName.buckets.map(function (t) {
+                    return t.key;
+                });
             });
-        }, 0);
-    };
-    $scope.sortMyBoardDir = function (item, model) {
-        var user = userResource.user;
-        user.searchSettings.myBoard.sortDir = item;
-        $timeout(function () {
-            $http.post('/user/me', user).then(function (res) {
-                if (res.status === 200) {
-                    $scope.addAlert("success", "User updated");
-                    ElasticBoard.loadMyBoards($scope);
-                } else {
-                    $scope.addAlert("danger", "Error, unable to save");
-                }
+        };
+
+        $scope.loadMyBoards();
+
+        $scope.removeBoard = function (index) {
+            $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
+                $scope.addAlert("success", "Board removed");
+                $scope.boards.splice(index, 1);
             });
-        }, 0);
-    };
-    $scope.selectedTags = [];
+        };
 
-    $scope.removeBoard = function (index) {
-        $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
-            $scope.addAlert("success", "Board removed");
-            $scope.boards.splice(index, 1);
-        });
-    };
+        $scope.cancelSave = function (board) {
+            delete board.editMode;
+            board.showEdit = false;
+        };
 
-    $scope.cancelSave = function (board) {
-        delete board.editMode;
-        board.showEdit = false;
-    };
-
-    $scope.updateTags = function (t, board) {
-        if (!board.tags) board.tags = [];
-        if (!t || t.length === 0) {
-            $scope.addAlert("danger", "Tag can not be empty.");
-            return;
-        }
-        if (board.tags.indexOf(t) === -1)
-            board.tags.push(t);
-        else $scope.addAlert("danger", "There is already a same tag for this board.");
-    };
-
-    $scope.changeStatus = function (index) {
-        var board = $scope.boards[index];
-        if (board.shareStatus === "Private") {
-            board.shareStatus = "Public";
-        } else {
-            board.shareStatus = "Private";
-        }
-        $scope.save(board);
-        $scope.showChangeStatus = false;
-    };
-
-    $scope.save = function (board) {
-        delete board.editMode;
-        $http.post("/board", board).success(function () {
-            $scope.addAlert("success", "Saved");
-            getAllMyBoardTags();
-        }).error(function (response) {
-            $scope.addAlert("danger", response);
-            $scope.selectedTags = ['All'];
-            $scope.updateMyBoardWithTagsAndSort();
-        });
-    };
-
-    $scope.getSuggestedTags = function (search) {
-        if ($scope.suggestTags) {
-            var newSuggs = $scope.suggestTags.slice();
-            if (search && newSuggs.indexOf(search) === -1) {
-                newSuggs.unshift(search);
+        $scope.changeStatus = function (index) {
+            var board = $scope.boards[index];
+            if (board.shareStatus === "Private") {
+                board.shareStatus = "Public";
+            } else {
+                board.shareStatus = "Private";
             }
-            return newSuggs;
-        }
-    };
+            $scope.save(board);
+            $scope.showChangeStatus = false;
+        };
 
-    var getAllMyBoardTags = function () {
-        $http.get('/myBoardTags').success(function (response) {
-            $scope.tags = response;
-            $scope.suggestTags = response.map(function (h) {
-                return h.key;
+        $scope.save = function (board) {
+            delete board.editMode;
+            $http.post("/board", board).success(function () {
+                $scope.addAlert("success", "Saved");
+                setTimeout($scope.loadMyBoards, 1000);
+            }).error(function (response) {
+                $scope.filter.reset();
+                $scope.addAlert("danger", response);
+                $scope.filter.reset();
+                setTimeout($scope.loadMyBoards, 1000);
             });
-        }).error(function (err) {
-            if (err) throw err;
-            $scope.suggestTags = [];
-        });
-    };
-    getAllMyBoardTags();
+        };
 
-    $scope.openNewBoard = function () {
-        var modalInstance = $modal.open({
-            animation: false,
-            templateUrl: 'newBoardModalContent.html',
-            controller: 'NewBoardModalCtrl',
-            resolve: {}
-        });
-        modalInstance.result.then(function (newBoard) {
-            newBoard.shareStatus = "Private";
-            Board.save(newBoard, function () {
-                $scope.addAlert("success", "Board created.");
-                $scope.loadMyBoards();
-            }, function (message) {
-                $scope.addAlert("danger", message.data);
+        $scope.openNewBoard = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'newBoardModalContent.html',
+                controller: 'NewBoardModalCtrl',
+                resolve: {}
             });
-        });
-    };
+            modalInstance.result.then(function (newBoard) {
+                newBoard.shareStatus = "Private";
+                Board.save(newBoard, function () {
+                    $scope.addAlert("success", "Board created.");
+                    setTimeout($scope.loadMyBoards, 1000);
+                }, function (message) {
+                    $scope.addAlert("danger", message.data);
+                });
+            });
+        };
 
-    $scope.sortableOptions = {
-        handle: '.fa.fa-arrows',
-        appendTo: "body",
-        revert: true,
-        start: function (event, ui) {
-            $('.dragDiv').css('border', '2px dashed grey');
-            ui.placeholder.height("20px");
-        },
-        stop: function (e, ui) {
-            $scope.save($scope.boards);
-            $('.dragDiv').css('border', '');
-        },
-        helper: function () {
-            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
-        }
-    };
-}
+        $scope.sortableOptions = {
+            handle: '.fa.fa-arrows',
+            appendTo: "body",
+            revert: true,
+            start: function (event, ui) {
+                $('.dragDiv').css('border', '2px dashed grey');
+                ui.placeholder.height("20px");
+            },
+            stop: function (e, ui) {
+                $scope.save($scope.boards);
+                $('.dragDiv').css('border', '');
+            },
+            helper: function () {
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+            }
+        };
+    }
 ]);

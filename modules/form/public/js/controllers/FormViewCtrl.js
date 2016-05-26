@@ -451,13 +451,23 @@ angular.module('formModule').controller('FormViewCtrl',
         });
 
         modalInstance.result.then(function (selectedBoard) {
+            var filter = {
+                reset: function () {
+                    this.tags = [];
+                    this.sortBy = 'updatedDate';
+                    this.sortDirection = 'desc';
+                },
+                sortBy: '',
+                sortDirection: '',
+                tags: []
+            };
             var data = {
                 board: selectedBoard,
                 formTinyId: $scope.elt.tinyId
             };
             $http({method: 'post', url: '/pinFormCdes', data: data}).success(function () {
                 $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards();
+                $scope.loadMyBoards(filter);
             }).error(function () {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });

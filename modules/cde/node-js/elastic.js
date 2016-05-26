@@ -183,19 +183,18 @@ exports.DataElementDistinct = function (field, cb) {
         }
     });
 };
-
-exports.myBoardTags = function (user, cb) {
-    if (!user) return cb("no user provided");
-    var distinctQuery = {
+exports.boardSearch = function (filter, cb) {
+    var query = {
         "query": {
             "bool": {
-                "must": {
-                    "term": {
-                        "owner.username": {
-                            value: user.username
-                        }
+                "must": [
+                    {
+                        "match": {"shareStatus": 'Public'}
+                    },
+                    {
+                        "match": {"_all": filter.search}
                     }
-                }
+                ]
             }
         },
         "aggs": {
@@ -205,33 +204,51 @@ exports.myBoardTags = function (user, cb) {
                     "size": 50
                 }
             }
-        },
-        "sort": [
-            {"updatedDate": {"order": "asc"}}
-        ]
+        }
     };
+    if (filter.tags) {
+        filter.tags.forEach(function (t) {
+            if (t !== 'All')
+                query.body.query.bool.must.push(
+                    {
+                        "term": {
+                            "tags": {
+                                value: t
+                            }
+                        }
+                    })
+        });
+    }
     esClient.search({
         index: config.elastic.boardIndex.name,
         type: "board",
-        body: distinctQuery
+        body: query
     }, function (error, response) {
         if (error) {
             logging.errorLogger.error("Error BoardDistinct", {
-                origin: "cde.elastic.BoardDistinct",
+                origin: "cde.elastic.boardSearch",
                 stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+                details: "query " + JSON.stringify(query) + "error " + error + "response" + JSON.stringify(response)
             });
+            cb("Unable to query");
         } else {
-            var list = response.aggregations.aggregationsName.buckets;
-            cb(list);
+            delete response._shards;
+            cb(null, response);
         }
     });
 };
 
-exports.myTaggedBoards = function (user, tags, cb) {
+exports.myBoards = function (user, filter, cb) {
     if (!user) return cb("no user provided");
-    if (!tags || tags.length === 0) {
-        tags = ['All'];
+    if (!filter) {
+        filter = {
+            sortBy: '',
+            sortDirection: '',
+            selectedTags: ['All']
+        }
+    }
+    if (!filter.selectedTags || filter.selectedTags.length === 0) {
+        filter.selectedTags = ['All'];
     }
     var query = {
         "query": {
@@ -258,15 +275,19 @@ exports.myTaggedBoards = function (user, tags, cb) {
         "sort": []
     };
     var sort = {};
-    if (user.searchSettings.myBoard && user.searchSettings.myBoard.sortBy && user.searchSettings.myBoard && user.searchSettings.myBoard.sortBy) {
-        sort[user.searchSettings.myBoard.sortBy] = {"order": "asc"}
+    if (filter && filter.sortBy) {
+        sort[filter.sortBy] = {};
+        if (filter && filter.sortDirection)
+            sort[filter.sortBy].order = filter.sortDirection;
+        else
+            sort[filter.sortBy].order = "asc";
     }
     else {
         sort['updatedDate'] = {"order": "asc"};
         query.sort.push(sort);
     }
     query.sort.push(sort);
-    tags.forEach(function (t) {
+    filter.selectedTags.forEach(function (t) {
         if (t !== 'All') {
             query.query.bool.must.push(
                 {
@@ -285,9 +306,9 @@ exports.myTaggedBoards = function (user, tags, cb) {
     }, function (error, response) {
         if (error) {
             logging.errorLogger.error("Error BoardDistinct", {
-                origin: "cde.elastic.myTaggedBoards",
+                origin: "cde.elastic.myBoards",
                 stack: new Error().stack,
-                details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
+                details: "query " + JSON.stringify(query) + "error " + error + "response" + JSON.stringify(response)
             });
             cb("Unable to query");
         } else {

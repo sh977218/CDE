@@ -22,25 +22,18 @@ angular.module('resourcesCde', ['ngResource'])
     })
     .factory('ElasticBoard', function ($http) {
         return {
-            loadMyBoards: function(scope, cb) {
-                var body = {};
-                if (scope.selectedTags) {
-                    body.tags = scope.selectedTags;
-                }
-                $http.post('/myBoards', body).success(function (response) {
-                    scope.boards = response.hits.hits.map(function (h) {
-                        h._source._id = h._id;
-                        return h._source;
-                    });
-                    scope.tags = response.aggregations.aggregationsName.buckets;
-                    if (cb) cb(null);
-                }).error(function() {
+            loadMyBoards: function (filter, cb) {
+                $http.post('/myBoards', filter).success(function (response) {
+                    if (cb) cb(response);
+                }).error(function () {
                     if (cb) cb("Unable to retrieve my boards");
                 });
             },
-            basicSearch: function (query, cb) {
-                $http.post("/boardSearch", query).then(function (response) {
-                    cb(response.data);
+            basicSearch: function (filter, cb) {
+                $http.post("/boardSearch", filter).success(function (response) {
+                    if (cb) cb(response);
+                }).error(function () {
+                    if (cb) cb("Unable to retrieve public boards");
                 });
             }
         };

@@ -1,24 +1,18 @@
 angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', function ($scope, $http, ElasticBoard) {
-    $scope.search = {name: ""};
     $scope.boards = [];
-    $scope.selectedTags = [];
-    $scope.reload = function () {
-        ElasticBoard.basicSearch({q: $scope.search.name}, function (response) {
-            $scope.publicBoardTags = response.aggregations.aggregationsName.buckets;
-            $scope.boards = response.hits.hits.map(function (b) {
-                b._source._id = b._id;
-                return b._source;
+    $scope.filter = {
+        search: "",
+        selectedTags: [],
+        tags: []
+    };
+    $scope.loadPublicBoards = function () {
+        ElasticBoard.basicSearch($scope.filter, function (response) {
+            $scope.boards = response.hits.hits.map(function (h) {
+                h._source._id = h._id;
+                return h._source;
             });
+            $scope.filter.tags = response.aggregations.aggregationsName.buckets;
         });
     };
-    $scope.updatePublicBoardWithTags = function () {
-        ElasticBoard.basicSearch({q: $scope.search.name, tags: $scope.selectedTags}, function (response) {
-            $scope.publicBoardTags = response.aggregations.aggregationsName.buckets;
-            $scope.boards = response.hits.hits.map(function (b) {
-                b._source._id = b._id;
-                return b._source;
-            });
-        });
-    }
 }
 ]);

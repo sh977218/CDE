@@ -1,5 +1,4 @@
 var cdesvc = require('./cdesvc')
-    , boardsvc = require('./boardsvc')
     , usersvc = require('./usersvc')
     , mongo_data = require('./mongo-cde')
     , classificationNode_system = require('../../system/node-js/classificationNode')
@@ -28,10 +27,6 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.post('/boardSearch', function (req, res) {
-        boardsvc.boardSearch(req, res);
-    });
-
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_data.cdesByTinyIdList(req.body, function (err, cdes) {
             cdes.forEach(adminItemSvc.hideUnapprovedComments);
@@ -45,20 +40,18 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/myBoardTags', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            return res.status(403).send();
-        } else {
-            elastic.myBoardTags(req.user, function (result) {
-                res.send(result);
-            });
-        }
+    app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.boardSearch(req.body, function (err, result) {
+            if (err) return res.status(500).send(err);
+            return res.send(result);
+        });
     });
+
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
         } else {
-            elastic.myTaggedBoards(req.user, req.body.tags, function (err, result) {
+            elastic.myBoards(req.user, req.body, function (err, result) {
                 if (err) return res.status(500).send(err);
                 return res.send(result);
             });
