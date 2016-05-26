@@ -27,6 +27,11 @@ require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
 
+app.use(helmet({
+    frameguard: {
+        action: 'deny'
+    }
+})); //So, there are a ton of app.js files in the project. Do I have to set the settings for all of them, or is there a place that can apply to them all?
 app.use(auth.ticketAuth);
 app.use(compress());
 
@@ -65,11 +70,6 @@ app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
-app.use(helmet({
-    frameguard: {
-        action: 'deny'
-    }
-})); //So, there are a ton of app.js files in the project. Do I have to set the settings for all of them, or is there a place that can apply to them all?
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
