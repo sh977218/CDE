@@ -17,6 +17,8 @@ var express = require('express')
     , methodOverride = require('method-override')
     , morganLogger = require('morgan')
     , compress = require('compression')
+    , helmet = require('helmet')
+
     ;
 
 require('./modules/system/node-js/elastic').initEs();
@@ -32,6 +34,7 @@ var request = require('request');
 app.use('/kibana/', function(req, res) {
     req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500);}).pipe(res);
 });
+
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
@@ -62,7 +65,11 @@ app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
-
+app.use(helmet({
+    frameguard: {
+        action: 'deny'
+    }
+}));
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
