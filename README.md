@@ -4,13 +4,12 @@
 
 ###Prerequisites
 
-    * Java
-    * Node.js 0.10.x
-    * Gradle
-    * Groovy
-    * Mongodb - 2.6.7
-    * ElasticSearch 1.4.3
-    * Elastic River for MongoDB - 2.0.5
+ * Java (ideally 1.8)
+ * Node.js (ideally 4.5)
+ * Gradle (whatever version)
+ * Mongodb - 2.6.7
+ * ElasticSearch 2.3
+
 
 **ElasticSearch** should be installed with the river for mongo plugin.
 
