@@ -230,6 +230,9 @@ exports.myBoardTags = function (user, cb) {
 
 exports.myTaggedBoards = function (user, tags, cb) {
     if (!user) return cb("no user provided");
+    if (!tags || tags.length === 0) {
+        tags = ['All'];
+    }
     var query = {
         "query": {
             "bool": {
@@ -263,8 +266,8 @@ exports.myTaggedBoards = function (user, tags, cb) {
         query.sort.push(sort);
     }
     query.sort.push(sort);
-    tags.split(',').forEach(function (t) {
-        if (t !== 'All')
+    tags.forEach(function (t) {
+        if (t !== 'All') {
             query.query.bool.must.push(
                 {
                     "term": {
@@ -272,7 +275,8 @@ exports.myTaggedBoards = function (user, tags, cb) {
                             value: t
                         }
                     }
-                })
+                });
+        }
     });
     esClient.search({
         index: config.elastic.boardIndex.name,
@@ -285,8 +289,10 @@ exports.myTaggedBoards = function (user, tags, cb) {
                 stack: new Error().stack,
                 details: "query " + JSON.stringify(query) + "error " + error + "respone" + JSON.stringify(response)
             });
+            cb("Unable to query");
         } else {
-            cb(response);
+            delete response._shards;
+            cb(null, response);
         }
     });
 };

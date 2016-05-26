@@ -1,7 +1,8 @@
-angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibModalInstance', 'boards',
-    function($scope, $modalInstance, boards)
+angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibModalInstance', 'ElasticBoard',
+    function($scope, $modalInstance, ElasticBoard)
 {
-    $scope.boards = boards;
+
+    ElasticBoard.loadMyBoards($scope);
 
     $scope.ok = function (board) {
       $modalInstance.close(board);
