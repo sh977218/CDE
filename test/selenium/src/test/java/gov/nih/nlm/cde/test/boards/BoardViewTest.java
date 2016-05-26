@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class BoardViewTest extends BoardTest {
 
-    @Test(priority = 3)
+    @Test
     public void showLargeGridView() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
@@ -39,7 +39,10 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
+        textPresent("CODE_FOR...");
+
         clickElement(By.id("cde_gridView"));
+
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");

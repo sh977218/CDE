@@ -175,7 +175,7 @@ exports.init = function (app, daoManager) {
                     idList.push(pins[i].deTinyId);
                 }
                 mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
-                    res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes), totalItems: totalItems});
+                    res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
                 });
             } else {
                 res.status(404).end();

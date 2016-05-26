@@ -14,7 +14,8 @@ var gulp = require('gulp'),
     fstream = require('fstream'),
     spawn = require('child_process').spawn,
     elastic = require('./modules/system/node-js/createIndexes'),
-    git = require('gulp-git')
+    git = require('gulp-git'),
+    templateCache = require('gulp-angular-templatecache')
 ;
 
 require('es6-promise').polyfill();
@@ -48,14 +49,16 @@ gulp.task('copyCode', ['wiredep'], function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/shared/'));
-        gulp.src('./modules/' + module + '/**/*.html')
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        //gulp.src('./modules/' + module + '/html/**/*.html')
+        //    .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.png')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.ico')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
         gulp.src('./modules/' + module + '/**/*.gif')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/'));
+        gulp.src('./modules/' + module + '/views/**/*.html')
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs', 'webtrends.ejs'].forEach(function(file) {
@@ -90,6 +93,19 @@ gulp.task('copyCode', ['wiredep'], function() {
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
 
+});
+
+gulp.task('angularTemplates', function() {
+    ['cde', 'form', 'system', 'article'].forEach(function(module) {
+        return gulp.src("modules/" + module + "/public/html/**/*.html")
+            .pipe(templateCache({
+                root: "/" + module + "/public/html",
+                filename: "angularTemplates.js",
+                module: module + "Templates",
+                standalone: true
+            }))
+            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
+    });
 });
 
 gulp.task('prepareVersion', ['copyCode'], function() {
@@ -157,6 +173,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'prepareVersion', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin']);
 
 
