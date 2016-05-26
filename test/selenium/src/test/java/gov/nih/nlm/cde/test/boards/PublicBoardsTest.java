@@ -8,9 +8,9 @@ public class PublicBoardsTest extends BoardTest {
     @Test
     public void editBoard() {
         mustBeLoggedOut();
-        findElement(By.id("boardsLink")).click();
+        clickElement(By.id("boardsLink"));
         findElement(By.name("search")).sendKeys("Depression");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("Schizophrenia");
         textPresent("Bipolar Disorder");
         textPresent("Geriatric Depression Scale (GDS) - empty life indicator");
