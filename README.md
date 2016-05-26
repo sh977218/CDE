@@ -25,11 +25,11 @@ In order to run this application, you need to edit the Elasticsearch.yml.  This 
 
 ## Create & Configure Application Environment
 
-Next, navigate to your CDE folder, and run 
+Next, navigate to your CDE directory, and run 
 
 
 ```sh
-$> export NODE_ENV=test
+$/cde/> export NODE_ENV=test
 ```
 
 This will establish your config environment
@@ -55,7 +55,7 @@ rs.initiate()
 
 
 Next, you will have to create several users for the app, in order for various aspects to function 
-properly. In the same mongo terminal, run
+properly. In the same mongo terminal, run the following commands in this order
 
 
 ```sh
@@ -79,6 +79,37 @@ use migration;
 db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
 ```
 
+##Preparing to run
+
+Before running the app, run 
+
+```sh 
+$/cde/>  npm install -a
+```
+
+This will install all the various packages needed for the app to function. 
+
+
+Before you start the app, run
+ 
+ ```sh
+$/cde/> sh start-test-instance.sh 
+ ```
+ 
+ This will populate the mongo database with a test dataset. From there, the app (once it starts running) will ingest the data in the mongo database into the elastic database (this should take a few minutes. Go get a cup of coffee)
+
+Next, you need to set up the various angular files used in the project. 
+
+```sh
+$/cde/> gulp bower wiredep
+```
+
+(if you get an error message here, complaining that you don’t have gulp, run 
+
+```sh
+$/cde/>  npm -install -g gulp
+```
+)
 
 ## Run Node from the cde project directory
 
@@ -86,6 +117,9 @@ db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", 
 $> node app
 ```
 
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ## Test
 
 Start the **vsac mock** with 
