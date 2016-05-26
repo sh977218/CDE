@@ -2,7 +2,7 @@
 
 ## Install
 
-###Prerequisites
+##Prerequisites
 
  * Java -1.8
  * Node.js - 4.5
@@ -11,7 +11,7 @@
  * ElasticSearch 2.3
 
 
-configure **elascticsearch.yml** 
+## configure **elascticsearch.yml** 
 
 In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch. Add the following lines to the end of the .yml file
 
@@ -51,8 +51,33 @@ In another terminal, open up mongo.
 ```javascript
 rs.initiate()
 ```
+## Establish users
 
-With **ElasticSearch** running, run grunt and rebuild ElasticSearch indices.
+
+Next, you will have to create several users for the app, in order for various aspects to function 
+properly. In the same mongo terminal, run
+
+
+```sh
+use admin;
+db.createUser( { user: "siteRootAdmin", pwd: "password", roles: [ { role: "root", db: "admin" }, { role: "dbAdmin", db: "test" }, { role: "dbAdmin", db: "cde-logs-test" } ] });
+```
+
+
+```sh
+   use test;
+   db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "test" } ] });
+   ```
+
+```sh
+use cde-logs-test;
+db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "cde-logs-test" } ] });
+```
+
+```sh
+use migration;
+db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
+```
 
 
 ## Run Node from the cde project directory
