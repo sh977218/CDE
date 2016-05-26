@@ -4,55 +4,24 @@
 
 ###Prerequisites
 
- * Java (ideally 1.8)
- * Node.js (ideally 4.5)
- * Gradle (whatever version)
+ * Java -1.8
+ * Node.js - 4.5
+ * Gradle *
  * Mongodb - 2.6.7
  * ElasticSearch 2.3
 
 
-**ElasticSearch** should be installed with the river for mongo plugin.
-
-```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.3.tar.gz
-```
-
 configure **elascticsearch.yml** 
 
-    * path.data
-    * path.work
-    * path.logs
-    * plugin.mandatory: mapper-attachments, lang-javascript, river-mongodb
-    * cluster.name: yourclustername
-    * node.name: "Your Name"
-    * node.master: true
-    * node.data: true
-    * index.number_of_shards: 1
-    * index.number_of_replicas: 0
-    * script.disable_dynamic: false
-    * script.groovy.sandbox.enabled: false
-    * script.js.sandbox.enabled: true
-
-```sh
-$> ./bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.5
-```
-
-Versions numbers should match per river plugin doc. 
-
-Install javascript plugin
-
-```sh
-$> ./bin/plugin --install elasticsearch/elasticsearch-lang-javascript/2.3.1
-```
+In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch. Add the following lines to the end of the .yml file
 
 
-Install mapper attachment plugin
 
-```sh
-$> ./bin/plugin --install elasticsearch/elasticsearch-mapper-attachments/2.4.1
-```
 
-**Note:** Get the latest version of the plugins at: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-plugins.html
+    * script.engine.groovy.inline.update: on  
+    * script.inline: on
+    * script.indexed: on
+    * script.engine.groovy.inline.aggs: on
 
 ## Create & Configure Application Environment
 The NLM CDE application can run on a single computer in different configurations. 
