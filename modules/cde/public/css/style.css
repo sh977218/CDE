@@ -1015,7 +1015,8 @@ div + .questionPlaceholder {
 }
 
 #sidebar-wrapper {
-    background: #CCC;
+    /*border: 1px solid rgb(220, 220, 220);*/
+    border-radius: 5px;
     position: fixed;
     width: inherit;
     padding-right: 15px;
@@ -1026,8 +1027,9 @@ div + .questionPlaceholder {
     border: 1px solid rgb(220, 220, 220);
     border-radius: 5px;
     margin: 5px;
-    padding: 5px;
+    padding: 15px;
     word-wrap: break-word;
+    min-height: 160px;
 }
 
 .my-board-tag {
@@ -1052,4 +1054,28 @@ div + .questionPlaceholder {
 
 .select2-search-field {
     width: 100% !important;
+}
+
+.myBoardEditButtons{
+    margin: 0px;
+}
+
+.myBoardName{
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.myBoardTags {
+    position: absolute;
+    top: 130px;
+}
+
+.myBoardLastModified {
+    position: absolute;
+    top: 134px;
+    left: 320px;
+}
+
+.ui-select-container {
+    z-index: 1000;
 }

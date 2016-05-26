@@ -261,7 +261,8 @@ exports.createBoardIndexJson = {
     "mappings": {
         "board": {
             "properties": {
-                "tags": {"type": "string", "index": "not_analyzed"}
+                "tags": {"type": "string", "index": "not_analyzed"},
+                "shareStatus": {"type": "string", "index": "not_analyzed"}
             }
         }
     }

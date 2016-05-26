@@ -215,7 +215,7 @@ exports.init = function (app, daoManager) {
                     if (nbBoards < boardQuota) {
                         mongo_data.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
-                            res.send();
+                            elastic.boardRefresh(function() {res.send();});
                         });
                     } else {
                         res.status(403).send("You have too many boards!");
@@ -248,7 +248,9 @@ exports.init = function (app, daoManager) {
                                 details: "board._id " + board._id
                             });
                         }
-                        res.send(b);
+                        elastic.boardRefresh(function() {
+                            res.send(b);
+                        });
                     });
                 });
             }

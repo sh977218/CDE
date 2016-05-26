@@ -32,6 +32,10 @@ exports.updateOrInsert = function (elt) {
     }
 };
 
+exports.boardRefresh = function(cb) {
+    esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
+};
+
 exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();
@@ -208,7 +212,7 @@ exports.boardSearch = function (filter, cb) {
     };
     if (filter.tags) {
         filter.tags.forEach(function (t) {
-            if (t !== 'All')
+            if (t !== 'All') {
                 query.query.bool.must.push(
                     {
                         "term": {
@@ -216,7 +220,8 @@ exports.boardSearch = function (filter, cb) {
                                 value: t
                             }
                         }
-                    })
+                    });
+            }
         });
     }
     esClient.search({
@@ -244,11 +249,9 @@ exports.myBoards = function (user, filter, cb) {
         filter = {
             sortBy: '',
             sortDirection: '',
-            selectedTags: ['All']
-        }
-    }
-    if (!filter.selectedTags || filter.selectedTags.length === 0) {
-        filter.selectedTags = ['All'];
+            selectedTags: ['All'],
+            selectedShareStatus: ['All']
+        };
     }
     var query = {
         "query": {
@@ -265,10 +268,16 @@ exports.myBoards = function (user, filter, cb) {
             }
         },
         "aggs": {
-            "aggregationsName": {
+            "tagAgg": {
                 "terms": {
                     "field": "tags",
                     "size": 50
+                }
+            },
+            "ssAgg": {
+                "terms": {
+                    "field": "shareStatus",
+                    "size": 2
                 }
             }
         },
@@ -287,18 +296,34 @@ exports.myBoards = function (user, filter, cb) {
         query.sort.push(sort);
     }
     query.sort.push(sort);
-    filter.selectedTags.forEach(function (t) {
-        if (t !== 'All') {
-            query.query.bool.must.push(
-                {
-                    "term": {
-                        "tags": {
-                            value: t
+    if (filter.selectedTags) {
+        filter.selectedTags.forEach(function (t) {
+            if (t !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "tags": {
+                                value: t
+                            }
                         }
-                    }
-                });
-        }
-    });
+                    });
+            }
+        });
+    }
+    if (filter.selectedShareStatus) {
+        filter.selectedShareStatus.forEach(function (ss) {
+            if (ss !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "shareStatus": {
+                                value: ss
+                            }
+                        }
+                    });
+            }
+        });
+    }
     esClient.search({
         index: config.elastic.boardIndex.name,
         type: "board",

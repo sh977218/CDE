@@ -1,23 +1,19 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'Board', 'SearchSettings', 'ElasticBoard',
-    function ($scope, $modal, $http, Board, SearchSettings, ElasticBoard) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard',
+    function ($scope, $modal, $http, SearchSettings, ElasticBoard) {
+
         $scope.filter = {
-            sortByOptions: ['name', 'description', 'shareStatus', 'createdDate', 'updatedDate'],
-            sortDirectionOptions: ['asc', 'desc'],
             tags: [],
-            reset: function () {
-                this.selectedTags = [];
-                this.sortBy = 'updatedDate';
-                this.sortDirection = 'desc';
-            },
+            shareStatus: [],
             getSuggestedTags: function (search) {
                 var newSuggestTags = this.suggestTags.slice();
                 if (search && newSuggestTags.indexOf(search) === -1) {
                     newSuggestTags.unshift(search);
                 }
-                return this.suggestTags = newSuggestTags;
+                return newSuggestTags;
             },
-            sortBy: '',
-            sortDirection: '',
+            sortBy: 'updatedDate',
+            sortDirection: 'desc',
+            selectedShareStatus: [],
             selectedTags: [],
             suggestTags: []
         };
@@ -28,8 +24,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                     h._source._id = h._id;
                     return h._source;
                 });
-                $scope.filter.tags = response.aggregations.aggregationsName.buckets;
-                $scope.filter.suggestTags = response.aggregations.aggregationsName.buckets.map(function (t) {
+                $scope.filter.tags = response.aggregations.tagAgg.buckets;
+                $scope.filter.shareStatus = response.aggregations.ssAgg.buckets;
+                $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
                     return t.key;
                 });
             });
@@ -64,12 +61,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             delete board.editMode;
             $http.post("/board", board).success(function () {
                 $scope.addAlert("success", "Saved");
-                setTimeout($scope.loadMyBoards, 1000);
+                $scope.loadMyBoards();
             }).error(function (response) {
-                $scope.filter.reset();
                 $scope.addAlert("danger", response);
-                $scope.filter.reset();
-                setTimeout($scope.loadMyBoards, 1000);
             });
         };
 
@@ -82,30 +76,13 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             });
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
-                Board.save(newBoard, function () {
+                $http.post("/board", newBoard).success(function () {
                     $scope.addAlert("success", "Board created.");
-                    setTimeout($scope.loadMyBoards, 1000);
+                    $scope.loadMyBoards();
                 }, function (message) {
                     $scope.addAlert("danger", message.data);
                 });
             });
-        };
-
-        $scope.sortableOptions = {
-            handle: '.fa.fa-arrows',
-            appendTo: "body",
-            revert: true,
-            start: function (event, ui) {
-                $('.dragDiv').css('border', '2px dashed grey');
-                ui.placeholder.height("20px");
-            },
-            stop: function (e, ui) {
-                $scope.save($scope.boards);
-                $('.dragDiv').css('border', '');
-            },
-            helper: function () {
-                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
-            }
         };
     }
 ]);

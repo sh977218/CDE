@@ -1,43 +1,31 @@
 <div class="container-fluid">
-    <h3 class="text-center">My Boards. (Sort By
-        <ui-select ng-model="filter.sortBy" theme="select2" style="min-width: 25%"
-                   on-select="loadMyBoards()">
-            <ui-select-match placeholder="sort my board by:">
-                {{$select.selected}}
-            </ui-select-match>
-            <ui-select-choices repeat="sortBy in filter.sortByOptions | filter: $select.search">
-                <div ng-bind-html="sortBy | highlight: $select.search"></div>
-            </ui-select-choices>
-        </ui-select>
-        <ui-select ng-model="filter.sortDirection" theme="select2" style="min-width: 5%"
-                   on-select="loadMyBoards()">
-            <ui-select-match placeholder="sort my board dir:">
-                {{$select.selected}}
-            </ui-select-match>
-            <ui-select-choices repeat="sortDirection in filter.sortDirectionOptions | filter: $select.search">
-                <div ng-bind-html="sortDirection | highlight: $select.search"></div>
-            </ui-select-choices>
-        </ui-select>
-        )
+    <h3>My Boards
+        <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i
+            class="fa fa-plus"> </i> Add Board
+    </button>
     </h3>
     <hr/>
-    <div class="col-xs-2 noLeftRightPadding">
+    <div class="col-md-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
+            <h4>Tags</h4>
             <label ng-repeat="tag in filter.tags" class="my-board-tag">
                 <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
                        checklist-change="loadMyBoards()">
                 {{tag.key}} ({{tag.doc_count}})
             </label>
+            <h4>Share Status</h4>
+            <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
+                <input type="checkbox" data-checklist-model="filter.selectedShareStatus" data-checklist-value="ss.key"
+                       checklist-change="loadMyBoards()">
+                {{ss.key}} ({{ss.doc_count}})
+            </label>
         </div>
     </div>
-    <div class="col-xs-10 dragDiv" id="my-board-container" ui-sortable="sortableOptions" ng-model="boards">
+    <div class="col-md-10 col-xs-8 dragDiv" id="my-board-container">
         <div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
             <div class="my-board-card" data-id="boardDiv_{{board.name}}">
-                <div class="row">
-                    <div class="col-xs-1 text-left">
-                        <i class="fa fa-arrows"></i>
-                    </div>
-                    <div class="text-right pr20">
+                <div class="myBoardEditButtons pull-right">
+                    <div class="text-right">
                         <span ng-show="showDelete">Confirm Delete
                             <i class="fa fa-check" ng-click="showDelete = false; removeBoard($index)"
                                id="confirmRemove-{{$index}}"></i>
@@ -49,12 +37,6 @@
                             <i class="fa fa-check" ng-click="changeStatus($index)"
                                id="confirmChangeStatus_{{$index}}"></i>
                             <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
-                        </span>
-                        <span ng-hide="showChangeStatus">
-                            <i class="fa fa-unlock" ng-show="board.shareStatus === 'Public'"
-                               ng-click="showChangeStatus = true" id="publicIcon_{{$index}}"></i>
-                            <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"
-                               ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                         </span>
                         <span ng-show="board.editMode">Save?
                             <i class="fa fa-check" ng-click="save(board)" id="confirmEdit_{{$index}}"></i>
@@ -69,9 +51,6 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i
-            class="fa fa-plus"> </i> Add Board
-    </button>
     <script type="text/ng-template" id="newBoardModalContent.html">
         <div ng-include="'/cde/public/html/newBoardModal.html'"></div>
     </script>
