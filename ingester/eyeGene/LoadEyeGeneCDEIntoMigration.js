@@ -8,6 +8,7 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+const orgName = "Newborn Screening";
 
 var cdeCounter = 0;
 var eyeGeneOrg = null;
@@ -127,14 +128,16 @@ function createCde(eyeGene, loinc) {
     componentArray.forEach(function (component) {
         componentToAdd.push(component);
     });
-    classificationShared.classifyItem(newCde, "EyeGene", componentToAdd);
+
+    classificationShared.classifyItem(newCde, orgName, componentToAdd);
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, componentToAdd);
     var classificationToAdd = ['Classification'];
     var classificationArray = eyeGene.CLASS.split('^');
     classificationArray.forEach(function (classification) {
         classificationToAdd.push(classification);
     });
-    classificationShared.classifyItem(newCde, "EyeGene", classificationToAdd);
+
+    classificationShared.classifyItem(newCde, orgName, classificationToAdd);
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
 
     return newCde;
@@ -146,7 +149,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: 'EyeGene'}).save(function (e) {
+                    new MigrationOrgModel({name: orgName}).save(function (e) {
                         if (e) throw e;
                         cb();
                     });
@@ -154,7 +157,7 @@ function run() {
             });
         },
         function (cb) {
-            MigrationOrgModel.findOne({"name": 'EyeGene'}).exec(function (error, org) {
+            MigrationOrgModel.findOne({"name": orgName}).exec(function (error, org) {
                 eyeGeneOrg = org;
                 cb();
             });
@@ -171,7 +174,9 @@ function run() {
                         MigrationLoincModal.find({loincId: eyeGene.LOINC_NUM, info: {$not:/^no loinc name/i}}, function (er, existingLoinc) {
                             if (er) throw er;
                             if (existingLoinc.length === 0) {
-                                process.exit(1);
+                                console.log("Cannot find loinc CDE for " + eyeGene.LOINC_NUM);
+                                //TODO: How to handle this?
+                                stream.resume();
                             } else {
                                 var loinc = existingLoinc[0].toObject();
                                 var newCde = createCde(eyeGene, loinc);
@@ -206,8 +211,6 @@ function run() {
                                             newCde.valueDomain = valueDomain;
                                         } else {
                                             throw "answer list error";
-                                            //console.log('answer list error.');
-                                            //process.exit(0);
                                         }
                                         var newCdeObj = new MigrationDataElementModel(newCde);
                                         newCdeObj.save(function (err) {
@@ -221,8 +224,6 @@ function run() {
                             }
                         });
                     } else {
-                        console.log('duplicated id: ' + eyeGene.LOINC_NUM);
-                        //process.exit(1);
                         throw 'duplicated id: ' + eyeGene.LOINC_NUM;
                     }
                 });
