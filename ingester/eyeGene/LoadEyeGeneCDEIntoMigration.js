@@ -75,6 +75,8 @@ function createCde(eyeGene, loinc) {
         };
         if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
         else name.designation = loinc['LOINC NAME'];
+
+        if (loinc['TERM DEFINITION/DESCRIPTION(S)']) name.definition = loinc['TERM DEFINITION/DESCRIPTION(S)'].Description;
         naming.push(name);
     }
     if (!loinc.NAME) {
