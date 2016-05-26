@@ -69,7 +69,7 @@ app.use(helmet({
     frameguard: {
         action: 'deny'
     }
-}));
+})); //So, there are a ton of app.js files in the project. Do I have to set the settings for all of them, or is there a place that can apply to them all?
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
