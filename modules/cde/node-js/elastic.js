@@ -209,7 +209,7 @@ exports.boardSearch = function (filter, cb) {
     if (filter.tags) {
         filter.tags.forEach(function (t) {
             if (t !== 'All')
-                query.body.query.bool.must.push(
+                query.query.bool.must.push(
                     {
                         "term": {
                             "tags": {
