@@ -55,8 +55,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     };
 
 
-    var umlsLookup = function(code, targetSystem, cb) {
-        function joinAll(cuisArrs) {
+    var umlsLookup = function() {
+        function joinCodes(cuisArrs) {
             cuisArrs.map(function(a) {
                 return a.join(":");
             }).join(":");
@@ -64,22 +64,28 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
         $timeout(function () {
             $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
-                if (pv.codeSystemName !==)
-                var funcArray = [];
-                pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
-                    funcArray[i] = $q.defer();
-                    umlsFromOther(pvCode, pv.codeSystemName, function(err, cuis) {
-                        funcArray[i].resolve(cuis);
+                if (externalSources.indexOf(pv.codeSystemName) > -1) {
+                    var funcArray = [];
+                    pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
+                        funcArray[i] = $q.defer();
+                        umlsFromOther(pvCode, pv.codeSystemName, function (err, cuis) {
+                            funcArray[i].resolve(cuis);
+                        });
                     });
-                });
-                $q.all(funcArray.map(function (d) {return d.promise;})).then(function(arrRes) {
-                    cb(null, joinAll(arrRes));
-                });
+                    $q.all(funcArray.map(function (d) {
+                        return d.promise;
+                    })).then(function (arrRes) {
+                        pv.UMLS = {
+                            valueMeaningCode: joinCodes(arrRes)
+                        };
+                        // set results here
+                    });
+                }
             });
         }, 0);
     };
 
-    umlsLookup('NCI', function(err, codes) {
+    umlsLookup(function(err, codes) {
         console.log(codes);
     });
 
