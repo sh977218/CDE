@@ -15,7 +15,7 @@ public class BoardTest extends NlmCdeBaseTest {
         textPresent(boardName);
         int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("viewBoard_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
                 findElement(By.id("privateIcon_" + i)).click();
                 findElement(By.id("confirmChangeStatus_" + i)).click();
