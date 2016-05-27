@@ -18,7 +18,6 @@ var express = require('express')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
-
     ;
 
 require('./modules/system/node-js/elastic').initEs();
