@@ -349,7 +349,7 @@ angular.module('systemModule').run(function ($rootScope) {
         if (!submitWebtrends) return;
         clearTimeout(timeout);
         timeout = setTimeout(function () {
-            submitWebtrends();
+            submitWebtrends(); //Not sure what the purpose of this is. Ignroing it for now
         }, 4000);
     });
 });
