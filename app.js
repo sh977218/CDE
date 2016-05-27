@@ -28,16 +28,6 @@ require('log-buffer')(config.logBufferSize || 4096);
 var app = express();
 
 app.use(helmet());
-
-// app.use(helmet.xssFilter());
-// app.use(helmet.xssFilter({ setOnOldIE: true }));
-//
-// app.use(helmet({
-//     frameguard: {
-//         action: 'deny'
-//     }
-// }));
-
 app.use(auth.ticketAuth);
 app.use(compress());
 
