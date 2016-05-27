@@ -2,18 +2,15 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     function($scope, $timeout, $http, $modal, $q)
 {
     var defaultSrcOptions = {
-        NCI: {displayAs: "NCI", termType: "PT", selected: false},
+        NCI: {displayAs: "NCI Thesaurus", termType: "PT", selected: false},
         UMLS: {displayAs: "UMLS", termType: "PT", selected: false},
         LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
         SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
     };
 
-    var externalSources = ['NCI', 'LNC']
-
-    var displayAsArray = [];
+    var displayAs = {'NCI Thesaurus': "NCI", 'LOINC': "LNC", "SNOMEDCT US": "SNOMEDCT_US"};
 
     Object.keys(defaultSrcOptions).forEach(function(srcKey) {
-        displayAsArray.push(srcKey);
         $scope.$watch('srcOptions.' + srcKey + ".selected", function() {
             if ($scope.srcOptions[srcKey] && $scope.srcOptions[srcKey].selected) {
                 lookupAsSource(srcKey);
@@ -32,7 +29,7 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
     function initSrcOptions() {
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
-            if (displayAsArray.indexOf($scope.elt.valueDomain.permissibleValues[i].codeSystemName) > -1) {
+            if (displayAs[$scope.elt.valueDomain.permissibleValues[i].codeSystemName]) {
                 $scope.containsKnownSystem = true;
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
@@ -41,6 +38,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
     var umlsFromOther = function(code, system, cb) {
         var cuis = [];
+        console.log("CODE: " + code);
+        console.log("CODE Systen: " + system);
         $http.get("/umlsCuiFromSrc/" + code + "/" + system).success(function (response) {
             if (response.result && response.result.results) {
                 response.result.results.forEach(function (result) {
@@ -56,19 +55,14 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
 
     var umlsLookup = function() {
-        function joinCodes(cuisArrs) {
-            cuisArrs.map(function(a) {
-                return a.join(":");
-            }).join(":");
-        }
-
-        $timeout(function () {
-            $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
-                if (externalSources.indexOf(pv.codeSystemName) > -1) {
+        $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+            if (pv.codeSystemName !== "UMLS") {
+                var system = displayAs[pv.codeSystemName];
+                if (system) {
                     var funcArray = [];
                     pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
                         funcArray[i] = $q.defer();
-                        umlsFromOther(pvCode, pv.codeSystemName, function (err, cuis) {
+                        umlsFromOther(pvCode, system, function (err, cuis) {
                             funcArray[i].resolve(cuis);
                         });
                     });
@@ -76,88 +70,105 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
                         return d.promise;
                     })).then(function (arrRes) {
                         pv.UMLS = {
-                            valueMeaningCode: joinCodes(arrRes)
+                            valueMeaningCode: arrRes.map(function (arr) {
+                                return arr.map(function (a) {
+                                    return a.valueMeaningCode;
+                                }).join(":");
+                            }).join(":"),
+                            valueMeaningName: arrRes.map(function (arr) {
+                                return arr.map(function (a) {
+                                    return a.valueMeaningName;
+                                }).join(":");
+                            }).join(":")
                         };
-                        // set results here
                     });
                 }
-            });
-        }, 0);
+            }
+        });
     };
 
-    umlsLookup(function(err, codes) {
-        console.log(codes);
-    });
+    var dupCodesForSameSrc = function(src) {
+        $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+            if(pv.codeSystemName === defaultSrcOptions[src].displayAs) {
+                pv[src] = {valueMeaningName: pv.valueMeaningName, valueMeaningCode: pv.valueMeaningCode};
+            }
+        });
+    };
 
     var lookupAsSource = function(src) {
         $timeout(function() {
-            $scope.elt.valueDomain.permissibleValues.forEach(function(pv) {
-                if (displayAsArray.indexOf(pv.codeSystemName) > -1) {
-                    var newCodes = [];
-                    pv[src] = {
-                        valueMeaningName: "Retrieving...",
-                        valueMeaningCode: "Retrieving..."
-                    };
-                    var todo = pv.valueMeaningCode.split(":").length;
-                    pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
-                        if (pv.codeSystemName === 'UMLS') {
-                            $http.get("/umlsAtomsBridge/" + pvCode + "/" + src).success(function (response) {
-                                var termFound = false;
-                                todo--;
-                                if (response.result) {
-                                    response.result.forEach(function (atom) {
-                                        if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
-                                            var srcConceptArr = atom.sourceConcept.split('/');
-                                            var code = srcConceptArr[srcConceptArr.length - 1];
+            dupCodesForSameSrc(src);
+            if (src === 'UMLS') {
+                umlsLookup();
+            } else {
+                $scope.elt.valueDomain.permissibleValues.forEach(function (pv) {
+                    if (pv.codeSystemName === "UMLS" || (displayAs[pv.codeSystemName] && src !== displayAs[pv.codeSystemName])) {
+                        var newCodes = [];
+                        pv[src] = {
+                            valueMeaningName: "Retrieving...",
+                            valueMeaningCode: "Retrieving..."
+                        };
+                        //var todo = pv.valueMeaningCode.split(":").length;
+                        var funcArray = [];
+                        pv.valueMeaningCode.split(":").forEach(function (pvCode, i) {
+                            var def = $q.defer();
+
+                            if (pv.codeSystemName !== "UMLS") {
+                                umlsFromOther(pvCode, displayAs[pv.codeSystemName], function(err, cuis) {
+                                    console.log("retrieving umls for " + pvCode);
+                                    console.log("found: " + cuis[0].valueMeaningCode);
+                                     def.resolve(cuis[0].valueMeaningCode);
+                                });
+                            } else {
+                                def.resolve(pvCode);
+                            }
+                            def.promise.then(function(newCode) {
+                                funcArray[i] = $q.defer();
+                                $http.get("/umlsAtomsBridge/" + newCode + "/" + src).success(function (response) {
+                                    funcArray[i].resolve(response);
+                                });
+                                $q.all(funcArray.map(function(d) {return d.promise;})).then(function(arrOfResponses) {
+                                    arrOfResponses.forEach(function(response, i) {
+                                        var termFound = false;
+                                        if (response.result) {
+                                            response.result.forEach(function (atom) {
+                                                if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
+                                                    var srcConceptArr = atom.sourceConcept.split('/');
+                                                    var code = srcConceptArr[srcConceptArr.length - 1];
+                                                    newCodes[i] = {
+                                                        valueMeaningName: atom.name,
+                                                        valueMeaningCode: code
+                                                    };
+                                                    termFound = true;
+                                                }
+                                            });
+                                            if (!termFound) {
+                                                newCodes[i] = {
+                                                    valueMeaningName: "N/A",
+                                                    valueMeaningCode: "N/A"
+                                                };
+                                            }
+                                        } else {
                                             newCodes[i] = {
-                                                valueMeaningName: atom.name,
-                                                valueMeaningCode: code
+                                                valueMeaningName: "N/A",
+                                                valueMeaningCode: "N/A"
                                             };
-                                            termFound = true;
                                         }
                                     });
-                                    if (!termFound) {
-                                        newCodes[i] = {
-                                            valueMeaningName: "N/A",
-                                            valueMeaningCode: "N/A"
-                                        };
-                                    }
-                                    if (todo === 0) {
-                                        pv[src] = {
-                                            valueMeaningName: newCodes.map(function (c) {
-                                                    return c.valueMeaningName;
-                                                })
-                                                .join(" "),
-                                            valueMeaningCode: newCodes.map(function (c) {
-                                                    return c.valueMeaningCode;
-                                                })
-                                                .join(":")
-                                        };
-                                    }
-                                } else {
                                     pv[src] = {
-                                        valueMeaningName: "Not Found",
-                                        valueMeaningCode: "Not Found"
+                                        valueMeaningCode: newCodes.map(function (a) {
+                                            return a.valueMeaningCode;
+                                        }).join(":"),
+                                        valueMeaningName: newCodes.map(function (a) {
+                                            return a.valueMeaningName;
+                                        }).join(":")
                                     };
-                                }
+                                });
                             });
-                        }
-                         else if (src === "UMLS") {
-                            $http.get("/umlsCuiFromSrc/" + pvCode + "/" + pv.codeSystemName).success(function (response) {
-                                if (response.result && response.result.results) {
-                                    todo--;
-                                    response.result.results.forEach(function (result) {
-                                            newCodes.push({
-                                                valueMeaningName: result.name,
-                                                valueMeaningCode: result.ui
-                                            });
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         }, 0);
     };
 
