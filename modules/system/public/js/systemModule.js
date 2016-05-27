@@ -343,13 +343,3 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('nlmcde');
 });
 
-angular.module('systemModule').run(function ($rootScope) {
-    var timeout;
-    $rootScope.$on("$routeChangeSuccess", function (event, next, current) {
-        if (!submitWebtrends) return;
-        clearTimeout(timeout);
-        timeout = setTimeout(function () {
-            submitWebtrends(); //Not sure what the purpose of this is. Ignroing it for now
-        }, 4000);
-    });
-});
