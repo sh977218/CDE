@@ -84,5 +84,5 @@
     "yui"           : false,    // Yahoo User Interface
 
     "globals"       : {} ,       // additional predefined global variables
-    "predef"        : ["angular", "regStatusShared"]
+    "predef"        : ["angular", "deValidator", "regStatusShared"]
 }

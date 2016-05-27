@@ -9,7 +9,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
             }, sideBySide: {
                 url: '/system/public/html/eltsCompare.html'
             }, summary: {
-                url: '/' + $scope.module + '/public/html/' + $scope.module + 'SummaryList.html'
+                url: "/" + $scope.module + "/public/html/" + $scope.module + "SummaryList.html"
             }
         };
 
