@@ -146,16 +146,16 @@ function createCde(eyeGene, loinc) {
 
     newCde.valueDomain = {};
 
-    if (loinc['NORMATIVE ANSWER LIST']) {
-        newCde.valueDomain.permissibleValues = loinc['NORMATIVE ANSWER LIST'].answerList.map(function(a){
+    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
+        newCde.valueDomain.datatype = 'Value List';
+        var type;
+        if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
+        if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
+        newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function(a){
             return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
         });
-    }
-
-    if (loinc['PREFERRED ANSWER LIST']) {
-        newCde.valueDomain.permissibleValues = loinc['PREFERRED ANSWER LIST'].answerList.map(function(a){
-            return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
-        });
+    } else {
+        newCde.valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
     }
 
 
