@@ -51,6 +51,10 @@ var map = {
     'EXAMPLE UNITS': {
         function: parsingExampleUnitsTable,
         xpath: '//*[@class="Section40000000"]/table'
+    },
+    'EXAMPLE UNITS': {
+        function: parsingExampleUnitsTable,
+        xpath: '//*[@class="Section40000000"]/table'
     }
 };
 

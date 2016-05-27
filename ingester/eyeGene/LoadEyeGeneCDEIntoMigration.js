@@ -142,6 +142,23 @@ function createCde(eyeGene, loinc) {
     classificationShared.classifyItem(newCde, orgName, classificationToAdd);
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
 
+
+
+    newCde.valueDomain = {};
+
+    if (loinc['NORMATIVE ANSWER LIST']) {
+        newCde.valueDomain.permissibleValues = loinc['NORMATIVE ANSWER LIST'].answerList.map(function(a){
+            return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
+        });
+    }
+
+    if (loinc['PREFERRED ANSWER LIST']) {
+        newCde.valueDomain.permissibleValues = loinc['PREFERRED ANSWER LIST'].answerList.map(function(a){
+            return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
+        });
+    }
+
+
     return newCde;
 }
 function run() {
@@ -175,6 +192,9 @@ function run() {
                     if (existingCdes.length === 0) {
                         MigrationLoincModal.find({loincId: eyeGene.LOINC_NUM, info: {$not:/^no loinc name/i}}, function (er, existingLoinc) {
                             if (er) throw er;
+
+
+
                             if (existingLoinc.length === 0) {
                                 console.log("Cannot find loinc CDE for " + eyeGene.LOINC_NUM);
                                 //TODO: How to handle this?
@@ -183,46 +203,57 @@ function run() {
                                 var loinc = existingLoinc[0].toObject();
                                 var newCde = createCde(eyeGene, loinc);
                                 var valueDomain = {uom: eyeGene.EXAMPLE_UNITS};
-                                if (eyeGene.AnswerListId && eyeGene.AnswerListId.length === 0) {
-                                    valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
-                                    var newCdeObj = new MigrationDataElementModel(newCde);
-                                    newCdeObj.save(function (err) {
-                                        if (err) throw err;
-                                        cdeCounter++;
-                                        console.log('cdeCounter: ' + cdeCounter);
-                                        stream.resume();
-                                    });
-                                } else {
-                                    valueDomain.datatype = 'Value List';
-                                    MigrationEyeGeneAnswerListModel.find({AnswerListId: eyeGene.AnswerListId}).sort({Sequence: 1}).exec(function (err, existingAnswerLists) {
-                                        if (err) throw err;
-                                        if (existingAnswerLists && existingAnswerLists.length === 0) {
-                                            console.log('cannot find answer list of ' + eyeGene.AnswerListId);
-                                        } else if (existingAnswerLists && existingAnswerLists.length > 0) {
-                                            valueDomain.permissibleValues = [];
-                                            valueDomain.identifiers = [];
-                                            valueDomain.identifiers.push({source: 'LOINC', id: eyeGene.AnswerListId});
-                                            existingAnswerLists.forEach(function (existingAnswerList) {
-                                                valueDomain.permissibleValues.push({
-                                                    valueMeaningName: existingAnswerList.get('AnswerString'),
-                                                    valueMeaningCode: existingAnswerList.get('AnswerStringId'),
-                                                    permissibleValue: existingAnswerList.get('AnswerString'),
-                                                    codeSystemName: 'LOINC'
-                                                });
-                                            });
-                                            newCde.valueDomain = valueDomain;
-                                        } else {
-                                            throw "answer list error";
-                                        }
-                                        var newCdeObj = new MigrationDataElementModel(newCde);
-                                        newCdeObj.save(function (err) {
-                                            if (err) throw err;
-                                            cdeCounter++;
-                                            console.log('cdeCounter: ' + cdeCounter);
-                                            stream.resume();
-                                        });
-                                    });
-                                }
+
+                                var newCdeObj = new MigrationDataElementModel(newCde);
+                                newCdeObj.save(function (err) {
+                                    if (err) throw err;
+                                    cdeCounter++;
+                                    console.log('cdeCounter: ' + cdeCounter);
+                                    stream.resume();
+                                });
+
+                                //if (eyeGene.AnswerListId && eyeGene.AnswerListId.length === 0) {
+                                //    valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
+                                //    var newCdeObj = new MigrationDataElementModel(newCde);
+                                //    newCdeObj.save(function (err) {
+                                //        if (err) throw err;
+                                //        cdeCounter++;
+                                //        console.log('cdeCounter: ' + cdeCounter);
+                                //        stream.resume();
+                                //    });
+                                //} else {
+                                //    valueDomain.datatype = 'Value List';
+                                //    MigrationEyeGeneAnswerListModel.find({AnswerListId: eyeGene.AnswerListId}).sort({Sequence: 1}).exec(function (err, existingAnswerLists) {
+                                //        if (err) throw err;
+                                //        if (existingAnswerLists && existingAnswerLists.length === 0) {
+                                //            console.log('cannot find answer list of ' + eyeGene.AnswerListId);
+                                //        } else if (existingAnswerLists && existingAnswerLists.length > 0) {
+                                //            valueDomain.permissibleValues = [];
+                                //            valueDomain.identifiers = [];
+                                //            valueDomain.identifiers.push({source: 'LOINC', id: eyeGene.AnswerListId});
+                                //            existingAnswerLists.forEach(function (existingAnswerList) {
+                                //                valueDomain.permissibleValues.push({
+                                //                    valueMeaningName: existingAnswerList.get('AnswerString'),
+                                //                    valueMeaningCode: existingAnswerList.get('AnswerStringId'),
+                                //                    permissibleValue: existingAnswerList.get('AnswerString'),
+                                //                    codeSystemName: 'LOINC'
+                                //                });
+                                //            });
+                                //            newCde.valueDomain = valueDomain;
+                                //        } else {
+                                //            throw "answer list error";
+                                //        }
+                                //        var newCdeObj = new MigrationDataElementModel(newCde);
+                                //        newCdeObj.save(function (err) {
+                                //            if (err) throw err;
+                                //            cdeCounter++;
+                                //            console.log('cdeCounter: ' + cdeCounter);
+                                //            stream.resume();
+                                //        });
+                                //    });
+                                //}
+
+
                             }
                         });
                     } else {
