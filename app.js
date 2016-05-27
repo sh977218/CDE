@@ -27,16 +27,17 @@ require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
 
-app.use(helmet.xssFilter());
-app.use(helmet.xssFilter({ setOnOldIE: true }));
+app.use(helmet());
 
-app.use(helmet({
-    frameguard: {
-        action: 'deny'
-    }
-}));
+// app.use(helmet.xssFilter());
+// app.use(helmet.xssFilter({ setOnOldIE: true }));
+//
+// app.use(helmet({
+//     frameguard: {
+//         action: 'deny'
+//     }
+// }));
 
-//So, there are a ton of app.js files in the project. Do I have to set the settings for all of them, or is there a place that can apply to them all?
 app.use(auth.ticketAuth);
 app.use(compress());
 
@@ -44,7 +45,6 @@ var request = require('request');
 app.use('/kibana/', function(req, res) {
     req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500);}).pipe(res);
 });
-
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
