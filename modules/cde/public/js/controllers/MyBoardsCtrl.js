@@ -11,8 +11,8 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                 }
                 return newSuggestTags;
             },
-            sortBy: 'updatedDate',
-            sortDirection: 'desc',
+            sortBy: 'name',
+            sortDirection: 'asc',
             selectedShareStatus: [],
             selectedTags: [],
             suggestTags: []
@@ -39,9 +39,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $scope.loadMyBoards();
 
         $scope.removeBoard = function (index) {
-            $http['delete']("/board/" + $scope.boards[index]._id).then(function (response) {
+            $http['delete']("/board/" + $scope.boards[index]._id).then(function () {
                 $scope.addAlert("success", "Board removed");
-                $scope.boards.splice(index, 1);
+                $scope.loadMyBoards();
             });
         };
 

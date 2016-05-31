@@ -7,19 +7,23 @@
     <hr/>
     <div class="col-md-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
-            <h4>Tags</h4>
-            <label ng-repeat="tag in filter.tags" class="my-board-tag">
-                <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
-                       checklist-change="loadMyBoards()">
-                {{tag.key}} ({{tag.doc_count}})
-            </label>
-            <h4>Share Status</h4>
-            <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
-                <input type="checkbox" data-checklist-model="filter.selectedShareStatus" data-checklist-value="ss.key"
-                       checklist-change="loadMyBoards()">
-                {{ss.key}} ({{ss.doc_count}})
-            </label>
-        </div>
+            <div ng-if="filter.tags.length > 0">
+                <h4>Tags</h4>
+                <label ng-repeat="tag in filter.tags" class="my-board-tag">
+                    <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
+                           checklist-change="loadMyBoards()">
+                    {{tag.key}} ({{tag.doc_count}})
+                </label>
+            </div>
+            <div ng-if="filter.shareStatus.length > 0">
+                <h4>Share Status</h4>
+                <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
+                    <input type="checkbox" data-checklist-model="filter.selectedShareStatus" data-checklist-value="ss.key"
+                           checklist-change="loadMyBoards()">
+                    {{ss.key}} ({{ss.doc_count}})
+                </label>
+            </div>
+       </div>
     </div>
     <div class="col-md-10 col-xs-8 dragDiv" id="my-board-container">
         <div ng-repeat="board in boards" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">

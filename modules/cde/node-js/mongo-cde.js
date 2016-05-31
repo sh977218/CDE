@@ -36,6 +36,11 @@ schemas.pinningBoardSchema.pre('save', function (next) {
     elastic.boardUpdateOrInsert(self);
     next();
 });
+schemas.pinningBoardSchema.pre('remove', function (next) {
+    var self = this;
+    elastic.boardDelete(self);
+    next();
+});
 
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
@@ -245,12 +250,6 @@ exports.boardById = function (boardId, callback) {
     });
 };
 
-exports.removeBoard = function (boardId, callback) {
-    PinningBoard.remove({'_id': boardId}, function (err) {
-        if (callback) callback(err);
-    });
-};
-//TODO: Consider moving
 exports.addToViewHistory = function (cde, user) {
     if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
         origin: "cde.mongo-cde.addToViewHistory",

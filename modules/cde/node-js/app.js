@@ -262,12 +262,19 @@ exports.init = function (app, daoManager) {
     app.delete('/board/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             mongo_data.boardById(req.params.boardId, function (err, board) {
+                if (!board) {
+                    res.status(500).send("Can not find board with id:" + req.params.boardId);
+                    return;
+                }
                 if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                     res.send("You must own the board that you wish to delete.");
+                } else {
+                    board.remove(function () {
+                        elastic.boardRefresh(function () {
+                            res.send("Board Removed.");
+                        });
+                    });
                 }
-                mongo_data.removeBoard(req.params.boardId, function () {
-                    res.send("Board Removed.");
-                });
             });
         } else {
             res.send("You must be logged in to do this.");

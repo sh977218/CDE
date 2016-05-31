@@ -48,8 +48,27 @@ exports.boardUpdateOrInsert = function (elt) {
         }, function (err) {
             if (err) {
                 dbLogger.logError({
-                    message: "Unable to index board: " + doc.tinyId,
+                    message: "Unable to index board: " + elt._id.toString(),
                     origin: "cde.elastic.boardUpdateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.boardDelete = function (elt) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.boardIndex.name,
+            type: "board",
+            id: elt._id.toString()
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete board: " + elt._id.toString(),
+                    origin: "cde.elastic.boardDelete",
                     stack: err,
                     details: ""
                 });
