@@ -18,6 +18,7 @@ public class BoardTest extends NlmCdeBaseTest {
             String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
                 clickElement(By.id("privateIcon_" + i));
+                textPresent("Change Status?");
                 clickElement(By.id("confirmChangeStatus_" + i));
                 textPresent(response);
                 closeAlert();
@@ -32,6 +33,7 @@ public class BoardTest extends NlmCdeBaseTest {
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
+        hangon(2);
     }
 
     protected void gotoPublicBoards() {

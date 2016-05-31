@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,11 +25,13 @@ public class BoardExportTest extends BoardTest {
         findElement(By.name("search")).sendKeys("\"" + board_name + "\"");
         clickElement(By.id("search.submit"));
         textPresent(board_name);
-        clickElement(By.linkText(board_name));
+        clickElement(By.id("viewBoard_" + board_name));
+        switchTab(1);
         textPresent("Export Board");
         clickElement(By.id("mb.export"));
         textPresent("Export downloaded.");
         closeAlert();
+        switchTabAndClose(0);
 
         String[] expected = {
                 "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
