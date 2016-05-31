@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test.boards;
 
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,20 +20,20 @@ public class BoardExportTest extends BoardTest {
 
         String board_name = "Board Export Test";
 
-        findElement(By.linkText("Boards")).click();
+        clickElement(By.linkText("Boards"));
         findElement(By.name("search")).sendKeys("\"" + board_name + "\"");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         clickElement(By.linkText(board_name));
 
         textPresent("Export Board");
-        findElement(By.id("mb.export")).click();
+        clickElement(By.id("mb.export"));
         textPresent("Export downloaded.");
         closeAlert();
 
         String[] expected = {
-            "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
-            "\"PTSD Checklist Military (PCLM) - Happening again indicator\",\"Suddenly acting or feeling as if the stressful experience were happening again (as if you were reliving it)?\",\"Value List\",\"1; 2; 3; 4; 5\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C07394 v3; NINDS Variable Name: PCLMHappeningAgainInd\"",
-            "\"Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale\",\"My Parkinson�s symptoms cause me to stay away from social gatherings\",\"Value List\",\"Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale\""
+                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+                "\"PTSD Checklist Military (PCLM) - Happening again indicator\",\"Suddenly acting or feeling as if the stressful experience were happening again (as if you were reliving it)?\",\"Value List\",\"1; 2; 3; 4; 5\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C07394 v3; NINDS Variable Name: PCLMHappeningAgainInd\"",
+                "\"Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale\",\"My Parkinson�s symptoms cause me to stay away from social gatherings\",\"Value List\",\"Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale\""
         };
 
         try {
