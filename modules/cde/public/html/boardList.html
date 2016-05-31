@@ -1,5 +1,5 @@
 <br><br>
-<div class="container">
+<div class="container-fluid">
     <form id="searchBoardsForm">
         <div class="input-group input-group-lg">
             <input ng-model="filter.search" name="search" class="form-control search-query"
@@ -11,14 +11,17 @@
             </div>
         </div>
     </form>
-    <div class="row">
-        <div class="col-xs-2 noLeftRightPadding">
-            <div id="sidebar-wrapper">
-                <label ng-repeat="tag in filter.tags" class="public-board-tag">
-                    <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
-                           checklist-change="loadPublicBoards()">
-                    {{tag.key}} ({{tag.doc_count}})
-                </label>
+    <div class=" col-md-12">
+        <div class="col-md-2 col-xs-4 noLeftRightPadding">
+            <div ng-if="filter.tags.length > 0">
+                <h4>Tags</h4>
+                <div id="sidebar-wrapper">
+                    <label ng-repeat="tag in filter.tags" class="public-board-tag">
+                        <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
+                               checklist-change="loadPublicBoards()">
+                        {{tag.key}} ({{tag.doc_count}})
+                    </label>
+                </div>
             </div>
         </div>
         <div class="col-md-10">
