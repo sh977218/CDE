@@ -1026,7 +1026,7 @@ div + .questionPlaceholder {
 .my-board-card {
     border: 1px solid rgb(220, 220, 220);
     border-radius: 5px;
-    margin: 5px;
+    margin: 3px;
     padding: 15px;
     word-wrap: break-word;
     min-height: 160px;
@@ -1067,13 +1067,13 @@ div + .questionPlaceholder {
 
 .myBoardTags {
     position: absolute;
-    top: 130px;
+    bottom: 5px;
 }
 
 .myBoardLastModified {
     position: absolute;
-    top: 134px;
-    left: 320px;
+    bottom: 5px;
+    right: 25px;
 }
 
 .ui-select-container {

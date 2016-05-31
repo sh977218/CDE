@@ -32,6 +32,10 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             });
         };
 
+        $scope.canEditBoard = function() {
+            return true;
+        };
+
         $scope.loadMyBoards();
 
         $scope.removeBoard = function (index) {
