@@ -17,6 +17,7 @@ var express = require('express')
     , methodOverride = require('method-override')
     , morganLogger = require('morgan')
     , compress = require('compression')
+    , helmet = require('helmet')
     ;
 
 require('./modules/system/node-js/elastic').initEs();
@@ -25,6 +26,7 @@ require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
 
+app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
@@ -62,7 +64,6 @@ app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
-
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
