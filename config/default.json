@@ -52,7 +52,7 @@
     "index": {"name": "auto"},
     "formIndex": {"name": "auto"},
     "boardIndex": {"name": "auto"},
-    "storedQueryIndex": {"name": "auto"},
+    "storedQueryIndex": {"name": "auto"}
   },
   "database": {
     "servers": [
