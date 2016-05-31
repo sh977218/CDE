@@ -157,7 +157,7 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
-        shortWait = new WebDriverWait(driver, 2);
+        shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 //        textPresent("has been designed to provide access");
     }
