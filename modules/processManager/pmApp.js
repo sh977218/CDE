@@ -29,7 +29,7 @@ var spawned;
 var spawnChild = function() {
     var opts = {stdio: 'inherit'};
     var nodeProcess = config.pmNodeProcess || "node";
-    spawned = spawn(nodeProcess, ['--harmony', 'app'], opts);
+    spawned = spawn(nodeProcess, ['app'], opts);
     setTimeout(function() {
         getHosts();
     }, 10 * 1000);
