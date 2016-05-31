@@ -37,7 +37,7 @@
         <i class="fa fa-check" ng-click="save(board)" id="confirmEdit_{{$index}}"></i>
         <i class="fa fa-times" ng-click="cancelSave(board)"></i>
     </span>
-    <span ng-hide="board.editMode">
+    <span ng-hide="board.editMode" ng-if="canEditBoard()">
         <i class="fa fa-pencil" ng-click="board.editMode = true" id="edit_board_{{$index}}"></i>
     </span>
 </div>
