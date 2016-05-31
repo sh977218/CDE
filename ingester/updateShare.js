@@ -48,7 +48,7 @@ exports.removeClassificationTree = function (element, org) {
 };
 
 exports.removePropertiesOfSource = function (properties, source) {
-    properties.filter(function (p) {
-        return !p.source || p.source === source;
+    return properties.filter(function (p) {
+        return !p.source || p.source !== source;
     });
 };

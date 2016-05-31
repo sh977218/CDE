@@ -112,7 +112,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
+        newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
 
         removeClassificationTree(newDe, orgName);
@@ -122,7 +122,9 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
                 if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
             });
             if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
-            else newDe.classification.push(migrationCde.classification[0]);
+            else {
+                newDe.classification.push(migrationCde.classification[0]);
+            }
         }
         newDe._id = existingCde._id;
         try {
