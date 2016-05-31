@@ -116,7 +116,14 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.properties = newDe.properties.concat(migrationCde.properties);
 
         removeClassificationTree(newDe, orgName);
-        if (migrationCde.classification[0]) newDe.classification.push(migrationCde.classification[0]);
+        if (migrationCde.classification[0]) {
+            var indexOfClassZero = null;
+            newDe.classification.forEach(function(c, i){
+                if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
+            });
+            if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
+            else newDe.classification.push(migrationCde.classification[0]);
+        }
         newDe._id = existingCde._id;
         try {
             mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
