@@ -23,8 +23,8 @@ public class BoardExportTest extends BoardTest {
         clickElement(By.linkText("Boards"));
         findElement(By.name("search")).sendKeys("\"" + board_name + "\"");
         clickElement(By.id("search.submit"));
+        textPresent(board_name);
         clickElement(By.linkText(board_name));
-
         textPresent("Export Board");
         clickElement(By.id("mb.export"));
         textPresent("Export downloaded.");

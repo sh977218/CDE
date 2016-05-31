@@ -1,4 +1,4 @@
-<h4 class="myBoardName">
+<h4 class="myBoardName" id="board_name_{{$index}}">
     <span ng-show="showChangeStatus">Change Status?
         <i class="fa fa-check" ng-click="changeStatus($index)"
            id="confirmChangeStatus_{{$index}}"></i>
@@ -17,7 +17,7 @@
 
 <div inline-edit model="board.description" is-allowed="canEditBoard()"></div>
 
-<small class="myBoardLastModified">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
+<small class="myBoardLastModified" id="board_mod_{{$index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
 
 <div id="board_tag_{{$index}}" class="myBoardTags">
     <span ng-if="!board.editMode" ng-repeat="tag in board.tags">
