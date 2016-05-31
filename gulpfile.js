@@ -61,7 +61,7 @@ gulp.task('copyCode', ['wiredep'], function() {
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/views/'));
     });
 
-    ['supportedBrowsers.ejs', 'loginText.ejs', 'webtrends.ejs'].forEach(function(file) {
+    ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function(file) {
         gulp.src('./modules/system/views/' + file)
             .pipe(gulp.dest(config.node.buildDir + "/modules/system/views/"));
     });
