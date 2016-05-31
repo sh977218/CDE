@@ -38,13 +38,6 @@
                                id="confirmChangeStatus_{{$index}}"></i>
                             <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
                         </span>
-                        <span ng-show="board.editMode">Save?
-                            <i class="fa fa-check" ng-click="save(board)" id="confirmEdit_{{$index}}"></i>
-                            <i class="fa fa-times" ng-click="cancelSave(board)"></i>
-                        </span>
-                        <span ng-hide="board.editMode">
-                            <i class="fa fa-pencil" ng-click="board.editMode = true" id="edit_board_{{$index}}"></i>
-                        </span>
                     </div>
                 </div>
                 <div ng-include="'cde/public/html/boardTemplate.html'"></div>
