@@ -2,54 +2,23 @@
  TODO
  this script does not update org
  */
-var fs = require('fs'),
-    util = require('util'),
-    xml2js = require('xml2js'),
-    mongoose = require('mongoose'),
-    config = require('../modules/system/node-js/parseConfig'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    sys_schemas = require('../modules/system/node-js/schemas'),
+var MigrationFormModel = require('./createConnection').MigrationFormModel,
+    MigrationOrgModel = require('./createConnection').MigrationOrgModel,
+    FormModel = require('./createConnection').FormModel,
+    OrgModel = require('./createConnection').OrgModel,
     mongo_form = require('../modules/form/node-js/mongo-form'),
-    cdesvc = require('../modules/cde/node-js/cdesvc'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     updateShare = require('./updateShare')
     ;
 
 var importDate = new Date().toJSON();
 
-var mongoUri = config.mongoUri;
-var mongoMigrationUri = config.mongoMigrationUri;
-
-var conn = mongoose.createConnection(mongoUri);
-conn.on('error', console.error.bind(console, 'appData connection error:'));
-conn.on('error', function () {
-    process.exit(1);
-});
-conn.once('open', function callback() {
-    console.log('mongodb connection open');
-});
-
-var migrationConn = mongoose.createConnection(mongoMigrationUri);
-migrationConn.on('error', function (err) {
-    console.log('migration connection error:' + err);
-    process.exit(1);
-});
-migrationConn.once('open', function callback() {
-    console.log('mongodb migration connection open');
-});
-
-
-var Form = conn.model('Form', form_schemas.formSchema);
-var MigrationForm = migrationConn.model('Form', form_schemas.formSchema);
-
-var Org = conn.model('Org', sys_schemas.orgSchema);
-var MigrationOrg = migrationConn.model('Org', sys_schemas.orgSchema);
-
 var changed = 0;
 var created = 0;
 var createdForm = [];
 var same = 0;
-var source = 'NINDS';
+
+var source = 'LOINC';
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy
@@ -75,11 +44,8 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         newForm.imported = importDate;
         newForm.referenceDocuments = migrationForm.referenceDocuments;
         newForm.formElements = migrationForm.formElements;
-
-        for (var j = 0; j < migrationForm.properties.length; j++) {
-            updateShare.removeProperty(newForm, migrationForm.properties[j]);
-            newForm.properties.push(migrationForm.properties[j]);
-        }
+        updateShare.removePropertiesOfSource(newForm.properties, migrationForm.source);
+        newForm.properties = newForm.properties.concat(migrationForm.properties);
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
@@ -111,13 +77,13 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
 }
 
 
-function doMigrationForm(formId, migrationForm, source, orgName, findFormDone) {
+function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDone) {
     var formCond = {
         archived: null,
         "registrationState.registrationStatus": {$not: /Retired/},
         created: {$ne: importDate}
     };
-    Form.find(formCond)
+    FormModel.find(formCond)
         .where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(formId);
@@ -127,7 +93,7 @@ function doMigrationForm(formId, migrationForm, source, orgName, findFormDone) {
             //delete migrationForm._id;
             var mForm = JSON.parse(JSON.stringify(migrationForm.toObject()));
             delete mForm._id; //use mForm below!!!
-            var createForm = new Form(mForm);
+            var createForm = new FormModel(mForm);
             createForm.imported = importDate;
             createForm.created = importDate;
             createForm.save(function (err) {
@@ -167,7 +133,7 @@ function doMigrationForm(formId, migrationForm, source, orgName, findFormDone) {
 function streamOnClose() {
 
     // Retire Missing CDEs
-    Form.where({
+    FormModel.where({
         imported: {$ne: importDate},
         'stewardOrg.name': source
     }).update({
@@ -176,10 +142,10 @@ function streamOnClose() {
     });
 
     console.log("Nothing left to do, saving Org");
-    MigrationOrg.find().exec(function (err, orgs) {
+    MigrationOrgModel.find().exec(function (err, orgs) {
         if (err) console.log("Error Finding Migration Org " + err);
         orgs.forEach(function (org) {
-            Org.findOne({name: org.name}).exec(function (err, theOrg) {
+            OrgModel.findOne({name: org.name}).exec(function (err, theOrg) {
                 if (err)  console.log("Error finding existing org " + err);
                 theOrg.classifications = org.classifications;
                 theOrg.save(function (err) {
@@ -199,11 +165,12 @@ function streamOnClose() {
 
 
 function run() {
-    var migStream = MigrationForm.find().stream();
+    var migStream = MigrationFormModel.find().stream();
     migStream.on('data', function (migrationForm) {
         migStream.pause();
         classificationShared.sortClassification(migrationForm);
         var orgName = migrationForm.stewardOrg.name;
+        var source = migrationForm.source;
         var formIdCounter = 0;
         var formId;
         var version;
@@ -220,7 +187,7 @@ function run() {
         }
 
         if (formId) {
-            doMigrationForm(formId, migrationForm, source, orgName, function () {
+            doMigrationFormModel(formId, migrationForm, source, orgName, function () {
                 migStream.resume();
             });
         } else {

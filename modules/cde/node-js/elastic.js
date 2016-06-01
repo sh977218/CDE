@@ -10,7 +10,7 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.updateOrInsert = function(elt) {
+exports.updateOrInsert = function (elt, cb) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
         delete doc._id;
@@ -28,11 +28,12 @@ exports.updateOrInsert = function(elt) {
                     details: ""
                 });
             }
+            if (cb) cb(err);
         });
     }
 };
 
-exports.boardUpdateOrInsert = function(elt) {
+exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();
         delete doc._id;
@@ -58,10 +59,12 @@ exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
-            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {delete query.highlight.fields[field];}
+            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
+                delete query.highlight.fields[field];
+            }
         });
     }
-    sharedElastic.elasticsearch(query, 'cde', function(err, result) {
+    sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
