@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.valueDomain;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CodesFromNCI extends NlmCdeBaseTest {
@@ -16,7 +17,8 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         clickElement(By.id("displayUMLSCodes"));
         textPresent("American Indian or Alaska Native", By.id("nameAsUMLS-0"));
         textPresent("C1515945", By.id("codeAsUMLS-0"));
-        Assert.assBy.id("displayLNCCodes");
+        Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
+        Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
     }
 
