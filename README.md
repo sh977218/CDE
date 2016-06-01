@@ -9,30 +9,30 @@
     * Gradle
     * Groovy
     * Mongodb - 2.6.7
-    * ElasticSearch 1.4.3
+    * ElasticSearch 2.3.3
     * Elastic River for MongoDB - 2.0.5
 
 **ElasticSearch** should be installed with the river for mongo plugin.
 
 ```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.3.tar.gz
+$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz
 ```
 
-configure **elascticsearch.yml** 
+configure **elascticsearch.yml**
 
+    * script.engine.groovy.inline.update: on
+    * script.inline: on
+    * script.indexed: on
+    * script.engine.groovy.inline.aggs: on
     * path.data
     * path.work
     * path.logs
-    * plugin.mandatory: mapper-attachments, lang-javascript, river-mongodb
     * cluster.name: yourclustername
     * node.name: "Your Name"
     * node.master: true
     * node.data: true
     * index.number_of_shards: 1
     * index.number_of_replicas: 0
-    * script.disable_dynamic: false
-    * script.groovy.sandbox.enabled: false
-    * script.js.sandbox.enabled: true
 
 ```sh
 $> ./bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.5
