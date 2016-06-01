@@ -127,12 +127,13 @@ exports.morelike = function (id, callback) {
                 },
                 "filter": {
                     bool: {
-                        must_not: [{
-                            term: {
-                                "registrationState.registrationStatus": "Retired"
-                            }
-                        }
-                            , {
+                        must_not: [
+                            {
+                                term: {
+                                    "registrationState.registrationStatus": "Retired"
+                                }
+                            },
+                            {
                                 term: {
                                     "isFork": "true"
                                 }
@@ -178,12 +179,12 @@ exports.morelike = function (id, callback) {
 
 exports.DataElementDistinct = function (field, cb) {
     var distinctQuery = {
-        "size": 0
-        , "aggs": {
+        "size": 0,
+        "aggs": {
             "aggregationsName": {
                 "terms": {
-                    "field": field
-                    , "size": 1000
+                    "field": field,
+                    "size": 1000
                 }
             }
         }
@@ -282,7 +283,7 @@ exports.myBoards = function (user, filter, cb) {
                     {
                         "term": {
                             "owner.username": {
-                                value: user.username
+                                value: user.username.toLowerCase()
                             }
                         }
                     }
