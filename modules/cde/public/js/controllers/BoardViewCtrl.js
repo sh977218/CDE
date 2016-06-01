@@ -7,7 +7,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
     $scope.cdes = [];
 
     $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
-        "/cde/public/html/accordion/addToQuickBoardActions.html" ];
+        "/cde/public/html/accordion/addToQuickBoardActions.html"
+ ];
+        //Create new file for new value "Sort CDEs.html"
+    $scope.includeInQuickBoard = [         "/cde/public/html/accordion/sortCdes.html"];
+    //Modify this to allow for 
 
     $scope.setPage = function (p) {
         $scope.currentPage = p;
@@ -70,6 +74,16 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             });
+    };
+
+    $scope.save = function() {//wrap in timeout 0
+        $http.post("/board", $scope.board).success(function (response) {
+            $scope.addAlert("success", "Saved");
+            $scope.reload();
+        }).error(function (response) {
+            $scope.addAlert("danger", response);
+            $scope.reload();
+        });
     };
 
     $scope.classifyBoard = function () {
