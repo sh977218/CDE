@@ -9,9 +9,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
     $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
         "/cde/public/html/accordion/addToQuickBoardActions.html"
  ];
-        //Create new file for new value "Sort CDEs.html"
-    $scope.includeInQuickBoard = [         "/cde/public/html/accordion/sortCdes.html"];
-    //Modify this to allow for 
+    $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
 
     $scope.setPage = function (p) {
         $scope.currentPage = p;
