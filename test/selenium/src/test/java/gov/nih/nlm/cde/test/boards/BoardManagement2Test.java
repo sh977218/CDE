@@ -1,11 +1,13 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class BoardManagement2Test extends BoardTest {
 
     @Test
+    @RecordVideo
     public void cdeBoards() {
         mustBeLoggedInAs(boarduser1_username, password);
         String board1 = "First CDE Board";

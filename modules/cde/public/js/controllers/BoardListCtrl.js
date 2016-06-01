@@ -3,6 +3,9 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
     $scope.filter = {
         search: "",
         selectedTags: [],
+        selectedShareStatus: ['Public'],
+        sortBy: 'name',
+        sortDirection: 'asc',
         tags: []
     };
     $scope.loadPublicBoards = function () {
@@ -13,6 +16,10 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
             });
             $scope.filter.tags = response.aggregations.aggregationsName.buckets;
         });
+    };
+
+    $scope.canEditBoard = function () {
+        return false;
     };
 }
 ]);
