@@ -18,7 +18,7 @@ exports.wipeUseless = function (toWipeForm) {
 
 
 exports.compareObjects = function (existingForm, newForm) {
-    var existingForm = JSON.parse(JSON.stringify(existingForm));
+    existingForm = JSON.parse(JSON.stringify(existingForm));
     exports.wipeUseless(existingForm);
     for (var i = existingForm.classification.length - 1; i > 0; i--) {
         if (existingForm.classification[i].stewardOrg.name !== newForm.source) {
@@ -47,11 +47,8 @@ exports.removeClassificationTree = function (element, org) {
     }
 };
 
-exports.removeProperty = function (element, property) {
-    for (var i = 0; i < element.properties.length; i++) {
-        if (property.key === element.properties[i].key) {
-            element.properties.splice(i, 1);
-            return;
-        }
-    }
+exports.removePropertiesOfSource = function (properties, source) {
+    return properties.filter(function (p) {
+        return !p.source || p.source !== source;
+    });
 };
