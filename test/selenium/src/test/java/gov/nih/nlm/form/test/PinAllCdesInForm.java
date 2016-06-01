@@ -14,16 +14,15 @@ public class PinAllCdesInForm extends NlmCdeBaseTest {
     public void pinAllCdesInForm() {
         String boardName = "Pin All CDEs From Form";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
-        boardTest.createBoard(boardName, "Descriptions are cool.");
         goToFormByName("Imaging OCT Analysis -Cirrus Macular Thickness");
-        findElement(By.id("pinAllCdes")).click();
-        findElement(By.linkText(boardName)).click();
+        clickElement(By.id("pinAllCdes"));
+        clickElement(By.linkText(boardName));
         textPresent("All elements pinned");
         closeAlert();
         boardTest.gotoMyBoards();
         Assert.assertEquals(findElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName +
                 "\"]//dd[contains(@id,'dd_numb_')]")).getText(), "7");
-        findElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName + "\"]//a")).click();
+        clickElement(By.xpath("//div[@data-id=\"boardDiv_" + boardName + "\"]//a"));
         textPresent("Optical coherence");
         boardTest.removeBoard(boardName);
     }
