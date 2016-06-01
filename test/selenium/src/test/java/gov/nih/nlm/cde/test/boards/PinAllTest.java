@@ -14,16 +14,16 @@ public class PinAllTest extends BoardTest {
         createBoard(board_name, board_description);
         goToCdeSearch();
 
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Stroke")).click();
-        findElement(By.id("li-blank-Classification")).click();
-        findElement(By.id("li-blank-Exploratory")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("li-blank-Disease"));
+        clickElement(By.id("li-blank-Stroke"));
+        clickElement(By.id("li-blank-Classification"));
+        clickElement(By.id("li-blank-Exploratory"));
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        findElement(By.linkText(board_name)).click();
+        clickElement(By.id("board_name_" + board_name));
         textPresent("All elements pinned.");
         gotoMyBoards();
 
@@ -43,18 +43,18 @@ public class PinAllTest extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         createBoard(board_name, board_description);
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
-        findElement(By.id("li-blank-Amyotrophic Lateral Sclerosis")).click();
-        findElement(By.id("li-blank-Classification")).click();
-        findElement(By.id("li-blank-Core")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("li-blank-Disease"));
+        clickElement(By.id("li-blank-Amyotrophic Lateral Sclerosis"));
+        clickElement(By.id("li-blank-Classification"));
+        clickElement(By.id("li-blank-Core"));
         hangon(3);
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         Assert.assertTrue(searchResultNum_int > 20);
         scrollToTop();
-        findElement(By.id("pinAll")).click();
+        clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
-        findElement(By.linkText(board_name)).click();
+        clickElement(By.id("board_name_" + board_name));
         textPresent("All elements pinned.");
         gotoMyBoards();
         int num_cde_after_pinAll_int =
