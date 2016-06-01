@@ -32,7 +32,7 @@ exports.updateOrInsert = function (elt) {
     }
 };
 
-exports.boardRefresh = function(cb) {
+exports.boardRefresh = function (cb) {
     esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
 };
 
@@ -208,6 +208,7 @@ exports.DataElementDistinct = function (field, cb) {
 };
 exports.boardSearch = function (filter, cb) {
     var query = {
+        "size": 100,
         "query": {
             "bool": {
                 "must": [
@@ -273,6 +274,7 @@ exports.myBoards = function (user, filter, cb) {
         };
     }
     var query = {
+        "size": 100,
         "query": {
             "bool": {
                 "must": [

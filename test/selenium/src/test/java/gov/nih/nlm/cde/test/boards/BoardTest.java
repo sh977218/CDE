@@ -61,9 +61,9 @@ public class BoardTest extends NlmCdeBaseTest {
 
     public void removeBoard(String boardName) {
         gotoMyBoards();
-        int length = driver.findElements(By.linkText("View Board")).size();
+        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
                 clickElement(By.id("removeBoard-" + i));
                 clickElement(By.id("confirmRemove-" + i));

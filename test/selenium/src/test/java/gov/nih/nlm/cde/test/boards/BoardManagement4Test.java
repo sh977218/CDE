@@ -10,11 +10,9 @@ public class BoardManagement4Test extends BoardTest {
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
-        createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        goToCdeSearch();
-        gotoMyBoards();
-        Assert.assertTrue(textNotPresent("Not a very useful"));
+        hangon(2);
+        textNotPresent("Not a very useful");
     }
 
     @Test
