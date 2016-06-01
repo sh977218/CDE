@@ -42,11 +42,12 @@ public class BoardManagement2Test extends BoardTest {
         removeBoard(board2);
     }
 
-    @Test(priority = 4)
+    @Test
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         clickElement(By.linkText("10"));
+        textPresent("The indicator whether participant/subject worked in landscaping/gardening/groundskeeping from age 36 to 45 as part of the Risk Factor Questionnaire (RFQ-U) for Pesticide (Work).")
     }
 
 }

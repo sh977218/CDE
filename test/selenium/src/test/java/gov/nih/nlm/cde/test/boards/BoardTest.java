@@ -86,7 +86,7 @@ public class BoardTest extends NlmCdeBaseTest {
         gotoMyBoards();
         textPresent(boardName);
         clickElement(By.id("viewBoard_" + boardName));
-        // wait for board to show name in title
+        switchTab(1);
         findElement(By.xpath("//h3[text() = '" + boardName + "']"));
     }
 
