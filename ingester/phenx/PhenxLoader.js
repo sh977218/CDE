@@ -1,7 +1,4 @@
 var webdriver = require('selenium-webdriver'),
-    By = require('selenium-webdriver').By,
-    until = require('selenium-webdriver').until,
-    fs = require('fs'),
     mongoose = require('mongoose'),
     config = require('../../modules/system/node-js/parseConfig'),
     cde_schemas = require('../../modules/cde/node-js/schemas'),
@@ -9,19 +6,18 @@ var webdriver = require('selenium-webdriver'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_form = require('../../modules/form/node-js/mongo-form'),
-    async = require('async');
+    async = require('async')
+    ;
 
 // global variables
 var baseUrl = "https://www.phenxtoolkit.org/index.php?pageLink=browse.measures&tree=off";
 var mongoUrl = config.mongoUri;
 var conn = mongoose.createConnection(mongoUrl, {auth: {authdb: "admin"}});
 var cacheSchema = mongoose.Schema({}, {strict: false});
-var formSchema = mongoose.Schema({}, {strict: false});
 var measureSchema = mongoose.Schema({}, {strict: false});
 var Measure = conn.model('measure', measureSchema);
 var DataElement = conn.model('DataElement', cde_schemas.dataElementSchema);
 var Cache = conn.model('cache', cacheSchema);
-var Form = conn.model('form', formSchema);
 var user = {username: "batchloader"};
 var phenxOrg = null;
 var nciOrg = null;
@@ -60,7 +56,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                         driver1.findElement(webdriver.By.xpath('/html/body/center/table/tbody/tr[3]/td/div/div[5]/div[1]')).getText().then(function (text) {
                                             measure.introduction = text.trim();
                                             doneParsingMeasureIntroduction();
-                                        })
+                                        });
                                     },
                                     function parsingMeasureClassifiction(doneParsingMeasureClassification) {
                                         driver1.findElements(webdriver.By.xpath("//p[@class='back'][1]/a")).then(function (classificationArr) {
@@ -70,7 +66,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                     c.getText().then(function (text) {
                                                         classification.push(text.trim());
                                                         doneOneC();
-                                                    })
+                                                    });
                                                 }, function doneAllC() {
                                                     var classi = [{
                                                         stewardOrg: {name: "PhenX"},
@@ -91,11 +87,11 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                         if (err) throw err;
                                                         doneParsingMeasureClassification();
                                                     });
-                                                })
+                                                });
                                             } else {
                                                 doneParsingMeasureClassification();
                                             }
-                                        })
+                                        });
                                     },
                                     function parsingMeasureProtocol(doneParsingMeasureProtocol) {
                                         var protocols = [];
@@ -124,19 +120,19 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                                                                 tds[0].getText().then(function (text) {
                                                                                                     standard['Standard'] = text;
                                                                                                     doneParsingStandard();
-                                                                                                })
+                                                                                                });
                                                                                             },
                                                                                             parsingName: function (doneParsingName) {
                                                                                                 tds[1].getText().then(function (text) {
                                                                                                     standard['Name'] = text;
                                                                                                     doneParsingName();
-                                                                                                })
+                                                                                                });
                                                                                             },
                                                                                             parsingId: function (doneParsingId) {
                                                                                                 tds[2].getText().then(function (text) {
                                                                                                     standard['ID'] = text;
                                                                                                     doneParsingId();
-                                                                                                })
+                                                                                                });
                                                                                             },
                                                                                             parsingSource: function (doneParsingSource) {
                                                                                                 var source = {};
@@ -202,7 +198,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                                                                                                     });
                                                                                                                                 }
                                                                                                                             }, function doneAllHref() {
-                                                                                                                                if (i != 1)
+                                                                                                                                if (i !== 1)
                                                                                                                                     elements.push(element);
                                                                                                                                 doneOneTr();
                                                                                                                             });
@@ -238,24 +234,24 @@ var remoteGrabFromPhenX = function (doneStep1) {
 
                                                                                                                 });
 
-                                                                                                            })
-                                                                                                        })
+                                                                                                            });
+                                                                                                        });
                                                                                                     } else {
                                                                                                         standard['Source'] = source;
                                                                                                         doneParsingSource();
                                                                                                     }
-                                                                                                })
+                                                                                                });
                                                                                             }
                                                                                         }, function doneAllStandardsTds() {
                                                                                             standards.push(standard);
                                                                                             doneOneStandardsTr();
-                                                                                        })
+                                                                                        });
                                                                                     });
                                                                                 }, function doneAllStandardsTrs() {
                                                                                     protocol['Standards'] = standards;
                                                                                     doneOneLabel();
                                                                                 });
-                                                                            })
+                                                                            });
                                                                         }
                                                                         else if (newId.indexOf('PROTOCOL_TEXT') > -1 || newId.indexOf('Requirements') > -1 || newId.indexOf('SPECIFIC_INSTRUCTIONS') > -1) {
                                                                             driver2.findElements(webdriver.By.xpath("//*[@id='" + newId + "']")).then(function (temp) {
@@ -267,15 +263,15 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                                                 }
                                                                                 else
                                                                                     doneOneLabel();
-                                                                            })
+                                                                            });
                                                                         }
                                                                         else {
                                                                             driver2.findElement(webdriver.By.id(newId)).getText().then(function (text) {
                                                                                 protocol[key.trim()] = text;
                                                                                 doneOneLabel();
-                                                                            })
+                                                                            });
                                                                         }
-                                                                    })
+                                                                    });
                                                                 });
                                                             }, function donAllLabels() {
                                                                 driver2.findElements(webdriver.By.xpath("//*[@class='back'][1]/a")).then(function (temp) {
@@ -299,7 +295,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                                                     doneOneProtocolLink();
                                                                                 }
                                                                             });
-                                                                        })
+                                                                        });
                                                                     }
                                                                     else {
                                                                         protocolCounter++;
@@ -311,7 +307,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                                             });
                                                         });
                                                     });
-                                                })
+                                                });
                                             }, function doneAllProtocolLinks() {
                                                 measure['protocols'] = protocols;
                                                 doneParsingMeasureProtocol();
@@ -322,10 +318,11 @@ var remoteGrabFromPhenX = function (doneStep1) {
                                 function doneParsingAllMeasureDetails() {
                                     doneGoToMeasure();
                                 }
-                            )
+                            );
                         }
                     ],
-                    function doneAllMeasureParsing(err, result) {
+                    function doneAllMeasureParsing(err) {
+                        if (err) throw err;
                         measure.step1 = 'done';
                         var newMeasure = new Measure(measure);
                         newMeasure.save(function () {
@@ -354,7 +351,7 @@ var remoteGrabFromPhenX = function (doneStep1) {
 
 var parsingQuestion = function (driver4, ele, doneOneEle) {
     driver4.get(ele['href']);
-    driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th")).then(function (temp) {
+    driver4.findElements(webdriver.By.xpath("/html/body/div[2]/table[1]/tbody/tr[1]/th")).then(function () {
         var naming = [];
         var pvs = [];
         var ids = [];
@@ -369,7 +366,7 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                 id['id'] = idText.trim();
                                 ids.push(id);
                                 doneParsingId();
-                            })
+                            });
                         },
                         parsingFullySpecifiedName: function (doneParsingFullySpecifiedName) {
                             var name = {};
@@ -383,11 +380,11 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         name['context'] = context;
                                         naming.push(name);
                                         doneParsingFullySpecifiedName();
-                                    })
+                                    });
                                 } else {
                                     doneParsingFullySpecifiedName();
                                 }
-                            })
+                            });
                         },
                         parsingLongCommonName: function (doneParsingLongCommonName) {
                             var name = {};
@@ -401,11 +398,11 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         name['context'] = context;
                                         naming.push(name);
                                         doneParsingLongCommonName();
-                                    })
+                                    });
                                 } else {
                                     doneParsingLongCommonName();
                                 }
-                            })
+                            });
                         },
                         parsingShortName: function (doneParsingShortName) {
                             var name = {};
@@ -419,11 +416,11 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         name['context'] = context;
                                         naming.push(name);
                                         doneParsingShortName();
-                                    })
+                                    });
                                 } else {
                                     doneParsingShortName();
                                 }
-                            })
+                            });
                         },
                         parsingQuestionName: function (doneParsingQuestionName) {
                             var name = {};
@@ -437,17 +434,17 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         name['context'] = context;
                                         naming.push(name);
                                         doneParsingQuestionName();
-                                    })
+                                    });
                                 }
                                 else {
                                     doneParsingQuestionName();
                                 }
-                            })
+                            });
                         }
                     }, function doneParsingOneNames() {
                         doneParsingAllNames();
-                    })
-                })
+                    });
+                });
             },
             parsingPermissibleValue: function (doneParsingAllPermissibleValues) {
                 driver4.findElements(webdriver.By.xpath("//*[@class='Section80000']/table/tbody/tr")).then(function (pvTrs) {
@@ -458,7 +455,7 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                         if (i > 2) {
                             pvTr.findElements(webdriver.By.css('td')).then(function (pvTds) {
                                 var num_tds = pvTds.length;
-                                if (num_tds == 8) {
+                                if (num_tds === 8) {
                                     async.parallel({
                                         one: function (b) {
                                             pvTds[3].getText().then(function (pvText) {
@@ -478,7 +475,7 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         doneOnePvTr();
                                     });
                                 }
-                                else if (num_tds == 9) {
+                                else if (num_tds === 9) {
                                     async.parallel({
                                         one: function (b) {
                                             pvTds[3].getText().then(function (pvText) {
@@ -503,7 +500,7 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                                         pvs.push(pv);
                                         doneOnePvTr();
                                     });
-                                } else if (num_tds == 7) {
+                                } else if (num_tds === 7) {
                                     async.parallel({
                                         one: function (b) {
                                             pvTds[3].getText().then(function (pvText) {
@@ -532,8 +529,8 @@ var parsingQuestion = function (driver4, ele, doneOneEle) {
                         }
                     }, function doneAllPvTrs() {
                         doneParsingAllPermissibleValues();
-                    })
-                })
+                    });
+                });
             }
         }, function doneAllParsingCdeDetail() {
             var valueDomain = {'datatype': pvs.length > 0 ? 'Value List' : 'Text'};
@@ -581,7 +578,7 @@ var parsingPanel = function (driver, element, numElements, doneOneElement) {
                                         parsingQuestion(driver2, anotherElement, doneParsingHref);
                                     }
                                 });
-                            })
+                            });
                         },
                         parsingLoincId: function (doneParsingLoincId) {
                             link.getText().then(function (loincIdText) {
@@ -603,7 +600,7 @@ var parsingPanel = function (driver, element, numElements, doneOneElement) {
             element['numElement'] = numElements;
             doneOneElement();
         }
-    })
+    });
 };
 
 var f = function (elements, doneOneProtocol) {
@@ -621,7 +618,6 @@ var f = function (elements, doneOneProtocol) {
 };
 
 var isElementPanelOrQuestion = function (doneStep2) {
-    var panelCde = [];
     Measure.find({step1: 'done', step2: null}, function (err, measures) {
         if (err) throw err;
         async.eachSeries(measures, function (measure, doneOneMeasure) {
@@ -641,17 +637,17 @@ var isElementPanelOrQuestion = function (doneStep2) {
                 measure.save(function () {
                     doneOneMeasure();
                 });
-            })
+            });
         }, function doneAllMeasures() {
             doneStep2();
-        })
-    })
+        });
+    });
 };
 
 var loadCdeLoop = function (elements, cdes, cdeCounter, cdeUpdateCounter, cdeSaveCounter, cb) {
     if (elements) {
         async.eachSeries(elements, function (element, doneOneElement) {
-            if (element.type === 'Question' && element.remove != true) {
+            if (element.type === 'Question' && element.remove !== true) {
                 cdeCounter++;
                 DataElement.findOne({'ids.id': element.loincId}, function (err, result) {
                     if (err) throw err;
@@ -717,7 +713,7 @@ var loadCde = function (doneLoadCde) {
             cache.save(function () {
                 console.log("finished load cde.");
                 doneLoadCde();
-            })
+            });
         });
     });
 };
@@ -735,7 +731,7 @@ var removePanelElementsLoop = function (elements, cb) {
             removePanelElementsLoop(element['elements'], null);
         }
         else {
-            if (num != 0) {
+            if (num !== 0) {
                 element['remove'] = true;
                 num--;
             }
@@ -924,13 +920,13 @@ var loadForm = function (doneLoadForm) {
                             else {
                                 mongo_form.create(form, user, function () {
                                     doneOneProtocol();
-                                })
+                                });
                             }
                         }
                         else {
                             mongo_form.create(form, user, function () {
                                 doneOneProtocol();
-                            })
+                            });
                         }
                     },
                     function doneAllProtocols() {

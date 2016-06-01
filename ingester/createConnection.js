@@ -19,11 +19,23 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-
+exports.MigrationLoincModal = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'loinc'
+}));
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
     strict: false,
     collection: 'ninds'
 }));
+exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'EyeGENE_LOINC'
+}));
+exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'EyeGENE_AnswerList'
+}));
+
 exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
 exports.MigrationFormModel = migrationConn.model('MigrationForm', form_schemas.formSchema);
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
@@ -39,3 +51,4 @@ exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVar
 exports.DataElementModel = mongoConn.model('DataElement', cde_schemas.dataElementSchema);
 exports.FormModel = mongoConn.model('Form', form_schemas.formSchema);
 exports.BoardModel = mongoConn.model('Board', cde_schemas.pinningBoardSchema);
+exports.OrgModel = mongoConn.model('Org', sharedSchemas.orgSchema);
