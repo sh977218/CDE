@@ -2,91 +2,110 @@
 
 ## Install
 
-###Prerequisites
+### Prerequisites
 
-    * Java
-    * Node.js 0.10.x
-    * Gradle
-    * Groovy
-    * Mongodb - 2.6.7
-    * ElasticSearch 2.3.3
-    * Elastic River for MongoDB - 2.0.5
+ * Java -1.8
+ * Node.js - 4.5
+ * Gradle *
+ * Mongodb - 2.6.7
+ * ElasticSearch 2.3
 
-**ElasticSearch** should be installed with the river for mongo plugin.
 
-```sh
-$> wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz
-```
+## Configure **elascticsearch.yml** 
 
-configure **elascticsearch.yml**
+In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch.
+Add the following lines to the end of the .yml file
 
-    * script.engine.groovy.inline.update: on
+    * script.engine.groovy.inline.update: on  
     * script.inline: on
     * script.indexed: on
     * script.engine.groovy.inline.aggs: on
-    * path.data
-    * path.work
-    * path.logs
-    * cluster.name: yourclustername
-    * node.name: "Your Name"
-    * node.master: true
-    * node.data: true
-    * index.number_of_shards: 1
-    * index.number_of_replicas: 0
-
-```sh
-$> ./bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.5
-```
-
-Versions numbers should match per river plugin doc. 
-
-Install javascript plugin
-
-```sh
-$> ./bin/plugin --install elasticsearch/elasticsearch-lang-javascript/2.3.1
-```
-
-
-Install mapper attachment plugin
-
-```sh
-$> ./bin/plugin --install elasticsearch/elasticsearch-mapper-attachments/2.4.1
-```
-
-**Note:** Get the latest version of the plugins at: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/modules-plugins.html
 
 ## Create & Configure Application Environment
-The NLM CDE application can run on a single computer in different configurations. 
 
-First of all create and setup a configuration file for your local instance:
-
-```sh
-$> cp ./configure/config.sample.js ./configure/my-env.js
-```
-
-Secondly, specify the desired configuration by setting up NODE_ENV environment variable:
+Next, navigate to your CDE directory, and run
 
 ```sh
-$> export NODE_ENV=my_env
+$/cde/> export NODE_ENV=test
 ```
 
-The application will automatically use the settings from the ./configure/my-env.js file whenever running node node-js/app.js, grunt or node node-js/mock/vsacMock.js.
+This will establish your config environment
 
 ### Configure Elastic Search
 
-**MongoDB** must run in **Replicate mode**. For example
+**MongoDB** must run in **Replicate mode**. 
+In a separate terminal, run  
+
 
 ```sh
 $> mongod --replSet rs0
 ```
 
-Initiate MongoDB replica set:
+Then, initiate MongoDB replica set:
+
+In another terminal, open up mongo. 
 
 ```javascript
 rs.initiate()
 ```
+## Establish users
 
-With **ElasticSearch** running, run grunt and rebuild ElasticSearch indices.
+
+Next, you will have to create several users for the app, in order for various aspects to function 
+properly. In the same mongo terminal, run the following commands in this order
+
+
+```sh
+use admin;
+db.createUser( { user: "siteRootAdmin", pwd: "password", roles: [ { role: "root", db: "admin" }, { role: "dbAdmin", db: "test" }, { role: "dbAdmin", db: "cde-logs-test" } ] });
+```
+
+
+```sh
+   use test;
+   db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "test" } ] });
+   ```
+
+```sh
+use cde-logs-test;
+db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "cde-logs-test" } ] });
+```
+
+```sh
+use migration;
+db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
+```
+
+## Preparing to run
+
+Before running the app, run 
+
+```sh 
+$/cde/>  npm install -a
+```
+
+This will install all the various packages needed for the app to function. 
+
+
+Before you start the app, run
+ 
+ ```sh
+$/cde/> sh start-test-instance.sh 
+ ```
+ 
+ This will populate the mongo database with a test dataset. From there, the app (once it starts running) will ingest the data in the mongo database into the elastic database (this should take a few minutes. Go get a cup of coffee)
+
+Next, you need to set up the various angular files used in the project. 
+
+```sh
+$/cde/> gulp bower wiredep
+```
+
+If you get an error message here, complaining that you don’t have gulp, run 
+
+```sh
+$/cde/>  npm -install -g gulp
+```
 
 
 ## Run Node from the cde project directory
@@ -95,6 +114,9 @@ With **ElasticSearch** running, run grunt and rebuild ElasticSearch indices.
 $> node app
 ```
 
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ## Test
 
 Start the **vsac mock** with 
