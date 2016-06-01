@@ -87,7 +87,7 @@ public class BoardTest extends NlmCdeBaseTest {
         textPresent(boardName);
         clickElement(By.id("viewBoard_" + boardName));
         switchTab(1);
-        findElement(By.xpath("//h3[text() = '" + boardName + "']"));
+        textPresent(boardName, By.id("board_name_" + boardName));
     }
 
 }

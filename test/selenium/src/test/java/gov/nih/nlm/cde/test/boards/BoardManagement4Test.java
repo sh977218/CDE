@@ -30,7 +30,7 @@ public class BoardManagement4Test extends BoardTest {
                 numElt = findElement(By.id("board_num_cdes_" + i));
             }
         }
-        int num = new Integer(numElt.getText());
+        int num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
         gotoMyBoards();
