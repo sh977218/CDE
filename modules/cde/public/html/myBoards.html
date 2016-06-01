@@ -15,7 +15,7 @@
                     {{tag.key}} ({{tag.doc_count}})
                 </label>
             </div>
-            <div ng-if="filter.shareStatus.length > 0">
+            <div ng-if="filter.shareStatus.length > 1">
                 <h4>Share Status</h4>
                 <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
                     <input type="checkbox" data-checklist-model="filter.selectedShareStatus"
@@ -45,6 +45,20 @@
                         </span>
                     </div>
                 </div>
+                <h4 class="myBoardName">
+                    <span ng-show="showChangeStatus">Change Status?
+                        <i class="fa fa-check" ng-click="changeStatus($index)"
+                           id="confirmChangeStatus_{{$index}}"></i>
+                        <i class="fa fa-times" ng-click="showChangeStatus = false"></i>
+                    </span>
+                    <span ng-hide="showChangeStatus">
+                        <i class="fa fa-globe" ng-show="board.shareStatus === 'Public'"
+                           ng-click="showChangeStatus = true" id="publicIcon_{{$index}}"></i>
+                        <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"
+                           ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
+                    </span>
+                    <a href="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank" ng-bind="board.name"></a>
+                </h4>
                 <div ng-include="'/cde/public/html/boardTemplate.html'"></div>
             </div>
         </div>
