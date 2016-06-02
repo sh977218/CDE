@@ -205,8 +205,8 @@ exports.init = function (app, daoManager) {
             if (!board._id) {
                 board.createdDate = Date.now();
                 board.owner = {
-                    userId: req.user._id
-                    , username: req.user.username
+                    userId: req.user._id,
+                    username: req.user.username
                 };
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
@@ -215,7 +215,9 @@ exports.init = function (app, daoManager) {
                     if (nbBoards < boardQuota) {
                         mongo_data.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
-                            elastic.boardRefresh(function() {res.send();});
+                            elastic.boardRefresh(function () {
+                                res.send();
+                            });
                         });
                     } else {
                         res.status(403).send("You have too many boards!");
@@ -248,7 +250,7 @@ exports.init = function (app, daoManager) {
                                 details: "board._id " + board._id
                             });
                         }
-                        elastic.boardRefresh(function() {
+                        elastic.boardRefresh(function () {
                             res.send(b);
                         });
                     });

@@ -82,6 +82,7 @@ public class NlmCdeBaseTest {
     protected static String testAdmin_username = "testAdmin";
     protected static String classifyBoardUser_username = "classifyBoardUser";
     protected static String oldUser_username = "oldUser";
+    protected static String boardPublisherTest_username = "boardPublisherTest";
 
     protected static String password = "pass";
 

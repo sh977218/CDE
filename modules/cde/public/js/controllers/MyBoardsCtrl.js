@@ -18,7 +18,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             suggestTags: []
         };
 
-        $scope.loadMyBoards = function () {
+        $scope.loadMyBoards = function (cb) {
             ElasticBoard.loadMyBoards($scope.filter, function (response) {
                 $scope.boards = response.hits.hits.map(function (h) {
                     h._source._id = h._id;
@@ -29,10 +29,11 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                 $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
                     return t.key;
                 });
+                if (cb) cb();
             });
         };
 
-        $scope.canEditBoard = function() {
+        $scope.canEditBoard = function () {
             return true;
         };
 
@@ -81,8 +82,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
                 $http.post("/board", newBoard).success(function () {
-                    $scope.addAlert("success", "Board created.");
-                    $scope.loadMyBoards();
+                    $scope.loadMyBoards(function () {
+                        $scope.addAlert("success", "Board created.");
+                    });
                 }, function (message) {
                     $scope.addAlert("danger", message.data);
                 });
