@@ -13,8 +13,5 @@ public class PublicBoardsTest extends BoardTest {
         clickElement(By.id("search.submit"));
         textPresent("Schizophrenia");
         textPresent("Bipolar Disorder");
-        textPresent("Geriatric Depression Scale (GDS) - empty life indicator");
-        textPresent("Psychiatric history psychotic diagnosis type");
-        textPresent("Hamilton Depression Rating Scale (HDRS) - suicide indicator");
     }
 }
