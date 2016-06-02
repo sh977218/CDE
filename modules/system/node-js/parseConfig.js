@@ -1,5 +1,4 @@
-var config = require('config')
-    ;
+var config = require('config');
 
 config.database.log.uri = "mongodb://" + config.database.log.username + ":" + config.database.log.password + "@" +
 config.database.servers.map(function (srv) {

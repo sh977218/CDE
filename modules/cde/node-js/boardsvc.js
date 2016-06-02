@@ -3,7 +3,7 @@ var elasticsearch = require('elasticsearch')
     ;
 
 var client = new elasticsearch.Client({
-    host: config.elasticBoardIndexUri
+    host: config.elastic.hosts
 });
 
 exports.boardSearch = function(req, res) {
