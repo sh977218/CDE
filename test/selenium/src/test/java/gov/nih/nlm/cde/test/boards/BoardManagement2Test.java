@@ -14,11 +14,6 @@ public class BoardManagement2Test extends BoardTest {
         String board2 = "Second CDE Board";
         String cdeName = "Biomarker Outcome Characteristics java.lang.String";
 
-        createBoard(board1, "");
-        createBoard(board2, "");
-
-        makePublic(board1);
-
         pinTo(cdeName, board1);
         pinTo(cdeName, board2);
 
@@ -37,9 +32,6 @@ public class BoardManagement2Test extends BoardTest {
 
         textPresent(board1);
         textPresent(board2);
-
-        removeBoard(board1);
-        removeBoard(board2);
     }
 
     @Test
