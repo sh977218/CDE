@@ -8,8 +8,7 @@ public class BoardClassification extends BoardTest {
     @Test
     public void classifyAllCdes() {
         mustBeLoggedInAs(classifyBoardUser_username, password);
-        gotoMyBoards();
-        clickElement(By.id("viewBoard_Classify Board"));
+        goToBoard("Classify Board");
         clickElement(By.id("board.classifyAll"));
         clickElement(By.xpath("//div[span/text() = 'Classify Board']/button"));
         textPresent("Elements classified");

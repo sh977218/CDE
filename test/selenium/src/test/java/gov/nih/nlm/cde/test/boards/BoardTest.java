@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -82,11 +83,17 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     protected void goToBoard(String boardName) {
-        gotoMyBoards();
-        textPresent(boardName);
-        clickElement(By.id("viewBoard_" + boardName));
-        switchTab(1);
-        textPresent(boardName, By.id("board_name_" + boardName));
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.id("viewBoard_" + boardName));
+            switchTab(1);
+            textPresent(boardName, By.id("board_name_" + boardName));
+        }
     }
 
 }

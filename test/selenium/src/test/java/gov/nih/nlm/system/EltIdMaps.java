@@ -49,6 +49,9 @@ public class EltIdMaps {
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
 
+        //Boards
+        eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
+
     }
 
 }
