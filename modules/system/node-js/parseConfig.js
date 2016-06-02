@@ -5,10 +5,6 @@ config.database.log.uri = "mongodb://" + config.database.log.username + ":" + co
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
 }).join(",") + "/" + config.database.log.db;
-config.database.local.uri = "mongodb://" + config.database.local.username + ":" + config.database.local.password + "@" +
-config.database.servers.map(function (srv) {
-    return srv.host + ":" + srv.port;
-}).join(",") + "/" + config.database.local.db;
 config.mongoUri = "mongodb://" + config.database.appData.username + ":" + config.database.appData.password + "@" +
 config.database.servers.map(function (srv) {
     return srv.host + ":" + srv.port;
