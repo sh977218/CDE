@@ -20,6 +20,9 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
+        mustBeLoggedInAs(test_username, password);
+        goToCdeByName("Race Category Text");
+        clickElement(By.id("pvs_tab"));
     }
 
 }

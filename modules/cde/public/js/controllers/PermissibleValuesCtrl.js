@@ -38,8 +38,6 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
     var umlsFromOther = function(code, system, cb) {
         var cuis = [];
-        console.log("CODE: " + code);
-        console.log("CODE Systen: " + system);
         $http.get("/umlsCuiFromSrc/" + code + "/" + system).success(function (response) {
             if (response.result && response.result.results) {
                 response.result.results.forEach(function (result) {
@@ -115,9 +113,8 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
 
                             if (pv.codeSystemName !== "UMLS") {
                                 umlsFromOther(pvCode, displayAs[pv.codeSystemName], function(err, cuis) {
-                                    console.log("retrieving umls for " + pvCode);
-                                    console.log("found: " + cuis[0].valueMeaningCode);
-                                     def.resolve(cuis[0].valueMeaningCode);
+                                    var resolve = cuis[0]?cuis[0].valueMeaningCode:"Not Found";
+                                     def.resolve(resolve);
                                 });
                             } else {
                                 def.resolve(pvCode);

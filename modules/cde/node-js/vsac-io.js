@@ -129,20 +129,6 @@ exports.getValueSet = function(vs_id, cb) {
     });
 };
 
-//exports.getAtomsFromAnyUMLSSrc = function(id, fromSrc, toSrc, res) {
-//    this.getTicket(function(oneTimeTicket) {
-//        var url = config.umls.wsHost + "/rest/content/current/source/" + fromSrc + '/' + id + "/atoms?" +
-//            "pageSize=500&ttys=PT,OAP&ticket=" + oneTimeTicket;
-//        request({url: url, strictSSL: false}, function(err, response, body) {
-//            if (!err && response.statusCode === 200) res.send(body);
-//            else {
-//                res.send();
-//            }
-//        });
-//    });
-//};
-
-
 exports.getAtomsFromUMLS = function(cui, source, res) {
     this.getTicket(function(oneTimeTicket) {
         var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
