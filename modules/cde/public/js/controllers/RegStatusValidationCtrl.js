@@ -13,8 +13,9 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
         $scope.cdeOrgRules = $scope.getOrgRulesForCde($scope.elt);
 
         $scope.cdePassingRule = function(cde, rule){
-            function checkRe(){
-                return true;
+            function checkRe(field, rule){
+                var re = new RegExp(rule.rule.regex);
+                return re.test(field);
             }
             function checkSubTree(object, rule, level){
                 var key = rule.field.split(".")[level];
