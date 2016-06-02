@@ -51,6 +51,7 @@ public class EltIdMaps {
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
+        eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
 
     }
 
