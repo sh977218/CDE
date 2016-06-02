@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class PublicBoardsTest extends BoardTest {
 
     @Test
-    public void editBoard() {
+    public void searchPublicBoard() {
         mustBeLoggedOut();
         clickElement(By.id("boardsLink"));
         findElement(By.name("search")).sendKeys("Depression");

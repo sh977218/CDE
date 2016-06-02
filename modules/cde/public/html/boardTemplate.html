@@ -1,6 +1,7 @@
 <div tabindex="0"><span id="board_num_cdes_{{$index}}">{{board.pins.length}}</span> CDEs</div>
 
-<div inline-edit model="board.description" is-allowed="canEditBoard()"></div>
+<div id="board_desc_{{$index}}" inline-edit model="board.description" is-allowed="canEditBoard()"
+     on-ok="save(board);"></div>
 
 <small class="myBoardLastModified" id="board_mod_{{$index}}">Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}</small>
 

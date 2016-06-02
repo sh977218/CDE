@@ -11,19 +11,19 @@ public class BoardManagement3Test extends BoardTest {
         mustBeLoggedInAs(boarduserEdit_username, password);
         gotoMyBoards();
         String modified = findElement(By.id("board_mod_0")).getText();
-        clickElement(By.id("edit_board_0"));
-        findElement(By.id("name_input_0")).sendKeys(" -- Name Edited");
 
-        clickElement(By.id("desc_edit_0"));
-        findElement(By.id("desc_input_0")).sendKeys(" -- Desc Edited");
-        clickElement(By.id("confirmEdit_0"));
+        clickElement(By.xpath("//*[@id='board_desc_0']//i"));
+        findElement(By.xpath("//*[@id='board_desc_0']//input")).sendKeys(" -- Desc Edited");
+        clickElement(By.xpath("//div[@id='board_desc_0']//button[contains(text(),'Confirm')]"));
+        closeAlert();
 
         goToCdeSearch();
         gotoMyBoards();
-        textPresent("-- Name Edited");
+
         textPresent("-- Desc Edited");
 
-        Assert.assertNotEquals(modified + " --- " + findElement(By.id("dd_mod")).getText(), modified, findElement(By.id("dd_mod")).getText());
+        String newModified = findElement(By.id("board_mod_0")).getText();
+        Assert.assertNotEquals(modified, newModified);
     }
 
     @Test

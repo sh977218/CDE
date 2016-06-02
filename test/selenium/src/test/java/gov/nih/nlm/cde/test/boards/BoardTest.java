@@ -52,11 +52,10 @@ public class BoardTest extends NlmCdeBaseTest {
         textPresent("Create New Board");
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
-        hangon(1);
+        hangon(2);
         clickElement(By.id("createBoard"));
         textPresent(response);
         closeAlert();
-        hangon(1);
     }
 
     public void removeBoard(String boardName) {
