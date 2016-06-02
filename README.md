@@ -117,104 +117,55 @@ $> node app
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
 ## Test
 
-Start the **vsac mock** with 
-
-```sh
-$> node ./modules/cde/node-js/mock/vsacMock
-```
-
-You may need to generate your own **ssl** server key. 
-
-Download **ChromeDriver**, possibly from here:
-
-[https://code.google.com/p/chromedriver/downloads/list](https://code.google.com/p/chromedriver/downloads/list)
 
 
-Move the **chromedriver** executable into test/selenium.
-You may try testing with Firefox but Selenium is bad with Firefox. At this time, version 24 seems ok, but not version 26.
 
-Create test database and elastic search indexes:
 
-```sh
-$> ./start-test-instance.sh
-```
 
-## Remote Testing
+## Prerequisites 
 
-SSH to the desired server and do the following.
+Selenium-Server-Standalone *
+Chromedriver *
+Java JRE *
+Java JDK *
+Intellij Community Edition *
 
-```sh
-$> export NODE_ENV=test
-$> node modules/cde/node-js/mock/vsackMock.js
-```
 
-Run grunt and re-ingest the test collection.
+============
 
-```sh
-$> node node-js/app.js
-```
+(Note, in the following instructions, we make reference to something called PATH TO. Replace the "PATH TO"'s with the actual paths to the directories in question)
 
-On your local computer, run grunt and select remote testing.
 
-### Seed
+First, edit your bashrc file to include the following
 
-To seed data
 
-```sh
-$> ./upload.sh
-```
 
-### Run
+    alias hubStart='java -jar /c/PATH TO /selenium-server-standalone-2.53.0.jar -role hub'
+    alias nodeStart='java -jar /c/PATH TO/selenium-server-standalone-2.53.0.jar -role node -maxSession 7 -hub http://localhost:4444/grid/register -browser browserName="chrome",maxInstances=7 -Dwebdriver.chrome.driver=/c/PATH TO/chromedriver.exe'
+    export HUB_URL=http://localhost:4444/wd/hub
+    export TEST_URL=http://localhost:3001
 
-To run the app: 
 
-```sh
-$> node app
-```
+Next, open Intellij, create a new project rooted at C:\PATH TO\cde\test\selenium
 
-### How to create two mongo instances and enable authentication
-Step 1: start mongo instance 1 without auth
-//default port 27017
-mongod --port 27017 --dbpath ../mongo/data1 --replSet rs0
-mongod --port 27018 --dbpath ../mongo/data2 --replSet rs0
 
-Step 2: log in to 1 instance, then set up replicateSet and user
-# set up replicateSet
-mongo --host localhost --port 27018
-rs.initiate();
-rs.add("NLM01961050MLB:27017");
-rs.config();
-rs.status();
-# make instance 27017 primary manually
-var cfg = rs.conf()
-cfg.members[0].priority = 1
-cfg.members[1].priority = 10
-rs.reconfig(cfg)
-# log in on primary instance
-mongo --host localhost --port 27017
-# create super user
-use admin;
-db.createUser( {
-    user: "siteRootAdmin",
-    pwd: "password",
-    roles: [ { role: "root", db: "admin" },
-			{ role: "dbAdmin", db: "test" },
-			{ role: "dbAdmin", db: "cde-logs-test" } ]
-  });
+## Running the tests
 
-Step 3: restart mongo instances with auth enabled
-mongod --config ../mongo/mongodb1.conf
-mongod --config ../mongo/mongodb2.conf
+Don’t forget to have elastic and mongo running while you run the following
 
-Step 4: import data
-mongo test deploy/dbInit.js -u siteRootAdmin -p password -authenticationDatabase admin
-mongo test test/data/testForms.js -u siteRootAdmin -p password -authenticationDatabase admin
-mongo cde-logs-test deploy/logInit.js -u siteRootAdmin -p password -authenticationDatabase admin
-mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u siteRootAdmin -p password -authenticationDatabase admin
-mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u siteRootAdmin -p password -authenticationDatabase admin
-mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u siteRootAdmin -p password -authenticationDatabase admin
-mongo test test/createLargeBoard.js -u siteRootAdmin -p password -authenticationDatabase admin
-mongo test test/createManyBoards.js -u siteRootAdmin -p password -authenticationDatabase admin
-mongo test test/initOrgs.js -u siteRoot
+In the following order, run these commands, all of them either in their own terminals, or as a deamon 
+
+1 ```sh hubStart ```
+2 ```sh nodeStart ```     
+3 ```sh	$> node ./modules/cde/node-js/mock/vsacMock.js ```
+
+Now, you need the app running in some way when you run the test. 
+
+We have include a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
+
+If, for some reason, you don't want to use it (for example, if you just want to run one test), you will need to run the app before you can run any tests
