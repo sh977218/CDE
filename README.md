@@ -135,9 +135,7 @@ Java JRE *
 Java JDK *
 Intellij Community Edition *
 
-
-============
-
+## Set up
 (Note, in the following instructions, we make reference to something called PATH TO. Replace the "PATH TO"'s with the actual paths to the directories in question)
 
 
@@ -156,16 +154,21 @@ Next, open Intellij, create a new project rooted at C:\PATH TO\cde\test\selenium
 
 ## Running the tests
 
-Don’t forget to have elastic and mongo running while you run the following
 
 In the following order, run these commands, all of them either in their own terminals, or as a deamon 
 
 1 ```sh hubStart ```
+
 2 ```sh nodeStart ```     
+
 3 ```sh	$> node ./modules/cde/node-js/mock/vsacMock.js ```
 
 Now, you need the app running in some way when you run the test. 
 
+
 We have include a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
+
+(Don’t forget to have elastic and mongo running while you run the app, even if you are running it throught he start-test-instance script)
+
 
 If, for some reason, you don't want to use it (for example, if you just want to run one test), you will need to run the app before you can run any tests
