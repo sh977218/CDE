@@ -23,19 +23,20 @@ public class BoardManagement4Test extends BoardTest {
         createBoard(boardName, "Number Increment Definition");
         gotoMyBoards();
         WebElement numElt = null;
-        int length = driver.findElements(By.linkText("View Board")).size();
+        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
                 numElt = findElement(By.id("board_num_cdes_" + i));
             }
         }
+        System.out.println("****************" + numElt.getText().trim());
         int num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
         gotoMyBoards();
         textPresent(boardName);
-        length = driver.findElements(By.linkText("View Board")).size();
+        length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
@@ -43,7 +44,7 @@ public class BoardManagement4Test extends BoardTest {
             }
         }
 
-        num = new Integer(numElt.getText());
+        num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(1, num);
         removeBoard("Number Increment Board");
     }
