@@ -30,45 +30,16 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
                         });
                         return result;
                     }
-
+                    if (rule.occurence === "all") {
+                        var result = true;
+                        object[key].forEach(function(subTree){
+                            result = result && checkSubTree(subTree, rule, level+1);
+                        });
+                        return result;
+                    }
                 }
             }
             return checkSubTree(cde, rule, 0);
         };
 
-        //$scope.cdePassingRule = function(object, rule){
-        //    var fields = rule.field.split(".");
-        //
-        //    var obj = object;
-        //    var failed = false;
-        //    fields.forEach(function(f){
-        //        if (failed) return;
-        //        if (!obj[f]) {
-        //            failed = true;
-        //            return;
-        //        } else {
-        //            obj = obj[f]
-        //        }
-        //    });
-        //    if (!Array.isArray(obj)) {
-        //        return !failed;
-        //    } else {
-        //        if (rule.occurence === "all") {
-        //            var result = true;
-        //            obj.forEach(function (subTree) {
-        //                result = result && $scope.cdePassingRule(subTree, rule);
-        //            });
-        //            return result;
-        //        }
-        //
-        //        if (rule.occurence === "atLeastOne") {
-        //            var result = false;
-        //            obj.forEach(function (subTree) {
-        //                result = result || $scope.cdePassingRule(subTree, rule);
-        //            });
-        //            return result;
-        //        }
-        //    }
-        //
-        //};
     }]);
