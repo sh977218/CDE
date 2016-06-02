@@ -12,7 +12,7 @@ public class UnpinTest extends BoardTest {
         String cdeName = "Imaging volumetric result";
         goToBoard("Unpin Board");
         textPresent(cdeName);
-        findElement(By.id("unpin_0")).click();
+        clickElement(By.id("unpin_0"));
         goToBoard("Unpin Board");
         textNotPresent(cdeName);
     }

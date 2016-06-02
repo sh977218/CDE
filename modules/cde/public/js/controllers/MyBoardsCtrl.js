@@ -41,8 +41,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
 
         $scope.removeBoard = function (index) {
             $http['delete']("/board/" + $scope.boards[index]._id).then(function () {
-                $scope.addAlert("success", "Board removed");
-                $scope.loadMyBoards();
+                $scope.loadMyBoards(function () {
+                    $scope.addAlert("success", "Board removed");
+                });
             });
         };
 
@@ -65,8 +66,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $scope.save = function (board) {
             delete board.editMode;
             $http.post("/board", board).success(function () {
-                $scope.addAlert("success", "Saved");
-                $scope.loadMyBoards();
+                $scope.loadMyBoards(function () {
+                    $scope.addAlert("success", "Saved");
+                });
             }).error(function (response) {
                 $scope.addAlert("danger", response);
             });

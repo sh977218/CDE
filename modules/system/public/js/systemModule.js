@@ -54,15 +54,27 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         return {
             restrict: 'AE',
             scope: {
-                model: '='
-                , inputType: '=?'
-                , isAllowed: '&'
-                , onOk: '&'
-                , typeaheadSource: '='
+                model: '=',
+                inputType: '=?',
+                isAllowed: '&',
+                onOk: '&',
+                typeaheadSource: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
+                $scope.value = $scope.model;
+                $scope.discard = function () {
+                    $scope.editMode = false;
+                };
+                $scope.save = function () {
+                    $scope.model = angular.copy($scope.value);
+                    $scope.editMode = false;
+                    $scope.onOk();
+                };
+                $scope.edit = function () {
+                    $scope.editMode = true;
+                }
             }
         };
     })
