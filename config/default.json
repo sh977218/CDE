@@ -51,17 +51,9 @@
   "elastic": {
     "hosts": ["http://localhost:9200"],
     "index": {"name": "auto"},
-    "river": {"name": "cdetest"},
     "formIndex": {"name": "auto"},
-    "formRiver": {"name": "formtest"},
     "boardIndex": {"name": "auto"},
-    "boardRiver": {"name": "boardtest"},
-    "storedQueryIndex": {"name": "auto"},
-    "storedQueryRiver": {"name": "storedquerytest"},
-    "scripts": {
-      "stop": "sudo /sbin/service elasticsearch stop",
-      "start": "sudo /sbin/service elasticsearch start"
-    }
+    "storedQueryIndex": {"name": "auto"}
   },
   "database": {
     "servers": [
@@ -70,14 +62,6 @@
         "port": 27017
       }
     ],
-    "local": {
-      "db": "local",
-      "username": "siteRootAdmin",
-      "password": "password",
-      "options": {
-        "auth": {"authdb": "admin"}
-      }
-    },
     "appData": {
       "db": "test",
       "username": "cdeuser",
@@ -168,61 +152,7 @@
     "callbackURL": "http://localhost:3001/nlmoauth/callback",
     "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
   },
-  "occsNonPrimaryReplicas": [
-    "130.14.164.22:27017",
-    "130.14.164.21:27017"
-  ],
-  "nccsReplicas": [
-    "165.112.35.20:27017",
-    "165.112.35.21:27017"
-  ],
-  "nccsPrimaryRepl": {
-    "_id": "rs0",
-    "members": [
-      {
-        "_id": 0,
-        "host": "130.14.164.20:27017",
-        "priority": 5
-      },
-      {
-        "_id": 4,
-        "host": "165.112.35.20:27017"
-      },
-      {
-        "_id": 5,
-        "host": "165.112.35.21:27017"
-      }
-    ]
-  },
-  "occsPrimaryRepl": {
-    "_id": "rs0",
-    "members": [
-      {
-        "_id": 0,
-        "host": "130.14.164.20:27017",
-        "priority": 5
-      },
-      {
-        "_id": 1,
-        "host": "130.14.164.21:27017",
-        "priority": 5
-      },
-      {
-        "_id": 2,
-        "host": "165.112.35.20:27017"
-      },
-      {
-        "_id": 4,
-        "host": "165.112.35.21:27017"
-      },
-      {
-        "_id": 5,
-        "host": "130.14.164.22:27017",
-        "priority": 5
-      }
-    ]
-  }
-  , "prodDump": {
+  "prodDump": {
     "enabled": true
     , "url": "https://local-cde-1.nlm.nih.gov/cde/public/html/dailyDump.tz"
   }
