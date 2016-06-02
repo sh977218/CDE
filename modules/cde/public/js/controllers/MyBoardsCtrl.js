@@ -87,8 +87,8 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                     $scope.loadMyBoards(function () {
                         $scope.addAlert("success", "Board created.");
                     });
-                }, function (message) {
-                    $scope.addAlert("danger", message.data);
+                }).error(function (message) {
+                    $scope.addAlert("danger", message);
                 });
             });
         };
