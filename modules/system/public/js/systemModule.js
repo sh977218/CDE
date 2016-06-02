@@ -50,7 +50,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             templateUrl: '/system/public/html/searchSettings.html'
         });
     })
-    .directive('inlineEdit', function () {
+    .directive('inlineEdit', function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -70,15 +70,15 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.save = function () {
                     $scope.model = angular.copy($scope.value);
                     $scope.editMode = false;
-                    $scope.onOk();
+                    $timeout($scope.onOk, 0);
                 };
                 $scope.edit = function () {
                     $scope.editMode = true;
-                }
+                };
             }
         };
     })
-    .directive('inlineAreaEdit', function () {
+    .directive('inlineAreaEdit', function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -127,7 +127,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     } else {
                         $scope.model = $scope.inScope.value;
                         $scope.editMode = false;
-                        $scope.onOk();
+                        $timeout($scope.onOk, 0);
                     }
                 };
                 $scope.cancel = function () {

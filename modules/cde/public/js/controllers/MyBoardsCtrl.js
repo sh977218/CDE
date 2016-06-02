@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard',
-    function ($scope, $modal, $http, SearchSettings, ElasticBoard) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout',
+    function ($scope, $modal, $http, SearchSettings, ElasticBoard, $timeout) {
 
         $scope.filter = {
             tags: [],
