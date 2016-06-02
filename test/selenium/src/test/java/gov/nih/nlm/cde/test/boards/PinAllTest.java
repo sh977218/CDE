@@ -29,7 +29,7 @@ public class PinAllTest extends BoardTest {
         // find nb of cdes for the board.
         int num_cde_after_pinAll_int =
                 Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
-                        + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
+                        + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
 
@@ -56,7 +56,7 @@ public class PinAllTest extends BoardTest {
         gotoMyBoards();
         int num_cde_after_pinAll_int =
                 Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
-                        + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
+                        + board_name + "']//*[contains(@id, 'board_num_cdes_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
 }
