@@ -19,8 +19,6 @@ public class BoardManagement4Test extends BoardTest {
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
-        goToCdeSearch();
-        createBoard(boardName, "Number Increment Definition");
         gotoMyBoards();
         WebElement numElt = null;
         int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
@@ -30,7 +28,6 @@ public class BoardManagement4Test extends BoardTest {
                 numElt = findElement(By.id("board_num_cdes_" + i));
             }
         }
-        System.out.println("****************" + numElt.getText().trim());
         int num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
@@ -46,7 +43,6 @@ public class BoardManagement4Test extends BoardTest {
 
         num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(1, num);
-        removeBoard("Number Increment Board");
     }
 
 }
