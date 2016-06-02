@@ -153,6 +153,21 @@ exports.init = function (app, daoManager) {
 
 
     app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
+        /////////////SLOPPPY
+        function sendNativeJson(cde, res){
+            res.send(cde);
+            console.log(cde);
+        }
+
+        function sendNativeXml(cde, res){
+            res.setHeader("Content-Type", "application/xml");
+            var exportCde = cde.toObject();
+            exportCde = exportShared.stripBsonIds(exportCde);
+            res.send(js2xml("dataElement", exportCde));
+        }
+
+
+
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -175,7 +190,10 @@ exports.init = function (app, daoManager) {
                     idList.push(pins[i].deTinyId);
                 }
                 mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
-                    res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
+                    //sendNativeJson({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems}, res); //So... that kinda works. At least for JSON.
+                    //So, here is where we want to make all of our changes. Essentially, depening on what button was clicked, we call different metgids
+
+                     res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
                 });
             } else {
                 res.status(404).end();
