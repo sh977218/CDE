@@ -31,3 +31,15 @@
         {{elt.registrationState.administrativeStatus | placeHoldEmpty}}
     </div>
 </div>
+
+<br><br>
+<h4 id="regStatusValidationRules">Registration Status Validation Rules</h4>
+<div ng-controller="RegStatusValidationCtrl">
+    <div ng-repeat="(name, org) in cdeOrgRules" ng-show="org.length>0">
+        <h5>{{name}}</h5>
+        <div ng-repeat="rule in org">
+            <i class="fa fa-check" ng-show="cdePassingRule(elt, rule)"></i><i class="fa fa-times" ng-hide="cdePassingRule(elt, rule)"></i> {{rule.ruleName}}
+        </div>
+    </div>
+
+</div>
