@@ -54,6 +54,7 @@ function EsInjector(esClient, indexName, documentType) {
         }
     };
     this.inject = function (cb) {
+        if (!cb) cb = function(){};
         var request = {
             body: []
         };
@@ -71,16 +72,25 @@ function EsInjector(esClient, indexName, documentType) {
         _esInjector.buffer = [];
         esClient.bulk(request, function (err) {
             if (err) {
-                dbLogger.logError({
-                    message: "Unable to Index in bulk",
-                    origin: "system.elastic.inject",
-                    stack: err,
-                    details: ""
-                });
+                // a few random fails, pause 2 seconds and try again.
+                setTimeout(function() {
+                    esClient.bulk(request, function (err) {
+                        if (err) {
+                            dbLogger.logError({
+                                message: "Unable to Index in bulk",
+                                origin: "system.elastic.inject",
+                                stack: err,
+                                details: ""
+                            });
+                            cb();
+                        } else {
+                            cb();
+                            console.log("ingested: " + request.body.length / 2);
+                        }
+                    });
+                }, 2000);
             } else {
                 console.log("ingested: " + request.body.length / 2);
-            }
-            if (cb) {
                 cb();
             }
         });
