@@ -1,3 +1,9 @@
+<ul ui-sortable ng-model="fakeBoards">
+    <li class="fa fa-square" ng-repeat="board in fakeBoards">
+        {{board.name}}
+    </li>
+</ul>
+
 <div ng-repeat="elt in forms track by elt.tinyId" ng-init="acc_index = $index">
 
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">

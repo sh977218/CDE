@@ -25,15 +25,20 @@ exports.DataElement = DataElement;
 var mongo_data = this;
 exports.DataElement = DataElement;
 
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     elastic.updateOrInsert(self);
     next();
 });
 
-schemas.pinningBoardSchema.pre('save', function(next) {
+schemas.pinningBoardSchema.pre('save', function (next) {
     var self = this;
     elastic.boardUpdateOrInsert(self);
+    next();
+});
+schemas.pinningBoardSchema.pre('remove', function (next) {
+    var self = this;
+    elastic.boardDelete(self);
     next();
 });
 
@@ -43,12 +48,12 @@ exports.exists = function (condition, callback) {
     });
 };
 
-exports.getStream = function(condition) {
+exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
 exports.boardsDao = {
-    getStream: function() {
+    getStream: function () {
         return PinningBoard.find({}).sort({_id: -1}).stream();
     }
 };
@@ -245,12 +250,6 @@ exports.boardById = function (boardId, callback) {
     });
 };
 
-exports.removeBoard = function (boardId, callback) {
-    PinningBoard.remove({'_id': boardId}, function (err) {
-        if (callback) callback(err);
-    });
-};
-//TODO: Consider moving
 exports.addToViewHistory = function (cde, user) {
     if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
         origin: "cde.mongo-cde.addToViewHistory",
@@ -521,7 +520,8 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
+DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
+});
 
 var statusCdeTinyId;
 

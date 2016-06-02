@@ -1,12 +1,12 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-        'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
-        'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-        'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-        , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
+    'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
+    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
-    .config(['$rootScopeProvider', function($rootScopeProvider){
+    .config(['$rootScopeProvider', function ($rootScopeProvider) {
         $rootScopeProvider.digestTtl(20);
     }])
     .config(function ($routeProvider, $locationProvider) {
@@ -54,15 +54,27 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         return {
             restrict: 'AE',
             scope: {
-                model: '='
-                , inputType: '=?'
-                , isAllowed: '&'
-                , onOk: '&'
-                , typeaheadSource: '='
+                model: '=',
+                inputType: '=?',
+                isAllowed: '&',
+                onOk: '&',
+                typeaheadSource: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
+                $scope.value = $scope.model;
+                $scope.discard = function () {
+                    $scope.editMode = false;
+                };
+                $scope.save = function () {
+                    $scope.model = angular.copy($scope.value);
+                    $scope.editMode = false;
+                    $scope.onOk();
+                };
+                $scope.edit = function () {
+                    $scope.editMode = true;
+                }
             }
         };
     })
@@ -297,46 +309,32 @@ angular.module('systemModule').config(['$compileProvider', function ($compilePro
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-angular.module('systemModule').config(function ($provide) {
-    $provide.decorator('uiSortableDirective', function ($delegate) {
-        var directive = $delegate[0];
-        var link = directive.link;
-        directive.compile = function () {
-            return function (scope, element, attrs, ngModel) {
-                if (scope.dragEnabled) {
-                    link(scope, element, attrs, ngModel);
-                }
-            };
-        };
-        return $delegate;
-    });
-});
 
 angular.module('systemModule').config(function ($provide) {
     var previousException;
     var http;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
         function ($delegate, $injector) {
-        return function (exception, cause) {
-            $delegate(exception, cause);
-            if (previousException && exception.toString() === previousException.toString()) return;
-            previousException = exception;
-            if (!http) {
-                http = $injector.get('$http');
-            }
-            try {
-                if (exception.message.indexOf("[$compile:tpload]") > -1) return;
-                http.post('/logClientException', {
-                    stack: exception.stack,
-                    message: exception.message,
-                    name: exception.name,
-                    url: window.location.pathname
-                });
-            } catch (e) {
+            return function (exception, cause) {
+                $delegate(exception, cause);
+                if (previousException && exception.toString() === previousException.toString()) return;
+                previousException = exception;
+                if (!http) {
+                    http = $injector.get('$http');
+                }
+                try {
+                    if (exception.message.indexOf("[$compile:tpload]") > -1) return;
+                    http.post('/logClientException', {
+                        stack: exception.stack,
+                        message: exception.message,
+                        name: exception.name,
+                        url: window.location.pathname
+                    });
+                } catch (e) {
 
-            }
-        };
-    }]);
+                }
+            };
+        }]);
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {

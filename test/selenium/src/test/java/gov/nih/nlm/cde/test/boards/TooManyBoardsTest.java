@@ -6,7 +6,7 @@ public class TooManyBoardsTest extends BoardTest {
 
     @Test
     public void tooManyBoards() {
-        mustBeLoggedInAs("boardBot", password);
+        mustBeLoggedInAs(boardBot_username, password);
         gotoMyBoards();
         createBoard("BoardBots successfull board", "This board should be created!");
         createBoard("Failboard!", "This board will disappear!", "You have too many boards!");

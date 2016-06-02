@@ -36,21 +36,21 @@ angular.module('ElasticSearchResource')
         var searchSettings = localStorageService.get("SearchSettings");
         if (!searchSettings) searchSettings = this.getDefault();
 
-        this.getDefaultSearchView = function() {
+        this.getDefaultSearchView = function () {
             return searchSettings.defaultSearchView;
         };
-        this.getPromise = function() {
+        this.getPromise = function () {
             return searchSettingsFactory.deferred.promise;
         };
-        this.getUserDefaultStatuses = function() {
+        this.getUserDefaultStatuses = function () {
             var overThreshold = false;
-            return exports.statusList.filter(function(status) {
+            return exports.statusList.filter(function (status) {
                 if (overThreshold) return false;
                 overThreshold = searchSettings.lowestRegistrationStatus === status;
                 return true;
             });
         };
-        userResource.getPromise().then(function(user){
+        userResource.getPromise().then(function (user) {
             if (user === "Not logged in.") {
             }
             else {
