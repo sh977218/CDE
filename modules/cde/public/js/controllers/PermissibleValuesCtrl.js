@@ -114,53 +114,60 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
                             if (pv.codeSystemName !== "UMLS") {
                                 umlsFromOther(pvCode, displayAs[pv.codeSystemName], function(err, cuis) {
                                     var resolve = cuis[0]?cuis[0].valueMeaningCode:"Not Found";
-                                     def.resolve(resolve);
+                                    def.resolve(resolve);
                                 });
                             } else {
                                 def.resolve(pvCode);
                             }
                             def.promise.then(function(newCode) {
-                                funcArray[i] = $q.defer();
-                                $http.get("/umlsAtomsBridge/" + newCode + "/" + src).success(function (response) {
-                                    funcArray[i].resolve(response);
-                                });
-                                $q.all(funcArray.map(function(d) {return d.promise;})).then(function(arrOfResponses) {
-                                    arrOfResponses.forEach(function(response, i) {
-                                        var termFound = false;
-                                        if (response.result) {
-                                            response.result.forEach(function (atom) {
-                                                if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
-                                                    var srcConceptArr = atom.sourceConcept.split('/');
-                                                    var code = srcConceptArr[srcConceptArr.length - 1];
+                                if (newCode === "Not Found") {
+                                    pv[src] = {
+                                        valueMeaningName: "N/A",
+                                        valueMeaningCode: "N/A"
+                                    };
+                                } else {
+                                    funcArray[i] = $q.defer();
+                                    $http.get("/umlsAtomsBridge/" + newCode + "/" + src).success(function (response) {
+                                        funcArray[i].resolve(response);
+                                    });
+                                    $q.all(funcArray.map(function(d) {return d.promise;})).then(function(arrOfResponses) {
+                                        arrOfResponses.forEach(function(response, i) {
+                                            var termFound = false;
+                                            if (response.result) {
+                                                response.result.forEach(function (atom) {
+                                                    if (!termFound && atom.termType === $scope.srcOptions[src].termType) {
+                                                        var srcConceptArr = atom.sourceConcept.split('/');
+                                                        var code = srcConceptArr[srcConceptArr.length - 1];
+                                                        newCodes[i] = {
+                                                            valueMeaningName: atom.name,
+                                                            valueMeaningCode: code
+                                                        };
+                                                        termFound = true;
+                                                    }
+                                                });
+                                                if (!termFound) {
                                                     newCodes[i] = {
-                                                        valueMeaningName: atom.name,
-                                                        valueMeaningCode: code
+                                                        valueMeaningName: "N/A",
+                                                        valueMeaningCode: "N/A"
                                                     };
-                                                    termFound = true;
                                                 }
-                                            });
-                                            if (!termFound) {
+                                            } else {
                                                 newCodes[i] = {
                                                     valueMeaningName: "N/A",
                                                     valueMeaningCode: "N/A"
                                                 };
                                             }
-                                        } else {
-                                            newCodes[i] = {
-                                                valueMeaningName: "N/A",
-                                                valueMeaningCode: "N/A"
-                                            };
-                                        }
+                                        });
+                                        pv[src] = {
+                                            valueMeaningCode: newCodes.map(function (a) {
+                                                return a.valueMeaningCode;
+                                            }).join(":"),
+                                            valueMeaningName: newCodes.map(function (a) {
+                                                return a.valueMeaningName;
+                                            }).join(":")
+                                        };
                                     });
-                                    pv[src] = {
-                                        valueMeaningCode: newCodes.map(function (a) {
-                                            return a.valueMeaningCode;
-                                        }).join(":"),
-                                        valueMeaningName: newCodes.map(function (a) {
-                                            return a.valueMeaningName;
-                                        }).join(":")
-                                    };
-                                });
+                                }
                             });
                         });
                     }
