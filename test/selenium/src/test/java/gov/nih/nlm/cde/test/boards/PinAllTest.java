@@ -8,10 +8,9 @@ public class PinAllTest extends BoardTest {
 
     @Test
     public void pinAllLessThan20() {
-        String board_name = "Pin All Test Board";
-        String board_description = "Pin All less than 20 board.";
+        String board_name = "Pin All Less Than 20 Test Board";
+        String board_description = "This board is only for pin all less than 20 test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
-        createBoard(board_name, board_description);
         goToCdeSearch();
 
         clickElement(By.id("browseOrg-NINDS"));
@@ -32,7 +31,6 @@ public class PinAllTest extends BoardTest {
                 Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
                         + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
-        removeBoard(board_name);
     }
 
 
@@ -41,7 +39,6 @@ public class PinAllTest extends BoardTest {
         String board_name = "Pin All More Than 20 Test Board";
         String board_description = "This board is only for pin all more than 20 test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
-        createBoard(board_name, board_description);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("li-blank-Disease"));
@@ -61,6 +58,5 @@ public class PinAllTest extends BoardTest {
                 Integer.valueOf(findElement(By.xpath("//*[@data-id = 'boardDiv_"
                         + board_name + "']//*[contains(@id, 'dd_numb_')]")).getText());
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
-        removeBoard(board_name);
     }
 }
