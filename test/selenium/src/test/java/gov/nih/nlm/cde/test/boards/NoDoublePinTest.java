@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 public class NoDoublePinTest extends BoardTest {
 
     @Test
-    @RecordVideo
     public void noDoublePin() {
         mustBeLoggedInAs(doublepinuser_username, password);
         goToCdeSearch();
@@ -27,8 +26,6 @@ public class NoDoublePinTest extends BoardTest {
 
         goToBoard(boardName);
         Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 1);
-
-        removeBoard(boardName);
     }
 
 }
