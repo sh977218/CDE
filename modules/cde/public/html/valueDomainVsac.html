@@ -12,7 +12,7 @@
 </div>
 
 <div  tabindex="0" ng-hide="vsacMappingExists()">No Value Set specified.</div>
-<div ng-show="user._id" ng-controller="SaveCdeCtrl">
+<div ng-show="user._id" ng-controller="PermissibleValuesCtrl">
     <div tabindex="0" >{{vsacError}}</div>
     <div ng-hide="editMode">
         <a class="btn btn-default" ng-show="canCurate" ng-click="editMode=true" id="updateOID">Update O.I.D</a>

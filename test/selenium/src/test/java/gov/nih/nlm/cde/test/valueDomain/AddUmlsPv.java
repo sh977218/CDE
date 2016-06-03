@@ -54,5 +54,4 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("C16576", By.id("codeAsNCI-5"));
     }
 
-
 }
