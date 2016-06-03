@@ -45,6 +45,26 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
         $scope.sortRulesByStatus = function(rule) {
             var map = {'Preferred Standard':0, Standard: 1, Qualified: 2, Recorded: 3, Candidate: 4, Incomplete: 5};
             return map[rule.targetStatus];
-        }
+        };
+
+        $scope.conditionsMetForStatusWithinOrg = function(cde, orgName, status){
+            var orgRules = $scope.cdeOrgRules[orgName];
+            var rules = orgRules.filter(function(r){
+                var s = r.targetStatus;
+                if (status==='Candidate') return s === 'Candidate';
+                if (status==='Recorded') return s === 'Candidate' || s === 'Recorded';
+                if (status==='Qualified') return s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
+                if (status==='Standard') return s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
+                return true;
+            });
+            var results = rules.map(function(r){
+                return $scope.cdePassingRule(cde, r);
+            });
+            return results.every(function(x){return x});
+        };
+
+        console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Qualified'));
+        console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Recorded'));
+        console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Candidate'));
 
     }]);
