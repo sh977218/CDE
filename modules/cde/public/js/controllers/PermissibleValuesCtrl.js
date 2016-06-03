@@ -28,8 +28,10 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     $scope.containsKnownSystem = false;
     $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
     function initSrcOptions() {
+        $scope.containsKnownSystem = false;
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
-            if (displayAs[$scope.elt.valueDomain.permissibleValues[i].codeSystemName]) {
+            if (displayAs[$scope.elt.valueDomain.permissibleValues[i].codeSystemName] ||
+                $scope.elt.valueDomain.permissibleValues[i].codeSystemName === 'UMLS') {
                 $scope.containsKnownSystem = true;
                 i = $scope.elt.valueDomain.permissibleValues.length;
             }
@@ -217,8 +219,6 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
             $scope.stageElt($scope.elt);
             initSrcOptions();
             $scope.runManualValidation();
-
-
         });
     };
 
