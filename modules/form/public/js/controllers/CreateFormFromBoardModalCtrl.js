@@ -1,13 +1,39 @@
-angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope', '$controller', '$uibModalInstance', 'board', 'userResource',
-    function ($scope, $controller, $modalInstance, board, userResource) {
+angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope', '$controller', '$location', '$uibModalInstance', 'board', 'userResource', 'Form',
+    function ($scope, $controller, $location, $modalInstance, board, userResource, Form) {
         $scope.elt = board;
         $scope.elt.stewardOrg = {};
         $scope.elt.naming = [{}];
         $scope.elt.classification = [];
+        $scope.elt.formElements = [];
         $scope.myOrgs = userResource.userOrgs;
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
         $scope.close = function () {
             $modalInstance.close();
         };
+
+        $scope.save = function () {
+            board.pins.forEach(function (p) {
+                $scope.elt.formElements.push({
+                    elementType: 'question',
+                    label: p.deName,
+                    question: {
+                        cde: {
+                            tinyId: p.deTinyId,
+                            version: p.cde.version ? p.cde.version : '',
+                            permissibleValues: p.cde.valueDomain.permissibleValues,
+                            ids: p.cde.ids
+
+                        }
+                    }
+                });
+            });
+            delete $scope.elt._id;
+            Form.save($scope.elt, function (form) {
+                $modalInstance.close(function () {
+                    $location.url("formView?tinyId=" + form.tinyId);
+                });
+            });
+
+        }
     }
 ]);
