@@ -29,7 +29,7 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         textPresent("LA10608-0", By.id("codeAsLNC-0"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
-        textPresent("American Indian or Alaska Native", By.id("nameAsSCT-0"));
+        textPresent("American Indian or Alaska native", By.id("nameAsSCT-0"));
         textPresent("413490006", By.id("codeAsSCT-0"));
     }
 
