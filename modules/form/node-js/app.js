@@ -140,7 +140,7 @@ exports.init = function (app, daoManager) {
                     var fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
-                    usersvc.pinAllToBoard(req, fakeCdes, res)
+                    usersvc.pinAllToBoard(req, fakeCdes, res);
                 } else {
                     res.status(404).end();
                 }
