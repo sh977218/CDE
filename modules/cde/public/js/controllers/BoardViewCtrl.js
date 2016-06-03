@@ -51,7 +51,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
     };
 
     $scope.exportBoard = function () {
-        $http.get('/board/' + $scope.board._id + '/0/500')
+        $http.get('/board/' + $scope.board._id + '/0/500/?type=csv')
             .success(function (response) {
                 SearchSettings.getPromise().then(function (settings) {
                     var csv = exports.getCdeCsvHeader(settings.tableViewFields);

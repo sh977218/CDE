@@ -20,7 +20,8 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
-    ;
+
+;
 
 
 exports.init = function (app, daoManager) {
@@ -152,22 +153,7 @@ exports.init = function (app, daoManager) {
     });
 
 
-    app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
-        /////////////SLOPPPY
-        function sendNativeJson(cde, res){
-            res.send(cde);
-            console.log(cde);
-        }
-
-        function sendNativeXml(cde, res){
-            res.setHeader("Content-Type", "application/xml");
-            var exportCde = cde.toObject();
-            exportCde = exportShared.stripBsonIds(exportCde);
-            res.send(js2xml("dataElement", exportCde));
-        }
-
-
-
+    app.get('/board/:boardId/:start/:size?/', exportShared.nocacheMiddleware, function (req, res) {
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -175,29 +161,50 @@ exports.init = function (app, daoManager) {
         if (size > 500) {
             return res.status(403).send("Request too large");
         }
+
         mongo_data.boardById(req.params.boardId, function (err, board) {
+
             if (board) {
                 if (board.shareStatus !== "Public") {
+
                     if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
                         return res.status(403).end();
                     }
                 }
                 var totalItems = board.pins.length;
-                var pins = board.pins.splice(req.params.start, size);
-                board.pins = pins;
-                var idList = [];
-                for (var i = 0; i < pins.length; i++) {
-                    idList.push(pins[i].deTinyId);
-                }
+                board.pins = board.pins.splice(req.params.start, size).map(function(a) {
+                    return a.toObject()
+                });
+                delete board._doc.owner.userId;
+                var idList = board.pins.map(function(p) {
+                    return p.deTinyId;
+                });
                 mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
-                    //sendNativeJson({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems}, res); //So... that kinda works. At least for JSON.
-                    //So, here is where we want to make all of our changes. Essentially, depening on what button was clicked, we call different metgids
 
-                     res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
+                    if (req.query.type == "xml"){
+                        res.setHeader("Content-Type", "application/xml");
+                        var exportBoard ={
+                            board: exportShared.stripBsonIds(board.toObject()),
+                            cdes: cdesvc.hideProprietaryPvs(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
+                            totalItems: totalItems
+                        };
+                        exportBoard = exportShared.stripBsonIds(exportBoard);
+
+                        res.send(js2xml("export", exportBoard));
+
+                    }
+                    else {
+                        res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
+                    }
                 });
             } else {
                 res.status(404).end();
             }
+
+
+
+
+
         });
     });
 
