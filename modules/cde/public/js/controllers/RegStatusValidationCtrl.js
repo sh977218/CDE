@@ -42,4 +42,9 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             return checkSubTree(cde, rule, 0);
         };
 
+        $scope.sortRulesByStatus = function(rule) {
+            var map = {'Preferred Standard':0, Standard: 1, Qualified: 2, Recorded: 3, Candidate: 4, Incomplete: 5};
+            return map[rule.targetStatus];
+        }
+
     }]);
