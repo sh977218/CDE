@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.EltIdMaps;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -20,17 +21,11 @@ public class BoardExportTest extends BoardTest {
 
         String board_name = "Board Export Test";
 
-        clickElement(By.linkText("Boards"));
-        findElement(By.name("search")).sendKeys("\"" + board_name + "\"");
-        clickElement(By.id("search.submit"));
-        textPresent(board_name);
-        clickElement(By.id("viewBoard_" + board_name));
-        switchTab(1);
+        goToBoard(board_name);
         textPresent("Export Board");
         clickElement(By.id("mb.export"));
         textPresent("Export downloaded.");
         closeAlert();
-        switchTabAndClose(0);
 
         String[] expected = {
                 "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
@@ -54,16 +49,12 @@ public class BoardExportTest extends BoardTest {
         }
 
 
-        String url = driver.getCurrentUrl();
-        String bid = url.substring(url.lastIndexOf("/") + 1);
-        String url_string = baseUrl + "/board/" + bid + "/0/500";
+        String url_string = baseUrl + "/board/" + EltIdMaps.eltMap.get(board_name) + "/0/500";
         String response = given().when().get(url_string).asString();
         String[] expected2 = {
                 "\"name\":\"Board Export Test\",\"description\":\"Test for board export\",\"shareStatus\":\"Public\"",
                 "\"name\":\"Acute Hospitalized\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Psychiatric and Psychological"
         };
-        System.out.println("url_string: " + url_string);
-        System.out.println("board export response:\n" + response);
         for (String s : expected2) {
             Assert.assertTrue(response.contains(s));
         }
