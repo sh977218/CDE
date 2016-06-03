@@ -34,7 +34,10 @@ var questionSchema = {
 
 var sectionSchema = {};
 
-var formSchema = {};
+var formSchema = {
+    formTinyId: String,
+    version: String
+};
 
 var cardinalitySchema = {
     min: Number,
