@@ -17,8 +17,7 @@ public class BoardManagement3Test extends BoardTest {
         clickElement(By.xpath("//div[@id='board_desc_0']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        goToCdeSearch();
-        gotoMyBoards();
+        driver.navigate().refresh();
 
         textPresent("-- Desc Edited");
 

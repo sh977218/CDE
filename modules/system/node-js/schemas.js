@@ -70,10 +70,6 @@ schemas.userSchema = new mongoose.Schema({
             , numQuestions: Boolean
             , tinyId: Boolean
         }
-        , myBoard: {
-            sortBy: {type: String, default: 'updatedDate'},
-            sortDir: {type: String, default: 'asc'}
-        }
     }
     , accessToken: String
     , refreshToken: String

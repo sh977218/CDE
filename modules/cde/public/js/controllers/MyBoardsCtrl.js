@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard',
-    function ($scope, $modal, $http, SearchSettings, ElasticBoard) {
+angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout',
+    function ($scope, $modal, $http, SearchSettings, ElasticBoard, $timeout) {
 
         $scope.filter = {
             tags: [],
@@ -87,8 +87,8 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
                     $scope.loadMyBoards(function () {
                         $scope.addAlert("success", "Board created.");
                     });
-                }, function (message) {
-                    $scope.addAlert("danger", message.data);
+                }).error(function (message) {
+                    $scope.addAlert("danger", message);
                 });
             });
         };
