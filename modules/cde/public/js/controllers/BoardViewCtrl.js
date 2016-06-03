@@ -121,6 +121,56 @@ angular.module('cdeModule').controller('BoardViewCtrl',
         });
     };
 
+
+    $scope.createFormFromBoard = function () {
+        var $modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/form/public/html/createFormFromBoard.html',
+            controller: 'createFormFromBoardModalCtrl',
+            resolve: {
+                // @TODO bad design -> refactor
+                cde: function () {
+                    return null;
+                }
+                , orgName: function () {
+                    return null;
+                }
+                , pathArray: function () {
+                    return null;
+                }
+                , module: function () {
+                    return null;
+                }
+                , addClassification: function () {
+                    return {
+                        addClassification: function (newClassification) {
+                            var _timeout = $timeout(function () {
+                                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+                            }, 3000);
+                            $http({
+                                method: 'post',
+                                url: '/classifyBoard',
+                                data: {
+                                    boardId: $scope.board._id
+                                    , newClassification: newClassification
+                                }
+                            })
+                                .success(function (data, status) {
+                                    $timeout.cancel(_timeout);
+                                    if (status === 200) $scope.addAlert("success", "All Elements classified.");
+                                    else $scope.addAlert("danger", data.error.message);
+                                }).error(function () {
+                                $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
+                                $timeout.cancel(_timeout);
+                            });
+                            $modalInstance.close();
+                        }
+                    };
+                }
+            }
+        });
+    };
+
     $scope.reload();
 
 }]);
