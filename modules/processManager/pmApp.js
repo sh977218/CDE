@@ -7,8 +7,7 @@ var spawn = require('child_process').spawn,
     fs = require('fs'),
     multer = require('multer'),
     tar = require('tar-fs'),
-    zlib = require('zlib'),
-    templateCache = require('gulp-angular-templatecache')
+    zlib = require('zlib')
     ;
 
 var allHosts = [];
@@ -30,7 +29,7 @@ var spawned;
 var spawnChild = function() {
     var opts = {stdio: 'inherit'};
     var nodeProcess = config.pmNodeProcess || "node";
-    spawned = spawn(nodeProcess, ['--harmony', 'app'], opts);
+    spawned = spawn(nodeProcess, ['app'], opts);
     setTimeout(function() {
         getHosts();
     }, 10 * 1000);
