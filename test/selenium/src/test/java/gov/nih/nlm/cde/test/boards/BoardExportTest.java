@@ -62,6 +62,7 @@ public class BoardExportTest extends BoardTest {
                 "\"name\":\"Board Export Test\",\"description\":\"Test for board export\",\"shareStatus\":\"Public\"",
                 "\"name\":\"Acute Hospitalized\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Psychiatric and Psychological"
         };
+        System.out.println("url_string: " + url_string);
         System.out.println("board export response:\n" + response);
         for (String s : expected2) {
             Assert.assertTrue(response.contains(s));
