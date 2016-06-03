@@ -1,5 +1,5 @@
-angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope', '$controller', '$location', '$uibModalInstance', 'board', 'userResource', 'Form',
-    function ($scope, $controller, $location, $modalInstance, board, userResource, Form) {
+angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope', '$controller', '$location', '$timeout', '$uibModalInstance', 'board', 'userResource', 'Form',
+    function ($scope, $controller, $location, $timeout, $modalInstance, board, userResource, Form) {
         $scope.elt = board;
         $scope.elt.stewardOrg = {};
         $scope.elt.naming = [{}];
@@ -8,7 +8,7 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
         $scope.myOrgs = userResource.userOrgs;
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
         $scope.close = function () {
-            $modalInstance.close();
+            $modalInstance.dismiss('cancel');
         };
 
         $scope.save = function () {
@@ -29,9 +29,10 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
             });
             delete $scope.elt._id;
             Form.save($scope.elt, function (form) {
-                $modalInstance.close(function () {
+                $modalInstance.close();
+                $timeout(function () {
                     $location.url("formView?tinyId=" + form.tinyId);
-                });
+                }, 0);
             });
 
         }

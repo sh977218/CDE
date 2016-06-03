@@ -60,6 +60,7 @@ public class EltIdMaps {
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
 
         eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
+        eltMap.put("Form Board", "5751ee614184ddb440886745");
     }
 
 }
