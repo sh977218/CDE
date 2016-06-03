@@ -140,7 +140,8 @@
                                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
                         </div>
                         <div ng-switch-default>
-                            <div id="q_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate" on-ok="stageElt()"
+                            <div id="q_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate"
+                                 on-ok="stageElt()"
                                  model="question.question.defaultAnswer"></div>
                         </div>
                     </div>
