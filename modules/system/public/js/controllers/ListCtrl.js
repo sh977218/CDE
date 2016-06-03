@@ -371,6 +371,16 @@ angular.module('systemModule').controller('ListCtrl',
             });
 
             modalInstance.result.then(function (selectedBoard) {
+                var filter = {
+                    reset: function () {
+                        this.tags = [];
+                        this.sortBy = 'updatedDate';
+                        this.sortDirection = 'desc';
+                    },
+                    sortBy: '',
+                    sortDirection: '',
+                    tags: []
+                };
                 var data = {
                     query: Elastic.buildElasticQuerySettings($scope.searchSettings)
                     , board: selectedBoard
@@ -379,7 +389,7 @@ angular.module('systemModule').controller('ListCtrl',
                 data.query.resultPerPage = window.maxPin;
                 $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
                     $scope.addAlert("success", "All elements pinned.");
-                    $scope.loadMyBoards();
+                    $scope.loadMyBoards(filter);
                 }).error(function() {
                     $scope.addAlert("danger", "Not all elements were not pinned!");
                 });
