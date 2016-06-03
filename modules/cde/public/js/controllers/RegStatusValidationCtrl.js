@@ -43,7 +43,7 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
         };
 
         $scope.sortRulesByStatus = function(rule) {
-            var map = {'Preferred Standard':0, Standard: 1, Qualified: 2, Recorded: 3, Candidate: 4, Incomplete: 5};
+            var map = {'Preferred Standard':5, Standard: 4, Qualified: 3, Recorded: 2, Candidate: 1, Incomplete: 0};
             return map[rule.targetStatus];
         };
 
@@ -51,18 +51,21 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             var orgRules = $scope.cdeOrgRules[orgName];
             var rules = orgRules.filter(function(r){
                 var s = r.targetStatus;
-                if (status==='Candidate') return s === 'Candidate';
-                if (status==='Recorded') return s === 'Candidate' || s === 'Recorded';
-                if (status==='Qualified') return s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
-                if (status==='Standard') return s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
+                if (status==='Incomplete') return s === 'Incomplete';
+                if (status==='Candidate') return s === 'Incomplete' || s === 'Candidate';
+                if (status==='Recorded') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded';
+                if (status==='Qualified') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
+                if (status==='Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
                 return true;
             });
+            if (rules.length==0) return true;
             var results = rules.map(function(r){
                 return $scope.cdePassingRule(cde, r);
             });
             return results.every(function(x){return x});
         };
 
+        console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Incomplete'));
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Qualified'));
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Recorded'));
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Candidate'));
