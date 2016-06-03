@@ -49,6 +49,17 @@ public class EltIdMaps {
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
 
+        //Boards
+        eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
+        eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
+        eltMap.put("Unpin Board", "57114b5328329938330f5c7f");
+        eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
+        eltMap.put("Blood Board", "5711497e28329938330f5c4c");
+        eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
+        eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
+        eltMap.put("Double Pin Board", "5750470189949d54384ee625");
+
+        eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
     }
 
 }
