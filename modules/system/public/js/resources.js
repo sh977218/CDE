@@ -19,7 +19,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
             this.elts.forEach(function(elt) {
                 if (!elt.primaryNameCopy) elt.primaryNameCopy = elt.naming[0].designation;
                 if (!elt.primaryDefinitionCopy) elt.primaryDefinitionCopy = elt.naming[0].definition;
-            })
+            });
         },
         elts: [],
         loading: false,
@@ -57,7 +57,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
                 return false;
             }
         }
-    }
+    };
 }
 
 angular.module('resourcesSystem', ['ngResource'])
@@ -147,7 +147,7 @@ angular.module('resourcesSystem', ['ngResource'])
 
         $http.get('/user/me').then(function (response) {
             var u = response.data;
-            if (u == "Not logged in.") {
+            if (u === "Not logged in.") {
                 userResource.user = {userLoaded: true};
             } else {
                 userResource.user = u;
@@ -202,12 +202,12 @@ angular.module('resourcesSystem', ['ngResource'])
                     return response.data;
                 });
             }
-        }
+        };
     })
     .factory("SearchResultResource", function () {
         return {
             elts: []
-        }
+        };
     })
     .factory('LoginRedirect', function ($location) {
         var lastRoute;
@@ -247,7 +247,7 @@ angular.module('resourcesSystem', ['ngResource'])
                 }
             }, window.userAlertTime);
         };
-        var mapAlerts = function(){return alerts;}
+        var mapAlerts = function() {return alerts;};
         return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
     })
 ;
