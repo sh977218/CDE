@@ -89,12 +89,12 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                     $scope.aggregations.flatClassifications = [];
                 }
 
-                //filterOutWorkingGroups($scope.aggregations);
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
                 // Decorate
                 $scope.elts.forEach(function (c) {
                     c.embed = {};
+                    //c.embed.primaryName = "<a target='_blank' href='https://cde.nlm.nih.gov/'>{{c.naming[0].designation}}</a>";
                     if ($scope.args.sourceId) {
                         var id = c.ids.filter(function(e) {
                              return e.source === $scope.args.org;
@@ -124,6 +124,8 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         $scope.searchViewSettings.tableViewFields.ids = $scope.args.ids;
 
         $scope.searchViewSettings.tableViewFields.customFields = [];
+
+        //$scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryName", label: "Name", asHtml: true});
 
         if ($scope.args.primaryDefinition) {
             $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition", label: "Definition"});

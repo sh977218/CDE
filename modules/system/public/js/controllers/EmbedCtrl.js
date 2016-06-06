@@ -16,7 +16,7 @@ angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scop
             "&sourceId=" + $scope.selection.sourceId +
             "&sourceVersion=" + $scope.selection.sourceVersion +
             "&pageSize=" + $scope.selection.pageSize +
-            " width='" + $scope.selection.width + "px' height='" + $scope.selection.height + "px'></iframe>";
+            "' width='" + $scope.selection.width + "px' height='" + $scope.selection.height + "px'></iframe>";
     };
 
     $scope.styles = "<style>html,body{height:100%;}.wrapper{width:80%;height:100%;margin:0 auto;background:#CCC}.h_iframe{position:relative;}.h_iframe .ratio {display:block;width:100%;height:auto;}.h_iframe iframe {position:absolute;top:0;left:0;width:100%; height:100%;} </style>";

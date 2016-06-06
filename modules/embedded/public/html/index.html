@@ -62,7 +62,7 @@
         <div class="input-group input-group">
             <select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"
                     ng-model="selectedClassif" style="width:50%;">
-                <option value="" disabled selected>Search within...</option>
+                <option value="Search within..." disabled selected>Search within...</option>
                 <option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>
             </select>
             <label class="sr-only" for="ftsearch-input">Search Terms</label>
