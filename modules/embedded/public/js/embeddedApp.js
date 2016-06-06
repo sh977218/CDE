@@ -1,15 +1,5 @@
-angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap'])
-    .controller('SearchCtrl', function($scope, Elastic) {
-
-        $scope.searchSettings = {
-            q: ""
-            , page: 1
-            , classification: []
-            , classificationAlt: []
-            , regStatuses: []
-            , resultPerPage: 5
-        };
-
+angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories'])
+    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers) {
 
         $scope.args = {};
         var args1 = window.location.search.substr(1).split("&");
@@ -19,6 +9,33 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap'])
         });
 
         $scope.org = $scope.args.org;
+
+        $scope.searchSettings = {
+            q: ""
+            , page: 1
+            , classification: []
+            , classificationAlt: []
+            , regStatuses: []
+            , resultPerPage: 5
+            , selectedOrg: $scope.org
+        };
+
+        $scope.selectElement = function(s) {
+            $scope.searchSettings.classification.push(s);
+            $scope.search();
+        };
+
+        $scope.crumbSelect = function(i) {
+            $scope.searchSettings.classification.length = i + 1;
+            $scope.search();
+        };
+
+        $scope.reset = function() {
+            $scope.searchSettings.q = "";
+            $scope.searchSettings.page = 1;
+            $scope.searchSettings.classification = [];
+            delete $scope.searchStarted;
+        };
 
         $scope.search = function (type) {
             if (!type) type = "cde";
@@ -70,13 +87,8 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap'])
                     $scope.aggregations.flatClassifications = [];
                 }
 
-                if (result.aggregations !== undefined && result.aggregations.flatClassificationsAlt !== undefined) {
-                    $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
-                        return {name: c.key.split(';').pop(), count: c.doc_count};
-                    });
-                } else {
-                    $scope.aggregations.flatClassificationsAlt = [];
-                }
+                //filterOutWorkingGroups($scope.aggregations);
+                OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
                 // Decorate
                 $scope.elts.forEach(function (c) {
@@ -97,12 +109,9 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap'])
                         c.embed.primaryDefinition = c.naming[0].definition;
                     }
                 });
-
-
             });
-
         };
-
+        $scope.search();
     })
     .controller('TableViewCtrl', function($scope, SearchSettings) {
         $scope.searchViewSettings = SearchSettings.getDefault();

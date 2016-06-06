@@ -11,6 +11,7 @@
     <script src="/system/public/js/elastic.js"></script>
     <script src="/embedded/public/js/SearchSettings.js"></script>
     <script src="/embedded/public/js/embeddedApp.js"></script>
+    <script src="/system/public/js/orgFactories.js"></script>
     <script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -20,16 +21,17 @@
 
     <style>
         body {
-            padding-top: 0px;
+            padding: 0px 0px 0px 0px;
         }
         .extraPadding {
             margin-top: 100px!important;
             margin-left: 50px!important;margin-right: 50px!important;
         }
         #pageWrapper{
-            height: 88%;
+            height: 97%;
             width: 99%;
             position: absolute;
+
         }
 
         #poweredByNihCde {
@@ -45,6 +47,8 @@
 
 
         .gridListView .name {width: auto;}
+
+        #searchResult table{width: auto;}
     </style>
 
 
@@ -53,22 +57,42 @@
 
 <div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div">
 
-    <form name="advSearchForm" id="advSearchForm" novalidate="" method="GET" class="ng-pristine ng-valid ng-valid-maxlength" ng-class="{'extraPadding': !elts }">
+    <form name="advSearchForm" id="advSearchForm" novalidate="" method="GET" class="ng-pristine ng-valid ng-valid-maxlength"
+          ng-class="{'extraPadding': !searchStarted }">
         <div class="input-group input-group">
+            <select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"
+                    ng-model="selectedClassif" style="width:50%;">
+                <option value="" disabled selected>Search within...</option>
+                <option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>
+            </select>
             <label class="sr-only" for="ftsearch-input">Search Terms</label>
-            <input name="q" id="ftsearch-input" class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched" type="text" ng-model="searchSettings.q" >
-        </ul>
+            <input name="q" id="ftsearch-input" style="width: 50%"
+                   class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched"
+                   type="text" ng-model="searchSettings.q"
+                   placeholder="Search..."
+            autocomplete="off">
         <div class="input-group-btn">
-            <button id="search.submit" ng-click="search()" type="submit" class="btn btn-danger btn">
+            <button id="search.submit" ng-click="searchStarted = true;  search()" type="submit" class="btn btn-danger ">
                 <i class="fa fa-search"></i> Search</button>
+            <button id="search.reset" ng-click="reset()" type="submit" class="btn">
+                <i class="fa fa-search"></i> Reset</button>
         </div>
         </div>
     </form>
 
-    <div ng-if="elts.length>0" ng-include="'/cde/public/html/cdeGridList.html'"></div>
 
-    <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
-                    ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
+    <ol ng-if="searchSettings.classification.length > 0" class="breadcrumb" class="form-control">
+        <li ng-repeat="c in searchSettings.classification"><a href="#" ng-click="crumbSelect($index)">{{c}}</a></li>
+    </ol>
+
+    <div ng-if="searchStarted" >
+        <div id="searchResult" ng-include="'/cde/public/html/cdeGridList.html'"></div>
+        <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
+                        ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
+    </div>
+
+
+
     <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE repository</a></small>
 </div>
 
