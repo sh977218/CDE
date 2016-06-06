@@ -2,9 +2,12 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
     function ($scope, $controller, $location, $timeout, $modalInstance, board, userResource, Form) {
         $scope.elt = board;
         $scope.elt.stewardOrg = {};
-        $scope.elt.naming = [{}];
+        $scope.elt.naming = [{designation: board.name}];
         $scope.elt.classification = [];
-        $scope.elt.formElements = [];
+        $scope.elt.formElements = [{
+            elementType: 'section',
+            formElements: []
+        }];
         $scope.myOrgs = userResource.userOrgs;
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
         $scope.close = function () {
@@ -13,16 +16,16 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
 
         $scope.save = function () {
             board.pins.forEach(function (p) {
-                $scope.elt.formElements.push({
+                $scope.elt.formElements[0].formElements.push({
                     elementType: 'question',
                     label: p.deName,
                     question: {
                         cde: {
                             tinyId: p.deTinyId,
+                            name: p.deName,
                             version: p.cde.version ? p.cde.version : '',
                             permissibleValues: p.cde.valueDomain.permissibleValues,
                             ids: p.cde.ids
-
                         }
                     }
                 });
