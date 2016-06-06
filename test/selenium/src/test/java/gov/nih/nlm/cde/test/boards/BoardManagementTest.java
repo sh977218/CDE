@@ -1,33 +1,31 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardManagementTest extends BoardTest {
-    
-    @Test(priority = 2)
+
+    @Test
     public void boardPublisher() {
-        mustBeLoggedInAs("boardPublisherTest", password);
-        createBoard("IsItPublic", "A board that we try to make public");
-        makePublic("IsItPublic", "You don't have permission to make boards public!");        
+        mustBeLoggedInAs(boardPublisherTest_username, password);
+        makePublic("IsItPublic", "You don't have permission to make boards public!");
         mustBeLoggedInAs(nlm_username, nlm_password);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Site Management")).click();
-        findElement(By.linkText("Users")).click();
-        
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Users"));
+
         findElement(By.name("searchUsers")).sendKeys("boardPublisherTest");
-        findElement(By.id("searchUsersSubmit")).click();
+        clickElement(By.id("searchUsersSubmit"));
         findElement(By.xpath("//div[@id='user_roles_0']//input")).sendKeys("boardp");
-        findElement(By.xpath("//div[@id='user_roles_0']//li/div/span")).click();
+        clickElement(By.xpath("//div[@id='user_roles_0']//li/div/span"));
         textPresent("Roles saved");
         closeAlert();
-        
+
         mustBeLoggedInAs("boardPublisherTest", password);
         gotoMyBoards();
         makePublic("IsItPublic");
     }
-    
+
 
     @Test(priority = 4)
     public void iHaveNoBoard() {
@@ -36,12 +34,11 @@ public class BoardManagementTest extends BoardTest {
 
         goToCdeSearch();
         openCdeInList(cdeName);
-        findElement(By.id("pinToBoard_0")).click();
+        clickElement(By.id("pinToBoard_0"));
         textPresent("Click here to create a board now");
-        findElement(By.id("cancelSelect")).click();
+        clickElement(By.id("cancelSelect"));
         modalGone();
     }
-    
 
-       
+
 }

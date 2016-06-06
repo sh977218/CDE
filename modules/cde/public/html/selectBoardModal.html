@@ -8,7 +8,7 @@
     </div>
     <ul ng-switch-default>
         <li ng-repeat="board in boards">
-            <a ng-click="ok(board)">{{board.name}}</a>
+            <a id="board_name_{{board.name}}" ng-click="ok(board)">{{board.name}}</a>
         </li>
     </ul>
 </div>
