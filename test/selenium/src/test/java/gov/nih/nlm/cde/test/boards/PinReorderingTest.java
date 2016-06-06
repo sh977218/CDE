@@ -9,7 +9,7 @@ public class PinReorderingTest extends BoardTest {
     public void pin() {
         //Essentially, what this code does is that it ensures that we are able to move down a CDE, and check that we have done so successfully.
         //We're probably going to want to expand on this though, as it's really bare bones
-        mustBeLoggedInAs(nlm_username,  nlm_password);
+        mustBeLoggedInAs(classifyBoardUser_username,  password);
         goToBoard("Test Pinning Board ");
         findElement(By.id("linkToElt_0")).getText().equals("Medication affecting cardiovascular function type exam day indicator");
         findElement(By.id("moveDown-0"));

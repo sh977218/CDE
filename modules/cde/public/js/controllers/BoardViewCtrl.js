@@ -5,9 +5,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.module = 'cde';
             $scope.cdes = [];
 
-    $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
-        "/cde/public/html/accordion/addToQuickBoardActions.html"];
-    $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
+            $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
+                "/cde/public/html/accordion/addToQuickBoardActions.html"
+            ];
+            $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
 
             $scope.setPage = function (p) {
                 $scope.currentPage = p;
@@ -119,60 +120,66 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-<<<<<<< HEAD
-    $scope.save = function() {//wrap in timeout 0
-        $http.post("/board", $scope.board).success(function (response) {
-            $scope.addAlert("success", "Saved");
-            $scope.reload();
-        }).error(function (response) {
-            $scope.addAlert("danger", response);
-            $scope.reload();
-        });
-    };
+            $scope.save = function () {//wrap in timeout 0
+                $http.post("/board", $scope.board).success(function (response) {
+                    $scope.addAlert("success", "Saved");
+                    $scope.reload();
+                }).error(function (response) {
+                    $scope.addAlert("danger", response);
+                    $scope.reload();
+                });
+            };
 
-    $scope.classifyBoard = function () {
-        var $modalInstance = $modal.open({
-            animation: false,
-            templateUrl: '/cde/public/html/classifyCdesInBoard.html',
-            controller: 'AddClassificationModalCtrl',
-            resolve: {
-                // @TODO bad design -> refactor
-                cde: function () {
-                    return null;
-                }
-                , orgName: function () {
-                    return null;
-                }
-                , pathArray: function () {
-                    return null;
-                }
-                , module: function () {
-                    return null;
-                }
-                , addClassification: function () {
-                    return {
-                        addClassification: function (newClassification) {
-                            var _timeout = $timeout(function () {
-                                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
-                            }, 3000);
-                            $http({
-                                method: 'post',
-                                url: '/classifyBoard',
-                                data: {
-                                    boardId: $scope.board._id
-                                    , newClassification: newClassification
+            $scope.classifyBoard = function () {
+                var $modalInstance = $modal.open({
+                    animation: false,
+                    templateUrl: '/cde/public/html/classifyCdesInBoard.html',
+                    controller: 'AddClassificationModalCtrl',
+                    resolve: {
+                        // @TODO bad design -> refactor
+                        cde: function () {
+                            return null;
+                        }
+                        , orgName: function () {
+                            return null;
+                        }
+                        , pathArray: function () {
+                            return null;
+                        }
+                        , module: function () {
+                            return null;
+                        }
+                        , addClassification: function () {
+                            return {
+                                addClassification: function (newClassification) {
+                                    var _timeout = $timeout(function () {
+                                        $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+                                    }, 3000);
+                                    $http({
+                                        method: 'post',
+                                        url: '/classifyBoard',
+                                        data: {
+                                            boardId: $scope.board._id
+                                            , newClassification: newClassification
+                                        }
+                                    }).success(function (data, status) {
+                                        $timeout.cancel(_timeout);
+                                        if (status === 200) $scope.addAlert("success", "All Elements classified.");
+                                        else $scope.addAlert("danger", data.error.message);
+                                    }).error(function () {
+                                        $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
+                                        $timeout.cancel(_timeout);
+                                    });
+                                    $modalInstance.close();
+
+                                    $scope.reload();
+
                                 }
-                            })
-                            .success(function (data, status) {
-                                $timeout.cancel(_timeout);
-                                if (status === 200) $scope.addAlert("success", "All Elements classified.");
-                                else $scope.addAlert("danger", data.error.message);
-                            }).error(function () {
-                                $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
-                                $timeout.cancel(_timeout);
-                            });
-                            $modalInstance.close();
-=======
+                            }
+                        }
+                    }
+                })
+            };
 
             $scope.createFormFromBoard = function () {
                 var $modalInstance = $modal.open({
@@ -182,12 +189,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     resolve: {
                         board: function () {
                             return $scope.board
->>>>>>> 66bb13650c87a7505ecc3f4666b36ee17703d1ce
                         }
                     }
                 });
             };
 
-            $scope.reload();
-
-        }]);
+        }
+    ]);
