@@ -1,0 +1,42 @@
+
+
+<div class="container">
+
+    <h3>Embed CDE on your site</h3>
+
+    <label for="selection.org">Org to embed</label>
+    <select class="form-control" ng-model="selection.org" id="selection.org" required>
+        <option value="">Select One</option>
+        <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
+    </select>
+
+    <input type="checkbox" ng-model="selection.primaryDefinition">
+    <label>See Primary Definition</label>
+    <br>
+    <input type="checkbox" ng-model="selection.sourceId">
+    <label>See Source ID</label>
+    <br>
+    <input type="checkbox" ng-model="selection.sourceVersion">
+    <label>See Source Version</label>
+    <br>
+    <input type="number" ng-model="selection.pageSize">
+    <label>Number of results per page</label>
+    <br>
+    <input type="number" ng-model="selection.width" min="600">
+    <label>Width</label>
+    <input type="number" ng-model="selection.height" min="600">
+    <label>Height</label>
+
+    <hr>
+
+    <p>Include the following code in the body section of your HTML.</p>
+    <blockquote ng-if="selection.org" ng-bind="getEmbedCode()"></blockquote>
+
+    <p>To improve readability, you may also include the following in the HEAD section of your HTML.</p>
+    <blockquote ng-if="selection.org" ng-bind="styles"></blockquote>
+
+
+</div>
+
+
+

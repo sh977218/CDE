@@ -9,6 +9,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         });
 
         $scope.org = $scope.args.org;
+        var pageSize = $scope.args.pageSize | 5;
 
         $scope.searchSettings = {
             q: ""
@@ -16,7 +17,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             , classification: []
             , classificationAlt: []
             , regStatuses: []
-            , resultPerPage: 5
+            , resultPerPage: pageSize
             , selectedOrg: $scope.org
         };
 
@@ -34,6 +35,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             $scope.searchSettings.q = "";
             $scope.searchSettings.page = 1;
             $scope.searchSettings.classification = [];
+            $scope.search();
             delete $scope.searchStarted;
         };
 
