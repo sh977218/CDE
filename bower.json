@@ -17,7 +17,7 @@
     "jquery-ui": "1.11.3",
     "select2": "~3.4.5",
     "selectize": "~0.8.5",
-    "angular-ui-select": "0.16.1",
+    "angular-ui-select": "0.17.1",
     "textAngular": "1.3.x",
     "bootstrap-tour": "0.10.1",
     "ng-grid": "2.0.14",
@@ -30,7 +30,9 @@
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
     "lforms": "4.2.4",
     "lforms-converter": "2.0.0",
-    "ngInfiniteScroll": "1.2.2"
+    "ngInfiniteScroll": "1.2.2",
+    "checklist-model": "0.9.0",
+    "angular-ui-sortable": "0.14.0"
   },
   "resolutions": {
     "angular": "1.5.3",

@@ -243,6 +243,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     }
     else {
+        //noinspection JSAnnotator
         queryStuff.sort = {"views": {order: "desc"}};
     }
 

@@ -6,15 +6,12 @@ import org.testng.annotations.Test;
 public class PublicBoardsTest extends BoardTest {
 
     @Test
-    public void editBoard() {
+    public void searchPublicBoard() {
         mustBeLoggedOut();
-        findElement(By.id("boardsLink")).click();
+        clickElement(By.id("boardsLink"));
         findElement(By.name("search")).sendKeys("Depression");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("Schizophrenia");
         textPresent("Bipolar Disorder");
-        textPresent("Geriatric Depression Scale (GDS) - empty life indicator");
-        textPresent("Psychiatric history psychotic diagnosis type");
-        textPresent("Hamilton Depression Rating Scale (HDRS) - suicide indicator");
     }
 }
