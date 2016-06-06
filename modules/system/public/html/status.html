@@ -32,16 +32,14 @@
     </div>
 </div>
 
-<br><br>
-<h4 id="regStatusValidationRules">Registration Status Validation Rules</h4>
 
-
-
+<h4 id="regStatusValidationRules" style="margin-top:60px;">Registration Status Validation Rules</h4>
 <div ng-controller="RegStatusValidationCtrl">
     Validation rules according to an organization:
     <div ng-repeat="(name, org) in cdeOrgRules" ng-show="org.length>0">
         <h4>{{name}}</h4>
-        <table class="table table-condensed">
+        <strong>According to status validation rules CDE can hold the following statuses</strong>
+        <table class="table table-condensed" style="max-width:300px">
             <tr><td>Incomplete</td><td><i ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Incomplete')" class="fa fa-check"></i><i ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Incomplete')" class="fa fa-times"></i></td></tr>
             <tr><td>Candidate</td><td><i ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Candidate')" class="fa fa-check"></i><i ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Candidate')" class="fa fa-times"></i></td></tr>
             <tr><td>Recorded</td><td><i ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Recorded')" class="fa fa-check"></i><i ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Recorded')" class="fa fa-times"></i></td></tr>
@@ -49,9 +47,9 @@
             <tr><td>Standard</td><td><i ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Standard')" class="fa fa-check"></i><i ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Standard')" class="fa fa-times"></i></td></tr>
             <tr><td>Preferred Standard</td><td><i ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Preferred Standard')" class="fa fa-check"></i><i ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Preferred Standard')" class="fa fa-times"></i></td></tr>
         </table>
+        <strong>CDE is passing the following rules namely</strong>
         <div ng-repeat="rule in org | orderBy:sortRulesByStatus">
            {{rule.targetStatus}} <i class="fa fa-check" ng-show="cdePassingRule(elt, rule)"></i><i class="fa fa-times" ng-hide="cdePassingRule(elt, rule)"></i> {{rule.ruleName}}
         </div>
     </div>
-
 </div>
