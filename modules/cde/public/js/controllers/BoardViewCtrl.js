@@ -171,9 +171,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                         $timeout.cancel(_timeout);
                                     });
                                     $modalInstance.close();
-
-                                    $scope.reload();
-
                                 }
                             }
                         }
@@ -194,5 +191,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-        }
-    ]);
+            $scope.reload();
+
+        }]);
