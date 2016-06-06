@@ -33,13 +33,16 @@ var questionSchema = {
 };
 
 var sectionSchema = {};
+
+var formSchema = {};
+
 var cardinalitySchema = {
     min: Number,
     max: Number
 };
 
 var formElementTreeRoot = {
-    elementType: {type: String, enum: ['section', 'question']}
+    elementType: {type: String, enum: ['section', 'question', 'form']}
     , label: String
     , instructions: sharedSchemas.instructionSchema
     , cardinality: cardinalitySchema
@@ -47,6 +50,7 @@ var formElementTreeRoot = {
     , showIfExpression: String
     , section: sectionSchema
     , question: questionSchema
+    , form: formSchema
     , formElements: []
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']}
@@ -66,6 +70,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , showIfExpression: String
         , section: sectionSchema
         , question: questionSchema
+        , form: formSchema
         , formElements: []
         , skipLogic: {
             action: {type: String, enum: ['show', 'enable']}

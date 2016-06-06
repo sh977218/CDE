@@ -6,48 +6,43 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardManagement4Test extends BoardTest {
-    
+
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
-        createBoard("Remove me board", "Not a very useful board");
         removeBoard("Remove me board");
-        goToCdeSearch();
-        gotoMyBoards();
-        Assert.assertTrue(textNotPresent("Not a very useful"));
+        hangon(2);
+        textNotPresent("Not a very useful");
     }
-    
+
     @Test
     public void cdeNumbIncrement() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
-        goToCdeSearch();
-        createBoard(boardName, "Number Increment Definition");
-        gotoMyBoards(); 
+        gotoMyBoards();
         WebElement numElt = null;
-        int length = driver.findElements(By.linkText("View Board")).size();
+        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
-                numElt = findElement(By.id("dd_numb_" + i));
+                numElt = findElement(By.id("board_num_cdes_" + i));
             }
-        }        
-        int num = new Integer(numElt.getText());
+        }
+        int num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(0, num);
         pinTo("Lymph Node Procedure", boardName);
         gotoMyBoards();
         textPresent(boardName);
-        length = driver.findElements(By.linkText("View Board")).size();
+        length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
-                numElt = findElement(By.id("dd_numb_" + i));
+                numElt = findElement(By.id("board_num_cdes_" + i));
             }
         }
 
-        num = new Integer(numElt.getText());
+        num = Integer.parseInt(numElt.getText().trim());
         Assert.assertEquals(1, num);
-        removeBoard("Number Increment Board");
     }
 
 }

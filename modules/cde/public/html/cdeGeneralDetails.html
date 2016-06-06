@@ -1,4 +1,4 @@
-<div ng-controller="SaveCdeCtrl">
+<div ng-controller="PermissibleValuesCtrl">
     <h4 tabindex="0">General Details</h4>
     <dl class="dl-horizontal">
         <dt tabindex="0">Name:</dt>
@@ -19,7 +19,7 @@
                 <i title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit"
                    ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i>
                 <a uib-tooltip-html="orgDetailsInfoHtml" tooltip-popup-delay="500" tooltip-placement="right"
-                   tooltip-append-to-body="true">{{elt.stewardOrg.name}}</a>
+                   tooltip-append-to-body="true" id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
             </span>
         </dd>
         <dt tabindex="0">Definition:</dt>

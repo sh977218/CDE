@@ -34,7 +34,6 @@ exports.Org = Org;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
-var localConn = connHelper.establishConnection(config.database.local);
 
 exports.getClusterHostStatus = function(server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
@@ -317,36 +316,6 @@ exports.updateOrg = function(org, res) {
             res.send('Org does not exist.');
         }
     });
-};
-
-exports.rsStatus = function (cb) {
-    var db = localConn.db;
-    db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
-        cb(err, doc);        
-    });
-};
-
-exports.rsConf = function(cb) {
-    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
-       cb(err, conf); 
-    });
-};
-
-exports.switchToReplSet = function (replConfig, force, cb) {
-    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
-        if (err) cb(err);
-        else {
-            replConfig.version = conf.version + 1;        
-            conn.db.admin().command({"replSetReconfig": replConfig, force: force}, function (err, doc) {
-                if (err) {
-                    mongoose.disconnect();
-                    cb(err, doc);
-                } else {
-                    cb(err, doc);
-                }
-            });
-        }
-    });   
 };
 
 exports.getAllUsernames = function(callback) {
