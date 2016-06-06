@@ -11,6 +11,13 @@
                     <i class="fa fa-folder-open-o"></i> Classify All CDEs
                 </button>
             </div>
+            <div class="btn-group  pull-right" ng-controller="ExportCtrl">
+                <button id="mb.createForm" value="Create Form" ng-click="createFormFromBoard()"
+                        class="btn btn-default">
+                    <i class="fa"></i> Create Form
+                </button>
+            </div>
+
             <div class="btn-group  pull-right">
                 <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
                 <button ng-show="totalItems>0" ng-click="openCloseAllSwitch(cdes, 'list');"
