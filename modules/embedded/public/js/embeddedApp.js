@@ -1,0 +1,129 @@
+angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap'])
+    .controller('SearchCtrl', function($scope, Elastic) {
+
+        $scope.searchSettings = {
+            q: ""
+            , page: 1
+            , classification: []
+            , classificationAlt: []
+            , regStatuses: []
+            , resultPerPage: 5
+        };
+
+
+        $scope.args = {};
+        var args1 = window.location.search.substr(1).split("&");
+        args1.forEach(function(arg) {
+           var argArr = arg.split("=");
+            $scope.args[argArr[0]] = argArr[1];
+        });
+
+        $scope.org = $scope.args.org;
+
+        $scope.search = function (type) {
+            if (!type) type = "cde";
+
+            var timestamp = new Date().getTime();
+            $scope.lastQueryTimeStamp = timestamp;
+            $scope.accordionListStyle = "semi-transparent";
+            var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
+
+            Elastic.generalSearchQuery(settings, type, function (err, result) {
+                if (err) {
+                    $scope.accordionListStyle = "";
+                    $scope[type + 's'] = [];
+                    return;
+                }
+                if (timestamp < $scope.lastQueryTimeStamp) return;
+                $scope.numPages = Math.ceil(result.totalNumber / $scope.resultPerPage);
+                $scope.totalItems = result.totalNumber;
+                $scope[type + 's'] = result[type + 's'];
+                $scope.elts = result[type + 's'];
+                $scope.took = result.took;
+
+                if ($scope.searchSettings.page === 1 && result.totalNumber > 0) {
+                    var maxJump = 0;
+                    var maxJumpIndex = 100;
+                    $scope.elts.map(function(e, i) {
+                        if (!$scope.elts[i+1]) return;
+                        var jump = e.score - $scope.elts[i+1].score;
+                        if (jump>maxJump) {
+                            maxJump = jump;
+                            maxJumpIndex = i+1;
+                        }
+                    });
+
+                    if (maxJump > (result.maxScore/4)) $scope.cutoffIndex = maxJumpIndex;
+                    else $scope.cutoffIndex = 100;
+                } else {
+                    $scope.cutoffIndex = 100;
+                }
+
+                $scope.accordionListStyle = "";
+                $scope.aggregations = result.aggregations;
+
+                if (result.aggregations !== undefined && result.aggregations.flatClassifications !== undefined) {
+                    $scope.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassifications = [];
+                }
+
+                if (result.aggregations !== undefined && result.aggregations.flatClassificationsAlt !== undefined) {
+                    $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassificationsAlt = [];
+                }
+
+                // Decorate
+                $scope.elts.forEach(function (c) {
+                    c.embed = {};
+                    if ($scope.args.sourceId) {
+                        var id = c.ids.filter(function(e) {
+                             return e.source === $scope.args.org;
+                        })[0];
+                        if (id) c.embed.sourceId = id.id;
+                    }
+                    if ($scope.args.sourceVersion) {
+                        var id = c.ids.filter(function(e) {
+                            return e.source === $scope.args.org;
+                        })[0];
+                        if (id) c.embed.sourceVersion = id.version;
+                    }
+                    if ($scope.args.primaryDefinition) {
+                        c.embed.primaryDefinition = c.naming[0].definition;
+                    }
+                });
+
+
+            });
+
+        };
+
+    })
+    .controller('TableViewCtrl', function($scope, SearchSettings) {
+        $scope.searchViewSettings = SearchSettings.getDefault();
+
+        $scope.searchViewSettings.tableViewFields.nbOfPVs = $scope.args.numberOfPvs;
+        $scope.searchViewSettings.tableViewFields.permissibleValues = $scope.args.permissibleValues;
+        $scope.searchViewSettings.tableViewFields.naming = $scope.args.naming;
+        $scope.searchViewSettings.tableViewFields.ids = $scope.args.ids;
+
+        $scope.searchViewSettings.tableViewFields.customFields = [];
+
+        if ($scope.args.primaryDefinition) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition", label: "Definition"});
+        }
+        if ($scope.args.sourceId) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceId", label: "ID"});
+        }
+        if ($scope.args.sourceVersion) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceVersion", label: "version"});
+        }
+
+    })
+;
+

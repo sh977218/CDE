@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="embeddedApp">
+<head>
+    <meta charset="UTF-8">
+    <title>this is a sample</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.js"></script>
+
+    <script src="/system/shared/regStatusShared.js"></script>
+    <script src="/system/public/js/elastic.js"></script>
+    <script src="/embedded/public/js/SearchSettings.js"></script>
+    <script src="/embedded/public/js/embeddedApp.js"></script>
+    <script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+
+    <style>
+        body {
+            padding-top: 0px;
+        }
+        .extraPadding {
+            margin-top: 100px!important;
+            margin-left: 50px!important;margin-right: 50px!important;
+        }
+        #pageWrapper{
+            height: 88%;
+            width: 99%;
+            position: absolute;
+        }
+
+        #poweredByNihCde {
+            position: absolute;
+            bottom: -10px;
+            right: 5px;
+            background: white;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        #advSearchForm {}
+
+
+        .gridListView .name {width: auto;}
+    </style>
+
+
+</head>
+<body>
+
+<div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div">
+
+    <form name="advSearchForm" id="advSearchForm" novalidate="" method="GET" class="ng-pristine ng-valid ng-valid-maxlength" ng-class="{'extraPadding': !elts }">
+        <div class="input-group input-group">
+            <label class="sr-only" for="ftsearch-input">Search Terms</label>
+            <input name="q" id="ftsearch-input" class="form-control search-query ng-pristine ng-valid ng-empty ng-valid-maxlength ng-touched" type="text" ng-model="searchSettings.q" >
+        </ul>
+        <div class="input-group-btn">
+            <button id="search.submit" ng-click="search()" type="submit" class="btn btn-danger btn">
+                <i class="fa fa-search"></i> Search</button>
+        </div>
+        </div>
+    </form>
+
+    <div ng-if="elts.length>0" ng-include="'/cde/public/html/cdeGridList.html'"></div>
+
+    <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
+                    ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
+    <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE repository</a></small>
+</div>
+
+</body>
+</html>
