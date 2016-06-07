@@ -120,7 +120,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-            $scope.save = function () {//wrap in timeout 0
+            $scope.save = function () {
                 $http.post("/board", $scope.board).success(function (response) {
                     $scope.addAlert("success", "Saved");
                     $scope.reload();
