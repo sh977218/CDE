@@ -26,7 +26,23 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_data);
 
-    app.post('/boardSearch',boardsvc.boardSearch);
+    app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
+        elastic.boardSearch(req.body, function (err, result) {
+            if (err) return res.status(500).send(err);
+            return res.send(result);
+        });
+    });
+
+    app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            return res.status(403).send();
+        } else {
+            elastic.myBoards(req.user, req.body, function (err, result) {
+                if (err) return res.status(500).send(err);
+                return res.send(result);
+            });
+        }
+    });
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_data.cdesByTinyIdList(req.body, function (err, cdes) {
@@ -43,7 +59,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, cdesvc.priorCdes);
 
-    app.get('/forks/:id', exportShared.nocacheMiddleware,cdesvc.forks);
+    app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
 
     app.post('/dataelement/fork', function (req, res) {
         adminItemSvc.fork(req, res, mongo_data);
@@ -424,15 +440,15 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get('/umlsCuiFromSrc/:id/:src', function(req, res) {
-        if(!config.umls.sourceOptions[req.params.src]) {
+    app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {
+        if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
         }
         return vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
-    app.get('/umlsAtomsBridge/:id/:src', function(req, res) {
-        if(!config.umls.sourceOptions[req.params.src]) {
+    app.get('/umlsAtomsBridge/:id/:src', function (req, res) {
+        if (!config.umls.sourceOptions[req.params.src]) {
             return res.send("Source cannot be looked up, use UTS Instead.");
         }
         if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user) {
@@ -441,7 +457,8 @@ exports.init = function (app, daoManager) {
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
     });
 
-    app.get('/searchUmls', function(req, res) { if (!req.user) return res.status(403).send();
+    app.get('/searchUmls', function (req, res) {
+        if (!req.user) return res.status(403).send();
         return vsac.searchUmls(req.query.searchTerm, res);
     });
 
