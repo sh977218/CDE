@@ -16,19 +16,18 @@
                 id="select_display_profile"></select>
     </div>
 
-    <ng-render-form model="elt" options="renderOptions"></ng-render-form>
-    <!--
-        <form name="sectionLabel" role="form" class="form-inline">
-            <div ng-repeat="formElement in elt.formElements track by $index" class="row">
-                <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'"
-                     ng-init="question = formElement;  formElements = elt.formElements;"></div>
-                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
-                     ng-init="section = formElement; formElements = elt.formElements;"></div>
-                <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
-                     ng-init="innerForm = formElement;"></div>
-            </div>
-        </form>
-    -->
+    <form name="sectionLabel" role="form" class="form-inline">
+        <div ng-repeat="formElement in elt.formElements track by $index" class="row">
+            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-init="question = formElement;  formElements = elt.formElements;"></div>
+            <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
+                 ng-init="section = formElement; formElements = elt.formElements;"></div>
+<!--
+            <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
+                 ng-init="innerForm = formElement;"></div>
+-->
+        </div>
+    </form>
 
     <uib-alert type="danger" ng-show="skipLogicError.length > 0">
         <span ng-bind="skipLogicError"></span>
