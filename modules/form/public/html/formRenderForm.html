@@ -1,0 +1,26 @@
+<div class="panel panel-default" id="formRenderForm_{{innerForm.label}}" style="margin-left:10px"
+     ng-controller="InnerFormRenderCtrl">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-9">
+                <h4 tabindex="0">{{innerForm.label}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form name="sectionLabel" role="form" class="form-inline">
+            <div ng-repeat="formElement in elt.formElements track by $index" class="row">
+                <div ng-if="formElement.elementType === 'question'"
+                     ng-include="'/form/public/html/formRenderQuestion.html'"
+                     ng-init="question = formElement;  formElements = elt.formElements;"></div>
+                <div ng-if="formElement.elementType === 'section'"
+                     ng-include="'/form/public/html/formRenderSection.html'"
+                     ng-init="section = formElement; formElements = elt.formElements;"></div>
+                <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
+                     ng-init="innerForm = formElement;"></div>
+            </div>
+        </form>
+        <div>{{innerForm.form.formTinyId}}</div>
+        <div>{{innerForm.form.formVersion}}</div>
+    </div>
+</div>

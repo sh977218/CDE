@@ -21,7 +21,7 @@
                     </small>
                 </div>
                 <div ng-if="renderWith === 'native'">
-                    <div ng-include="'/form/public/html/formRender.html'"></div>
+                    <div ng-include="'/form/public/html/nativeFormRender.html'"></div>
                     <small>You may also preview this form with <a href=""
                                                                   ng-click="setRenderFormat('lforms')">LForms</a>.
                     </small>
@@ -34,7 +34,8 @@
 
         <div ng-if="!formPreviewRendered" style="text-align: center; margin-top: 20px">
             This form is large and is not automatically displayed. <br><br>
-            <button class="btn btn-default" ng-click="renderPreview()" id="renderPreviewButton">Preview this Form</button>
+            <button class="btn btn-default" ng-click="renderPreview()" id="renderPreviewButton">Preview this Form
+            </button>
         </div>
     </div>
 </div>

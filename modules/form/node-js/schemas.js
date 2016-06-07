@@ -36,7 +36,7 @@ var sectionSchema = {};
 
 var formSchema = {
     formTinyId: String,
-    version: String
+    formVersion: String
 };
 
 var cardinalitySchema = {
