@@ -1,13 +1,14 @@
+<div class="panel panel-default formRenderPanel">
+    <div class="panel-heading">{{elt.naming[0].designation}}</div>
+    <div class="panel-body">
+        <div ng-repeat="formElement in elt.formElements track by $index" class="row">
+            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-init="question = formElement;  formElements = elt.formElements;"></div>
+            <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
+                 ng-init="section = formElement; formElements = elt.formElements;"></div>
+            <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
+                 ng-init="innerForm = formElement;" ng-controller="FormRenderFormCtrl"></div>
+        </div>
 
-<form name="sectionLabel" role="form" class="form-inline">
-    <div ng-repeat="formElement in elt.formElements track by $index" class="row">
-        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'"
-             ng-init="question = formElement;  formElements = elt.formElements;"></div>
-        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="section = formElement; formElements = elt.formElements;"></div>
-<!--
-        <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
-             ng-init="innerForm = formElement;"></div>
--->
     </div>
-</form>
+</div>

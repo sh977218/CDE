@@ -176,3 +176,17 @@ exports.priorForms = function (req, res) {
         }
     });
 };
+
+exports.formByTinyIdVersion = function (req, res) {
+    if (req.params.version !== 'undefined') {
+        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else res.send(elt);
+        });
+    } else {
+        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else res.send(elt);
+        })
+    }
+};

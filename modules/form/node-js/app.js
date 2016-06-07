@@ -47,9 +47,7 @@ exports.init = function (app, daoManager) {
     });
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
-    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
-        res.send("");
-    });
+    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
