@@ -12,6 +12,19 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
 
         $scope.cdeOrgRules = $scope.getOrgRulesForCde($scope.elt);
 
+        var cdeStatusRules = {Incomplete: {}, Candidate: {}, Recorded: {}, Qualified: {}, Standard: {}, "Preferred Standard":{}};
+
+        Object.keys($scope.cdeOrgRules).forEach(function(orgName){
+            $scope.cdeOrgRules[orgName].forEach(function(rule){
+                if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
+                cdeStatusRules[rule.targetStatus][orgName].push(rule);
+            });
+        });
+
+        console.log(cdeStatusRules);
+
+        $scope.cdeStatusRules = cdeStatusRules;
+
         $scope.cdePassingRule = function(cde, rule){
             function checkRe(field, rule){
                 var re = new RegExp(rule.rule.regex);
@@ -63,6 +76,10 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
                 return $scope.cdePassingRule(cde, r);
             });
             return results.every(function(x){return x});
+        };
+
+        $scope.showStatus = function(status){
+            return Object.keys(status).length>0;
         };
 
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Incomplete'));
