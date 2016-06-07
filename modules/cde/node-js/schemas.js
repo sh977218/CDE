@@ -115,17 +115,19 @@ var pinSchema = new mongoose.Schema({
     , deName: String
 }, {_id: false});
 
+
 schemas.pinningBoardSchema = new mongoose.Schema({
-    name: String
-    , description: String
-    , shareStatus: String
-    , createdDate: Date
-    , updatedDate: Date
-    , owner: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , pins: [pinSchema]
+    name: String,
+    description: String,
+    tags: [String],
+    shareStatus: String,
+    createdDate: Date,
+    updatedDate: Date,
+    owner: {
+        userId: mongoose.Schema.Types.ObjectId,
+        username: String
+    },
+    pins: [pinSchema]
 });
 
 schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);

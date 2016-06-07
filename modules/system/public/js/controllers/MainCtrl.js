@@ -21,12 +21,6 @@ angular.module('systemModule').controller('MainCtrl',
                 $scope.checkMail();
             });
 
-            $scope.loadMyBoards = function () {
-                $http.get("/boards/" + userResource.user._id).then(function (response) {
-                    $scope.boards = response.data;
-                });
-            };
-
             $scope.canCreateForms = function () {
                 return exports.hasRole(userResource.user, "FormEditor");
             };
@@ -54,13 +48,6 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.Alert = Alert;
 
-            $scope.boards = [];
-
-
-            userResource.getPromise().then(function () {
-                $scope.loadMyBoards();
-            });
-
             $scope.isOrgCurator = function () {
                 return exports.isOrgCurator(userResource.user);
             };
@@ -86,19 +73,13 @@ angular.module('systemModule').controller('MainCtrl',
                     var modalInstance = $modal.open({
                         animation: false,
                         templateUrl: '/cde/public/html/selectBoardModal.html',
-                        controller: 'SelectBoardModalCtrl',
-                        resolve: {
-                            boards: function () {
-                                return $scope.boards;
-                            }
-                        }
+                        controller: 'SelectBoardModalCtrl'
                     });
 
                     modalInstance.result.then(function (selectedBoard) {
                         $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                            if (response.status == 200) {
+                            if (response.status === 200) {
                                 $scope.addAlert("success", response.data);
-                                $scope.loadMyBoards();
                             } else
                                 $scope.addAlert("warning", response.data);
                         }, function (response) {
@@ -107,7 +88,7 @@ angular.module('systemModule').controller('MainCtrl',
                     }, function () {
                     });
                 } else {
-                    var modalInstance = $modal.open({
+                    $modal.open({
                         animation: false,
                         templateUrl: '/system/public/html/ifYouLogInModal.html'
                     });
@@ -153,8 +134,8 @@ angular.module('systemModule').controller('MainCtrl',
             };
 
             $scope.searchByClassification = function (orgName, elts, type) {
-                $location.url('/' + type + '/search?selectedOrg=' + encodeURIComponent(orgName)
-                + "&classification=" + encodeURIComponent(elts.join(";")));
+                $location.url('/' + type + '/search?selectedOrg=' + encodeURIComponent(orgName) +
+                "&classification=" + encodeURIComponent(elts.join(";")));
             };
 
             // Gets screen size and also updates it in the callboack on screen resize

@@ -14,11 +14,8 @@ angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHist
             });
         }, 0);
     };
-    
-    $scope.hasQuota = true;
-    if(!userResource.user.quota) {
-        $scope.hasQuota = false;
-    }
+
+    $scope.hasQuota = userResource.user.quota;
     
     $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g,', ');
     

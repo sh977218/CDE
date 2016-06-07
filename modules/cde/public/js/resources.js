@@ -22,9 +22,18 @@ angular.module('resourcesCde', ['ngResource'])
     })
     .factory('ElasticBoard', function ($http) {
         return {
-            basicSearch: function (query, cb) {
-                $http.post("/boardSearch", query).then(function (response) {
-                    cb(response.data);
+            loadMyBoards: function (filter, cb) {
+                $http.post('/myBoards', filter).success(function (response) {
+                    if (cb) cb(response);
+                }).error(function () {
+                    if (cb) cb("Unable to retrieve my boards");
+                });
+            },
+            basicSearch: function (filter, cb) {
+                $http.post("/boardSearch", filter).success(function (response) {
+                    if (cb) cb(response);
+                }).error(function () {
+                    if (cb) cb("Unable to retrieve public boards");
                 });
             }
         };
@@ -45,10 +54,6 @@ angular.module('resourcesCde', ['ngResource'])
     })
     .factory('CdesForApproval', function ($resource) {
         return $resource('/cdesforapproval');
-    })
-    .factory('Board', function ($resource) {
-        return $resource('/board/:id/:start', {id: '@id', start: '@start'},
-            {'getCdes': {method: 'GET', isArray: true}});
     })
     .factory('CDE', function ($http) {
         return {

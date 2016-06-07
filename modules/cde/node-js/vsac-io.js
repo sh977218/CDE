@@ -1,8 +1,6 @@
 var https = require('https')
     , querystring = require('querystring')
     , config = require('../../system/node-js/parseConfig')
-    , fs = require('fs')
-    , util = require('util')
     , request = require('request')
 ;
 
@@ -133,14 +131,22 @@ exports.getValueSet = function(vs_id, cb) {
 
 exports.getAtomsFromUMLS = function(cui, source, res) {
     this.getTicket(function(oneTimeTicket) {
-        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source
-            + "&pageSize=500&ticket=" + oneTimeTicket;
+        var url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
+            "&pageSize=500&ticket=" + oneTimeTicket;
         request({url: url, strictSSL: false}, function(err, response, body) {
-            if (!err && response.statusCode == 200) res.send(body);
+            if (!err && response.statusCode === 200) res.send(body);
             else {
                 res.send();
             }
         });
+    });
+};
+
+exports.umlsCuiFromSrc = function(id, src, res) {
+    this.getTicket(function(oneTimeTicket) {
+        var url = config.umls.wsHost + "/rest/search/current?string=" + id +
+            "&searchType=exact&inputType=sourceUi&sabs=" + src + "&ticket=" + oneTimeTicket;
+        request.get({url: url, strictSSL: false}).pipe(res);
     });
 };
 
