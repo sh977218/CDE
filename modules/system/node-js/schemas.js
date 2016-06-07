@@ -35,6 +35,8 @@ schemas.orgSchema = new mongoose.Schema({
     , uri: String
     , classifications: [csEltSchema]
     , workingGroupOf: String
+    , propertyKeys: [String]
+    , nameContexts: [String]
     , extraInfo: String
 });
 
