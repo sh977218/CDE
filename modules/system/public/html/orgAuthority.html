@@ -106,5 +106,29 @@
                 </tr>
             </table>
         </div>
+        <div uib-tab heading="List Management">
+            <table class="table table-border table-responsive">
+                <tr>
+                    <th>Organization Name:</th>
+                    <th>Properties:</th>
+                    <th>Context:</th>
+
+                </tr>
+                <tr ng-repeat="c in orgs | orderBy:'name'">
+                    <td id="orgName-{{c.name}}">
+                        {{c.name}}
+                    </td>
+                    <td>
+                        <div inline-edit id="orgLongName-{{c.name}}" model="c.longName"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgMailAddress-{{c.name}}" model="c.mailAddress"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
     </uib-tabset>
 </div>
