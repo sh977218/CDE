@@ -797,5 +797,8 @@ public class NlmCdeBaseTest {
         closeAlert();
     }
 
+    protected void elementVisible(By selector){
+        findElement(selector);
+    }
 
 }
