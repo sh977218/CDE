@@ -107,6 +107,7 @@
             </table>
         </div>
         <div uib-tab heading="List Management">
+            <p>Lists</p>
             <table class="table table-border table-responsive">
                 <tr>
                     <th>Organization Name:</th>
@@ -115,15 +116,15 @@
 
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
-                    <td id="orgName-{{c.name}}">
+                    <td id="orgListName-{{c.name}}">
                         {{c.name}}
                     </td>
                     <td>
-                        <div inline-edit id="orgLongName-{{c.name}}" model="c.longName"
+                        <div inline-edit id="orgListKeys-{{c.name}}" model="c.propertyKeys"
                              is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
                     <td>
-                        <div inline-edit id="orgMailAddress-{{c.name}}" model="c.mailAddress"
+                        <div inline-edit id="orgListContexts-{{c.name}}" model="c.nameContexts"
                              is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
 
