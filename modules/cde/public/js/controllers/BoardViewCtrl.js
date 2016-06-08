@@ -120,6 +120,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
+            
             $scope.save = function () {
                 $http.post("/board", $scope.board).success(function (response) {
                     $scope.addAlert("success", "Saved");
@@ -149,30 +150,26 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         , module: function () {
                             return null;
                         }
-                        , addClassification: function () {
-                            return {
-                                addClassification: function (newClassification) {
-                                    var _timeout = $timeout(function () {
-                                        $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
-                                    }, 3000);
-                                    $http({
-                                        method: 'post',
-                                        url: '/classifyBoard',
-                                        data: {
-                                            boardId: $scope.board._id
-                                            , newClassification: newClassification
-                                        }
-                                    }).success(function (data, status) {
-                                        $timeout.cancel(_timeout);
-                                        if (status === 200) $scope.addAlert("success", "All Elements classified.");
-                                        else $scope.addAlert("danger", data.error.message);
-                                    }).error(function () {
-                                        $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
-                                        $timeout.cancel(_timeout);
-                                    });
-                                    $modalInstance.close();
+                        , addClassification: function (newClassification) {
+                            var _timeout = $timeout(function () {
+                                $scope.addAlert("warning", "Classification task is still in progress. Please hold on.");
+                            }, 3000);
+                            $http({
+                                method: 'post',
+                                url: '/classifyBoard',
+                                data: {
+                                    boardId: $scope.board._id
+                                    , newClassification: newClassification
                                 }
-                            }
+                            }).success(function (data, status) {
+                                $timeout.cancel(_timeout);
+                                if (status === 200) $scope.addAlert("success", "All Elements classified.");
+                                else $scope.addAlert("danger", data.error.message);
+                            }).error(function () {
+                                $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
+                                $timeout.cancel(_timeout);
+                            });
+                            $modalInstance.close();
                         }
                     }
                 })
