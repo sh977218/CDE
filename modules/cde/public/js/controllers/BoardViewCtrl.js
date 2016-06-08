@@ -70,7 +70,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         });
                     });
             };
-
             
             $scope.save = function () {
                 $http.post("/board", $scope.board).success(function (response) {
@@ -130,10 +129,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             };
-
-
-
-
 
             $scope.createFormFromBoard = function () {
                 var $modalInstance = $modal.open({

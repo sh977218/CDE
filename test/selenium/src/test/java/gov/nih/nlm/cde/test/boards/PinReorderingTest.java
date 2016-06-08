@@ -24,11 +24,6 @@ public class PinReorderingTest extends BoardTest {
         clickElement(By.id("moveDown-1"));
         findElement(By.id("linkToElt_2")).getText().equals("Ethnic Group Category Text");
         findElement(By.id("linkToElt_0")).getText().equals("Medication affecting cardiovascular function type exam day indicator");
-
-
-
-
-
     }
 }
 
