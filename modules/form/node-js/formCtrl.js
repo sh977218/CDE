@@ -5,7 +5,8 @@ var mongo_data_form = require('./mongo-form'),
     JXON = require('jxon'),
     sdc = require('./sdcForm'),
     redCap = require('./redCapForm'),
-    archiver = require('archiver')
+    archiver = require('archiver'),
+    async = require('async')
     ;
 
 exports.findForms = function (req, res) {
@@ -92,6 +93,51 @@ exports.formById = function (req, res) {
         else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
         else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
         else getFormJson(form, req, res);
+    });
+};
+function fetchWholeForm(Form, callback) {
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
+                        fe.formElements = result.formElements;
+                        fe.elementType = 'section';
+                        loopFormElements(fe, function () {
+                            depth--;
+                            doneOne();
+                        });
+                    });
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            })
+        }
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+};
+
+exports.wholeFormById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    mongo_data_form.wholeEltByTinyId(req.params.id, function (err, form) {
+        fetchWholeForm(form, function (f) {
+            res.send(f);
+        })
     });
 };
 

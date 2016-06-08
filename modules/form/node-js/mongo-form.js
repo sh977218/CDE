@@ -145,7 +145,13 @@ exports.transferSteward = function (from, to, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    Form.findOne({'tinyId': tinyId, "version": version}).exec(function (err, elt) {
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+    } else {
+        query.archived = null;
+    }
+    Form.findOne(query).exec(function (err, elt) {
         if (err) callback(err);
         else callback("", elt);
     });
@@ -156,6 +162,12 @@ exports.eltByTinyId = function (tinyId, callback) {
     if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
     else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
 };
+exports.wholeEltByTinyId = function (tinyId, callback) {
+    if (!tinyId) callback("tinyId is undefined!", null);
+    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
+    else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
+};
+
 
 exports.removeAttachmentLinks = function (id) {
     adminItemSvc.removeAttachmentLinks(id, Form);
