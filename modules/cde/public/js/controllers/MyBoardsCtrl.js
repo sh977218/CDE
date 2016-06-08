@@ -41,9 +41,11 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
 
         $scope.removeBoard = function (index) {
             $http['delete']("/board/" + $scope.boards[index]._id).then(function () {
-                $scope.loadMyBoards(function () {
-                    $scope.addAlert("success", "Board removed");
-                });
+                $timeout(function () {
+                    $scope.loadMyBoards(function () {
+                        $scope.addAlert("success", "Board removed");
+                    });
+                }, 2000);
             });
         };
 
@@ -66,9 +68,11 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $scope.save = function (board) {
             delete board.editMode;
             $http.post("/board", board).success(function () {
-                $scope.loadMyBoards(function () {
-                    $scope.addAlert("success", "Saved");
-                });
+                $timeout(function () {
+                    $scope.loadMyBoards(function () {
+                        $scope.addAlert("success", "Saved");
+                    });
+                }, 2000);
             }).error(function (response) {
                 $scope.addAlert("danger", response);
             });
@@ -84,9 +88,11 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
                 $http.post("/board", newBoard).success(function () {
-                    $scope.loadMyBoards(function () {
-                        $scope.addAlert("success", "Board created.");
-                    });
+                    $timeout(function () {
+                        $scope.loadMyBoards(function () {
+                            $scope.addAlert("success", "Board created.");
+                        });
+                    }, 2000);
                 }).error(function (message) {
                     $scope.addAlert("danger", message);
                 });
