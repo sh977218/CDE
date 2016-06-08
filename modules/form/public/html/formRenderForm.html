@@ -6,7 +6,7 @@
                  ng-init="question = formElement;  formElements = elt.formElements;"></div>
             <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formRenderSection.html'"
                  ng-init="section = formElement; formElements = elt.formElements;"></div>
-            <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
+            <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formViewForm.html'"
                  ng-init="innerForm = formElement;" ng-controller="FormRenderFormCtrl"></div>
         </div>
 
