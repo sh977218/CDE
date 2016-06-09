@@ -188,7 +188,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     $scope.renderPreview = function () {
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
-        converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
+        converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
                 $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
