@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings',
-    function ($scope, Elastic, SearchSettings) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
+    function ($scope, Elastic, SearchSettings, $http) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -50,6 +50,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         });
                         var content = zip.generate({type: "blob"});
                         saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
+                    },
+                    'validationRules': function(result){
+                        JSON.parse(result).forEach(function (oneElt) {
+                            console.log(oneElt);
+                        });
                     }
                 };
                 if (result) {
@@ -84,6 +89,22 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 } else {
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
+            });
+        };
+
+        $scope.validStatusExport = function(){
+            var q = Elastic.buildElasticQuerySettings($scope.searchSettings);
+            $http({
+                url: "/validationRulesReport"
+                , method: "POST"
+                , data: q
+                , transformResponse: function(a){return a;}
+            }).success(function (response) {
+                console.log(response)
+            })
+            .error(function(data, status) {
+                if (status === 503) console.log("The server is busy processing similar request, please try again in a minute.");
+                else console.log("An error occured. This issue has been reported.");
             });
         };
     }]);

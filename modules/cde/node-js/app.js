@@ -579,6 +579,18 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
+    //app.post('/validationRulesReport', function (req, res) {
+    //    var query = elastic_system.buildElasticSearchQuery(req.user, req.body);
+    //    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+    //        if (err) return res.status(500).send(err);
+    //        else if (elt) {
+    //            res.write(JSON.stringify(elt));
+    //        } else {
+    //            res.send();
+    //        }
+    //    }, query, 'cde');
+    //});
+
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         var result = [];
         var term = req.params.term;

@@ -10,9 +10,10 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             return result;
         };
 
-        $scope.cdeOrgRules = $scope.getOrgRulesForCde($scope.elt);
 
-        $scope.cdePassingRule = function(cde, rule){
+        var cdeOrgRules = $scope.getOrgRulesForCde($scope.elt);
+
+        var cdePassingRule = function(cde, rule){
             function checkRe(field, rule){
                 var re = new RegExp(rule.rule.regex);
                 return re.test(field);
@@ -42,13 +43,15 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             return checkSubTree(cde, rule, 0);
         };
 
+        $scope.cdePassingRule = cdePassingRule;
+
         $scope.sortRulesByStatus = function(rule) {
             var map = {'Preferred Standard':5, Standard: 4, Qualified: 3, Recorded: 2, Candidate: 1, Incomplete: 0};
             return map[rule.targetStatus];
         };
 
-        $scope.conditionsMetForStatusWithinOrg = function(cde, orgName, status){
-            var orgRules = $scope.cdeOrgRules[orgName];
+        var conditionsMetForStatusWithinOrg = function(cde, orgName, status){
+            var orgRules = cdeOrgRules[orgName];
             var rules = orgRules.filter(function(r){
                 var s = r.targetStatus;
                 if (status==='Incomplete') return s === 'Incomplete';
@@ -60,10 +63,12 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             });
             if (rules.length==0) return true;
             var results = rules.map(function(r){
-                return $scope.cdePassingRule(cde, r);
+                return cdePassingRule(cde, r);
             });
             return results.every(function(x){return x});
         };
+
+        $scope.conditionsMetForStatusWithinOrg = conditionsMetForStatusWithinOrg;
 
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Incomplete'));
         console.log($scope.conditionsMetForStatusWithinOrg($scope.elt, 'TEST', 'Qualified'));
