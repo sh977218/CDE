@@ -37,7 +37,8 @@ var sectionSchema = {};
 var inFormSchema = {
     form: {
         tinyId: String,
-        version: String
+        version: String,
+        name: String
     }
 };
 

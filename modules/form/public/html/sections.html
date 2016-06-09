@@ -22,10 +22,17 @@
              ng-init="question = formElement; parent = elt;"></div>
         <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
              ng-init="parent = elt; section = formElement; "></div>
-        <div ng-if="formElement.elementType === 'form'">
-            <div class="panel panel-default formRenderPanel">
-                <div class="panel-heading questionSectionTitle">
-                    <a href="formView?tinyId={{formElement.inForm.form.tinyId}}" target="_blank"><i class="fa fa-eye"></i>{{formElement.label}}</a>
+        <div ng-if="formElement.elementType === 'form'" class="panel panel-default">
+            <div class="panel-heading questionSectionTitle">
+                Embedded Form: {{formElement.label}}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Form: </div>
+                    <div class="col-sm-10">
+                        <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
+                           target="_blank"><i class="fa fa-eye"></i> {{formElement.form.name}}</a>
+                    </div>
                 </div>
             </div>
         </div>
