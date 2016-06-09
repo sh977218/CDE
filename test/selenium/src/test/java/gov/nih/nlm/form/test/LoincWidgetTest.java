@@ -9,9 +9,6 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
     @Test
     public void lformsDisplay() {
         goToFormByName("Loinc Widget Test Form");
-        textPresent("PROMIS SF v1.0 - Phys. Function 10a");
-        textPresent("Are you able to get on and off the toilet?");
-
         textPresent("Prior BMSCT Administered Indicator");
 
         // test skip logic

@@ -27,8 +27,6 @@ public class SdcExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("sdcExport"));
         switchTab(1);
-        textPresent("PROMIS SF v1.0 - Phys. Function 10a");
-        textPresent("Are you able to get on and off the toilet?");
         textPresent("Hormone production");
         findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));
         textPresent("Distance from Closest Margin");

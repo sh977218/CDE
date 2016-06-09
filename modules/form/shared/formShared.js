@@ -1,10 +1,4 @@
-/*var async = require('async'),
- mongo_data_form = require('../node-js/mongo-form')
- ;*/
-
-if (typeof(exports) === "undefined") {
-    exports = {};
-}
+if (typeof(exports) === "undefined") {exports = {};}
 
 
 var _crypto;
@@ -16,10 +10,10 @@ if (typeof(window) === "undefined") {
     _crypto = jscrypto;
 }
 
-exports.getFormQuestions = function (form) {
-    var getQuestions = function (fe) {
+exports.getFormQuestions = function(form){
+    var getQuestions = function(fe){
         var qs = [];
-        fe.formElements.forEach(function (e) {
+        fe.formElements.forEach(function(e){
             if (e.elementType === 'question') qs.push(e.question);
             else qs = qs.concat(getQuestions(e));
         });
@@ -28,21 +22,19 @@ exports.getFormQuestions = function (form) {
     return getQuestions(form);
 };
 
-exports.getFormCdes = function (form) {
-    return exports.getFormQuestions(form).map(function (q) {
-        return q.cde;
-    });
+exports.getFormCdes = function(form){
+    return exports.getFormQuestions(form).map(function(q){return q.cde;});
 };
 
 
-exports.getFormOdm = function (form, cb) {
+exports.getFormOdm = function(form, cb) {
 
     if (!form) return cb(null, "");
     if (!form.formElements) {
         form.formElements = [];
     }
 
-    function cdeToOdmDatatype(cdeType) {
+    function cdeToOdmDatatype(cdeType){
         var cdeOdmMapping = {
             "Value List": "text",
             "Character": "text",
@@ -74,7 +66,7 @@ exports.getFormOdm = function (form, cb) {
         return cdeOdmMapping[cdeType] || 'text';
     }
 
-    function escapeHTML(text) {
+    function escapeHTML(text){
         return text.replace(/\<.+?\>/gi, "");
     }
 
@@ -121,8 +113,7 @@ exports.getFormOdm = function (form, cb) {
                     , FormRef: {
                         '@FormOID': form.tinyId,
                         '@Mandatory': 'Yes',
-                        '@OrderNumber': '1'
-                    }
+                        '@OrderNumber': '1'}
                 }
                 , FormDef: {
                     '@Name': escapeHTML(form.naming[0].designation)
@@ -139,7 +130,7 @@ exports.getFormOdm = function (form, cb) {
     var sections = [];
     var questions = [];
     var codeLists = [];
-    form.formElements.forEach(function (s1, si) {
+    form.formElements.forEach(function (s1,si) {
         var childrenOids = [];
         s1.formElements.forEach(function (q1, qi) {
             var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
@@ -171,7 +162,7 @@ exports.getFormOdm = function (form, cb) {
                     }
                 });
 
-                if (!codeListAlreadyPresent) {
+                if (!codeListAlreadyPresent){
                     odmQuestion.CodeListRef = {'@CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
                     var codeList = {
@@ -212,9 +203,8 @@ exports.getFormOdm = function (form, cb) {
             , '@Repeating': 'No'
             , Description: {
                 TranslatedText: {
-                    '@xml:lang': 'en',
-                    'keyValue': s1.label
-                }
+                    '@xml:lang':'en',
+                    'keyValue': s1.label}
             }
             , ItemRef: childrenOids.map(function (oid, i) {
                 return {
@@ -225,14 +215,8 @@ exports.getFormOdm = function (form, cb) {
             })
         });
     });
-    sections.forEach(function (s) {
-        odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
-    });
-    questions.forEach(function (s) {
-        odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
-    });
-    codeLists.forEach(function (cl) {
-        odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
-    });
+    sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);});
+    questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);});
+    codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);});
     cb(null, odmJsonForm);
 };
