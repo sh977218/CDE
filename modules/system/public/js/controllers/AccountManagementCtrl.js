@@ -10,6 +10,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.transferStewardObj = {from:'', to:''};
     $scope.allUsernames = [];
 
+
+
     function resetTransferStewardObj() {
         $scope.transferStewardObj.from = '';
         $scope.transferStewardObj.to = '';
@@ -183,7 +185,20 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             }
         );
     };
-    
+    $scope.getSuggestedTags = function (search) {
+        var newSuggestTags =$scope.orgs.propertyKeys;
+        if (search && newSuggestTags.indexOf(search) === -1) {
+            newSuggestTags.unshift(search);
+        }
+        //SAVE when you change variables
+        return newSuggestTags;
+    };
+
+
+  /*  angular.watch($scope.org,function(){
+            //todo: check the api and fix it!!!!!!!!!!!
+    });
+*/
     $scope.updateOrg = function(c) {
         $timeout(function(){
             AccountManagement.updateOrg(c,
@@ -232,5 +247,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
     $scope.getAllUsernames();
+
 }
 ]);

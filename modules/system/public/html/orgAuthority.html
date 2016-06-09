@@ -107,7 +107,15 @@
             </table>
         </div>
         <div uib-tab heading="List Management">
-            <p>Lists</p>
+            <!--
+            <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="orgs" theme="bootstrap" sortable="true">
+                <ui-select-match placeholder="Select colors...">{{$item.name}}</ui-select-match>
+                <ui-select-choices repeat="name in getSuggestedTags($select.search) | filter: {name: $select.search}">
+                    {{name}}
+                </ui-select-choices>
+            </ui-select>
+            <p>Selected: {{name}}</p>
+            -->
             <table class="table table-border table-responsive">
                 <tr>
                     <th>Organization Name:</th>
@@ -116,12 +124,34 @@
 
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
+
+
+
+
+
+
                     <td id="orgListName-{{c.name}}">
                         {{c.name}}
                     </td>
+
+
+
+
                     <td>
                         <div inline-edit id="orgListKeys-{{c.name}}" model="c.propertyKeys"
-                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                             is-allowed="true" on-ok="updateOrg(c)">
+
+                        </div>
+
+                        <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="c.propertyKeys" theme="bootstrap" sortable="true">
+                            <ui-select-match placeholder="Select ...">{{$item.propertyKeys}}</ui-select-match>
+                            <ui-select-choices repeat="name in getSuggestedTags($select.search) | filter: {name: $select.search}">
+                                {{c.propertyKeys}}
+                            </ui-select-choices>
+                        </ui-select>
+                        <p>Selected: {{name}}</p>
+
+
                     </td>
                     <td>
                         <div inline-edit id="orgListContexts-{{c.name}}" model="c.nameContexts"
