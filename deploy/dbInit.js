@@ -98,6 +98,7 @@ var users = [
         , roles: ["OrgAuthority"]}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
     , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
+    , {username: 'tagBoardUsers', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
 ];
 
 users.forEach(function(u) {
