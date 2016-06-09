@@ -217,7 +217,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                         if (fe.elementType === 'form') {
                             depth++;
                             if (depth < maxDepth) {
-                                $http.get('/formByTinyIdAndVersion/' + fe.form.formTinyId + '/' + fe.form.formVersion).then(function (result) {
+                                $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version).then(function (result) {
                                     fe.formElements = result.data.formElements;
                                     loopFormElements(fe, function () {
                                         depth--;
@@ -235,7 +235,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                         }
                     }, function doneAll() {
                         cb();
-                    })
+                    });
                 }
                 else {
                     cb();
@@ -244,7 +244,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             loopFormElements(form, function () {
                 callback(form);
             });
-        };
+        }
 
         $scope.reload = function () {
             Form.get(query, function (form) {
