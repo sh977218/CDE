@@ -2,8 +2,8 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
     function($scope, OrgHelpers, RegStatusValidator)
     {
 
-        $scope.getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
-        var cdeOrgRules = $scope.getOrgRulesForCde($scope.elt);
+        var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
+        var cdeOrgRules = getOrgRulesForCde($scope.elt);
         $scope.cdeStatusRules = RegStatusValidator.getStatusRules(cdeOrgRules);
         $scope.cdePassingRule = RegStatusValidator.cdePassingRule;
         $scope.conditionsMetForStatusWithinOrg = RegStatusValidator.conditionsMetForStatusWithinOrg;
@@ -19,8 +19,6 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
             };
             return map[rule.targetStatus];
         };
-
-
 
         $scope.showStatus = function (status) {
             return Object.keys(status).length > 0;

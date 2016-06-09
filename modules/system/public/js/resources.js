@@ -254,6 +254,7 @@ angular.module('resourcesSystem', ['ngResource'])
 
         var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
             var orgRules = cdeOrgRules[orgName];
+            if (!orgRules) return true;
             var rules = orgRules.filter(function (r) {
                 var s = r.targetStatus;
                 if (status === 'Incomplete') return s === 'Incomplete';

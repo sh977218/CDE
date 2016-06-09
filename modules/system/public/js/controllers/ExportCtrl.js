@@ -53,10 +53,19 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     },
                     'validationRules': function(result){
                         var orgName = 'TEST';
+                        var cdes = [];
                         JSON.parse(result).forEach(function (oneElt) {
                             //console.log(oneElt);
 
+
+                            var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
+                            var cdeOrgRules = getOrgRulesForCde(oneElt);
+                            //$scope.cdeStatusRules = RegStatusValidator.getStatusRules(cdeOrgRules);
+                            //
+                            //$scope.cdePassingRule = RegStatusValidator.cdePassingRule;
+                            if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, "TEST", "Qualified", cdeOrgRules)) cdes.push(oneElt.tinyId);
                         });
+                        console.log(cdes);
                     }
                 };
                 if (result) {
