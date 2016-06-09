@@ -1,7 +1,4 @@
-
-
 <div class="container">
-
     <h3>Embed CDE on your site</h3>
 
     <label for="selection.org">Org to embed</label>
@@ -34,6 +31,19 @@
 
     <p>To improve readability, you may also include the following in the HEAD section of your HTML.</p>
     <blockquote ng-if="selection.org" ng-bind="styles"></blockquote>
+
+    <p>To embed this iFrame into a response site, you may include it inside a div tag, like so:</p>
+    <blockquote>
+        &lt;div id="nlmcdeFrame">
+        insert frame here
+        &lt;/div>
+    </blockquote>
+    <p>Then include the following code in a script</p>
+    <blockquote>
+        jQuery(window).resize(function(){
+            jQuery("#nlmcdeIFrame").width(jQuery('.nlmcdeFrame').width()-400);
+        })
+    </blockquote>
 
 
 </div>

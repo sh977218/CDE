@@ -11,7 +11,7 @@ angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scop
     };
 
     $scope.getEmbedCode = function() {
-        return "<iframe type='text/html' src='http://localhost:3001/embedded/public/html/index.html?org=" +
+        return "<iframe type='text/html' id='nlmcdeIFrame' src='http://localhost:3001/embedded/public/html/index.html?org=" +
             $scope.selection.org + "&primaryDefinition=" + $scope.selection.primaryDefinition +
             "&sourceId=" + $scope.selection.sourceId +
             "&sourceVersion=" + $scope.selection.sourceVersion +
