@@ -1,5 +1,5 @@
 <div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements)"
-     class="panel panel-default formRenderSection formRenderPanel" id="formRenderSection_{{section.label}}" >
+     class="panel panel-default formRenderSection formRenderPanel" id="formRenderSection_{{section.label}}">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-9">
@@ -39,6 +39,9 @@
                     <div ng-if="formElement.elementType === 'section'"
                          ng-include="'/form/public/html/formRenderSection.html'"
                          ng-init="formElements = section.formElements; section = formElement;"></div>
+                    <div ng-if="formElement.elementType === 'form'"
+                         ng-include="'/form/public/html/formRenderForm.html'"
+                         ng-init="innerForm = formElement;" ng-controller="FormRenderFormCtrl"></div>
                 </div>
             </div>
         </div>

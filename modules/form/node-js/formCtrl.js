@@ -108,7 +108,6 @@ function fetchWholeForm(Form, callback) {
                         mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
                             fe.formElements = result.formElements;
                             fe.label = result.naming[0].designation;
-                            fe.elementType = 'section';
                             loopFormElements(fe, function () {
                                 depth--;
                                 doneOne();
@@ -146,47 +145,6 @@ exports.wholeFormById = function (req, res) {
     });
 };
 
-function fetchWholeForm(Form, callback) {
-    var maxDepth = 8;
-    var depth = 0;
-    var form = JSON.parse(JSON.stringify(Form));
-    var loopFormElements = function (form, cb) {
-        if (form.formElements) {
-            async.forEach(form.formElements, function (fe, doneOne) {
-                if (fe.elementType === 'form') {
-                    depth++;
-                    if (depth < maxDepth) {
-                        mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
-                            fe.formElements = result.formElements;
-                            fe.label = result.naming[0].designation;
-                            fe.elementType = 'section';
-                            loopFormElements(fe, function () {
-                                depth--;
-                                doneOne();
-                            });
-                        });
-                    } else {
-                        doneOne();
-                    }
-                } else if (fe.elementType === 'section') {
-                    loopFormElements(fe, function () {
-                        doneOne();
-                    });
-                } else {
-                    doneOne();
-                }
-            }, function doneAll() {
-                cb();
-            })
-        }
-        else {
-            cb();
-        }
-    };
-    loopFormElements(form, function () {
-        callback(form);
-    });
-};
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     fetchWholeForm(form, function (wholeForm) {

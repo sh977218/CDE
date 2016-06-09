@@ -22,9 +22,15 @@
              ng-init="question = formElement; parent = elt;"></div>
         <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
              ng-init="parent = elt; section = formElement; "></div>
-        <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formViewForm.html'"
-             ng-init="innerForm = formElement;" ng-controller="FormRenderFormCtrl"></div>
+        <div ng-if="formElement.elementType === 'form'">
+            <div class="panel panel-default formRenderPanel">
+                <div class="panel-heading questionSectionTitle">
+                    <a href="formView?tinyId={{formElement.form.formTinyId}}"><i class="fa fa-eye"></i>{{formElement.label}}</a>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
 </div>
 <button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">

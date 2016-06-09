@@ -103,7 +103,7 @@ var doSection = function (parent, section) {
     section.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'question') {
             doQuestion(newSection.Section.ChildItems, formElement);
-        } else if (formElement.elementType === 'section') {
+        } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
             doSection(newSection.Section.ChildItems, formElement);
         }
     });
