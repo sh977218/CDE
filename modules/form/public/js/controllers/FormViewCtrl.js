@@ -209,6 +209,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         };
 
         function fetchWholeForm(Form, callback) {
+            var maxDepth = 8;
             var depth = 0;
             var form = angular.copy(Form);
             var loopFormElements = function (form, cb) {
@@ -216,13 +217,16 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                     async.forEach(form.formElements, function (fe, doneOne) {
                         if (fe.elementType === 'form') {
                             depth++;
-                            $http.get('/formByTinyIdAndVersion/' + fe.form.formTinyId + '/' + fe.form.formVersion).then(function (result) {
-                                fe.formElements = result.data.formElements;
-                                loopFormElements(fe, function () {
-                                    depth--;
-                                    doneOne();
+                            if (depth < maxDepth) {
+                                $http.get('/formByTinyIdAndVersion/' + fe.form.formTinyId + '/' + fe.form.formVersion).then(function (result) {
+                                    fe.formElements = result.data.formElements;
+                                    loopFormElements(fe, function () {
+                                        depth--;
+                                        doneOne();
+                                    });
                                 });
-                            });
+                            }
+                            else doneOne();
                         } else if (fe.elementType === 'section') {
                             loopFormElements(fe, function () {
                                 doneOne();

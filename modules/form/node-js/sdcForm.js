@@ -1,6 +1,6 @@
 var xmlbuilder = require("xmlbuilder")
     , JXON = require('jxon')
-;
+    ;
 
 
 //var addCardinality = function(parent, formElement) {
@@ -8,7 +8,6 @@ var xmlbuilder = require("xmlbuilder")
 //    card.ele("mfi13:minimum", {}, "0");
 //    card.ele("mfi13:maximum", {}, "1");
 //};
-
 
 
 function addQuestion(parent, question) {
@@ -29,11 +28,11 @@ function addQuestion(parent, question) {
 
     if (question.question.datatype === 'Value List') {
         newQuestion.Question.ListField = {"List": {"ListItem": []}};
-        if(question.question.multiselect) newQuestion.Question.ListField["@multiSelect"] = "true";
+        if (question.question.multiselect) newQuestion.Question.ListField["@multiSelect"] = "true";
 
         if (question.question.answers) {
-            question.question.answers.forEach(function(answer) {
-                var title =  answer.valueMeaningName?answer.valueMeaningName:answer.permissibleValue;
+            question.question.answers.forEach(function (answer) {
+                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 newQuestion.Question.ListField.List.ListItem.push({"@title": title});
             });
         }
@@ -56,7 +55,7 @@ function doQuestion(parent, question) {
     try {
         if (question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function(t) {
+                var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
                     return t.substr(1, t.length - 2);
                 });
                 if (terms.length === 2) {
@@ -93,7 +92,7 @@ function doQuestion(parent, question) {
 
 var questionsInSection = {};
 
-var doSection = function(parent, section) {
+var doSection = function (parent, section) {
     var newSection = {
         "Section": {
             "@title": section.label,
@@ -101,7 +100,7 @@ var doSection = function(parent, section) {
         }
     };
 
-    section.formElements.forEach(function(formElement) {
+    section.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'question') {
             doQuestion(newSection.Section.ChildItems, formElement);
         } else if (formElement.elementType === 'section') {
@@ -118,8 +117,7 @@ var doSection = function(parent, section) {
 
 var idToName = {};
 
-exports.formToSDC = function(form) {
-
+exports.formToSDC = function (form) {
     var root = {
         "FormDesign": {
             "@xmlns:sdc": "http://healthIT.gov/sdc",
@@ -138,32 +136,8 @@ exports.formToSDC = function(form) {
         }
     };
 
-    //form.properties.forEach(function(prop) {
-    //   if  (prop.key.toLowerCase().indexOf("header_") === 0) {
-    //       if (prop.valueFormat === "html") {
-    //           try {
-    //               root.FormDesign.Header.OtherText.push({
-    //                   "@val": "html", "@type": "title", "@styleClass": "title", "@name": "title",
-    //                   HTML: {
-    //                       div: {
-    //                           "@xmlns": "http://www.w3.org/1999/xhtml",
-    //                           "@xsi:schemaLocation": "http://www.w3.org/1999/xhtml xhtml.xsd",
-    //                           div: JXON.stringToJs(prop.value)
-    //                       }
-    //                   }
-    //               });
-    //           } catch (e) {
-    //               console.log(e)
-    //               console.log("skipping " + prop.key);
-    //           }
-    //       } else {
-    //           root.FormDesign.Header.OtherText.push({"@val": prop.value})
-    //       }
-    //   }
-    //});
-
-    form.formElements.forEach(function(formElement) {
-        if (formElement.elementType === 'section') {
+    form.formElements.forEach(function (formElement) {
+        if (formElement.elementType === 'section' || formElement.elementType === 'form') {
             doSection(root.FormDesign.Body.ChildItems, formElement);
         }
     });

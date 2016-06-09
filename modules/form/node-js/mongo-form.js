@@ -162,12 +162,6 @@ exports.eltByTinyId = function (tinyId, callback) {
     if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
     else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
 };
-exports.wholeEltByTinyId = function (tinyId, callback) {
-    if (!tinyId) callback("tinyId is undefined!", null);
-    if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);
-    else Form.findOne({'tinyId': tinyId, "archived": null}).exec(callback);
-};
-
 
 exports.removeAttachmentLinks = function (id) {
     adminItemSvc.removeAttachmentLinks(id, Form);
