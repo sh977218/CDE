@@ -1,5 +1,6 @@
-var async = require('async'),
-    mongo_data_form = require('../node-js/mongo-form')
+/*var async = require('async'),
+ mongo_data_form = require('../node-js/mongo-form')
+ ;*/
 
 if (typeof(exports) === "undefined") {
     exports = {};
@@ -234,45 +235,4 @@ exports.getFormOdm = function (form, cb) {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(null, odmJsonForm);
-};
-
-exports.fetchWholeForm = function (Form, callback) {
-    var maxDepth = 8;
-    var depth = 0;
-    var form = JSON.parse(JSON.stringify(Form));
-    var loopFormElements = function (form, cb) {
-        if (form.formElements) {
-            async.forEach(form.formElements, function (fe, doneOne) {
-                if (fe.elementType === 'form') {
-                    depth++;
-                    if (depth < maxDepth) {
-                        mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
-                            fe.formElements = result.formElements;
-                            fe.elementType = 'section';
-                            loopFormElements(fe, function () {
-                                depth--;
-                                doneOne();
-                            });
-                        });
-                    } else {
-                        doneOne();
-                    }
-                } else if (fe.elementType === 'section') {
-                    loopFormElements(fe, function () {
-                        doneOne();
-                    });
-                } else {
-                    doneOne();
-                }
-            }, function doneAll() {
-                cb();
-            })
-        }
-        else {
-            cb();
-        }
-    };
-    loopFormElements(form, function () {
-        callback(form);
-    });
 };

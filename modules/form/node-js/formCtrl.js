@@ -6,7 +6,7 @@ var mongo_data_form = require('./mongo-form'),
     sdc = require('./sdcForm'),
     redCap = require('./redCapForm'),
     archiver = require('archiver'),
-    formShared = require('../shared/formShared')
+    async = require('async')
     ;
 
 exports.findForms = function (req, res) {
@@ -95,20 +95,101 @@ exports.formById = function (req, res) {
         else getFormJson(form, req, res);
     });
 };
-
+function fetchWholeForm(Form, callback) {
+    var maxDepth = 8;
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
+                            fe.formElements = result.formElements;
+                            fe.label = result.naming[0].designation;
+                            fe.elementType = 'section';
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            })
+        }
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+};
 exports.wholeFormById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-        formShared.fetchWholeForm(form, function (f) {
+        fetchWholeForm(form, function (f) {
             res.send(f);
         })
     });
 };
 
+function fetchWholeForm(Form, callback) {
+    var maxDepth = 8;
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_data_form.byTinyIdAndVersion(fe.form.formTinyId, fe.form.formVersion, function (err, result) {
+                            fe.formElements = result.formElements;
+                            fe.label = result.naming[0].designation;
+                            fe.elementType = 'section';
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            })
+        }
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+};
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
-    formShared.fetchWholeForm(form, function (wholeForm) {
+    fetchWholeForm(form, function (wholeForm) {
         res.send(sdc.formToSDC(wholeForm));
     });
 };
