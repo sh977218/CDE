@@ -311,10 +311,30 @@ angular.module('resourcesSystem', ['ngResource'])
             return result;
         };
 
+        var getStatusRules = function(cdeOrgRules){
+            var cdeStatusRules = {
+                Incomplete: {},
+                Candidate: {},
+                Recorded: {},
+                Qualified: {},
+                Standard: {},
+                "Preferred Standard": {}
+            };
+
+            Object.keys(cdeOrgRules).forEach(function (orgName) {
+                cdeOrgRules[orgName].forEach(function (rule) {
+                    if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
+                    cdeStatusRules[rule.targetStatus][orgName].push(rule);
+                });
+            });
+            return cdeStatusRules;
+        };
+
         return {
             conditionsMetForStatusWithinOrg: conditionsMetForStatusWithinOrg
             , cdePassingRule: cdePassingRule
             , getOrgRulesForCde: getOrgRulesForCde
+            , getStatusRules: getStatusRules
         };
     })
 ;

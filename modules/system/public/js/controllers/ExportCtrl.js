@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
-    function ($scope, Elastic, SearchSettings, $http) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -52,8 +52,10 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
                     },
                     'validationRules': function(result){
+                        var orgName = 'TEST';
                         JSON.parse(result).forEach(function (oneElt) {
-                            console.log(oneElt);
+                            //console.log(oneElt);
+
                         });
                     }
                 };
