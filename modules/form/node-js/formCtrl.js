@@ -108,8 +108,9 @@ exports.wholeFormById = function (req, res) {
 
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
-    var wholeForm = '';
-    res.send(sdc.formToSDC(wholeForm));
+    formShared.fetchWholeForm(form, function (wholeForm) {
+        res.send(sdc.formToSDC(wholeForm));
+    });
 };
 var exportWarnings = {
     'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
