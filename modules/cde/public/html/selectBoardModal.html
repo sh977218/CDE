@@ -1,14 +1,18 @@
 <div class="modal-header">
     <h3>Choose a Board to pin this CDE to</h3>
 </div>
-<div ng-switch="boards.length" class="row" style="margin-top: 10px">
+<div ng-switch="boards.length" class="row" style="margin-top: 10px" ng-controller="MyBoardsCtrl">
     <div ng-switch-when="0">
-        <div>No Boards</div>
-        <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()" id="addBoard"><i
-                class="fa fa-plus"> </i> Add Board
-        </button>
+        <div class="col-md-12">
+            <div style="margin-left: 10px"> You don't have any boards</div>
+            <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()"
+                    id="addBoard" style="margin-bottom: 10px;">
+                <i class="fa fa-plus"> </i> Add Board
+            </button>
+            <i ng-show="reloading" class="fa fa-spinner fa-spin"></i>
+        </div>
     </div>
-    <div ng-switch-default ng-controller="MyBoardsCtrl">
+    <div ng-switch-default >
         <div class="col-md-3">
             <div style="padding-left: 10px">
                 <form id="searchBoardsForm">

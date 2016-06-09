@@ -1,22 +1,25 @@
-angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout',
-    function ($scope, $modal, $http, SearchSettings, ElasticBoard, $timeout) {
-
-        $scope.filter = {
-            tags: [],
-            shareStatus: [],
-            getSuggestedTags: function (search) {
-                var newSuggestTags = this.suggestTags.slice();
-                if (search && newSuggestTags.indexOf(search) === -1) {
-                    newSuggestTags.unshift(search);
-                }
-                return newSuggestTags;
-            },
-            sortBy: 'name',
-            sortDirection: 'asc',
-            selectedShareStatus: [],
-            selectedTags: [],
-            suggestTags: []
-        };
+angular.module('cdeModule').controller('MyBoardsCtrl',
+    ['$scope', '$uibModal', '$http', 'SearchSettings', 'ElasticBoard', '$timeout', 'Alert',
+    function ($scope, $modal, $http, SearchSettings, ElasticBoard, $timeout, Alert) {
+        
+        if (!$scope.filter) {
+            $scope.filter = {
+                tags: [],
+                shareStatus: [],
+                getSuggestedTags: function (search) {
+                    var newSuggestTags = this.suggestTags.slice();
+                    if (search && newSuggestTags.indexOf(search) === -1) {
+                        newSuggestTags.unshift(search);
+                    }
+                    return newSuggestTags;
+                },
+                sortBy: 'createdDate',
+                sortDirection: 'desc',
+                selectedShareStatus: [],
+                selectedTags: [],
+                suggestTags: []
+            };
+        }
 
         $scope.loadMyBoards = function (cb) {
             ElasticBoard.loadMyBoards($scope.filter, function (response) {
@@ -33,6 +36,16 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             });
         };
 
+        var waitAndReload = function() {
+            $scope.reloading = true;
+            $timeout(function () {
+                $scope.loadMyBoards(function () {
+                    $scope.reloading = false;
+                    Alert.addAlert("success", "Done");
+                });
+            }, 2000);
+        };
+
         $scope.canEditBoard = function () {
             return true;
         };
@@ -41,11 +54,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
 
         $scope.removeBoard = function (index) {
             $http['delete']("/board/" + $scope.boards[index]._id).then(function () {
-                $timeout(function () {
-                    $scope.loadMyBoards(function () {
-                        $scope.addAlert("success", "Board removed");
-                    });
-                }, 2000);
+                waitAndReload();
             });
         };
 
@@ -68,13 +77,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
         $scope.save = function (board) {
             delete board.editMode;
             $http.post("/board", board).success(function () {
-                $timeout(function () {
-                    $scope.loadMyBoards(function () {
-                        $scope.addAlert("success", "Saved");
-                    });
-                }, 2000);
+                waitAndReload();
             }).error(function (response) {
-                $scope.addAlert("danger", response);
+                Alert.addAlert("danger", response);
             });
         };
 
@@ -88,13 +93,9 @@ angular.module('cdeModule').controller('MyBoardsCtrl', ['$scope', '$uibModal', '
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
                 $http.post("/board", newBoard).success(function () {
-                    $timeout(function () {
-                        $scope.loadMyBoards(function () {
-                            $scope.addAlert("success", "Board created.");
-                        });
-                    }, 2000);
+                    waitAndReload();
                 }).error(function (message) {
-                    $scope.addAlert("danger", message);
+                    Alert.addAlert("danger", message);
                 });
             });
         };
