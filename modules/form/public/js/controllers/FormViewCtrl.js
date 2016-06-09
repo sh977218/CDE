@@ -208,10 +208,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             }
         };
 
-        function fetchWholeForm(Form, callback) {
+        function fetchWholeForm(form, callback) {
             var maxDepth = 8;
             var depth = 0;
-            var form = angular.copy(Form);
             var loopFormElements = function (form, cb) {
                 if (form.formElements) {
                     async.forEach(form.formElements, function (fe, doneOne) {
@@ -249,8 +248,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
 
         $scope.reload = function () {
             Form.get(query, function (form) {
-                fetchWholeForm(form, function (f) {
-                    $scope.elt = f;
+                var formCopy = angular.copy(form);
+                fetchWholeForm(formCopy, function (wholeForm) {
+                    $scope.elt = wholeForm;
                     if (exports.hasRole(userResource.user, "FormEditor")) {
                         isAllowedModel.setCanCurate($scope);
                     }
