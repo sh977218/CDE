@@ -36,12 +36,9 @@
                         <div class="col-md-12" ng-include="'/form/public/html/formRenderQuestion.html'"
                              ng-init="formElements = section.formElements; question = formElement; question.question.answer = question.question.defaultAnswer"></div>
                     </div>
-                    <div ng-if="formElement.elementType === 'section'"
+                    <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
                          ng-include="'/form/public/html/formRenderSection.html'"
                          ng-init="formElements = section.formElements; section = formElement;"></div>
-                    <div ng-if="formElement.elementType === 'form'"
-                         ng-include="'/form/public/html/formRenderForm.html'"
-                         ng-init="innerForm = formElement;" ng-controller="FormRenderFormCtrl"></div>
                 </div>
             </div>
         </div>

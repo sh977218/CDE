@@ -194,10 +194,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
             });
             return result;
         };
-
-        $scope.renderOptions = {disable: false, type: 'form'};
         setSelectedProfile();
-        
     }]);
 
 
