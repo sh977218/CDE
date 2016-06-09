@@ -185,20 +185,72 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             }
         );
     };
-    $scope.getSuggestedTags = function (search) {
-        var newSuggestTags =$scope.orgs.propertyKeys;
-        if (search && newSuggestTags.indexOf(search) === -1) {
-            newSuggestTags.unshift(search);
+
+
+    var uniqueKeys = [];
+
+    $scope.getExistingKeys = function (newKey) {
+        var result = [];
+        for (i = 0; i < uniqueKeys.length; i++) {
+           result.push(uniqueKeys[i]);
         }
-        //SAVE when you change variables
-        return newSuggestTags;
+        result.push(newKey);
+        return result;
+    };
+
+    $scope.updateOrgPropKey = function(o, propertyKey) {
+        $timeout(function(){
+            AccountManagement.updateOrg(o,
+                function(res) {
+                    for (var i = 0, len = propertyKey.length; i < len; i++) {
+                        if (uniqueKeys.indexOf(propertyKey[i]) == -1){
+                            uniqueKeys.push(propertyKey[i]);
+                        }
+                    }
+
+                    $scope.addAlert("success", res);
+                    $scope.orgs = $scope.getOrgs();
+                },
+                function(res) {
+                    $scope.addAlert("danger", res);
+                }
+            );
+        },0);
+    };
+
+    var uniqueContexts = [];
+
+    $scope.getExistingContexts = function (newContext) {
+        var result = [];
+        for (i = 0; i < uniqueContexts.length; i++) {
+            result.push(uniqueContexts[i]);
+        }
+        result.push(newContext);
+        return result;
+    };
+
+    $scope.updateOrgContexts = function(o, contexts) {
+        $timeout(function(){
+            AccountManagement.updateOrg(o,
+                function(res) {
+                    for (var i = 0, len = contexts.length; i < len; i++) {
+                        if (uniqueContexts.indexOf(contexts[i]) == -1){
+                            uniqueContexts.push(contexts[i]);
+                        }
+                    }
+
+                    $scope.addAlert("success", res);
+                    $scope.orgs = $scope.getOrgs();
+                },
+                function(res) {
+                    $scope.addAlert("danger", res);
+                }
+            );
+        },0);
     };
 
 
-  /*  angular.watch($scope.org,function(){
-            //todo: check the api and fix it!!!!!!!!!!!
-    });
-*/
+
     $scope.updateOrg = function(c) {
         $timeout(function(){
             AccountManagement.updateOrg(c,

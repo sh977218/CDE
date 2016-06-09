@@ -107,55 +107,58 @@
             </table>
         </div>
         <div uib-tab heading="List Management">
-            <!--
-            <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="orgs" theme="bootstrap" sortable="true">
-                <ui-select-match placeholder="Select colors...">{{$item.name}}</ui-select-match>
-                <ui-select-choices repeat="name in getSuggestedTags($select.search) | filter: {name: $select.search}">
-                    {{name}}
-                </ui-select-choices>
-            </ui-select>
-            <p>Selected: {{name}}</p>
-            -->
             <table class="table table-border table-responsive">
                 <tr>
                     <th>Organization Name:</th>
                     <th>Properties:</th>
                     <th>Context:</th>
-
                 </tr>
-                <tr ng-repeat="c in orgs | orderBy:'name'">
-
-
-
-
-
-
-                    <td id="orgListName-{{c.name}}">
-                        {{c.name}}
+                <tr  ng-repeat="o in orgs | orderBy:'name'">
+                    <td id="orgListName-{{o.name}}">
+                        {{o.name}}
                     </td>
-
-
-
-
                     <td>
-                        <div inline-edit id="orgListKeys-{{c.name}}" model="c.propertyKeys"
-                             is-allowed="true" on-ok="updateOrg(c)">
-
-                        </div>
-
-                        <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="c.propertyKeys" theme="bootstrap" sortable="true">
-                            <ui-select-match placeholder="Select ...">{{$item.propertyKeys}}</ui-select-match>
-                            <ui-select-choices repeat="name in getSuggestedTags($select.search) | filter: {name: $select.search}">
-                                {{c.propertyKeys}}
+                        <span ng-if="!propertyKeys.editMode" ng-repeat="p in o.propertyKeys">
+                            <span class="label label-default">{{p}}</span>
+                        </span>
+                        <ui-select multiple ng-show="propertyKeys.editMode" sortable="true" ng-model="o.propertyKeys"
+                                   theme="select2" style="width: 100%">
+                            <ui-select-match placeholder="type or select a Property" allow-clear="true">
+                                {{$item}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="p in getExistingKeys($select.search) | filter: $select.search  track by $index">
+                                <div ng-bind-html="p | highlight: $select.search"></div>
                             </ui-select-choices>
                         </ui-select>
-                        <p>Selected: {{name}}</p>
-
-
+                        <span ng-show="propertyKeys.editMode">Save?
+                            <i class="fa fa-check" ng-click="updateOrgPropKey(o, o.propertyKeys)" id="confirmEdit_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="getOrgs()"></i>
+                        </span>
+                        <span ng-hide="propertyKeys.editMode">
+                            <i class="fa fa-pencil" ng-click="propertyKeys.editMode = true" id="edit_org_props_{{$index}}"></i>
+                        </span>
                     </td>
                     <td>
-                        <div inline-edit id="orgListContexts-{{c.name}}" model="c.nameContexts"
-                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                        <span ng-if="!nameContexts.editMode" ng-repeat="p in o.nameContexts">
+                            <span class="label label-default">{{p}}</span>
+                        </span>
+                        <ui-select multiple ng-show="nameContexts.editMode" sortable="true" ng-model="o.nameContexts"
+                                   theme="select2" style="width: 100%">
+                            <ui-select-match placeholder="type or select a Context" allow-clear="true">
+                                {{$item}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="p in getExistingContexts($select.search) | filter: $select.search  track by $index">
+                                <div ng-bind-html="p | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span ng-show="nameContexts.editMode">Save?
+                            <i class="fa fa-check" ng-click="updateOrgContexts(o, o.nameContexts)" id="confirmContextEdit_{{$index}}"></i>
+                            <i class="fa fa-times" ng-click="getOrgs()"></i>
+                        </span>
+                        <span ng-hide="nameContexts.editMode">
+                            <i class="fa fa-pencil" ng-click="nameContexts.editMode = true" id="edit_org_propsContext_{{$index}}"></i>
+                        </span>
+
                     </td>
 
                 </tr>
