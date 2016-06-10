@@ -166,7 +166,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: orgName}).save(function (e) {
+                    new MigrationOrgModel({name: orgName, classifications: []}).save(function (e, o) {
                         if (e) throw e;
                         cb();
                     });
