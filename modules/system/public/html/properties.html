@@ -15,13 +15,15 @@
                     <span ng-click="showDelete = true" ng-hide="showDelete" class="btn-default fa fa-trash-o"
                           id="removeProperty-{{$index}}" title="Remove" href=""></span>
 
-                    <div sortable-array="elt.properties" index="$index" cb="stageElt(elt)"></div> 
+                    <div sortable-array="elt.properties" index="$index" cb="stageElt(elt)"></div>
                 </div>
             </div>
             <div class="col-md-11">
                 <dl class="dl-horizontal">
                     <dt tabindex="0">Key:</dt>
                     <dd tabindex="0" id="dd_name_{{$index}}">{{prop.key}}</dd>
+                    <dt tabindex="0">Source:</dt>
+                    <dd tabindex="0" id="dd_source_{{$index}}">{{prop.source}}</dd>
                     <dt tabindex="0">Value:</dt>
 
                     <dd tabindex="0" id="dd_prop_value_{{$index}}">

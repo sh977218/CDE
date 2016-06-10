@@ -1,14 +1,13 @@
 var async = require('async'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
     MigrationEyeGeneLoincModel = require('./../createConnection').MigrationEyeGeneLoincModel,
-    MigrationEyeGeneAnswerListModel = require('./../createConnection').MigrationEyeGeneAnswerListModel,
     MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
     MigrationLoincModal = require('./../createConnection').MigrationLoincModal,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-const orgName = "Newborn Screening";
+const orgName = "EyeGene";
 
 var cdeCounter = 0;
 var eyeGeneOrg = null;
@@ -143,7 +142,6 @@ function createCde(eyeGene, loinc) {
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
 
 
-
     newCde.valueDomain = {};
 
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
@@ -151,7 +149,7 @@ function createCde(eyeGene, loinc) {
         var type;
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
-        newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function(a){
+        newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function (a) {
             return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
         });
     } else {
@@ -190,9 +188,11 @@ function run() {
                 MigrationDataElementModel.find({'ids.id': eyeGene.LOINC_NUM}, function (err, existingCdes) {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
-                        MigrationLoincModal.find({loincId: eyeGene.LOINC_NUM, info: {$not:/^no loinc name/i}}, function (er, existingLoinc) {
+                        MigrationLoincModal.find({
+                            loincId: eyeGene.LOINC_NUM,
+                            info: {$not: /^no loinc name/i}
+                        }, function (er, existingLoinc) {
                             if (er) throw er;
-
 
 
                             if (existingLoinc.length === 0) {
@@ -211,49 +211,6 @@ function run() {
                                     console.log('cdeCounter: ' + cdeCounter);
                                     stream.resume();
                                 });
-
-                                //if (eyeGene.AnswerListId && eyeGene.AnswerListId.length === 0) {
-                                //    valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
-                                //    var newCdeObj = new MigrationDataElementModel(newCde);
-                                //    newCdeObj.save(function (err) {
-                                //        if (err) throw err;
-                                //        cdeCounter++;
-                                //        console.log('cdeCounter: ' + cdeCounter);
-                                //        stream.resume();
-                                //    });
-                                //} else {
-                                //    valueDomain.datatype = 'Value List';
-                                //    MigrationEyeGeneAnswerListModel.find({AnswerListId: eyeGene.AnswerListId}).sort({Sequence: 1}).exec(function (err, existingAnswerLists) {
-                                //        if (err) throw err;
-                                //        if (existingAnswerLists && existingAnswerLists.length === 0) {
-                                //            console.log('cannot find answer list of ' + eyeGene.AnswerListId);
-                                //        } else if (existingAnswerLists && existingAnswerLists.length > 0) {
-                                //            valueDomain.permissibleValues = [];
-                                //            valueDomain.identifiers = [];
-                                //            valueDomain.identifiers.push({source: 'LOINC', id: eyeGene.AnswerListId});
-                                //            existingAnswerLists.forEach(function (existingAnswerList) {
-                                //                valueDomain.permissibleValues.push({
-                                //                    valueMeaningName: existingAnswerList.get('AnswerString'),
-                                //                    valueMeaningCode: existingAnswerList.get('AnswerStringId'),
-                                //                    permissibleValue: existingAnswerList.get('AnswerString'),
-                                //                    codeSystemName: 'LOINC'
-                                //                });
-                                //            });
-                                //            newCde.valueDomain = valueDomain;
-                                //        } else {
-                                //            throw "answer list error";
-                                //        }
-                                //        var newCdeObj = new MigrationDataElementModel(newCde);
-                                //        newCdeObj.save(function (err) {
-                                //            if (err) throw err;
-                                //            cdeCounter++;
-                                //            console.log('cdeCounter: ' + cdeCounter);
-                                //            stream.resume();
-                                //        });
-                                //    });
-                                //}
-
-
                             }
                         });
                     } else {
