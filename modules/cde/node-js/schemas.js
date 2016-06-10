@@ -127,17 +127,18 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         username: String
     },
     pins: [pinSchema]
+}, {
+    collection: 'pinningBoards'
 });
 
-schemas.dataElementSchema = new mongoose.Schema(exports.deJson);
+schemas.dataElementSchema = new mongoose.Schema(exports.deJson, {
+    collection: 'dataelements'
+});
 
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();
     next();
 });
-
-schemas.dataElementSchema.set('collection', 'dataelements');
-schemas.pinningBoardSchema.set('collection', 'pinningBoards');
 
 schemas.cdeAuditSchema = new mongoose.Schema({
     date: {type: Date, default: Date.now, index: true}
@@ -157,8 +158,9 @@ schemas.cdeAuditSchema = new mongoose.Schema({
         , name: String
     }
     , diff: Object
-}, {strict: false});
-
-schemas.cdeAuditSchema.set('collection', 'cdeAudit');
+}, {
+    strict: false,
+    collection: 'cdeAudit'
+});
 
 module.exports = schemas;

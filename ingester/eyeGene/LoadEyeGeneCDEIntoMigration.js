@@ -166,17 +166,12 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: orgName, classifications: []}).save(function (e, o) {
+                    new MigrationOrgModel({name: orgName}).save(function (e, org) {
                         if (e) throw e;
+                        eyeGeneOrg = org;
                         cb();
                     });
                 });
-            });
-        },
-        function (cb) {
-            MigrationOrgModel.findOne({"name": orgName}).exec(function (error, org) {
-                eyeGeneOrg = org;
-                cb();
             });
         },
         function (cb) {
