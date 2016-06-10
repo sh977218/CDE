@@ -10,7 +10,7 @@ DataElement.find({
     'classification.stewardOrg.name': 'PhenX',
     archived: null,
     'registrationState.registrationStatus': {$ne: "Retired"}
-}, function (err, DEs) {
+}, function (err, DEs) { 
     if (err) throw err;
     async.forEach(DEs, function (de, doneOneDe) {
         de.source = 'LOINC';
