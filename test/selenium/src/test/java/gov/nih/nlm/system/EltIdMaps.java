@@ -48,6 +48,7 @@ public class EltIdMaps {
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
+        eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
