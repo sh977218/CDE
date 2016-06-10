@@ -2,7 +2,8 @@ var mongoose = require('mongoose'),
     config = require('../modules/system/node-js/parseConfig'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     form_schemas = require('../modules/form/node-js/schemas'),
-    sharedSchemas = require('../modules/system/node-js/schemas.js')
+    sharedSchemas = require('../modules/system/node-js/schemas.js'),
+    Schema = mongoose.Schema
     ;
 
 
@@ -36,18 +37,9 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
     collection: 'EyeGENE_AnswerList'
 }));
 
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new mongoose.Schema(cde_schemas.deJson, {
-    strict: false,
-    collection: 'dataelements'
-}));
-exports.MigrationFormModel = migrationConn.model('MigrationForm', new mongoose.Schema(form_schemas.formJson, {
-    strict: false,
-    collection: 'forms'
-}));
-exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new mongoose.Schema(sharedSchemas.orgJson, {
-    strict: false,
-    collection: 'orgs'
-}));
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
+exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
+exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new mongoose.Schema({}, {
     strict: false,
     collection: 'PhenxToLoincMapping'

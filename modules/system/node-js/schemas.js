@@ -26,7 +26,7 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
-exports.orgJson = {
+schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
     , mailAddress: String
@@ -36,9 +36,7 @@ exports.orgJson = {
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
-};
-
-schemas.orgSchema = new mongoose.Schema(exports.orgJson);
+});
 
 schemas.userSchema = new mongoose.Schema({
     username: String
