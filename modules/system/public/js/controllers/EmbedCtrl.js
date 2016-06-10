@@ -10,15 +10,20 @@ angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scop
         height: 900
     };
 
+    //$scope.styles = "<style>html,body{height:100%;}.wrapper{width:80%;height:100%;margin:0 auto;background:#CCC}.h_iframe{position:relative;}.h_iframe .ratio {display:block;width:100%;height:auto;}.h_iframe iframe {position:absolute;top:0;left:0;width:100%; height:100%;} </style>";
+
+    $scope.styles = "These are the styles"
+
     $scope.getEmbedCode = function() {
-        return "<iframe type='text/html' id='nlmcdeIFrame' src='http://localhost:3001/embedded/public/html/index.html?org=" +
+        var res = "<iframe type='text/html' id='nlmcdeIFrame' src='http://localhost:3001/embedded/public/html/index.html?org=" +
             $scope.selection.org + "&primaryDefinition=" + $scope.selection.primaryDefinition +
             "&sourceId=" + $scope.selection.sourceId +
             "&sourceVersion=" + $scope.selection.sourceVersion +
             "&pageSize=" + $scope.selection.pageSize +
+            "&lowestRegistrationStatus=" + $scope.selection.lowestRegistrationStatus +
             "' width='" + $scope.selection.width + "px' height='" + $scope.selection.height + "px'></iframe>";
+        return "Kfjf";
     };
 
-    $scope.styles = "<style>html,body{height:100%;}.wrapper{width:80%;height:100%;margin:0 auto;background:#CCC}.h_iframe{position:relative;}.h_iframe .ratio {display:block;width:100%;height:auto;}.h_iframe iframe {position:absolute;top:0;left:0;width:100%; height:100%;} </style>";
 
 }]);

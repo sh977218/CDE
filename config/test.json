@@ -9,6 +9,16 @@
   "umls": {
     "wsHost": "https://localhost:4000"
   },
+  "database": {
+    "local": {
+      "db": "local",
+      "username": "siteRootAdmin",
+      "password": "password",
+      "options": {
+        "auth": {"authdb": "admin"}
+      }
+    }
+  },
   "vsac": {
     "username": "user",
     "password": "pass",

@@ -7,6 +7,8 @@
         <option ng-repeat="o in myOrgs" ng-value="o">{{o}}</option>
     </select>
 
+    <br>
+
     <input type="checkbox" ng-model="selection.primaryDefinition">
     <label>See Primary Definition</label>
     <br>
@@ -16,13 +18,49 @@
     <input type="checkbox" ng-model="selection.sourceVersion">
     <label>See Source Version</label>
     <br>
-    <input type="number" ng-model="selection.pageSize">
-    <label>Number of results per page</label>
     <br>
-    <input type="number" ng-model="selection.width" min="600">
+
+    <label>Number of results per page</label>
+    <input type="number" ng-model="selection.pageSize" class="form-control">
     <label>Width</label>
-    <input type="number" ng-model="selection.height" min="600">
+    <input type="number" ng-model="selection.width" min="600" class="form-control">
+
     <label>Height</label>
+    <input type="number" ng-model="selection.height" min="600" class="form-control">
+
+    <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
+    <div class="form-group">
+        <span>I want my search results to include these statuses</span>
+        <div class="radio indent">
+            <label>
+                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
+                       value="Qualified">
+                Preferred Standard, Standard, Qualified
+            </label>
+        </div>
+        <div class="radio indent">
+            <label>
+                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
+                       value="Recorded">
+                Preferred Standard, Standard, Qualified, Recorded
+            </label>
+        </div>
+        <div class="radio indent">
+            <label>
+                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
+                       value="Candidate">
+                Preferred Standard, Standard, Qualified, Recorded, Candidate
+            </label>
+        </div>
+        <div class="radio indent">
+            <label>
+                <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
+                       value="Incomplete">
+                Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
+            </label>
+        </div>
+    </div>
+
 
     <hr>
 
