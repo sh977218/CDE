@@ -82,6 +82,8 @@ function wipeRenderDisallowed (form, req, cb) {
             if (!isYouAllowed) form.formElements = [];
             cb();
         });
+    } else {
+        cb();
     }
 }
 
