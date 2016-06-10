@@ -72,7 +72,7 @@ angular.module('resourcesCde', ['ngResource'])
                 scope.$watch(attrs.ngModel, function () {
                     var lastVersion = scope.elt.version;
                     if (scope.elt.formElements) {
-                        url = '/formbytinyid/' + scope.elt.tinyId + "/" + scope.elt.version;
+                        url = '/formByTinyIdAndVersion/' + scope.elt.tinyId + "/" + scope.elt.version;
                     } else {
                         url = '/deExists/' + scope.elt.tinyId + "/" + scope.elt.version
                     }

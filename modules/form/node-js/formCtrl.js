@@ -5,7 +5,8 @@ var mongo_data_form = require('./mongo-form'),
     JXON = require('jxon'),
     sdc = require('./sdcForm'),
     redCap = require('./redCapForm'),
-    archiver = require('archiver')
+    archiver = require('archiver'),
+    async = require('async')
     ;
 
 exports.findForms = function (req, res) {
@@ -95,10 +96,64 @@ exports.formById = function (req, res) {
     });
 };
 
+function fetchWholeForm(Form, callback) {
+    var maxDepth = 8;
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_data_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
+                            fe.formElements = result.formElements;
+                            fe.label = result.naming[0].designation;
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            });
+        }
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+}
+
+exports.wholeFormById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        fetchWholeForm(form, function (f) {
+            res.send(f);
+        });
+    });
+};
+
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
-    res.send(sdc.formToSDC(form));
+    fetchWholeForm(form, function (wholeForm) {
+        res.send(sdc.formToSDC(wholeForm));
+    });
 };
+
 var exportWarnings = {
     'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
     'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
@@ -106,6 +161,7 @@ var exportWarnings = {
     'nestedSection': 'REDCap cannot support nested section.',
     'unknownElementType': 'This form has error.'
 };
+
 function loopForm(form) {
     function loopFormElements(fe, insideSection) {
         for (var i = 0; i < fe.formElements.length; i++) {
@@ -121,7 +177,6 @@ function loopForm(form) {
                     return loopFormElements(e, true);
                 }
             } else if (e.elementType === 'question') {
-                continue;
             } else {
                 console.log('unknown element type in form: ' + form);
                 return 'unknownElementType';
@@ -132,6 +187,7 @@ function loopForm(form) {
 
     return loopFormElements(form, false);
 }
+
 var getFormRedCap = function (form, response) {
     if (exportWarnings[form.stewardOrg.name]) {
         response.status(500).send(exportWarnings[form.stewardOrg.name]);
@@ -175,4 +231,18 @@ exports.priorForms = function (req, res) {
             res.send(priorForms);
         }
     });
+};
+
+exports.formByTinyIdVersion = function (req, res) {
+    if (req.params.version !== 'undefined') {
+        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else res.send(elt);
+        });
+    } else {
+        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else res.send(elt);
+        });
+    }
 };
