@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource',
-        function($scope, $http, $timeout, $location, AccountManagement, userResource)
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert)
 {
     $scope.admin = {};
     $scope.newOrg = {};
@@ -42,10 +42,20 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
     $scope.getSiteAdmins();
 
+    var allPropertyKeys = [];
+
     $scope.getOrgs = function() {
         $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
             $scope.orgNames = $scope.orgs.map(function(o) {return o.name;});
+            $scope.orgs.forEach(function (o) {
+                if (o.propertyKeys) {
+                    allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
+                }
+            });
+            allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
+                return self.indexOf(item) === pos;
+            });
         });
     };
     $scope.getOrgs(); 
@@ -186,45 +196,36 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-
-    var uniqueKeys = [];
-
     $scope.getExistingKeys = function (newKey) {
-        var result = [];
-        for (i = 0; i < uniqueKeys.length; i++) {
-           result.push(uniqueKeys[i]);
-        }
+        var result = allPropertyKeys.slice(0);
         result.push(newKey);
         return result;
     };
 
-    $scope.updateOrgPropKey = function(o, propertyKey) {
-        $timeout(function(){
-            AccountManagement.updateOrg(o,
-                function(res) {
-                    for (var i = 0, len = propertyKey.length; i < len; i++) {
-                        if (uniqueKeys.indexOf(propertyKey[i]) == -1){
-                            uniqueKeys.push(propertyKey[i]);
-                        }
-                    }
-
-                    $scope.addAlert("success", res);
-                    $scope.orgs = $scope.getOrgs();
-                },
-                function(res) {
-                    $scope.addAlert("danger", res);
-                }
-            );
-        },0);
-    };
+    //$scope.updateOrgPropKey = function(o) {
+    //    var propertyKeys = o.propertyKeys;
+    //    $timeout(function(){
+    //        AccountManagement.updateOrg(o,
+    //            function(res) {
+    //                propertyKeys.forEach(function(p) {
+    //                    if (uniqueKeys.indexOf(p) === -1) {
+    //                        uniqueKeys.push(p);
+    //                    }
+    //                });
+    //                $scope.addAlert("success", res);
+    //                $scope.orgs = $scope.getOrgs();
+    //            },
+    //            function(res) {
+    //                $scope.addAlert("danger", res);
+    //            }
+    //        );
+    //    },0);
+    //};
 
     var uniqueContexts = [];
 
     $scope.getExistingContexts = function (newContext) {
-        var result = [];
-        for (i = 0; i < uniqueContexts.length; i++) {
-            result.push(uniqueContexts[i]);
-        }
+        var result = allPropertyKeys.slice(0);
         result.push(newContext);
         return result;
     };
@@ -239,7 +240,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                         }
                     }
 
-                    $scope.addAlert("success", res);
+                    Alert.addAlert("success", res);
                     $scope.orgs = $scope.getOrgs();
                 },
                 function(res) {
@@ -248,8 +249,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             );
         },0);
     };
-
-
 
     $scope.updateOrg = function(c) {
         $timeout(function(){
