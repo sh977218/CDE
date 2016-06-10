@@ -28,6 +28,19 @@
                 </div>
                 <div class="row">
                     <div tabindex="0" class="col-lg-2 col-md-2"><strong>Context:</strong></div>
+
+                        <select model="namePair.context.contextName"  change="updateContext()">
+                            <option ng-repeat="x in allContexts" value="{{x}}">{{x}}</option>
+
+                        </select>
+                        <br>
+                        <br>
+                        <!--
+                        <div tabindex="0" class="col-lg-10 col-md-10" id="dd_context_{{$index}}">
+                        <span inline-edit id="nameEdit" model="namePair.context.contextName"
+                        is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>
+
+                            -->
                     <div tabindex="0" class="col-lg-10 col-md-10" id="dd_context_{{$index}}">
                         <span inline-edit id="nameEdit" model="namePair.context.contextName"
                               is-allowed="canCurate" on-ok="stageNewName(namePair)"></span></div>

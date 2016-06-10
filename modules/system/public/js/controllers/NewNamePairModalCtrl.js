@@ -1,6 +1,7 @@
 angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde',
 function($scope, $modalInstance, cde) {
 
+
     $scope.newNamePair = {
         "languageCode" : "EN-US"
         , context: {

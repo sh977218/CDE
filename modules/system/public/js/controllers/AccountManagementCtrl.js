@@ -43,7 +43,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getSiteAdmins();
 
     var allPropertyKeys = [];
-
+    var allContexts = [];
     $scope.getOrgs = function() {
         $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
@@ -52,8 +52,14 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 if (o.propertyKeys) {
                     allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
                 }
+                if (o.nameContexts) {
+                    allContexts = allContexts.concat(o.nameContexts);
+                }
             });
             allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
+                return self.indexOf(item) === pos;
+            });
+            allContexts = allContexts.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
         });
@@ -202,53 +208,13 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         return result;
     };
 
-    //$scope.updateOrgPropKey = function(o) {
-    //    var propertyKeys = o.propertyKeys;
-    //    $timeout(function(){
-    //        AccountManagement.updateOrg(o,
-    //            function(res) {
-    //                propertyKeys.forEach(function(p) {
-    //                    if (uniqueKeys.indexOf(p) === -1) {
-    //                        uniqueKeys.push(p);
-    //                    }
-    //                });
-    //                $scope.addAlert("success", res);
-    //                $scope.orgs = $scope.getOrgs();
-    //            },
-    //            function(res) {
-    //                $scope.addAlert("danger", res);
-    //            }
-    //        );
-    //    },0);
-    //};
-
-    var uniqueContexts = [];
-
     $scope.getExistingContexts = function (newContext) {
-        var result = allPropertyKeys.slice(0);
+        var result = allContexts.slice(0);
         result.push(newContext);
         return result;
     };
 
-    $scope.updateOrgContexts = function(o, contexts) {
-        $timeout(function(){
-            AccountManagement.updateOrg(o,
-                function(res) {
-                    for (var i = 0, len = contexts.length; i < len; i++) {
-                        if (uniqueContexts.indexOf(contexts[i]) == -1){
-                            uniqueContexts.push(contexts[i]);
-                        }
-                    }
 
-                    Alert.addAlert("success", res);
-                    $scope.orgs = $scope.getOrgs();
-                },
-                function(res) {
-                    $scope.addAlert("danger", res);
-                }
-            );
-        },0);
-    };
 
     $scope.updateOrg = function(c) {
         $timeout(function(){
