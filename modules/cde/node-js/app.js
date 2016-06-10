@@ -520,10 +520,6 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/cde/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
-    });
-
     app.get('/cde/mappingSpecifications/types', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.getDistinct("mappingSpecifications.spec_type", function (err, types) {
             if (err) res.status(500).send("Unexpected Error");

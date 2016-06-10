@@ -67,11 +67,12 @@ angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$u
     function($scope, $modalInstance, $http, module, elt) {
     $scope.elt = elt;
     $scope.newProperty = {};
-    $scope.autocompleteList = [];
-    
-    $http.get("/" + module + "/properties/keys").then(function(result) {
-        $scope.autocompleteList = result.data;
-    });
+
+     // Replace this! with OrgHelper !
+//    $scope.autocompleteList = [];
+//    $http.get("/" + module + "/properties/keys").then(function(result) {
+//        $scope.autocompleteList = result.data;
+//    });
 
     $scope.okCreate = function () {
         $modalInstance.close($scope.newProperty);

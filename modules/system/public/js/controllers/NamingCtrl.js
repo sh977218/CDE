@@ -2,14 +2,6 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
     function($scope, $modal, OrgHelpers)
 {
     $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
-    console.log($scope.allContexts);
-    $scope.updateContext = function(){
-       // namePair.context= x;
-        console.log("ASDFASDF");
-       // $scope.stageNewName
-    };
-
-
 
     $scope.openNewNamePair = function () {
         $modal.open({

@@ -78,6 +78,32 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             }
         };
     })
+    .directive('inlineSelectEdit', function($timeout) {
+        return {
+            restrict: 'AE',
+            scope: {
+                model: '=',
+                isAllowed: '&',
+                onOk: '&',
+                allOptions: '='
+            },
+            templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
+            controller: function ($scope) {
+                $scope.value = $scope.model;
+                $scope.discard = function () {
+                    $scope.editMode = false;
+                };
+                $scope.save = function () {
+                    $scope.model = angular.copy($scope.value);
+                    $scope.editMode = false;
+                    $timeout($scope.onOk, 0);
+                };
+                $scope.edit = function () {
+                    $scope.editMode = true;
+                };
+            }
+        };
+    })
     .directive('inlineAreaEdit', function ($timeout) {
         return {
             restrict: 'AE',

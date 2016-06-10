@@ -134,10 +134,6 @@ exports.query = function (query, callback) {
     Form.find(query).exec(callback);
 };
 
-exports.allPropertiesKeys = function (callback) {
-    Form.distinct("properties.key").exec(callback);
-};
-
 exports.transferSteward = function (from, to, callback) {
     Form.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
         callback(err, result.nModified);

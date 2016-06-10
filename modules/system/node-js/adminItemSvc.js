@@ -393,15 +393,6 @@ exports.bulkAction = function (ids, action, cb) {
     );
 };
 
-exports.allPropertiesKeys = function (req, res, dao) {
-    dao.allPropertiesKeys(function (err, keys) {
-        if (err) res.status(500).send("Unexpected Error");
-        else {
-            res.send(keys);
-        }
-    });
-};
-
 exports.hideUnapprovedComments = function (adminItem) {
     if (!adminItem || !adminItem.comments) return;
     adminItem.comments.forEach(function (c) {
