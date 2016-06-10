@@ -37,9 +37,9 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
     collection: 'EyeGENE_AnswerList'
 }));
 
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson));
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
-exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
+exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson));
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new mongoose.Schema({}, {
     strict: false,
     collection: 'PhenxToLoincMapping'
