@@ -137,6 +137,7 @@ exports.formJson = {
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 
-exports.formSchema = new Schema(exports.formJson, {collection: 'forms'});
+exports.formSchema = new Schema(exports.formJson);
 
+exports.formSchema.set('collection', 'forms');
 

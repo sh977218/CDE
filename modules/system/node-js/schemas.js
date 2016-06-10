@@ -38,7 +38,7 @@ exports.orgJson = {
     , extraInfo: String
 };
 
-schemas.orgSchema = new mongoose.Schema(exports.orgJson, {collection: 'org'});
+schemas.orgSchema = new mongoose.Schema(exports.orgJson);
 
 schemas.userSchema = new mongoose.Schema({
     username: String
@@ -75,7 +75,10 @@ schemas.userSchema = new mongoose.Schema({
     }
     , accessToken: String
     , refreshToken: String
-}, {collection: 'users'});
+});
+
+schemas.orgSchema.set('collection', 'orgs');
+schemas.userSchema.set('collection', 'users');
 
 schemas.namingSchema = new mongoose.Schema({
     designation: {type: String}
@@ -174,7 +177,9 @@ schemas.message = new mongoose.Schema({
         , date: Date
         , comment: String
     }]
-}, {collection: 'messages'});
+});
+
+schemas.message.set('collection', 'messages');
 
 schemas.clusterStatus = mongoose.Schema({
     hostname: String
@@ -203,7 +208,7 @@ schemas.fs_files = new mongoose.Schema({
         "status": String
     }
     , "md5": String
-}, {collection: 'fs.files'});
+});
 
 schemas.referenceDocumentSchema = {
     docType: String,
@@ -238,6 +243,10 @@ schemas.classificationAudit = new mongoose.Schema({
     , newname: String
     , action: {type: String, enum: ["add", "delete", "rename", "reclassify"]}
     , path: [String]
-}, {collection: 'classificationAudit'});
+});
+
+schemas.classificationAudit.set('collection', 'classificationAudit');
+
+schemas.fs_files.set('collection', 'fs.files');
 
 module.exports = schemas;

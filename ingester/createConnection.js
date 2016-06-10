@@ -37,11 +37,11 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
 }));
 
 exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new mongoose.Schema(cde_schemas.deJson, {
-    strict: true,
+    strict: false,
     collection: 'dataelements'
 }));
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new mongoose.Schema(form_schemas.formJson, {
-    strict: true,
+    strict: false,
     collection: 'forms'
 }));
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new mongoose.Schema(sharedSchemas.orgJson, {
