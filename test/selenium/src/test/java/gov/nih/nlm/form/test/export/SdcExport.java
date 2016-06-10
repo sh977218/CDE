@@ -12,7 +12,7 @@ public class SdcExport extends NlmCdeBaseTest {
     @Test
     public void sdcXmlExport() {
         String response = get(baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc").asString();
-        
+
         Assert.assertTrue(response.contains("<FormDesign xmlns:sdc=\"http://healthIT.gov/sdc\""));
         Assert.assertTrue(response.contains("<Section title=\"CLINICAL\">"));
         Assert.assertTrue(response.contains("<ListItem title=\"Intact\"/>"));
@@ -24,12 +24,13 @@ public class SdcExport extends NlmCdeBaseTest {
     public void sdcRender() {
         mustBeLoggedInAs(reguser_username, password);
         goToFormByName("SDC Adrenal");
-        findElement(By.id("export")).click();
-        findElement(By.id("sdcExport")).click();
+        clickElement(By.id("export"));
+        clickElement(By.id("sdcExport"));
         switchTab(1);
         textPresent("Hormone production");
         findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));
         textPresent("Distance from Closest Margin");
+
         switchTabAndClose(0);
     }
 

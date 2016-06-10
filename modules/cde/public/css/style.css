@@ -1056,11 +1056,11 @@ div + .questionPlaceholder {
     width: 100% !important;
 }
 
-.myBoardEditButtons{
+.myBoardEditButtons {
     margin: 0px;
 }
 
-.myBoardName{
+.myBoardName {
     margin: 0px;
     margin-bottom: 5px;
 }
@@ -1078,4 +1078,8 @@ div + .questionPlaceholder {
 
 .ui-select-container {
     z-index: 1000;
+}
+
+.formRenderPanel {
+    margin-left: 10px;
 }

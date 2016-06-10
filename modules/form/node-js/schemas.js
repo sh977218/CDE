@@ -34,7 +34,13 @@ var questionSchema = {
 
 var sectionSchema = {};
 
-var formSchema = {};
+var inFormSchema = {
+    form: {
+        tinyId: String,
+        version: String,
+        name: String
+    }
+};
 
 var cardinalitySchema = {
     min: Number,
@@ -50,7 +56,7 @@ var formElementTreeRoot = {
     , showIfExpression: String
     , section: sectionSchema
     , question: questionSchema
-    , form: formSchema
+    , inForm: inFormSchema
     , formElements: []
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']}
@@ -70,7 +76,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , showIfExpression: String
         , section: sectionSchema
         , question: questionSchema
-        , form: formSchema
+        , form: inFormSchema
         , formElements: []
         , skipLogic: {
             action: {type: String, enum: ['show', 'enable']}
