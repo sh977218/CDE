@@ -520,22 +520,6 @@ var cj = new CronJob({
 });
 cj.start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")}, function () {
-});
-
-var statusCdeTinyId;
-
-exports.upsertStatusCde = function (cde, cb) {
-    var query = statusCdeTinyId ?
-    {"tinyId": statusCdeTinyId} :
-    {"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")};
-
-    DataElement.update(query, cde, {upsert: true}, function (err, cde) {
-        statusCdeTinyId = cde.tinyId;
-        if (cb) cb(err, cde);
-    });
-};
-
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);
 };
