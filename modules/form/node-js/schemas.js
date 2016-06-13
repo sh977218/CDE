@@ -90,7 +90,7 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 
 var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
-exports.formSchema = new Schema({
+exports.formJson = {
     tinyId: String
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
@@ -135,7 +135,9 @@ exports.formSchema = new Schema({
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
-});
+};
+
+exports.formSchema = new Schema(exports.formJson);
 
 exports.formSchema.set('collection', 'forms');
 
