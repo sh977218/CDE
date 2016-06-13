@@ -14,20 +14,20 @@ var eyeGeneOrg = null;
 var today = new Date().toJSON();
 
 var uom_datatype_map = {
-    'cm': 'number',
-    'years': 'date',
-    'mm': 'number',
-    'ratio': '',
-    'mv': '',
-    'ms': '',
-    'Diopter': '',
-    'um': '',
+    'cm': 'Number',
+    'years': 'Date',
+    'mm': 'Number',
+    'ratio': 'Text',
+    'mv': 'Number',
+    'ms': 'Number',
+    'Diopter': 'Text',
+    'um': 'Number',
     'log': 'text',
-    'deg': '',
-    'logMAR': '',
-    'ft/ft': 'number',
-    'cells': '',
-    'mm Hg': ''
+    'deg': 'Number',
+    'logMAR': 'Text',
+    'ft/ft': 'Text',
+    'cells': 'Text',
+    'mm Hg': 'Text'
 };
 
 function createCde(eyeGene, loinc) {
