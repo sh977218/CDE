@@ -2,6 +2,7 @@ package gov.nih.nlm.common.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 
 public abstract class PropertyTest extends CommonTest {
 
@@ -50,7 +51,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey1");//Replace this with clicking the drop down menu, and selecting he
+        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("Property");
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
