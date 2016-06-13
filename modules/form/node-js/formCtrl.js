@@ -77,7 +77,7 @@ var getFormPlainXml = function (form, req, res) {
 };
 
 function wipeRenderDisallowed (form, req, cb) {
-    if (form.noRenderAllowed) {
+    if (form && form.noRenderAllowed) {
         authorization.checkOwnership(mongo_data_form, form._id, req, function(err, isYouAllowed) {
             if (!isYouAllowed) form.formElements = [];
             cb();
