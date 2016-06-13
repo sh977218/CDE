@@ -193,8 +193,6 @@ function run() {
                             info: {$not: /^no loinc name/i}
                         }, function (er, existingLoinc) {
                             if (er) throw er;
-
-
                             if (existingLoinc.length === 0) {
                                 console.log("Cannot find loinc CDE for " + eyeGene.LOINC_NUM);
                                 //TODO: How to handle this?
@@ -202,8 +200,11 @@ function run() {
                             } else {
                                 var loinc = existingLoinc[0].toObject();
                                 var newCde = createCde(eyeGene, loinc);
-                                var valueDomain = {uom: eyeGene.EXAMPLE_UNITS};
-
+                                if (eyeGene.EXAMPLE_UNITS)
+                                    newCde.valueDomain.uom = eyeGene.EXAMPLE_UNITS;
+                                else if (eyeGene.EXAMPLE_UCUM_UNITS)
+                                    newCde.valueDomain.uom = eyeGene.EXAMPLE_UCUM_UNITS;
+                                else newCde.valueDomain.uom = '';
                                 var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
                                     if (err) throw err;
