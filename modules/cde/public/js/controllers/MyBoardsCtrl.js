@@ -36,7 +36,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
             });
         };
 
-        var waitAndReload = function() {
+        var waitAndReload = function(message) {
             $scope.reloading = true;
             $timeout(function () {
                 $scope.loadMyBoards(function () {
@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
         $scope.save = function (board) {
             delete board.editMode;
             $http.post("/board", board).success(function () {
-                waitAndReload();
+                waitAndReload("Saved.");
             }).error(function (response) {
                 Alert.addAlert("danger", response);
             });
