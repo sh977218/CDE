@@ -48,6 +48,7 @@ public class EltIdMaps {
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
+        eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
@@ -58,9 +59,11 @@ public class EltIdMaps {
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
-
         eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
+
+        eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
+
     }
 
 }
