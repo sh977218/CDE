@@ -37,11 +37,12 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
         };
 
         var waitAndReload = function(message) {
+            if (!message) message = "Done";
             $scope.reloading = true;
             $timeout(function () {
                 $scope.loadMyBoards(function () {
                     $scope.reloading = false;
-                    Alert.addAlert("success", "Done");
+                    Alert.addAlert("success", message);
                 });
             }, 2000);
         };
@@ -93,7 +94,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
                 $http.post("/board", newBoard).success(function () {
-                    waitAndReload();
+                    waitAndReload("Board created.");
                 }).error(function (message) {
                     Alert.addAlert("danger", message);
                 });
