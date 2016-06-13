@@ -37,26 +37,6 @@
     <h4 id="regStatusValidationRules">Validation Rules</h4>
     <info>Stewards have defined organizational validation rules for each registration status. </info>
     <div ng-controller="RegStatusValidationCtrl">
-        <!--Validation rules according to an organization:-->
-        <!--<div ng-repeat="(name, org) in cdeOrgRules" ng-show="org.length>0">-->
-            <!--<h4>{{name}}</h4>-->
-            <!--<strong>According to status validation rules CDE can hold the following statuses</strong>-->
-            <!--<table class="table table-condensed" style="max-width:300px">-->
-                <!--<tr><td>Incomplete</td><td><i id="incompletePossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Incomplete')" class="fa fa-check"></i><i id="incompleteNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Incomplete')" class="fa fa-times"></i></td></tr>-->
-                <!--<tr><td>Candidate</td><td><i id="candidatePossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Candidate')" class="fa fa-check"></i><i id="candidateNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Candidate')" class="fa fa-times"></i></td></tr>-->
-                <!--<tr><td>Recorded</td><td><i id="recordedPossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Recorded')" class="fa fa-check"></i><i id="recordedNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Recorded')" class="fa fa-times"></i></td></tr>-->
-                <!--<tr><td>Qualified</td><td><i id="qualifiedPossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Qualified')" class="fa fa-check"></i><i id="qualifiedNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Qualified')" class="fa fa-times"></i></td></tr>-->
-                <!--<tr><td>Standard</td><td><i id="standardPossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Standard')" class="fa fa-check"></i><i id="standardNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Standard')" class="fa fa-times"></i></td></tr>-->
-                <!--<tr><td>Preferred Standard</td><td><i id="prefStandardPossible" ng-show="conditionsMetForStatusWithinOrg(elt, name, 'Preferred Standard')" class="fa fa-check"></i><i id="prefStandardNotPossible" ng-hide="conditionsMetForStatusWithinOrg(elt, name, 'Preferred Standard')" class="fa fa-times"></i></td></tr>-->
-            <!--</table>-->
-            <!--<strong>CDE is passing the following rules namely</strong>-->
-            <!--<div ng-repeat="rule in org | orderBy:sortRulesByStatus">-->
-                <!--{{rule.targetStatus}} <i class="fa fa-check" ng-show="cdePassingRule(elt, rule)"></i>-->
-                <!--<i class="fa fa-times" ng-hide="cdePassingRule(elt, rule)"></i> {{rule.ruleName}}-->
-            <!--</div>-->
-        <!--</div>-->
-
-
         <div ng-repeat="(statusName, status) in cdeStatusRules" ng-show="showStatus(status)">
             <h3>{{statusName}}</h3>
             <div ng-repeat="(orgName, org) in status">
@@ -67,7 +47,5 @@
             </div>
             <hr>
         </div>
-
-
     </div>
 </div>

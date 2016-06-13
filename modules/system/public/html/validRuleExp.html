@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h3>Export CDEs not Following Validation Rules</h3>
+</div>
+<div class="modal-body">
+    <select ng-model="status" class="form-control">
+        <option>Incomplete</option>
+        <option>Candidate</option>
+        <option>Recorded</option>
+        <option>Qualified</option>
+        <option>Standard</option>
+        <option>Preferred Standard</option>
+    </select>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="close()" id="cancelCopy">Cancel</button>
+    <button class="btn btn-success" ng-click="export()" id="saveCopy">Export</button>
+</div>

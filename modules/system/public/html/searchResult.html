@@ -59,6 +59,9 @@
                         <!--<li ng-click="validStatusExport()">-->
                             <!--Validation Rules-->
                         <!--</li>-->
+                        <li ng-if="displayValidation()">
+                            <a ng-click="openValidRulesModal()">Validation Rules</a>
+                        </li>
                     </ul>
                 </div>
 

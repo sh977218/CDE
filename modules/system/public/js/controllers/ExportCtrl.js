@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator',
-    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -53,17 +53,12 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     },
                     'validationRules': function(result){
                         var orgName = 'TEST';
+                        var status = 'Qualifier';
                         var cdes = [];
                         JSON.parse(result).forEach(function (oneElt) {
-                            //console.log(oneElt);
-
-
                             var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
                             var cdeOrgRules = getOrgRulesForCde(oneElt);
-                            //$scope.cdeStatusRules = RegStatusValidator.getStatusRules(cdeOrgRules);
-                            //
-                            //$scope.cdePassingRule = RegStatusValidator.cdePassingRule;
-                            if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, "TEST", "Qualified", cdeOrgRules)) cdes.push(oneElt.tinyId);
+                            if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) cdes.push(oneElt.tinyId);
                         });
                         console.log(cdes);
                     }
@@ -103,19 +98,45 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             });
         };
 
-        $scope.validStatusExport = function(){
-            var q = Elastic.buildElasticQuerySettings($scope.searchSettings);
-            $http({
-                url: "/validationRulesReport"
-                , method: "POST"
-                , data: q
-                , transformResponse: function(a){return a;}
-            }).success(function (response) {
-                console.log(response)
-            })
-            .error(function(data, status) {
-                if (status === 503) console.log("The server is busy processing similar request, please try again in a minute.");
-                else console.log("An error occured. This issue has been reported.");
+
+
+        $scope.displayValidation = function(){
+            var org = $scope.searchSettings.selectedOrg;
+            var curatorOf = userResource.user.orgAdmin.concat(userResource.user.orgCurator);
+            return curatorOf.indexOf(org)>-1;
+        };
+
+        $scope.openValidRulesModal = function(){
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/validRuleExp.html',
+                controller: 'ValidRuleExpCtrl',
+                resolve: {
+                    //searchSettings: function(){
+                    //    console.log($scope.searchSettings);
+                    //    return $scope.searchSettings
+                    //}
+                }
             });
+
+            modalInstance.result.then(function (newelt) {
+                $scope.exportSearchResults('validationRules');
+            }, function(reason) {
+
+            });
+        };
+    }]);
+
+angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
+    function ($scope, $modalInstance) {
+
+
+
+        $scope.export = function(){
+
+            $modalInstance.close();
+        };
+        $scope.close = function(){
+            $modalInstance.dismiss();
         };
     }]);
