@@ -27,9 +27,30 @@ public abstract class PropertyTest extends CommonTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName, status);
         showAllTabs();
+        //This is crazy broken. Fix it
+        //Ok, so you  need to be logged in, and have an actual CDE with predefined properties and contexts (which can be made in a later test).
+
+        /**
+         * To redesign this method,  You have to have a preset list of properties. Then, you go to a board, create a couple of properties, check for conflict,
+         * then delete and remake properties.
+         *
+         * To do that, we need another method (ideally, the method also runs tests itself, killing two birds with one stone) that logs in, and adds valid proerties and keys. Enquire about whether or not they'll be deleted after.
+         *
+         * Alernatively, we can have a "TEST ORG" that is primed with certain keys and values, and then we work with that.
+         *
+         * But, my concern is, that if a test that adds properties, that runs asychcronusly with the other tests, then we have a race condidtion.
+         *
+         * The way I see it, it'd be better for us to have a properties/contexts "MEGATEST" that has functions that cover everything that we want.
+         *
+         * One method that populates (and tests) the things that we want.
+         *
+         * Then, we test the various features and aspects of theis stuff for  CDES
+         *
+         */
+
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey1");
+        findElement(By.name("key")).sendKeys("MyKey1");//Replace this with clicking the drop down menu, and selecting he
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");

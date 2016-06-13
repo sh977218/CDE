@@ -24,6 +24,8 @@ public class FormPropertyTest extends PropertyTest {
     @Test
     @RecordVideo
     public void addRemoveFormProperty() {
+
+        //What does this do?
         addRemoveProperty("Form Property Test", "Recorded");
     }
 
