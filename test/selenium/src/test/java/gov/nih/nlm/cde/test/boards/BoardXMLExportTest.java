@@ -12,18 +12,18 @@ public class BoardXMLExportTest  extends BoardTest {
     @Test
     public void boardXMLExport() {
             mustBeLoggedInAs(classifyBoardUser_username, password);
-            goToBoard("Test Pinning Board");
+            goToBoard("Classify Board");
             textPresent("Export Board");
             clickElement(By.id("export"));
             findElement(By.id("xmlExport")).click();
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
-            Assert.assertTrue(response.contains("<primaryDefinitionCopy>\n" + "Ethnicity the participant/subject's mother most closely identifies with\n" + "</primaryDefinitionCopy>"));
-            Assert.assertTrue(response.contains("<name>Multisite Research Study</name>"));
-            Assert.assertTrue(response.contains("<primaryDefinitionCopy> The text for reporting information about ethnicity based on the Office of Management and Budget (OMB) categories.</primaryDefinitionCopy>"));
-            Assert.assertTrue(response.contains("<name>GBC Group Banking Committee</name>"));
-            Assert.assertTrue(response.contains("<primaryDefinitionCopy>\n" + "Indicator of whether the participant/subject used the specific type of medication affecting cardiovascular functions on the day of the examination\n" + "</primaryDefinitionCopy>"));
-            Assert.assertTrue(response.contains("<name>Disease</name>"));
+            Assert.assertTrue(response.contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
+            Assert.assertTrue(response.contains("</elements>\n" + "<name>Domain</name>"));
+            Assert.assertTrue(response.contains("<primaryDefinitionCopy>\n" + "Date (and time, if applicable and known) the Manual Muscle Testing (MMT) was performed\n" + "</primaryDefinitionCopy>"));
+            Assert.assertTrue(response.contains("<source>NINDS Variable Name</source>\n"));
+            Assert.assertTrue(response.contains("<primaryDefinitionCopy>\n" + "Indicator how often the subject feels irritable or has angry outbursts as part of PTSD Checklist Military (PCLM).\n" + "</primaryDefinitionCopy>"));
+            Assert.assertTrue(response.contains("<changeNote>Bulk update from source</changeNote>"));
             findElement(By.id("xmlExport")).click();
             switchTab(1);
             switchTabAndClose(0);

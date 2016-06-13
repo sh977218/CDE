@@ -25,7 +25,6 @@ public class BoardExportTest extends BoardTest {
 
         goToBoard(board_name);
         textPresent("Export Board");
-        clickElement(By.id("export"));
         clickElement(By.id("mb.export"));
         textPresent("Export downloaded.");
         closeAlert();
