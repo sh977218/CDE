@@ -15,7 +15,7 @@ public class BoardXMLExportTest  extends BoardTest {
             mustBeLoggedInAs(classifyBoardUser_username, password);
             goToBoard("Classify Board");
             textPresent("Export Board");
-            clickElement(By.id("export"));
+            clickElement(By.id(("export")));
             clickElement(By.id(("xmlExport")));
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
