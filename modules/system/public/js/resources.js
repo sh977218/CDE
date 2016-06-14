@@ -267,7 +267,7 @@ angular.module('resourcesSystem', ['ngResource'])
             });
             if (rules.length == 0) return [];
             var results = rules.map(function (r) {
-                return {rule: r, passing: cdePassingRule(cde, r)};
+                return {ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)};
             });
             return results;
         };
@@ -343,6 +343,7 @@ angular.module('resourcesSystem', ['ngResource'])
             , cdePassingRule: cdePassingRule
             , getOrgRulesForCde: getOrgRulesForCde
             , getStatusRules: getStatusRules
+            , evalCde: evalCde
         };
     })
 ;
