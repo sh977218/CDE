@@ -14,9 +14,6 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
             $modalInstance.dismiss('cancel');
         };
 
-        console.log("Hello world!");
-
-
         $scope.save = function () {
             board.pins.forEach(function (p) {
                 $scope.elt.formElements[0].formElements.push({

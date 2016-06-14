@@ -51,6 +51,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
+        clickElement(By.id("newPropertyKey"));
         clickElement(By.id("myProperty0"));
         findElement(By.name("value")).sendKeys("MyValue0");
         clickElement(By.id("createProperty"));
@@ -59,6 +60,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
+        clickElement(By.id("newPropertyKey"));
         clickElement(By.id("myProperty1"));
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
@@ -67,6 +69,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
+        clickElement(By.id("newPropertyKey"));
         clickElement(By.id("myProperty2"));
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));
