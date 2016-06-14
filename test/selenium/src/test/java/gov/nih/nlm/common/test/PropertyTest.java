@@ -25,7 +25,7 @@ public abstract class PropertyTest extends CommonTest {
     }
 
     public void addRemoveProperty(String eltName, String status) {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName, status);
         showAllTabs();
         //This is crazy broken. Fix it
