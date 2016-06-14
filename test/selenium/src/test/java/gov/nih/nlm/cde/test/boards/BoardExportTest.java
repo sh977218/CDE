@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.boards;
 
 import gov.nih.nlm.system.EltIdMaps;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -25,7 +26,7 @@ public class BoardExportTest extends BoardTest {
 
         goToBoard(board_name);
         textPresent("Export Board");
-        clickElement(By.id("mb.export"));
+        new Select(driver.findElement(By.name("export"))).selectByVisibleText("mb.export");
         textPresent("Export downloaded.");
         closeAlert();
 

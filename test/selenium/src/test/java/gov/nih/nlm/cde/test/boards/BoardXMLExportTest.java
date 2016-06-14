@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,7 @@ public class BoardXMLExportTest  extends BoardTest {
             goToBoard("Classify Board");
             textPresent("Export Board");
             clickElement(By.id("export"));
-            findElement(By.id("xmlExport")).click();
+            new Select(driver.findElement(By.name("export"))).selectByVisibleText("xmlExport");
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
             Assert.assertTrue(response.contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
