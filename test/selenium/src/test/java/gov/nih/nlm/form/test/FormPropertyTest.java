@@ -26,7 +26,7 @@ public class FormPropertyTest extends PropertyTest {
     public void addRemoveFormProperty() {
 
         //What does this do?
-        addRemoveProperty("Form Property Test", "Recorded");
+        addRemoveProperty("Test Form Propeties", "Recorded");
     }
 
     @Test

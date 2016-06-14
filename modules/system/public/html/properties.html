@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label tabindex="0" for="key">Key</label>
                     <select  ng-model="newProperty.key" id="newPropertyKey" name="key">
-                        <option ng-repeat="x in autocompleteList" value="{{x}}">{{x}}</option>
+                        <option ng-repeat="x in autocompleteList" value="{{x}}" id="{{x}}">{{x}}</option>
 
                     </select>
                     

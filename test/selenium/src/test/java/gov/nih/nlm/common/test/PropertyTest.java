@@ -51,22 +51,24 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("Property");
+        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty0"); //drop down selected is the value that
+        findElement(By.name("value")).sendKeys("MyValue0");
+        clickElement(By.id("createProperty"));
+        textPresent("Property Added");
+        closeAlert();
+        modalGone();
+
+        clickElement(By.id("addProperty"));
+        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty1"); //drop down selected is the value that
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
+
         clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey2");
+        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty2"); //drop down selected is the value that
         findElement(By.name("value")).sendKeys("MyValue2");
-        clickElement(By.id("createProperty"));
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
-        clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey3");
-        findElement(By.name("value")).sendKeys("MyValue3");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
@@ -80,12 +82,12 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
         showAllTabs();
         clickElement(By.id("properties_tab"));
-        textPresent("MyKey1");
-        textPresent("MyKey3");
-        textPresent("MyValue1");
-        textPresent("MyValue3");
-        textNotPresent("MyValue2");
-        textNotPresent("MyValue2");
+        textPresent("myProperty0");
+        textPresent("myProperty2");
+        textPresent("MyValue0");
+        textPresent("MyValue2");
+        textNotPresent("myProperty1");
+        textNotPresent("MyValue1");
     }
 
     public void richText(String eltName, String status) {
