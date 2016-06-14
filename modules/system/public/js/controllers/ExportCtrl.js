@@ -3,7 +3,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
-        $scope.exportSearchResults = function (type) {
+        $scope.exportSearchResults = function (type, exportSettings) {
             if ($scope.module === 'form' && (!$scope.user || !$scope.user._id)) {
                 return $scope.Alert.addAlert("danger", "Please login to access this feature");
             }
@@ -52,8 +52,8 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
                     },
                     'validationRules': function(result){
-                        var orgName = 'TEST';
-                        var status = 'Qualifier';
+                        var orgName = exportSettings.org;
+                        var status = exportSettings.status;
                         var cdes = [];
                         JSON.parse(result).forEach(function (oneElt) {
                             var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
@@ -96,7 +96,8 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
             });
-        };
+        }.
+        ;
 
 
 
@@ -112,15 +113,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 templateUrl: '/system/public/html/validRuleExp.html',
                 controller: 'ValidRuleExpCtrl',
                 resolve: {
-                    //searchSettings: function(){
-                    //    console.log($scope.searchSettings);
-                    //    return $scope.searchSettings
-                    //}
                 }
             });
 
-            modalInstance.result.then(function (newelt) {
-                $scope.exportSearchResults('validationRules');
+            modalInstance.result.then(function (report) {
+                $scope.exportSearchResults('validationRules', report);
             }, function(reason) {
 
             });
@@ -129,12 +126,8 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
 angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
-
-
-
         $scope.export = function(){
-
-            $modalInstance.close();
+            $modalInstance.close({status: $scope.statusm, org: 'TEST'});
         };
         $scope.close = function(){
             $modalInstance.dismiss();
