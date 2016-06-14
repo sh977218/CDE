@@ -1083,3 +1083,20 @@ div + .questionPlaceholder {
 .formRenderPanel {
     margin-left: 10px;
 }
+
+.commaUL {
+    display: inline;
+    list-style: none;
+}
+
+.commaUL li {
+    display: inline;
+}
+
+.commaUL li:after {
+    content: ", ";
+}
+
+.commaUL li:last-child:after {
+    content: "";
+}

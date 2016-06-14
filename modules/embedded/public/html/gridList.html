@@ -3,15 +3,30 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th ng-if="searchViewSettings.tableViewFields.permissibleValues">Permissible Values</th>
             <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="c in cdes">
             <td ng-if="searchViewSettings.tableViewFields.name" class="name">
-                <a href="/#/deview/?tinyId={{c.tinyId}}">
+                <a href="https://cde.nlm.nih.gov/deview/?tinyId={{c.tinyId}}" target="_blank">
                     {{c.naming[0].designation}}
                 </a>
+            </td>
+            <td ng-if="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues multiline-ellipsis">
+                <div>
+                    {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
+                </div>
+                <span ng-if="c.valueDomain.permissibleValues" class="commaUL">
+                    <span ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
+                        {{pv.permissibleValue | limitTo: lineLength}} <span ng-show="pv.permissibleValue.length > lineLength">...</span>
+                    </span>
+                    <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
+                </span>
+            </td>
+            <td ng-if="searchViewSettings.tableViewFields.nbOfPVs" class="nbOfPVs">
+                {{c.valueDomain.nbOfPVs}}
             </td>
             <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key]}}</td>
         </tr>
