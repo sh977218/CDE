@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('BoardViewCtrl',
-    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout',
-        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout) {
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert',
+        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert) {
 
             $scope.module = 'cde';
             $scope.cdes = [];
@@ -44,8 +44,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.unpin = function (pin) {
-                $http['delete']("/pincde/" + pin._id + "/" + $scope.board._id).then(function () {
+                $http['delete']("/pincde/" + pin.deTinyId + "/" + $scope.board._id).then(function () {
                     $scope.reload();
+                    Alert.addAlert("success", "CDE Unpinned.")
                 });
             };
 
@@ -62,10 +63,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                     type: "text/csv"
                                 });
                                 saveAs(blob, 'BoardExport' + '.csv');
-                                $scope.addAlert("success", "Export downloaded.");
+                                Alert.addAlert("success", "Export downloaded.");
                                 $scope.feedbackClass = ["fa-download"];
                             } else {
-                                $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
+                                Alert.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
                             }
                         });
                     });
@@ -73,10 +74,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             
             $scope.save = function () {
                 $http.post("/board", $scope.board).success(function (response) {
-                    $scope.addAlert("success", "Saved");
+                    Alert.addAlert("success", "Saved");
                     $scope.reload();
                 }).error(function (response) {
-                    $scope.addAlert("danger", response);
+                    Alert.addAlert("danger", response);
                     $scope.reload();
                 });
             };

@@ -26,7 +26,7 @@ public class BoardExportTest extends BoardTest {
 
         goToBoard(board_name);
         textPresent("Export Board");
-        new Select(driver.findElement(By.name("export"))).selectByVisibleText("mb.export");
+        clickElement(By.id(("csvExport")));
         textPresent("Export downloaded.");
         closeAlert();
 

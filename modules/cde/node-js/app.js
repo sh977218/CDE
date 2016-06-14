@@ -310,7 +310,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.delete('/pincde/:pinId/:boardId', function (req, res) {
+    app.delete('/pincde/:deTinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             usersvc.removePinFromBoard(req, res);
         } else {
