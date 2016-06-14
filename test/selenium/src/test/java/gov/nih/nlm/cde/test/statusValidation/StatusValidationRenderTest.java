@@ -12,11 +12,15 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         goToCdeByName("Reg Status Lift");
         showAllTabs();
         findElement(By.id("status_tab")).click();
-        elementVisible(By.id("incompletePossible"));
-        elementVisible(By.id("candidatePossible"));
-        elementVisible(By.id("recordedNotPossible"));
-        elementVisible(By.id("qualifiedNotPossible"));
-        elementVisible(By.id("standardNotPossible"));
-        elementVisible(By.id("prefStandardNotPossible"));
+        elementVisible(By.cssSelector("#rule_Candidate_0 .fa-check"));
+
+        elementVisible(By.cssSelector("#rule_Recorded_0 .fa-times"));
+        elementVisible(By.cssSelector("#rule_Recorded_1 .fa-times"));
+        elementVisible(By.cssSelector("#rule_Recorded_2 .fa-check"));
+        elementVisible(By.cssSelector("#rule_Recorded_3 .fa-times"));
+
+        elementVisible(By.cssSelector("#rule_Qualified_0 .fa-check"));
+        elementVisible(By.cssSelector("#rule_Qualified_1 .fa-check"));
+        elementVisible(By.cssSelector("#rule_Qualified_2 .fa-times"));
     }
 }

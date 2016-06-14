@@ -68,7 +68,8 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                 cdes.push(record)
                             };
                         });
-                        console.log(cdes);
+                        var blob = new Blob([JSON.stringify(cdes)], {type: "application/json"});
+                        saveAs(blob, "SearchExport.json");
                     }
                 };
                 if (result) {
