@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde',
-function($scope, $modalInstance, cde) {
+angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde', 'OrgHelpers',
+function($scope, $modalInstance, cde, OrgHelpers) {
 
 
     $scope.newNamePair = {
@@ -14,6 +14,7 @@ function($scope, $modalInstance, cde) {
     $scope.cancelCreate = function() {
         $modalInstance.dismiss('cancel');
     };
+    $scope.orgContexts =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
 
     $scope.okCreate = function() {
         cde.naming.push($scope.newNamePair);

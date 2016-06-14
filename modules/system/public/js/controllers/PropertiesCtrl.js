@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModal', '$location', '$timeout','OrgHelpers',
+angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers',
     function($scope, $modal, $location, $timeout, OrgHelpers)
 {    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
     console.log("All keys" + $scope.allKeys);
@@ -68,7 +68,7 @@ angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$u
     function($scope, $modalInstance, $http, module, elt, OrgHelpers) {
     $scope.elt = elt;
     $scope.newProperty = {};
-    $scope.autocompleteList =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+    $scope.orgPropertyKeys =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
      // Replace this! with OrgHelper !
 //    $scope.autocompleteList = [];
 //    $http.get("/" + module + "/properties/keys").then(function(result) {

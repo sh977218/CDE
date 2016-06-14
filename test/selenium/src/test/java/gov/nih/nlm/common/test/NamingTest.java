@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
+import org.openqa.selenium.support.ui.Select;
+
 public abstract class NamingTest extends CommonTest {
 
     public void addRemoveEditTest() {
@@ -45,6 +47,8 @@ public abstract class NamingTest extends CommonTest {
         textPresent("New Definition Changed");
 
         findElement(By.cssSelector("#dd_context_1 .fa-edit")).click();
+        new Select(findElement(By.cssSelector("#dd_context_1 select"))).selectByVisibleText(" Changed");
+
         findElement(By.cssSelector("#dd_context_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_context_1 .fa-check")).click();
         textPresent("Health Changed");
