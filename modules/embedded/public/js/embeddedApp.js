@@ -40,6 +40,12 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             delete $scope.searchStarted;
         };
 
+        $scope.concatenatePVs = function(elt) {
+          return elt.valueDomain.permissibleValues.map(function(a) {
+              return a.permissibleValue;
+          }).join(",");
+        };
+
         $scope.search = function (type) {
             if (!type) type = "cde";
 

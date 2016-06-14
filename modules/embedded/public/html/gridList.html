@@ -15,21 +15,19 @@
                 </a>
             </td>
             <td ng-if="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues multiline-ellipsis">
-                <div>
+                <strong>
                     {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
-                </div>
-                <span ng-if="c.valueDomain.permissibleValues" class="commaUL">
-                    <span ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
-                        {{pv.permissibleValue | limitTo: lineLength}}<span ng-show="pv.permissibleValue.length > lineLength">...</span>
-                        <span ng-show="$index < c.valueDomain.permissibleValues.length">, </span>
-                    </span>
-                    <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
+                </strong>
+                <span ng-if="c.valueDomain.permissibleValues">
+                    <span>{{concatenatePVs(c) | limitTo : 200}}</span>
+                    <span class="lastItem" ng-show="concatenatePVs(c).length > 200">(More...)</span>
                 </span>
             </td>
             <td ng-if="searchViewSettings.tableViewFields.nbOfPVs" class="nbOfPVs">
                 {{c.valueDomain.nbOfPVs}}
             </td>
-            <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key]}}</td>
+            <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key] | limitTo : 200}}
+                <span ng-show="c.embed[customField.key].length > 200">(More...)</span></td>
         </tr>
         </tbody>
     </table>
