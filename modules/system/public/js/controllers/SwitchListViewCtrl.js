@@ -14,7 +14,7 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         };
 
         $scope.maxLines = 5;
-        $scope.lineLength = 50;
+        $scope.lineLength = 20;
 
         var listViewCacheName = $scope.module + "listViewType";
         if ($scope.cache.get(listViewCacheName)) $scope.listViewType = $scope.cache.get(listViewCacheName);

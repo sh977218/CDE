@@ -20,7 +20,8 @@
                 </div>
                 <span ng-if="c.valueDomain.permissibleValues" class="commaUL">
                     <span ng-repeat="pv in c.valueDomain.permissibleValues  | limitTo: maxLines">
-                        {{pv.permissibleValue | limitTo: lineLength}} <span ng-show="pv.permissibleValue.length > lineLength">...</span>
+                        {{pv.permissibleValue | limitTo: lineLength}}<span ng-show="pv.permissibleValue.length > lineLength">...</span>
+                        <span ng-show="$index < c.valueDomain.permissibleValues.length">, </span>
                     </span>
                     <li class="lastItem" ng-show="c.valueDomain.permissibleValues.length > maxLines">...</li>
                 </span>
