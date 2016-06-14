@@ -266,10 +266,11 @@ angular.module('resourcesSystem', ['ngResource'])
             });
             if (rules.length == 0) return true;
             var results = rules.map(function (r) {
-                return cdePassingRule(cde, r);
+                return {rule: r, passing: cdePassingRule(cde, r)};
             });
+            console.log(results);
             return results.every(function (x) {
-                return x;
+                return x.passing;
             });
         };
 

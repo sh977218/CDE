@@ -6,7 +6,6 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
         var cdeOrgRules = getOrgRulesForCde($scope.elt);
         $scope.cdeStatusRules = RegStatusValidator.getStatusRules(cdeOrgRules);
         $scope.cdePassingRule = RegStatusValidator.cdePassingRule;
-        $scope.conditionsMetForStatusWithinOrg = RegStatusValidator.conditionsMetForStatusWithinOrg;
 
         $scope.sortRulesByStatus = function (rule) {
             var map = {

@@ -58,7 +58,11 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         JSON.parse(result).forEach(function (oneElt) {
                             var getOrgRulesForCde = RegStatusValidator.getOrgRulesForCde;
                             var cdeOrgRules = getOrgRulesForCde(oneElt);
-                            if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) cdes.push(oneElt.tinyId);
+                            var record = {
+                                tinyId: oneElt.tinyId
+                                , name: oneElt.naming[0].designation
+                            };
+                            if (!RegStatusValidator.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) cdes.push(record);
                         });
                         console.log(cdes);
                     }
