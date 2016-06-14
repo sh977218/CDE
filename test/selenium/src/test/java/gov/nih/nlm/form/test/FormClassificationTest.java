@@ -28,19 +28,19 @@ public class FormClassificationTest extends BaseFormTest {
     public void classifyFormCdes() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
-        goToFormByName("Deployment Risk and Resiliency Inventory, Version 2 (Combat)");
+        goToFormByName("History Data Source and Reliability");
         clickElement(By.id("classification_tab"));
         clickElement(By.id("classifyAllCdes"));
         clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
         clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
-        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Combat patrol frequency scale");
+        goToCdeByName("From whom/ what were the medical history data obtained");
         clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
 
-        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Witness enemy serious injury casuality frequency scale");
+        goToCdeByName("Overall assessment of the reliability of the medical history data obtained");
         clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
