@@ -51,7 +51,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty0"); //drop down selected is the value that
+        clickElement(By.id("myProperty0"));
         findElement(By.name("value")).sendKeys("MyValue0");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -59,7 +59,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
-        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty1"); //drop down selected is the value that
+        clickElement(By.id("myProperty1"));
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -67,7 +67,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
-        new Select(driver.findElement(By.name("newPropertyKey"))).selectByVisibleText("myProperty2"); //drop down selected is the value that
+        clickElement(By.id("myProperty2"));
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
