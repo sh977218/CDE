@@ -251,9 +251,6 @@ angular.module('resourcesSystem', ['ngResource'])
         return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
     })
     .factory("RegStatusValidator", function(OrgHelpers){
-
-
-
         var evalCde = function (cde, orgName, status, cdeOrgRules) {
             var orgRules = cdeOrgRules[orgName];
             var rules = orgRules.filter(function (r) {
@@ -285,7 +282,6 @@ angular.module('resourcesSystem', ['ngResource'])
                 var re = new RegExp(rule.rule.regex);
                 return re.test(field);
             }
-
             function checkSubTree(object, rule, level) {
                 var key = rule.field.split(".")[level];
                 if (!object[key]) return false;
