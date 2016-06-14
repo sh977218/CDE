@@ -1,0 +1,20 @@
+<span ng-class="accordionListStyle" ng-controller="TableViewCtrl" id="gridList">
+    <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="c in cdes">
+            <td ng-if="searchViewSettings.tableViewFields.name" class="name">
+                <a href="/#/deview/?tinyId={{c.tinyId}}">
+                    {{c.naming[0].designation}}
+                </a>
+            </td>
+            <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key]}}</td>
+        </tr>
+        </tbody>
+    </table>
+</span>

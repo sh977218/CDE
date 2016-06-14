@@ -9,7 +9,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         });
 
         $scope.org = $scope.args.org;
-        var pageSize = $scope.args.pageSize | 5;
+        var pageSize = $scope.args.pageSize | 5; // check this syntax
 
         $scope.searchSettings = {
             q: ""
