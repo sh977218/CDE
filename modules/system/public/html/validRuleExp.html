@@ -1,7 +1,8 @@
 <div class="modal-header">
-    <h3>Export CDEs not Following Validation Rules</h3>
+    <h3>Export CDEs not passing validation rules</h3>
 </div>
 <div class="modal-body">
+    <b>Registration Status</b>
     <select ng-model="status" class="form-control">
         <option>Incomplete</option>
         <option>Candidate</option>
@@ -10,6 +11,7 @@
         <option>Standard</option>
         <option>Preferred Standard</option>
     </select>
+    The export will list CDEs who do not pass registration status rules for the selected status.
 </div>
 <div class="modal-footer">
     <button class="btn btn-warning" ng-click="close()" id="cancelCopy">Cancel</button>

@@ -96,14 +96,13 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                     $scope.addAlert("danger", "Something went wrong, please try again in a minute.");
                 }
             });
-        }.
-        ;
+        };
 
 
 
         $scope.displayValidation = function(){
             var org = $scope.searchSettings.selectedOrg;
-            var curatorOf = userResource.user.orgAdmin.concat(userResource.user.orgCurator);
+            var curatorOf = [].concat(userResource.user.orgAdmin).concat(userResource.user.orgCurator);
             return curatorOf.indexOf(org)>-1;
         };
 
@@ -126,8 +125,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
 angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
+        $scope.status = "Incomplete";
         $scope.export = function(){
-            $modalInstance.close({status: $scope.statusm, org: 'TEST'});
+            $modalInstance.close({status: $scope.status, org: 'TEST'});
         };
         $scope.close = function(){
             $modalInstance.dismiss();
