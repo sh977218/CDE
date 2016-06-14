@@ -4,8 +4,17 @@ var request = require('request'),
     parseString = require('xml2js').parseString,
     MigrationNCIModel = require('../createConnection').MigrationNCIModel
     ;
+var jSessionId = '';
+
+exports.setJSessionId = function (id) {
+    jSessionId = id;
+};
 
 function doNCI(href, cb) {
+    if (jSessionId.length === 0) {
+        cb('no jSessionId set');
+        return;
+    }
     var parsedUrl = url.parse(href, true, true);
     var options = {
         method: 'GET',
@@ -13,7 +22,7 @@ function doNCI(href, cb) {
         url: 'https://formbuilder.nci.nih.gov/FormBuilder/formXMLDownload.do',
         qs: {'': '', formIdSeq: parsedUrl.query.formIdSeq},
         headers: {
-            'Cookie': 'JSESSIONID=588E49670EAFE4DBAAD4C5345C53DF0A'
+            'Cookie': 'JSESSIONID=' + jSessionId
         }
     };
     request(options, function (error, response, body) {
@@ -28,14 +37,16 @@ function doNCI(href, cb) {
     });
 }
 
-exports.runOne = function (nciUrl, next) {
+exports.runOne = function (nciUrl, removeMigration, next) {
     async.series([
         function (cb) {
-            MigrationNCIModel.remove({}, function (err) {
-                if (err) throw err;
-                console.log('removed migration nci collection.');
-                cb();
-            });
+            if (removeMigration) {
+                MigrationNCIModel.remove({}, function (err) {
+                    if (err) throw err;
+                    console.log('removed migration nci collection.');
+                    cb();
+                });
+            } else cb();
         },
         function (cb) {
             doNCI(nciUrl, cb);
