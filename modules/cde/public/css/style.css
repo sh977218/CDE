@@ -1032,6 +1032,10 @@ div + .questionPlaceholder {
     min-height: 160px;
 }
 
+.pinToBoard-card {
+    min-height: 80px;
+}
+
 .my-board-tag {
     display: block;
 }
@@ -1056,11 +1060,11 @@ div + .questionPlaceholder {
     width: 100% !important;
 }
 
-.myBoardEditButtons{
+.myBoardEditButtons {
     margin: 0px;
 }
 
-.myBoardName{
+.myBoardName {
     margin: 0px;
     margin-bottom: 5px;
 }
@@ -1078,4 +1082,8 @@ div + .questionPlaceholder {
 
 .ui-select-container {
     z-index: 1000;
+}
+
+.formRenderPanel {
+    margin-left: 10px;
 }

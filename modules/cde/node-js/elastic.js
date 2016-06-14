@@ -269,7 +269,6 @@ exports.myBoards = function (user, filter, cb) {
     if (!user) return cb("no user provided");
     if (!filter) {
         filter = {
-            sortBy: '',
             sortDirection: '',
             selectedTags: ['All'],
             selectedShareStatus: ['All']
@@ -307,7 +306,7 @@ exports.myBoards = function (user, filter, cb) {
         "sort": []
     };
     var sort = {};
-    if (filter && filter.sortBy) {
+    if (filter.sortBy) {
         sort[filter.sortBy] = {};
         if (filter && filter.sortDirection)
             sort[filter.sortBy].order = filter.sortDirection;
@@ -317,6 +316,14 @@ exports.myBoards = function (user, filter, cb) {
     else {
         sort['updatedDate'] = {"order": "asc"};
         query.sort.push(sort);
+    }
+    if (filter.boardName) {
+        query.query.bool.must.push({
+            "query_string": {
+                "fields": ["name"]
+                , "query": filter.booardName
+            }
+        });
     }
     query.sort.push(sort);
     if (filter.selectedTags) {

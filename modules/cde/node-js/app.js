@@ -251,7 +251,9 @@ exports.init = function (app, daoManager) {
                     b.name = board.name;
                     b.description = board.description;
                     b.shareStatus = board.shareStatus;
+                    b.pins = board.pins;
                     b.tags = board.tags;
+
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
                         return res.status(403).send("You don't have permission to make boards public!");
                     }
