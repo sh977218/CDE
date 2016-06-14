@@ -28,7 +28,7 @@ function doNCI(href, cb) {
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
         parseString(body, function (err, result) {
-            result.href = href;
+            result.form.href = href;
             var obj = MigrationNCIModel(result);
             obj.save(function () {
                 cb();

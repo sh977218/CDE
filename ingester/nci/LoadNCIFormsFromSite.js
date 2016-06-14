@@ -6,10 +6,10 @@ var fs = require('fs'),
     ;
 
 /*
-set this id before run script.
-1. go to https://formbuilder.nci.nih.gov/FormBuilder/formSearchAction.do
-2. open development model, check cookie.
-3. copy JSession id.
+ set this id before run script.
+ 1. go to https://formbuilder.nci.nih.gov/FormBuilder/formSearchAction.do
+ 2. open development model, check cookie.
+ 3. copy JSession id.
  */
 var jSessionId = 'BA66A957C719FE47912B7CC64FC712AE';
 
@@ -21,6 +21,7 @@ $('img[alt="XML Download"]').each(function (i, img) {
 });
 // very important!!!
 LoadFromNciSite.setJSessionId(jSessionId);
+
 async.forEach(hrefArray, function (href, doneOne) {
     LoadFromNciSite.runOne(href, false, function () {
         console.log('counter: ' + counter++);
@@ -28,4 +29,5 @@ async.forEach(hrefArray, function (href, doneOne) {
     });
 }, function donAll() {
     console.log('finished all. ' + counter);
+    process.exit(1);
 });
