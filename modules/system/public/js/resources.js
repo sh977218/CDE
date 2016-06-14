@@ -252,9 +252,10 @@ angular.module('resourcesSystem', ['ngResource'])
     })
     .factory("RegStatusValidator", function(OrgHelpers){
 
-        var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
+
+
+        var evalCde = function (cde, orgName, status, cdeOrgRules) {
             var orgRules = cdeOrgRules[orgName];
-            if (!orgRules) return true;
             var rules = orgRules.filter(function (r) {
                 var s = r.targetStatus;
                 if (status === 'Incomplete') return s === 'Incomplete';
@@ -264,11 +265,16 @@ angular.module('resourcesSystem', ['ngResource'])
                 if (status === 'Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
                 return true;
             });
-            if (rules.length == 0) return true;
+            if (rules.length == 0) return [];
             var results = rules.map(function (r) {
                 return {rule: r, passing: cdePassingRule(cde, r)};
             });
-            console.log(results);
+            return results;
+        };
+
+        var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
+            if (!cdeOrgRules[orgName]) return true;
+            var results = evalCde(cde, orgName, status, cdeOrgRules);
             return results.every(function (x) {
                 return x.passing;
             });
