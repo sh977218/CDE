@@ -35,7 +35,7 @@ public class FormClassificationTest extends BaseFormTest {
         clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
         
         // Verify
-        goToCdeByName("From whom/ what were the medical history data obtained");
+        goToCdeByName("Data source");
         clickElement(By.id("classification_tab"));
         textPresent("ABTC");
         textPresent("ABTC 0904");
