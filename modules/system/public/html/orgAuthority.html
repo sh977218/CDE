@@ -122,7 +122,7 @@
                             <span class="label label-default">{{p}}</span>
                         </span>
                         <ui-select multiple ng-show="propertyKeys.editMode" sortable="true" ng-model="o.propertyKeys"
-                                   theme="select2" style="width: 100%">
+                                   theme="select2" style="width: 100%" id="text_entry_box_{{$index}}">
                             <ui-select-match placeholder="type or select a Property" allow-clear="true">
                                 {{$item}}
                             </ui-select-match>
