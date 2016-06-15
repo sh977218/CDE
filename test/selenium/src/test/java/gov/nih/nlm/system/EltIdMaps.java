@@ -11,9 +11,11 @@ public class EltIdMaps {
         eltMap.put("Apgar Score Created By java.lang.Long", "GvOOag_P4Zg");
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
+        eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H-tWNZ");
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
+        eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");
