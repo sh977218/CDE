@@ -60,7 +60,7 @@ public class BoardExportTest extends BoardTest {
                 "\"name\":\"Acute Hospitalized\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Psychiatric and Psychological"
         };
         for (String s : expected2) {
-            Assert.assertTrue(response.contains(s));
+            Assert.assertTrue(response.contains(s), "Actual Export: " + response);
         }
     }
 
