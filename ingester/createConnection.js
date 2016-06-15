@@ -28,9 +28,13 @@ exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose
     strict: false,
     collection: 'ninds'
 }));
-exports.MigrationNCIModel = migrationConn.model('MigrationNCI', new mongoose.Schema({}, {
+exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new mongoose.Schema({}, {
     strict: false,
-    collection: 'nci'
+    collection: 'nciFormXml'
+}));
+exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'nciCdeXml'
 }));
 exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
     strict: false,

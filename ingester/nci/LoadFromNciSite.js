@@ -2,7 +2,7 @@ var request = require('request'),
     url = require('url'),
     async = require('async'),
     parseString = require('xml2js').parseString,
-    MigrationNCIModel = require('../createConnection').MigrationNCIModel
+    MigrationNCIModel = require('../createConnection').MigrationNCIFormXmlModel
     ;
 var jSessionId = '';
 
