@@ -1,12 +1,17 @@
 var fs = require('fs'),
+    request = require('request'),
     async = require('async'),
     entities = require("entities"),
+    beautify = require("json-beautify"),
     parseString = require('xml2js').parseString,
     MigrationDataElementModel = require('../createConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('../createConnection').MigrationOrgModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data_system = require('../../modules/system/node-js/mongo-data')
     ;
+var classificationMapping;
 
+var orgName = 'NCIP';
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
 var datatypeMapping = {
     CHARACTER: "Text",
@@ -233,13 +238,13 @@ function doDataElementList(result, next) {
                 };
                 var classifVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
                 try {
-                    var classifName = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].longName || "";
+                    var classifName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].longName || "";
 
                 } catch (e) {
                     console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion);
                     throw e;
                 }
-                var classifStatus = classifMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
+                var classifStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
                 if (classifStatus === 'RELEASED' && classifName.length > 0 &&
                     csi.ClassificationSchemeItemName[0].length > 0) {
                     if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
@@ -272,22 +277,76 @@ function doDataElementList(result, next) {
 }
 
 function run() {
-    console.log('Reading xml files from ' + xmlFolder);
-    fs.readdir(xmlFolder, function (error, files) {
-        if (error) throw error;
-        async.forEach(files, function (xml, doneOneXml) {
-            fs.readFile(xmlFolder + xml, function (err, data) {
-                console.log('Start processing ' + xml);
+    async.series([
+        function (cb) {
+            fs.readFile('./caDSRclassificationMaping', function (err) {
+                if (err) {
+                    console.log('classification map does not find. retrieve it now');
+                    request('http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=gov.nih.nci.cadsr.domain.ClassificationScheme&gov.nih.nci.cadsr.domain.ClassificationScheme&startIndex=0&pageSize=2000&resultCounter=2000',
+                        function (error, response, body) {
+                            var finalMapping = {};
+                            if (!error && response.statusCode == 200) {
+                                parseString(body, function (err, jsonRes) {
+                                    jsonRes['xlink:httpQuery'].queryResponse[0]['class'].forEach(function (thisClass) {
+                                        var returnObj = {};
+                                        thisClass.field.forEach(function (field) {
+                                            if (field['$'].name === "publicID") returnObj.publicID = field['_'];
+                                            if (field['$'].name === "version") returnObj.version = field['_'];
+                                            if (field['$'].name === "longName") returnObj.longName = field['_'];
+                                            if (field['$'].name === "workflowStatusName") returnObj.workflowStatusName = field['_'];
+                                        });
+                                        //finalMapping.push(returnObj);
+                                        finalMapping[returnObj.publicID + "v" + returnObj.version] = {
+                                            longName: returnObj.longName,
+                                            workflowStatusName: returnObj.workflowStatusName
+                                        };
+                                    });
+                                });
+                                console.log("Classifications obtained.");
+                                fs.writeFile("./ingester/nci/caDSRclassificationMaping.json", beautify(finalMapping, null, 2, 1000), function () {
+                                    var classificationMapping = require('./caDSRclassificationMaping.json')
+                                    cb();
+                                });
+                            }
+                        });
+                }
+                else {
+                    console.log('classification map found.');
+                    cb();
+                }
+            })
+        },
+        function (cb) {
+            MigrationDataElementModel.remove({}, function (err) {
                 if (err) throw err;
-                parseString(data, function (e, json) {
-                    doDataElementList(json, doneOneXml);
-                })
+                MigrationOrgModel.remove({}, function (er) {
+                    if (er) throw er;
+                    new MigrationOrgModel({name: orgName}).save(function (e) {
+                        if (e) throw e;
+                        cb();
+                    });
+                });
             });
-        }, function doneAllXml() {
-            console.log('Finished loading all XML.');
-        })
-    })
-
+        },
+        function () {
+            console.log('Reading xml files from ' + xmlFolder);
+            fs.readdir(xmlFolder, function (error, files) {
+                if (error) throw error;
+                async.forEach(files, function (xml, doneOneXml) {
+                    fs.readFile(xmlFolder + xml, function (err, data) {
+                        console.log('Start processing ' + xml);
+                        if (err) throw err;
+                        parseString(data, function (e, json) {
+                            doDataElementList(json, doneOneXml);
+                        })
+                    });
+                }, function doneAllXml() {
+                    console.log('Finished loading all XML.');
+                    process.exit(1);
+                })
+            })
+        }
+    ]);
 }
 
 

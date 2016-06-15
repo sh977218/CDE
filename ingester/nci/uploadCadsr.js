@@ -14,12 +14,6 @@ var fs = require('fs'),
     ;
 
 
-// 1) Change your config file to point to migration DB
-// 2) Download caDSR https://wiki.nci.nih.gov/x/AbH9AQ
-// 3) run this:  node ingester/getCadsrClassifs.js
-// 4) run each file, for example, like this:
-// for f in $(find ../seed/caDSR/*.xml); do  node ingester/uploadCadsr.js $f ; done
-
 var parser = new xml2js.Parser();
 var builder = new xml2js.Builder();
 
