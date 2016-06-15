@@ -57,6 +57,17 @@
 
     <form name="advSearchForm" id="advSearchForm" novalidate="" method="GET" class="ng-pristine ng-valid ng-valid-maxlength"
           ng-class="{'extraPadding': !searchStarted }">
+
+        <div class="btn-group" ng-if="!searchStarted">
+            <button id="betaDisabled" class="btn btn-sm" ng-class="{'btn-success':searchType === 'cde'}"
+                    ng-click="searchCDEs()"> CDEs
+            </button>
+            <button id="searchForm" class="btn btn-sm" ng-class="{'btn-success':searchType === 'form'}"
+                    ng-click="searchForms()"> Forms
+            </button>
+        </div>
+
+
         <div class="input-group input-group">
             <select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"
                     ng-model="selectedClassif" style="width:50%;">

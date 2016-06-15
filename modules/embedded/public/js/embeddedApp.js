@@ -2,6 +2,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
     .controller('SearchCtrl', function($scope, Elastic, OrgHelpers) {
 
         $scope.args = {};
+        $scope.searchType = 'cde';
         var args1 = window.location.search.substr(1).split("&");
         args1.forEach(function(arg) {
            var argArr = arg.split("=");
@@ -46,8 +47,11 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
           }).join(",");
         };
 
-        $scope.search = function (type) {
-            if (!type) type = "cde";
+        $scope.searchCDEs = function() {$scope.searchType = 'cde';};
+        $scope.searchForms = function() {$scope.searchType = 'form';};
+
+        $scope.search = function () {
+            var type = $scope.searchType;
 
             var timestamp = new Date().getTime();
             $scope.lastQueryTimeStamp = timestamp;
