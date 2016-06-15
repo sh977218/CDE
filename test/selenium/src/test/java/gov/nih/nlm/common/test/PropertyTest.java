@@ -51,8 +51,9 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
+        // Select using Selenium Select class and select by Value
         clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("myProperty0"));
+        clickElement(By.id("propKey0"));
         findElement(By.name("value")).sendKeys("MyValue0");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -61,7 +62,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("myProperty1"));
+        clickElement(By.id("propKey1"));
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -70,7 +71,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("myProperty2"));
+        clickElement(By.id("propKey2"));
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -85,11 +86,11 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
         showAllTabs();
         clickElement(By.id("properties_tab"));
-        textPresent("myProperty0");
-        textPresent("myProperty2");
+        textPresent("propKey0");
+        textPresent("propKey2");
         textPresent("MyValue0");
         textPresent("MyValue2");
-        textNotPresent("myProperty1");
+        textNotPresent("propKey1");
         textNotPresent("MyValue1");
     }
 
