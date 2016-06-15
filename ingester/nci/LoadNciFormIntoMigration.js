@@ -113,8 +113,20 @@ function createForm(nciForm, cb) {
                 console.log('form ' + nciForm.href + ' has more question more than 1 id or version');
                 process.exit(1);
             }
-            mongo_cde.bySourceIdVersionAndNotRetiredNotArchived(source, question.publicID[0], question.version[0], function (err, existingCde) {
-                if (err) throw err;
+            var de = question.dataElement[0];
+            var version = parseFloat(de.version[0]);
+            var id = de.publicID[0];
+            /** @namespace question.dataElement */
+            mongo_cde.bySourceIdVersionAndNotRetiredNotArchived(source, id, version, function (err, existingCde) {
+                if (err) {
+                    console.log('Cannot find cde. id: ' + id);
+                    console.log('Parsed version: ' + version);
+                    console.log('Origin version: ' + de.version[0]);
+                    console.log('form id: ' + nciForm.publicID[0]);
+                    console.log('form href: ' + nciForm.href);
+                    throw err;
+                    process.exit(1);
+                }
                 /** @namespace question.multiValue */
                 /** @namespace question.isMandatory */
                 var questionFE = {
@@ -137,7 +149,7 @@ function createForm(nciForm, cb) {
                     uom: existingCde.valueDomain.uom,
                     answers: existingCde.valueDomain.permissibleValues
                 };
-                sectionFE.push(questionFE);
+                sectionFE.formElements.push(questionFE);
                 doneOneQuestion();
             });
         }, function doneAllQuestions() {
@@ -159,7 +171,7 @@ function createForm(nciForm, cb) {
             naming: naming,
             ids: ids,
             properties: [property],
-            changeNote: nciForm.changeNote[0],
+            changeNote: nciForm.changeNote ? (nciForm.changeNote[0] ? nciForm.changeNote[0] : '') : '',
             version: nciForm.version[0],
             formElements: formElements,
             classification: []
@@ -200,6 +212,7 @@ function run() {
                             newFormObj.save(function (e) {
                                 if (e) throw e;
                                 console.log('formCounter: ' + formCounter++);
+                                stream.resume();
                             })
                         });
                     } else {
