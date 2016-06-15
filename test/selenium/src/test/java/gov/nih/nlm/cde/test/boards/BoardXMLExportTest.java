@@ -16,7 +16,7 @@ public class BoardXMLExportTest  extends BoardTest {
             goToBoard("Classify Board");
             textPresent("Export Board");
             clickElement(By.id(("export")));
-            clickElement(By.id(("xmlExport")));
+            //clickElement(By.id(("xmlExport")));
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
             Assert.assertTrue(response.contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
