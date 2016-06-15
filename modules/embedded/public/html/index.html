@@ -12,6 +12,7 @@
     <script src="/embedded/public/js/SearchSettings.js"></script>
     <script src="/embedded/public/js/embeddedApp.js"></script>
     <script src="/system/public/js/orgFactories.js"></script>
+    <script src="/form/shared/formShared.js"></script>
     <script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -95,7 +96,7 @@
     </ol>
 
     <div ng-if="searchStarted" >
-        <div id="searchResult" ng-include="'/embedded/public/html/gridList.html'"></div>
+        <div id="searchResult" ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>
         <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
                         ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
     </div>

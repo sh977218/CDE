@@ -41,6 +41,11 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             delete $scope.searchStarted;
         };
 
+        $scope.concatenateQuestions = function(form) {
+            var cdes = exports.getFormCdes(form);
+            return cdes.map(function(c) {return c.name;}).join(",");
+        };
+
         $scope.concatenatePVs = function(elt) {
           return elt.valueDomain.permissibleValues.map(function(a) {
               return a.permissibleValue;
