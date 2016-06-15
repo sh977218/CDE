@@ -247,28 +247,18 @@ function doDataElementList(result, next) {
                 var classifStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
                 if (classifStatus === 'RELEASED' && classifName.length > 0 &&
                     csi.ClassificationSchemeItemName[0].length > 0) {
-                    if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
-                        classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
-                        classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", csi.ClassificationSchemeItemName[0]]);
+                    if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                         if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
                             cde.registrationState.registrationStatus = "Qualified";
                         }
-                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
-                        if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
-                            cde.registrationState.registrationStatus = "Qualified";
-                        }
-                    } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
-                        // ignore classifications
-                    } else {
-                        classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
-                        classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
                     }
+                    classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
+                    classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
                 }
             });
 
-
         var obj = new MigrationDataElementModel(cde);
-        obj.save(function (error) {
+        obj.save(function () {
             cb();
         });
     }, function () {
@@ -304,7 +294,7 @@ function run() {
                                 });
                                 console.log("Classifications obtained.");
                                 fs.writeFile("./ingester/nci/caDSRClassificationMapping.json", beautify(finalMapping, null, 2, 1000), function () {
-                                    var classificationMapping = require('./caDSRClassificationMapping.json')
+                                    var classificationMapping = require('./caDSRClassificationMapping.json');
                                     cb();
                                 });
                             }
@@ -314,7 +304,7 @@ function run() {
                     console.log('classification map found.');
                     cb();
                 }
-            })
+            });
         },
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
@@ -338,13 +328,13 @@ function run() {
                         if (err) throw err;
                         parseString(data, function (e, json) {
                             doDataElementList(json, doneOneXml);
-                        })
+                        });
                     });
                 }, function doneAllXml() {
                     console.log('Finished loading all XML.');
                     process.exit(1);
-                })
-            })
+                });
+            });
         }
     ]);
 }
