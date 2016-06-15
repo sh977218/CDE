@@ -10,7 +10,6 @@
  * Mongodb - 2.6.7
  * ElasticSearch 2.3
 
-
 ## Configure **elascticsearch.yml** 
 
 In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch.
