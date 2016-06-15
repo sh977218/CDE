@@ -7,9 +7,9 @@ var fs = require('fs'),
     MigrationDataElementModel = require('../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('../createConnection').MigrationOrgModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
-    mongo_data_system = require('../../modules/system/node-js/mongo-data')
+    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
+    classificationMapping = require('./caDSRClassificationMapping.json')
     ;
-var classificationMapping;
 
 var orgName = 'NCIP';
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
@@ -279,7 +279,7 @@ function doDataElementList(result, next) {
 function run() {
     async.series([
         function (cb) {
-            fs.readFile('./caDSRclassificationMaping', function (err) {
+            fs.readFile('./caDSRClassificationMapping', function (err) {
                 if (err) {
                     console.log('classification map does not find. retrieve it now');
                     request('http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=gov.nih.nci.cadsr.domain.ClassificationScheme&gov.nih.nci.cadsr.domain.ClassificationScheme&startIndex=0&pageSize=2000&resultCounter=2000',
@@ -303,8 +303,8 @@ function run() {
                                     });
                                 });
                                 console.log("Classifications obtained.");
-                                fs.writeFile("./ingester/nci/caDSRclassificationMaping.json", beautify(finalMapping, null, 2, 1000), function () {
-                                    var classificationMapping = require('./caDSRclassificationMaping.json')
+                                fs.writeFile("./ingester/nci/caDSRClassificationMapping.json", beautify(finalMapping, null, 2, 1000), function () {
+                                    var classificationMapping = require('./caDSRClassificationMapping.json')
                                     cb();
                                 });
                             }
