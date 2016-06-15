@@ -11,7 +11,7 @@ var fs = require('fs'),
     classificationMapping = require('./caDSRClassificationMapping.json')
     ;
 
-var orgName = 'NCI';
+var orgName = 'NCIP';
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
 var datatypeMapping = {
     CHARACTER: "Text",
@@ -236,18 +236,18 @@ function doDataElementList(result, next) {
                     if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
                     else return shortVersion;
                 };
-                var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
+                var classifVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
                 try {
-                    var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
+                    var classifName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].longName || "";
 
                 } catch (e) {
-                    console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
+                    console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion);
                     throw e;
                 }
-                var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
-                if (classificationStatus === 'RELEASED' && classificationName.length > 0 &&
+                var classifStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
+                if (classifStatus === 'RELEASED' && classifName.length > 0 &&
                     csi.ClassificationSchemeItemName[0].length > 0) {
-                    if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classificationName === "PhenX") {
+                    if (csi.ClassificationScheme[0].ContextName[0] === "caBIG" && classifName === "PhenX") {
                         classificationShared.classifyItem(cde, "PhenX", ['PhenX', csi.ClassificationSchemeItemName[0]]);
                         classificationShared.addCategory({elements: phenxOrg.classifications}, ["PhenX", csi.ClassificationSchemeItemName[0]]);
                         if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
@@ -260,8 +260,8 @@ function doDataElementList(result, next) {
                     } else if (csi.ClassificationScheme[0].ContextName[0] === "NINDS") {
                         // ignore classifications
                     } else {
-                        classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-                        classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+                        classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
+                        classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
                     }
                 }
             });
