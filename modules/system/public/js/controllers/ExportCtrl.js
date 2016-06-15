@@ -146,7 +146,8 @@ angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibMo
     };
 }]);
 
-angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope',
-    function ($scope) {
-        console.log('xxx');
+angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams',
+    function ($scope, $routeParams) {
+        $routeParams.searchSettings  = JSON.parse($routeParams.searchSettings);
+        console.log($routeParams);
     }]);
