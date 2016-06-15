@@ -5,7 +5,7 @@ function($scope, $modalInstance, cde, OrgHelpers) {
     $scope.newNamePair = {
         "languageCode" : "EN-US"
         , context: {
-            contextName: "Health"
+            contextName: ""
             , "acceptability" : "preferred"
         }
     };
@@ -14,7 +14,8 @@ function($scope, $modalInstance, cde, OrgHelpers) {
     $scope.cancelCreate = function() {
         $modalInstance.dismiss('cancel');
     };
-    $scope.orgContexts =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+
+    $scope.orgContexts =  function() {return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts};
 
     $scope.okCreate = function() {
         cde.naming.push($scope.newNamePair);

@@ -1,7 +1,10 @@
 angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers',
     function($scope, $modal, OrgHelpers)
 {
-    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+
+    $scope.allContexts = function() {
+        return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+    };
 
     $scope.openNewNamePair = function () {
         $modal.open({

@@ -17,8 +17,9 @@
         <div class="form-group">
             <label tabindex="0" for="newContext">Context</label>
              <select  ng-model="newNamePair.context.contextName" id="newContext" name="context" class="form-control">
-                <option ng-repeat="context in orgContexts" value="{{context}}">{{context}}</option>
+                <option ng-repeat="context in orgContexts()" value="{{context}}">{{context}}</option>
             </select>
+            <info>Contexts are managed in Org Management > List Management</info>
         </div>
     </div>
     <div class="modal-footer">

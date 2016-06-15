@@ -1,20 +1,28 @@
-angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers',
-    function($scope, $modal, $location, $timeout, OrgHelpers)
-{    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-    console.log("All keys" + $scope.allKeys);
+angular.module('systemModule').controller('PropertiesCtrl',
+    ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert',
+    function($scope, $modal, $location, $timeout, OrgHelpers, Alert)
+{
+
+    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+
     $scope.openNewProperty = function () {
+        if (!$scope.allKeys || $scope.allKeys.length === 0) {
+            Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
+            return;
+        }
+
         var modalInstance = $modal.open({
             animation: false,
-          templateUrl: 'newPropertyModalContent.html',
-          controller: 'NewPropertyModalCtrl',
-          resolve: {
-              elt: function() {
-                  return $scope.elt;
-              },
-              module: function() {
-                  return $scope.module;
-              }
-          }
+            templateUrl: 'newPropertyModalContent.html',
+            controller: 'NewPropertyModalCtrl',
+            resolve: {
+                elt: function () {
+                    return $scope.elt;
+                },
+                module: function () {
+                    return $scope.module;
+                }
+            }
         });
         
         modalInstance.result.then(function (newProperty) {
@@ -26,11 +34,11 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModa
             }
             $scope.elt.properties.push(newProperty);
             if ($scope.elt.unsaved) {
-                $scope.addAlert("info", "Property added. Save to confirm.");
+                Alert.addAlert("info", "Property added. Save to confirm.");
             } else {
                 $scope.elt.$save(function (newElt) {
                     $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
-                    $scope.addAlert("success", "Property Added"); 
+                    Alert.addAlert("success", "Property Added");
                 });
             }
         });
@@ -44,7 +52,7 @@ angular.module('systemModule').controller('PropertiesCtrl', ['$scope', '$uibModa
             $scope.elt.$save(function (newElt) {
                 $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
                 $scope.elt = newElt;
-                $scope.addAlert("success", "Property Removed"); 
+                Alert.addAlert("success", "Property Removed");
             });
         }
     };
@@ -69,11 +77,6 @@ angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$u
     $scope.elt = elt;
     $scope.newProperty = {};
     $scope.orgPropertyKeys =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-     // Replace this! with OrgHelper !
-//    $scope.autocompleteList = [];
-//    $http.get("/" + module + "/properties/keys").then(function(result) {
-//        $scope.autocompleteList = result.data;
-//    });
 
     $scope.okCreate = function () {
         $modalInstance.close($scope.newProperty);

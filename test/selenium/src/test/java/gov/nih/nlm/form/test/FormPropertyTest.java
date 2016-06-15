@@ -17,16 +17,8 @@ public class FormPropertyTest extends PropertyTest {
     }
 
     @Test
-    public void autocomplete() {
-        autocomplete("Skin Cancer Patient", "autoc", "Autocomplete");
-    }
-
-    @Test
-    @RecordVideo
     public void addRemoveFormProperty() {
-
-        //What does this do?
-        addRemoveProperty("Testing properties for Forms", "Recorded");
+        addRemoveProperty("Form Property Test", "Recorded");
     }
 
     @Test
