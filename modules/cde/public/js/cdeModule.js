@@ -22,6 +22,6 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplate
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
         when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'})
-        .when('/cdeStatusReport', {controller: 'ShowValidRuleReportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
+        .when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
         ;
     });
