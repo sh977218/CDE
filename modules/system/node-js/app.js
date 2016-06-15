@@ -467,7 +467,6 @@ exports.init = function (app) {
         res.render('orgAccountManagement', "system");
     });
 
-
     app.get('/data/:imgtag', function (req, res) {
         mongo_data_system.getFile(req.user, req.params.imgtag, res);
     });

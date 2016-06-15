@@ -13,9 +13,7 @@ public abstract class PropertyTest extends CommonTest {
 
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        // Select using Selenium Select class and select by Value
-        clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("propKey0"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
         findElement(By.name("value")).sendKeys("MyValue0");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -23,8 +21,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
-        clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("propKey1"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
@@ -32,8 +29,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
-        clickElement(By.id("newPropertyKey"));
-        clickElement(By.id("propKey2"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");

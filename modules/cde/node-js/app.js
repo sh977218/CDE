@@ -301,12 +301,6 @@ exports.init = function (app, daoManager) {
             res.send("Please login first.");
         }
     });
-    /*
-    app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.org_autocomplete(req.params.name, function (result) {
-            res.send(result);
-        });
-    });*/
 
     app.get('/cdediff/:deId', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.deId) res.status(404).send("Please specify CDE id.");

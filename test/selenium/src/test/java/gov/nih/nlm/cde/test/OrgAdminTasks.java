@@ -13,7 +13,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         findElement(By.linkText("Organizations Curators")).click();       
-        new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG"); //How you select from a dropdown
+        new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
         Assert.assertEquals(findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).getText(), "userToPromote");
         findElement(By.xpath("//form[@id='newOrgCuratorForm']/div[1]/ul/li[1]/a")).click();
