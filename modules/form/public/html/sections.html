@@ -14,7 +14,15 @@
     </div>
 </div>
 <div ng-show="elt.formElements.length === 0">
-    <i class="fa fa-exclamation-triangle"></i> There is no content yet.
+    <i class="fa fa-exclamation-triangle"></i>
+    <span ng-switch="elt.noRenderAllowed">
+        <span ng-switch-when="true">
+            Rendering is disabled for this form.
+        </span>
+        <span ng-switch-default>
+            There is no content yet.
+        </span>
+    </span>
 </div>
 <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions" id="sectionsDiv">
     <div ng-repeat="(sectionIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
