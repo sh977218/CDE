@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal',
-    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$location', '$httpParamSerializer',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $location, $httpParamSerializer) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -126,7 +126,9 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
             modalInstance.result.then(function (report) {
                 report.searchSettings = $scope.searchSettings;
-                $scope.exportSearchResults('validationRules', report);
+                var uri = $httpParamSerializer(report);
+                //$scope.exportSearchResults('validationRules', report);
+                $location.url('/cdeStatusReport?' + uri);
             }, function(reason) {
 
             });
@@ -135,11 +137,16 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
 
 angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
-        $scope.status = "Incomplete";
-        $scope.export = function(){
-            $modalInstance.close({status: $scope.status, org: 'TEST'});
-        };
-        $scope.close = function(){
-            $modalInstance.dismiss();
-        };
+    $scope.status = "Incomplete";
+    $scope.export = function(){
+        $modalInstance.close({status: $scope.status, org: 'TEST'});
+    };
+    $scope.close = function(){
+        $modalInstance.dismiss();
+    };
+}]);
+
+angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope',
+    function ($scope) {
+        console.log('xxx');
     }]);
