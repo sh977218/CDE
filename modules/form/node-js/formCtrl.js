@@ -6,7 +6,8 @@ var mongo_data_form = require('./mongo-form'),
     sdc = require('./sdcForm'),
     redCap = require('./redCapForm'),
     archiver = require('archiver'),
-    async = require('async')
+    async = require('async'),
+    authorization = require('../../system/node-js/authorization')
     ;
 
 exports.findForms = function (req, res) {
@@ -75,26 +76,62 @@ var getFormPlainXml = function (form, req, res) {
     });
 };
 
+function wipeRenderDisallowed (form, req, cb) {
+    if (form && form.noRenderAllowed) {
+        authorization.checkOwnership(mongo_data_form, form._id, req, function(err, isYouAllowed) {
+            if (!isYouAllowed) form.formElements = [];
+            cb();
+        });
+    } else {
+        cb();
+    }
+}
+
 exports.formById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') {
-            formShared.getFormOdm(form, function (err, xmlForm) {
-                if (err) res.status(err).send(xmlForm);
-                else {
-                    res.set('Content-Type', 'text/xml');
-                    res.send(JXON.jsToString({element: xmlForm}));
-                }
-            });
-        }
-        else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
-        else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-        else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
-        else getFormJson(form, req, res);
+        wipeRenderDisallowed(form, req, function() {
+            if (req.query.type === 'xml' && req.query.subtype === 'odm') {
+                formShared.getFormOdm(form, function (err, xmlForm) {
+                    if (err) res.status(err).send(xmlForm);
+                    else {
+                        res.set('Content-Type', 'text/xml');
+                        res.send(JXON.jsToString({element: xmlForm}));
+                    }
+                });
+            }
+            else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
+            else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
+            else getFormJson(form, req, res);
+        });
     });
 };
+
+exports.formByTinyIdVersion = function (req, res) {
+    if (req.params.version !== 'undefined') {
+        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    } else {
+        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    }
+};
+
 
 function fetchWholeForm(Form, callback) {
     var maxDepth = 8;
@@ -233,16 +270,3 @@ exports.priorForms = function (req, res) {
     });
 };
 
-exports.formByTinyIdVersion = function (req, res) {
-    if (req.params.version !== 'undefined') {
-        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
-            if (err) res.status(500).send(err);
-            else res.send(elt);
-        });
-    } else {
-        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
-            if (err) res.status(500).send(err);
-            else res.send(elt);
-        });
-    }
-};

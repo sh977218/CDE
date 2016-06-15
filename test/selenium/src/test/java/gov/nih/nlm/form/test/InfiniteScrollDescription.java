@@ -9,6 +9,7 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
 
     @Test
     public void infiniteScrollDescription() {
+        mustBeLoggedInAs("ninds", password);
         goToFormByName("Food Frequency Questionnaire (FFQ)");
         clickElement(By.id("description_tab"));
         try {
