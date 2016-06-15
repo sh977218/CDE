@@ -56,9 +56,6 @@
                         <li ng-repeat="(key, value) in exporters">
                             <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a>
                         </li>
-                        <!--<li ng-click="validStatusExport()">-->
-                            <!--Validation Rules-->
-                        <!--</li>-->
                         <li ng-if="displayValidation()">
                             <a ng-click="openValidRulesModal()">Validation Rules</a>
                         </li>

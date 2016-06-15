@@ -15,7 +15,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             }
             $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
             $scope.addAlert("warning", "Your export is being generated, please wait.");
-            Elastic.getExport(Elastic.buildElasticQuerySettings($scope.searchSettings), $scope.module, function (err, result) {
+            Elastic.getExport(Elastic.buildElasticQuerySettings(exportSettings.searchSettings), $scope.module, function (err, result) {
                 if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
                 var exporters =
                 {
@@ -125,6 +125,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             });
 
             modalInstance.result.then(function (report) {
+                report.searchSettings = $scope.searchSettings;
                 $scope.exportSearchResults('validationRules', report);
             }, function(reason) {
 
