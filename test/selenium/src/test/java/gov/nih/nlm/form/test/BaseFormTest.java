@@ -18,8 +18,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void saveForm() {
         clickElement(By.id("openSaveBottom"));
+        textPresent("has already been used");
         findElement(By.name("version")).sendKeys("1");
-        hangon(3);
+        textNotPresent("has already been used");
+        hangon(2);
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();

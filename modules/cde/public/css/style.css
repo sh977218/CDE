@@ -1032,6 +1032,10 @@ div + .questionPlaceholder {
     min-height: 160px;
 }
 
+.pinToBoard-card {
+    min-height: 80px;
+}
+
 .my-board-tag {
     display: block;
 }

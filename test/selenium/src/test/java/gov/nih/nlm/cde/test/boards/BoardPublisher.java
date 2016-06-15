@@ -3,7 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class BoardManagementTest extends BoardTest {
+public class BoardPublisher extends BoardTest {
 
     @Test
     public void boardPublisher() {
@@ -25,20 +25,5 @@ public class BoardManagementTest extends BoardTest {
         gotoMyBoards();
         makePublic("IsItPublic");
     }
-
-
-    @Test(priority = 4)
-    public void iHaveNoBoard() {
-        mustBeLoggedInAs(boarduser2_username, password);
-        String cdeName = "Specimen Array";
-
-        goToCdeSearch();
-        openCdeInList(cdeName);
-        clickElement(By.id("pinToBoard_0"));
-        textPresent("Click here to create a board now");
-        clickElement(By.id("cancelSelect"));
-        modalGone();
-    }
-
 
 }
