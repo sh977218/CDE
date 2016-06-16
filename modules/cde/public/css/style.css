@@ -1079,3 +1079,9 @@ div + .questionPlaceholder {
 .ui-select-container {
     z-index: 1000;
 }
+
+.cdeStatusReportGrid {
+    border: 1px solid rgb(212,212,212);
+    width: auto;
+    height: 600px
+}

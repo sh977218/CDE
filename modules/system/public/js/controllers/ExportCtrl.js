@@ -68,8 +68,10 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                 cdes.push(record)
                             };
                         });
-                        var blob = new Blob([JSON.stringify(cdes)], {type: "application/json"});
-                        saveAs(blob, "SearchExport.json");
+                        //var blob = new Blob([JSON.stringify(cdes)], {type: "application/json"});
+                        //saveAs(blob, "SearchExport.json");
+                        //$scope.reportOutput = cdes;
+                        if(exportSettings.cb) exportSettings.cb(cdes);
                     }
                 };
                 if (result) {
@@ -149,7 +151,23 @@ angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibMo
 angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams',
     function ($scope, $routeParams) {
         $routeParams.searchSettings  = JSON.parse($routeParams.searchSettings);
-        $scope.exportParams = $routeParams;
+        $scope.gridOptionsReport = {
+            data:'cdes'
+            , columnDefs: [{field: "cdeName", display: "CDE Name"}, {field: 'tinyId', display: "NLM ID"}]
+        };
+        $routeParams.cb = function(cdes){
+            cdes[0].validationRules.forEach(function(r, i){
+                $scope.gridOptionsReport.columnDefs.push({field: 'rule' + i, displayName: r.ruleName});
+            });
+            var exportFormat = cdes.map(function(cde){
+                var output = {cdeName: cde.cdeName, tinyId: cde.tinyId};
+                cde.validationRules.forEach(function(rule, i){
+                    output['rule' + i] = rule.cdePassingRule?"Yes":"No";
+                });
+                return output;
+            });
+            $scope.cdes = exportFormat;
+        };
         $scope.module = 'cde';
         $scope.exportSearchResults('validationRules', $routeParams);
     }]);

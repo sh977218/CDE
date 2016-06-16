@@ -1,5 +1,6 @@
-xxx
 
 <div ng-controller="ShowValidRuleReportCtrl">
-    {{exportParams}}
+    <div ng-if="cdes">
+        <div ng-grid="gridOptionsReport" class="cdeStatusReportGrid"></div>
+    </div>
 </div>
