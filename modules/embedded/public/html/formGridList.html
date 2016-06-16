@@ -5,7 +5,8 @@
             <th ng-if="searchViewSettings.tableViewFields.questions">Questions</th>
             <th ng-if="args.nbOfQuestions">Questions</th>
             <th ng-if="args.cdes">CDEs</th>
-            <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
+            <!--<th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>-->
+            <th ng-if="args.sdcLink">SDC</th>
         </thead>
         <tbody>
         <tr ng-repeat="f in elts">
@@ -21,8 +22,12 @@
                 <span>{{concatenateQuestions(f) | limitTo : 200}}</span>
                 <span class="lastItem" ng-show="concatenateQuestions(f).length > 200">(More...)</span>
             </td>
-            <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{f.embed[customField.key] | limitTo : 200}}
-                <span ng-show="f.embed[customField.key].length > 200">(More...)</span></td>
+            <!--<td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{f.embed[customField.key] | limitTo : 200}}-->
+                <!--<span ng-show="f.embed[customField.key].length > 200">(More...)</span></td>-->
+            <td ng-if="args.sdcLink">
+                <a href="https://cde.nlm.nih.gov/form/{{f.tinyId}}?type=xml&subtype=sdc" target="_blank"><i class="fa fa-wpforms fa-2x"></i>
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

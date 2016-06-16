@@ -2,9 +2,9 @@
     <table class="gridListView table table-condensed table-striped table-bordered" ng-class="accordionListStyle">
         <thead>
         <tr>
-            <th>Name</th>
+            <th >Name</th>
             <th ng-if="searchViewSettings.tableViewFields.permissibleValues">Permissible Values</th>
-            <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
+            <th  ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
         </tr>
         </thead>
         <tbody>
@@ -19,8 +19,8 @@
                     {{c.valueDomain.datatype}}<span ng-show="c.valueDomain.datatype==='Value List'">:</span>
                 </strong>
                 <span ng-if="c.valueDomain.permissibleValues">
-                    <span>{{concatenatePVs(c) | limitTo : 200}}</span>
-                    <span class="lastItem" ng-show="concatenatePVs(c).length > 200">(More...)</span>
+                    <span>{{concatenatePVs(c) | limitTo : 170}}</span>
+                    <span class="lastItem" ng-show="concatenatePVs(c).length > 170">(More...)</span>
                 </span>
             </td>
             <td ng-if="searchViewSettings.tableViewFields.nbOfPVs" class="nbOfPVs">

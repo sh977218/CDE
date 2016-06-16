@@ -25,6 +25,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
 
         $scope.selectElement = function(s) {
             $scope.searchSettings.classification.push(s);
+            $scope.selectedClassif = "";
             $scope.search();
         };
 

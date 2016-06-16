@@ -15,6 +15,7 @@
     <script src="/form/shared/formShared.js"></script>
     <script src="/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -25,7 +26,7 @@
             padding: 0px 0px 0px 0px;
         }
         .extraPadding {
-            margin-top: 100px!important;
+            margin-top: 30px!important;
             margin-left: 50px!important;margin-right: 50px!important;
         }
         #pageWrapper{
@@ -44,35 +45,54 @@
             padding-right: 5px;
         }
 
-        #advSearchForm {}
+        #advSearchForm {
+            margin: 0px 0px 5px 0px;
+        }
 
 
         .gridListView .name {width: auto;}
 
         #searchResult table{width: auto;}
+
+        #searchCdesFormsHeading{
+            margin-top: 90px;
+        }
+
+        #selectCdeForms{
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .halfOpacity{opacity: 0.5!important;}
     </style>
 </head>
 <body>
 
 <div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div">
 
-    <form name="advSearchForm" id="advSearchForm" novalidate="" method="GET" class="ng-pristine ng-valid ng-valid-maxlength"
-          ng-class="{'extraPadding': !searchStarted }">
+    <h2 class="text-center" ng-if="!searchStarted" id="searchCdesFormsHeading">Search CDEs and Forms</h2>
 
-        <div class="btn-group" ng-if="!searchStarted">
-            <button id="betaDisabled" class="btn btn-sm" ng-class="{'btn-success':searchType === 'cde'}"
+    <div id="selectCdeForms"  ng-if="!searchStarted" class="text-center">
+        <div class="btn-group">
+            <button id="betaDisabled" class="btn" ng-class="{'btn-primary':searchType === 'cde'}"
                     ng-click="searchCDEs()"> CDEs
             </button>
-            <button id="searchForm" class="btn btn-sm" ng-class="{'btn-success':searchType === 'form'}"
+            <button id="searchForm" class="btn" ng-class="{'btn-primary':searchType === 'form'}"
                     ng-click="searchForms()"> Forms
             </button>
         </div>
+    </div>
 
+    <form name="advSearchForm" id="advSearchForm" novalidate="" class="ng-pristine ng-valid ng-valid-maxlength"
+          ng-class="{'extraPadding': !searchStarted }" ng-action="">
 
         <div class="input-group input-group">
             <select class="form-control" ng-change="selectElement(selectedClassif)" placeholder="Browse"
-                    ng-model="selectedClassif" style="width:50%;">
-                <option value="Search within..." disabled selected>Search within...</option>
+                    ng-model="selectedClassif" style="width:50%;" ng-switch="searchSettings.classification.length > 0"
+                    ng-disabled="aggregations.flatClassifications.length === 0"
+                    ng-class="{'halfOpacity':aggregations.flatClassifications.length === 0}"
+            >
+                <option value="" selected ng-switch-when="true">All Sub Classifications</option>
+                <option value="" selected ng-switch-default="true">All Classifications</option>
                 <option ng-repeat="classif in aggregations.flatClassifications">{{classif.name}}</option>
             </select>
             <label class="sr-only" for="ftsearch-input">Search Terms</label>
@@ -84,19 +104,25 @@
         <div class="input-group-btn">
             <button id="search.submit" ng-click="searchStarted = true;  search()" type="submit" class="btn btn-danger ">
                 <i class="fa fa-search"></i> Search</button>
-            <button id="search.reset" ng-click="reset()" type="submit" class="btn">
+            <button id="search.reset" ng-click="reset()" class="btn">
                 <i class="fa fa-search"></i> Reset</button>
         </div>
         </div>
     </form>
 
+    <div> Search Inside
+        <ol  class="breadcrumb" class="form-control" style="display: inline-block;">
+            <li ng-if="!searchSettings.classification.length>0">All Classifications</li>
+            <li ng-repeat="c in searchSettings.classification track by $index"><a href="#" ng-click="crumbSelect($index)">{{c}}</a></li>
+            <li ng-if="searchSettings.classification.length>0 && aggregations.flatClassifications.length > 0" >All Sub Classifications</li>
+        </ol>
+        <span ng-if="searchStarted" class="pull-right" style="padding-top:10px">{{totalItems}} results <small> ({{took / 1000}} secs)</small></span>
+    </div>
+    <div class="clearfix"></div>
 
-    <ol ng-if="searchSettings.classification.length > 0" class="breadcrumb" class="form-control">
-        <li ng-repeat="c in searchSettings.classification"><a href="#" ng-click="crumbSelect($index)">{{c}}</a></li>
-    </ol>
 
     <div ng-if="searchStarted" >
-        <div id="searchResult" ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>
+        <div ng-if="totalItems > 0" id="searchResult" ng-include="'/embedded/public/html/' + searchType + 'GridList.html'"></div>
         <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
                         ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
     </div>
