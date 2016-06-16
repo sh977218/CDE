@@ -36,10 +36,12 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
 
     @Test
     public void removeOneFromCdeQuickBoard() {
+        //This test is failing because we took away the ng-init in the formSummaryList.html page
+
         goToCdeSearch();
         clickElement(By.id("browseOrg-OHSU Knight"));
         textPresent("4 results for");
-        clickElement(By.id("addToCompare_0"));
+        clickElement(By.id("addToCompare_0")); //right here
         closeAlert();
         clickElement(By.id("addToCompare_1"));
         closeAlert();
