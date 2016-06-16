@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -23,8 +24,7 @@ public class FormNamingTest extends BaseFormTest {
         findElement(By.id("addNamePair")).click();
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
-        findElement(By.name("context")).clear();
-        findElement(By.name("context")).sendKeys("Great CTX");
+        new Select(findElement(By.name("context"))).selectByVisibleText("Great CTX");
         findElement(By.id("createNamePair")).click();
         modalGone();
         saveForm();
