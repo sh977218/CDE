@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.boards;
 
 import gov.nih.nlm.system.EltIdMaps;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,8 +11,6 @@ import java.nio.file.Paths;
 
 import static com.jayway.restassured.RestAssured.given;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
-
 
 public class BoardExportTest extends BoardTest {
 

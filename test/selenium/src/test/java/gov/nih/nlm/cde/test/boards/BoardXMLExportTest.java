@@ -1,16 +1,12 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static com.jayway.restassured.RestAssured.get;
-
 
 public class BoardXMLExportTest  extends BoardTest {
 
-    @Test
+//    @Test
     public void boardXMLExport() {
             mustBeLoggedInAs(classifyBoardUser_username, password);
             goToBoard("Classify Board");
@@ -28,5 +24,6 @@ public class BoardXMLExportTest  extends BoardTest {
                             "<primaryDefinitionCopy>\nIndicator how often the subject feels irritable or has angry outbursts as part of PTSD Checklist Military (PCLM).\n</primaryDefinitionCopy>" +
                 "<changeNote>Bulk update from source</changeNote>").replaceAll("\\s+", "")));
         }
+
 
 }
