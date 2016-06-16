@@ -11,7 +11,8 @@
             </div>
         </div>
     </form>
-    <div class=" col-md-12">
+    <div class="bg-info" ng-if="message.length > 0 && boards.length === 0">{{message}}</div>
+    <div class=" col-md-12" ng-if="boards.length > 0">
         <div class="col-md-2 col-xs-4 noLeftRightPadding">
             <div ng-if="filter.tags.length > 0">
                 <h4>Tags</h4>

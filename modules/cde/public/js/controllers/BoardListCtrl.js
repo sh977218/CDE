@@ -1,4 +1,12 @@
 angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', function ($scope, $http, ElasticBoard) {
+
+    $scope.$watch(function () {
+        return $scope.filter.search;
+    }, function (newValue, oldValue) {
+        if (oldValue !== newValue) {
+            $scope.message = '';
+        }
+    });
     $scope.boards = [];
     $scope.filter = {
         search: "",
@@ -9,13 +17,20 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
         tags: []
     };
     $scope.loadPublicBoards = function () {
-        ElasticBoard.basicSearch($scope.filter, function (response) {
-            $scope.boards = response.hits.hits.map(function (h) {
-                h._source._id = h._id;
-                return h._source;
+        if ($scope.filter.search.length > 0) {
+            ElasticBoard.basicSearch($scope.filter, function (response) {
+                if (response.hits.hits.length === 0) {
+                    $scope.message = 'No board(s) found with search: ' + $scope.filter.search;
+                }
+                $scope.boards = response.hits.hits.map(function (h) {
+                    h._source._id = h._id;
+                    return h._source;
+                });
+                $scope.filter.tags = response.aggregations.aggregationsName.buckets;
             });
-            $scope.filter.tags = response.aggregations.aggregationsName.buckets;
-        });
+        } else {
+            $scope.message = 'Please enter something to search';
+        }
     };
 
     $scope.canEditBoard = function () {
