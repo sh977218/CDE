@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,11 +38,13 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         clickElement(By.id("saveRegStatus"));
         closeAlert();
         Date today = new Date();
-        today.setHours(0);
-        today.setMinutes(0);
-        today.setSeconds(0);
         String effectiveDate_string = findElement(By.id("effectiveDate")).getText();
-        Date effectiveDate = new Date(effectiveDate_string);
+        Date effectiveDate = null;
+        try {
+            effectiveDate = formatter.parse(effectiveDate_string);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(today);

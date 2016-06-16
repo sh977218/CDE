@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.attribute.PosixFilePermission;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -92,6 +93,8 @@ public class NlmCdeBaseTest {
 
     String className = this.getClass().getSimpleName();
     private ScheduledExecutorService videoExec;
+
+    protected SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMMM-yyyy", Locale.US);
 
     int videoRate = 300;
     int totalCdes = 11700;
