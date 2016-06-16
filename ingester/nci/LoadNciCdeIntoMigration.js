@@ -15,6 +15,8 @@ var nciOrg;
 var deCount = 0;
 var badDe = [];
 
+var $attribute = 'attribute';
+
 var datatypeMapping = {
     CHARACTER: "Text",
     NUMBER: "Number",
@@ -44,6 +46,7 @@ function createNewCde(de) {
     if (de.toObject) de = de.toObject();
     if (de.REGISTRATIONSTATUS[0] === "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") {
         console.log('de is retired or historical');
+        console.log(JSON.stringify(de));
         return null;
     }
     var cde = {
@@ -54,13 +57,13 @@ function createNewCde(de) {
         tinyId: mongo_data_system.generateTinyId(),
         imported: Date.now(),
         source: 'caDSR',
-        version: '1',
+        version: de.VERSION[0],
         valueDomain: {
             datatype: de.VALUEDOMAIN[0].Datatype[0],
             name: de.VALUEDOMAIN[0].LongName[0],
             definition: de.VALUEDOMAIN[0].PreferredDefinition[0]
         },
-        stewardOrg: {name: "NCI"},
+        stewardOrg: {name: orgName},
         naming: [
             {
                 designation: entities.decodeXML(de.LONGNAME[0]),
@@ -105,11 +108,11 @@ function createNewCde(de) {
     if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
         de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function (altName) {
             if (["USED_BY"].indexOf(altName.AlternateNameType[0]) > -1) {
-                return;
+                return null;
             }
             cde.properties.push({
-                key: altName.AlternateNameType[0]
-                , value: entities.decodeXML(altName.AlternateName[0])
+                key: altName.AlternateNameType[0],
+                value: entities.decodeXML(altName.AlternateName[0])
             });
         });
     }
@@ -144,10 +147,10 @@ function createNewCde(de) {
         de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
             if (["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > -1) {
                 cde.naming.push({
-                    designation: entities.decodeXML(refDoc.DocumentText[0])
-                    , definition: entities.decodeXML(refDoc.Name[0])
-                    , languageCode: "EN-US"
-                    , context: {
+                    designation: entities.decodeXML(refDoc.DocumentText[0]),
+                    definition: entities.decodeXML(refDoc.Name[0]),
+                    languageCode: "EN-US",
+                    context: {
                         contextName: refDoc.DocumentType[0],
                         acceptability: "preferred"
                     }
@@ -184,13 +187,12 @@ function createNewCde(de) {
     cde.valueDomain.permissibleValues = [];
     if (de.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
         de.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(function (pv) {
-            var newPv =
-            {
+            var newPv = {
                 permissibleValue: entities.decodeXML(pv.VALIDVALUE[0]),
                 valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0]),
                 valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0])
             };
-            if (!pv.MEANINGCONCEPTS[0]['$']) {
+            if (!pv.MEANINGCONCEPTS[0][$attribute]) {
                 newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
             }
             cde.valueDomain.permissibleValues.push(newPv);
@@ -235,7 +237,7 @@ function createNewCde(de) {
 
     cde.classification = [];
 
-    if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM)
+    if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
         de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
             var getStringVersion = function (shortVersion) {
                 if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
@@ -261,6 +263,8 @@ function createNewCde(de) {
                 classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
             }
         });
+    }
+
     return cde;
 }
 
@@ -274,7 +278,7 @@ function run() {
                     if (er) throw er;
                     new MigrationOrgModel({name: orgName}).save(function (e, org) {
                         if (e) throw e;
-                        console.log('create new org of ' + orgName + ' in migration db');
+                        console.log('created new org of ' + orgName + ' in migration db');
                         nciOrg = org;
                         cb();
                     });
@@ -284,16 +288,23 @@ function run() {
         function (cb) {
             var stream = MigrationNCICdeXmlModel.find({}).stream();
             stream.on('data', function (xml) {
+                stream.pause();
                 var newCde = createNewCde(xml);
                 if (newCde) {
                     MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch("ids", newCde.ids[0]).exec(function (err, existingCdes) {
                         if (err) throw err;
                         if (existingCdes.length === 0) {
                             var obj = new MigrationDataElementModel(newCde);
-                            obj.save(function () {
-                                deCount++;
-                                console.log('deCount: ' + deCount);
-                                stream.resume();
+                            obj.save(function (err, o) {
+                                if (err) {
+                                    throw err;
+                                    process.exit(1);
+                                } else if (o) {
+                                    deCount++;
+                                    stream.resume();
+                                } else {
+                                    process.exit(1);
+                                }
                             });
                         }
                         else if (existingCdes.length === 1) {
@@ -309,9 +320,12 @@ function run() {
                     stream.resume();
                 }
             });
-            stream.on('end', function (err) {
-                console.log("End of NCI stream.");
+            stream.on('error', function (err) {
                 if (err) throw err;
+                process.exit(1);
+            });
+            stream.on('close', function () {
+                console.log("End of NCI stream.");
                 nciOrg.markModified('classifications');
                 nciOrg.save(function (e) {
                     if (e) throw e;
@@ -326,7 +340,6 @@ function run() {
             console.log('deCount: ' + deCount);
             console.log('badDeCount: ' + badDe.length);
             console.log('bad De: ' + JSON.stringify(badDe));
-            process.exit(1);
         }
     ]);
 }
