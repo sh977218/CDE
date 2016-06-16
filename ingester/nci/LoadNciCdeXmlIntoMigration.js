@@ -1,6 +1,7 @@
 var fs = require('fs'),
     async = require('async'),
-    parseString = require('xml2js').parseString,
+    xml2js = require('xml2js'),
+    parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString,
     MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel
     ;
 
@@ -21,15 +22,22 @@ function run() {
                 if (error) throw error;
                 async.forEach(files, function (xml, doneOneXml) {
                     fs.readFile(xmlFolder + xml, function (err, data) {
+                        var counter = 0;
                         console.log('Start processing ' + xml);
                         if (err) throw err;
                         parseString(data, function (e, json) {
-                            async.forEach(json.DataElementsList, function (one, doneOne) {
+                            async.forEach(json.DataElementsList.DataElement, function (one, doneOne) {
+                                delete one['$'];
+                                delete one['ORIGIN'];
                                 var obj = new MigrationNCICdeXmlModel(one);
-                                obj.save(function () {
+                                obj.save(function (err) {
+                                    if (err) throw err;
+                                    counter++;
                                     doneOne();
                                 })
                             }, function doneAll() {
+                                console.log('Finished processing ' + xml);
+                                console.log('counter: ' + counter);
                                 doneOneXml();
                             })
                         })
