@@ -14,4 +14,15 @@ public class PublicBoardsTest extends BoardTest {
         textPresent("Schizophrenia");
         textPresent("Bipolar Disorder");
     }
+
+    @Test
+    public void searchPublicBoardNoResult() {
+        mustBeLoggedOut();
+        clickElement(By.id("boardsLink"));
+        findElement(By.name("search")).sendKeys("noResultSearch");
+        clickElement(By.id("search.submit"));
+        textPresent("No board(s) found with search: noResultSearch");
+        findElement(By.name("search")).sendKeys("\u0008");
+        textNotPresent("No board(s) found with search: noResultSearch");
+    }
 }
