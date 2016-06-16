@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 public abstract class PropertyTest extends CommonTest {
 
     public void addRemoveProperty(String eltName, String status) {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
         showAllTabs();
 
