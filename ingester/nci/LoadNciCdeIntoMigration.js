@@ -243,30 +243,32 @@ function createNewCde(de) {
                 if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
                 else return shortVersion;
             };
-            var classifVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
+            var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
             try {
-                var classifName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].longName || "";
+                var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
 
             } catch (e) {
-                console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion);
+                console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
                 throw e;
             }
-            var classifStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classifVersion].workflowStatusName;
-            if (classifStatus === 'RELEASED' && classifName.length > 0 &&
+            var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
+            if (classificationStatus === 'RELEASED' && classificationName.length > 0 &&
                 csi.ClassificationSchemeItemName[0].length > 0) {
                 if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                     if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
                         cde.registrationState.registrationStatus = "Qualified";
                     }
                 }
-                classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
-                classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classifName, csi.ClassificationSchemeItemName[0]]);
+                classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+                classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
             }
         });
     }
     else {
+        cde.classification = [];
+        classificationShared.classifyItem(cde, "NCI", []);
+        classificationShared.addCategory({elements: nciOrg.classifications}, []);
         noClassificationDE.push(de);
-        return null;
     }
 
     return cde;
