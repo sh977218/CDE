@@ -23,7 +23,7 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
                         cde: {
                             tinyId: p.deTinyId,
                             name: p.deName,
-                            version: p.cde.version ? p.cde.version : '',
+                            version: p.cde.version ? p.cde.version : null,
                             permissibleValues: p.cde.valueDomain.permissibleValues,
                             ids: p.cde.ids
                         }
@@ -37,7 +37,6 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
                     $location.url("formView?tinyId=" + form.tinyId);
                 }, 0);
             });
-
-        }
+        };
     }
 ]);
