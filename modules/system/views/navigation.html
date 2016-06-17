@@ -58,7 +58,7 @@
                         <li><a href="/#/help/index">User Guide</a></li>
                         <% } %>
                         <li ng-controller="TakeATourCtrl"><a href="" ng-click="restartTour()">Take a tour</a></li>
-                        <li><a href="/#/stats">Statistics</a></li>
+                        <li ng-if="user._id && user.siteAdmin"><a href="/#/stats">Statistics</a></li>
                     </ul>
                 </li>
             </ul>
