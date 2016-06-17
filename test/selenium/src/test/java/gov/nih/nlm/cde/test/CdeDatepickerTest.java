@@ -41,6 +41,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         String effectiveDate_string = findElement(By.id("effectiveDate")).getText();
         Date effectiveDate = null;
         try {
+            System.out.println("effectiveDate_string:" + effectiveDate_string);
             effectiveDate = formatter.parse(effectiveDate_string);
             System.out.println("effectiveDate:" + effectiveDate);
         } catch (ParseException e) {

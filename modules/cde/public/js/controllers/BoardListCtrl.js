@@ -29,7 +29,7 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
                 $scope.filter.tags = response.aggregations.aggregationsName.buckets;
             });
         } else {
-            $scope.message = 'Please enter something to search';
+            $scope.message = '';
         }
     };
 
