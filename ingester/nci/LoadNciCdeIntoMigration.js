@@ -13,7 +13,8 @@ var fs = require('fs'),
 var orgName = 'NCI';
 var nciOrg;
 var deCount = 0;
-var badDe = [];
+var retiredDE = [];
+var noClassificationDE = [];
 
 var $attribute = 'attribute';
 
@@ -45,8 +46,7 @@ function convertCadsrStatusToNlmStatus(status) {
 function createNewCde(de) {
     if (de.toObject) de = de.toObject();
     if (de.REGISTRATIONSTATUS[0] === "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") {
-        console.log('de is retired or historical');
-        console.log(JSON.stringify(de));
+        retiredDE.push(de);
         return null;
     }
     var cde = {
@@ -264,6 +264,10 @@ function createNewCde(de) {
             }
         });
     }
+    else {
+        noClassificationDE.push(de);
+        return null;
+    }
 
     return cde;
 }
@@ -316,7 +320,6 @@ function run() {
                         }
                     })
                 } else {
-                    badDe.push(xml);
                     stream.resume();
                 }
             });
@@ -338,8 +341,9 @@ function run() {
         function () {
             console.log('finished all xml');
             console.log('deCount: ' + deCount);
-            console.log('badDeCount: ' + badDe.length);
-            console.log('bad De: ' + JSON.stringify(badDe));
+            console.log('retiredDECount: ' + retiredDE.length);
+            console.log('noClassificationDECount: ' + noClassificationDE.length);
+            process.exit(1);
         }
     ]);
 }

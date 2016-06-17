@@ -21,14 +21,17 @@ function run() {
             fs.readdir(xmlFolder, function (error, files) {
                 if (error) throw error;
                 async.forEach(files, function (xml, doneOneXml) {
-                    fs.readFile(xmlFolder + xml, function (err, data) {
+                    var xmlFile = xmlFolder + xml;
+                    fs.readFile(xmlFile, function (err, data) {
                         var counter = 0;
                         console.log('Start processing ' + xml);
                         if (err) throw err;
                         parseString(data, function (e, json) {
+                            var index = 0;
                             async.forEach(json.DataElementsList.DataElement, function (one, doneOne) {
-                                delete one['$'];
-                                delete one['ORIGIN'];
+                                one['xmlFile'] = xmlFile;
+                                one['index'] = index;
+                                index++;
                                 var obj = new MigrationNCICdeXmlModel(one);
                                 obj.save(function (err) {
                                     if (err) throw err;
