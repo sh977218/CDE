@@ -10,8 +10,13 @@
             </thead>
             <tr ng-repeat="cde in cdes">
                 <td ng-repeat="(key, field) in cde">
-                    <span ng-if="key==='cdeName'"><a ng-href="/deview?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a></span>
-                    <span ng-if="key!=='cdeName'">{{field}}</span>
+                    <span ng-if="key.indexOf('rule')===-1">
+                        <span ng-if="key==='cdeName'"><a ng-href="/deview?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a></span>
+                        <span ng-if="key!=='cdeName'">{{field}}</span>
+                    </span>
+                    <span ng-if="key.indexOf('rule')>-1">
+                        {{field}}
+                    </span>
                 </td>
             </tr>
         </table>

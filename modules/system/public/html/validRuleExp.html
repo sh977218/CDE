@@ -3,10 +3,10 @@
 </div>
 <div class="modal-body">
     <b>Registration Status</b>
-    <select ng-model="status" class="form-control">
+    <select id="selectStatus" ng-model="status" class="form-control">
         <option>Incomplete</option>
         <option>Candidate</option>
-        <option>Recorded</option>
+        <option id="recorded">Recorded</option>
         <option>Qualified</option>
         <option>Standard</option>
         <option>Preferred Standard</option>
@@ -15,5 +15,5 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-warning" ng-click="close()" id="cancelCopy">Cancel</button>
-    <button class="btn btn-success" ng-click="export()" id="saveCopy">Export</button>
+    <button class="btn btn-success" ng-click="export()" id="exportVR">Export</button>
 </div>

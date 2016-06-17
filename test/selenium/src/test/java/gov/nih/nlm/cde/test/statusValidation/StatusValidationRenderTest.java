@@ -23,4 +23,17 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         elementVisible(By.cssSelector("#rule_Qualified_1 .fa-check"));
         elementVisible(By.cssSelector("#rule_Qualified_2 .fa-times"));
     }
+
+    @Test
+    public void exportValidRules(){
+        mustBeLoggedInAs(testAdmin_username, password);
+        goToCdeSearch();
+        findElement(By.id("browseOrg-TEST")).click();
+        hangon(2);
+        findElement(By.id("export")).click();
+        findElement(By.id("exportValidRule")).click();
+        findElement(By.id("selectStatus")).click();
+        findElement(By.id("recorded")).click();
+        findElement(By.id("exportVR")).click();
+    }
 }
