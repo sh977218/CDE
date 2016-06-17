@@ -94,7 +94,7 @@ public class NlmCdeBaseTest {
     private String className = this.getClass().getSimpleName();
     private ScheduledExecutorService videoExec;
 
-    protected SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMMM-yyyy", Locale.US);
+    protected SimpleDateFormat formatter = new SimpleDateFormat("mm/dd/yyyy", Locale.US);
 
     private int videoRate = 300;
     private int totalCdes = 11700;
