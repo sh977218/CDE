@@ -84,18 +84,22 @@ function createNewCde(de) {
         properties: [
             {
                 key: "caDSR_Context",
+                source: 'caDSR',
                 value: de.CONTEXTNAME[0]
             },
             {
                 key: "caDSR_Datatype",
+                source: 'caDSR',
                 value: de.VALUEDOMAIN[0].Datatype[0]
             },
             {
                 key: "caDSR_Short_Name",
+                source: 'caDSR',
                 value: de.PREFERREDNAME[0]
             },
             {
                 key: "caDSR_Registration_Status",
+                source: 'caDSR',
                 value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
             }
         ]
@@ -271,7 +275,19 @@ function createNewCde(de) {
         noClassificationDE.push(de);
     }
 
-    return cde;
+    var readable = new Readable();
+    var origXml = builder.buildObject(de).toString();
+    readable.push(origXml);
+    readable.push(null);
+    mongo_data_system.addAttachment({
+        originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml",
+        type: "application/xml",
+        size: origXml.length,
+        stream: readable,
+        ingested: true
+    }, null, "Original XML File", newCde, function () {
+        return cde;
+    });
 }
 
 function run() {

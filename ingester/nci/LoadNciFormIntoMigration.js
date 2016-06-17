@@ -4,7 +4,8 @@ var async = require('async'),
     MigrationNCIModel = require('./../createConnection').MigrationNCIFormXmlModel,
     MigrationFormModel = require('./../createConnection').MigrationFormModel,
     MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
-    classificationShared = require('../../modules/system/shared/classificationShared')
+    classificationShared = require('../../modules/system/shared/classificationShared'),
+    classificationMapping = require('./caDSRClassificationMapping.json')
     ;
 
 var orgName = 'NCI';
@@ -167,15 +168,40 @@ function createForm(nciForm, cb) {
                 registrationStatus: "Qualified",
                 administrativeStatus: map[nciForm.workflowStatusName[0]]
             },
-            source: 'NCI',
+            source: source,
             naming: naming,
             ids: ids,
             properties: [property],
             changeNote: nciForm.changeNote ? (nciForm.changeNote[0] ? nciForm.changeNote[0] : '') : '',
-            version: nciForm.version[0],
+            version: nciForm.version[0].replace('.0', ''),
             formElements: formElements,
-            classification: []
+            classification: [{stewardOrg: {name: 'NCI'}}]
         };
+
+        if (nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
+            nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
+                var getStringVersion = function (shortVersion) {
+                    if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
+                    else return shortVersion;
+                };
+                var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
+                try {
+                    var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
+
+                } catch (e) {
+                    console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
+                    throw e;
+                }
+                var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
+                classificationShared.classifyItem(newForm, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+                classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            });
+        }
+        else {
+            newForm.classification = [];
+            classificationShared.classifyItem(newForm, "NCI", []);
+            classificationShared.addCategory({elements: nciOrg.classifications}, []);
+        }
         cb(newForm);
     })
 }
