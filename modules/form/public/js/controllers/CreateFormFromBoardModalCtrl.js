@@ -6,6 +6,7 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
         $scope.elt.classification = [];
         $scope.elt.formElements = [{
             elementType: 'section',
+            label: "",
             formElements: []
         }];
         $scope.myOrgs = userResource.userOrgs;
@@ -19,6 +20,7 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
                 $scope.elt.formElements[0].formElements.push({
                     elementType: 'question',
                     label: p.deName,
+                    formElements: [],
                     question: {
                         cde: {
                             tinyId: p.deTinyId,
