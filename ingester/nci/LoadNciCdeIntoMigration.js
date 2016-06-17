@@ -2,6 +2,9 @@ var fs = require('fs'),
     MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel,
     async = require('async'),
     entities = require("entities"),
+    xml2js = require('xml2js'),
+    builder = new xml2js.Builder({attrkey: 'attribute'}),
+    Readable = require('stream').Readable,
     MigrationDataElementModel = require('../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('../createConnection').MigrationOrgModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -10,6 +13,7 @@ var fs = require('fs'),
     ;
 
 
+var source = 'caDSR';
 var orgName = 'NCI';
 var nciOrg;
 var deCount = 0;
@@ -56,7 +60,7 @@ function createNewCde(de) {
         },
         tinyId: mongo_data_system.generateTinyId(),
         imported: Date.now(),
-        source: 'caDSR',
+        source: source,
         version: de.VERSION[0],
         valueDomain: {
             datatype: de.VALUEDOMAIN[0].Datatype[0],
@@ -76,7 +80,7 @@ function createNewCde(de) {
             }
         ],
         ids: [{
-            source: "caDSR",
+            source: source,
             id: de.PUBLICID[0],
             version: de.VERSION[0]
         }],
@@ -84,22 +88,22 @@ function createNewCde(de) {
         properties: [
             {
                 key: "caDSR_Context",
-                source: 'caDSR',
+                source: source,
                 value: de.CONTEXTNAME[0]
             },
             {
                 key: "caDSR_Datatype",
-                source: 'caDSR',
+                source: source,
                 value: de.VALUEDOMAIN[0].Datatype[0]
             },
             {
                 key: "caDSR_Short_Name",
-                source: 'caDSR',
+                source: source,
                 value: de.PREFERREDNAME[0]
             },
             {
                 key: "caDSR_Registration_Status",
-                source: 'caDSR',
+                source: source,
                 value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
             }
         ]
@@ -274,20 +278,7 @@ function createNewCde(de) {
         classificationShared.addCategory({elements: nciOrg.classifications}, []);
         noClassificationDE.push(de);
     }
-
-    var readable = new Readable();
-    var origXml = builder.buildObject(de).toString();
-    readable.push(origXml);
-    readable.push(null);
-    mongo_data_system.addAttachment({
-        originalname: cde.ids[0].id + "v" + cde.ids[0].version + ".xml",
-        type: "application/xml",
-        size: origXml.length,
-        stream: readable,
-        ingested: true
-    }, null, "Original XML File", newCde, function () {
-        return cde;
-    });
+    return cde;
 }
 
 function run() {
@@ -313,7 +304,11 @@ function run() {
                 stream.pause();
                 var newCde = createNewCde(xml);
                 if (newCde) {
-                    MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch("ids", newCde.ids[0]).exec(function (err, existingCdes) {
+                    MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch(function (elem) {
+                        elem.where("source").equals(newCde.ids[0].source);
+                        elem.where("id").equals(newCde.ids[0].id);
+                        elem.where("version").equals(newCde.ids[0].version);
+                    }).exec(function (err, existingCdes) {
                         if (err) throw err;
                         if (existingCdes.length === 0) {
                             var obj = new MigrationDataElementModel(newCde);
@@ -322,8 +317,25 @@ function run() {
                                     throw err;
                                     process.exit(1);
                                 } else if (o) {
-                                    deCount++;
-                                    stream.resume();
+                                    var readable = new Readable();
+                                    var xmlObj = JSON.parse(JSON.stringify(xml));
+                                    delete xmlObj._id;
+                                    delete xmlObj.index;
+                                    delete xmlObj.xmlFile;
+                                    var origXml = builder.buildObject(xmlObj).toString();
+                                    readable.push(origXml);
+                                    readable.push(null);
+                                    mongo_data_system.addAttachment({
+                                        originalname: newCde.ids[0].id + "v" + newCde.ids[0].version + ".xml",
+                                        type: "application/xml",
+                                        size: origXml.length,
+                                        stream: readable,
+                                        ingested: true
+                                    }, null, "Original XML File", o, function (attachment, newFileCreated, e) {
+                                        if (e) throw e;
+                                        deCount++;
+                                        stream.resume();
+                                    });
                                 } else {
                                     process.exit(1);
                                 }

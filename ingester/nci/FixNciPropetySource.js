@@ -16,7 +16,7 @@ DataElement.find({
         de.source = 'caDSR';
         de.updatedBy = user;
         de.updated = new Date().toJSON();
-        if (!de.classification || de.classification === '')
+        if (!de.classification || de.classification.length === 0)
             de.classification = [{
                 steward: {name: 'NCI'},
                 elements: []
