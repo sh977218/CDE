@@ -35,5 +35,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         findElement(By.id("selectStatus")).click();
         findElement(By.id("recorded")).click();
         findElement(By.id("exportVR")).click();
+        textPresent("Distance from Closest Margin");
+        textPresent("Neoadjuvant Therapy Specify");
     }
 }
