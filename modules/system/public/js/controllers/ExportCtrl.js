@@ -152,8 +152,7 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
     function ($scope, $routeParams) {
         $routeParams.searchSettings  = JSON.parse($routeParams.searchSettings);
         $scope.gridOptionsReport = {
-            data:'cdes'
-            , columnDefs: [{field: "cdeName", display: "CDE Name"}, {field: 'tinyId', display: "NLM ID"}]
+            columnDefs: [{field: "cdeName", displayName: "CDE Name"}, {field: 'tinyId', displayName: "NLM ID"}]
         };
         $routeParams.cb = function(cdes){
             cdes[0].validationRules.forEach(function(r, i){
