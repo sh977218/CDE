@@ -31,7 +31,7 @@ angular.module('resourcesCde', ['ngResource'])
             },
             basicSearch: function (filter, cb) {
                 $http.post("/boardSearch", filter).success(function (response) {
-                    if (cb) cb(response);
+                    if (cb) cb(null, response);
                 }).error(function () {
                     if (cb) cb("Unable to retrieve public boards");
                 });

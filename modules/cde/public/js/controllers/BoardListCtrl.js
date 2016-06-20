@@ -1,12 +1,6 @@
-angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', function ($scope, $http, ElasticBoard) {
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', 'Alert',
+    function ($scope, $http, ElasticBoard, Alert) {
 
-    $scope.$watch(function () {
-        return $scope.filter.search;
-    }, function (newValue, oldValue) {
-        if (oldValue !== newValue) {
-            $scope.message = '';
-        }
-    });
     $scope.boards = [];
     $scope.filter = {
         search: "",
@@ -17,20 +11,14 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
         tags: []
     };
     $scope.loadPublicBoards = function () {
-        if ($scope.filter.search.length > 0) {
-            ElasticBoard.basicSearch($scope.filter, function (response) {
-                if (response.hits.hits.length === 0) {
-                    $scope.message = 'No board(s) found with search: ' + $scope.filter.search;
-                }
-                $scope.boards = response.hits.hits.map(function (h) {
-                    h._source._id = h._id;
-                    return h._source;
-                });
-                $scope.filter.tags = response.aggregations.aggregationsName.buckets;
+        ElasticBoard.basicSearch($scope.filter, function (err, response) {
+            if (err) Alert.addAlert("danger", "an error occured");
+            $scope.boards = response.hits.hits.map(function (h) {
+                h._source._id = h._id;
+                return h._source;
             });
-        } else {
-            $scope.message = '';
-        }
+            $scope.filter.tags = response.aggregations.aggregationsName.buckets;
+        });
     };
 
     $scope.canEditBoard = function () {
