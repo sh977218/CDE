@@ -206,43 +206,43 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         }
     };
 
-        function fetchWholeForm(form, callback) {
-            var maxDepth = 8;
-            var depth = 0;
-            var loopFormElements = function (form, cb) {
-                if (form.formElements) {
-                    async.forEach(form.formElements, function (fe, doneOne) {
-                        if (fe.elementType === 'form') {
-                            depth++;
-                            if (depth < maxDepth) {
-                                $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version).then(function (result) {
-                                    fe.formElements = result.data.formElements;
-                                    loopFormElements(fe, function () {
-                                        depth--;
-                                        doneOne();
-                                    });
+    function fetchWholeForm(form, callback) {
+        var maxDepth = 8;
+        var depth = 0;
+        var loopFormElements = function (form, cb) {
+            if (form.formElements) {
+                async.forEach(form.formElements, function (fe, doneOne) { // jshint ignore:line
+                    if (fe.elementType === 'form') {
+                        depth++;
+                        if (depth < maxDepth) {
+                            $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version).then(function (result) {
+                                fe.formElements = result.data.formElements;
+                                loopFormElements(fe, function () {
+                                    depth--;
+                                    doneOne();
                                 });
-                            }
-                            else doneOne();
-                        } else if (fe.elementType === 'section') {
-                            loopFormElements(fe, function () {
-                                doneOne();
                             });
-                        } else {
-                            doneOne();
                         }
-                    }, function doneAll() {
-                        cb();
-                    });
-                }
-                else {
+                        else doneOne();
+                    } else if (fe.elementType === 'section') {
+                        loopFormElements(fe, function () {
+                            doneOne();
+                        });
+                    } else {
+                        doneOne();
+                    }
+                }, function doneAll() {
                     cb();
-                }
-            };
-            loopFormElements(form, function () {
-                callback(form);
-            });
-        }
+                });
+            }
+            else {
+                cb();
+            }
+        };
+        loopFormElements(form, function () {
+            callback(form);
+        });
+    }
 
     $scope.reload = function () {
         Form.get(query, function (form) {
@@ -266,7 +266,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
-            })
+            });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
