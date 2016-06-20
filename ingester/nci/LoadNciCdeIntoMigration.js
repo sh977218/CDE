@@ -304,10 +304,10 @@ function run() {
                 stream.pause();
                 var newCde = createNewCde(xml);
                 if (newCde) {
-                    MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch(function (elem) {
-                        elem.where("source").equals(newCde.ids[0].source);
-                        elem.where("id").equals(newCde.ids[0].id);
-                        elem.where("version").equals(newCde.ids[0].version);
+                    MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch('ids', {
+                        "source": newCde.ids[0].source,
+                        "id": newCde.ids[0].id,
+                        "version": newCde.ids[0].version
                     }).exec(function (err, existingCdes) {
                         if (err) throw err;
                         if (existingCdes.length === 0) {

@@ -231,25 +231,28 @@ function streamOnData(migrationCde) {
 
 function streamOnClose() {
     // Retire Missing CDEs
-
-    //@todo callback
-    DataElement.where({
+    DataElement.update({
         imported: {$ne: importDate},
         source: cdeSource
-    }).update({
+    }, {
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
-    });
-    console.log("Nothing left to do, saving Org");
-    MigrationOrg.find().exec(function (err, orgs) {
-        if (err) console.log("Error Finding Migration Org " + err);
-        orgs.forEach(function (org) {
-            Org.findOne({name: org.name}).exec(function (err, theOrg) {
-                if (err)  console.log("Error finding existing org " + err);
-                theOrg.classifications = org.classifications;
-                theOrg.save(function (err) {
-                    if (err) console.log("Error saving Org " + err);
-                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+    }, function (err) {
+        if (err) {
+            throw err;
+            process.exit(1);
+        }
+        console.log("Nothing left to do, saving Org");
+        MigrationOrg.find().exec(function (err, orgs) {
+            if (err) console.log("Error Finding Migration Org " + err);
+            orgs.forEach(function (org) {
+                Org.findOne({name: org.name}).exec(function (err, theOrg) {
+                    if (err)  console.log("Error finding existing org " + err);
+                    theOrg.classifications = org.classifications;
+                    theOrg.save(function (err) {
+                        if (err) console.log("Error saving Org " + err);
+                        console.log(" changed: " + changed + " same: " + same + " created: " + created);
+                    });
                 });
             });
         });

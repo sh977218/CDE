@@ -11,7 +11,7 @@ var fs = require('fs'),
  2. open development model, check cookie.
  3. copy JSession id.
  */
-var jSessionId = 'BA66A957C719FE47912B7CC64FC712AE';
+var jSessionId = '6BC9CE4B0157FA5CB9AD4C68581DA5FF';
 
 var counter = 0;
 var hrefArray = [];
