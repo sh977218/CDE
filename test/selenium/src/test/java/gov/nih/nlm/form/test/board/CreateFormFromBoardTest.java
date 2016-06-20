@@ -20,10 +20,10 @@ public class CreateFormFromBoardTest extends BoardTest {
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("TEST");
         baseClassificationTest.addClassificationToNewCdeMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         clickElement(By.id("submit"));
-        hangon(2);
         textPresent("Incomplete");
-
-
+        textNotPresent("have newer version");
+        textPresent("Date Done");
+        textPresent("cdeCompare1");
     }
 
 }
