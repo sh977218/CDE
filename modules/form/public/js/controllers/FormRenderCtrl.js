@@ -1,7 +1,5 @@
-angular.module('formModule')
-    .controller('FormRenderCtrl',
-    ['$scope', '$http', '$routeParams', '$window',
-        function ($scope, $http, $routeParams, $window)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$routeParams', '$window',
+    function ($scope, $http, $routeParams, $window)
 {
 
     $scope.displayInstruction = false;
