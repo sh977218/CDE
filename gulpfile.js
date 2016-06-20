@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     gnf = require('gulp-npm-files'),
     config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
+    rev = require('gulp-rev'),
     minifyCss = require('gulp-minify-css'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
@@ -105,7 +106,7 @@ gulp.task('angularTemplates', function() {
                 module: module + "Templates",
                 standalone: true
             }))
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
+            .pipe(gulp.dest("modules/" + module + "/public/js/"));
     });
 });
 
@@ -120,41 +121,26 @@ gulp.task('prepareVersion', ['copyCode'], function() {
     }, 15000);
 });
 
-gulp.task('usemin', ['copyCode'], function() {
+gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
         {folder: "./modules/cde/views/", filename: "includeCdeFrontEndJS.ejs"},
         {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"}
     ].forEach(function (item) {
-        console.log('item:' + JSON.stringify(item));
-        if (item.filename === 'index.ejs') {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
+                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
-                    js: [uglify({mangle: false}), 'concat']
+                    js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
-                .on('end', function () {
+                .on('end', function() {
                     gulp.src(config.node.buildDir + '/modules/' + item.filename)
                         .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
                 });
-        } else {
-            return gulp.src(item.folder + item.filename)
-                .pipe(gulphash())
-                .pipe(usemin({
-                    assetsDir: "./modules/",
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
-                    js: [uglify({mangle: false}), 'concat']
-                }))
-                .pipe(gulp.dest(config.node.buildDir + '/modules/'))
-                .on('end', function () {
-                    gulp.src(config.node.buildDir + '/modules/' + item.filename)
-                        .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
-                });
-        }
-    });
+        });
 });
 
 gulp.task('es', function() {
