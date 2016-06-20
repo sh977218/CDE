@@ -232,8 +232,8 @@ exports.boardSearch = function (filter, cb) {
             }
         }
     };
-    if (filter.tags) {
-        filter.tags.forEach(function (t) {
+    if (filter.selectedTags) {
+        filter.selectedTags.forEach(function (t) {
             if (t !== 'All') {
                 query.query.bool.must.push(
                     {

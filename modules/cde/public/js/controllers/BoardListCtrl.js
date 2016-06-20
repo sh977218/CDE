@@ -12,7 +12,7 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
     };
     $scope.loadPublicBoards = function () {
         ElasticBoard.basicSearch($scope.filter, function (err, response) {
-            if (err) Alert.addAlert("danger", "an error occured");
+            if (err) Alert.addAlert("danger", "An error occured");
             $scope.boards = response.hits.hits.map(function (h) {
                 h._source._id = h._id;
                 return h._source;
