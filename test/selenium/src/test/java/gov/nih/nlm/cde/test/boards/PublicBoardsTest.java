@@ -25,7 +25,7 @@ public class PublicBoardsTest extends BoardTest {
         clickElement(By.id("boardsLink"));
         findElement(By.name("search")).sendKeys("noResultSearch");
         clickElement(By.id("search.submit"));
-        textPresent("No board(s) found with search: noResultSearch");
+        textPresent("No results were found. Try other criteria.");
         findElement(By.name("search")).sendKeys("\u0008");
         textNotPresent("No board(s) found with search: noResultSearch");
     }

@@ -6,12 +6,14 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CdeDatepickerTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeDatepicker() {
+        String today_string = new SimpleDateFormat("dd/mm/yyyy").format(new Date());
         mustBeLoggedInAs(ninds_username, password);
         goToSearch("cde");
         clickElement(By.id("browseOrg-NINDS"));
@@ -35,7 +37,6 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[contains(text(),'Clear')]"));
         clickElement(By.id("saveRegStatus"));
         closeAlert();
-        String today_string = formatter.format(new Date());
         String effectiveDate_string = findElement(By.id("effectiveDate")).getText();
         Assert.assertEquals(today_string, effectiveDate_string);
         effectiveDate_string = findElement(By.id("untilDate")).getText();
