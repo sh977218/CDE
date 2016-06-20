@@ -13,7 +13,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeDatepicker() {
-        String today_string = new SimpleDateFormat("dd/mm/yyyy").format(new Date());
+        String today_string = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
         mustBeLoggedInAs(ninds_username, password);
         goToSearch("cde");
         clickElement(By.id("browseOrg-NINDS"));
