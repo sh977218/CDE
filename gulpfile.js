@@ -9,7 +9,6 @@ var gulp = require('gulp'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
-    gulphash = require('gulp-hash'),
     tar = require('tar'),
     zlib = require('zlib'),
     fs = require('fs'),
@@ -99,7 +98,10 @@ gulp.task('copyCode', ['wiredep'], function() {
 
 gulp.task('angularTemplates', function() {
     ['cde', 'form', 'system', 'article'].forEach(function(module) {
-        return gulp.src("modules/" + module + "/public/html/**/*.html")
+        return gulp
+            .src("modules/" + module + "/public/js/angularTemplates.js")
+            .dest("modules/" + module + "/public/js/angularTemplates.backup.js")
+            .src("modules/" + module + "/public/html/**/*.html")
             .pipe(templateCache({
                 root: "/" + module + "/public/html",
                 filename: "angularTemplates.js",
@@ -131,8 +133,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
                     js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
@@ -141,6 +142,13 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
                         .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
                 });
         });
+});
+
+gulp.task('emptyTemplates', ['usemin'], function() {
+    ['cde', 'form', 'system', 'article'].forEach(function(module) {
+        return gulp.src("modules/" + module + "/public/js/angularTemplates.backup.js")
+            .dest("modules/" + module + "/public/js/angularTemplates.js");
+    });
 });
 
 gulp.task('es', function() {
@@ -175,6 +183,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
 
 
