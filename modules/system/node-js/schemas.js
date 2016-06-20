@@ -26,6 +26,32 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+var commonEmbedSchema = {
+    primaryDefinition: {label: String},
+    ids: [
+        {
+            label: String,
+            source: String,
+            version: Boolean,
+            labelVersion: String
+        }
+    ]
+};
+
+var embedSchema = new mongoose.Schema({
+    cde: {
+        common: commonEmbedSchema,
+        permissibleValues: Boolean
+    },
+    form: {
+        common:commonEmbedSchema,
+        sdcLink: Boolean,
+        nbOfQuestions: Boolean,
+        cdes: Boolean
+    },
+    pageSize: Number
+});
+
 schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
@@ -36,6 +62,7 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
+    , embed: [embedSchema]
 });
 
 schemas.userSchema = new mongoose.Schema({

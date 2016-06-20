@@ -48,9 +48,6 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/searchSettings', {
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
-        }).when('/embed', {
-            controller: 'EmbedCtrl',
-            templateUrl: '/system/public/html/embed.html'
         });
     })
     .directive('inlineEdit', function ($timeout) {

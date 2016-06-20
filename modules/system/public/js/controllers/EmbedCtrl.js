@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scope) {
+angular.module('systemModule').controller('EmbedCtrl', function($scope, $http) {
 
     $scope.selection = {
         org: $scope.myOrgs[0],
@@ -10,9 +10,12 @@ angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scop
         height: 900
     };
 
-    //$scope.styles = "<style>html,body{height:100%;}.wrapper{width:80%;height:100%;margin:0 auto;background:#CCC}.h_iframe{position:relative;}.h_iframe .ratio {display:block;width:100%;height:auto;}.h_iframe iframe {position:absolute;top:0;left:0;width:100%; height:100%;} </style>";
+    $scope.getEmbeds = function() {
+        $http.get("/org/" + $scope.selection.org).then(function(result) {
 
-    $scope.styles = "These are the styles"
+        });
+    };
+
 
     $scope.getEmbedCode = function() {
         var res = "<iframe type='text/html' id='nlmcdeIFrame' src='http://localhost:3001/embedded/public/html/index.html?org=" +
@@ -26,4 +29,4 @@ angular.module('systemModule').controller('EmbedCtrl', ['$scope', function($scop
     };
 
 
-}]);
+});

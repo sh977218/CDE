@@ -44,7 +44,7 @@ exports.init = function (app) {
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority", "/embed"].forEach(function (path) {
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
