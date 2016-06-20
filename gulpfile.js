@@ -8,6 +8,7 @@ var gulp = require('gulp'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
     wiredep = require('gulp-wiredep'),
+    gulphash = require('gulp-hash'),
     tar = require('tar'),
     zlib = require('zlib'),
     fs = require('fs'),
@@ -127,9 +128,9 @@ gulp.task('usemin', ['copyCode'], function() {
         {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"}
     ].forEach(function (item) {
             return gulp.src(item.folder + item.filename)
+                .pipe(gulphash())
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
                     js: [ uglify({mangle: false}), 'concat' ]
                 }))
