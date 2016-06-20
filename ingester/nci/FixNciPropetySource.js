@@ -26,12 +26,14 @@ DataElement.find({
                 p.source = 'caDSR';
             })
         }
-        de.save(function () {
-            elastic.updateOrInsert(de, function () {
-                deCounter++;
-                console.log('deCounter: ' + deCounter);
-                doneOneDe();
-            });
+        de.save(function (err) {
+            if (err) throw err;
+            else
+                elastic.updateOrInsert(de, function () {
+                    deCounter++;
+                    console.log('deCounter: ' + deCounter);
+                    doneOneDe();
+                });
         });
     }, function doneAllDes() {
         console.log('finished all. de count:' + deCounter);

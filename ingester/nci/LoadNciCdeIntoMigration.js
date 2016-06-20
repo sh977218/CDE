@@ -334,18 +334,15 @@ function run() {
                                     }, null, "Original XML File", o, function (attachment, newFileCreated, e) {
                                         if (e) throw e;
                                         deCount++;
+                                        console.log('deCount: ' + deCount);
                                         stream.resume();
                                     });
                                 } else {
                                     process.exit(1);
                                 }
                             });
-                        }
-                        else if (existingCdes.length === 1) {
-                            console.log('find 1 existing Cde of id:' + newCde.ids[0].id);
-                            process.exit(1);
                         } else {
-                            console.log('find more than 1 existing Cdes of id:' + newCde.ids[0].id);
+                            console.log('find 1 existing Cde of id:' + newCde.ids[0].id + 'version: ' + newCde.ids[0].version);
                             process.exit(1);
                         }
                     })
