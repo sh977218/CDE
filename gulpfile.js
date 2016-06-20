@@ -98,10 +98,10 @@ gulp.task('copyCode', ['wiredep'], function() {
 
 gulp.task('angularTemplates', function() {
     ['cde', 'form', 'system', 'article'].forEach(function(module) {
-        return gulp
+        gulp
             .src("modules/" + module + "/public/js/angularTemplates.js")
-            .dest("modules/" + module + "/public/js/angularTemplates.backup.js")
-            .src("modules/" + module + "/public/html/**/*.html")
+            .pipe(gulp.dest("modules/" + module + "/public/js/bkup/angularTemplates.js"));
+        return gulp.src("modules/" + module + "/public/html/**/*.html")
             .pipe(templateCache({
                 root: "/" + module + "/public/html",
                 filename: "angularTemplates.js",
@@ -146,8 +146,8 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
 
 gulp.task('emptyTemplates', ['usemin'], function() {
     ['cde', 'form', 'system', 'article'].forEach(function(module) {
-        return gulp.src("modules/" + module + "/public/js/angularTemplates.backup.js")
-            .dest("modules/" + module + "/public/js/angularTemplates.js");
+        return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
+            .pipe(gulp.dest("modules/" + module + "/public/js/angularTemplates.js"));
     });
 });
 
