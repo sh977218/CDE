@@ -304,7 +304,10 @@ function run() {
                 stream.pause();
                 var newCde = createNewCde(xml);
                 if (newCde) {
-                    MigrationDataElementModel.find({'ids.id': newCde.ids[0].id}).elemMatch('ids', {
+                    MigrationDataElementModel.find({
+                        'registrationState.registrationStatus': newCde.registrationState.registrationStatus,
+                        'ids.id': newCde.ids[0].id
+                    }).elemMatch('ids', {
                         "source": newCde.ids[0].source,
                         "id": newCde.ids[0].id,
                         "version": newCde.ids[0].version
@@ -342,7 +345,7 @@ function run() {
                                 }
                             });
                         } else {
-                            console.log('find 1 existing Cde of id:' + newCde.ids[0].id + 'version: ' + newCde.ids[0].version);
+                            console.log('find 1 existing Cde of id:' + newCde.ids[0].id + ' version: ' + newCde.ids[0].version);
                             process.exit(1);
                         }
                     })
