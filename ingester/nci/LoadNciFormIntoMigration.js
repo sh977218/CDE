@@ -10,8 +10,16 @@ var async = require('async'),
 
 var orgName = 'NCI';
 var source = 'caDSR';
-var map = {
+var statusMap = {
     'RELEASE': 'RELEASE'
+};
+var datatypeMap = {
+    CHARACTER: "Text",
+    NUMBER: "Number",
+    ALPHANUMERIC: "Text",
+    TIME: "Time",
+    DATE: "Date",
+    DATETIME: "Date/Time"
 };
 
 var formCounter = 0;
@@ -100,58 +108,115 @@ function createForm(nciForm, cb) {
 
     var formElements = [];
     nciForm.module.sort(compareFn);
-
     async.forEach(nciForm.module, function (module, doneOneModule) {
         var sectionFE = {
             elementType: 'section',
-            instructions: {value: module.instruction},
-            label: '',
+            instructions: {value: module.instruction[0].text},
+            label: module.longName[0],
             formElements: []
         };
         module.question.sort(compareFn);
-        async.forEach(module.question, function (question, doneOneQuestion) {
-            if (question.publicID.length > 1 || question.version.length > 1) {
+        async.forEach(module.question, function (questionXml, doneOneQuestion) {
+            if (questionXml.publicID.length > 1 || questionXml.version.length > 1) {
                 console.log('form ' + nciForm.href + ' has more question more than 1 id or version');
                 process.exit(1);
             }
-            var de = question.dataElement[0];
-            var version = parseFloat(de.version[0]);
+            if (questionXml.dataElement.length > 1) {
+                console.log('form ' + nciForm.href + ' has more than 1 dataElement');
+                process.exit(1);
+            }
+            var de = questionXml.dataElement[0];
+            var version = de.version[0].replace('.0', '');
             var id = de.publicID[0];
-            /** @namespace question.dataElement */
-            mongo_cde.bySourceIdVersionAndNotRetiredNotArchived(source, id, version, function (err, existingCde) {
+            mongo_cde.bySourceIdVersionAndNotRetiredNotArchived(source, id, version, function (err, existingCdes) {
                 if (err) {
-                    console.log('Cannot find cde. id: ' + id);
-                    console.log('Parsed version: ' + version);
-                    console.log('Origin version: ' + de.version[0]);
-                    console.log('form id: ' + nciForm.publicID[0]);
-                    console.log('form href: ' + nciForm.href);
                     throw err;
                     process.exit(1);
                 }
-                /** @namespace question.multiValue */
-                /** @namespace question.isMandatory */
                 var questionFE = {
                     elementType: 'question',
-                    label: question.questionText,
-                    required: Boolean(question.isMandatory),
-                    editable: Boolean(question.isEditable),
-                    multiselect: Boolean(question.multiValue),
-                    formElements: [],
-                    cde: {
+                    label: questionXml.questionText[0],
+                    question: {
+                        required: Boolean(questionXml.isMandatory[0]),
+                        editable: Boolean(questionXml.isEditable[0]),
+                        multiselect: Boolean(questionXml.multiValue[0]),
+                        answers: []
+                    },
+                    formElements: []
+                };
+                if (existingCdes.length === 0) {
+                    questionFE.question.cde = {
+                        ids: [{id: id, version: version}]
+                    };
+                    if (de.valueDomain[0].type && de.valueDomain[0].type[0] === 'Enumerated') {
+                        questionFE.question.datatype = 'Value List';
+                    }
+                    else {
+                        questionFE.question.datatype = datatypeMap[de.valueDomain[0].datatypeName[0]];
+                    }
+                    if (questionFE.question.datatype === 'Number') {
+                        questionFE.question.datatypeNumber = {
+                            minValue: de.valueDomain[0].minimumLengthNumber[0],
+                            maxValue: de.valueDomain[0].maximumLengthNumber[0],
+                            precision: de.valueDomain[0].decimalPlace[0]
+                        };
+
+                    } else if (questionFE.question.datatype === 'Text') {
+                        questionFE.question.datatypeText = {
+                            minLength: de.valueDomain[0].minimumLengthNumber[0],
+                            maxLength: de.valueDomain[0].maximumLengthNumber[0],
+                            regex: '',
+                            rule: ''
+                        }
+                    } else if (questionFE.question.datatype === 'Value List') {
+                        questionXml.validValue.sort(compareFn);
+                        questionXml.validValue.forEach(function (v) {
+                            var pv = {
+                                permissibleValue: v.value[0],
+                                valueMeaningName: v.meaningText ? v.meaningText[0] : '',
+                                valueMeaningCode: '',
+                                valueMeaningDefinition: v.description[0],
+                                codeSystemName: '',
+                                codeSystemVersion: ''
+                            };
+                            questionFE.question.answers.push(pv);
+                        });
+                    }
+                    sectionFE.formElements.push(questionFE);
+                    doneOneQuestion();
+                } else if (existingCdes.length === 1) {
+                    var existingCde = existingCdes[0].toObject();
+                    questionFE.question.cde = {
                         tinyId: existingCde.tinyId,
                         name: existingCde.naming[0].designation,
                         version: existingCde.version,
                         permissibleValues: existingCde.valueDomain.permissibleValues,
                         ids: existingCde.ids
-                    },
-                    datatype: existingCde.valueDomain.datatype,
-                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                    datatypeText: existingCde.valueDomain.datatypeText,
-                    uom: existingCde.valueDomain.uom,
-                    answers: existingCde.valueDomain.permissibleValues
-                };
-                sectionFE.formElements.push(questionFE);
-                doneOneQuestion();
+                    };
+                    questionFE.question.datatype = existingCde.valueDomain.datatype;
+                    questionFE.question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                    questionFE.question.datatypeText = existingCde.valueDomain.datatypeText;
+                    questionFE.question.uom = existingCde.valueDomain.uom;
+                    if (questionFE.question.datatype === 'Value List') {
+                        questionXml.validValue.sort(compareFn);
+                        questionXml.validValue.forEach(function (v) {
+                            var pv = {
+                                permissibleValue: v.value[0],
+                                valueMeaningName: v.meaningText ? v.meaningText[0] : '',
+                                valueMeaningCode: '',
+                                valueMeaningDefinition: v.description[0],
+                                codeSystemName: '',
+                                codeSystemVersion: ''
+                            };
+                            questionFE.question.answers.push(pv);
+                        });
+                    }
+                    sectionFE.formElements.push(questionFE);
+                    doneOneQuestion();
+                } else {
+                    console.log('multiple cdes found: source: ' + source + ' id: ' + id + ' version:' + version);
+                    process.exit(1);
+                }
             });
         }, function doneAllQuestions() {
             formElements.push(sectionFE);
@@ -166,7 +231,7 @@ function createForm(nciForm, cb) {
             imported: today,
             registrationState: {
                 registrationStatus: "Qualified",
-                administrativeStatus: map[nciForm.workflowStatusName[0]]
+                administrativeStatus: statusMap[nciForm.workflowStatusName[0]]
             },
             source: source,
             naming: naming,
@@ -178,7 +243,7 @@ function createForm(nciForm, cb) {
             classification: [{stewardOrg: {name: 'NCI'}}]
         };
 
-        if (nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
+        if (nciForm.CLASSIFICATIONSLIST && nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
             nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
                 var getStringVersion = function (shortVersion) {
                     if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
@@ -233,7 +298,6 @@ function run() {
                     if (err) throw err;
                     if (existingForms.length === 0) {
                         createForm(nciObj, function (newForm) {
-                            newForm.formElements.push();
                             var newFormObj = new MigrationFormModel(newForm);
                             newFormObj.save(function (e) {
                                 if (e) throw e;

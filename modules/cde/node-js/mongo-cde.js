@@ -479,10 +479,7 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
     }).elemMatch("ids", {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
-        if (err) cb(err);
-        else if (cdes.length === 0) cb('Cannot find CDE with source: ' + source + ' id: ' + id + ' version: ' + version, null);
-        else if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
-        else cb(err, cdes[0]);
+        cb(err, cdes);
     });
 };
 
