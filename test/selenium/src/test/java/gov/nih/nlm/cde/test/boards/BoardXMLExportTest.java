@@ -20,6 +20,7 @@ public class BoardXMLExportTest  extends BoardTest {
           //  switchTab(1);
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
+            System.out.println(response);
             Assert.assertTrue(response.replaceAll("\\s+","").contains(( "<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>" +
                     "</elements>\n<name>Domain</name>"+
                     "<primaryDefinitionCopy>\nDate (and time, if applicable and known) the Manual Muscle Testing (MMT) was performed\n</primaryDefinitionCopy>" +
