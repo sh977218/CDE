@@ -46,7 +46,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.unpin = function (pin) {
                 $http['delete']("/pincde/" + pin.deTinyId + "/" + $scope.board._id).then(function () {
                     $scope.reload();
-                    Alert.addAlert("success", "CDE Unpinned.")
+                    Alert.addAlert("success", "CDE Unpinned.");
                 });
             };
 
@@ -62,7 +62,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                 var blob = new Blob([csv], {
                                     type: "text/csv"
                                 });
-                                saveAs(blob, 'BoardExport' + '.csv');
+                                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
                                 Alert.addAlert("success", "Export downloaded.");
                                 $scope.feedbackClass = ["fa-download"];
                             } else {
@@ -73,7 +73,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
             
             $scope.save = function () {
-                $http.post("/board", $scope.board).success(function (response) {
+                $http.post("/board", $scope.board).success(function () {
                     Alert.addAlert("success", "Saved");
                     $scope.reload();
                 }).error(function (response) {
@@ -132,20 +132,18 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.createFormFromBoard = function () {
-                var $modalInstance = $modal.open({
+                $modal.open({
                     animation: false,
                     templateUrl: '/form/public/html/createFormFromBoard.html',
                     controller: 'CreateFormFromBoardModalCtrl',
                     resolve: {
                         board: function () {
-                            return $scope.board
+                            return $scope.board;
                         }
                     }
                 });
             };
-
             $scope.reload();
 
-        }]);
-
+}]);
 

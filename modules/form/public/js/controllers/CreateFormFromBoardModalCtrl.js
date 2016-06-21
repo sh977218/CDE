@@ -6,6 +6,7 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
         $scope.elt.classification = [];
         $scope.elt.formElements = [{
             elementType: 'section',
+            label: "",
             formElements: []
         }];
         $scope.myOrgs = userResource.userOrgs;
@@ -19,11 +20,12 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
                 $scope.elt.formElements[0].formElements.push({
                     elementType: 'question',
                     label: p.deName,
+                    formElements: [],
                     question: {
                         cde: {
                             tinyId: p.deTinyId,
                             name: p.deName,
-                            version: p.cde.version ? p.cde.version : '',
+                            version: p.cde.version ? p.cde.version : null,
                             permissibleValues: p.cde.valueDomain.permissibleValues,
                             ids: p.cde.ids
                         }
@@ -37,7 +39,6 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope
                     $location.url("formView?tinyId=" + form.tinyId);
                 }, 0);
             });
-
-        }
+        };
     }
 ]);
