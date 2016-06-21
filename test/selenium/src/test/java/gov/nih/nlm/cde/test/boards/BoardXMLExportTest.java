@@ -20,8 +20,19 @@ public class BoardXMLExportTest  extends BoardTest {
           //  switchTab(1);
             String url = findElement(By.id("xmlExport")).getAttribute("href");
             String response = get(url).asString();
+            System.out.println("response was");
             System.out.println(response);
             Assert.assertTrue(true);
+        /*
+           Assert.assertTrue(response.replaceAll("\\s+","").contains(( "<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>" +
+                    "</elements>\n<name>Domain</name>"+
+                    "<primaryDefinitionCopy>\nDate (and time, if applicable and known) the Manual Muscle Testing (MMT) was performed\n</primaryDefinitionCopy>" +
+                "Contains data elements collected when an imaging study is performed to measure parenchyma; data recorded attempt to divide the strokes into ischemic or hemorrhagic subtypes, as distinction of hemorrhage versus infarction is the initial critical branch point in acute stroke triage. (Examples of CDEs included: Acute infarcts present; Planimetic acute ischemic lesion volume; and Acute hematoma present)\n" +
+                    "<source>NINDS Variable Name</source>" +
+                            "<primaryDefinitionCopy>\nIndicator how often the subject feels irritable or has angry outbursts as part of PTSD Checklist Military (PCLM).\n</primaryDefinitionCopy>" +
+                "<changeNote>Bulk update from source</changeNote>").replaceAll("\\s+", "")));
+
+         */
         }
 
 }
