@@ -1,4 +1,6 @@
-angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', function ($scope, $http, ElasticBoard) {
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', 'Alert',
+    function ($scope, $http, ElasticBoard, Alert) {
+
     $scope.boards = [];
     $scope.filter = {
         search: "",
@@ -9,7 +11,8 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
         tags: []
     };
     $scope.loadPublicBoards = function () {
-        ElasticBoard.basicSearch($scope.filter, function (response) {
+        ElasticBoard.basicSearch($scope.filter, function (err, response) {
+            if (err) Alert.addAlert("danger", "An error occured");
             $scope.boards = response.hits.hits.map(function (h) {
                 h._source._id = h._id;
                 return h._source;

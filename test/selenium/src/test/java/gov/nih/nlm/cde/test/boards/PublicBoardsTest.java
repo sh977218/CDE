@@ -9,9 +9,24 @@ public class PublicBoardsTest extends BoardTest {
     public void searchPublicBoard() {
         mustBeLoggedOut();
         clickElement(By.id("boardsLink"));
-        findElement(By.name("search")).sendKeys("Depression");
+        findElement(By.name("search")).sendKeys("board");
         clickElement(By.id("search.submit"));
-        textPresent("Schizophrenia");
-        textPresent("Bipolar Disorder");
+        textPresent("Leukemia Board");
+        textPresent("Epilepsy Board");
+        clickElement(By.id("tag_Cancer"));
+        textNotPresent("Epilepsy Board");
+        clickElement(By.id("tag_Cancer"));
+        textPresent("Epilepsy Board");
+    }
+
+    @Test
+    public void searchPublicBoardNoResult() {
+        mustBeLoggedOut();
+        clickElement(By.id("boardsLink"));
+        findElement(By.name("search")).sendKeys("noResultSearch");
+        clickElement(By.id("search.submit"));
+        textPresent("No results were found. Try other criteria.");
+        findElement(By.name("search")).sendKeys("\u0008");
+        textNotPresent("No board(s) found with search: noResultSearch");
     }
 }

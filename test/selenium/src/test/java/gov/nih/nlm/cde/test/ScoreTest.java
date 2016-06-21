@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import gov.nih.nlm.cde.test.quickboard.CdeQuickBoardTest1;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,10 +7,8 @@ import org.testng.annotations.Test;
 
 public class ScoreTest extends NlmCdeBaseTest {
 
-    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
-
     @Test
-    public void cannotScoreAsAnonymous(){
+    public void cannotScoreAsAnonymous() {
         mustBeLoggedOut();
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         showAllTabs();
@@ -22,7 +19,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotCreateWithZeroCdes() {
         mustBeLoggedInAs(testAdmin_username, password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
         showAllTabs();
         clickElement(By.id("derivationRules_tab"));
@@ -35,7 +32,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddSelfToRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
         clickElement(By.id("addToQuickBoard"));
         showAllTabs();
@@ -49,7 +46,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void cannotAddDatatypeText() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
         clickElement(By.id("addToQuickBoard"));
         textPresent("Quick Board (1)");
@@ -65,7 +62,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     @Test
     public void validRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
         hangon(1);
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
