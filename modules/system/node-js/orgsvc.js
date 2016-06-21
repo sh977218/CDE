@@ -60,6 +60,8 @@ exports.transferSteward = function(req, res) {
     }
 };
 
+exports.getOrg =
+
 function concatResultsMessages( results ) {
     var finalMessage = '';
     

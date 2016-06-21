@@ -108,5 +108,35 @@
                 </button>
             </form>
         </uib-tab>
+        <uib-tab heading="Status Validation Rules">
+            <div ng-controller="SaveValidRuleCtrl">
+                <!--<table class="table">-->
+                    <!--<thead>-->
+                        <!--<th>Validation Rule</th>-->
+                        <!--<th ng-repeat="org in myOrgs">{{org}} Organization</th>-->
+                    <!--</thead>-->
+                    <!--<tr ng-repeat="rule in rules">-->
+                        <!--<td>{{rule.ruleName}}</td>-->
+                        <!--<td>-->
+                            <!--&lt;!&ndash;<div class="btn-group">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<label class="btn btn-primary" ng-model="userOrgs[org]" uib-btn-checkbox>Enabled</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+
+                <div ng-repeat="(orgName, rules) in userOrgs">
+                    <h3>{{orgName}} Organization Rules</h3>
+                    <table class="table">
+                        <tr ng-repeat="rule in rules">
+                            <td>
+                                {{rule.ruleName}}
+                            </td>
+                            <td>Remove</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </uib-tab>
     </uib-tabset>
 </div>    

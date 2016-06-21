@@ -68,9 +68,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                 cdes.push(record)
                             };
                         });
-                        //var blob = new Blob([JSON.stringify(cdes)], {type: "application/json"});
-                        //saveAs(blob, "SearchExport.json");
-                        //$scope.reportOutput = cdes;
                         if(exportSettings.cb) exportSettings.cb(cdes);
                     }
                 };
@@ -129,7 +126,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             modalInstance.result.then(function (report) {
                 report.searchSettings = $scope.searchSettings;
                 var uri = $httpParamSerializer(report);
-                //$scope.exportSearchResults('validationRules', report);
                 $location.url('/cdeStatusReport?' + uri);
             }, function(reason) {
 
@@ -169,4 +165,92 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
         };
         $scope.module = 'cde';
         $scope.exportSearchResults('validationRules', $routeParams);
+    }]);
+
+angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization',
+    function ($scope, OrgHelpers, Organization) {
+        $scope.rules = [
+            {
+                "field" : "stewardOrg.name",
+                "targetStatus" : "Candidate",
+                "ruleName" : "CDE has TEST steward (should pass)",
+                "rule" : {
+                    "regex" : "TEST"
+                },
+                "occurence" : "exactlyOne"
+            },
+            {
+                "field" : "stewardOrg.name",
+                "targetStatus" : "Recorded",
+                "ruleName" : "CDE has NCI steward (should fail)",
+                "rule" : {
+                    "regex" : "NCI"
+                },
+                "occurence" : "exactlyOne"
+            },
+            {
+                "field" : "stewardOrg.name1",
+                "targetStatus" : "Recorded",
+                "ruleName" : "CDE has non-existing field (should fail)",
+                "rule" : {
+                    "regex" : ".+"
+                },
+                "occurence" : "exactlyOne"
+            },
+            {
+                "field" : "properties.key",
+                "targetStatus" : "Recorded",
+                "ruleName" : "NINDS Guidelines are recorded (atLeastOne) (should pass)",
+                "rule" : {
+                    "regex" : "NINDS Guidelines"
+                },
+                "occurence" : "atLeastOne"
+            },
+            {
+                "field" : "properties.key",
+                "targetStatus" : "Recorded",
+                "ruleName" : "non-existing property is recorded (atLeastOne) (should fail)",
+                "rule" : {
+                    "regex" : "nonsense"
+                },
+                "occurence" : "atLeastOne"
+            },
+            {
+                "field" : "valueDomain.permissibleValues.codeSystemName",
+                "targetStatus" : "Qualified",
+                "ruleName" : "All PVs mapped to LOINC (all) (should pass)",
+                "rule" : {
+                    "regex" : "LOINC"
+                },
+                "occurence" : "all"
+            },
+            {
+                "field" : "valueDomain.permissibleValues.permissibleValue",
+                "targetStatus" : "Qualified",
+                "ruleName" : "All PVs have a value (all) (should pass)",
+                "rule" : {
+                    "regex" : ".+"
+                },
+                "occurence" : "all"
+            },
+            {
+                "field" : "valueDomain.permissibleValues.permissibleValue",
+                "targetStatus" : "Qualified",
+                "ruleName" : "All PVs have LOINC code (all) (should fail)",
+                "rule" : {
+                    "regex" : "L.+"
+                },
+                "occurence" : "all"
+            }
+        ];
+
+        $scope.userOrgs = {};
+        $scope.myOrgs.forEach(function(orgName){
+            //$scope.userOrgs[orgName] = OrgHelpers.getStatusValidationRules(orgName);
+            Organization.getByName(orgName, function(o){
+                $scope.userOrgs[orgName] = o.data.cdeStatusValidationRules;
+            });
+        });
+        console.log($scope.userOrgs);
+
     }]);
