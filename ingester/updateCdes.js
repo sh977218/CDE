@@ -65,12 +65,15 @@ function compareCdes(existingCde, newCde) {
 
     existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
-    for (var i = existingCde.classification.length - 1; i > 0; i--) {
-        if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
-            existingCde.classification.splice(i, 1);
+    if (!existingCde.classification || existingCde.classification === [])
+        existingCde.classification = newCde.classification;
+    else {
+        for (var i = existingCde.classification.length - 1; i > 0; i--) {
+            if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
+                existingCde.classification.splice(i, 1);
+            }
         }
     }
-    if (existingCde.classification === [null]) existingCde.classification = [];
     try {
         if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
     } catch (e) {
@@ -118,7 +121,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         removeClassificationTree(newDe, orgName);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
-            newDe.classification.forEach(function(c, i){
+            newDe.classification.forEach(function (c, i) {
                 if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
             });
             if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];

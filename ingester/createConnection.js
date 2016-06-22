@@ -28,6 +28,10 @@ exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose
     strict: false,
     collection: 'ninds'
 }));
+exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'nciCdeXml'
+}));
 exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
     strict: false,
     collection: 'EyeGENE_LOINC'
