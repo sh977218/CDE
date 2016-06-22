@@ -21,6 +21,7 @@ public class BoardXMLExportTest  extends BoardTest {
 
         System.out.println("URL: " + url);
         System.out.println("REsponse: " + response);
+        Assert.assertTrue((response.length() > 0));
 //        findElement(By.id("xmlExport")).click();
 //        switchTab(1);
 //        textPresent( "<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>" );
