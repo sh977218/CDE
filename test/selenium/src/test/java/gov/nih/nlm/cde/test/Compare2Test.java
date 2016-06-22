@@ -17,7 +17,7 @@ public class Compare2Test extends NlmCdeBaseTest {
         clickElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         // accordion expands
-        hangon(1);
+        hangon(2);
         clickElement(By.id("compare_0"));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         clickElement(By.linkText("Quick Board (2)"));
@@ -39,6 +39,5 @@ public class Compare2Test extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNamePair")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//a[@title='Remove']")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("fa-edit")));
-
     }
 }
