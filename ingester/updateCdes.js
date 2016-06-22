@@ -213,6 +213,9 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     console.log(idv);
                     throw "Too many CDEs with the same ID/version.";
                 } else {
+                    console.log(cdeId);
+                    console.log(source);
+                    console.log(idv);
                     throw "Too many CDEs with same ID but there is a new version. Need to implement this.";
                 }
             });
