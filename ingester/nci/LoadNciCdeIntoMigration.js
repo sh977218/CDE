@@ -346,7 +346,7 @@ function run() {
                             });
                         } else {
                             console.log('find 1 existing Cde of id:' + newCde.ids[0].id + ' version: ' + newCde.ids[0].version);
-                            process.exit(1);
+                            stream.resume();
                         }
                     })
                 } else {
