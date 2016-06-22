@@ -143,7 +143,7 @@
                             <span class="label label-default">{{p}}</span>
                         </span>
                         <ui-select multiple ng-show="nameContexts.editMode" sortable="true" ng-model="o.nameContexts"
-                                   theme="select2" style="width: 100%">
+                                   theme="select2" style="width: 100%" id="text_context_entry_box_{{o.name}}">
                             <ui-select-match placeholder="type or select a Context" allow-clear="true">
                                 {{$item}}
                             </ui-select-match>
