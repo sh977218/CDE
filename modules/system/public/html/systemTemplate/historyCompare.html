@@ -3,8 +3,8 @@
         <h3 class="panel-title">Differences</h3>
     </div>
     <div class="panel-body">
-        <div ng-compare-side-by-side ng-compare-side-by-side-options="option" ng-compare-side-by-side-left=priorCde
-             ng-compare-side-by-side-right=elt></div>
+        <div ng-repeat="option in optionArray" ng-compare-side-by-side ng-compare-side-by-side-options="option"
+             ng-compare-side-by-side-left=option.left ng-compare-side-by-side-right=option.right></div>
     </div>
 </div>
 
