@@ -38,12 +38,11 @@ exports.priorCdes = function(req, res) {
     });
 };
 
-exports.byId = function(req,res){
-    mongo_data.byId(req.param.id,function(err,de){
-        if(err){
+exports.byId = function (req, res) {
+    mongo_data.byId(req.params.id, function (err, de) {
+        if (err) {
             res.status(500).send(err);
-        }
-        else{
+        } else {
             res.send(de);
         }
     })

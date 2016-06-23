@@ -11,16 +11,14 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
     $scope.viewDiffVersion = function (elt, priorCde) {
         var modalInstance = $modal.open({
             animation: false,
-            template: '<div ng-compare-side-by-side ng-compare-side-by-side-options="{{option}}" ng-compare-side-by-side-left={{priorCde}} ng-compare-side-by-side-right={{elt}}></div>',
+            templateUrl: '/system/public/html/systemTemplate/historyCompare.html',
             controller: 'CdeDiffModalCtrl',
             resolve: {
-                elt: function () {
-                    return elt;
+                eltId: function () {
+                    return elt._id;
                 },
-                priorCde: function () {
-                    $http.get('/cdeById/' + priorCde._id).then(function (err, de) {
-                        return de;
-                    })
+                priorCdeId: function () {
+                    return priorCde._id;
                 }
             }
         });
@@ -47,8 +45,15 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
 
 }]);
 
-angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$uibModalInstance', 'elt', 'priorCde', function ($scope, $modal, elt, priorCde) {
-    $scope.elt = elt;
-    $scope.priorCde = priorCde;
-    $scope.option = {};
+angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$uibModalInstance', 'eltId', 'priorCdeId', function ($scope, $http, $modal, eltId, priorCdeId) {
+    $scope.option = {
+        properties: [{label: 'version', property: 'version'}]
+    };
+    $http.get('/cdeById/' + eltId).then(function (result) {
+        $scope.elt = result.data;
+    });
+    $http.get('/cdeById/' + priorCdeId).then(function (result) {
+        $scope.priorCde = result.data;
+    });
+
 }]);
