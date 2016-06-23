@@ -59,6 +59,8 @@ exports.init = function (app, daoManager) {
 
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, cdesvc.priorCdes);
 
+    app.get('/cdeById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
+
     app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
 
     app.post('/dataelement/fork', function (req, res) {

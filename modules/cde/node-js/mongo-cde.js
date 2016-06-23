@@ -323,9 +323,10 @@ exports.update = function (elt, user, callback, special) {
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         elt.updated = new Date().toJSON();
-        elt.updatedBy = {};
-        elt.updatedBy.userId = user._id;
-        elt.updatedBy.username = user.username;
+        elt.updatedBy = {
+            userId: user._id,
+            username: user.username
+        };
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
@@ -335,7 +336,7 @@ exports.update = function (elt, user, callback, special) {
             special(newDe, dataElement);
         }
 
-        if (newDe.naming.length < 1) {
+        if (!newDe.naming || newDe.naming.length === 0) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
                 origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,

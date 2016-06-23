@@ -17,18 +17,20 @@
                 <td tabindex="0">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td tabindex="0">{{elt.updatedBy.username}}</td>
                 <td tabindex="0">{{elt.changeNote}}</td>
-                <td tabindex="0"><a class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
+                <td><a tabindex="0" class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
                 <td tabindex="0">Currently Viewing</td>
             </tr>
             <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
                 <td tabindex="0">{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td tabindex="0">{{priorCde.updatedBy.username || priorCde.createdBy || "Imported"}}</td>
                 <td tabindex="0">{{priorCde.changeNote}}</td>
-                <td tabindex="0">
-                    <a class="fa fa-eye" ng-if="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a>
-                    <span ng-if="!priorCde.updated">First Version</span></td>
-                <td tabindex="0">
-                    <a href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye">View</a>
+                <td class='table-info'>
+                    <a tabindex="0" class="fa fa-eye" ng-if="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a>
+                    <a tabindex="0" class="fa fa-eye" ng-click="viewDiffVersion(elt,priorCde)"> New Version</a>
+                    <span tabindex="0" ng-if="!priorCde.updated">First Version</span></td>
+                <td>
+                    <a tabindex="0" href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"
+                       target="_blank">View</a>
                 </td>
             </tr>
             </tbody>
