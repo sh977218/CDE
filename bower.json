@@ -17,7 +17,7 @@
     "jquery-ui": "1.11.3",
     "select2": "~3.4.5",
     "selectize": "~0.8.5",
-    "angular-ui-select": "https://github.com/sh977218/ui-select.git#15cd044b1183a420df82dc17cfdecb5196527810",
+    "angular-ui-select": "https://github.com/sh977218/ui-select.git#19edde53d8d51e8c282610f3fd0fe4ae67f56fc5",
     "textAngular": "1.3.x",
     "bootstrap-tour": "0.10.1",
     "ng-grid": "2.0.14",
