@@ -298,7 +298,7 @@ var saveForm = function(cadsrForm, cbfc) {
                 console.log("Form Public ID " + cadsrForm.publicID);
                 return cbq();
             }
-            mongo_cde.byOtherIdAndVersion("caDSR", q.cde.publicID, q.cde.version, function (err, cde) {
+            mongo_cde.bySourceIdVersion("caDSR", q.cde.publicID, q.cde.version, function (err, cde) {
                 if (!cde) {
                     console.log("CDE not found. caDSR ID: " + q.cde.publicID);
                     return cbq();
