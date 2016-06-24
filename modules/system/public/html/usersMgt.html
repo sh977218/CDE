@@ -43,7 +43,7 @@
                            theme="select2" style="min-width: 300px"
                            on-remove="updateRoles(u)" on-select="updateRoles(u)">
                     <ui-select-match placeholder="Select answers...">{{$item}}</ui-select-match>
-                    <ui-select-choices repeat="role in (rolesEnum | filter:$select.search)">
+                    <ui-select-choices repeat="role in rolesEnum | filter:$select.search">
                         {{role}}
                     </ui-select-choices>
                 </ui-select>
