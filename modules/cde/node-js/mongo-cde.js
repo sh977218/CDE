@@ -464,12 +464,23 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
     });
 };
 
-exports.byOtherIdAndVersion = function (source, id, version, cb) {
+exports.bySourceIdVersion = function (source, id, version, cb) {
     DataElement.find({archived: null}).elemMatch("ids", {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
+    });
+};
+exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
+    //noinspection JSUnresolvedFunction
+    DataElement.find({
+        "archived": null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {
+        source: source, id: id, version: version
+    }).exec(function (err, cdes) {
+        cb(err, cdes);
     });
 };
 
@@ -499,6 +510,7 @@ schemas.dataElementSchema.post('save', function (doc) {
 
 var cj = new CronJob({
     cronTime: '00 00 4 * * *',
+    //noinspection JSUnresolvedFunction
     onTick: function () {
         console.log("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
