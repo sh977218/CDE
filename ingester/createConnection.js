@@ -28,6 +28,10 @@ exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose
     strict: false,
     collection: 'ninds'
 }));
+exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'nciFormXml'
+}));
 exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new mongoose.Schema({}, {
     strict: false,
     collection: 'nciCdeXml'
