@@ -179,10 +179,9 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
 exports.priorCdes = function (cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({}, "updated updatedBy changeNote")
-                .where("_id").in(dataElement.history).exec(function (err, cdes) {
-                    callback(err, cdes);
-                });
+            return DataElement.find({}).where("_id").in(dataElement.history).exec(function (err, cdes) {
+                callback(err, cdes);
+            });
         }
     });
 };
