@@ -50,6 +50,7 @@
   "port": 3000,
   "elastic": {
     "hosts": ["http://localhost:9200"],
+//    "hosts": ["http://localhost:9201","http://localhost:9202","http://localhost:9200"],
     "index": {"name": "auto"},
     "formIndex": {"name": "auto"},
     "boardIndex": {"name": "auto"},
