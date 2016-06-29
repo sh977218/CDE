@@ -8,17 +8,60 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
             $scope.cdeDiff = diffResult;
         });
     };
+    var sortClassification = function (elt) {
+        elt.classification = elt.classification.sort(function (c1, c2) {
+            return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
+        });
+        var sortSubClassif = function (classif) {
+            if (classif.elements) {
+                classif.elements = classif.elements.sort(function (c1, c2) {
+                    if (!c1.name)
+                        console.log('h');
+                    return c1.name.localeCompare(c2.name);
+                });
+            }
+        };
+        var doRecurse = function (classif) {
+            sortSubClassif(classif);
+            if (classif.elements) {
+                classif.elements.forEach(function (subElt) {
+                    doRecurse(subElt);
+                });
+            }
+        };
+        elt.classification.forEach(function (classif) {
+            doRecurse(classif);
+        });
+    };
+
+    function getFlatClassifications(e) {
+        var flatClassifications = [];
+        e.classifications.forEach(function (c) {
+            var f = [c.stewardOrg.name];
+            var elements = c.elements;
+            while (elements && elements.length > 0) {
+                elements.forEach(function (element) {
+                    f.push(element.name)
+                });
+            }
+        })
+    }
+
     $scope.viewDiffVersion = function (elt, priorCde) {
+        var eltCopy = angular.copy(elt);
+        var priorCdeCopy = angular.copy(priorCde);
+        sortClassification(eltCopy);
+        sortClassification(priorCdeCopy);
         var modalInstance = $modal.open({
             animation: false,
             templateUrl: '/system/public/html/systemTemplate/historyCompare.html',
             controller: 'CdeDiffModalCtrl',
             resolve: {
                 elt: function () {
-                    return elt;
+                    return eltCopy;
                 },
                 priorCde: function () {
-                    return priorCde;
+                    return priorCdeCopy;
                 }
             }
         });
