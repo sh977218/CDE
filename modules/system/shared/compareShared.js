@@ -19,13 +19,7 @@ exports.compareSideBySide = {
         var result = [];
         var leftIndex = 0;
         var beginIndex = 0;
-
-        if (!options) options = {};
-        if (!options.equal) {
-            options.equal = function (a, b) {
-                return JSON.stringify(a) === JSON.stringify(b);
-            }
-        }
+        
         if (options.sort) {
             leftArray.sort(options.sort);
             rightArray.sort(options.sort);

@@ -8,15 +8,15 @@
                     scope: {
                         left: '=ngCompareSideBySideLeft',
                         right: '=ngCompareSideBySideRight',
-                        options: '=ngCompareSideBySideOptions'
+                        options: '=?ngCompareSideBySideOptions'
                     },
                     templateUrl: '/system/public/html/compareTemplate/compareSwitchTemplate.html',
                     link: function ($scope) {
                         if (!$scope.left && !$scope.right) {
                             $scope.err = {error: true, errorMessage: "left and right are null"};
                         } else {
-                            $scope.options.type = Comparison.getType($scope.left, $scope.right);
                             Comparison.initialize($scope);
+                            $scope.options.type = Comparison.getType($scope.left, $scope.right);
                             var result1 = Comparison.compareImpl($scope.left, $scope.right, $scope.options);
                             var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.options);
                             if (result1.result && result2.result) {
@@ -51,6 +51,12 @@
         .factory("Comparison", ["$compile", function () {
             return {
                 initialize: function (scope) {
+                    if (!scope.options) scope.options = {};
+                    if (!scope.options.equal) {
+                        scope.options.equal = function (a, b) {
+                            return JSON.stringify(a) === JSON.stringify(b);
+                        }
+                    }
                     var type;
                     if (scope.left && !scope.right) {
                         type = typeof scope.left;
