@@ -154,7 +154,7 @@ gulp.task('emptyTemplates', ['usemin'], function() {
 gulp.task('es', function() {
     elastic.deleteIndices();
 
-    // dont know why but gulp wont exit this. Kill it.
+    /* don't know why but gulp wont exit this. Kill it.*/
     setTimeout(function() {
         process.exit(0);
     }, 3000);
