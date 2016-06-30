@@ -13,10 +13,14 @@
                     controller: function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
                             if (!o) return "";
-                            // convert indexes to properties
-                            s = s.replace(/\[(\w+)\]/g, '.$1');
-                            // strip a leading dot
-                            s = s.replace(/^\./, '');
+                            if (s) {
+                                // convert indexes to properties
+                                s = s.replace(/\[(\w+)\]/g, '.$1');
+                                // strip a leading dot
+                                s = s.replace(/^\./, '');
+                            } else {
+                                return JSON.stringify(o);
+                            }
                             var a = s.split('.');
                             for (var i = 0, n = a.length; i < n; ++i) {
                                 var k = a[i];
@@ -30,6 +34,8 @@
                         }
                     },
                     link: function ($scope, $element) {
+                        if (!$scope.properties.match)
+                            $scope.properties.match = true;
                         if (!$scope.obj) return;
                         else $scope.type = typeof $scope.obj;
                         Display.applyHtml($scope, $element);
@@ -40,10 +46,14 @@
             return {
                 getValueByNestedProperty: function (o, s) {
                     if (!o) return "";
-                    // convert indexes to properties
-                    s = s.replace(/\[(\w+)\]/g, '.$1');
-                    // strip a leading dot
-                    s = s.replace(/^\./, '');
+                    if (s) {
+                        // convert indexes to properties
+                        s = s.replace(/\[(\w+)\]/g, '.$1');
+                        // strip a leading dot
+                        s = s.replace(/^\./, '');
+                    } else {
+                        return JSON.stringify(o);
+                    }
                     var a = s.split('.');
                     for (var i = 0, n = a.length; i < n; ++i) {
                         var k = a[i];
@@ -67,9 +77,10 @@
                             return "<p>" + o[$scope.properties.displayAs] + "</p>";
                         }).join("");
                     var objectHtml = '' +
-                        '<div class="row" ng-class="{quickBoardContentCompareDiff:showWarningIcon && properties.match===false,quickBoardContentCompareSame:properties.match === true}">' +
-                        '   <div class="col-xs-4 {{properties.label}}">{{properties.label}}:</div>' +
-                        '   <div ng-if="properties.link" class="col-xs-7"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
+                        '<div class="row" ng-class="{quickBoardContentCompareDiff:showWarningIcon && properties.match===false,quickBoardContentCompareSame:properties.match === true || properties.match === undefined }">' +
+                        '   <div ng-if="properties.label" class="col-xs-4 {{properties.label}}">{{properties.label}}:</div>' +
+                        '   <div ng-if="properties.link && properties.url" class="col-xs-7"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
+                        '   <div ng-if="properties.link && !properties.url" class="col-xs-7">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</div>' +
                         '   <div ng-if="!properties.link" class="col-xs-7" ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="100"></div>';
                     if ($scope.showWarningIcon) {
                         objectHtml = objectHtml +

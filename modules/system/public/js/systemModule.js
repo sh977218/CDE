@@ -208,6 +208,70 @@ angular.module('systemModule').filter('bytes', function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 });
+angular.module('systemModule').factory('classificationUtil', function () {
+    var factoryObj = {};
+    factoryObj.sortClassification = function (elt) {
+        elt.classification = elt.classification.sort(function (c1, c2) {
+            return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
+        });
+        var sortSubClassif = function (classif) {
+            if (classif.elements) {
+                classif.elements = classif.elements.sort(function (c1, c2) {
+                    if (!c1.name)
+                        console.log('h');
+                    return c1.name.localeCompare(c2.name);
+                });
+            }
+        };
+        var doRecurse = function (classif) {
+            sortSubClassif(classif);
+            if (classif.elements) {
+                classif.elements.forEach(function (subElt) {
+                    doRecurse(subElt);
+                });
+            }
+        };
+        elt.classification.forEach(function (classif) {
+            doRecurse(classif);
+        });
+    };
+    factoryObj.getFlatClassifications = function (elt) {
+        var classificationArray = [];
+        if (elt.classification && elt.classification.length > 0) {
+            elt.classification.forEach(function (classification) {
+                var loopElements = function (elements, innerClassificationArray) {
+                    var temp = angular.copy(innerClassificationArray);
+                    var more = false;
+                    if (elements && elements.length > 0) {
+                        for (var i = 0; i < elements.length; i++) {
+                            var element = elements[i];
+                            if (element.name || element.stewardOrg.name) {
+                                var name = element.name || element.stewardOrg.name;
+                                innerClassificationArray.push(name);
+                            }
+                            if (!element.elements || element.elements.length === 0) {
+                                more = false;
+                                classificationArray.push(innerClassificationArray.join(";"));
+                                return;
+                            }
+                            else {
+                                more = true;
+                                loopElements(element.elements, innerClassificationArray);
+                            }
+                            if (more)
+                                innerClassificationArray = angular.copy(temp);
+                        }
+                    }
+                };
+                var a = [angular.copy(classification.stewardOrg.name)];
+                loopElements(classification.elements, a);
+            })
+        }
+        return classificationArray;
+    };
+
+    return factoryObj;
+});
 
 angular.module('systemModule').factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {};

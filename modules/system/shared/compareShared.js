@@ -1,10 +1,17 @@
 if (typeof(exports) === "undefined") exports = {};
 
 function getValueByNestedProperty(obj, propertyString) {
+    if (!propertyString) {
+        console.log('no propertyString');
+    }
     if (!obj) return "";
     // convert indexes to properties and strip a leading dot
-    propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
-    var propertyArray = propertyString.split('.');
+
+    var propertyArray = [];
+    if (propertyString) {
+        propertyString = propertyString.replace(/\[(\w+)]/g, '.$1').replace(/^\./, '');
+        propertyArray = propertyString.split('.');
+    }
     for (var i = 0, n = propertyArray.length; i < n; ++i) {
         var k = propertyArray[i];
         if (k in obj)obj = obj[k];
@@ -19,12 +26,13 @@ exports.compareSideBySide = {
         var result = [];
         var leftIndex = 0;
         var beginIndex = 0;
-        
+
         if (options.sort) {
             leftArray.sort(options.sort);
             rightArray.sort(options.sort);
         }
-        if (!options.properties) options.properties = exports.getProperties(leftArray[0], rightArray[0]);
+        if (!options.properties)
+            options.properties = exports.getProperties(leftArray[0], rightArray[0]);
         leftArray.forEach(function (o) {
                 if (options.wipeUseless) {
                     options.wipeUseless(o);
@@ -145,6 +153,80 @@ exports.compareSideBySide = {
             })
         }
         return {result: result, matchCount: matchCount};
+    },
+    stringArrayCompare: function (leftStringArray, rightStringArray, options) {
+        var matchCount = 0;
+        var result = [];
+        var leftIndex = 0;
+        var beginIndex = 0;
+
+        if (options.sort) {
+            leftStringArray.sort(options.sort);
+            rightStringArray.sort(options.sort);
+        }
+        leftStringArray.forEach(function (o) {
+                var rightIndex = exports.findIndexInArray(rightStringArray.slice(beginIndex, rightStringArray.length), o, options.equal);
+                // element didn't found in right list.
+                if (rightIndex === -1) {
+                    // put all right list elements before this element
+                    if (beginIndex === 0) {
+                        for (var m = 0; m < rightStringArray.length; m++) {
+                            result.push({
+                                found: "right",
+                                rightIndex: m,
+                                result: exports.copyProperties(options.properties)
+                            });
+                            beginIndex++;
+                        }
+                    }
+                    // put this element not found
+                    result.push({
+                        found: 'left',
+                        leftIndex: leftIndex,
+                        result: exports.copyProperties(options.properties)
+                    });
+                }
+                // element found in right list
+                else {
+                    // put all right elements before matched element
+                    var beginIndexCopy = beginIndex;
+                    for (var k = 0; k < rightIndex; k++) {
+                        result.push({
+                            found: "right",
+                            rightIndex: beginIndex + rightIndex - 1,
+                            result: exports.copyProperties(options.properties)
+                        });
+                        beginIndex++;
+                    }
+                    // put this element found
+                    var found = {
+                        found: "both",
+                        leftIndex: leftIndex,
+                        rightIndex: beginIndexCopy + rightIndex,
+                        result: []
+                    };
+                    options.properties.forEach(function (p) {
+                        var property = exports.deepCopy(p);
+                        if (!property.label) property.label = property.property;
+                        property.match = JSON.stringify(getValueByNestedProperty(leftStringArray[found.leftIndex], property.property))
+                            === JSON.stringify(getValueByNestedProperty(rightStringArray[found.rightIndex], property.property));
+                        found.result.push(property);
+                    });
+                    result.push(found);
+                    matchCount++;
+                    beginIndex++;
+                }
+                leftIndex++;
+            }
+        );
+        // if after looping left list, there are element in the right list, put all of them
+        for (var i = beginIndex; i < rightStringArray.length; i++)
+            result.push({
+                found: "right",
+                rightIndex: i,
+                result: exports.copyProperties(options.properties)
+            })
+        return {result: result, matchCount: matchCount};
     }
 };
 
@@ -155,6 +237,9 @@ exports.findIndexInArray = function (array, item, equal) {
     return -1;
 };
 exports.getProperties = function (leftObj, rightObj) {
+    if (typeof leftObj !== "object" && typeof rightObj !== "object") {
+        return [];
+    }
     var duplicatedProperties = Object.getOwnPropertyNames(leftObj).concat(Object.getOwnPropertyNames(rightObj));
     return duplicatedProperties.filter(function (item, pos) {
         return duplicatedProperties.indexOf(item) == pos;
@@ -164,12 +249,17 @@ exports.deepCopy = function (o) {
     return JSON.parse(JSON.stringify(o));
 };
 exports.copyProperties = function (properties) {
-    var result = [];
-    properties.forEach(function (p) {
-        var property = exports.deepCopy(p);
-        if (!property.label) property.label = property.property;
-        property.match = false;
-        result.push(property);
-    });
-    return result;
+    if (properties) {
+        var result = [];
+        properties.forEach(function (p) {
+            var property = exports.deepCopy(p);
+            if (!property.label) property.label = property.property;
+            property.match = false;
+            result.push(property);
+        });
+        return result;
+    }
+    else {
+        return {match: false};
+    }
 };

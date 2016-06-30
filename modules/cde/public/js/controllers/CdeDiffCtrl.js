@@ -48,23 +48,13 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
 
 }]);
 
-angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$timeout', '$uibModalInstance', 'elt', 'priorCde', function ($scope, $http, $timeout, $modal, elt, priorCde) {
+angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$timeout', '$uibModalInstance', 'elt', 'priorCde', 'classificationUtil', function ($scope, $http, $timeout, $modal, elt, priorCde, classificationUtil) {
     $scope.elt = elt;
     $scope.priorCde = priorCde;
-    sortClassification(elt);
-    sortClassification(priorCde);
-    $scope.elt.flatClassifications = [];
-    $scope.elt.classification.forEach(function (c) {
-        var cArray = [];
-        getFlatClassifications(c, cArray);
-        $scope.elt.flatClassifications.push(cArray);
-    });
-    $scope.priorCde.flatClassifications = [];
-    $scope.priorCde.classification.forEach(function (c) {
-        var cArray = [];
-        getFlatClassifications(c, cArray);
-        $scope.priorCde.flatClassifications.push(cArray);
-    });
+    classificationUtil.sortClassification(elt);
+    classificationUtil.sortClassification(priorCde);
+    $scope.elt.flatClassifications = classificationUtil.getFlatClassifications($scope.elt);
+    $scope.priorCde.flatClassifications = classificationUtil.getFlatClassifications($scope.priorCde);
     $scope.versionOption = {
         properties: [{label: 'Version', property: 'version'}]
     };
@@ -110,40 +100,5 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
 }]);
 
 
-function sortClassification(elt) {
-    elt.classification = elt.classification.sort(function (c1, c2) {
-        return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
-    });
-    var sortSubClassif = function (classif) {
-        if (classif.elements) {
-            classif.elements = classif.elements.sort(function (c1, c2) {
-                if (!c1.name)
-                    console.log('h');
-                return c1.name.localeCompare(c2.name);
-            });
-        }
-    };
-    var doRecurse = function (classif) {
-        sortSubClassif(classif);
-        if (classif.elements) {
-            classif.elements.forEach(function (subElt) {
-                doRecurse(subElt);
-            });
-        }
-    };
-    elt.classification.forEach(function (classif) {
-        doRecurse(classif);
-    });
-};
 
-function getFlatClassifications(elt, classification) {
-    if (elt.elements != undefined) {
-        elt.elements.forEach(function (e) {
-            if (e.name || (e.stewardOrg && e.stewardOrg.name)) {
-                var name = e.name || (e.stewardOrg && e.stewardOrg.name);
-                classification.push(name);
-            }
-            else getFlatClassifications(e, classification);
-        })
-    }
-};
+

@@ -108,6 +108,8 @@
                         return exports.compareSideBySide.stringCompare(l, r, options);
                     } else if (options.type === 'number') {
                         return exports.compareSideBySide.numberCompare(l, r, options);
+                    } else if (options.type === 'stringArray') {
+                        return exports.compareSideBySide.stringArrayCompare(l, r, options);
                     }
                 }
             };
