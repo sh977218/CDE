@@ -174,7 +174,7 @@ exports.compareSideBySide = {
                             result.push({
                                 found: "right",
                                 rightIndex: m,
-                                result: exports.copyProperties(options.properties)
+                                result: {match: right}
                             });
                             beginIndex++;
                         }
@@ -183,7 +183,7 @@ exports.compareSideBySide = {
                     result.push({
                         found: 'left',
                         leftIndex: leftIndex,
-                        result: exports.copyProperties(options.properties)
+                        result: [{match: false}]
                     });
                 }
                 // element found in right list
@@ -194,7 +194,7 @@ exports.compareSideBySide = {
                         result.push({
                             found: "right",
                             rightIndex: beginIndex + rightIndex - 1,
-                            result: exports.copyProperties(options.properties)
+                            result: {match: false}
                         });
                         beginIndex++;
                     }
@@ -203,15 +203,8 @@ exports.compareSideBySide = {
                         found: "both",
                         leftIndex: leftIndex,
                         rightIndex: beginIndexCopy + rightIndex,
-                        result: []
+                        result: {match: true}
                     };
-                    options.properties.forEach(function (p) {
-                        var property = exports.deepCopy(p);
-                        if (!property.label) property.label = property.property;
-                        property.match = JSON.stringify(getValueByNestedProperty(leftStringArray[found.leftIndex], property.property))
-                            === JSON.stringify(getValueByNestedProperty(rightStringArray[found.rightIndex], property.property));
-                        found.result.push(property);
-                    });
                     result.push(found);
                     matchCount++;
                     beginIndex++;
