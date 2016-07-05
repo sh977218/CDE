@@ -27,7 +27,7 @@ public abstract class NamingTest extends CommonTest {
         findElement(By.linkText("Naming")).click();
         textPresent("New Name");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeNaming-0")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("removeNaming-1")));
         findElement(By.cssSelector("#dd_name_1 .fa-edit")).click();
         findElement(By.cssSelector("#dd_name_1 input")).sendKeys(" Changed");
         findElement(By.cssSelector("#dd_name_1 .fa-check")).click();
