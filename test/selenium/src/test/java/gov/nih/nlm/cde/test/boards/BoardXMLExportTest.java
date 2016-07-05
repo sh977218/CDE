@@ -14,7 +14,7 @@ public class BoardXMLExportTest  extends BoardTest {
 
     @Test
     public void boardXMLExport() {
-      /*  mustBeLoggedInAs(classifyBoardUser_username, password);
+        mustBeLoggedInAs(classifyBoardUser_username, password);
         goToBoard("Classify Board");
         textPresent("Export Board");
         clickElement(By.id(("export")));
@@ -22,16 +22,16 @@ public class BoardXMLExportTest  extends BoardTest {
         String response = get(url).asString();
 
         System.out.println("URL: " + url);
-        System.out.println("REsponse: " + response);*/git com
+        System.out.println("REsponse: " + response);
 
-        mustBeLoggedInAs(reguser_username, password);
+  /*      mustBeLoggedInAs(reguser_username, password);
         String form = "Parenchymal Imaging";
         goToFormByName(form);
 
         findElement(By.id("export")).click();
         String url = findElement(By.id("nihXml")).getAttribute("href");
         String response = get(url).asString();
-
+*/
 
         Assert.assertTrue((response.length() > 0));
 //        findElement(By.id("xmlExport")).click();
