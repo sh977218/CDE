@@ -2,7 +2,7 @@
 
 <nav class="navbar navbar-default" id="searchInfo">
     <div class="container-fluid pdtp9">
-        <div class="navbar-header col-lg-7 col-sm-6">
+        <div class="navbar-header col-sm-6" ng-class="{'col-lg-12':embedded,'col-lg-7':!embedded}">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
@@ -11,7 +11,8 @@
                 <span class="icon-bar"></span>
             </button>
             <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
-            <input name="q" id="ftsearch-input" class="search-query col-lg-9 col-md-10 col-sm-9 col-xs-7 pdtp9"
+            <input name="q" id="ftsearch-input" class="search-query col-md-10 col-sm-9 col-xs-7 pdtp9"
+                   ng-class="{'col-lg-8':embedded,' col-lg-9':!embedded}"
                    type="text" ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1" autocomplete="off"
                    typeahead-wait-ms="500" typeahead-min-length="3" typeahead-focus-first="false"
                    typeahead-on-select="searchAction()"
@@ -28,7 +29,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse noLeftRightPadding" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav pull-right">
+            <ul ng-if="!embedded" class="nav navbar-nav pull-right">
                 <li>
                     <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems > 0 && user._id"
                             ng-hide="module === 'form'" class="btn btn-default" type="button">
