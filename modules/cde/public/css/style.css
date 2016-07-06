@@ -1107,6 +1107,10 @@ div + .questionPlaceholder {
     .navbar-header > input {
         padding: 0px !important;
     }
+
+    .nav > li {
+        float: left !important;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 992px) {
