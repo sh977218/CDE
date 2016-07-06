@@ -1104,7 +1104,7 @@ div + .questionPlaceholder {
         margin: 0px !important;
     }
 
-    .navbar-header input {
+    .navbar-header > input {
         padding: 0px !important;
     }
 }
