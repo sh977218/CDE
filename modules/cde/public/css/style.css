@@ -1087,3 +1087,32 @@ div + .questionPlaceholder {
 .formRenderPanel {
     margin-left: 10px;
 }
+
+.pdtp9 {
+    padding-top: 9px;
+}
+
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 3px 4px !important;
+        font-size: 80% !important;
+        line-height: 1 !important;
+        border-radius: 3px !important;
+    }
+
+    .navbar-toggle {
+        margin: 0px !important;
+    }
+
+    .navbar-header input {
+        padding: 0px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .btn-responsive {
+        padding: 4px 9px !important;
+        font-size: 90% !important;
+        line-height: 1.2 !important;
+    }
+}
