@@ -76,7 +76,6 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             , {fieldName: "Properties - Object Class - Name", path: ["objectClass", "concepts", -1, "name"]}
             
             
-            
         ]
     };
     

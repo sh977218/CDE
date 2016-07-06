@@ -131,8 +131,9 @@
                         <tr ng-repeat="rule in rules">
                             <td>
                                 {{rule.ruleName}}
+                                {{rule}}
                             </td>
-                            <td>Remove</td>
+                            <td ng-click="removeRule(orgName, $index)">Remove</td>
                         </tr>
                     </table>
                 </div>

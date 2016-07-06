@@ -809,4 +809,9 @@ exports.init = function (app) {
     app.get('/uploadLoincCsvStatus', function (req, res) {
         res.send(loincUploadStatus);
     });
+
+    app.post('/removeRule', function (req, res) {
+
+        res.send(req.data);
+    });
 };

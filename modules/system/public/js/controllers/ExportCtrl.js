@@ -167,8 +167,8 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
         $scope.exportSearchResults('validationRules', $routeParams);
     }]);
 
-angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization',
-    function ($scope, OrgHelpers, Organization) {
+angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http',
+    function ($scope, OrgHelpers, Organization, $http) {
         $scope.rules = [
             {
                 "field" : "stewardOrg.name",
@@ -252,5 +252,11 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
             });
         });
         console.log($scope.userOrgs);
-
+        $scope.removeRule = function(o, i){
+            var key = $scope.userOrgs[o][i].field.replace(/[^\w]/g,"")+$scope.userOrgs[o][i].rule.regex.replace(/[^\w]/g,"");
+            $http.post('/removeRule', {orgName:o, rule: key}, function(response){
+                console.log(response.data);
+                console.log('removed');
+            });
+        };
     }]);
