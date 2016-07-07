@@ -1,4 +1,5 @@
-var mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+var async = require('async'),
+    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
     cdesvc = require('../modules/cde/node-js/cdesvc'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     MigrationDataElement = require('./createConnection').MigrationDataElementModel,
@@ -193,7 +194,15 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                 }
             });
         } else if (existingCdes.length === 1) {
-            processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+            if (existingCdes[0].attachments) {
+                async.forEach(existingCdes[0].attachments, function (attachment, doneOneAttachment) {
+                    mongo_cde.removeAttachmentLinks(attachment.fileid);
+                    doneOneAttachment();
+                }, function doneAllAttachments() {
+                    existingCdes[0].attachments = migrationCde.attachments;
+                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+                })
+            }
         } else {
             console.log(cdeId);
             console.log(source);
