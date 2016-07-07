@@ -8,7 +8,7 @@ var user = {username: 'BatchLoader'};
 var deCounter = 0;
 DataElement.find({
     'stewardOrg.name': 'NCI',
-    archived: null,
+    'archived': null,
     'registrationState.registrationStatus': {$ne: "Retired"}
 }, function (err, DEs) {
     if (err) throw err;
@@ -18,7 +18,10 @@ DataElement.find({
         de.updated = new Date().toJSON();
         if (!de.classification || de.classification.length === 0)
             de.classification = [{
-                steward: {name: 'NCI'},
+                stewardOrg: {
+                    name: 'NCI',
+                    elements: []
+                },
                 elements: []
             }];
         if (de.properties) {

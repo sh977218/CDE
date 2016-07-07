@@ -240,7 +240,13 @@ function createForm(nciForm, cb) {
             changeNote: nciForm.changeNote ? (nciForm.changeNote[0] ? nciForm.changeNote[0] : '') : '',
             version: nciForm.version[0].replace('.0', ''),
             formElements: formElements,
-            classification: [{stewardOrg: {name: 'NCI'}}]
+            classification: [{
+                stewardOrg: {name: 'NCI'},
+                elements: [{
+                    name: 'NCIP',
+                    elements: []
+                }]
+            }]
         };
 
         if (nciForm.CLASSIFICATIONSLIST && nciForm.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
@@ -264,8 +270,8 @@ function createForm(nciForm, cb) {
         }
         else {
             newForm.classification = [];
-            classificationShared.classifyItem(newForm, "NCI", []);
-            classificationShared.addCategory({elements: nciOrg.classifications}, []);
+            classificationShared.classifyItem(newForm, "NCI", ['NCIP']);
+            classificationShared.addCategory({elements: nciOrg.classifications}, ['NCIP']);
         }
         cb(newForm);
     })
