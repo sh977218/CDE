@@ -10,14 +10,20 @@
     "wsHost": "https://localhost:4000"
   },
   "database": {
-    "local": {
-      "db": "local",
-      "username": "siteRootAdmin",
-      "password": "password",
-      "options": {
-        "auth": {"authdb": "admin"}
+    "servers": [
+      {
+        "host": "localhost",
+        "port": 27501
+      },
+      {
+        "host": "localhost",
+        "port": 27502
+      },
+      {
+        "host": "localhost",
+        "port": 27503
       }
-    }
+    ]
   },
   "vsac": {
     "username": "user",
@@ -44,6 +50,7 @@
 //    ,"serverBaseURL": "http://localhost:3005"
   },
   "elastic": {
+    "hosts": ["http://localhost:9251","http://localhost:9252","http://localhost:9253"],
     "index": {"name": "cdetest"},
     "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
