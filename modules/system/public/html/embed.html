@@ -1,87 +1,91 @@
 <div class="container">
-    <h3>Embed CDE on your site</h3>
+    <h3>Embed CDE / Form Search on your site</h3>
 
-    <label for="selection.org">Org to embed</label>
-    <select class="form-control" ng-model="selection.org" id="selection.org" required>
-        <option value="">Select One</option>
-        <option ng-repeat="o in myOrgAdmins" ng-value="o.name">{{o.name}}</option>
-    </select>
+    <h4>Current Embeds</h4>
+    <table>
+        <thead>
 
-    <br>
+        </thead>
+        <tbody>
+            <tr ng-repeat="e in getEmbeds()">
+                <td>{{e.org}}</td>
+                <td>{{e.embed.name}}</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <input type="checkbox" ng-model="selection.primaryDefinition">
-    <label>See Primary Definition</label>
-    <br>
-    <input type="checkbox" ng-model="selection.sourceId">
-    <label>See Source ID</label>
-    <br>
-    <input type="checkbox" ng-model="selection.sourceVersion">
-    <label>See Source Version</label>
-    <br>
-    <br>
+    <button class="btn btn-default" ng-click="createMode = true" ><i class="fa fa-plus-square-o"></i> Add New</button>
 
-    <label>Number of results per page</label>
-    <input type="number" ng-model="selection.pageSize" class="form-control">
-    <label>Width</label>
-    <input type="number" ng-model="selection.width" min="600" class="form-control">
+    <div ng-if="createMode" class="boxed-div">
 
-    <label>Height</label>
-    <input type="number" ng-model="selection.height" min="600" class="form-control">
+        <label for="selection.org">Org to embed</label>
+        <select class="form-control" ng-model="selection.org" id="selection.org" required>
+            <option value="">Select One</option>
+            <option ng-repeat="o in myOrgAdmins" ng-value="o.name">{{o.name}}</option>
+        </select>
 
-    <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
-    <div class="form-group">
-        <span>I want my search results to include these statuses</span>
-        <div class="radio indent">
-            <label>
-                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
-                       value="Qualified">
-                Preferred Standard, Standard, Qualified
-            </label>
+        <br>
+
+        <label for="embedName">Name this embedded search:</label>
+        <input class="form-control" ng-model="selection.embedName" id="embedName">
+        <br>
+        <input type="checkbox" ng-model="selection.primaryDefinition">
+        <label>See Primary Definition</label>
+        <br>
+        <input type="checkbox" ng-model="selection.sourceId">
+        <label>See Source ID</label>
+        <br>
+        <input type="checkbox" ng-model="selection.sourceVersion">
+        <label>See Source Version</label>
+        <br>
+        <br>
+
+        <label>Number of results per page</label>
+        <input type="number" ng-model="selection.pageSize" class="form-control">
+        <label>Width</label>
+        <input type="number" ng-model="selection.width" min="600" class="form-control">
+
+        <label>Height</label>
+        <input type="number" ng-model="selection.height" min="600" class="form-control">
+
+        <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
+        <div class="form-group">
+            <span>I want my search results to include these statuses</span>
+            <div class="radio indent">
+                <label>
+                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
+                           value="Qualified">
+                    Preferred Standard, Standard, Qualified
+                </label>
+            </div>
+            <div class="radio indent">
+                <label>
+                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
+                           value="Recorded">
+                    Preferred Standard, Standard, Qualified, Recorded
+                </label>
+            </div>
+            <div class="radio indent">
+                <label>
+                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
+                           value="Candidate">
+                    Preferred Standard, Standard, Qualified, Recorded, Candidate
+                </label>
+            </div>
+            <div class="radio indent">
+                <label>
+                    <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
+                           value="Incomplete">
+                    Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
+                </label>
+            </div>
         </div>
-        <div class="radio indent">
-            <label>
-                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
-                       value="Recorded">
-                Preferred Standard, Standard, Qualified, Recorded
-            </label>
-        </div>
-        <div class="radio indent">
-            <label>
-                <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
-                       value="Candidate">
-                Preferred Standard, Standard, Qualified, Recorded, Candidate
-            </label>
-        </div>
-        <div class="radio indent">
-            <label>
-                <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
-                       value="Incomplete">
-                Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
-            </label>
-        </div>
+
+        <button class="btn btn-default" ng-click="addEmbed()">Save</button>
+        <button class="btn btn-danger" ng-click="cancelEmbed()">Cancel</button>
+
     </div>
 
-
-    <hr>
-
-    <p>Include the following code in the body section of your HTML.</p>
-    <blockquote ng-if="selection.org" ng-bind="getEmbedCode()"></blockquote>
-
-    <p>To improve readability, you may also include the following in the HEAD section of your HTML.</p>
-    <blockquote ng-if="selection.org" ng-bind="styles"></blockquote>
-
-    <p>To embed this iFrame into a response site, you may include it inside a div tag, like so:</p>
-    <blockquote>
-        &lt;div id="nlmcdeFrame">
-        insert frame here
-        &lt;/div>
-    </blockquote>
-    <p>Then include the following code in a script</p>
-    <blockquote>
-        jQuery(window).resize(function(){
-            jQuery("#nlmcdeIFrame").width(jQuery('.nlmcdeFrame').width()-400);
-        })
-    </blockquote>
 </div>
 
 

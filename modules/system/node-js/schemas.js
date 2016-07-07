@@ -39,6 +39,7 @@ var commonEmbedSchema = {
 };
 
 var embedSchema = new mongoose.Schema({
+    name: String,
     cde: {
         common: commonEmbedSchema,
         permissibleValues: Boolean
@@ -62,7 +63,7 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
-    , embed: [embedSchema]
+    , embeds: [embedSchema]
 });
 
 schemas.userSchema = new mongoose.Schema({
