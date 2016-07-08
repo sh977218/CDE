@@ -1,3 +1,132 @@
+<!--<div class="container">-->
+    <!--<uib-tabset class="pt20">-->
+        <!--<uib-tab heading="Organizations Admins">-->
+            <!--<form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>-->
+                <!--Make-->
+                <!--<div class="form-group">-->
+                    <!--<input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"-->
+                           <!--placeholder="enter user name" ng-model="orgAdmin.username"-->
+                           <!--uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"-->
+                           <!--typeahead-min-length="3" required>-->
+                <!--</div>-->
+                <!--an administrator for-->
+                <!--<div class="form-group">-->
+                    <!--<select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"-->
+                            <!--ng-model="admin.orgName"-->
+                            <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                        <!--<option value="">select organization</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<button type="submit" class="btn btn-success" id="newOrgAdminSubmit" ng-click="addOrgAdmin()"-->
+                        <!--ng-disabled="newOrgAdminForm.newOrgAdminUsername.$invalid || newOrgAdminForm.newOrgAdminOrgName.$invalid">-->
+                    <!--Make Admin-->
+                <!--</button>-->
+            <!--</form>-->
+            <!--<table class="table table-border table-responsive">-->
+                <!--<tr>-->
+                    <!--<th>Organization Name:</th>-->
+                    <!--<th>Admins for this Organization:</th>-->
+                <!--</tr>-->
+                <!--<tr ng-repeat="myOrgAdmin in myOrgAdmins | orderBy:'name'">-->
+                    <!--<td id="existingOrgAdminOrgName-{{myOrgAdmin.name}}">-->
+                        <!--{{myOrgAdmin.name}}-->
+                    <!--</td>-->
+                    <!--<td>-->
+                        <!--<div ng-repeat="user in myOrgAdmin.users">-->
+                            <!--<span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>-->
+                            <!--<i class="fa fa-trash-o hand-cursor" ng-click="removeOrgAdmin(myOrgAdmin.name, user._id)"-->
+                               <!--id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</uib-tab>-->
+        <!--<uib-tab heading="Organizations Curators">-->
+            <!--<form class="form-inline pt40 pb40" role="form" id="newOrgCuratorForm" name="newOrgCuratorForm" novalidate>-->
+                <!--Make-->
+                <!--<div class="form-group">-->
+                    <!--<input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"-->
+                           <!--placeholder="enter user name" ng-model="orgCurator.username"-->
+                           <!--uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"-->
+                           <!--typeahead-min-length="3" required>-->
+                <!--</div>-->
+                <!--a curator for-->
+                <!--<div class="form-group">-->
+                    <!--<select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"-->
+                            <!--ng-model="curator.orgName"-->
+                            <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                        <!--<option value="">select organization</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<button type="submit" class="btn btn-success" id="newOrgCuratorSubmit" ng-click="addOrgCurator()"-->
+                        <!--ng-disabled="newOrgCuratorForm.newOrgCuratorUsername.$invalid || newOrgCuratorForm.newOrgCuratorOrgName.$invalid">-->
+                    <!--Make Curator-->
+                <!--</button>-->
+            <!--</form>-->
+            <!--<table class="table table-border table-responsive">-->
+                <!--<tr>-->
+                    <!--<th>Organization Name:</th>-->
+                    <!--<th>Curators for this Organization:</th>-->
+                <!--</tr>-->
+                <!--<tr ng-repeat="orgCurator in orgCurators | orderBy:'name'">-->
+                    <!--<td id="existingOrgCuratorOrgName-{{orgCurator.name}}">-->
+                        <!--{{orgCurator.name}}-->
+                    <!--</td>-->
+                    <!--<td>-->
+                        <!--<div ng-repeat="user in orgCurator.users">-->
+                            <!--<span id="existingOrgCuratorUsername-{{$parent.$index}}-{{$index}}">{{user.username}}</span>-->
+                            <!--<i class="fa fa-trash-o hand-cursor" ng-click="removeOrgCurator(orgCurator.name, user._id)"-->
+                               <!--id="removeOrgCuratorUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</uib-tab>-->
+        <!--<uib-tab heading="CDE & Form Management" ng-if="myOrgAdmins.length > 1">-->
+            <!--<form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm"-->
+                  <!--novalidate>-->
+                <!--Transfer CDEs and forms owned by-->
+                <!--<div class="form-group">-->
+                    <!--<select id="transferSteward_from" name="transferSteward_from" class="form-control"-->
+                            <!--ng-model="transferStewardObj.from"-->
+                            <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                        <!--<option value="">select organization</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--to-->
+                <!--<div class="form-group">-->
+                    <!--<select id="transferSteward_to" name="transferSteward_to" class="form-control"-->
+                            <!--ng-model="transferStewardObj.to"-->
+                            <!--ng-options="myOrgAdmin.name as myOrgAdmin.name for myOrgAdmin in myOrgAdmins" required>-->
+                        <!--<option value="">select organization</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<button type="submit" class="btn btn-success" id="transferStewardButton"-->
+                        <!--ng-click="transferStewardFunc()"-->
+                        <!--ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">-->
+                    <!--Transfer Now-->
+                <!--</button>-->
+            <!--</form>-->
+        <!--</uib-tab>-->
+        <!--<uib-tab heading="Status Validation Rules">-->
+            <!--<div ng-controller="SaveValidRuleCtrl">-->
+                <!--<div ng-repeat="(orgName, rules) in userOrgs">-->
+                    <!--<h3>{{orgName}} Organization Rules</h3>-->
+                    <!--<table class="table">-->
+                        <!--<tr ng-repeat="rule in rules">-->
+                            <!--<td>-->
+                                <!--{{rule.ruleName}}-->
+                                <!--{{rule}}-->
+                            <!--</td>-->
+                            <!--<td ng-click="removeRule(orgName, $index)">Remove</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</uib-tab>-->
+    <!--</uib-tabset>-->
+<!--</div>-->
+
 <div class="container">
     <uib-tabset class="pt20">
         <uib-tab heading="Organizations Admins">
@@ -110,34 +239,20 @@
         </uib-tab>
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">
-                <!--<table class="table">-->
-                    <!--<thead>-->
-                        <!--<th>Validation Rule</th>-->
-                        <!--<th ng-repeat="org in myOrgs">{{org}} Organization</th>-->
-                    <!--</thead>-->
-                    <!--<tr ng-repeat="rule in rules">-->
-                        <!--<td>{{rule.ruleName}}</td>-->
-                        <!--<td>-->
-                            <!--&lt;!&ndash;<div class="btn-group">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<label class="btn btn-primary" ng-model="userOrgs[org]" uib-btn-checkbox>Enabled</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--</td>-->
-                    <!--</tr>-->
-                <!--</table>-->
-
-                <div ng-repeat="(orgName, rules) in userOrgs">
-                    <h3>{{orgName}} Organization Rules</h3>
-                    <table class="table">
-                        <tr ng-repeat="rule in rules">
-                            <td>
-                                {{rule.ruleName}}
-                                {{rule}}
-                            </td>
-                            <td ng-click="removeRule(orgName, $index)">Remove</td>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Rule Name</td>
+                            <td ng-repeat="(orgName, rules) in userOrgs">{{orgName}}</td>
                         </tr>
-                    </table>
-                </div>
+                    </thead>
+                    <tr ng-repeat="rule in allRules">
+                        <td>{{rule.ruleName}}</td>
+                        <td ng-repeat="(orgName, rules) in userOrgs">{{ruleEnabled(orgName, rule)}}</td>
+                    </tr>
+                </table>
+
             </div>
         </uib-tab>
     </uib-tabset>
-</div>    
+</div>

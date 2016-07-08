@@ -169,80 +169,80 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
 
 angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http',
     function ($scope, OrgHelpers, Organization, $http) {
-        $scope.rules = [
-            {
-                "field" : "stewardOrg.name",
-                "targetStatus" : "Candidate",
-                "ruleName" : "CDE has TEST steward (should pass)",
-                "rule" : {
-                    "regex" : "TEST"
-                },
-                "occurence" : "exactlyOne"
-            },
-            {
-                "field" : "stewardOrg.name",
-                "targetStatus" : "Recorded",
-                "ruleName" : "CDE has NCI steward (should fail)",
-                "rule" : {
-                    "regex" : "NCI"
-                },
-                "occurence" : "exactlyOne"
-            },
-            {
-                "field" : "stewardOrg.name1",
-                "targetStatus" : "Recorded",
-                "ruleName" : "CDE has non-existing field (should fail)",
-                "rule" : {
-                    "regex" : ".+"
-                },
-                "occurence" : "exactlyOne"
-            },
-            {
-                "field" : "properties.key",
-                "targetStatus" : "Recorded",
-                "ruleName" : "NINDS Guidelines are recorded (atLeastOne) (should pass)",
-                "rule" : {
-                    "regex" : "NINDS Guidelines"
-                },
-                "occurence" : "atLeastOne"
-            },
-            {
-                "field" : "properties.key",
-                "targetStatus" : "Recorded",
-                "ruleName" : "non-existing property is recorded (atLeastOne) (should fail)",
-                "rule" : {
-                    "regex" : "nonsense"
-                },
-                "occurence" : "atLeastOne"
-            },
-            {
-                "field" : "valueDomain.permissibleValues.codeSystemName",
-                "targetStatus" : "Qualified",
-                "ruleName" : "All PVs mapped to LOINC (all) (should pass)",
-                "rule" : {
-                    "regex" : "LOINC"
-                },
-                "occurence" : "all"
-            },
-            {
-                "field" : "valueDomain.permissibleValues.permissibleValue",
-                "targetStatus" : "Qualified",
-                "ruleName" : "All PVs have a value (all) (should pass)",
-                "rule" : {
-                    "regex" : ".+"
-                },
-                "occurence" : "all"
-            },
-            {
-                "field" : "valueDomain.permissibleValues.permissibleValue",
-                "targetStatus" : "Qualified",
-                "ruleName" : "All PVs have LOINC code (all) (should fail)",
-                "rule" : {
-                    "regex" : "L.+"
-                },
-                "occurence" : "all"
-            }
-        ];
+        //$scope.rules = [
+        //    {
+        //        "field" : "stewardOrg.name",
+        //        "targetStatus" : "Candidate",
+        //        "ruleName" : "CDE has TEST steward (should pass)",
+        //        "rule" : {
+        //            "regex" : "TEST"
+        //        },
+        //        "occurence" : "exactlyOne"
+        //    },
+        //    {
+        //        "field" : "stewardOrg.name",
+        //        "targetStatus" : "Recorded",
+        //        "ruleName" : "CDE has NCI steward (should fail)",
+        //        "rule" : {
+        //            "regex" : "NCI"
+        //        },
+        //        "occurence" : "exactlyOne"
+        //    },
+        //    {
+        //        "field" : "stewardOrg.name1",
+        //        "targetStatus" : "Recorded",
+        //        "ruleName" : "CDE has non-existing field (should fail)",
+        //        "rule" : {
+        //            "regex" : ".+"
+        //        },
+        //        "occurence" : "exactlyOne"
+        //    },
+        //    {
+        //        "field" : "properties.key",
+        //        "targetStatus" : "Recorded",
+        //        "ruleName" : "NINDS Guidelines are recorded (atLeastOne) (should pass)",
+        //        "rule" : {
+        //            "regex" : "NINDS Guidelines"
+        //        },
+        //        "occurence" : "atLeastOne"
+        //    },
+        //    {
+        //        "field" : "properties.key",
+        //        "targetStatus" : "Recorded",
+        //        "ruleName" : "non-existing property is recorded (atLeastOne) (should fail)",
+        //        "rule" : {
+        //            "regex" : "nonsense"
+        //        },
+        //        "occurence" : "atLeastOne"
+        //    },
+        //    {
+        //        "field" : "valueDomain.permissibleValues.codeSystemName",
+        //        "targetStatus" : "Qualified",
+        //        "ruleName" : "All PVs mapped to LOINC (all) (should pass)",
+        //        "rule" : {
+        //            "regex" : "LOINC"
+        //        },
+        //        "occurence" : "all"
+        //    },
+        //    {
+        //        "field" : "valueDomain.permissibleValues.permissibleValue",
+        //        "targetStatus" : "Qualified",
+        //        "ruleName" : "All PVs have a value (all) (should pass)",
+        //        "rule" : {
+        //            "regex" : ".+"
+        //        },
+        //        "occurence" : "all"
+        //    },
+        //    {
+        //        "field" : "valueDomain.permissibleValues.permissibleValue",
+        //        "targetStatus" : "Qualified",
+        //        "ruleName" : "All PVs have LOINC code (all) (should fail)",
+        //        "rule" : {
+        //            "regex" : "L.+"
+        //        },
+        //        "occurence" : "all"
+        //    }
+        //];
 
         $scope.userOrgs = {};
         $scope.myOrgs.forEach(function(orgName){
@@ -259,4 +259,13 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 console.log('removed');
             });
         };
+
+        $scope.ruleEnabled = function(orgName, rule){
+            var ruleIds = $scope.userOrgs[orgName].map(function(rule){return rule.id});
+            return ruleIds.indexOf(rule.id) > -1;
+        };
+
+        $http.get('/getAllRules').then(function(response){
+            $scope.allRules = response.data;
+        });
     }]);

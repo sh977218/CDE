@@ -28,6 +28,7 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 
 schemas.statusValidationRuleSchema = new mongoose.Schema({
     field: String
+    , id: Number
     , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Qualified", "Standard", "Preferred Standard"]}
     , ruleName: String
     , rule: {
@@ -48,6 +49,7 @@ schemas.orgSchema = new mongoose.Schema({
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 });
+
 
 schemas.userSchema = new mongoose.Schema({
     username: String

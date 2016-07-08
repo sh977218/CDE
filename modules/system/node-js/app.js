@@ -814,4 +814,10 @@ exports.init = function (app) {
 
         res.send(req.data);
     });
+
+    app.get('/getAllRules', function(req, res){
+        mongo_data_system.getAllRules(function(err, rules){
+            res.send(rules);
+        });
+    });
 };

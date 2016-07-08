@@ -20,6 +20,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
+    ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
@@ -453,4 +454,10 @@ exports.getClassificationAuditLog = function(params, callback){
         .exec(function(err, logs){
             callback(err, logs);
         });
+};
+
+exports.getAllRules = function(cb){
+    ValidationRule.find().exec(function(err, rules){
+        cb(err, rules);
+    });
 };
