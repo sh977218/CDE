@@ -8,7 +8,7 @@ import static com.jayway.restassured.RestAssured.get;
 
 public class CdeExport extends NlmCdeBaseTest {
 
-    @Test(priority = 4)
+    @Test
     public void exportJson() {
         String cdeName = "Spinal column injury number";
         goToCdeByName(cdeName);
@@ -20,16 +20,18 @@ public class CdeExport extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    @Test(priority = 4)
+    @Test
     public void exportXml() {
-        String cdeName = "Spinal column injury number";
+        String cdeName = "Patient Gender Code";
         goToCdeByName(cdeName);
         findElement(By.id("export")).click();
         String url = findElement(By.id("xmlExport")).getAttribute("href");
         String response = get(url).asString();
-        Assert.assertTrue(response.contains("<designation>Spinal column injury number</designation>"));
-        Assert.assertTrue(response.contains("<definition>Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.</definition>"));
-        Assert.assertTrue(response.contains("<tinyId>7cDvUXR6SQe</tinyId>"));
+        Assert.assertTrue(response.contains("<designation>Patient Gender Code</designation>"));
+        Assert.assertTrue(response.contains("<definition>\n" +
+                "the coded CDUS values for classification of the sex or gender role of the patient/participant.(CDUS Exchange)\n" +
+                "</definition>"));
+        Assert.assertTrue(response.contains("<tinyId>bzGjaFPtQCs</tinyId>"));
         findElement(By.id("xmlExport")).click();
         switchTab(1);
         switchTabAndClose(0);
