@@ -2,7 +2,8 @@
 
 <nav class="navbar navbar-default" id="searchInfo">
     <div class="container-fluid" ng-class="{'noLeftRightPadding':embedded,'pdtp9':!embedded}">
-        <div class="navbar-header col-sm-12" ng-class="{'col-lg-12 col-md-12 noLeftRightPadding':embedded,'col-lg-7 col-md-10':!embedded}">
+        <div class="navbar-header col-sm-12"
+             ng-class="{'col-lg-12 col-md-12 noLeftRightPadding':embedded,'col-lg-7 col-md-10':!embedded}">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
@@ -19,11 +20,11 @@
                        typeahead-wait-ms="500" typeahead-min-length="3" typeahead-focus-first="false"
                        uib-typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8">
                 <div>
-                    <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger"
+                    <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger noLeftMargin"
                             ng-class="{'btn-sm':embedded,'btn':!embedded}">
                         <i class="fa fa-search"></i> Search
                     </button>
-                    <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default"
+                    <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default noLeftMargin"
                             type="button" ng-click="reset()"
                             ng-class="{'btn-sm':embedded,'btn':!embedded}">
                         <i class="fa fa-trash-o"></i> Reset

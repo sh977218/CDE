@@ -900,6 +900,10 @@ div + .questionPlaceholder {
     padding-right: 0 !important;
 }
 
+.noLeftMargin {
+    margin-left: 0 !important;
+}
+
 #export {
     margin-left: 10px;
 }
