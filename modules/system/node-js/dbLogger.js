@@ -9,7 +9,7 @@ var mongoose = require('mongoose')
     ;
 
 var esClient = new elasticsearch.Client({
-    host: config.elastic.uri
+    hosts: config.elastic.hosts
 });
 
 // w = 0 means write very fast. It's ok if it fails.   
