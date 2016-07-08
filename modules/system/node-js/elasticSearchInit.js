@@ -1,7 +1,6 @@
 var config = require('config'),
     hash = require("crypto");
 
-
 exports.createIndexJson = {
     "mappings": {
         "dataelement": {
@@ -86,6 +85,7 @@ exports.createIndexJson = {
         }
     }, settings: {
         index: {
+            "number_of_replicas" : 2,
             analysis: {
                 analyzer: {
                     default: {
@@ -140,6 +140,10 @@ exports.createFormIndexJson = {
                 }, "views": {"type": "integer"}
                 , "numQuestions": {"type": "integer"}
             }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas" : 2
         }
     }
 };
@@ -265,6 +269,10 @@ exports.createBoardIndexJson = {
                 "shareStatus": {"type": "string", "index": "not_analyzed"}
             }
         }
+    }, settings: {
+        index: {
+            "number_of_replicas" : 2
+        }
     }
 };
 
@@ -291,6 +299,10 @@ exports.createStoredQueryIndexJson = {
                     "payloads": true
                 }
             }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas" : 2
         }
     }
 };
@@ -337,7 +349,6 @@ exports.indices = [
         indexName: config.elastic.storedQueryIndex.name,
         indexJson: exports.createStoredQueryIndexJson,
         filter: exports.storedQueryRiverFunction
-
     }
 ];
 
