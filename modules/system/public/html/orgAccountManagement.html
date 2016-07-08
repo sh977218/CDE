@@ -248,7 +248,16 @@
                     </thead>
                     <tr ng-repeat="rule in allRules">
                         <td>{{rule.ruleName}}</td>
-                        <td ng-repeat="(orgName, rules) in userOrgs">{{ruleEnabled(orgName, rule)}}</td>
+                        <td ng-repeat="(orgName, rules) in userOrgs">
+
+                            <!--<div class="btn-group">-->
+                                <!--<label class="btn btn-xs btn-primary" ng-model="ruleEnabled(orgName, rule)" uib-btn-checkbox>On</label>-->
+                                <!--<label class="btn btn-xs btn-primary" ng-model="!ruleEnabled(orgName, rule)" uib-btn-checkbox>Off</label>-->
+                            <!--</div>-->
+
+                            <div class="btn btn-xs btn-success" ng-show="ruleEnabled(orgName, rule)">On</div>
+                            <div class="btn btn-xs btn-default" ng-show="!ruleEnabled(orgName, rule)">Off</div>
+                        </td>
                     </tr>
                 </table>
 
