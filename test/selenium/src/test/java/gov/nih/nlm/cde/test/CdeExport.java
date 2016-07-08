@@ -28,8 +28,8 @@ public class CdeExport extends NlmCdeBaseTest {
         String url = findElement(By.id("xmlExport")).getAttribute("href");
         String response = get(url).asString();
         Assert.assertTrue(response.contains("<designation>Patient Gender Code</designation>"));
-        Assert.assertTrue(response.contains("<definition>\n" +
-                "the coded CDUS values for classification of the sex or gender role of the patient/participant.(CDUS Exchange)\n" +
+        Assert.assertTrue(response.contains("<definition>" +
+                "the coded CDUS values for classification of the sex or gender role of the patient/participant.(CDUS Exchange)" +
                 "</definition>"));
         Assert.assertTrue(response.contains("<tinyId>bzGjaFPtQCs</tinyId>"));
         findElement(By.id("xmlExport")).click();
