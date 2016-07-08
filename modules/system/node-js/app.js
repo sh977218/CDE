@@ -820,4 +820,14 @@ exports.init = function (app) {
             res.send(rules);
         });
     });
+
+    app.post('/disableRule', function(req, res){
+        console.log(req.body);
+        res.send();
+    });
+
+    app.post('/enableRule', function(req, res){
+        console.log(req.body);
+        res.send();
+    });
 };
