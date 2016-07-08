@@ -402,6 +402,18 @@ exports.allPropertiesKeys = function (req, res, dao) {
     });
 };
 
+exports.hideProprietaryIds = function(elt) {
+    var blackList = [
+        "LOINC"
+    ];
+    elt.ids.forEach(function(id) {
+        if (blackList.indexOf(id.source) > -1) {
+            id.id = "Login to see value.";
+            id.source = "(" + id.source + ")";
+        }
+    });
+};
+
 exports.hideUnapprovedComments = function (adminItem) {
     if (!adminItem || !adminItem.comments) return;
     adminItem.comments.forEach(function (c) {

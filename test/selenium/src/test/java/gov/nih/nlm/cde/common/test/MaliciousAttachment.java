@@ -23,5 +23,4 @@ public class MaliciousAttachment  extends BaseAttachmentTest {
         textNotPresent("Filename");
     }
 
-
 }

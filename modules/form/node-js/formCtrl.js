@@ -55,6 +55,7 @@ var getFormJson = function (form, req, res) {
         });
     };
     adminSvc.hideUnapprovedComments(form);
+    adminSvc.hideProprietaryIds(form);
     var resForm = form.toObject();
     markCDE(resForm, function () {
         res.send(resForm);
@@ -64,6 +65,7 @@ var getFormJson = function (form, req, res) {
 var getFormPlainXml = function (form, req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (!form) return res.status(404).end();
+        adminSvc.hideProprietaryIds(form);
         res.setHeader("Content-Type", "application/xml");
         var exportForm = form.toObject();
         delete exportForm._id;
@@ -92,6 +94,7 @@ exports.formById = function (req, res) {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
+        adminSvc.hideProprietaryIds(form);
         wipeRenderDisallowed(form, req, function() {
             if (req.query.type === 'xml' && req.query.subtype === 'odm') {
                 formShared.getFormOdm(form, function (err, xmlForm) {
@@ -115,6 +118,7 @@ exports.formByTinyIdVersion = function (req, res) {
         mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
             if (err) res.status(500).send(err);
             else {
+                adminSvc.hideProprietaryIds(form);
                 wipeRenderDisallowed(elt, req, function() {
                     res.send(elt);
                 });
@@ -124,6 +128,7 @@ exports.formByTinyIdVersion = function (req, res) {
         mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
             if (err) res.status(500).send(err);
             else {
+                adminSvc.hideProprietaryIds(form);
                 wipeRenderDisallowed(elt, req, function() {
                     res.send(elt);
                 });
@@ -179,6 +184,7 @@ exports.wholeFormById = function (req, res) {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         fetchWholeForm(form, function (f) {
+            adminSvc.hideProprietaryIds(f);
             res.send(f);
         });
     });
@@ -187,6 +193,7 @@ exports.wholeFormById = function (req, res) {
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     fetchWholeForm(form, function (wholeForm) {
+        adminSvc.hideProprietaryIds(wholeForm);
         res.send(sdc.formToSDC(wholeForm));
     });
 };
