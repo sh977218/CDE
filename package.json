@@ -70,6 +70,7 @@
     "gulp-rev": "6.0.1",
     "gulp-bower": "0.0.11",
     "gulp-install": "0.6.0",
+    "gulp-header": "1.8.2",
     "gulp-cssnano": "2.1.0",
     "gulp-wiredep": "0.0.0",
     "gulp-git": "1.7.0",

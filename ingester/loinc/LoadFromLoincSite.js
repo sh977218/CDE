@@ -8,6 +8,10 @@ var url_postfix = '.html';
 var url_postfix_para = '?sections=Comprehensive';
 
 var map = {
+    "LOINC#": {
+        function: parsingLOINCTable,
+        xpath: '//*[@class="Section1"]/table[contains(@class,"bordered_table")]'
+    },
     'NAME': {
         function: parsingNameTable,
         xpath: '//*[@class="Section1000000F00"]/table'
@@ -58,17 +62,21 @@ var map = {
     }
 };
 
-function logMessange(obj, messange) {
+function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
+}
+
+function parsingLOINCTable(driver, loincId, sectionName, obj, cb) {
+    cb();
 }
 
 function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
     driver.findElements(webdriver.By.xpath('//*[@class="Section40000000000000"]')).then(function (divs) {
         if (divs.length === 0) {
-            logMessange(obj, 'No loinc name found');
+            logMessage(obj, 'No loinc name found');
             cb();
         } else if (divs.length > 0) {
-            if (divs.length > 1) logMessange(obj, 'More than one loinc name found');
+            if (divs.length > 1) logMessage(obj, 'More than one loinc name found');
             divs[0].getText().then(function (text) {
                 obj[sectionName] = text.trim();
                 cb();
@@ -398,7 +406,7 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
                                         doneOneTr();
                                     });
                                 } else {
-                                    logMessange(obj, 'this answer list has different length');
+                                    logMessage(obj, 'this answer list has different length');
                                     doneOneTr();
                                 }
 
@@ -579,7 +587,7 @@ function findTableAndParsing(driver, loincId, sectionName, obj, cb) {
         if (tables && tables.length === 0) {
             var message = 'cannot find ' + sectionName + ' for loinc: ' + loincId;
             console.log(message);
-            logMessange(obj, message);
+            logMessage(obj, message);
             cb();
         } else {
             if (tables && tables.length > 1) console.log('find more than 1 ' + sectionName + ' for loinc: ' + loincId);
@@ -593,6 +601,10 @@ function findTableAndParsing(driver, loincId, sectionName, obj, cb) {
 function parsingHtml(driver, loincId, cb) {
     var obj = {loincId: loincId, info: ''};
     async.parallel([
+        function (doneParsing) {
+            var sectionName = "LOINC#";
+            parsingLOINCTable(driver, loincId, sectionName, obj, doneParsing);
+        },
         function (doneParsing) {
             var sectionName = "LOINC NAME";
             parsingLoincNameTable(driver, loincId, sectionName, obj, doneParsing);

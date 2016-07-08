@@ -328,7 +328,7 @@ angular.module('systemModule').config(function ($provide) {
                         stack: exception.stack,
                         message: exception.message,
                         name: exception.name,
-                        url: window.location.pathname
+                        url: window.location.href
                     });
                 } catch (e) {
 
