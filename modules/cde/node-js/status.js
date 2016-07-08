@@ -6,99 +6,94 @@ var request = require('request')
     , email = require('../../system/node-js/email')
 ;
 
-var status = this;
+var app_status = this;
 
-status.statusReport = {
+app_status.statusReport = {
     elastic: {
-        up: false
-        , results: false
-        , sync: false
-        , updating: false
+        up: "Not Checked"
+        , results: "Not Checked"
+        , sync: "Not Checked"
     }
 };    
 
 exports.everythingOk = function() {
-    return status.statusReport.elastic.up;
+    return app_status.statusReport.elastic.up;
 };
 
 exports.assembleErrorMessage = function(statusReport) {
-    if (!statusReport.elastic.up) return "ElasticSearch service is not responding. ES service might be not running.";
-    if (!statusReport.elastic.results) return "ElasticSearch service is not returning any results. Index might be empty.";
-    if (!statusReport.elastic.sync) return "ElasticSearch index is completely different from MongoDB. Data might be reingested but ES not updated.";
-    //if (!statusReport.elastic.updating) return "ElasticSearch service does not reflect modifications in MongoDB. River plugin might be out of order.";
-    return "";
+    if (statusReport.elastic.up) return statusReport.elastic.up;
+    else if (statusReport.elastic.results) return statusReport.elastic.results;
+    else if (statusReport.elastic.sync) return statusReport.elastic.sync;
+    else return "";
 };
 
 exports.status = function(req, res) {    
-    if (status.everythingOk()) {
-        res.send("ALL SERVICES UP\n" + exports.assembleErrorMessage(status.statusReport));
+    if (app_status.everythingOk()) {
+        res.send("ALL SERVICES UP\n" + exports.assembleErrorMessage(app_status.statusReport));
     } else {
-        var msg = status.assembleErrorMessage(status.statusReport);
-        res.send("ERROR: " + msg);        
+        var msg = app_status.assembleErrorMessage(app_status.statusReport);
+        res.send("ERROR: " + msg);
     }
 };
 
-status.delayReports = function() {
-    status.reportSent = true;
+app_status.delayReports = function() {
+    app_status.reportSent = true;
     setTimeout(function() {
-        status.reportSent = false;
+        app_status.reportSent = false;
     }, config.status.timeouts.emailSendPeriod);
 };
 
 exports.evaluateResult = function() {
     if (process.uptime() < config.status.timeouts.minUptime) return;
-    if (status.statusReport.elastic.sync) return;
-    if (status.reportSent) return;    
+    if (app_status.statusReport.elastic.sync) return;
+    if (app_status.reportSent) return;
     var emailContent = {
         subject: "Urgent: ElasticSearch issue on " + config.name
-        , body: status.assembleErrorMessage(status.statusReport)
+        , body: app_status.assembleErrorMessage(app_status.statusReport)
     };
 
     mongo_data_system.siteadmins(function(err, users) {
         email.emailUsers(emailContent, users, function(err) {
-            if (!err) status.delayReports();
+            if (!err) app_status.delayReports();
         });
     });
 };
 
-status.checkElastic = function(elasticUrl, mongoCollection) {
+app_status.checkElastic = function(elasticUrl, mongoCollection) {
     request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
-        status.checkElasticUp(error, response, status.statusReport);
+        app_status.checkElasticUp(error, response, app_status.statusReport);
         var body = '';
         try {
             body = JSON.parse(bodyStr);  
-            if (status.statusReport.elastic.up) status.checkElasticResults(body, status.statusReport);
-            if (status.statusReport.elastic.results) status.checkElasticSync(body, status.statusReport, mongoCollection);
-            //if (status.statusReport.elastic.sync) status.checkElasticUpdating(body, status.statusReport, elasticUrl, mongoCollection);
+            if (app_status.statusReport.elastic.up) app_status.checkElasticResults(body, app_status.statusReport);
+            if (app_status.statusReport.elastic.results) app_status.checkElasticSync(body, app_status.statusReport, mongoCollection);
         } catch(e) {
             
         }
-        status.evaluateResult();
+        app_status.evaluateResult();
     });    
 };
 
-status.checkElasticUp = function(error, response, statusReport) {
+app_status.checkElasticUp = function(error, response, statusReport) {
     if (error || response.statusCode !== 200) { 
-        statusReport.elastic.up = false; 
-        statusReport.elastic.results = false; 
-        statusReport.elastic.sync = false; 
-        statusReport.elastic.updating = false; 
+        statusReport.elastic.up = "Response: " + response.statusCode + " -- Error:  " + error;
+        statusReport.elastic.results = "Not checked";
+        statusReport.elastic.sync = "Not Checked";
     } else {
-        statusReport.elastic.up = true; 
+        delete statusReport.elastic.up;
     }    
 };
 
-status.checkElasticResults = function(body, statusReport) {
-    if (body.hits.hits.length>0) {
-        statusReport.elastic.results = true;
+app_status.checkElasticResults = function(body, statusReport) {
+    if (body.hits.hits.length > 0) {
+        delete statusReport.elastic.results;
     } else {
-        statusReport.elastic.results = false;
-        statusReport.elastic.sync = false;
-        statusReport.elastic.updating = false;
+        statusReport.elastic.results = "No results in Query. BODY: " + body;
+        statusReport.elastic.sync = "Not Checked";
     }
 };
 
-status.checkElasticSync = function(body, statusReport) {
+app_status.checkElasticSync = function(body, statusReport) {
     mongo.deCount(function(deCount) {
         elastic.esClient.count(
             {
@@ -107,9 +102,11 @@ status.checkElasticSync = function(body, statusReport) {
             }
         , function(error, response) {
                 // +1 to allow elements that gets created for the check. 
-                statusReport.elastic.sync = response.count  >= deCount - 5 && response.count <= deCount + 5 ;
-                if (!statusReport.elastic.sync) {
-                    console.log("Setting status sync to false because deCount = " + deCount + " and esCount = " + response.count);
+                if (!(response.count  >= deCount - 5 && response.count <= deCount + 5)) {
+                    statusReport.elastic.sync =  "Setting status sync to false because deCount = " + deCount +
+                        " and esCount = " + response.count;
+                } else {
+                    delete statusReport.elastic.sync;
                 }
             }
         );
@@ -117,18 +114,18 @@ status.checkElasticSync = function(body, statusReport) {
 };
 
 setInterval(function() {
-    status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
+    app_status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
 }, config.status.timeouts.statusCheck);
 
 setInterval(function () {
     mongo_data_system.updateClusterHostStatus({
         hostname: config.hostname, port: config.port, nodeStatus: "Running",
-        elastic: status.statusReport.elastic, pmPort: config.pm.port
+        elastic: app_status.statusReport.elastic, pmPort: config.pm.port
     });
 }, config.status.timeouts.clusterStatus * 1000);
 
 mongo_data_system.updateClusterHostStatus({
     hostname: config.hostname, port: config.port, nodeStatus: "Running",
-    elastic: status.statusReport.elastic, pmPort: config.pm.port,
+    elastic: app_status.statusReport.elastic, pmPort: config.pm.port,
     startupDate: new Date()
 });
