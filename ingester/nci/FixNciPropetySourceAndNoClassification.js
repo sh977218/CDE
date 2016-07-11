@@ -1,6 +1,5 @@
 var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    DataElement = mongo_cde.DataElement,
+    DataElement = require('../../modules/cde/node-js/mongo-cde').DataElement,
     elastic = require('../../modules/cde/node-js/elastic')
     ;
 
