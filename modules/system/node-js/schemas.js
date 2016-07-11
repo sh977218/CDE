@@ -187,9 +187,13 @@ schemas.clusterStatus = mongoose.Schema({
     , lastUpdate: Date
     , startupDate: Date
     , elastic: {
-        up: String
-        , results: String
-        , sync: String
+        up: Boolean,
+        message: String,
+        indices: [{
+            name: String,
+            up: Boolean,
+            message: String
+        }]
     }
 });
 

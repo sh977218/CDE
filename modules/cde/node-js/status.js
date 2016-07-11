@@ -1,18 +1,19 @@
-var request = require('request')
-    , config = require('../../system/node-js/parseConfig')
-    , mongo = require('./mongo-cde')
+var config = require('../../system/node-js/parseConfig')
+    , mongo_cde = require('./mongo-cde')
+    , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , elastic = require('../../system/node-js/elastic')
     , email = require('../../system/node-js/email')
+    , async = require('async')
 ;
 
 var app_status = this;
 
 app_status.statusReport = {
     elastic: {
-        up: "Not Checked"
-        , results: "Not Checked"
-        , sync: "Not Checked"
+        up: false,
+        indices: [
+        ]
     }
 };    
 
@@ -51,7 +52,6 @@ exports.evaluateResult = function() {
         subject: "Urgent: ElasticSearch issue on " + config.name
         , body: app_status.assembleErrorMessage(app_status.statusReport)
     };
-
     mongo_data_system.siteadmins(function(err, users) {
         email.emailUsers(emailContent, users, function(err) {
             if (!err) app_status.delayReports();
@@ -59,63 +59,100 @@ exports.evaluateResult = function() {
     });
 };
 
-app_status.checkElastic = function(elasticUrl, mongoCollection) {
-    request.post(elasticUrl + "_search", {body: JSON.stringify({})}, function (error, response, bodyStr) {
-        app_status.checkElasticUp(error, response, app_status.statusReport);
-        var body = '';
-        try {
-            body = JSON.parse(bodyStr);  
-            if (app_status.statusReport.elastic.up) app_status.checkElasticResults(body, app_status.statusReport);
-            if (app_status.statusReport.elastic.results) app_status.checkElasticSync(body, app_status.statusReport, mongoCollection);
-        } catch(e) {
-            
+app_status.checkElasticCount = function(count, index, type, cb) {
+    elastic.esClient.count(
+        {
+            index: index
+            , type: type
         }
-        app_status.evaluateResult();
-    });    
-};
-
-app_status.checkElasticUp = function(error, response, statusReport) {
-    if (error || response.statusCode !== 200) { 
-        statusReport.elastic.up = "Response: " + response.statusCode + " -- Error:  " + error;
-        statusReport.elastic.results = "Not checked";
-        statusReport.elastic.sync = "Not Checked";
-    } else {
-        delete statusReport.elastic.up;
-    }    
-};
-
-app_status.checkElasticResults = function(body, statusReport) {
-    if (body.hits.hits.length > 0) {
-        delete statusReport.elastic.results;
-    } else {
-        statusReport.elastic.results = "No results in Query. BODY: " + body;
-        statusReport.elastic.sync = "Not Checked";
-    }
-};
-
-app_status.checkElasticSync = function(body, statusReport) {
-    mongo.deCount(function(deCount) {
-        elastic.esClient.count(
-            {
-                index: config.elastic.index.name
-                , type: "dataelement"
+    , function(err, response) {
+        if (err) {
+            cb(false, "Error retrieving index count: " + err);
+        } else {
+            if (!(response.count >= count - 5 && response.count <= count + 5)) {
+                cb(false, "Count mismatch because db count = " + count + " and esCount = " + response.count);
+            } else {
+                cb(true);
             }
-        , function(error, response) {
-                // +1 to allow elements that gets created for the check. 
-                if (!(response.count  >= deCount - 5 && response.count <= deCount + 5)) {
-                    statusReport.elastic.sync =  "Setting status sync to false because deCount = " + deCount +
-                        " and esCount = " + response.count;
-                } else {
-                    delete statusReport.elastic.sync;
-                }
-            }
-        );
+        }
+    });
+};
+
+app_status.isElasticUp = function(cb) {
+    elastic.esClient.cat.health({h: "st"}, function(err, response) {
+        if(err) {
+            app_status.statusReport.elastic.up = "No Response on Health Check: " + err;
+            cb(false);
+        } else {
+             if (response.indexOf("red") === 0) {
+                 app_status.statusReport.elastic.up = false;
+                 app_status.statusReport.elastic.message = "Cluster status is Red.";
+                 cb();
+             } else if (response.indexOf('yellow') === 0) {
+                 app_status.statusReport.elastic.up = true;
+                 app_status.statusReport.elastic.message = "Cluster status is Yellow.";
+                 cb();
+             } else if (response.indexOf("green") === 0) {
+                 app_status.statusReport.elastic.up = true;
+                 delete app_status.statusReport.elastic.message;
+                 cb(true);
+             } else {
+                 app_status.statusReport.elastic.up = true;
+                 app_status.statusReport.elastic.message = "Cluster status is unknown.";
+                 cb(true);
+             }
+        }
     });
 };
 
 setInterval(function() {
-    app_status.checkElastic(config.elastic.hosts[0] + "/" + config.elastic.index.name + "/", mongo);
-}, config.status.timeouts.statusCheck);
+    app_status.isElasticUp(function() {
+        if (app_status.statusReport.elastic.up) {
+            app_status.statusReport.elastic.indices = [];
+            async.parallel([
+               function(done) {
+                   mongo_cde.deCount(function(deCount) {
+                       app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function(up, message) {
+                           app_status.statusReport.elastic.indices.push({
+                               name: config.elastic.index.name,
+                               up: up,
+                               message: message
+                           });
+                           done();
+                       });
+                   });
+               },
+                function(done) {
+                    mongo_form.count(function(count) {
+                        app_status.checkElasticCount(count, config.elastic.formIndex.name, "form", function(up, message) {
+                            app_status.statusReport.elastic.indices.push({
+                                name: config.elastic.formIndex.name,
+                                up: up,
+                                message: message
+                            });
+                            done();
+                        });
+                    });
+                },
+                function(done) {
+                    mongo_cde.boardCount(function(count) {
+                        app_status.checkElasticCount(count, config.elastic.boardIndex.name, "board", function(up, message) {
+                            app_status.statusReport.elastic.indices.push({
+                                name: config.elastic.boardIndex.name,
+                                up: up,
+                                message: message
+                            });
+                            done();
+                        });
+                    });
+                }
+            ], function() {
+                console.log(JSON.stringify(app_status.statusReport));
+            });
+        }
+    });
+//}, config.status.timeouts.statusCheck);
+}, 5000);
 
 setInterval(function () {
     mongo_data_system.updateClusterHostStatus({
