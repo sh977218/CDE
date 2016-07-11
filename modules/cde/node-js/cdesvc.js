@@ -1,7 +1,4 @@
-var express = require('express')
-    , util = require('util')
-    , mongo_data = require('./mongo-cde')
-    , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
+var mongo_data = require('./mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , deepDiff = require('deep-diff')
     , elastic = require('../../cde/node-js/elastic')
@@ -38,7 +35,7 @@ exports.priorCdes = function(req, res) {
     });
 };
 
-exports.show = function(req, cb) {
+exports.show = function(req, res, cb) {
     var cdeId = req.params.id;
     if (!cdeId) {
         res.send("No Data Element Id");
