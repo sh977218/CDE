@@ -822,8 +822,9 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
-        mongo_data_system.disableRule(req.body, function(){
-            res.send();
+        mongo_data_system.disableRule(req.body, function(err, org){
+            if (err) res.status(500).send(org);
+            res.send(org);
         });
     });
 

@@ -270,8 +270,8 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
         });
 
         $scope.disableRule = function(orgName, rule){
-            $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(){
-                console.log("disabled");
+            $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
+                $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
             });
         };
         $scope.enableRule = function(orgName, rule){

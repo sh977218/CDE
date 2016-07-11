@@ -463,7 +463,14 @@ exports.getAllRules = function(cb){
 };
 
 exports.disableRule = function(params, cb){
-
+    exports.orgByName(params.orgName, function(org){
+        org.cdeStatusValidationRules.forEach(function(rule,i){
+            if (rule.id === params.rule.id) {
+                org.cdeStatusValidationRules.splice(i, 1);
+            }
+        });
+        org.save(cb);
+    });
 };
 
 exports.enableRule = function(params, cb){
