@@ -24,6 +24,7 @@ var passport = require('passport')
     , authorization = require('../../system/node-js/authorization')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
+    , app_status = require("./status.js")
     ;
 
 exports.init = function (app) {
@@ -92,8 +93,10 @@ exports.init = function (app) {
 
     app.get('/serverStatuses', function (req, res) {
         if (app.isLocalIp(getRealIp(req))) {
-            mongo_data_system.getClusterHostStatuses(function (err, statuses) {
-                res.send({esIndices: esInit.indices, statuses: statuses});
+            app_status.getStatus(function() {
+                mongo_data_system.getClusterHostStatuses(function (err, statuses) {
+                    res.send({esIndices: esInit.indices, statuses: statuses});
+                });
             });
         } else {
             res.status(401).send();

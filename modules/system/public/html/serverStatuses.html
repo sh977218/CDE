@@ -50,19 +50,24 @@
                 <dl class="dl-horizontal">
                     <dt>Up:</dt>
                     <dd>
-                        <a class="btn btn-xs" ng-class="status.elastic.up?'btn-danger':'btn-success'">
-                            <i class="fa" ng-class="status.elastic.up?'fa-times':'fa-check'" uib-tooltip="{{status.elastic.up}}"></i></a>
+                        <a class="btn btn-xs" ng-class="status.elastic.up?'btn-success':'btn-danger'">
+                            <i class="fa" ng-class="status.elastic.up?'fa-check':'fa-times'"></i></a>
                     </dd>
-                    <dt>Returns Results:</dt>
-                    <dd><a class="btn btn-xs" ng-class="status.elastic.results?'btn-danger':'btn-success'">
-                        <i class="fa" ng-class="status.elastic.results?'fa-times':'fa-check'" uib-tooltip="{{status.elastic.results}}"></i></a>
-                    </dd>
-                    <dt>Syncing:</dt>
-                    <dd><a class="btn btn-xs" ng-class="status.elastic.sync?'btn-danger':'btn-success'">
-                        <i class="fa" ng-class="status.elastic.sync?'fa-times':'fa-check'" uib-tooltip="{{status.elastic.sync}}"></i></a>
+                    <dt>Message:</dt>
+                    <dd>{{status.elastic.message}}
                     </dd>
                 </dl>
-                <hr/>
+                <div ng-repeat="index in status.elastic.indices" class="boxed-div">
+                    <dl class="dl-horizontal">
+                        <dt>{{index.name}}: </dt>
+                        <dd>
+                            <a class="btn btn-xs" ng-class="index.up?'btn-success':'btn-danger'">
+                                <i class="fa" ng-class="index.up?'fa-check':'fa-times'"></i></a>
+                        </dd>
+                        <dt>Message:</dt>
+                        <dd>{{index.message}}</dd>
+                    </dl>
+                </div>
                 <div ng-file-select="" ng-model="files" class="btn btn-default upload-button" ng-multiple="false"
                      ng-accept="'*.gpg'"
                      tabindex="0" ng-file-change="upload(status.hostname, status.pmPort, $files)">Deploy File
