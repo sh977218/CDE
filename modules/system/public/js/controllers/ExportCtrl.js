@@ -275,8 +275,8 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
             });
         };
         $scope.enableRule = function(orgName, rule){
-            $http.post("/enableRule", {orgName: orgName, rule: rule}).then(function(){
-                console.log("enabled");
+            $http.post("/enableRule", {orgName: orgName, rule: rule}).then(function(response){
+                $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
             });
         };
     }]);

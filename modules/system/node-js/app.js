@@ -829,7 +829,7 @@ exports.init = function (app) {
 
     app.post('/enableRule', function(req, res){
         mongo_data_system.enableRule(req.body, function(err, org){
-            if (err) res.status(500).send();
+            if (err) res.status(500).send(org);
             res.send(org);
         });
     });
