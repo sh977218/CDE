@@ -1,78 +1,81 @@
 <span ng-controller="SwitchListViewCtrl">
 
-<nav id="searchInfo" class="navbar navbar-default">
-    <div class="container-fluid searchInfo ">
-        <div class="col-sm-12 col-md-5 col-xs-10 col-lg-6">
-            <form name="advSearchForm" id="advSearchForm" novalidate>
-                <div class="input-group input-group">
-                    <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
-                    <input name="q" id="ftsearch-input" class="form-control search-query" type="text"
-                           ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1" autocomplete="off"
-                           typeahead-wait-ms="500" typeahead-min-length="3"
-                           uib-typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8"
-                           typeahead-focus-first="false" typeahead-on-select="searchAction()">
-                    <div class="input-group-btn">
-                        <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger">
-                            <i class="fa fa-search"></i> Search
-                        </button>
-                        <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default"
-                                type="button" ng-click="reset()">
-                            <i class="fa fa-trash-o"></i> Reset
-                        </button>
-                    </div>
+<nav class="navbar navbar-default" id="searchInfo">
+    <div class="container-fluid" ng-class="{'noLeftRightPadding':embedded,'pdtp9':!embedded}">
+        <div class="navbar-header col-sm-12"
+             ng-class="{'col-lg-12 col-md-12 noLeftRightPadding':embedded,'col-lg-7 col-md-10':!embedded}">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <form>
+                <label class="sr-only" id="l1" for="ftsearch-input">Search Terms</label>
+                <input name="q" id="ftsearch-input" class="search-query col-sm-9 col-xs-7 pdtp9"
+                       ng-class="{'col-md-8 col-lg-8':embedded,'col-md-10 col-lg-9':!embedded}"
+                       type="text" ng-model="searchSettings.q" ng-maxlength="500" aria-labelledby="l1"
+                       autocomplete="off" typeahead-on-select="searchAction()"
+                       typeahead-wait-ms="500" typeahead-min-length="3" typeahead-focus-first="false"
+                       uib-typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8">
+                <div>
+                    <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger noLeftMargin"
+                            ng-class="{'btn-sm':embedded,'btn':!embedded}">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    <button ng-if="embedded" name="resetSearch" id="resetSearch" class="btn btn-default noLeftMargin"
+                            type="button" ng-click="reset()"
+                            ng-class="{'btn-sm':embedded,'btn':!embedded}">
+                        <i class="fa fa-trash-o"></i> Reset
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="col-sm-12 col-md-7 col-xs-2 col-lg-6">
-            <div class="collapse navbar-collapse pull-right" id="searchResult-buttons">
-                <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems > 0 && user._id"
-                        ng-hide="module === 'form'" class="btn btn-default  btn-checkbox navbar-btn">
-                    <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
-                </button>
-
-                <button ng-click="hideShowFilter()" class="btn btn-default  btn-checkbox navbar-btn"
-                        id="showHideFilters">
-                    <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
-                    <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
-                </button>
-
-                <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
-
-                <button ng-if="listViewType === 'accordion'" ng-show="totalItems>0"
-                        ng-click="openCloseAllSwitch(elts, 'list');"
-                        class="btn btn-default  btn-checkbox navbar-btn" id="openAllCb">
-                    <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
-                    <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
-                </button>
-
-                <div class="btn-group" ng-controller="ExportCtrl">
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse noLeftRightPadding" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav pull-right">
+                <li ng-if="!embedded">
+                    <button id="pinAll" ng-click="showPinAllModal();" ng-show="totalItems > 0 && user._id"
+                            ng-hide="module === 'form'" class="btn btn-default" type="button">
+                        <i class="fa fa-thumb-tack hand-cursor"></i> Pin All
+                    </button>
+                </li>
+                <li>
+                    <button ng-click="hideShowFilter()" class="btn btn-default  btn-checkbox navbar-btn"
+                            id="showHideFilters">
+                        <span ng-hide="filterMode"><i class="glyphicon glyphicon-filter"></i> Show Filters</span>
+                        <span ng-show="filterMode"><i class="glyphicon glyphicon-filter"></i> Hide Filters</span>
+                    </button>
+                </li>
+                <li ng-if="!embedded">
+                    <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
+                </li>
+                <li ng-if="!embedded">
+                    <button ng-if="listViewType === 'accordion'" ng-show="totalItems>0"
+                            ng-click="openCloseAllSwitch(elts, 'list');"
+                            class="btn btn-default  btn-checkbox navbar-btn" id="openAllCb">
+                        <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
+                        <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
+                    </button>
+                </li>
+                <li ng-if="!embedded" class="dropdown" ng-controller="ExportCtrl">
                     <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-download"></i>
-                        Export<span class="caret"></span>
+                            data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i>Export<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li ng-repeat="(key, value) in exporters">
                             <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a>
                         </li>
                     </ul>
-                </div>
-
-            </div>
-            <div>
-                <button type="button" class="navbar-toggle collapsed pull-right"
-                        data-toggle="collapse" data-target="#searchResult-buttons">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-
-        </div>
-    </div>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
+
 <div id="searchInfoBar">
     <span tabindex="0" class="pt8 pb8 ib"><strong id="searchResultNum">{{totalItems}}</strong> results for
         <strong>{{currentSearchTerm?currentSearchTerm:'All Terms'}}</strong> |
@@ -164,7 +167,8 @@
                 Status</strong>
 
             <div class="pl5" id="registrationStatusListHolder">
-                    <span class="hand-cursor" ng-repeat="t in aggregations.statuses.statuses.buckets | orderBy : getRegStatusIndex"
+                    <span class="hand-cursor"
+                          ng-repeat="t in aggregations.statuses.statuses.buckets | orderBy : getRegStatusIndex"
                           uib-tooltip-html-unsafe="{{getRegStatusHelp(t.key)}}"
                           tooltip-popup-delay="500" tooltip-placement="right" tooltip-append-to-body="true">
                         <a href class="nonLinkAnchor displayBlock" tabindex="0" ng-if="t.doc_count > 0"
@@ -185,7 +189,8 @@
                 </span>
             <div ng-if="!embedded" ng-include="viewTypes[listViewType].url"></div>
             <div ng-if="embedded" ng-include="viewTypes.accordion.url"></div>
-            <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems" items-per-page="resultPerPage"
+            <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
+                            items-per-page="resultPerPage"
                             ng-model="searchSettings.page" next-text="Next" ng-change="pageChange()"></uib-pagination>
         </div>
     </div>
