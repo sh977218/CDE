@@ -143,5 +143,5 @@ setInterval(function() {
         }
         lastReport = newReport;
     });
-//}, config.status.timeouts.statusCheck);
-}, 5000);
+}, config.status.timeouts.statusCheck);
+
