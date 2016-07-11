@@ -29,7 +29,7 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 schemas.statusValidationRuleSchema = new mongoose.Schema({
     field: String
     , id: Number
-    , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Qualified", "Standard", "Preferred Standard"]}
+    , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]}
     , ruleName: String
     , rule: {
         regex:  String

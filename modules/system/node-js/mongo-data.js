@@ -461,3 +461,15 @@ exports.getAllRules = function(cb){
         cb(err, rules);
     });
 };
+
+exports.disableRule = function(params, cb){
+
+};
+
+exports.enableRule = function(params, cb){
+    exports.orgByName(params.orgName, function(org){
+        delete params.rule._id;
+        org.cdeStatusValidationRules.push(params.rule);
+        org.save(cb);
+    });
+};

@@ -822,12 +822,15 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
-        console.log(req.body);
-        res.send();
+        mongo_data_system.disableRule(req.body, function(){
+            res.send();
+        });
     });
 
     app.post('/enableRule', function(req, res){
-        console.log(req.body);
-        res.send();
+        mongo_data_system.enableRule(req.body, function(err, org){
+            if (err) res.status(500).send();
+            res.send(org);
+        });
     });
 };
