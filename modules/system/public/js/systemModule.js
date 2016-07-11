@@ -331,7 +331,7 @@ angular.module('systemModule').config(function ($provide) {
                         url: window.location.href
                     });
                 } catch (e) {
-
+    
                 }
             };
         }]);

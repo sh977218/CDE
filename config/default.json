@@ -53,7 +53,8 @@
     "index": {"name": "auto"},
     "formIndex": {"name": "auto"},
     "boardIndex": {"name": "auto"},
-    "storedQueryIndex": {"name": "auto"}
+    "storedQueryIndex": {"name": "auto"},
+    "number_of_replicas" : 2
   },
   "database": {
     "servers": [
@@ -112,15 +113,7 @@
   "status": {
     "timeouts": {
       "statusCheck": 60000,
-      //120000,
       // How often to update /status/cde page ? (miliseconds),
-      "dummyElementCheck": 20000,
-      // //30000,
-      // How long should we wait for a dummy element created in MongoDB to also appear in ElasticSearch? (miliseconds),
-      "emailSendPeriod": 14400000,
-      // How long should we wait after an email with a negative status report before we send another one? (miliseconds),
-      "minUptime": 300,
-      // How long should we wait after starting the app before we send a first negative email? (seconds!),
       "clusterStatus": 30
       // How often to update your status in DB (seconds)
     }

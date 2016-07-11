@@ -146,6 +146,7 @@ exports.stripBsonIds = function (elt) {
     delete elt._id;
     delete elt.updated;
     delete elt.history;
+    if (elt.updatedBy) delete elt.updatedBy.userId;
     return elt;
 };
 
