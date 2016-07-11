@@ -11,14 +11,17 @@
             </div>
         </div>
     </form>
-    <div class=" col-md-12">
+    <span ng-show="filter.search.length > 0 && boards.length === 0">
+        <h4><i class="fa fa-frown-o"></i> No results were found. Try other criteria.</h4>
+    </span>
+    <div class=" col-md-12" ng-if="boards.length > 0">
         <div class="col-md-2 col-xs-4 noLeftRightPadding">
             <div ng-if="filter.tags.length > 0">
                 <h4>Tags</h4>
                 <div id="sidebar-wrapper">
                     <label ng-repeat="tag in filter.tags" class="public-board-tag">
                         <input type="checkbox" data-checklist-model="filter.selectedTags" data-checklist-value="tag.key"
-                               checklist-change="loadPublicBoards()">
+                               checklist-change="loadPublicBoards()" id="tag_{{tag.key}}">
                         {{tag.key}} ({{tag.doc_count}})
                     </label>
                 </div>

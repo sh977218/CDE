@@ -43,7 +43,7 @@ var getFormJson = function (form, req, res) {
             cdes.forEach(function (formCde) {
                 currCdes.forEach(function (systemCde) {
                     if (formCde.tinyId === systemCde.tinyId) {
-                        if (formCde.version !== systemCde.version) {
+                        if (formCde.version != systemCde.version) {
                             formCde.outdated = true;
                             form.outdated = true;
                         }
@@ -213,8 +213,7 @@ function loopForm(form) {
                 else {
                     return loopFormElements(e, true);
                 }
-            } else if (e.elementType === 'question') {
-            } else {
+            } else if (e.elementType !== 'question') {
                 console.log('unknown element type in form: ' + form);
                 return 'unknownElementType';
             }
