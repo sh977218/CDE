@@ -257,16 +257,15 @@ function createNewCde(de) {
                 throw e;
             }
             var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
-            if (classificationStatus === 'RELEASED' && classificationName.length > 0 &&
-                csi.ClassificationSchemeItemName[0].length > 0) {
+            if (classificationStatus === 'RELEASED' && classificationName.length > 0 && csi.ClassificationSchemeItemName[0].length > 0) {
                 if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                     if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
                         cde.registrationState.registrationStatus = "Qualified";
                     }
                 }
-                classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-                classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
             }
+            classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
         });
     }
     else {
@@ -299,7 +298,14 @@ function run() {
             var stream = MigrationNCICdeXmlModel.find({}).stream();
             stream.on('data', function (xml) {
                 stream.pause();
+                xml = xml.toObject();
+                if (xml.PUBLICID[0] === '2001855') {
+                    console.log('1');
+                }
                 var newCde = createNewCde(xml);
+                if (newCde.classification.length === 0) {
+                    console.log('1');
+                }
                 if (newCde) {
                     MigrationDataElementModel.find({
                         'registrationState.registrationStatus': newCde.registrationState.registrationStatus,

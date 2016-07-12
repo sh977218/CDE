@@ -232,22 +232,24 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
             delete newCde._id; //use mCde below!!!
             newCde.imported = importDate;
             newCde.created = importDate;
-            addAttachment(newCde, xml, function () {
-                var newCdeObj = new DataElement(newCde);
-                newCdeObj.save(function (saveNewCdeError) {
-                    if (saveNewCdeError) {
-                        console.log("Unable to create CDE. id: " + cdeId + ' version: ' + version);
-                        throw saveNewCdeError;
-                        process.exit(1);
-                    } else {
-                        created++;
-                        createdCDE.push({id: cdeId, version: version});
-                        migrationCde.remove(function (removeMigrationCdeError) {
-                            if (removeMigrationCdeError) throw removeMigrationCdeError;
-                            else cb();
-                        });
-                    }
-                });
+            var newCdeObj = new DataElement(newCde);
+            newCdeObj.save(function (saveNewCdeError, thisDe) {
+                if (saveNewCdeError) {
+                    console.log("Unable to create CDE. id: " + cdeId + ' version: ' + version);
+                    throw saveNewCdeError;
+                    process.exit(1);
+                } else {
+                    created++;
+                    createdCDE.push({id: cdeId, version: version});
+                    migrationCde.remove(function (removeMigrationCdeError) {
+                        if (removeMigrationCdeError) throw removeMigrationCdeError;
+                        else {
+                            addAttachment(thisDe, xml, function () {
+                                cb();
+                            });
+                        }
+                    });
+                }
             });
         } else if (existingCdes.length === 1) {
             processCde(existingCdes[0], migrationCde, xml, orgName, cb);
