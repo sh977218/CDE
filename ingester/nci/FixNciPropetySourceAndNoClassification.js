@@ -3,6 +3,8 @@ var async = require('async'),
     ;
 
 var today = new Date();
+var yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
 DataElementModel.find({
@@ -10,7 +12,7 @@ DataElementModel.find({
     'archived': null,
     'registrationState.registrationStatus': {$ne: "Retired"},
     'updated': {$exists: false}
-//    'updated': {$ne:today}
+//    'updated': {$lt: yesterday}
 }).limit(10000).exec(function (err, DEs) {
     if (err) throw err;
     async.forEachSeries(DEs, function (de, doneOneDe) {
