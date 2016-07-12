@@ -1,20 +1,23 @@
 var async = require('async'),
-    DataElement = require('../../modules/cde/node-js/mongo-cde').DataElement,
-    elastic = require('../../modules/cde/node-js/elastic')
+    DataElementModel = require('../createConnection').DataElementModel
     ;
 
+var today = new Date();
+var yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
-DataElement.find({
+DataElementModel.find({
     'stewardOrg.name': 'NCI',
     'archived': null,
-    'registrationState.registrationStatus': {$ne: "Retired"}
-}, function (err, DEs) {
+    'registrationState.registrationStatus': {$ne: "Retired"},
+    'updated': {$lt: yesterday}
+}).limit(5000).exec(function (err, DEs) {
     if (err) throw err;
     async.forEach(DEs, function (de, doneOneDe) {
         de.source = 'caDSR';
         de.updatedBy = user;
-        de.updated = new Date().toJSON();
+        de.updated = today.toJSON();
         if (!de.classification || de.classification.length === 0)
             de.classification = [{
                 stewardOrg: {
@@ -29,16 +32,21 @@ DataElement.find({
             })
         }
         de.save(function (err) {
-            if (err) throw err;
-            else
-                elastic.updateOrInsert(de, function () {
-                    deCounter++;
-                    console.log('deCounter: ' + deCounter);
-                    doneOneDe();
-                });
+            if (err) {
+                throw err;
+                process.exit(1);
+            }
+            else {
+                deCounter++;
+                console.log('deCounter: ' + deCounter);
+                doneOneDe();
+            }
         });
     }, function doneAllDes() {
         console.log('finished all. de count:' + deCounter);
-        process.exit(1);
+        process.exit(0);
     });
 });
+
+
+
