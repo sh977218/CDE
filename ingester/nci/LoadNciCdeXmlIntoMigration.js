@@ -28,16 +28,29 @@ function run() {
                         if (err) throw err;
                         parseString(data, function (e, json) {
                             var index = 0;
-                            async.forEach(json.DataElementsList.DataElement, function (one, doneOne) {
+                            async.forEachSeries(json.DataElementsList.DataElement, function (one, doneOne) {
                                 one['xmlFile'] = xmlFile;
                                 one['index'] = index;
                                 index++;
-                                var obj = new MigrationNCICdeXmlModel(one);
-                                obj.save(function (err) {
+                                var id = one.PUBLICID[0];
+                                var version = one.VERSION[0];
+                                MigrationNCICdeXmlModel.find({
+                                    'PUBLICID': id,
+                                    'VERSION': version
+                                }).exec(function (err, existingXmls) {
                                     if (err) throw err;
-                                    counter++;
-                                    doneOne();
-                                })
+                                    else if (existingXmls.length === 0) {
+                                        var obj = new MigrationNCICdeXmlModel(one);
+                                        obj.save(function (err) {
+                                            if (err) throw err;
+                                            counter++;
+                                            doneOne();
+                                        })
+                                    } else {
+                                        console.log('find ' + existingXmls.length + ' xml with id: ' + id + ' version: ' + version);
+                                        doneOne();
+                                    }
+                                });
                             }, function doneAll() {
                                 console.log('Finished processing ' + xml);
                                 console.log('counter: ' + counter);
