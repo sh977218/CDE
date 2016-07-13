@@ -22,10 +22,9 @@ exports.everythingOk = function() {
 
 exports.status = function(req, res) {    
     if (app_status.everythingOk()) {
-        res.send("ALL SERVICES UP\n" + exports.assembleErrorMessage(app_status.statusReport));
+        res.send("ALL SERVICES UP\n" + JSON.stringify(app_status.statusReport));
     } else {
-        var msg = app_status.assembleErrorMessage(app_status.statusReport);
-        res.send("ERROR: " + msg);
+        res.send("ERROR: " + JSON.stringify(app_status.statusReport));
     }
 };
 
