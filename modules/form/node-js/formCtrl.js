@@ -118,7 +118,7 @@ exports.formByTinyIdVersion = function (req, res) {
         mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
             if (err) res.status(500).send(err);
             else {
-                adminSvc.hideProprietaryIds(form);
+                adminSvc.hideProprietaryIds(elt);
                 wipeRenderDisallowed(elt, req, function() {
                     res.send(elt);
                 });
