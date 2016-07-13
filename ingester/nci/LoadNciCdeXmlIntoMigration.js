@@ -20,7 +20,7 @@ function run() {
             console.log('Reading xml files from ' + xmlFolder);
             fs.readdir(xmlFolder, function (error, files) {
                 if (error) throw error;
-                async.forEach(files, function (xml, doneOneXml) {
+                async.forEachSeries(files, function (xml, doneOneXml) {
                     var xmlFile = xmlFolder + xml;
                     fs.readFile(xmlFile, function (err, data) {
                         var counter = 0;

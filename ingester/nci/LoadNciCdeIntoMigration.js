@@ -299,13 +299,7 @@ function run() {
             stream.on('data', function (xml) {
                 stream.pause();
                 xml = xml.toObject();
-                if (xml.PUBLICID[0] === '2001855') {
-                    console.log('1');
-                }
                 var newCde = createNewCde(xml);
-                if (newCde.classification.length === 0) {
-                    console.log('1');
-                }
                 if (newCde) {
                     MigrationDataElementModel.find({
                         'registrationState.registrationStatus': newCde.registrationState.registrationStatus,

@@ -22,8 +22,7 @@ var created = 0;
 var createdCDE = [];
 var same = 0;
 
-
-var importDate = new Date().toJSON();
+var today = new Date().toJSON();
 
 function output() {
     console.log(" changed: " + changed + " same: " + same + " created: " + created);
@@ -31,10 +30,6 @@ function output() {
 function findXml(id, version, cb) {
     MigrationNCICdeXmlModel.find({'PUBLICID': id, 'VERSION': version}).exec(function (err, xmls) {
         if (err) throw err;
-        else if (xmls.length !== 1) {
-            throw (xmls.length + ' xml(s) find with id: ' + id + ' version: ' + version );
-            process.exit(1);
-        }
         else cb(xmls[0]);
     })
 };
@@ -150,7 +145,7 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
     var deepDiff = compareCdes(existingCde, migrationCde);
     if (!deepDiff || deepDiff.length === 0) {
         // nothing changed, remove from input
-        existingCde.imported = importDate;
+        existingCde.imported = today;
         existingCde.save(function (saveExistingCdeError) {
             if (saveExistingCdeError) throw "Unable to update import date";
             migrationCde.remove(function (removeMigrationCdeError) {
@@ -164,7 +159,7 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
         newDe.naming = migrationCde.naming;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
-        newDe.imported = importDate;
+        newDe.imported = today;
         newDe.dataElementConcept = migrationCde.dataElementConcept;
         newDe.valueDomain = migrationCde.valueDomain;
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
@@ -185,6 +180,7 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
             }
         }
         newDe._id = existingCde._id;
+        newDe.attachments = [];
         try {
             mongo_cde.update(newDe, {username: "batchloader"}, function (updateError, thisDe) {
                 if (updateError) {
@@ -216,7 +212,7 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
         archived: null,
         source: source,
         "registrationState.registrationStatus": {$not: /Retired/},
-        imported: {$ne: importDate}
+        imported: {$ne: today}
     };
     //noinspection JSUnresolvedFunction
     DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
@@ -230,8 +226,8 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
             //delete migrationCde._id;
             var newCde = JSON.parse(JSON.stringify(migrationCde.toObject()));
             delete newCde._id; //use mCde below!!!
-            newCde.imported = importDate;
-            newCde.created = importDate;
+            newCde.imported = today;
+            newCde.created = today;
             var newCdeObj = new DataElement(newCde);
             newCdeObj.save(function (saveNewCdeError, thisDe) {
                 if (saveNewCdeError) {
@@ -294,32 +290,31 @@ function run() {
     migStream.on('close', function () {
         // Retire Missing CDEs
         DataElement.update({
-            imported: {$ne: importDate},
+            imported: {$ne: today},
             source: cdeSource
         }, {
             "registrationState.registrationStatus": "Retired",
-            "registrationState.administrativeNote": "Not present in import from " + importDate
+            "registrationState.administrativeNote": "Not present in import from " + today
         }, function (RetiredCdeError) {
             if (RetiredCdeError) throw RetiredCdeError;
             else {
                 console.log("Nothing left to do, saving Org");
-                MigrationOrg.find().exec(function (findOrgError, orgs) {
-                    if (findOrgError) throw findOrgError;
-                    orgs.forEach(function (org) {
-                        Org.findOne({name: org.name}).exec(function (err, theOrg) {
-                            if (err) throw err;
+                MigrationOrg.find().exec(function (findMigOrgError, orgs) {
+                    if (findMigOrgError) throw findMigOrgError;
+                    async.forEachSeries(orgs, function (org, doneOneOrg) {
+                        Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
+                            if (findOrgError) throw findOrgError;
                             else {
                                 theOrg.classifications = org.classifications;
                                 theOrg.save(function (saveOrgError) {
-                                    if (err) throw saveOrgError;
-                                    else {
-                                        output();
-                                        process.exit(0);
-                                    }
+                                    if (saveOrgError) throw saveOrgError;
+                                    else doneOneOrg();
                                 });
                             }
                         });
-
+                    }, function doneAllOrgs() {
+                        output();
+                        process.exit(0);
                     });
                 });
             }
