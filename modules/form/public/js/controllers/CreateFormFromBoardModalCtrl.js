@@ -1,6 +1,6 @@
 angular.module('formModule').controller('CreateFormFromBoardModalCtrl',
-    ['$scope', '$controller', '$location', '$timeout', '$uibModalInstance', 'board', 'userResource', 'Form',
-    function ($scope, $controller, $location, $timeout, $modalInstance, board, userResource, Form) {
+    ['$scope', '$controller', '$location', '$timeout', '$uibModalInstance', 'board', 'userResource', 'Form', '$http',
+    function ($scope, $controller, $location, $timeout, $modalInstance, board, userResource, Form, $http) {
         $scope.elt = board;
         $scope.elt.stewardOrg = {};
         $scope.elt.naming = [{designation: board.name}];
@@ -17,28 +17,30 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl',
         };
 
         $scope.save = function () {
-            board.pins.forEach(function (p) {
-                $scope.elt.formElements[0].formElements.push({
-                    elementType: 'question',
-                    label: p.deName,
-                    formElements: [],
-                    question: {
-                        cde: {
-                            tinyId: p.deTinyId,
-                            name: p.deName,
-                            version: p.cde.version ? p.cde.version : null,
-                            permissibleValues: p.cde.valueDomain.permissibleValues,
-                            ids: p.cde.ids
+            $http.get('/board/' + board._id + "/0/500").success(function(data) {
+                data.cdes.forEach(function (p) {
+                    $scope.elt.formElements[0].formElements.push({
+                        elementType: 'question',
+                        label: p.naming[0].designation,
+                        formElements: [],
+                        question: {
+                            cde: {
+                                tinyId: p.tinyId,
+                                name: p.naming[0].designation,
+                                version: p.version ? p.version : null,
+                                permissibleValues: p.valueDomain.permissibleValues,
+                                ids: p.ids
+                            }
                         }
-                    }
+                    });
                 });
-            });
-            delete $scope.elt._id;
-            Form.save($scope.elt, function (form) {
-                $modalInstance.close();
-                $timeout(function () {
-                    $location.url("formView?tinyId=" + form.tinyId);
-                }, 0);
+                delete $scope.elt._id;
+                Form.save($scope.elt, function (form) {
+                    $modalInstance.close();
+                    $timeout(function () {
+                        $location.url("formView?tinyId=" + form.tinyId);
+                    }, 0);
+                });
             });
         };
     }
