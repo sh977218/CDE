@@ -20,13 +20,14 @@ exports.save = function (req, res, dao, cb) {
             if (!elt.stewardOrg.name) {
                 res.send("Missing Steward");
             } else {
-                if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0
-                    && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0
-                    && !req.user.siteAdmin) {
+                if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
+                    req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
+                    !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else if (elt.registrationState && elt.registrationState.registrationStatus) {
-                    if ((elt.registrationState.registrationStatus === "Standard" || elt.registrationState.registrationStatus === " Preferred Standard")
-                        && !req.user.siteAdmin) {
+                    if ((elt.registrationState.registrationStatus === "Standard" ||
+                        elt.registrationState.registrationStatus === " Preferred Standard") &&
+                        !req.user.siteAdmin) {
                         return res.status(403).send("Not authorized");
                     }
                     return dao.create(elt, req.user, function (err, savedItem) {
@@ -43,18 +44,20 @@ exports.save = function (req, res, dao, cb) {
                 if (item.archived === true) {
                     return res.send("Element is archived.");
                 }
-                if (req.user.orgCurator.indexOf(item.stewardOrg.name) < 0
-                    && req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0
-                    && !req.user.siteAdmin) {
+                if (req.user.orgCurator.indexOf(item.stewardOrg.name) < 0 &&
+                    req.user.orgAdmin.indexOf(item.stewardOrg.name) < 0 &&
+                    !req.user.siteAdmin) {
                     res.status(403).send("Not authorized");
                 } else {
-                    if ((item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
-                        && !req.user.siteAdmin) {
+                    if ((item.registrationState.registrationStatus === "Standard" ||
+                        item.registrationState.registrationStatus === "Preferred Standard") &&
+                        !req.user.siteAdmin) {
                         res.status(403).send("This record is already standard.");
                     } else {
                         if ((item.registrationState.registrationStatus !== "Standard" && item.registrationState.registrationStatus !== " Preferred Standard") &&
-                            (item.registrationState.registrationStatus === "Standard" || item.registrationState.registrationStatus === "Preferred Standard")
-                            && !req.user.siteAdmin
+                            (item.registrationState.registrationStatus === "Standard" ||
+                            item.registrationState.registrationStatus === "Preferred Standard") &&
+                            !req.user.siteAdmin
                         ) {
                             res.status(403).send("Not authorized");
                         } else {
@@ -128,7 +131,7 @@ exports.addAttachment = function (req, res, dao) {
                     //store it to FS here
                     var writeStream = fs.createWriteStream(file.path);
                     streamFS.pipe(writeStream);
-                    writeStream.on('finish', function (err) {
+                    writeStream.on('finish', function () {
                         md5.async(file.path, function (hash) {
                             file.md5 = hash;
                             mongo_data_system.addAttachment(file, req.user, "some comment", elt, function (attachment, requiresApproval) {
@@ -309,18 +312,21 @@ exports.acceptFork = function (req, res, dao) {
                     if (!orig) {
                         return res.send("Not a fork");
                     }
-                    if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0
-                        && req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0
-                        && !req.user.siteAdmin) {
+                    if (req.user.orgCurator.indexOf(orig.stewardOrg.name) < 0 &&
+                        req.user.orgAdmin.indexOf(orig.stewardOrg.name) < 0 &&
+                        !req.user.siteAdmin) {
                         res.status(403).send("not authorized");
                     } else {
-                        if ((orig.registrationState.registrationStatus === "Standard" || orig.registrationState.registrationStatus === "Preferred Standard")
-                            && !req.user.siteAdmin) {
+                        if ((orig.registrationState.registrationStatus === "Standard" ||
+                            orig.registrationState.registrationStatus === "Preferred Standard") &&
+                            !req.user.siteAdmin) {
                             res.send("This record is already standard.");
                         } else {
-                            if ((orig.registrationState.registrationStatus !== "Standard" && orig.registrationState.registrationStatus !== " Preferred Standard") &&
-                                (orig.registrationState.registrationStatus === "Standard" || orig.registrationState.registrationStatus === "Preferred Standard")
-                                && !req.user.siteAdmin
+                            if ((orig.registrationState.registrationStatus !== "Standard" &&
+                                orig.registrationState.registrationStatus !== " Preferred Standard") &&
+                                (orig.registrationState.registrationStatus === "Standard" ||
+                                orig.registrationState.registrationStatus === "Preferred Standard") &&
+                                !req.user.siteAdmin
                             ) {
                                 res.status(403).send("not authorized");
                             } else {
@@ -347,9 +353,9 @@ exports.fork = function (req, res, dao) {
                 if (item.archived === true) {
                     return res.send("Element is archived.");
                 }
-                if (req.user.orgCurator.length < 0
-                    && req.user.orgAdmin.length < 0
-                    && !req.user.siteAdmin) {
+                if (req.user.orgCurator.length < 0 &&
+                    req.user.orgAdmin.length < 0 &&
+                    !req.user.siteAdmin) {
                     res.status(403).send("not authorized");
                 } else {
                     item.stewardOrg.name = req.body.org;
@@ -386,11 +392,25 @@ exports.bulkAction = function (ids, action, cb) {
                 cb();
             });
         },
-        function (err) {
+        function () {
             if (eltsTotal === eltsProcessed) cb();
             else cb("Task not performed completely!");
         }
     );
+};
+
+exports.hideProprietaryIds = function(elt) {
+    if (elt && elt.ids) {
+        var blackList = [
+            "LOINC"
+        ];
+        elt.ids.forEach(function(id) {
+            if (blackList.indexOf(id.source) > -1) {
+                id.id = "Login to see value.";
+                id.source = "(" + id.source + ")";
+            }
+        });
+    }
 };
 
 exports.hideUnapprovedComments = function (adminItem) {
