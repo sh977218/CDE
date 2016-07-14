@@ -1,4 +1,5 @@
-angular.module('formModule').controller('CreateFormFromBoardModalCtrl', ['$scope', '$controller', '$location', '$timeout', '$uibModalInstance', 'board', 'userResource', 'Form',
+angular.module('formModule').controller('CreateFormFromBoardModalCtrl',
+    ['$scope', '$controller', '$location', '$timeout', '$uibModalInstance', 'board', 'userResource', 'Form',
     function ($scope, $controller, $location, $timeout, $modalInstance, board, userResource, Form) {
         $scope.elt = board;
         $scope.elt.stewardOrg = {};

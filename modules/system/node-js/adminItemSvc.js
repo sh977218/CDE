@@ -403,7 +403,7 @@ exports.allPropertiesKeys = function (req, res, dao) {
 };
 
 exports.hideProprietaryIds = function(elt) {
-    if (elt) {
+    if (elt && elt.ids) {
         var blackList = [
             "LOINC"
         ];
