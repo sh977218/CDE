@@ -260,7 +260,7 @@ function run() {
         }
     });
     migStream.on('error', function (streamError) {
-        if (streamError) throw error;
+        if (streamError) throw streamError;
     });
     migStream.on('close', function () {
         // Retire Missing CDEs
