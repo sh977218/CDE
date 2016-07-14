@@ -26,8 +26,11 @@ angular.module('systemModule').controller('EmbedCtrl', function($scope, OrgHelpe
 
     $scope.addEmbed = function() {
         $scope.createMode = false;
-        if (!OrgHelpers.orgsDetailedInfo[$scope.selection.org].embeds)
+        if (!OrgHelpers.orgsDetailedInfo[$scope.selection.org].embeds) {
             OrgHelpers.orgsDetailedInfo[$scope.selection.org].embeds = [];
+        }
+
+        // TODO save embed
 
         OrgHelpers.orgsDetailedInfo[$scope.selection.org].embeds.push({
             name: $scope.selection.embedName

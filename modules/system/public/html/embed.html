@@ -2,7 +2,7 @@
     <h3>Embed CDE / Form Search on your site</h3>
 
     <h4>Current Embeds</h4>
-    <table>
+    <table class="table-striped">
         <thead>
 
         </thead>
@@ -14,9 +14,7 @@
         </tbody>
     </table>
 
-    <button class="btn btn-default" ng-click="createMode = true" ><i class="fa fa-plus-square-o"></i> Add New</button>
-
-    <div ng-if="createMode" class="boxed-div">
+    <div class="boxed-div">
 
         <label for="selection.org">Org to embed</label>
         <select class="form-control" ng-model="selection.org" id="selection.org" required>
@@ -27,62 +25,118 @@
         <br>
 
         <label for="embedName">Name this embedded search:</label>
-        <input class="form-control" ng-model="selection.embedName" id="embedName">
+        <input class="form-control" ng-model="selection.embedName" id="embedName" required>
         <br>
-        <input type="checkbox" ng-model="selection.primaryDefinition">
-        <label>See Primary Definition</label>
-        <br>
-        <input type="checkbox" ng-model="selection.sourceId">
-        <label>See Source ID</label>
-        <br>
-        <input type="checkbox" ng-model="selection.sourceVersion">
-        <label>See Source Version</label>
-        <br>
-        <br>
-
-        <label>Number of results per page</label>
-        <input type="number" ng-model="selection.pageSize" class="form-control">
         <label>Width</label>
         <input type="number" ng-model="selection.width" min="600" class="form-control">
-
         <label>Height</label>
         <input type="number" ng-model="selection.height" min="600" class="form-control">
 
-        <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
-        <div class="form-group">
-            <span>I want my search results to include these statuses</span>
-            <div class="radio indent">
-                <label>
-                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
-                           value="Qualified">
-                    Preferred Standard, Standard, Qualified
-                </label>
+        <div class="row">
+            <div class="col-md-5 boxed-div" style="margin-left: 15px">
+                <h2>CDE Search</h2>
+                <input type="checkbox" ng-model="selection.primaryDefinition">
+                <label>See Primary Definition</label>
+                <br>
+                <input type="checkbox" ng-model="selection.sourceId">
+                <label>See Source ID</label>
+                <br>
+                <input type="checkbox" ng-model="selection.sourceVersion">
+                <label>See Source Version</label>
+
+                <br>
+                <br>
+
+                <label>Number of results per page</label>
+                <input type="number" ng-model="selection.pageSize" class="form-control">
+
+                <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
+                <div class="form-group">
+                    <span>I want my search results to include these statuses</span>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
+                                   value="Qualified">
+                            Preferred Standard, Standard, Qualified
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
+                                   value="Recorded">
+                            Preferred Standard, Standard, Qualified, Recorded
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
+                                   value="Candidate">
+                            Preferred Standard, Standard, Qualified, Recorded, Candidate
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
+                                   value="Incomplete">
+                            Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="radio indent">
-                <label>
-                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
-                           value="Recorded">
-                    Preferred Standard, Standard, Qualified, Recorded
-                </label>
-            </div>
-            <div class="radio indent">
-                <label>
-                    <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
-                           value="Candidate">
-                    Preferred Standard, Standard, Qualified, Recorded, Candidate
-                </label>
-            </div>
-            <div class="radio indent">
-                <label>
-                    <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
-                           value="Incomplete">
-                    Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
-                </label>
+            <div class="col-md-5 boxed-div" style="margin-left: 15px">
+                <h2>Form Search</h2>
+                <input type="checkbox" ng-model="selection.primaryDefinition">
+                <label>See Primary Definition</label>
+                <br>
+                <input type="checkbox" ng-model="selection.sourceId">
+                <label>See Source ID</label>
+                <br>
+                <input type="checkbox" ng-model="selection.sourceVersion">
+                <label>See Source Version</label>
+
+                <br>
+                <br>
+
+                <label>Number of results per page</label>
+                <input type="number" ng-model="selection.pageSize" class="form-control">
+
+                <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
+                <div class="form-group">
+                    <span>I want my search results to include these statuses</span>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Qualified"
+                                   value="Qualified">
+                            Preferred Standard, Standard, Qualified
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Recorded"
+                                   value="Recorded">
+                            Preferred Standard, Standard, Qualified, Recorded
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input type="radio" ng-model="selection.lowestRegistrationStatus" id="minStatus-Candidate"
+                                   value="Candidate">
+                            Preferred Standard, Standard, Qualified, Recorded, Candidate
+                        </label>
+                    </div>
+                    <div class="radio indent">
+                        <label>
+                            <input id="minStatus-Incomplete" type="radio" ng-model="selection.lowestRegistrationStatus"
+                                   value="Incomplete">
+                            Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button class="btn btn-default" ng-click="addEmbed()">Save</button>
-        <button class="btn btn-danger" ng-click="cancelEmbed()">Cancel</button>
+
+        <button class="btn btn-default" ng-click="addEmbed()"><i class="fa fa-plus-square-o"></i> Add new Embed</button>
 
     </div>
 
