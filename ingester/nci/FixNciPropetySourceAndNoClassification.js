@@ -12,7 +12,7 @@ DataElementModel.find({
         'registrationState.registrationStatus': {$ne: "Retired"}
     }, {
         $or: [{'updated': {$exists: false}}, {
-            'updated': {$ne: today}
+            'updated': {$lt: today}
         }]
     }]
 }).exec(function (err, DEs) {
