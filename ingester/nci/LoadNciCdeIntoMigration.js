@@ -283,10 +283,10 @@ function run() {
             MigrationDataElementModel.remove({}, function (err) {
                 console.log('removed all doc in migration dataelements collection');
                 if (err) throw err;
-                MigrationOrgModel.remove({}, function (er) {
-                    if (er) throw er;
-                    new MigrationOrgModel({name: orgName}).save(function (e, org) {
-                        if (e) throw e;
+                MigrationOrgModel.remove({}, function (removeOrgError) {
+                    if (removeOrgError) throw removeOrgError;
+                    new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+                        if (createOrgError) throw createOrgError;
                         console.log('created new org of ' + orgName + ' in migration db');
                         nciOrg = org;
                         cb();
