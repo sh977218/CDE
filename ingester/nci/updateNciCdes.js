@@ -1,9 +1,6 @@
 var async = require('async'),
     entities = require("entities"),
-    xml2js = require('xml2js'),
-    builder = new xml2js.Builder({attrkey: 'attribute'}),
-    Readable = require('stream').Readable,
-    mongo_data = require('../../modules/system/node-js/mongo-data'),
+
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     cdesvc = require('../../modules/cde/node-js/cdesvc'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -33,26 +30,6 @@ function findXml(id, version, cb) {
         else cb(xmls[0]);
     })
 };
-function addAttachment(elt, xml, cb) {
-    var readable = new Readable();
-    var xmlObj = JSON.parse(JSON.stringify(xml));
-    delete xmlObj._id;
-    delete xmlObj.index;
-    delete xmlObj.xmlFile;
-    var origXml = builder.buildObject(xmlObj).toString();
-    readable.push(origXml);
-    readable.push(null);
-    mongo_data.addAttachment({
-        originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
-        type: "application/xml",
-        size: origXml.length,
-        stream: readable,
-        ingested: true
-    }, null, "Original XML File", elt, function (attachment, newFileCreated, e) {
-        if (e) throw e;
-        cb();
-    });
-}
 
 function removeClassificationTree(cde, org) {
     for (var i = 0; i < cde.classification.length; i++) {
@@ -183,10 +160,9 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
         newDe.attachments = [];
         try {
             mongo_cde.update(newDe, {username: "batchloader"}, function (updateError, thisDe) {
-                if (updateError) {
-                    throw updateError;
-                } else {
-                    addAttachment(thisDe, xml, function () {
+                if (updateError) throw updateError;
+                else {
+                    updateShare.addAttachment(thisDe, xml, function () {
                         migrationCde.remove(function (removeMigrationError) {
                             if (removeMigrationError) throw removeMigrationError;
                             else {
