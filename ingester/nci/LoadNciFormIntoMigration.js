@@ -83,7 +83,7 @@ function createForm(nciForm, cb) {
     var ids = [{source: source, id: nciForm.publicID[0], version: nciForm.version[0]}];
     var property = {
         key: 'protocol',
-        value: '<table><tr><th>preferredDefinition</th><th>shortName</th><th>context</th><th>longName</th></tr>',
+        value: '<table class="table table-striped"><tr><th>preferredDefinition</th><th>shortName</th><th>context</th><th>longName</th></tr>',
         source: 'NCIP',
         valueFormat: 'html'
     };
