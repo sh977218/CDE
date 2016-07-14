@@ -1,6 +1,5 @@
 var async = require('async'),
     entities = require("entities"),
-
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     cdesvc = require('../../modules/cde/node-js/cdesvc'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -216,7 +215,7 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
                     migrationCde.remove(function (removeMigrationCdeError) {
                         if (removeMigrationCdeError) throw removeMigrationCdeError;
                         else {
-                            addAttachment(thisDe, xml, function () {
+                            updateShare.addAttachment(thisDe, xml, function () {
                                 cb();
                             });
                         }
