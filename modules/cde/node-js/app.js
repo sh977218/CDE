@@ -12,7 +12,7 @@ var cdesvc = require('./cdesvc')
     , path = require('path')
     , express = require('express')
     , sdc = require("./sdc.js")
-    , appStatus = require('./status')
+    , appStatus = require('./../../system/node-js/status')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
@@ -76,7 +76,7 @@ exports.init = function (app, daoManager) {
     app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        cdesvc.show(req, function (result) {
+        cdesvc.show(req, res, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryPvs(result, req.user);
             adminItemSvc.hideUnapprovedComments(cde);
@@ -423,17 +423,18 @@ exports.init = function (app, daoManager) {
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
+        } else {
+            vsac.getValueSet(req.params.vsacId, function (result) {
+                if (result === 404 || result === 400) {
+                    res.status(result);
+                    res.end();
+                } else {
+                    parser.parseString(result, function (err, jsonResult) {
+                        res.send(jsonResult);
+                    });
+                }
+            });
         }
-        vsac.getValueSet(req.params.vsacId, function (result) {
-            if (result === 404 || result === 400) {
-                res.status(result);
-                res.end();
-            } else {
-                parser.parseString(result, function (err, jsonResult) {
-                    res.send(jsonResult);
-                });
-            }
-        });
     });
 
     app.get('/umlsCuiFromSrc/:id/:src', function (req, res) {

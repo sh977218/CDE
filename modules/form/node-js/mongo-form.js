@@ -31,6 +31,12 @@ exports.getStream = function (condition) {
     return Form.find(condition).sort({_id: -1}).stream();
 };
 
+exports.count = function (callback) {
+    Form.find({"archived": null}).count().exec(function (err, count) {
+        callback(count);
+    });
+};
+
 exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {

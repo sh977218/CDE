@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     gnf = require('gulp-npm-files'),
     config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
+    rev = require('gulp-rev'),
     minifyCss = require('gulp-minify-css'),
     bower = require('gulp-bower'),
     install = require('gulp-install'),
@@ -97,6 +98,9 @@ gulp.task('copyCode', ['wiredep'], function() {
 
 gulp.task('angularTemplates', function() {
     ['cde', 'form', 'system', 'article'].forEach(function(module) {
+        gulp
+            .src("modules/" + module + "/public/js/angularTemplates.js")
+            .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
         return gulp.src("modules/" + module + "/public/html/**/*.html")
             .pipe(templateCache({
                 root: "/" + module + "/public/html",
@@ -104,7 +108,7 @@ gulp.task('angularTemplates', function() {
                 module: module + "Templates",
                 standalone: true
             }))
-            .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + "/public/js/"));
+            .pipe(gulp.dest("modules/" + module + "/public/js/"));
     });
 });
 
@@ -119,7 +123,7 @@ gulp.task('prepareVersion', ['copyCode'], function() {
     }, 15000);
 });
 
-gulp.task('usemin', ['copyCode'], function() {
+gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
         {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
@@ -129,9 +133,8 @@ gulp.task('usemin', ['copyCode'], function() {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
                     assetsDir: "./modules/",
-                    //css: [minifyCss({root: "./", relativeTo: './', rebase: true}), 'concat'],
-                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat'],
-                    js: [ uglify({mangle: false}), 'concat' ]
+                    css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
+                    js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
                 .pipe(gulp.dest(config.node.buildDir + '/modules/'))
                 .on('end', function() {
@@ -139,6 +142,13 @@ gulp.task('usemin', ['copyCode'], function() {
                         .pipe(gulp.dest(config.node.buildDir + "/" + item.folder));
                 });
         });
+});
+
+gulp.task('emptyTemplates', ['usemin'], function() {
+    ['cde', 'form', 'system', 'article'].forEach(function(module) {
+        return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
+            .pipe(gulp.dest("modules/" + module + "/public/js/"));
+    });
 });
 
 gulp.task('es', function() {
@@ -173,6 +183,6 @@ gulp.task('tarCode', function () {
         .pipe(writeS);
 });
 
-gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin']);
+gulp.task('default', ['copyNpmDeps', 'copyCode', 'angularTemplates', 'prepareVersion', 'usemin', 'emptyTemplates']);
 
 
