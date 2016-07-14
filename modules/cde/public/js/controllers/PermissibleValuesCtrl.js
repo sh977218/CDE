@@ -1,11 +1,11 @@
-angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$timeout', '$http', '$uibModal', '$q',
-    function($scope, $timeout, $http, $modal, $q)
+angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$timeout', '$http', '$uibModal', '$q', 'userResource',
+    function($scope, $timeout, $http, $modal, $q, userResource)
 {
     var defaultSrcOptions = {
         NCI: {displayAs: "NCI Thesaurus", termType: "PT", selected: false},
         UMLS: {displayAs: "UMLS", termType: "PT", selected: false},
-        LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: !$scope.user._id},
-        SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: !$scope.user._id}
+        LNC: {displayAs: "LOINC", termType: "LA", selected: false, disabled: true},
+        SNOMEDCT_US: {displayAs: "SNOMEDCT US", termType: "PT", selected: false, disabled: true}
     };
 
     var displayAs = {'NCI Thesaurus': "NCI", 'LOINC': "LNC", "SNOMEDCT US": "SNOMEDCT_US"};
@@ -27,6 +27,11 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     $scope.srcOptions = {};
     $scope.containsKnownSystem = false;
     $scope.srcOptions = JSON.parse(JSON.stringify(defaultSrcOptions));
+
+    userResource.getPromise().then(function() {
+        $scope.srcOptions.LNC.disabled = !userResource.user._id;
+        $scope.srcOptions.SNOMEDCT_US.disabled = !userResource.user._id;
+    });
     function initSrcOptions() {
         $scope.containsKnownSystem = false;
         for (var i=0; i < $scope.elt.valueDomain.permissibleValues.length; i++) {
