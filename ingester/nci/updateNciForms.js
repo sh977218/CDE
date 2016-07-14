@@ -147,6 +147,7 @@ function streamOnClose() {
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
     });
+/*
 
     console.log("Nothing left to do, saving Org");
     MigrationOrgModel.find().exec(function (err, orgs) {
@@ -162,6 +163,7 @@ function streamOnClose() {
             });
         });
     });
+*/
 
     // give 5 secs for org to save.
     setTimeout(function () {
