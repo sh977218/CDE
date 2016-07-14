@@ -239,28 +239,27 @@
         </uib-tab>
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td>Rule Name</td>
-                            <td ng-repeat="(orgName, rules) in userOrgs">{{orgName}}</td>
+                <div ng-repeat="(orgName, orgRules) in userOrgs" ng-if="orgRules.length>0">
+                    {{orgName}}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Rule Name</td>
+                                <td>Status</td>
+                                <td>Field</td>
+                                <td>RegEx</td>
+                                <td>Occurence</td>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="rule in orgRules">
+                            <td>{{rule.ruleName}}</td>
+                            <td>{{rule.targetStatus}}</td>
+                            <td>{{rule.field}}</td>
+                            <td>{{rule.rule.regex}}</td>
+                            <td>{{rule.occurence}}</td>
                         </tr>
-                    </thead>
-                    <tr ng-repeat="rule in allRules">
-                        <td>{{rule.ruleName}}</td>
-                        <td ng-repeat="(orgName, rules) in userOrgs">
-
-                            <!--<div class="btn-group">-->
-                                <!--<label class="btn btn-xs btn-primary" ng-model="ruleEnabled(orgName, rule)" uib-btn-checkbox>On</label>-->
-                                <!--<label class="btn btn-xs btn-primary" ng-model="!ruleEnabled(orgName, rule)" uib-btn-checkbox>Off</label>-->
-                            <!--</div>-->
-
-                            <div class="btn btn-xs btn-success" ng-show="ruleEnabled(orgName, rule)" ng-click="disableRule(orgName, rule)">On</div>
-                            <div class="btn btn-xs btn-default" ng-show="!ruleEnabled(orgName, rule)" ng-click="enableRule(orgName, rule)">Off</div>
-                        </td>
-                    </tr>
-                </table>
-
+                    </table>
+                </div>
             </div>
         </uib-tab>
     </uib-tabset>

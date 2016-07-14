@@ -265,9 +265,6 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
             return ruleIds.indexOf(rule.id) > -1;
         };
 
-        $http.get('/getAllRules').then(function(response){
-            $scope.allRules = response.data;
-        });
 
         $scope.disableRule = function(orgName, rule){
             $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
