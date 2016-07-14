@@ -36,5 +36,4 @@ public class MaliciousAttachment  extends BaseAttachmentTest {
         tryAgain(3);
     }
 
-
 }
