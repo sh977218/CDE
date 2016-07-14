@@ -193,7 +193,7 @@ exports.init = function (app, daoManager) {
 
                     }
                     else {
-                        res.send({board: board, cdes: cdesvc.hideProprietaryPvs(cdes, req.user), totalItems: totalItems});
+                        res.send({board: board, cdes: cdesvc.hideProprietaryCodes(cdes, req.user), totalItems: totalItems});
                     }
                 });
             } else {
