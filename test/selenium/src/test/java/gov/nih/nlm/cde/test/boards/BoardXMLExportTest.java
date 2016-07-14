@@ -14,10 +14,17 @@ public class BoardXMLExportTest  extends BoardTest {
         clickElement(By.id(("export")));
         clickElement(By.id("xmlExport"));
 
+        System.out.println("before switch tab");
+
         switchTab(1);
+        System.out.println("after switch tab");
+
         Assert.assertTrue(driver.getPageSource().contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
 
+        System.out.println("before close tab");
         switchTabAndClose(0);
+        System.out.println("after close tab");
+
     }
 
 }
