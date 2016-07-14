@@ -78,7 +78,7 @@ app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
-            async.parallel([
+            async.series([
                 function(done) {
                     mongo_cde.deCount(function(deCount) {
                         app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function(up, message) {
