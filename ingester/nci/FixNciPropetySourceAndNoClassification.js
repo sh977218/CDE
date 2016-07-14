@@ -32,11 +32,11 @@ DataElementModel.find({
         if (de.properties) {
             de.properties.forEach(function (p) {
                 p.source = 'caDSR';
-            })
+            });
         }
         de.save(function (err) {
             if (err) {
-                throw err;
+                console.log(err);
                 process.exit(1);
             }
             else {

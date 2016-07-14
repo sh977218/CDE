@@ -3,7 +3,8 @@ var mongoose = require('mongoose'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     form_schemas = require('../modules/form/node-js/schemas'),
     sharedSchemas = require('../modules/system/node-js/schemas.js'),
-    Schema = mongoose.Schema
+    Schema = mongoose.Schema,
+    mongo_cde = require('../modules/cde/node-js/mongo-cde')
     ;
 
 

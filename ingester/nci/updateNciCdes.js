@@ -1,5 +1,4 @@
 var async = require('async'),
-    entities = require("entities"),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     cdesvc = require('../../modules/cde/node-js/cdesvc'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -22,13 +21,14 @@ var today = new Date().toJSON();
 
 function output() {
     console.log(" changed: " + changed + " same: " + same + " created: " + created);
-};
+}
+
 function findXml(id, version, cb) {
     MigrationNCICdeXmlModel.find({'PUBLICID': id, 'VERSION': version}).exec(function (err, xmls) {
         if (err) throw err;
         else cb(xmls[0]);
-    })
-};
+    });
+}
 
 function removeClassificationTree(cde, org) {
     for (var i = 0; i < cde.classification.length; i++) {
