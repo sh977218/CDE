@@ -15,21 +15,5 @@ public class FormPropertyTest extends PropertyTest {
     public void goToEltSearch() {
         goToFormSearch();
     }
-
-    @Test
-    public void addRemoveFormProperty() {
-        addRemoveProperty("Form Property Test", "Recorded");
-    }
-
-    @Test
-    public void richPropText() {
-        mustBeLoggedInAs(testAdmin_username, password);
-        richText("Form Rich Text Property Test", "Recorded");
-    }
-
-    @Test
-    public void reorderProperties() {
-        reorderPropertyTest("form for test cde reorder detail tabs");
-    }
-
+    
 }
