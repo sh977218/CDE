@@ -3,8 +3,11 @@ var async = require('async'),
     ;
 
 var today = new Date();
+var beforeNow = new Date();
+beforeNow.setHours(beforeNow.getHours() - 8);
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
+
 DataElementModel.find({
     $and: [{
         'stewardOrg.name': 'NCI',
@@ -12,10 +15,10 @@ DataElementModel.find({
         'registrationState.registrationStatus': {$ne: "Retired"}
     }, {
         $or: [{'updated': {$exists: false}}, {
-            'updated': {$lt: today}
+            'updated': {$lt: beforeNow}
         }]
     }]
-}).exec(function (err, DEs) {
+}).limit(5000).exec(function (err, DEs) {
     if (err) throw err;
     async.forEachSeries(DEs, function (de, doneOneDe) {
         de.source = 'caDSR';
