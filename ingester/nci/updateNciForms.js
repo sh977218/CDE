@@ -24,7 +24,10 @@ var source = 'caDSR';
 function findXml(id, version, cb) {
     MigrationNCIFormXmlModel.find({'form.publicID': id, 'form.version': version}).exec(function (err, xmls) {
         if (err) throw err;
-        else cb(xmls[0]);
+        else {
+            delete xmls[0].__v;
+            cb(xmls[0]);
+        }
     })
 };
 function processForm(migrationForm, existingForm, xml, orgName, processFormCb) {
@@ -147,23 +150,23 @@ function streamOnClose() {
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
     });
-/*
+    /*
 
-    console.log("Nothing left to do, saving Org");
-    MigrationOrgModel.find().exec(function (err, orgs) {
-        if (err) console.log("Error Finding Migration Org " + err);
-        orgs.forEach(function (org) {
-            OrgModel.findOne({name: org.name}).exec(function (err, theOrg) {
-                if (err)  console.log("Error finding existing org " + err);
-                theOrg.classifications = org.classifications;
-                theOrg.save(function (err) {
-                    if (err) console.log("Error saving Org " + err);
-                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-                });
-            });
-        });
-    });
-*/
+     console.log("Nothing left to do, saving Org");
+     MigrationOrgModel.find().exec(function (err, orgs) {
+     if (err) console.log("Error Finding Migration Org " + err);
+     orgs.forEach(function (org) {
+     OrgModel.findOne({name: org.name}).exec(function (err, theOrg) {
+     if (err)  console.log("Error finding existing org " + err);
+     theOrg.classifications = org.classifications;
+     theOrg.save(function (err) {
+     if (err) console.log("Error saving Org " + err);
+     console.log(" changed: " + changed + " same: " + same + " created: " + created);
+     });
+     });
+     });
+     });
+     */
 
     // give 5 secs for org to save.
     setTimeout(function () {

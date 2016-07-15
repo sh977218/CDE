@@ -26,7 +26,10 @@ function output() {
 function findXml(id, version, cb) {
     MigrationNCICdeXmlModel.find({'PUBLICID': id, 'VERSION': version}).exec(function (err, xmls) {
         if (err) throw err;
-        else cb(xmls[0]);
+        else {
+            delete xmls[0].__v;
+            cb(xmls[0]);
+        }
     });
 }
 
