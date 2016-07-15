@@ -257,6 +257,7 @@
                             <td>{{rule.field}}</td>
                             <td>{{rule.rule.regex}}</td>
                             <td>{{rule.occurence}}</td>
+                            <td><button ng-click="disableRule(orgName, rule)" class="btn btn-danger btn-xs">Remove</button></td>
                         </tr>
                     </table>
                     <button class="btn btn-success btn-sm" ng-click="openAddRuleModal(orgName)">Add New Rule</button>

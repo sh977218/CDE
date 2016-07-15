@@ -306,6 +306,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
             , ruleName: $scope.ruleName
             , rule: {regex: $scope.regex}
             , field: $scope.field
+            , id: Math.random()
         };
         $modalInstance.close(msg);
     };
