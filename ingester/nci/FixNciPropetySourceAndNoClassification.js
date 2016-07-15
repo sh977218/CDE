@@ -8,7 +8,7 @@ beforeNow.setHours(beforeNow.getHours() - 8);
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
 
-DataElementModel.find({
+var query = {
     $and: [{
         'stewardOrg.name': 'NCI',
         'archived': null,
@@ -18,7 +18,14 @@ DataElementModel.find({
             'updated': {$lt: beforeNow}
         }]
     }]
-}).limit(5000).exec(function (err, DEs) {
+};
+
+DataElementModel.count(query, function(err, count) {
+    if (err) throw err;
+    console.log(count + " CDEs left");
+});
+
+DataElementModel.find(query).limit(5000).exec(function (err, DEs) {
     if (err) throw err;
     async.forEachSeries(DEs, function (de, doneOneDe) {
         de.source = 'caDSR';
