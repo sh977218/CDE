@@ -13,17 +13,15 @@ public class BoardXMLExportTest  extends BoardTest {
         textPresent("Export Board");
         clickElement(By.id(("export")));
         clickElement(By.id("xmlExport"));
+        String url = findElement(By.id("xmlExport")).getAttribute("href");
 
-        System.out.println("before switch tab");
-
-        switchTab(1);
-        System.out.println("after switch tab");
+        System.out.println("BoardXMLExportTest driver.get");
+        driver.get(url);
+        System.out.println("BoardXMLExportTest Assert");
 
         Assert.assertTrue(driver.getPageSource().contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
 
-        System.out.println("before close tab");
-        switchTabAndClose(0);
-        System.out.println("after close tab");
+        System.out.println("BoardXMLExportTest Done");
 
     }
 
