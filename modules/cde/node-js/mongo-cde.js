@@ -24,6 +24,7 @@ exports.DataElement = DataElement;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
+exports.PinningBoard = PinningBoard;
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
