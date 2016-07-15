@@ -1,7 +1,4 @@
-var express = require('express')
-    , util = require('util')
-    , mongo_data = require('./mongo-cde')
-    , logging = require('../../system/node-js/logging.js') //TODO: USE DEPENDENCY INJECTION
+var mongo_data = require('./mongo-cde')
     , adminSvc = require('../../system/node-js/adminItemSvc.js')
     , deepDiff = require('deep-diff')
     , elastic = require('../../cde/node-js/elastic')
@@ -47,8 +44,7 @@ exports.byId = function (req, res) {
         }
     })
 };
-
-exports.show = function(req, cb) {
+exports.show = function(req, res, cb) {
     var cdeId = req.params.id;
     if (!cdeId) {
         res.send("No Data Element Id");
@@ -89,8 +85,8 @@ exports.diff = function(newCde, oldCde) {
   return deepDiff(oldCdeObj, newCdeObj);
 };
 
-exports.hideProprietaryPvs = function(cdes, user) {
-    this.hiddenFieldMessage = 'Login to see the value.';
+exports.hideProprietaryCodes = function(cdes, user) {
+    var hiddenFieldMessage = 'Login to see the value.';
     this.systemWhitelist = [
         "RXNORM"
         , "HSLOC"
@@ -109,13 +105,14 @@ exports.hideProprietaryPvs = function(cdes, user) {
             else if (pvSet.codeSystemName.indexOf(system)>=0) toBeCensored = false;
         });
         if (toBeCensored) {
-            pvSet.valueMeaningName = this.hiddenFieldMessage;
-            pvSet.valueMeaningCode = this.hiddenFieldMessage;
-            pvSet.codeSystemName = this.hiddenFieldMessage;
-            pvSet.codeSystemVersion = this.hiddenFieldMessage;
+            pvSet.valueMeaningName = hiddenFieldMessage;
+            pvSet.valueMeaningCode = hiddenFieldMessage;
+            pvSet.codeSystemName = hiddenFieldMessage;
+            pvSet.codeSystemVersion = hiddenFieldMessage;
         }
     };
     this.checkCde = function(cde) {
+        adminSvc.hideProprietaryIds(cde);
         if (cde.valueDomain.datatype !== "Value List") return cde;
         var self = this;
         cde.valueDomain.permissibleValues.forEach(function(pvSet) {

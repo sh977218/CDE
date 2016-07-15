@@ -64,6 +64,12 @@ exports.boardsByUserId = function (userId, callback) {
     });
 };
 
+exports.boardCount = function (callback) {
+    PinningBoard.count({}).exec(function (err, count) {
+        callback(count);
+    });
+};
+
 exports.nbBoardsByUserId = function (userId, callback) {
     PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
         callback(err, result);
