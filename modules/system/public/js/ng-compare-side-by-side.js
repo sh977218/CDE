@@ -41,8 +41,9 @@
                                 array: '/system/public/html/compareTemplate/compareArray.html',
                                 stringArray: '/system/public/html/compareTemplate/compareStringArray.html',
                                 object: '/system/public/html/compareTemplate/compareObject.html',
-                                string: '/system/public/html/compareTemplate/compareString.html',
-                                number: '/system/public/html/compareTemplate/compareNumber.html'
+                                string: '/system/public/html/compareTemplate/comparePrimitive.html',
+                                number: '/system/public/html/compareTemplate/comparePrimitive.html',
+                                boolean: '/system/public/html/compareTemplate/comparePrimitive.html'
                             }[$scope.options.type];
                         }
                     }

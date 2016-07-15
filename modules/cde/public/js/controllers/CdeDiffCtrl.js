@@ -96,7 +96,14 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
             {label: 'Document', property: 'document'}
         ]
     };
-    $scope.classificationOption = {}
+    $scope.classificationOption = {
+        equal: function (a, b) {
+            return a === b;
+        },
+        sort: function (a, b) {
+            return a.localeCompare(b);
+        }
+    }
 }]);
 
 
