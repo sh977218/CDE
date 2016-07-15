@@ -12,7 +12,6 @@ public class BoardXMLExportTest  extends BoardTest {
         goToBoard("Classify Board");
         textPresent("Export Board");
         clickElement(By.id(("export")));
-        clickElement(By.id("xmlExport"));
         String url = findElement(By.id("xmlExport")).getAttribute("href");
 
         System.out.println("BoardXMLExportTest driver.get");
