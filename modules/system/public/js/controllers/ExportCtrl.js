@@ -167,8 +167,8 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
         $scope.exportSearchResults('validationRules', $routeParams);
     }]);
 
-angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http',
-    function ($scope, OrgHelpers, Organization, $http) {
+angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http', '$uibModal',
+    function ($scope, OrgHelpers, Organization, $http, $modal) {
         //$scope.rules = [
         //    {
         //        "field" : "stewardOrg.name",
@@ -276,4 +276,37 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
             });
         };
+
+        $scope.openAddRuleModal = function(orgName){
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/statusRules/addNewRule.html',
+                controller: 'AddNewRuleCtrl',
+                resolve: {
+                }
+            });
+            modalInstance.result.then(function (rule) {
+                console.log(rule);
+                $scope.enableRule(orgName, rule);
+            }, function(reason) {
+
+            });
+        };
     }]);
+
+angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', function($scope, $modalInstance){
+    $scope.fields = ['stewardOrg.name','properties.key','valueDomain.permissibleValues.codeSystemName','valueDomain.permissibleValues.permissibleValue'];
+    $scope.cancel = function(){
+        $modalInstance.dismiss();
+    };
+    $scope.saveRule = function(){
+        var msg = {
+            occurence: $scope.occurence
+            , targetStatus: $scope.targetStatus
+            , ruleName: $scope.ruleName
+            , rule: {regex: $scope.regex}
+            , field: $scope.field
+        };
+        $modalInstance.close(msg);
+    };
+}]);

@@ -240,7 +240,7 @@
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">
                 <div ng-repeat="(orgName, orgRules) in userOrgs" ng-if="orgRules.length>0">
-                    {{orgName}}
+                    <h3>{{orgName}}</h3>
                     <table class="table">
                         <thead>
                             <tr>
@@ -259,6 +259,7 @@
                             <td>{{rule.occurence}}</td>
                         </tr>
                     </table>
+                    <button class="btn btn-success btn-sm" ng-click="openAddRuleModal(orgName)">Add New Rule</button>
                 </div>
             </div>
         </uib-tab>
