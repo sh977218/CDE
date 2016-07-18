@@ -22,6 +22,9 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
                 },
                 priorCde: function () {
                     return priorCdeCopy;
+                },
+                hideSame: function () {
+                    return $scope.hideSame;
                 }
             }
         });
@@ -48,7 +51,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
 
 }]);
 
-angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$timeout', '$uibModalInstance', 'elt', 'priorCde', 'classificationUtil', function ($scope, $http, $timeout, $modal, elt, priorCde, classificationUtil) {
+angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$timeout', '$uibModalInstance', 'elt', 'priorCde', 'classificationUtil', 'hideSame', function ($scope, $http, $timeout, $modal, elt, priorCde, classificationUtil, hideSame) {
     $scope.elt = elt;
     $scope.priorCde = priorCde;
     classificationUtil.sortClassification(elt);
@@ -97,7 +100,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.classificationOption = {
-        hideSame: true,
+        hideSame: hideSame,
         equal: function (a, b) {
             return a === b;
         },
