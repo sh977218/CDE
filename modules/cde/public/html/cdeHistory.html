@@ -25,9 +25,12 @@
                 <td tabindex="0">{{priorCde.updatedBy.username}}</td>
                 <td tabindex="0">{{priorCde.changeNote}}</td>
                 <td class='table-info'>
-                    <a tabindex="0" class="fa fa-eye" ng-if="priorCde.updated" ng-click="viewDiff(priorCde)"> View</a>
-                    <a tabindex="0" class="fa fa-eye" ng-if="priorCde.version && elt.version !== priorCde.version"
-                       ng-click="viewDiffVersion(elt,priorCde)"> New Version</a>
+                    {{priorCde._id}}
+                    <div ng-if="priorCde.updated">
+                        <a tabindex="0" class="fa fa-eye" ng-click="viewDiff(priorCde)"> View</a>
+                        <a tabindex="0" class="fa fa-eye" ng-if="priorCde.version && elt.version !== priorCde.version"
+                           ng-click="viewDiffVersion(elt,priorCde)"> New Version</a>
+                    </div>
                     <span tabindex="0" ng-if="!priorCde.updated">First Version</span></td>
                 <td>
                     <a tabindex="0" href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"

@@ -1,5 +1,7 @@
 <div class="row" ng-repeat="r in result"
      ng-class="{quickBoardContentCompareModified:r.result.match===false,quickBoardContentCompareSame:r.result.match===true}">
-    <div class="col-xs-6 quickBoardContentCompareCol">{{left[r.leftIndex]}}</div>
-    <div class="col-xs-6 quickBoardContentCompareCol">{{right[r.rightIndex]}}</div>
+    <div ng-if="!$parent.hideSame || r.result.match===false">
+        <div class="col-xs-6 quickBoardContentCompareCol">{{left[r.leftIndex]}}</div>
+        <div class="col-xs-6 quickBoardContentCompareCol">{{right[r.rightIndex]}}</div>
+    </div>
 </div>

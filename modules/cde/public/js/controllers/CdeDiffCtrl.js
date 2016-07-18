@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
 
     $scope.nullsToBottom = CdeDiffPopulate.nullsToBottom;
 
-    var loadPriorCdes = function () {
+    function loadPriorCdes() {
         if (!$scope.priorCdes) {
             if ($scope.elt.history && $scope.elt.history.length > 0) {
                 PriorCdes.getCdes({cdeId: $scope.elt._id}, function (dataElements) {
@@ -97,6 +97,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.classificationOption = {
+        hideSame: true,
         equal: function (a, b) {
             return a === b;
         },
