@@ -7,7 +7,8 @@ var async = require('async'),
     DataElement = require('../createConnection').DataElementModel,
     MigrationOrg = require('../createConnection').MigrationOrgModel,
     Org = require('../createConnection').OrgModel,
-    updateShare = require('../updateShare')
+    updateShare = require('../updateShare'),
+    logger = require('../log')
     ;
 
 var cdeSource = process.argv[3];
@@ -21,6 +22,7 @@ var today = new Date().toJSON();
 
 function output() {
     console.log(" changed: " + changed + " same: " + same + " created: " + created);
+    logger.info(" changed: " + changed + " same: " + same + " created: " + created);
 }
 
 function findXml(id, version, cb) {
