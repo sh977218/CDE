@@ -11,6 +11,8 @@ var async = require('async'),
     logger = require('../log')
     ;
 
+logger.setDirectory(__dirname);
+
 var cdeSource = process.argv[3];
 
 var changed = 0;
