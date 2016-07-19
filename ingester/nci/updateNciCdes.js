@@ -225,7 +225,7 @@ function run() {
             var cdeId = foundIdVersion[0].id;
             var cdeVersion = foundIdVersion[0].version;
             findXml(cdeId, cdeVersion, function (xml) {
-                findCde(migrationCde, xml, cdeStewardOrg, cdeSource, cdeId, cdeVersion, function () {
+                findCde(migrationCde, xml, cdeSource, cdeId, cdeVersion, function () {
                     migStream.resume();
                 });
             })
