@@ -1,28 +1,36 @@
-var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    cdesvc = require('../../modules/cde/node-js/cdesvc'),
-    classificationShared = require('../../modules/system/shared/classificationShared'),
-    MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel,
-    MigrationDataElement = require('../createConnection').MigrationDataElementModel,
-    DataElement = require('../createConnection').DataElementModel,
-    MigrationOrg = require('../createConnection').MigrationOrgModel,
-    Org = require('../createConnection').OrgModel,
-    updateShare = require('../updateShare'),
-    logger = require('../log')
-    ;
+// npm module
+var async = require('async');
 
-var cdeSource = process.argv[3];
+// mongoose schema
+var MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel;
+var MigrationDataElement = require('../createConnection').MigrationDataElementModel;
+var DataElement = require('../createConnection').DataElementModel;
+var MigrationOrg = require('../createConnection').MigrationOrgModel;
+var Org = require('../createConnection').OrgModel;
+
+var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var cdesvc = require('../../modules/cde/node-js/cdesvc');
+var classificationShared = require('../../modules/system/shared/classificationShared');
+var updateShare = require('../updateShare');
+var logger = require('../log');
+
+
+var cdeSource = 'caDSR';
+var cdeStewardOrg = 'NCI';
 
 var changed = 0;
 var created = 0;
-var createdCDE = [];
 var same = 0;
 
+var createdCDE = [];
+
 var today = new Date().toJSON();
+var lastEightHours = new Date();
+lastEightHours.setHours(new Date().getHours() - 8);
+
 
 function output() {
     console.log(" changed: " + changed + " same: " + same + " created: " + created);
-    logger.info(" changed: " + changed + " same: " + same + " created: " + created);
 }
 
 function findXml(id, version, cb) {
@@ -31,37 +39,6 @@ function findXml(id, version, cb) {
         else {
             delete xmls[0].__v;
             cb(xmls[0]);
-        }
-    });
-}
-
-function removeClassificationTree(cde, org) {
-    for (var i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === org) {
-            cde.classification.splice(i, 1);
-            return;
-        }
-    }
-}
-
-function wipeUseless(toWipeCde) {
-    delete toWipeCde._id;
-    delete toWipeCde.history;
-    delete toWipeCde.imported;
-    delete toWipeCde.created;
-    delete toWipeCde.createdBy;
-    delete toWipeCde.updated;
-    delete toWipeCde.updatedBy;
-    delete toWipeCde.comments;
-    delete toWipeCde.registrationState;
-    delete toWipeCde.tinyId;
-    delete toWipeCde.changeNote;
-    delete toWipeCde.valueDomain.datatypeValueList;
-    delete toWipeCde.attachments;
-
-    Object.keys(toWipeCde).forEach(function (key) {
-        if (Array.isArray(toWipeCde[key]) && toWipeCde[key].length === 0) {
-            delete toWipeCde[key];
         }
     });
 }
@@ -99,8 +76,8 @@ function compareCdes(existingCde, migrationCde) {
     });
 
 
-    wipeUseless(existingCdeCopy);
-    wipeUseless(migrationCdeCopy);
+    updateShare.wipeUseless(existingCdeCopy);
+    updateShare.wipeUseless(migrationCdeCopy);
 
     if (!existingCdeCopy.classification || existingCdeCopy.classification === [])
         existingCdeCopy.classification = migrationCdeCopy.classification;
@@ -122,7 +99,7 @@ function compareCdes(existingCde, migrationCde) {
     return cdesvc.diff(existingCdeCopy, migrationCdeCopy);
 }
 
-function processCde(existingCde, migrationCde, xml, orgName, cb) {
+function processCde(existingCde, migrationCde, xml, cb) {
     var deepDiff = compareCdes(existingCde, migrationCde);
     if (!deepDiff || deepDiff.length === 0) {
         // nothing changed, remove from input
@@ -149,7 +126,7 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
 
-        removeClassificationTree(newDe, orgName);
+        updateShare.removeClassificationTree(newDe, cdeStewardOrg);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {
@@ -187,7 +164,7 @@ function processCde(existingCde, migrationCde, xml, orgName, cb) {
     }
 }
 
-function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
+function findCde(migrationCde, xml, source, cdeId, version, cb) {
     var cdeCond = {
         archived: null,
         source: source,
@@ -213,7 +190,6 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
                 if (saveNewCdeError) {
                     console.log("Unable to create CDE. id: " + cdeId + ' version: ' + version);
                     throw saveNewCdeError;
-                    process.exit(1);
                 } else {
                     created++;
                     createdCDE.push({id: cdeId, version: version});
@@ -228,10 +204,9 @@ function findCde(migrationCde, xml, orgName, cdeId, source, version, cb) {
                 }
             });
         } else if (existingCdes.length === 1) {
-            processCde(existingCdes[0], migrationCde, xml, orgName, cb);
+            processCde(existingCdes[0], migrationCde, xml, cb);
         } else {
             throw "Too many CDEs with the same ID/version. id: " + cdeId + ' version: ' + version;
-            process.exit(1);
         }
     });
 }
@@ -242,26 +217,22 @@ function run() {
     migStream.on('data', function (migrationCde) {
         migStream.pause();
         classificationShared.sortClassification(migrationCde);
-        var source = migrationCde.source;
-        var orgName = migrationCde.stewardOrg.name;
-        var cdeId = 0;
-        var version;
-        for (var i = 0; i < migrationCde.ids.length; i++) {
-            if (migrationCde.ids[i].source === source) {
-                cdeId = migrationCde.ids[i].id;
-                version = migrationCde.ids[i].version;
-            }
-        }
-        if (cdeId === 0) {
-            // No Cde Id.
+        var foundIdVersion = updateShare.findEltIdVersion(migrationCde, cdeSource);
+        if (foundIdVersion.length == 0) {
+            // No Cde Ids.
             throw ("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
-            process.exit(1);
-        } else {
-            findXml(cdeId, version, function (xml) {
-                findCde(migrationCde, xml, orgName, cdeId, source, version, function () {
+        } else if (foundIdVersion.length === 1) {
+            var cdeId = foundIdVersion[0].id;
+            var cdeVersion = foundIdVersion[0].version;
+            findXml(cdeId, cdeVersion, function (xml) {
+                findCde(migrationCde, xml, cdeStewardOrg, cdeSource, cdeId, cdeVersion, function () {
                     migStream.resume();
                 });
             })
+        }
+        else {
+            // too many Ids
+            throw ('Multiple id and version found. ' + foundIdVersion);
         }
     });
     migStream.on('error', function (streamError) {
@@ -270,12 +241,12 @@ function run() {
     migStream.on('close', function () {
         // Retire Missing CDEs
         DataElement.update({
-            imported: {$ne: today},
+            imported: {$lt: lastEightHours},
             source: cdeSource
         }, {
             "registrationState.registrationStatus": "Retired",
             "registrationState.administrativeNote": "Not present in import from " + today
-        }, function (RetiredCdeError) {
+        }, function (RetiredCdeError, retired) {
             if (RetiredCdeError) throw RetiredCdeError;
             else {
                 console.log("Nothing left to do, saving Org");
@@ -293,7 +264,9 @@ function run() {
                             }
                         });
                     }, function doneAllOrgs() {
-                        output();
+                        logger.info("changed: " + changed + " same: " + same + " created: " + created);
+                        logger.info('createdCDE: ' + createdCDE);
+                        logger.info('retired: ' + retired);
                         process.exit(0);
                     });
                 });
