@@ -137,7 +137,7 @@ angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibMo
     function ($scope, $modalInstance) {
     $scope.status = "Incomplete";
     $scope.export = function(){
-        $modalInstance.close({status: $scope.status, org: 'TEST'});
+        $modalInstance.close({status: $scope.status, org: $scope.selectedOrg});
     };
     $scope.close = function(){
         $modalInstance.dismiss();
@@ -267,9 +267,21 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
 
 
         $scope.disableRule = function(orgName, rule){
-            $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
-                $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
+            var modalInstance = $modal.open({
+                //animation: false,
+                templateUrl: '/system/public/html/statusRules/removeRule.html',
+                controller: 'RemoveRuleCtrl'
+                //resolve: {
+                //}
             });
+            modalInstance.result.then(function () {
+                $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
+                    $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
+                });
+            }, function(reason) {
+
+            });
+
         };
         $scope.enableRule = function(orgName, rule){
             $http.post("/enableRule", {orgName: orgName, rule: rule}).then(function(response){
@@ -309,5 +321,15 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
             , id: Math.random()
         };
         $modalInstance.close(msg);
+    };
+}]);
+
+angular.module('systemModule').controller('RemoveRuleCtrl', ['$scope', '$uibModalInstance', function($scope, $modalInstance){
+    $scope.fields = ['stewardOrg.name','properties.key','valueDomain.permissibleValues.codeSystemName','valueDomain.permissibleValues.permissibleValue'];
+    $scope.cancel = function(){
+        $modalInstance.dismiss();
+    };
+    $scope.deleteRule = function(){
+        $modalInstance.close();
     };
 }]);
