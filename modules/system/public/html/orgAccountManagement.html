@@ -239,6 +239,7 @@
         </uib-tab>
         <uib-tab heading="Status Validation Rules">
             <div ng-controller="SaveValidRuleCtrl">
+                <button class="btn btn-success btn-sm" ng-click="openAddRuleModal()">Add New Rule</button>
                 <div ng-repeat="(orgName, orgRules) in userOrgs" ng-if="orgRules.length>0">
                     <h3>{{orgName}}</h3>
                     <table class="table">
@@ -260,7 +261,6 @@
                             <td><button ng-click="disableRule(orgName, rule)" class="btn btn-danger btn-xs">Remove</button></td>
                         </tr>
                     </table>
-                    <button class="btn btn-success btn-sm" ng-click="openAddRuleModal(orgName)">Add New Rule</button>
                 </div>
             </div>
         </uib-tab>

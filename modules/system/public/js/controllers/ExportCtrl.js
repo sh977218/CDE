@@ -271,8 +271,6 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 //animation: false,
                 templateUrl: '/system/public/html/statusRules/removeRule.html',
                 controller: 'RemoveRuleCtrl'
-                //resolve: {
-                //}
             });
             modalInstance.result.then(function () {
                 $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
@@ -289,25 +287,26 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
             });
         };
 
-        $scope.openAddRuleModal = function(orgName){
+        $scope.openAddRuleModal = function(){
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/statusRules/addNewRule.html',
                 controller: 'AddNewRuleCtrl',
                 resolve: {
+                    myOrgs: function(){return $scope.myOrgs}
                 }
             });
             modalInstance.result.then(function (rule) {
-                console.log(rule);
-                $scope.enableRule(orgName, rule);
+                $scope.enableRule(rule.org, rule);
             }, function(reason) {
 
             });
         };
     }]);
 
-angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', function($scope, $modalInstance){
+angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'myOrgs', function($scope, $modalInstance, myOrgs){
     $scope.fields = ['stewardOrg.name','properties.key','valueDomain.permissibleValues.codeSystemName','valueDomain.permissibleValues.permissibleValue'];
+    $scope.myOrgs = myOrgs;
     $scope.cancel = function(){
         $modalInstance.dismiss();
     };
@@ -319,13 +318,13 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
             , rule: {regex: $scope.regex}
             , field: $scope.field
             , id: Math.random()
+            , org: $scope.org
         };
         $modalInstance.close(msg);
     };
 }]);
 
 angular.module('systemModule').controller('RemoveRuleCtrl', ['$scope', '$uibModalInstance', function($scope, $modalInstance){
-    $scope.fields = ['stewardOrg.name','properties.key','valueDomain.permissibleValues.codeSystemName','valueDomain.permissibleValues.permissibleValue'];
     $scope.cancel = function(){
         $modalInstance.dismiss();
     };

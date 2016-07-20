@@ -4,6 +4,13 @@
 <div class="modal-body">
     <form>
         <div class="form-group">
+            <label for="org">Organization</label>
+            <select id="org" ng-model="org" class="form-control">
+                <option ng-repeat="org in myOrgs">{{org}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="ruleName">Rule Name</label>
             <input type="text" ng-model="ruleName" class="form-control" id="ruleName" placeholder="CDE has a property ...">
         </div>
