@@ -59,9 +59,13 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
     $scope.elt.flatClassifications = classificationUtil.getFlatClassifications($scope.elt);
     $scope.priorCde.flatClassifications = classificationUtil.getFlatClassifications($scope.priorCde);
     $scope.versionOption = {
+        title: 'Versions',
+        hideSame: true,
         properties: [{label: 'Version', property: 'version'}]
     };
     $scope.nameOption = {
+        title: 'Names',
+        hideSame: true,
         properties: [
             {label: 'Name', property: 'designation'}, {
                 label: 'Definition',
@@ -70,6 +74,8 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.propertiesOption = {
+        title: 'Properties',
+        hideSame: true,
         equal: function (a, b) {
             return a.key === b.key;
         },
@@ -82,6 +88,8 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.referenceDocumentOption = {
+        title: 'Reference Documents',
+        hideSame: true,
         equal: function (a, b) {
             return a.title === b.title;
         },
@@ -100,7 +108,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.classificationOption = {
-        hideSame: hideSame,
+        hideSame: true,
         equal: function (a, b) {
             return a === b;
         },

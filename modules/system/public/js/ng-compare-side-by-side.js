@@ -106,10 +106,8 @@
                         return exports.compareSideBySide.arrayCompare(l, r, options);
                     } else if (options.type === 'object') {
                         return exports.compareSideBySide.objectCompare(l, r, options);
-                    } else if (options.type === 'string') {
-                        return exports.compareSideBySide.stringCompare(l, r, options);
-                    } else if (options.type === 'number') {
-                        return exports.compareSideBySide.numberCompare(l, r, options);
+                    } else if (options.type === 'string' || options.type === 'number' || options.type === 'boolean') {
+                        return exports.compareSideBySide.primitiveCompare(l, r, options);
                     } else if (options.type === 'stringArray') {
                         return exports.compareSideBySide.stringArrayCompare(l, r, options);
                     }

@@ -98,7 +98,7 @@ exports.compareSideBySide = {
                 rightIndex: i,
                 result: exports.copyProperties(options.properties)
             })
-        return {result: result, matchCount: matchCount};
+        return {options: options, result: result, matchCount: matchCount};
     },
     objectCompare: function (leftObj, rightObj, options) {
         if (options.wipeUseless) {
@@ -122,9 +122,9 @@ exports.compareSideBySide = {
             }
             result.push(property);
         });
-        return {result: result, matchCount: matchCount};
+        return {hideSame: options.hideSame, result: result, matchCount: matchCount};
     },
-    stringCompare: function (leftString, rightString) {
+    primitiveCompare: function (leftString, rightString, options) {
         var matchCount = 0;
         var result = [];
         if (leftString === rightString) {
@@ -137,22 +137,7 @@ exports.compareSideBySide = {
                 match: false
             })
         }
-        return {result: result, matchCount: matchCount};
-    },
-    numberCompare: function (leftString, rightString) {
-        var matchCount = 0;
-        var result = [];
-        if (leftString === rightString) {
-            matchCount++;
-            result.push({
-                match: true
-            })
-        } else {
-            result.push({
-                match: false
-            })
-        }
-        return {result: result, matchCount: matchCount};
+        return {options: options, result: result, matchCount: matchCount};
     },
     stringArrayCompare: function (leftStringArray, rightStringArray, options) {
         var matchCount = 0;
@@ -174,7 +159,7 @@ exports.compareSideBySide = {
                             result.push({
                                 found: "right",
                                 rightIndex: m,
-                                result: {match: right}
+                                result: {match: true}
                             });
                             beginIndex++;
                         }
@@ -219,7 +204,7 @@ exports.compareSideBySide = {
                 rightIndex: i,
                 result: exports.copyProperties(options.properties)
             })
-        return {result: result, matchCount: matchCount};
+        return {hideSame: options.hideSame, result: result, matchCount: matchCount};
     }
 };
 

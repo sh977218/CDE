@@ -6,6 +6,8 @@ var xml2js = require('xml2js'),
     classificationShared = require('../modules/system/shared/classificationShared')
     ;
 
+var user = {username: 'BatchLoader'};
+
 exports.findEltIdVersion = function (elt, source) {
     var idVersions = [];
     if (!elt.ids || elt.ids.length === 0) {
@@ -35,7 +37,7 @@ exports.addAttachment = function (elt, xml, cb) {
         size: origXml.length,
         stream: readable,
         ingested: true
-    }, null, "Original XML File", elt, function (attachment, newFileCreated, e) {
+    }, user, "Original XML File", elt, function (attachment, newFileCreated, e) {
         if (e) throw e;
         cb();
     });

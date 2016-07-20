@@ -249,6 +249,7 @@ function run() {
         }).exec(function (retiredCdeError, retireCdes) {
                 if (retiredCdeError) throw retiredCdeError;
                 else {
+                    console.log('retiredCdes: ' + retireCdes.length);
                     async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
                             retireCde.registrationState.registrationStatus = 'Retired';
                             retireCde.registrationState.administrativeNote = "Not present in import from " + today;
@@ -275,7 +276,8 @@ function run() {
                                         }
                                     });
                                 }, function doneAllOrgs() {
-                                    logger.info('createdCDE: ' + createdCDE);
+                                    logger.info('createdCDE: ' + JSON.stringify(createdCDE));
+                                    output();
                                     process.exit(0);
                                 });
                             });
