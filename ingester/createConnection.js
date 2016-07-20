@@ -3,7 +3,10 @@ var mongoose = require('mongoose'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     form_schemas = require('../modules/form/node-js/schemas'),
     sharedSchemas = require('../modules/system/node-js/schemas.js'),
-    Schema = mongoose.Schema
+    Schema = mongoose.Schema,
+    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
+    mongo_form = require('../modules/form/node-js/mongo-form'),
+    mongo_data = require('../modules/system/node-js/mongo-data')
     ;
 
 
@@ -57,7 +60,7 @@ exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVar
     collection: 'VariableCrossReference'
 }));
 
-exports.DataElementModel = mongoConn.model('DataElement', cde_schemas.dataElementSchema);
-exports.FormModel = mongoConn.model('Form', form_schemas.formSchema);
-exports.BoardModel = mongoConn.model('Board', cde_schemas.pinningBoardSchema);
-exports.OrgModel = mongoConn.model('Org', sharedSchemas.orgSchema);
+exports.DataElementModel = mongo_cde.DataElement;
+exports.FormModel = mongo_form.Form;
+exports.BoardModel = mongo_cde.PinningBoard;
+exports.OrgModel = mongo_data.Org;

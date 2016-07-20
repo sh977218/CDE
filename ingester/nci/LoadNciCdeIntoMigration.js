@@ -1,14 +1,11 @@
 var fs = require('fs'),
-    MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel,
     async = require('async'),
     entities = require("entities"),
-    xml2js = require('xml2js'),
-    builder = new xml2js.Builder({attrkey: 'attribute'}),
-    Readable = require('stream').Readable,
     MigrationDataElementModel = require('../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('../createConnection').MigrationOrgModel,
+    MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
-    mongo_data_system = require('../../modules/system/node-js/mongo-data'),
+    mongo_data = require('../../modules/system/node-js/mongo-data'),
     classificationMapping = require('./caDSRClassificationMapping.json')
     ;
 
@@ -58,7 +55,7 @@ function createNewCde(de) {
             registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0]),
             administrativeStatus: de.WORKFLOWSTATUS[0]
         },
-        tinyId: mongo_data_system.generateTinyId(),
+        tinyId: mongo_data.generateTinyId(),
         imported: Date.now(),
         source: source,
         version: de.VERSION[0],
@@ -260,22 +257,21 @@ function createNewCde(de) {
                 throw e;
             }
             var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
-            if (classificationStatus === 'RELEASED' && classificationName.length > 0 &&
-                csi.ClassificationSchemeItemName[0].length > 0) {
+            if (classificationStatus === 'RELEASED' && classificationName.length > 0 && csi.ClassificationSchemeItemName[0].length > 0) {
                 if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
                     if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
                         cde.registrationState.registrationStatus = "Qualified";
                     }
                 }
-                classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-                classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
             }
+            classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
         });
     }
     else {
         cde.classification = [];
-        classificationShared.classifyItem(cde, "NCI", []);
-        classificationShared.addCategory({elements: nciOrg.classifications}, []);
+        classificationShared.classifyItem(cde, "NCI", ['NCIP']);
+        classificationShared.addCategory({elements: nciOrg.classifications}, ['NCIP']);
         noClassificationDE.push(de);
     }
     return cde;
@@ -287,10 +283,10 @@ function run() {
             MigrationDataElementModel.remove({}, function (err) {
                 console.log('removed all doc in migration dataelements collection');
                 if (err) throw err;
-                MigrationOrgModel.remove({}, function (er) {
-                    if (er) throw er;
-                    new MigrationOrgModel({name: orgName}).save(function (e, org) {
-                        if (e) throw e;
+                MigrationOrgModel.remove({}, function (removeOrgError) {
+                    if (removeOrgError) throw removeOrgError;
+                    new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+                        if (createOrgError) throw createOrgError;
                         console.log('created new org of ' + orgName + ' in migration db');
                         nciOrg = org;
                         cb();
@@ -302,6 +298,7 @@ function run() {
             var stream = MigrationNCICdeXmlModel.find({}).stream();
             stream.on('data', function (xml) {
                 stream.pause();
+                xml = xml.toObject();
                 var newCde = createNewCde(xml);
                 if (newCde) {
                     MigrationDataElementModel.find({
@@ -320,26 +317,9 @@ function run() {
                                     throw err;
                                     process.exit(1);
                                 } else if (o) {
-                                    var readable = new Readable();
-                                    var xmlObj = JSON.parse(JSON.stringify(xml));
-                                    delete xmlObj._id;
-                                    delete xmlObj.index;
-                                    delete xmlObj.xmlFile;
-                                    var origXml = builder.buildObject(xmlObj).toString();
-                                    readable.push(origXml);
-                                    readable.push(null);
-                                    mongo_data_system.addAttachment({
-                                        originalname: newCde.ids[0].id + "v" + newCde.ids[0].version + ".xml",
-                                        type: "application/xml",
-                                        size: origXml.length,
-                                        stream: readable,
-                                        ingested: true
-                                    }, null, "Original XML File", o, function (attachment, newFileCreated, e) {
-                                        if (e) throw e;
-                                        deCount++;
-                                        console.log('deCount: ' + deCount);
-                                        stream.resume();
-                                    });
+                                    deCount++;
+                                    console.log('deCount: ' + deCount);
+                                    stream.resume();
                                 } else {
                                     process.exit(1);
                                 }
