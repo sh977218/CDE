@@ -52,7 +52,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         saveAs(content, "SearchExport_ODM.zip");  // jshint ignore:line
                     },
                     'validationRules': function(result){
-                        var orgName = exportSettings.org;
+                        var orgName = exportSettings.searchSettings.selectedOrg;
                         var status = exportSettings.status;
                         var cdes = [];
                         JSON.parse(result).forEach(function (oneElt) {
