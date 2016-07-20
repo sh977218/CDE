@@ -23,7 +23,7 @@ var created = 0;
 var same = 0;
 
 var createdCDE = [];
-var retiredCdeCount = 0;
+var retired = 0;
 
 var today = new Date().toJSON();
 var lastEightHours = new Date();
@@ -31,7 +31,8 @@ lastEightHours.setHours(new Date().getHours() - 8);
 
 
 function output() {
-    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+    console.log(" changed: " + changed + " same: " + same + " created: " + created + " retired: " + retired);
+    logger.info(" changed: " + changed + " same: " + same + " created: " + created + " retired: " + retired);
 }
 
 function findXml(id, version, cb) {
@@ -254,8 +255,7 @@ function run() {
                             retireCde.save(function (error) {
                                 if (error) throw error;
                                 else {
-                                    retiredCdeCount++;
-                                    console.log('retiredCdeCount: ' + retiredCdeCount);
+                                    retired++;
                                     doneOneRetireCde();
                                 }
                             })
@@ -275,9 +275,7 @@ function run() {
                                         }
                                     });
                                 }, function doneAllOrgs() {
-                                    logger.info("changed: " + changed + " same: " + same + " created: " + created);
                                     logger.info('createdCDE: ' + createdCDE);
-                                    logger.info('retiredCdeCount: ' + retiredCdeCount);
                                     process.exit(0);
                                 });
                             });
