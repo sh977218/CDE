@@ -2,15 +2,11 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('./parseConfig')
     , Grid = require('gridfs-stream')
-    , fs = require('fs')
     , connHelper = require('./connections')
-    , express = require('express')
     , session = require('express-session')
     , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
-    , email = require('../../system/node-js/email')
-    , adminItemSvc = require('./adminItemSvc')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , async = require('async')
@@ -21,6 +17,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
+    Embeds = conn.model('Embed', schemas.embedSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
         mongooseConnection: conn
@@ -55,6 +52,21 @@ exports.updateClusterHostStatus = function(status, callback) {
         }
         if (callback) callback(err);
     });
+};
+
+exports.embeds = {
+    save: function(embed, cb) {
+        if (embed._id) {
+            var _id = embed._id;
+            delete embed._id;
+            Embeds.update({_id: _id}, embed, cb);
+        } else {
+            new Embeds(embed).save(cb);
+        }
+    },
+    find: function(crit, cb) {
+        Embeds.find(crit, cb);
+    }
 };
 
 exports.org_autocomplete = function(name, callback) {
@@ -160,7 +172,7 @@ exports.findOrCreateOrg = function(newOrg, cb) {
         if (err) {
             cb(err);
             logging.errorLogger.error("Cannot add org.",
-                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
+                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrg.name + "Error: " + err});
         } else if (found) {
             cb(null, found);
         } else {
@@ -254,7 +266,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         attachment.uploadedBy = {
             userId: user._id
             , username: user.username
-        }
+        };
     }
 
     gfs.findOne({md5: file.md5}, function (err, f) {
@@ -437,7 +449,7 @@ exports.addToClassifAudit = function(msg) {
         msg.elements[0].name = elt.naming[0].designation;
         msg.elements[0].status = elt.registrationState.registrationStatus;
         var classifRecord = new classificationAudit(msg);
-        classifRecord.save(function(err,r){});
+        classifRecord.save();
     };
     daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);

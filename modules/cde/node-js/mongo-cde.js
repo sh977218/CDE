@@ -24,6 +24,7 @@ exports.DataElement = DataElement;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
+exports.PinningBoard = PinningBoard;
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
@@ -61,6 +62,12 @@ exports.boardsDao = {
 exports.boardsByUserId = function (userId, callback) {
     PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
+    });
+};
+
+exports.boardCount = function (callback) {
+    PinningBoard.count({}).exec(function (err, count) {
+        callback(count);
     });
 };
 

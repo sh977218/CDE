@@ -80,17 +80,10 @@ function createForm(nciForm, cb) {
             acceptability: "preferred"
         }
     }];
-    var ids = [];
-    nciForm.publicID.forEach(function (id, i) {
-        if (i > 0) {
-            console.log('there are more than 1 id in form.' + nciForm.href);
-            process.exit(1);
-        }
-        ids.push({source: source, id: id});
-    });
+    var ids = [{source: source, id: nciForm.publicID[0], version: nciForm.version[0]}];
     var property = {
         key: 'protocol',
-        value: '<table><tr><th>preferredDefinition</th><th>shortName</th><th>context</th><th>longName</th></tr>',
+        value: '<table class="table table-striped"><tr><th>preferredDefinition</th><th>shortName</th><th>context</th><th>longName</th></tr>',
         source: 'NCIP',
         valueFormat: 'html'
     };

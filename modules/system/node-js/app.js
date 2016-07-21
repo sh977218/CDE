@@ -24,6 +24,7 @@ var passport = require('passport')
     , authorization = require('../../system/node-js/authorization')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
+    , app_status = require("./status.js")
     ;
 
 exports.init = function (app) {
@@ -92,8 +93,10 @@ exports.init = function (app) {
 
     app.get('/serverStatuses', function (req, res) {
         if (app.isLocalIp(getRealIp(req))) {
-            mongo_data_system.getClusterHostStatuses(function (err, statuses) {
-                res.send({esIndices: esInit.indices, statuses: statuses});
+            app_status.getStatus(function() {
+                mongo_data_system.getClusterHostStatuses(function (err, statuses) {
+                    res.send({esIndices: esInit.indices, statuses: statuses});
+                });
             });
         } else {
             res.status(401).send();
@@ -757,6 +760,29 @@ exports.init = function (app) {
         usersrvc.updateSearchSettings(req.user.username, req.body, function (err) {
             if (err) res.status(500).send(err);
             else res.send("Search settings updated.");
+        });
+    });
+
+    app.post('/embed/', function (req, res) {
+        mongo_data_system.embeds.save(req.body, function(err, embed) {
+            if (err) res.status(500).send("There was an error saving this embed.");
+            else res.send(embed);
+        });
+    });
+
+    app.get('/embed/:id', function (req, res) {
+        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+            if (err) res.status(500).send();
+            if (embeds.length !== 1) res.status.send("Expectation not met: one document.");
+            else res.send(embeds[0]);
+        });
+
+    });
+
+    app.get('/embeds/:org', function(req, res) {
+        mongo_data_system.embeds.find({org: req.params.org}, function(err, embeds) {
+            if (err) res.status(500).send();
+            else res.send(embeds);
         });
     });
 

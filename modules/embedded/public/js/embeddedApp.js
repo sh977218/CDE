@@ -1,5 +1,5 @@
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories'])
-    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers) {
+    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http) {
 
         $scope.args = {};
         $scope.searchType = 'cde';
@@ -9,19 +9,19 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             $scope.args[argArr[0]] = argArr[1];
         });
 
-        $scope.org = $scope.args.org;
-        var pageSize = 5; // check this syntax
-        if ($scope.args.pageSize) pageSize = $scope.args.pageSize;
-
         $scope.searchSettings = {
             q: ""
             , page: 1
             , classification: []
             , classificationAlt: []
             , regStatuses: []
-            , resultPerPage: pageSize
-            , selectedOrg: $scope.org
         };
+
+        $http.get('/embed/' + $scope.args.id).success(function (embed) {
+            $scope.embed = embed;
+            $scope.searchSettings.selectedOrg = embed.org;
+            $scope.search();
+        });
 
         $scope.selectElement = function(s) {
             $scope.searchSettings.classification.push(s);
@@ -58,6 +58,8 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
 
         $scope.search = function () {
             var type = $scope.searchType;
+
+            $scope.searchSettings.resultPerPage = $scope.embed[$scope.searchType].pageSize;
 
             var timestamp = new Date().getTime();
             $scope.lastQueryTimeStamp = timestamp;
@@ -109,14 +111,20 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
                 // Decorate
+                var embed4Type = $scope.embed[$scope.searchType];
                 $scope.elts.forEach(function (c) {
-                    c.embed = {};
+                    c.embed = {
+                        ids: []
+                    };
                     //c.embed.primaryName = "<a target='_blank' href='https://cde.nlm.nih.gov/'>{{c.naming[0].designation}}</a>";
-                    if ($scope.args.sourceId) {
-                        var id = c.ids.filter(function(e) {
-                             return e.source === $scope.args.org;
-                        })[0];
-                        if (id) c.embed.sourceId = id.id;
+
+                    if (embed4Type.ids) {
+                        embed4Type.ids.forEach(function (eId) {
+                            var id = c.ids.filter(function(e) {
+                                return e.source === eId.source;
+                            })[0];
+                            if (id) c.embed.ids = {label: eId.idLabel, id: id.id};
+                        });
                     }
                     if ($scope.args.sourceVersion) {
                         var id = c.ids.filter(function(e) {
@@ -124,13 +132,12 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                         })[0];
                         if (id) c.embed.sourceVersion = id.version;
                     }
-                    if ($scope.args.primaryDefinition) {
+                    if ($scope.embed[$scope.searchType].primaryDefinition) {
                         c.embed.primaryDefinition = c.naming[0].definition;
                     }
                 });
             });
         };
-        $scope.search();
     })
     .controller('TableViewCtrl', function($scope, SearchSettings) {
         $scope.searchViewSettings = SearchSettings.getDefault();
@@ -142,14 +149,20 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
 
         $scope.searchViewSettings.tableViewFields.customFields = [];
 
+        var embed4Type = $scope.embed[$scope.searchType];
+
+        embed4Type.ids.forEach(function (eId) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceId", label: eId.label});
+        });
         //$scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryName", label: "Name", asHtml: true});
 
         if ($scope.args.primaryDefinition) {
             $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition", label: "Definition"});
         }
-        if ($scope.args.sourceId) {
-            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceId", label: "ID"});
-        }
+
+
+
+
         if ($scope.args.sourceVersion) {
             $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceVersion", label: "version"});
         }

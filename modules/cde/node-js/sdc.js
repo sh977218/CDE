@@ -33,8 +33,12 @@ var sdcExport = function(req, res, cde) {
     }
     if (!sdcRecord.preferredQuestionText) {
         cde.naming.forEach(function(n) {
-            if (!sdcRecord.preferredQuestionText && n.context.contextName.toLowerCase() === "question text") {
-                sdcRecord.preferredQuestionText = n.designation;
+            try {
+                if (!sdcRecord.preferredQuestionText && n.context.contextName.toLowerCase() === "question text") {
+                    sdcRecord.preferredQuestionText = n.designation;
+                }
+            } catch (e) {
+                // ignore error
             }
         });
     }

@@ -85,7 +85,7 @@ exports.createIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : 2,
+            "number_of_replicas" : config.elastic.number_of_replicas,
             analysis: {
                 analyzer: {
                     default: {
@@ -143,7 +143,7 @@ exports.createFormIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : 2
+            "number_of_replicas" : config.elastic.number_of_replicas
         }
     }
 };
@@ -271,7 +271,7 @@ exports.createBoardIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : 2
+            "number_of_replicas" : config.elastic.number_of_replicas
         }
     }
 };
@@ -302,7 +302,7 @@ exports.createStoredQueryIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas" : 2
+            "number_of_replicas" : config.elastic.number_of_replicas
         }
     }
 };

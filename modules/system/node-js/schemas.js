@@ -1,7 +1,6 @@
 var mongoose = require('mongoose')
     , authorizationShared = require('../shared/authorizationShared')
-    , config = require("config")
-    , regStatusShared = require("../shared/regStatusShared")
+    , regStatusShared = require("../shared/regStatusShared") // jshint ignore:line
     ;
 
 var schemas = {};
@@ -27,31 +26,46 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 }, {_id: false});
 
 var commonEmbedSchema = {
+    nameLabel: String,
+    pageSize: Number,
     primaryDefinition: {label: String},
-    ids: [
+    registrationStatus: {label: String},
+    lowestRegistrationStatus: {type: String, enum:regStatusShared.statusList},
+    properties: [
         {
             label: String,
+            key: String,
+            limit: Number
+        }
+    ],
+    otherNames: [{
+        label: String,
+        contextName: String
+    }],
+    ids: [
+        {
+            idLabel: String,
             source: String,
             version: Boolean,
-            labelVersion: String
+            versionLabel: String
         }
     ]
 };
 
-var embedSchema = new mongoose.Schema({
+var embedJson = {
+    org: String,
     name: String,
-    cde: {
-        common: commonEmbedSchema,
-        permissibleValues: Boolean
-    },
-    form: {
-        common:commonEmbedSchema,
-        sdcLink: Boolean,
-        nbOfQuestions: Boolean,
-        cdes: Boolean
-    },
-    pageSize: Number
-});
+    height: Number,
+    width: Number,
+    cde: commonEmbedSchema,
+    form: commonEmbedSchema
+};
+embedJson.cde.permissibleValues = Boolean;
+embedJson.form.sdcLink = Boolean;
+embedJson.form.nbOfQuestions = Boolean;
+embedJson.form.cdes = Boolean;
+
+schemas.embedSchema = new mongoose.Schema(embedJson);
 
 schemas.orgSchema = new mongoose.Schema({
     name: String
@@ -63,7 +77,6 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
-    , embeds: [embedSchema]
 });
 
 schemas.userSchema = new mongoose.Schema({
@@ -215,10 +228,13 @@ schemas.clusterStatus = mongoose.Schema({
     , lastUpdate: Date
     , startupDate: Date
     , elastic: {
-        up: Boolean
-        , results: Boolean
-        , sync: Boolean
-        , updating: Boolean
+        up: Boolean,
+        message: String,
+        indices: [{
+            name: String,
+            up: Boolean,
+            message: String
+        }]
     }
 });
 
