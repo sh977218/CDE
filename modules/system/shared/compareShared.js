@@ -26,6 +26,7 @@ exports.compareSideBySide = {
         var result = [];
         var leftIndex = 0;
         var beginIndex = 0;
+        var showTitle = false;
 
         if (options.sort) {
             leftArray.sort(options.sort);
@@ -43,6 +44,7 @@ exports.compareSideBySide = {
                     // put all right list elements before this element
                     if (beginIndex === 0) {
                         for (var m = 0; m < rightArray.length; m++) {
+                            showTitle = true;
                             result.push({
                                 found: "right",
                                 rightIndex: m,
@@ -52,6 +54,7 @@ exports.compareSideBySide = {
                         }
                     }
                     // put this element not found
+                    showTitle = true;
                     result.push({
                         found: 'left',
                         leftIndex: leftIndex,
@@ -63,6 +66,7 @@ exports.compareSideBySide = {
                     // put all right elements before matched element
                     var beginIndexCopy = beginIndex;
                     for (var k = 0; k < rightIndex; k++) {
+                        showTitle = true;
                         result.push({
                             found: "right",
                             rightIndex: beginIndex + rightIndex - 1,
@@ -92,13 +96,15 @@ exports.compareSideBySide = {
             }
         );
         // if after looping left list, there are element in the right list, put all of them
-        for (var i = beginIndex; i < rightArray.length; i++)
+        for (var i = beginIndex; i < rightArray.length; i++) {
+            showTitle = true;
             result.push({
                 found: "right",
                 rightIndex: i,
                 result: exports.copyProperties(options.properties)
             })
-        return {options: options, result: result, matchCount: matchCount};
+        }
+        return {showTitle: showTitle, options: options, result: result, matchCount: matchCount};
     },
     objectCompare: function (leftObj, rightObj, options) {
         if (options.wipeUseless) {
@@ -122,10 +128,11 @@ exports.compareSideBySide = {
             }
             result.push(property);
         });
-        return {hideSame: options.hideSame, result: result, matchCount: matchCount};
+        return {options: options, result: result, matchCount: matchCount};
     },
     primitiveCompare: function (leftString, rightString, options) {
         var matchCount = 0;
+        var showTitle = false;
         var result = [];
         if (leftString === rightString) {
             matchCount++;
@@ -133,11 +140,12 @@ exports.compareSideBySide = {
                 match: true
             })
         } else {
+            showTitle = true;
             result.push({
                 match: false
             })
         }
-        return {options: options, result: result, matchCount: matchCount};
+        return {showTitle: showTitle, options: options, result: result, matchCount: matchCount};
     },
     stringArrayCompare: function (leftStringArray, rightStringArray, options) {
         var matchCount = 0;

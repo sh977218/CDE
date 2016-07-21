@@ -32,7 +32,6 @@
                                         Comparison.swapIndex(result2);
                                     } else {
                                         $scope.result = result1.result;
-                                        $scope.hideSame = $scope.options.hideSame;
                                     }
                                 }
                             } else {
