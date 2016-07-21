@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    angular.module('comparePrimitiveArray', []).directive("comparePrimitiveArray", ["$compile", "PrimitiveArrayComparison",
+    angular.module('compareObjectArray', []).directive("compareObjectArray", ["$compile", "ObjectArrayComparison",
         function ($compile, PrimitiveComparison) {
             return {
                 restrict: "E",
@@ -9,7 +9,7 @@
                     right: '=right',
                     options: '=?options'
                 },
-                templateUrl: '/system/public/html/compareTemplate/comparePrimitiveArray.html',
+                templateUrl: '/system/public/html/compareTemplate/compareObjectArray.html',
                 link: function ($scope) {
                     $scope.left = $scope.left ? $scope.left : [];
                     $scope.right = $scope.right ? $scope.right : [];
@@ -21,7 +21,7 @@
                     PrimitiveComparison.primitiveArrayCompare($scope.left, $scope.right, $scope.options);
                 }
             };
-        }]).factory("PrimitiveArrayComparison", ["$compile", function () {
+        }]).factory("ObjectArrayComparison", ["$compile", function () {
         return {
             loadDefaultOptions: function (options) {
                 if (!options.equal) {

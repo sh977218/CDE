@@ -1,5 +1,5 @@
 <label ng-if="options.showTitle">{{options.title}}:</label>
-<div class="row" ng-repeat="result in options.results"
+<div ng-repeat="result in options.results"
      ng-class="{quickBoardContentCompareModified:result.match===false,quickBoardContentCompareSame:result.match===true}">
     <div>
         <div class="col-xs-6 quickBoardContentCompareCol">{{left[result.leftIndex]}}</div>

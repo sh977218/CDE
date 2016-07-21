@@ -1,0 +1,20 @@
+<label ng-if="options.showTitle">{{options.title}}:</label>
+<div ng-repeat="result in options.results"
+     ng-class="{quickBoardContentCompareModified:result.match===false,quickBoardContentCompareSame:result.match===true}">
+    <div class="overflowHidden">
+        <div class="col-xs-6 quickBoardContentCompareCol">
+            <div ng-repeat="p in options.properties">
+                <div ng-display-object
+                     ng-display-object-obj="left[result.leftIndex]"
+                     ng-display-object-properties="p"></div>
+            </div>
+        </div>
+        <div class="col-xs-6 quickBoardContentCompareCol">
+            <div ng-repeat="p in options.properties">
+                <div ng-display-object
+                     ng-display-object-obj="right[result.rightIndex]"
+                     ng-display-object-properties="p"></div>
+            </div>
+        </div>
+    </div>
+</div>

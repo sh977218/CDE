@@ -64,6 +64,12 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         hideSame: true
     };
     $scope.nameOption = {
+        equal: function (a, b) {
+            return a.designation === b.designation;
+        },
+        sort: function (a, b) {
+            return a.designation.localeCompare(b.designation);
+        },
         title: 'Names',
         hideSame: true,
         properties: [
@@ -74,14 +80,14 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.referenceDocumentOption = {
-        title: 'Reference Documents',
-        hideSame: true,
         equal: function (a, b) {
             return a.title === b.title;
         },
         sort: function (a, b) {
             return a.title.localeCompare(b.title);
         },
+        title: 'Reference Documents',
+        hideSame: true,
         properties: [
             {label: 'Title', property: 'title'},
             {label: 'URI', property: 'uri'},
@@ -94,14 +100,14 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.propertiesOption = {
-        title: 'Properties',
-        hideSame: true,
         equal: function (a, b) {
             return a.key === b.key;
         },
         sort: function (a, b) {
             return a.key.localeCompare(b.key);
         },
+        title: 'Properties',
+        hideSame: true,
         properties: [
             {label: 'Key', property: 'key'},
             {label: 'Value', property: 'value'}
@@ -109,17 +115,8 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
     };
     $scope.classificationOption = {
         title: 'Classifications',
-        hideSame: true,
-        equal: function (a, b) {
-            return a === b;
-        },
-        sort: function (a, b) {
-            return a.localeCompare(b);
-        }
-    }
-
-    $scope.testArray1 = ['classi 1', 'classi 2', 'classi 3'];
-    $scope.testArray2 = ['classi 1', 'classi 2', 'classi 4'];
+        hideSame: true
+    };
 }]);
 
 

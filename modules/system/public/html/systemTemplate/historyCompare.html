@@ -4,29 +4,19 @@
     </div>
     <div class="panel-body">
 
-        <!--
-                <compare-primitive left='elt.version' right='priorCde.version' options='versionOption'></compare-primitive>
-        -->
+        <compare-primitive left='elt.version' right='priorCde.version' options='versionOption'></compare-primitive>
 
+        <compare-object-array left='elt.naming' right='priorCde.naming'
+                              options='nameOption'></compare-object-array>
 
-        <!--
-                <div ng-compare-side-by-side ng-compare-side-by-side-options="nameOption"
-                     ng-compare-side-by-side-left=elt.naming ng-compare-side-by-side-right=priorCde.naming></div>
+        <compare-object-array left='elt.referenceDocuments' right='priorCde.referenceDocuments'
+                              options='referenceDocumentOption'></compare-object-array>
 
-                <div ng-compare-side-by-side ng-compare-side-by-side-options="referenceDocumentOption"
-                     ng-compare-side-by-side-left=elt.referenceDocuments
-                     ng-compare-side-by-side-right=priorCde.referenceDocuments></div>
+        <compare-object-array left='elt.properties' right='priorCde.properties'
+                              options='propertiesOption'></compare-object-array>
 
-                <div ng-compare-side-by-side ng-compare-side-by-side-options="propertiesOption"
-                     ng-compare-side-by-side-left=elt.properties
-                     ng-compare-side-by-side-right=priorCde.properties></div>
-        -->
         <compare-primitive-array left='elt.flatClassifications' right='priorCde.flatClassifications'
                                  options='classificationOption'></compare-primitive-array>
-        <!--
-                <compare-primitive-array left='testArray1' right='testArray2'></compare-primitive-array>
-        -->
-
 
     </div>
 </div>
