@@ -53,7 +53,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         new Select(driver.findElement(By.id("targetStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("regex")).sendKeys("non-existent");
         new Select(driver.findElement(By.id("occurence"))).selectByVisibleText("All Elements");
-        findElement(by.id("saveRule")).click();
+        findElement(By.id("saveRule")).click();
         goToCdeSearch();
         findElement(By.id("browseOrg-TEST")).click();
 
