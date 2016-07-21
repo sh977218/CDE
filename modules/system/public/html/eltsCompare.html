@@ -21,9 +21,8 @@
         <hr class="divider compare-divider">
         <h4 class="compareSectionTitle">General Details</h4>
 
-        <div ng-compare-side-by-side ng-compare-side-by-side-options="stewardOrgOption"
-             ng-compare-side-by-side-left="eltsToCompare[0].stewardOrg"
-             ng-compare-side-by-side-right="eltsToCompare[1].stewardOrg"></div>
+        <compare-primitive left='eltsToCompare[0].stewardOrg' right='eltsToCompare[1].stewardOrg'
+                           options='stewardOrgOption'></compare-primitive>
         <div ng-compare-side-by-side ng-compare-side-by-side-options="registrationStateOption"
              ng-compare-side-by-side-left="eltsToCompare[0].registrationState"
              ng-compare-side-by-side-right="eltsToCompare[1].registrationState"></div>

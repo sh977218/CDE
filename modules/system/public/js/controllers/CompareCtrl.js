@@ -141,6 +141,7 @@ angular.module('cdeModule').controller('CompareCtrl',
                 wipeUseless: $scope.wipeUseless
             };
             $scope.stewardOrgOption = {
+                hideLabel: true,
                 properties: [{label: 'Steward', property: 'name'}]
             };
             $scope.registrationStateOption = {

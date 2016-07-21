@@ -95,7 +95,7 @@
                             r.leftIndex = rightIndexCopy;
                         if (leftIndexCopy != undefined)
                             r.rightIndex = leftIndexCopy;
-                        if (r.found !== 'both') {
+                        if (r.found !== 'both') {ncomparehis
                             r.found = r.found === 'right' ? 'left' : 'right';
                         }
                     });

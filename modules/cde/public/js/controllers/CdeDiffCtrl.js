@@ -58,10 +58,10 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
     classificationUtil.sortClassification(priorCde);
     $scope.elt.flatClassifications = classificationUtil.getFlatClassifications($scope.elt);
     $scope.priorCde.flatClassifications = classificationUtil.getFlatClassifications($scope.priorCde);
+
     $scope.versionOption = {
         title: 'Versions',
-        hideSame: true,
-        properties: [{label: 'Version', property: 'version'}]
+        hideSame: true
     };
     $scope.nameOption = {
         title: 'Names',
@@ -108,6 +108,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
         ]
     };
     $scope.classificationOption = {
+        title: 'Classifications',
         hideSame: true,
         equal: function (a, b) {
             return a === b;
@@ -116,6 +117,9 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
             return a.localeCompare(b);
         }
     }
+
+    $scope.testArray1 = ['classi 1', 'classi 2', 'classi 3'];
+    $scope.testArray2 = ['classi 1', 'classi 2', 'classi 4'];
 }]);
 
 
