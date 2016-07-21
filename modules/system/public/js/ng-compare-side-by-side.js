@@ -21,21 +21,21 @@
                             var result2 = Comparison.compareImpl($scope.right, $scope.left, $scope.options);
                             if (result1.result && result2.result) {
                                 if (result1.result.length < result2.result.length) {
-                                    $scope.result = result1.result;
+                                    $scope.result = result1;
                                 } else if (result1.result.length > result2.result.length) {
                                     Comparison.swapIndex(result2);
-                                    $scope.result = result2.result;
+                                    $scope.result = result2;
                                 } else {
                                     if (result1.matchCount < result2.matchCount) {
-                                        $scope.result = result1.result;
+                                        $scope.result = result1;
                                     } else if (result1.matchCount > result2.matchCount) {
                                         Comparison.swapIndex(result2);
                                     } else {
-                                        $scope.result = result1.result;
+                                        $scope.result = result1;
                                     }
                                 }
                             } else {
-                                $scope.result = result1.result;
+                                $scope.result = result1;
                             }
                             $scope.displayTemplate = {
                                 array: '/system/public/html/compareTemplate/compareArray.html',

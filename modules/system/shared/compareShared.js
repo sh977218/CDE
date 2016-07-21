@@ -104,7 +104,7 @@ exports.compareSideBySide = {
                 result: exports.copyProperties(options.properties)
             })
         }
-        return {showTitle: showTitle, options: options, result: result, matchCount: matchCount};
+        return {showTitle: showTitle, result: result, matchCount: matchCount};
     },
     objectCompare: function (leftObj, rightObj, options) {
         if (options.wipeUseless) {

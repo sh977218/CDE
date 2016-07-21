@@ -73,20 +73,6 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
             }, {label: 'Context', property: 'context.contextName'}
         ]
     };
-    $scope.propertiesOption = {
-        title: 'Properties',
-        hideSame: true,
-        equal: function (a, b) {
-            return a.key === b.key;
-        },
-        sort: function (a, b) {
-            return a.key.localeCompare(b.key);
-        },
-        properties: [
-            {label: 'Key', property: 'key'},
-            {label: 'Value', property: 'value'}
-        ]
-    };
     $scope.referenceDocumentOption = {
         title: 'Reference Documents',
         hideSame: true,
@@ -105,6 +91,20 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
             },
             {label: 'Language Code', property: 'languageCode'},
             {label: 'Document', property: 'document'}
+        ]
+    };
+    $scope.propertiesOption = {
+        title: 'Properties',
+        hideSame: true,
+        equal: function (a, b) {
+            return a.key === b.key;
+        },
+        sort: function (a, b) {
+            return a.key.localeCompare(b.key);
+        },
+        properties: [
+            {label: 'Key', property: 'key'},
+            {label: 'Value', property: 'value'}
         ]
     };
     $scope.classificationOption = {

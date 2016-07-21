@@ -1,4 +1,4 @@
-<label ng-if="showTitle">{{options.title}}</label>
+<label ng-if="result.showTitle">{{options.title}}</label>
 <div class="row" ng-repeat="r in result"
      ng-class="{quickBoardContentCompareModified:r.result.match===false,quickBoardContentCompareSame:r.result.match===true}">
     <div ng-if="options.hideSame || r.result.match===false">
