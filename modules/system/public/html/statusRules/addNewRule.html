@@ -12,7 +12,7 @@
 
         <div class="form-group">
             <label for="ruleName">Rule Name</label>
-            <input type="text" ng-model="ruleName" class="form-control" id="ruleName" placeholder="CDE has a property ...">
+            <input type="text" ng-model="ruleName" class="form-control" id="ruleName" placeholder="e.g. CDE has a property...">
         </div>
         <div class="form-group">
             <label for="field">Field</label>
@@ -21,11 +21,11 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="regex">RegEx Value</label>
-            <input type="text" class="form-control" id="regex" ng-model="regex" placeholder="/^[A-z]+[0-9]+$/">
+            <label for="regex">Field matches regular expression</label>
+            <input type="text" class="form-control" id="regex" ng-model="regex" placeholder="^[A-z]+[0-9]+$">
         </div>
         <div class="form-group">
-            <label for="targetStatus">Status</label>
+            <label for="targetStatus">Applies to Status (and above)</label>
             <select id="targetStatus" ng-model="targetStatus" class="form-control">
                 <option>Incomplete</option>
                 <option>Candidate</option>

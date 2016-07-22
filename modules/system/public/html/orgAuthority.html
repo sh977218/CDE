@@ -111,15 +111,15 @@
                 <br>
                 <button id="addRule" class="btn btn-success btn-sm" ng-click="openAddRuleModal()">Add New Rule</button>
                 <div ng-repeat="(orgName, orgRules) in userOrgs" ng-if="orgRules.length>0">
-                    <h3>{{orgName}}</h3>
+                    <h3>CDEs classified by {{orgName}}</h3>
                     <table class="table">
                         <thead>
                         <tr>
-                            <td>Rule Name</td>
-                            <td>Status</td>
-                            <td>Field</td>
-                            <td>RegEx</td>
-                            <td>Occurence</td>
+                            <th>Rule Name</th>
+                            <th>Status</th>
+                            <th>Field</th>
+                            <th>RegEx</th>
+                            <th>Occurence</th>
                         </tr>
                         </thead>
                         <tr ng-repeat="rule in orgRules">
