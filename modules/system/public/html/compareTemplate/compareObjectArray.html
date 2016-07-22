@@ -1,7 +1,6 @@
 <label ng-if="options.showTitle" uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
-<div ng-repeat="result in options.results"
-     ng-class="{quickBoardContentCompareModified:result.match===false,quickBoardContentCompareSame:result.match===true}">
-    <div class="overflowHidden" ng-if="result.match === false">
+<div ng-repeat="result in options.results">
+    <div class="overflowHidden boxed-div" ng-if="result.match === false">
         <div class="col-xs-6 quickBoardContentCompareCol">
             <div ng-repeat="p in options.properties">
                 <div ng-display-object

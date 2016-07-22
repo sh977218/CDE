@@ -1,54 +1,41 @@
-angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibModal', 'CdeDiff', 'CdeDiffPopulate', 'PriorCdes', function ($scope, $http, $modal, CdeDiff, CdeDiffPopulate, PriorCdes) {
+angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibModal', 'CdeDiff', 'CdeDiffPopulate',
+    function ($scope, $http, $modal, CdeDiff, CdeDiffPopulate) {
     $scope.selectedObjs = {length: 0, selected: {}};
-    $scope.setSelected = function (index) {
-        $scope.selectedObjs.selected[index] = !$scope.selectedObjs.selected[index];
-        $scope.selectedObjs.length = 0;
-        for (var property in $scope.selectedObjs.selected) {
-            if ($scope.selectedObjs.selected.hasOwnProperty(property) && $scope.selectedObjs.selected[property]) {
-                $scope.selectedObjs.length++;
-            } else {
-                delete $scope.selectedObjs.selected[property];
-            }
+    $scope.selectedIds = [];
+
+    $scope.setSelected = function (id)  {
+        var index = $scope.selectedIds.indexOf(id);
+        if (index === -1) {
+            $scope.selectedIds.splice(0, 0, id);
+            if ($scope.selectedIds.length > 2) $scope.selectedIds.length = 2;
+        } else {
+            $scope.selectedIds.splice(index, 1);
         }
-        if ($scope.selectedObjs.length > 2) {
-            $scope.selectedObjs.selected[index] = !$scope.selectedObjs.selected[index];
-            if (!$scope.selectedObjs.selected[index])
-                delete $scope.selectedObjs.selected[index];
-            $scope.selectedObjs.length--;
-            $scope.addAlert("danger", "You can only select two to compare.");
-        }
-    };
-    $scope.viewDiff = function (elt) {
-        CdeDiff.get({deId: elt._id}, function (diffResult) {
-            diffResult = diffResult.filter(function (change) {
-                return change.path[3] !== "isValid";
-            });
-            diffResult.forEach(CdeDiffPopulate.makeHumanReadable);
-            $scope.cdeDiff = diffResult;
+        $scope.selectedIds.sort(function (a, b) {
+            return a < b;
         });
     };
 
+    $scope.isSelected = function(id) {return $scope.selectedIds.indexOf(id) > -1;};
+
     $scope.viewDiffVersion = function () {
-        if ($scope.selectedObjs.length === 0) {
+        if ($scope.selectedIds.length === 0) {
             $scope.addAlert("danger", "Select two to compare.");
         } else {
-            var keys = Object.keys($scope.selectedObjs.selected).sort(function (a, b) {
-                if (a < 0 && b >= 0) return b > 1;
-                else if (b < 0 && a > 0) return a > b;
-                else return a - b;
-            });
             $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/systemTemplate/historyCompare.html',
                 controller: 'CdeDiffModalCtrl',
                 resolve: {
                     left: function () {
-                        if (keys[0] === "-1")
-                            return angular.copy($scope.elt);
-                        else return angular.copy($scope.priorCdes[parseInt(keys[0])]);
+                        return angular.copy($scope.priorCdes.filter(function (a) {
+                            return a._id === $scope.selectedIds[0];
+                        })[0]);
                     },
                     right: function () {
-                        return angular.copy($scope.priorCdes[parseInt(keys[1])]);
+                        return angular.copy($scope.priorCdes.filter(function (a) {
+                            return a._id === $scope.selectedIds[1];
+                        })[0]);
                     },
                     hideSame: function () {
                         return $scope.hideSame;
@@ -64,12 +51,13 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
     function loadPriorCdes() {
         if (!$scope.priorCdes) {
             if ($scope.elt.history && $scope.elt.history.length > 0) {
-                PriorCdes.getCdes({cdeId: $scope.elt._id}, function (dataElements) {
-                    $scope.priorCdes = dataElements;
+                $http.get('/priorcdes/' + $scope.elt._id).success(function(result) {
+                    $scope.priorCdes = result;
+                    $scope.priorCdes.splice(0, 0, $scope.elt);
                 });
             }
         }
-    };
+    }
 
     $scope.$on('loadPriorCdes', loadPriorCdes);
 
@@ -77,13 +65,15 @@ angular.module('cdeModule').controller('CdeDiffCtrl', ['$scope', '$http', '$uibM
 
 }]);
 
-angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http', '$timeout', '$uibModalInstance', 'left', 'right', 'classificationUtil', 'hideSame', function ($scope, $http, $timeout, $modal, left, right, classificationUtil, hideSame) {
+angular.module('systemModule').controller('CdeDiffModalCtrl',
+    ['$scope', '$http', '$timeout', '$uibModalInstance', 'left', 'right', 'ClassificationUtil',
+        function ($scope, $http, $timeout, $modal, left, right, ClassificationUtil) {
     $scope.left = left;
     $scope.right = right;
-    classificationUtil.sortClassification(left);
-    classificationUtil.sortClassification(right);
-    $scope.left.flatClassifications = classificationUtil.getFlatClassifications($scope.left);
-    $scope.right.flatClassifications = classificationUtil.getFlatClassifications($scope.right);
+    ClassificationUtil.sortClassification(left);
+    ClassificationUtil.sortClassification(right);
+    $scope.left.flatClassifications = ClassificationUtil.getFlatClassifications($scope.left);
+    $scope.right.flatClassifications = ClassificationUtil.getFlatClassifications($scope.right);
 
     $scope.versionOption = {
         title: 'Versions',

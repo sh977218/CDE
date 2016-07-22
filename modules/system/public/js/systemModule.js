@@ -208,7 +208,7 @@ angular.module('systemModule').filter('bytes', function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 });
-angular.module('systemModule').factory('classificationUtil', function () {
+angular.module('systemModule').factory('ClassificationUtil', function () {
     var factoryObj = {};
     factoryObj.sortClassification = function (elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {

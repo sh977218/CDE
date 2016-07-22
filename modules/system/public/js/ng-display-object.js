@@ -27,7 +27,7 @@
                                 }
                             }
                             return o;
-                        }
+                        };
                     },
                     link: function ($scope, $element) {
                         if (!$scope.obj) return;

@@ -4,8 +4,8 @@
     </div>
     <div class="panel-body">
         <div>
-            <div class="col-xs-6"><h4>Current CDE</h4></div>
-            <div class="col-xs-6"><h4>Prior CDE</h4></div>
+            <div class="col-xs-6"><h5>Updated: {{left.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
+            <div class="col-xs-6"><h5>Updated: {{right.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
         </div>
         <compare-primitive left='left.version' right='right.version' options='versionOption'></compare-primitive>
 
