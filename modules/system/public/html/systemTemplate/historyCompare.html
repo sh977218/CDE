@@ -3,19 +3,22 @@
         <h3 class="panel-title">Differences</h3>
     </div>
     <div class="panel-body">
+        <div>
+            <div class="col-xs-6"><h4>Current CDE</h4></div>
+            <div class="col-xs-6"><h4>Prior CDE</h4></div>
+        </div>
+        <compare-primitive left='left.version' right='right.version' options='versionOption'></compare-primitive>
 
-        <compare-primitive left='elt.version' right='priorCde.version' options='versionOption'></compare-primitive>
-
-        <compare-object-array left='elt.naming' right='priorCde.naming'
+        <compare-object-array left='left.naming' right='right.naming'
                               options='nameOption'></compare-object-array>
 
-        <compare-object-array left='elt.referenceDocuments' right='priorCde.referenceDocuments'
+        <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
                               options='referenceDocumentOption'></compare-object-array>
 
-        <compare-object-array left='elt.properties' right='priorCde.properties'
+        <compare-object-array left='left.properties' right='right.properties'
                               options='propertiesOption'></compare-object-array>
 
-        <compare-primitive-array left='elt.flatClassifications' right='priorCde.flatClassifications'
+        <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
                                  options='classificationOption'></compare-primitive-array>
 
     </div>

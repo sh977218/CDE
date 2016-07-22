@@ -1,5 +1,5 @@
-<h4 tabindex="0">History</h4>
-<div class="row" ng-controller="CdeDiffCtrl">
+<div ng-controller="CdeDiffCtrl">
+    <h4>History</h4>
     <div class="btn-group">
         <label class="btn btn-success" ng-model="showFull" uib-btn-radio="true">
             Full History</label>
@@ -7,6 +7,9 @@
             Only New Version</label>
     </div>
 
+    <a tabindex="0" class="fa fa-eye" ng-click="viewDiffVersion()">Compare</a>
+
+    <div class="row">
     <div class="col-md-5">
         <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
             <caption tabindex="0">List of previous versions</caption>
@@ -17,31 +20,36 @@
                 <th tabindex="0">Change Note</th>
                 <th tabindex="0">Modifications since Previous Version</th>
                 <th tabindex="0">See Full</th>
+                <th tabindex="0">Version:</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr ng-click="setSelected(-1)" ng-class="{selectedRow:selectedObjs.selected[-1]}">
                 <td tabindex="0">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td tabindex="0">{{elt.updatedBy.username}}</td>
                 <td tabindex="0">{{elt.changeNote}}</td>
                 <td><a tabindex="0" class="fa fa-eye" ng-click="viewDiff(elt)"> View</a></td>
                 <td tabindex="0">Currently Viewing</td>
+                <td>{{elt.version}}</td>
             </tr>
-            <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated']">
+            <tr ng-repeat="priorCde in priorCdes | orderBy:[nullsToBottom,'-updated'] track by $index"
+                ng-show="showFull || priorCde.version !== priorCdes[$index-1].version" ng-click="setSelected($index);"
+                ng-class="{selectedRow:selectedObjs.selected[$index]}">
                 <td tabindex="0">{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
                 <td tabindex="0">{{priorCde.updatedBy.username}}</td>
                 <td tabindex="0">{{priorCde.changeNote}}</td>
                 <td class='table-info'>
                     <div ng-if="priorCde.updated">
-                        <a tabindex="0" class="fa fa-eye" ng-click="viewDiff(priorCde)"> View</a>
-                        <a tabindex="0" class="fa fa-eye" ng-if="priorCde.version && elt.version !== priorCde.version"
-                           ng-click="viewDiffVersion(elt,priorCde)"> New Version</a>
+                        <a tabindex="0" class="fa fa-eye" ng-click="viewDiff(priorCde)">View</a>
+                        <a tabindex="0" class="fa fa-eye" ng-show="priorCde.version !== priorCdes[$index-1].version">
+                            New Version</a>
                     </div>
                     <span tabindex="0" ng-if="!priorCde.updated">First Version</span></td>
                 <td>
                     <a tabindex="0" href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"
                        target="_blank">View</a>
                 </td>
+                <td>{{priorCde.version}}</td>
             </tr>
             </tbody>
 
@@ -50,6 +58,7 @@
     </div>
     <div class="col-md-7">
         <div ng-include="'/cde/public/html/cdeDiff.html'"></div>
+    </div>
     </div>
 </div>
 

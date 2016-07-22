@@ -1124,3 +1124,7 @@ div + .questionPlaceholder {
         line-height: 1.2 !important;
     }
 }
+
+.selectedRow {
+    background-color: #f9f9f9;
+}
