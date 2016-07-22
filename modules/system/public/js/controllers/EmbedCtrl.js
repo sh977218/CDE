@@ -60,6 +60,10 @@ angular.module('systemModule').controller('EmbedCtrl', function($scope, OrgHelpe
         if (!$scope.selection.cde.properties) $scope.selection.cde.properties = [];
         $scope.selection.cde.properties.push({key: "", label: "", limit: 50});
     };
+    $scope.addCdeClassification = function() {
+        if (!$scope.selection.cde.classifications) $scope.selection.cde.classifications = [];
+        $scope.selection.cde.classifications.push({under: ""});
+    };
 
     $scope.enableCde = function(b) {
         if (b) {

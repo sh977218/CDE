@@ -2,6 +2,9 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
     .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http) {
 
         $scope.args = {};
+        $scope.clLimit = 3;
+        $scope.raiseClLimit = function () {$scope.clLimit = 100;}
+        $scope.lowerClLimit = function () {$scope.clLimit = 3;}
         $scope.searchType = 'cde';
         var args1 = window.location.search.substr(1).split("&");
         args1.forEach(function(arg) {
@@ -55,6 +58,35 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
 
         $scope.searchCDEs = function() {$scope.searchType = 'cde';};
         $scope.searchForms = function() {$scope.searchType = 'form';};
+
+        function doClassif(currentString, classif, result) {
+            if (currentString.length > 0) {
+                currentString = currentString + ';';
+            }
+            currentString = currentString + classif.name;
+            if (classif.elements && classif.elements.length > 0) {
+                classif.elements.forEach(function(cl) {
+                    doClassif(currentString, cl, result);
+                });
+            } else {
+                result.push(currentString);
+            }
+        }
+
+        function flattenClassification(elt) {
+            var result = [];
+            if (elt.classification) {
+                elt.classification.forEach(function (cl) {
+                    if (cl.elements) {
+                        cl.elements.forEach(function (subCl) {
+                            doClassif(cl.stewardOrg.name, subCl, result);
+                        });
+                    }
+                });
+            }
+            return result;
+        }
+
 
         $scope.search = function () {
             var type = $scope.searchType;
@@ -123,17 +155,28 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                             var id = c.ids.filter(function(e) {
                                 return e.source === eId.source;
                             })[0];
-                            if (id) c.embed.ids = {label: eId.idLabel, id: id.id};
+                            if (id) {
+                                c.embed[eId.idLabel] = id.id;
+                                if (eId.version) {
+                                    c.embed[eId.idLabel + "_version"] = id.version;
+                                }
+                            }
                         });
                     }
-                    if ($scope.args.sourceVersion) {
-                        var id = c.ids.filter(function(e) {
-                            return e.source === $scope.args.org;
-                        })[0];
-                        if (id) c.embed.sourceVersion = id.version;
-                    }
-                    if ($scope.embed[$scope.searchType].primaryDefinition) {
+                    if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
                         c.embed.primaryDefinition = c.naming[0].definition;
+                    }
+
+                    if (embed4Type.classifications && embed4Type.classifications.length > 0) {
+                        embed4Type.classifications.forEach(function (eCl) {
+                            var flatClassifs = flattenClassification(c);
+                            var exclude = new RegExp(eCl.exclude);
+                            c.embed[eCl.label] = flatClassifs.filter(function (cl) {
+                                return cl.indexOf(eCl.startsWith) === 0 && !cl.match(exclude);
+                            }).map(function (cl) {
+                                return cl.substr(eCl.startsWith.length);
+                            });
+                       });
                     }
                 });
             });
@@ -152,19 +195,16 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         var embed4Type = $scope.embed[$scope.searchType];
 
         embed4Type.ids.forEach(function (eId) {
-            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceId", label: eId.label});
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel, label: eId.idLabel});
+            if (eId.version) {
+                $scope.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + "_version", label: eId.versionLabel});
+            }
         });
         //$scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryName", label: "Name", asHtml: true});
 
-        if ($scope.args.primaryDefinition) {
-            $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition", label: "Definition"});
-        }
-
-
-
-
-        if ($scope.args.sourceVersion) {
-            $scope.searchViewSettings.tableViewFields.customFields.push({key: "sourceVersion", label: "version"});
+        if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition",
+                label: embed4Type.primaryDefinition.label, style: embed4Type.primaryDefinition.style});
         }
 
     })

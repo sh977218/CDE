@@ -28,8 +28,15 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 var commonEmbedSchema = {
     nameLabel: String,
     pageSize: Number,
-    primaryDefinition: {label: String},
-    registrationStatus: {label: String},
+    primaryDefinition: {
+        show: Boolean,
+        label: String,
+        style: String
+    },
+    registrationStatus: {
+        show: Boolean,
+        label: String
+    },
     lowestRegistrationStatus: {type: String, enum:regStatusShared.statusList},
     properties: [
         {
@@ -41,6 +48,11 @@ var commonEmbedSchema = {
     otherNames: [{
         label: String,
         contextName: String
+    }],
+    classifications: [{
+        label: String,
+        startsWith: String,
+        exclude: String
     }],
     ids: [
         {

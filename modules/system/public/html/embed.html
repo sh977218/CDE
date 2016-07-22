@@ -43,15 +43,19 @@
                     </span>
                 </h2>
                 <div ng-show="selection.cde">
-                    <input type="checkbox" ng-model="selection.cde.primaryDefinition"
-                           ng-true-value="{label: 'Definition'}"
-                           ng-false-value="null"
+                    <input type="checkbox" ng-model="selection.cde.primaryDefinition.show"
                            id="cde.primaryDefinition">
                     <label for="cde.primaryDefinition">See Primary Definition</label>
-                    <div ng-if="selection.cde.primaryDefinition">
+                    <div ng-if="selection.cde.primaryDefinition.show">
                         <label for="cde.primaryDefinition.label">Definition Label: </label>
                         <input ng-model="selection.cde.primaryDefinition.label"
                                id="cde.primaryDefinition.label"
+                                class="form-control">
+                    </div>
+                    <div ng-if="selection.cde.primaryDefinition.show">
+                        <label for="cde.primaryDefinition.label">CSS Style: </label>
+                        <input ng-model="selection.cde.primaryDefinition.style"
+                               id="cde.primaryDefinition.style"
                                 class="form-control">
                     </div>
                     <br>
@@ -110,6 +114,23 @@
                         </div>
                     </div>
                     <br>
+                    <div class="boxed-div">
+                        <h4>Classifications</h4>
+                        <button ng-click="addCdeClassification()" class="btn btn-default">Add Classification</button>
+                        <div ng-repeat="thisClassif in selection.cde.classifications" class="boxed-div">
+                            <button ng-click="selection.cde.classifications.splice($index, 1)" title="Remove">
+                                <i class="fa fa-trash"></i></button>
+                            <label for="thisClassif.label">Choose a label:</label>
+                            <input ng-model="thisClassif.label" id="thisClassif.label" class="form-control" required>
+                            <br>
+                            <label for="thisClassif.startsWith">Include classifications starting with: </label>
+                            <input ng-model="thisClassif.startsWith" id="thisClassif.startsWith" class="form-control">
+                            <br>
+                            <label for="thisClassif.exclude">Exclude classifications with regEx: </label>
+                            <input ng-model="thisClassif.exclude" id="thisClassif.exclude" class="form-control">
+                        </div>
+                    </div>
+                    <br>
                     <label for="cde.pageSize">Number of results per page</label>
                     <input type="number" ng-model="selection.cde.pageSize" id="cde.pageSize" class="form-control" required>
 
@@ -146,9 +167,7 @@
                         </div>
                     </div>
                 </div>
-                <input type="checkbox" ng-model="selection.cde.registrationStatus"
-                       ng-true-value="{label: 'Status'}"
-                       ng-false-value="null"
+                <input type="checkbox" ng-model="selection.cde.registrationStatus.show"
                        id="cde.regStatus">
                 <label for="cde.regStatus">See Registration Status</label>
                 <div ng-if="selection.cde.registrationStatus">

@@ -4,7 +4,11 @@
         <tr>
             <th >Name</th>
             <th ng-if="searchViewSettings.tableViewFields.permissibleValues">Permissible Values</th>
-            <th  ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
+            <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields"
+                style="{{customeField.style}}">{{customField.label}}</th>
+            <th ng-repeat="eCl in embed[searchType].classifications" ng-switch="clLimit === 100">{{eCl.label}} <span
+                    ng-switch-when="true"> <a href="" ng-click="lowerClLimit()">(show 3)</a></span>
+                <span ng-switch-default>(3 shown, <a href="" ng-click="raiseClLimit()">see all</a>)</span></th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +32,12 @@
             </td>
             <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key] | limitTo : 200}}
                 <span ng-show="c.embed[customField.key].length > 200">(More...)</span></td>
+            <td ng-repeat="eCl in embed[searchType].classifications">
+                <ul style="margin-bottom: 0">
+                    <li ng-repeat="cl in c.embed[eCl.label] | limitTo:clLimit"><small>{{cl}}</small></li>
+                </ul>
+                <div ng-if="c.embed[eCl.label].length > clLimit" style="margin-left: 20px">...</div>
+            </td>
         </tr>
         </tbody>
     </table>
