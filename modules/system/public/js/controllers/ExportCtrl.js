@@ -305,7 +305,22 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
     }]);
 
 angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'myOrgs', function($scope, $modalInstance, myOrgs){
-    $scope.fields = ['stewardOrg.name','properties.key','valueDomain.permissibleValues.codeSystemName','valueDomain.permissibleValues.permissibleValue'];
+    $scope.fields = [
+        'stewardOrg.name'
+        , 'properties.key'
+        , 'valueDomain.permissibleValues.codeSystemName'
+        , 'valueDomain.permissibleValues.permissibleValue'
+        , 'valueDomain.permissibleValues.valueMeaningName'
+        , 'valueDomain.permissibleValues.permissibleValue'
+        , 'version'
+        , 'ids.version'
+        , 'ids.source'
+        , 'naming.context.contextName'
+        , 'valueDomain.datatype'
+        , 'properties.key'
+        , 'properties.key'
+        , 'properties.key'
+    ];
     $scope.myOrgs = myOrgs;
     $scope.cancel = function(){
         $modalInstance.dismiss();
