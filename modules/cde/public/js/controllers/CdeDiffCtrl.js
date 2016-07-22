@@ -65,7 +65,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
     };
     $scope.nameOption = {
         equal: function (a, b) {
-            return a.designation === b.designation;
+            return a.designation === b.designation && a.definition === b.definition;
         },
         sort: function (a, b) {
             return a.designation.localeCompare(b.designation);
@@ -104,7 +104,7 @@ angular.module('systemModule').controller('CdeDiffModalCtrl', ['$scope', '$http'
             return a.key === b.key;
         },
         sort: function (a, b) {
-            return a.key.localeCompare(b.key);
+            return a.key.localeCompare(b.key) && a.value.localeCompare(b.value);
         },
         title: 'Properties',
         hideSame: true,

@@ -36,6 +36,13 @@
                 }
             },
             primitiveArrayCompare: function (leftArray, rightArray, options) {
+                function findIndexInArray(array, item, equalFn) {
+                    if (!array || array.length === 0)return -1;
+                    for (var index = 0; index < array.length; index++) {
+                        if (equalFn(item, array[index])) return index;
+                    }
+                    return -1;
+                };
                 options.matchCount = 0;
                 options.results = [];
                 options.showTitle = false;
@@ -47,7 +54,7 @@
                 var beginRightIndex = 0;
                 leftArray.forEach(function (leftItem, leftIndex) {
                     rightArrayCopy = rightArray.slice(beginRightIndex, rightArray.length);
-                    var foundInRight = rightArrayCopy.indexOf(leftItem);
+                    var foundInRight = findIndexInArray(rightArrayCopy, leftItem, options.equal);
                     if (foundInRight === -1) {
                         options.showTitle = true;
                         options.results.push({leftIndex: leftIndex, match: false});
