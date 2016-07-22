@@ -72,8 +72,8 @@ angular.module('systemModule').controller('CdeDiffModalCtrl',
     $scope.right = right;
     ClassificationUtil.sortClassification(left);
     ClassificationUtil.sortClassification(right);
-    $scope.left.flatClassifications = ClassificationUtil.getFlatClassifications($scope.left);
-    $scope.right.flatClassifications = ClassificationUtil.getFlatClassifications($scope.right);
+    $scope.left.flatClassifications = ClassificationUtil.flattenClassification($scope.left);
+    $scope.right.flatClassifications = ClassificationUtil.flattenClassification($scope.right);
 
     $scope.versionOption = {
         title: 'Versions',
