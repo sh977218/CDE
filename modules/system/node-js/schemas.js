@@ -52,7 +52,8 @@ var commonEmbedSchema = {
     classifications: [{
         label: String,
         startsWith: String,
-        exclude: String
+        exclude: String,
+        selectedOnly: Boolean
     }],
     ids: [
         {

@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('EmbedCtrl', function($scope, OrgHelpers, $http, Alert) {
+angular.module('systemModule').controller('EmbedCtrl',
+    function($scope, OrgHelpers, $http, Alert, $timeout) {
 
     var defaultCommon = {
         lowestRegistrationStatus: 'Qualified',

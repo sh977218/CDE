@@ -53,10 +53,10 @@
                                 class="form-control">
                     </div>
                     <div ng-if="selection.cde.primaryDefinition.show">
-                        <label for="cde.primaryDefinition.label">CSS Style: </label>
+                        <label for="cde.primaryDefinition.style">CSS Style: </label>
                         <input ng-model="selection.cde.primaryDefinition.style"
                                id="cde.primaryDefinition.style"
-                                class="form-control">
+                               class="form-control" >
                     </div>
                     <br>
                     <div class="boxed-div">
@@ -128,6 +128,9 @@
                             <br>
                             <label for="thisClassif.exclude">Exclude classifications with regEx: </label>
                             <input ng-model="thisClassif.exclude" id="thisClassif.exclude" class="form-control">
+                            <br>
+                            <input type="checkbox" ng-model="thisClassif.selectedOnly" id="thisClassif.selectedOnly">
+                            <label for="thisClassif.selectedOnly">Only show selected classifications </label>
                         </div>
                     </div>
                     <br>

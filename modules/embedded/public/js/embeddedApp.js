@@ -3,8 +3,8 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
 
         $scope.args = {};
         $scope.clLimit = 3;
-        $scope.raiseClLimit = function () {$scope.clLimit = 100;}
-        $scope.lowerClLimit = function () {$scope.clLimit = 3;}
+        $scope.raiseClLimit = function () {$scope.clLimit = 100;};
+        $scope.lowerClLimit = function () {$scope.clLimit = 3;};
         $scope.searchType = 'cde';
         var args1 = window.location.search.substr(1).split("&");
         args1.forEach(function(arg) {
@@ -172,7 +172,11 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                             var flatClassifs = flattenClassification(c);
                             var exclude = new RegExp(eCl.exclude);
                             c.embed[eCl.label] = flatClassifs.filter(function (cl) {
-                                return cl.indexOf(eCl.startsWith) === 0 && !cl.match(exclude);
+                                result = cl.indexOf(eCl.startsWith) === 0 && !cl.match(exclude);
+                                if (eCl.selectedOnly) {
+                                    result = result && cl.indexOf($scope.embed.org + ";" + $scope.searchSettings.classification.join(";")) === 0;
+                                }
+                                return result;
                             }).map(function (cl) {
                                 return cl.substr(eCl.startsWith.length);
                             });
