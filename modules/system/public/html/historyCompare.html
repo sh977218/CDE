@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" ng-show="showHistory">
     <div class="panel-heading">
         <h3 class="panel-title">Differences</h3>
     </div>
@@ -14,6 +14,9 @@
 
         <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
                               options='referenceDocumentOption'></compare-object-array>
+
+        <compare-object-array left='left.ids' right='right.ids'
+                              options='idOption'></compare-object-array>
 
         <compare-object-array left='left.properties' right='right.properties'
                               options='propertiesOption'></compare-object-array>

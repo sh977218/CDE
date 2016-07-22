@@ -1,6 +1,5 @@
 <label ng-if="options.showTitle">{{options.title}}:</label>
-<div ng-repeat="result in options.results"
-     ng-class="{quickBoardContentCompareModified:result.match===false,quickBoardContentCompareSame:result.match===true}">
+<div ng-repeat="result in options.results">
     <div class="overflowHidden" ng-if="result.match === false">
         <div class="col-xs-6 quickBoardContentCompareCol">{{left[result.leftIndex]}}</div>
         <div class="col-xs-6 quickBoardContentCompareCol">{{right[result.rightIndex]}}</div>
