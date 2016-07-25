@@ -1,6 +1,30 @@
-var cdesvc = require('../modules/cde/node-js/cdesvc'),
+var xml2js = require('xml2js'),
+    builder = new xml2js.Builder({attrkey: 'attribute'}),
+    Readable = require('stream').Readable,
+    mongo_data = require('../modules/system/node-js/mongo-data'),
+    cdesvc = require('../modules/cde/node-js/cdesvc'),
     classificationShared = require('../modules/system/shared/classificationShared')
     ;
+exports.addAttachment = function (elt, xml, cb) {
+    var readable = new Readable();
+    var xmlObj = JSON.parse(JSON.stringify(xml));
+    delete xmlObj._id;
+    delete xmlObj.index;
+    delete xmlObj.xmlFile;
+    var origXml = builder.buildObject(xmlObj).toString();
+    readable.push(origXml);
+    readable.push(null);
+    mongo_data.addAttachment({
+        originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
+        type: "application/xml",
+        size: origXml.length,
+        stream: readable,
+        ingested: true
+    }, null, "Original XML File", elt, function (attachment, newFileCreated, e) {
+        if (e) throw e;
+        cb();
+    });
+};
 
 exports.wipeUseless = function (toWipeForm) {
     delete toWipeForm._id;

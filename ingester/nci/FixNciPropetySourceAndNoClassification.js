@@ -1,21 +1,36 @@
 var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    DataElement = mongo_cde.DataElement,
-    elastic = require('../../modules/cde/node-js/elastic')
+    DataElementModel = require('../createConnection').DataElementModel
     ;
 
+var today = new Date();
+var beforeNow = new Date();
+beforeNow.setHours(beforeNow.getHours() - 8);
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
-DataElement.find({
-    'stewardOrg.name': 'NCI',
-    'archived': null,
-    'registrationState.registrationStatus': {$ne: "Retired"}
-}, function (err, DEs) {
+
+var query = {
+    $and: [{
+        'stewardOrg.name': 'NCI',
+        'archived': null,
+        'registrationState.registrationStatus': {$ne: "Retired"}
+    }, {
+        $or: [{'updated': {$exists: false}}, {
+            'updated': {$lt: beforeNow}
+        }]
+    }]
+};
+
+DataElementModel.count(query, function(err, count) {
     if (err) throw err;
-    async.forEach(DEs, function (de, doneOneDe) {
+    console.log(count + " CDEs left");
+});
+
+DataElementModel.find(query).limit(5000).exec(function (err, DEs) {
+    if (err) throw err;
+    async.forEachSeries(DEs, function (de, doneOneDe) {
         de.source = 'caDSR';
         de.updatedBy = user;
-        de.updated = new Date().toJSON();
+        de.updated = today.toJSON();
         if (!de.classification || de.classification.length === 0)
             de.classification = [{
                 stewardOrg: {
@@ -27,19 +42,24 @@ DataElement.find({
         if (de.properties) {
             de.properties.forEach(function (p) {
                 p.source = 'caDSR';
-            })
+            });
         }
         de.save(function (err) {
-            if (err) throw err;
-            else
-                elastic.updateOrInsert(de, function () {
-                    deCounter++;
-                    console.log('deCounter: ' + deCounter);
-                    doneOneDe();
-                });
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            }
+            else {
+                deCounter++;
+                console.log('deCounter: ' + deCounter);
+                doneOneDe();
+            }
         });
     }, function doneAllDes() {
         console.log('finished all. de count:' + deCounter);
-        process.exit(1);
+        process.exit(0);
     });
 });
+
+
+
