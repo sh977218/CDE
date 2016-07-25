@@ -14,7 +14,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
             }
             $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
-            $scope.addAlert("warning", "Your export is being generated, please wait.");
+            if (type !== 'validationRules') $scope.addAlert("warning", "Your export is being generated, please wait.");
             Elastic.getExport(Elastic.buildElasticQuerySettings(exportSettings.searchSettings), $scope.module?$scope.module:'cde', function (err, result) {
                 if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
                 var exporters =
@@ -65,10 +65,10 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                     , cdeName: oneElt.naming[0].designation
                                     , validationRules: RegStatusValidator.evalCde(oneElt, orgName, status, cdeOrgRules)
                                 };
-                                cdes.push(record)
+                                if (record.validationRules.every(function(x){return x;})) cdes.push(record)
                             };
                         });
-                        if(exportSettings.cb) exportSettings.cb(cdes);
+                        if(exportSettings.cb) exportSettings.cb(cdes.slice(0, 100));
                     }
                 };
                 if (result) {
@@ -77,7 +77,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                         $scope.addAlert("danger", "This export format is not supported.");
                     } else {
                         exporter(result);
-                        $scope.addAlert("success", "Export downloaded.");
+                        if (type !== 'validationRules') $scope.addAlert("success", "Export downloaded.");
                         $scope.feedbackClass = ["fa-download"];
                     }
                 } else {
@@ -169,84 +169,8 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
 
 angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http', '$uibModal',
     function ($scope, OrgHelpers, Organization, $http, $modal) {
-        //$scope.rules = [
-        //    {
-        //        "field" : "stewardOrg.name",
-        //        "targetStatus" : "Candidate",
-        //        "ruleName" : "CDE has TEST steward (should pass)",
-        //        "rule" : {
-        //            "regex" : "TEST"
-        //        },
-        //        "occurence" : "exactlyOne"
-        //    },
-        //    {
-        //        "field" : "stewardOrg.name",
-        //        "targetStatus" : "Recorded",
-        //        "ruleName" : "CDE has NCI steward (should fail)",
-        //        "rule" : {
-        //            "regex" : "NCI"
-        //        },
-        //        "occurence" : "exactlyOne"
-        //    },
-        //    {
-        //        "field" : "stewardOrg.name1",
-        //        "targetStatus" : "Recorded",
-        //        "ruleName" : "CDE has non-existing field (should fail)",
-        //        "rule" : {
-        //            "regex" : ".+"
-        //        },
-        //        "occurence" : "exactlyOne"
-        //    },
-        //    {
-        //        "field" : "properties.key",
-        //        "targetStatus" : "Recorded",
-        //        "ruleName" : "NINDS Guidelines are recorded (atLeastOne) (should pass)",
-        //        "rule" : {
-        //            "regex" : "NINDS Guidelines"
-        //        },
-        //        "occurence" : "atLeastOne"
-        //    },
-        //    {
-        //        "field" : "properties.key",
-        //        "targetStatus" : "Recorded",
-        //        "ruleName" : "non-existing property is recorded (atLeastOne) (should fail)",
-        //        "rule" : {
-        //            "regex" : "nonsense"
-        //        },
-        //        "occurence" : "atLeastOne"
-        //    },
-        //    {
-        //        "field" : "valueDomain.permissibleValues.codeSystemName",
-        //        "targetStatus" : "Qualified",
-        //        "ruleName" : "All PVs mapped to LOINC (all) (should pass)",
-        //        "rule" : {
-        //            "regex" : "LOINC"
-        //        },
-        //        "occurence" : "all"
-        //    },
-        //    {
-        //        "field" : "valueDomain.permissibleValues.permissibleValue",
-        //        "targetStatus" : "Qualified",
-        //        "ruleName" : "All PVs have a value (all) (should pass)",
-        //        "rule" : {
-        //            "regex" : ".+"
-        //        },
-        //        "occurence" : "all"
-        //    },
-        //    {
-        //        "field" : "valueDomain.permissibleValues.permissibleValue",
-        //        "targetStatus" : "Qualified",
-        //        "ruleName" : "All PVs have LOINC code (all) (should fail)",
-        //        "rule" : {
-        //            "regex" : "L.+"
-        //        },
-        //        "occurence" : "all"
-        //    }
-        //];
-
         $scope.userOrgs = {};
         $scope.myOrgs.forEach(function(orgName){
-            //$scope.userOrgs[orgName] = OrgHelpers.getStatusValidationRules(orgName);
             Organization.getByName(orgName, function(o){
                 $scope.userOrgs[orgName] = o.data.cdeStatusValidationRules;
             });
@@ -311,15 +235,12 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'valueDomain.permissibleValues.codeSystemName'
         , 'valueDomain.permissibleValues.permissibleValue'
         , 'valueDomain.permissibleValues.valueMeaningName'
-        , 'valueDomain.permissibleValues.permissibleValue'
+        , 'valueDomain.permissibleValues.valueMeaningCode'
         , 'version'
         , 'ids.version'
         , 'ids.source'
         , 'naming.context.contextName'
         , 'valueDomain.datatype'
-        , 'properties.key'
-        , 'properties.key'
-        , 'properties.key'
     ];
     $scope.myOrgs = myOrgs;
     $scope.cancel = function(){

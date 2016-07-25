@@ -1,5 +1,5 @@
 <div ng-controller="ShowValidRuleReportCtrl">
-    <div ng-if="cdes">
+    <div ng-if="cdes && cdes.length>0">
         <table class="table">
             <thead>
                 <tr>
@@ -21,9 +21,14 @@
             </tr>
         </table>
     </div>
-    <div ng-hide="cdes">
+    <div ng-if="cdes && cdes.length===0">
         <br><br><br>
         <h3 class="text-center">All CDEs are passing validation rules</h3>
+        <br><br>
+    </div>
+    <div ng-if="!cdes">
+        <br><br><br>
+        <h3 class="text-center">Retrieving report...</h3>
         <br><br>
     </div>
 </div>
