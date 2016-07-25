@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
 
-@Test(groups="CdeEditTest")
+@Test(groups = "CdeEditTest")
 public class CdeEditTest extends NlmCdeBaseTest {
 
     private void confirmCdeModification(String field, String oldValue,
-                                          String newValue) {
+                                        String newValue) {
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));
@@ -53,8 +53,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("history_tab"));
         textPresent(cdeName);
         textPresent("Change note for change number 1");
-        hangon(1);
-        showHistoryDiff(0);
+        selectHistoryAndCompare(1, 2);
         textPresent(cdeName + "[name change number 1]");
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
 

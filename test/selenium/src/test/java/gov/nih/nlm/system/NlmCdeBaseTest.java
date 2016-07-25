@@ -709,8 +709,12 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }
 
-    protected void showHistoryDiff(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
+    protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
+        hangon(1);
+        clickElement(By.id("historyCompareBtn"));
+
     }
 
     protected void showHistoryFull(Integer prev) {
@@ -719,7 +723,7 @@ public class NlmCdeBaseTest {
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
         clickElement(By.id("history_tab"));
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
+        selectHistoryAndCompare(1, 2);
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));

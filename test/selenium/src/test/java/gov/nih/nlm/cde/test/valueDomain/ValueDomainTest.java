@@ -16,7 +16,6 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         String cdeName = "CTC Adverse Event Apnea Grade";
         goToCdeByName(cdeName);
         clickElement(By.linkText("Permissible Values"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         clickElement(By.id("editDatatype"));
         findElement(By.name("datatypeFreeText")).clear();
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");

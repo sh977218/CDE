@@ -1,12 +1,12 @@
 <div ng-controller="CdeHistoryCtrl">
     <h4>History</h4>
     <div class="row">
-    <div class="col-md-4">
+        <div class="col-md-4" ng-show="priorCdes.length > 0">
         <input id="showVersionedHistory" type="checkbox" ng-model="showVersioned">
         <label for="showVersionedHistory">Only show versioned revisions.</label>
-        <table ng-show="priorCdes.length > 0" class="table" id="historyTable">
+            <table class="table" id="historyTable">
             <caption tabindex="0">List of previous versions. Click rows to select them.
-                <button ng-if="selectedIds.length === 2"
+                <button ng-if="selectedIds.length === 2" id="historyCompareBtn"
                         tabindex="0" class="btn btn-default" ng-click="viewDiff()">
                     <i class="fa fa-files-o"></i> Compare</button>
 
@@ -34,8 +34,8 @@
             </tbody>
 
         </table>
-        <div tabindex="0" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
     </div>
+        <div tabindex="0" class="col-md-4" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
     <div class="col-md-8">
         <div ng-include="'/system/public/html/historyCompare.html'"></div>
     </div>
