@@ -8,7 +8,14 @@
         <span ng-if="embeds[org].length > 0">
             <ul>
                 <li ng-repeat="e in embeds[org]">
-                    <i title="editEmbed" class="fa fa-pencil" ng-click="edit(org, e)"> </i> {{e.name}}
+                    <span ng-show="showDelete">Confirm Delete
+                        <a class="fa fa-check" ng-click="showDelete = false; remove(org, e)"
+                           id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
+                        <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+                    </span>
+                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                       id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
+                    <a title="editEmbed" class="fa fa-pencil" ng-click="edit(org, e)" href=""> </a> {{e.name}}
                 (id = {{e._id}})</li>
             </ul>
         </span>

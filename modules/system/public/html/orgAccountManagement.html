@@ -108,7 +108,7 @@
                 </button>
             </form>
         </uib-tab>
-        <uib-tab heading="Embedding" ng-if="myOrgAdmins.length > 0">
+        <uib-tab heading="Embedding" ng-if="myOrgAdmins.length > 0" id="embeddingTab">
             <div ng-include="'/system/public/html/embed.html'" ng-controller="EmbedCtrl"></div>
         </uib-tab>
     </uib-tabset>
