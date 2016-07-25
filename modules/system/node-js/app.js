@@ -43,6 +43,7 @@ exports.init = function (app) {
     app.use("/system/shared", express.static(path.join(__dirname, '../shared')));
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
+        "/board/:id", "/deview", "/myboards", "/sdcview",
         "/cdeStatusReport", "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
@@ -811,17 +812,6 @@ exports.init = function (app) {
 
     app.get('/uploadLoincCsvStatus', function (req, res) {
         res.send(loincUploadStatus);
-    });
-
-    app.post('/removeRule', function (req, res) {
-
-        res.send(req.data);
-    });
-
-    app.get('/getAllRules', function(req, res){
-        mongo_data_system.getAllRules(function(err, rules){
-            res.send(rules);
-        });
     });
 
     app.post('/disableRule', function(req, res){
