@@ -69,18 +69,18 @@
 
 <div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div" style="border: none">
 
-    <h2 class="text-center" ng-if="!searchStarted" id="searchCdesFormsHeading">Search CDEs and Forms</h2>
+    <h2 class="text-center" ng-if="!searchStarted" id="searchCdesFormsHeading">Search CDEs</h2>
 
-    <div id="selectCdeForms"  ng-if="!searchStarted" class="text-center">
-        <div class="btn-group">
-            <button id="betaDisabled" class="btn" ng-class="{'btn-primary':searchType === 'cde'}"
-                    ng-click="searchCDEs()"> CDEs
-            </button>
-            <button id="searchForm" class="btn" ng-class="{'btn-primary':searchType === 'form'}"
-                    ng-click="searchForms()"> Forms
-            </button>
-        </div>
-    </div>
+    <!--<div id="selectCdeForms"  ng-if="!searchStarted" class="text-center">-->
+        <!--<div class="btn-group">-->
+            <!--<button id="betaDisabled" class="btn" ng-class="{'btn-primary':searchType === 'cde'}"-->
+                    <!--ng-click="searchCDEs()"> CDEs-->
+            <!--</button>-->
+            <!--<button id="searchForm" class="btn" ng-class="{'btn-primary':searchType === 'form'}"-->
+                    <!--ng-click="searchForms()"> Forms-->
+            <!--</button>-->
+        <!--</div>-->
+    <!--</div>-->
 
     <form name="advSearchForm" id="advSearchForm" novalidate="" class="ng-pristine ng-valid ng-valid-maxlength"
           ng-class="{'extraPadding': !searchStarted }" ng-action="">
@@ -126,8 +126,6 @@
         <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
                         ng-model="searchSettings.page" next-text="Next" ng-change="search()"></uib-pagination>
     </div>
-
-
 
     <small id="poweredByNihCde">Search provided by the <a target="_blank" href="https://cde.nlm.nih.gov/">NIH CDE repository</a></small>
 </div>
