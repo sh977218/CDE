@@ -582,7 +582,6 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-
     app.get('/cdeCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
         var result = [];
         var term = req.params.term;
