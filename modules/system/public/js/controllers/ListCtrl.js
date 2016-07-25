@@ -14,7 +14,6 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.exporters = {
         json: {id: "jsonExport", display: "JSON Export"}
         , xml: {id: "xmlExport", display: "XML Export"}
-        //, validationRules: {id: "validationRules", display: "Validation Rules"}
     };
 
     if ($route.current.subCtrl) {

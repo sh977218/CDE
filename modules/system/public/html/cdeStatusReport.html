@@ -3,13 +3,13 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th ng-repeat="field in gridOptionsReport.columnDefs">
+                    <th ng-repeat="field in gridOptionsReport.columnDefs track by $index">
                         {{field.displayName}}
                     </th>
                 </tr>
             </thead>
-            <tr ng-repeat="cde in cdes">
-                <td ng-repeat="(key, field) in cde">
+            <tr ng-repeat="cde in cdes track by $index">
+                <td ng-repeat="(key, field) in cde track by $index">
                     <span ng-if="key.indexOf('rule')===-1">
                         <span ng-if="key==='cdeName'"><a ng-href="/deview?tinyId={{cde.tinyId}}" target="_blank">{{field}}</a></span>
                         <span ng-if="key!=='cdeName'">{{field}}</span>
