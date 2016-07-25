@@ -4,6 +4,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
         $scope.csvDownloadState = "none";
 
         $scope.exportSearchResults = function (type, exportSettings) {
+            if (!exportSettings) exportSettings = {searchSettings: $scope.searchSettings};
             if ($scope.module === 'form' && (!$scope.user || !$scope.user._id)) {
                 return $scope.Alert.addAlert("danger", "Please login to access this feature");
             }
@@ -162,6 +163,7 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
                 return output;
             });
             $scope.cdes = exportFormat;
+            $scope.cdes.length = 100;
         };
         $scope.module = 'cde';
         $scope.exportSearchResults('validationRules', $routeParams);

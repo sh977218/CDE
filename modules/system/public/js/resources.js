@@ -262,7 +262,7 @@ angular.module('resourcesSystem', ['ngResource'])
                 if (status === 'Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
                 return true;
             });
-            if (rules.length == 0) return [];
+            if (rules.length === 0) return [];
             var results = rules.map(function (r) {
                 return {ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)};
             });
