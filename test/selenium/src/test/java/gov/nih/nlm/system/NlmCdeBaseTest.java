@@ -718,8 +718,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));

@@ -9,11 +9,18 @@
         </div>
         <compare-primitive left='left.version' right='right.version' options='versionOption'></compare-primitive>
 
+        <compare-primitive left='left.registrationState.registrationStatus'
+                           right='right.registrationState.registrationStatus'
+                           options='statusOption'></compare-primitive>
+
         <compare-object-array left='left.naming' right='right.naming'
-                              options='nameOption'></compare-object-array>
+                              options='namingOption'></compare-object-array>
+
+        <compare-object-array left='left.dataElementConcept.concepts' right='right.dataElementConcept.concepts'
+                              options='dataElementConceptOption'></compare-object-array>
 
         <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
-                              options='referenceDocumentOption'></compare-object-array>
+                              options='referenceDocumentsOption'></compare-object-array>
 
         <compare-object-array left='left.ids' right='right.ids'
                               options='idsOption'></compare-object-array>
@@ -22,7 +29,7 @@
                               options='propertiesOption'></compare-object-array>
 
         <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
-                                 options='classificationOption'></compare-primitive-array>
+                                 options='classificationsOption'></compare-primitive-array>
 
         <div ng-init="elt = left" class="col-md-6 noLeftRightPadding">
             <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>

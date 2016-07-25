@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
-    @Test(priority = -1)
+    @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
@@ -31,10 +31,13 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        checkInHistory("Concepts", "", "Code Name 1");
-        checkInHistory("Concepts", "", "Code ID 1");
-        checkInHistory("Naming", "", "Alternative Name 1");
-        checkInHistory("Naming", "", "Alternative Definition 1");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+
+        textPresent("Code Name 1",By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent("Code ID 1",By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'id')]"));
+        textPresent("Alternative Name 1",By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'designation')]"));
+        textPresent("Alternative Definition 1",By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'definition')]"));
 
         goToCdeByName(cdeName);
         showAllTabs();

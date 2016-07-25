@@ -12,7 +12,12 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
         hideSame: true,
         tooltip: ''
     };
-    $scope.nameOption = {
+    $scope.statusOption = {
+        title: 'Status',
+        hideSame: true,
+        tooltip: ''
+    };
+    $scope.namingOption = {
         equal: function (a, b) {
             return a.designation === b.designation &&
                 a.definition === b.definition &&
@@ -32,7 +37,26 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
             }, {label: 'Context', property: 'context.contextName'}
         ]
     };
-    $scope.referenceDocumentOption = {
+    $scope.dataElementConceptOption = {
+        equal: function (a, b) {
+            return a.name === b.name &&
+                a.origin === b.origin &&
+                a.originId === b.originId;
+        },
+        sort: function (a, b) {
+            return a.name - b.name;
+        },
+        tooltip: 'dataElementConcept are sorted by name, compared by it\'s all properties',
+        title: 'Concept',
+        hideSame: true,
+        properties: [
+            {label: 'Name', property: 'name'}, {
+                label: 'Origin',
+                property: 'origin'
+            }, {label: 'OriginId', property: 'originId'}
+        ]
+    };
+    $scope.referenceDocumentsOption = {
         equal: function (a, b) {
             return a.title === b.title;
         },
