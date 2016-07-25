@@ -19,9 +19,18 @@ angular.module('systemModule').controller('EmbedCtrl',
             .success(function(result) {
                 if (!$scope.selection._id) $scope.selection._id = result._id;
                 delete $scope.selection;
+                $scope.previewOn = false;
                 Alert.addAlert("success", "Saved.");
             }).error(function() {
                 Alert.addAlert('danger', "There was an issue saving this record. ");
+        });
+    };
+
+    $scope.cancel = function() {
+        $http.get('/embeds/' + encodeURIComponent($scope.selection.org)).success(function(res) {
+            $scope.embeds[$scope.selection.org] = res;
+            delete $scope.selection;
+            $scope.previewOn = false;
         });
     };
 
@@ -66,12 +75,20 @@ angular.module('systemModule').controller('EmbedCtrl',
         $scope.selection.cde.classifications.push({under: ""});
     };
 
+    $scope.enablePreview = function(b) {
+        $scope.previewOn = b;
+    };
+
+    $scope.getPreview = function() {
+        return "/embedded/public/html/index.html?id=" + $scope.selection._id;
+    };
+
     $scope.enableCde = function(b) {
-        if (b) {
-            $scope.selection.cde = {lowestRegistrationStatus: 'Qualified'};
-        } else {
-            delete $scope.selection.cde;
-        }
+    if (b) {
+        $scope.selection.cde = {lowestRegistrationStatus: 'Qualified'};
+    } else {
+        delete $scope.selection.cde;
+    }
     };
     $scope.enableForm = function(b) {
         if (b) {

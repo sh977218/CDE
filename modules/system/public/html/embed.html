@@ -31,7 +31,7 @@
         <input type="number" ng-model="selection.height" id="height" min="600" class="form-control" required>
 
         <div class="row">
-            <div class="col-md-5 boxed-div" style="margin-left: 15px">
+            <div class="col-md-10 boxed-div" style="margin-left: 15px">
                 <h2>CDE Search
                     <span class="btn-group">
                         <button id="cdeEnabled" class="btn btn-sm" ng-class="{'btn-success':selection.cde}"
@@ -96,24 +96,24 @@
                         </div>
                     </div>
                     <br>
-                    <div class="boxed-div">
-                        <h4>Properties</h4>
-                        <button ng-click="addCdeProperty()" class="btn btn-default">Add Property</button>
-                        <div ng-repeat="thisProp in selection.cde.properties" class="boxed-div">
-                            <button ng-click="selection.cde.properties.splice($index, 1)" title="Remove">
-                                <i class="fa fa-trash"></i></button>
-                            <label for="thisProp.key">Property Key:</label>
-                            <input ng-model="thisProp.key" id="thisProp.key" class="form-control" required>
-                            <br>
-                            <label for="thisProp.label">Choose a label for the Property:</label>
-                            <input ng-model="thisProp.label" id="thisProp.label" class="form-control" required>
-                            <br>
-                            <label for="thisProp.limit">Truncate this property to Property: (chars)</label>
-                            <input ng-model="thisProp.limit" id="thisProp.limit" class="form-control" type="number" required>
-                            <br>
-                        </div>
-                    </div>
-                    <br>
+                    <!--<div class="boxed-div">-->
+                        <!--<h4>Properties</h4>-->
+                        <!--<button ng-click="addCdeProperty()" class="btn btn-default">Add Property</button>-->
+                        <!--<div ng-repeat="thisProp in selection.cde.properties" class="boxed-div">-->
+                            <!--<button ng-click="selection.cde.properties.splice($index, 1)" title="Remove">-->
+                                <!--<i class="fa fa-trash"></i></button>-->
+                            <!--<label for="thisProp.key">Property Key:</label>-->
+                            <!--<input ng-model="thisProp.key" id="thisProp.key" class="form-control" required>-->
+                            <!--<br>-->
+                            <!--<label for="thisProp.label">Choose a label for the Property:</label>-->
+                            <!--<input ng-model="thisProp.label" id="thisProp.label" class="form-control" required>-->
+                            <!--<br>-->
+                            <!--<label for="thisProp.limit">Truncate this property to Property: (chars)</label>-->
+                            <!--<input ng-model="thisProp.limit" id="thisProp.limit" class="form-control" type="number" required>-->
+                            <!--<br>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<br>-->
                     <div class="boxed-div">
                         <h4>Classifications</h4>
                         <button ng-click="addCdeClassification()" class="btn btn-default">Add Classification</button>
@@ -132,6 +132,16 @@
                             <input type="checkbox" ng-model="thisClassif.selectedOnly" id="thisClassif.selectedOnly">
                             <label for="thisClassif.selectedOnly">Only show selected classifications </label>
                         </div>
+                    </div>
+                    <div class="boxed-div">
+                        <h4>Linked Forms</h4>
+                        <input type="checkbox" ng-model="selection.cde.linkedForms.show"
+                               id="cde.linkedForms">
+                        <label for="cde.linkedForms">See Linked Forms</label>
+                        <span ng-show="selection.cde.linkedForms.show">
+                            <label for="cde.linkedForms.label">Choose a label:</label>
+                            <input ng-model="selection.cde.linkedForms.label" id="cde.linkedForms.label" class="form-control">
+                        </span>
                     </div>
                     <br>
                     <label for="cde.pageSize">Number of results per page</label>
@@ -182,74 +192,93 @@
                 <br>
             </div>
 
-            <div class="col-md-5 boxed-div" style="margin-left: 15px">
-                <h2>Form Search
-                    <span class="btn-group">
-                        <button id="formEnabled" class="btn btn-sm" ng-class="{'btn-success':selection.form}"
-                                ng-click="enableForm(true)"> On
-                        </button>
-                        <button id="formDisabled" class="btn btn-sm" ng-class="{'btn-danger':!selection.form}"
-                                ng-click="enableForm(false)"> Off
-                        </button>
-                    </span>
-                </h2>
-                <div ng-show="selection.form">
-                    <input type="checkbox" id="form.primaryDefinition"  ng-model="selection.form.primaryDefinition">
-                    <label for="form.primaryDefinition">See Primary Definition</label>
-                    <br>
-                    <input type="checkbox" ng-model="selection.sourceId" id="form.sourceId">
-                    <label for="form.sourceId">See Source ID</label>
-                    <br>
-                    <input type="checkbox" ng-model="selection.sourceVersion" id="form.sourceVersion">
-                    <label for="form.sourceVersion">See Source Version</label>
+            <!--<div class="col-md-5 boxed-div" style="margin-left: 15px">-->
+                <!--<h2>Form Search-->
+                    <!--<span class="btn-group">-->
+                        <!--<button id="formEnabled" class="btn btn-sm" ng-class="{'btn-success':selection.form}"-->
+                                <!--ng-click="enableForm(true)"> On-->
+                        <!--</button>-->
+                        <!--<button id="formDisabled" class="btn btn-sm" ng-class="{'btn-danger':!selection.form}"-->
+                                <!--ng-click="enableForm(false)"> Off-->
+                        <!--</button>-->
+                    <!--</span>-->
+                <!--</h2>-->
+                <!--<div ng-show="selection.form">-->
+                    <!--<input type="checkbox" id="form.primaryDefinition"  ng-model="selection.form.primaryDefinition">-->
+                    <!--<label for="form.primaryDefinition">See Primary Definition</label>-->
+                    <!--<br>-->
+                    <!--<input type="checkbox" ng-model="selection.sourceId" id="form.sourceId">-->
+                    <!--<label for="form.sourceId">See Source ID</label>-->
+                    <!--<br>-->
+                    <!--<input type="checkbox" ng-model="selection.sourceVersion" id="form.sourceVersion">-->
+                    <!--<label for="form.sourceVersion">See Source Version</label>-->
 
-                    <br>
-                    <br>
+                    <!--<br>-->
+                    <!--<br>-->
 
-                    <label for="form.pageSize">Number of results per page</label>
-                    <input type="number" ng-model="selection.pageSize" class="form-control" id="form.pageSize">
+                    <!--<label for="form.pageSize">Number of results per page</label>-->
+                    <!--<input type="number" ng-model="selection.pageSize" class="form-control" id="form.pageSize">-->
 
-                    <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
-                    <div class="form-group">
-                        <span>I want my search results to include these statuses</span>
-                        <div class="radio indent">
-                            <label>
-                                <input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Qualified"
-                                       value="Qualified">
-                                Preferred Standard, Standard, Qualified
-                            </label>
-                        </div>
-                        <div class="radio indent">
-                            <label>
-                                <input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Recorded"
-                                       value="Recorded">
-                                Preferred Standard, Standard, Qualified, Recorded
-                            </label>
-                        </div>
-                        <div class="radio indent">
-                            <label>
-                                <input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Candidate"
-                                       value="Candidate">
-                                Preferred Standard, Standard, Qualified, Recorded, Candidate
-                            </label>
-                        </div>
-                        <div class="radio indent">
-                            <label>
-                                <input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Incomplete"
-                                       value="Incomplete">
-                                Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <!--<h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>-->
+                    <!--<div class="form-group">-->
+                        <!--<span>I want my search results to include these statuses</span>-->
+                        <!--<div class="radio indent">-->
+                            <!--<label>-->
+                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Qualified"-->
+                                       <!--value="Qualified">-->
+                                <!--Preferred Standard, Standard, Qualified-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <!--<div class="radio indent">-->
+                            <!--<label>-->
+                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Recorded"-->
+                                       <!--value="Recorded">-->
+                                <!--Preferred Standard, Standard, Qualified, Recorded-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <!--<div class="radio indent">-->
+                            <!--<label>-->
+                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Candidate"-->
+                                       <!--value="Candidate">-->
+                                <!--Preferred Standard, Standard, Qualified, Recorded, Candidate-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <!--<div class="radio indent">-->
+                            <!--<label>-->
+                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Incomplete"-->
+                                       <!--value="Incomplete">-->
+                                <!--Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete-->
+                            <!--</label>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
-
 
         <button class="btn btn-default" ng-click="save()" ng-show="selection.cde || selection.form"
                 ng-disabled="isClean() || editEmbed.$invalid">
             <i class="fa fa-save"></i> Save</button>
+
+        <button class="btn btn-default" ng-click="cancel()" ng-show="selection.cde || selection.form">
+            <i class="fa fa-close"></i> Cancel</button>
+        <br>
+
+        <div> preview:
+            <span class="btn-group">
+                <button id="previewEnabled" class="btn btn-sm" ng-class="{'btn-success':previewOn}"
+                        ng-click="enablePreview(true)"> On
+                </button>
+                <button id="previewDisabled" class="btn btn-sm" ng-class="{'btn-danger':!previewOn}"
+                        ng-click="enablePreview(false)"> Off
+                </button>
+            </span>
+        </div>
+
         </form>
+
+        <iframe ng-if="previewOn" width="{{selection.width}}" height="{{selection.height}}"
+                src="{{getPreview()}}"></iframe>
+
 
     </div>
 

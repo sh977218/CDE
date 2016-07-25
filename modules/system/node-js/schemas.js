@@ -74,6 +74,10 @@ var embedJson = {
     form: commonEmbedSchema
 };
 embedJson.cde.permissibleValues = Boolean;
+embedJson.cde.linkedForms = {
+    show: Boolean,
+    label: String
+};
 embedJson.form.sdcLink = Boolean;
 embedJson.form.nbOfQuestions = Boolean;
 embedJson.form.cdes = Boolean;
