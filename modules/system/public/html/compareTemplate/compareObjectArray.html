@@ -1,14 +1,15 @@
-<label ng-if="options.showTitle" uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
-<div ng-repeat="result in options.results">
-    <div class="overflowHidden boxed-div" ng-if="result.match === false">
-        <div class="col-xs-6 quickBoardContentCompareCol">
+<label for="historyCompare_{{options.title}}" ng-if="options.showTitle" uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
+<div ng-repeat="result in options.results track by $index" id="historyCompare_{{options.title}}">
+    <div class="overflowHidden boxed-div" ng-if="result.match === false"
+         id="historyCompare_{{options.title}}_{{$index}}">
+        <div class="col-xs-6 quickBoardContentCompareCol left">
             <div ng-repeat="p in options.properties">
                 <div ng-display-object
                      ng-display-object-obj="left[result.leftIndex]"
                      ng-display-object-properties="p"></div>
             </div>
         </div>
-        <div class="col-xs-6 quickBoardContentCompareCol">
+        <div class="col-xs-6 quickBoardContentCompareCol right">
             <div ng-repeat="p in options.properties">
                 <div ng-display-object
                      ng-display-object-obj="right[result.rightIndex]"
