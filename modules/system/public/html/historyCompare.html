@@ -1,4 +1,4 @@
-<div class="panel panel-default" ng-show="showHistory">
+<div class="panel panel-default" ng-if="showHistory" ng-controller="CdeHistoryCompareCtrl">
     <div class="panel-heading">
         <h3 class="panel-title">Differences</h3>
     </div>
@@ -11,6 +11,7 @@
 
         <compare-object-array left='left.naming' right='right.naming'
                               options='nameOption'></compare-object-array>
+<!--
 
         <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
                               options='referenceDocumentOption'></compare-object-array>
@@ -20,10 +21,17 @@
 
         <compare-object-array left='left.properties' right='right.properties'
                               options='propertiesOption'></compare-object-array>
+-->
 
         <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
                                  options='classificationOption'></compare-primitive-array>
 
+        <div ng-init="elt = left" class="col-md-6 noLeftRightPadding">
+            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+        </div>
+        <div ng-init="elt = right" class="col-md-6 noLeftRightPadding">
+            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+        </div>
     </div>
 </div>
 

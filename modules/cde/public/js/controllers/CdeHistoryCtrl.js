@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', '$http',
-    function ($scope, $http, $modal, CdeDiff) {
+angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', '$rootScope', '$http',
+    function ($scope, $rootScope, $http) {
         $scope.showVersioned = false;
         $scope.showHistory = false;
         $scope.selectedObjs = {length: 0, selected: {}};
@@ -22,10 +22,19 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', '$http',
             return $scope.selectedIds.indexOf(id) > -1;
         };
 
-        $scope.viewDiffVersion = function () {
+        $scope.viewDiff = function () {
             if ($scope.selectedIds.length === 0) {
                 $scope.addAlert("danger", "Select two to compare.");
             } else {
+                $rootScope.eltHistoryCompare = {};
+                $scope.priorCdes.forEach(function (o) {
+                    if (o._id === $scope.selectedIds[0]) {
+                        $rootScope.eltHistoryCompare.left = o;
+                    }
+                    if (o._id === $scope.selectedIds[1]) {
+                        $rootScope.eltHistoryCompare.right = o;
+                    }
+                });
                 $scope.showHistory = true;
             }
         };
