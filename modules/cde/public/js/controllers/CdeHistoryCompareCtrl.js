@@ -66,21 +66,23 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
             {label: 'Value', property: 'value'}
         ]
     };
-        $scope.idsOption = {
-            equal: function (a, b) {
-                return JSON.stringify(a) === JSON.stringify(b);
-            },
-            sort: function (a, b) {
-                return a.id.localeCompare(b.id);
-            },
-            title: 'Ids',
-            hideSame: true,
-            properties: [
-                {label: 'Source', property: 'source'},
-                {label: 'ID', property: 'id'},
-                {label: 'Version', property: 'version'}
-            ]
-        };
+    $scope.idsOption = {
+        equal: function (a, b) {
+            return a.id === b.id &&
+                a.source === b.source &&
+                a.version === b.version;
+        },
+        sort: function (a, b) {
+            return a.id.localeCompare(b.id);
+        },
+        title: 'IDs',
+        hideSame: true,
+        properties: [
+            {label: 'Source', property: 'source'},
+            {label: 'ID', property: 'id'},
+            {label: 'Version', property: 'version'}
+        ]
+    };
     $scope.classificationOption = {
         title: 'Classifications',
         hideSame: true

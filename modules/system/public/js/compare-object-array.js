@@ -31,7 +31,7 @@
                 }
                 if (!options.sort) {
                     options.sort = function (a, b) {
-                        return a.localeCompare(b);
+                        return a - b;
                     }
                 }
             },
