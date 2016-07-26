@@ -66,7 +66,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                                     , cdeName: oneElt.naming[0].designation
                                     , validationRules: RegStatusValidator.evalCde(oneElt, orgName, status, cdeOrgRules)
                                 };
-                                if (record.validationRules.every(function(x){return x;})) cdes.push(record)
+                                if (!record.validationRules.every(function(x){return x.cdePassingRule;})) cdes.push(record);
                             };
                         });
                         if(exportSettings.cb) exportSettings.cb(cdes.slice(0, 100));
