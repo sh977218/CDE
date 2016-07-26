@@ -7,14 +7,14 @@ angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$uibModa
         var _timeout;
         $scope.lookupUmls = function () {
             if (_timeout) {
-                $timeout.cancel(_timeout)
+                $timeout.cancel(_timeout);
             }
             _timeout = $timeout(function() {
                 _timeout = null;
                 $http.get('/searchUmls?searchTerm=' + $scope.newPv.valueMeaningName).success(function(data) {
-                    $scope.umlsTerms = data.result.results;
+                    if (data && data.result && data.result.results) $scope.umlsTerms = data.result.results;
                 });
-            }, 500)
+            }, 500);
         };
 
         $scope.selectFromUmls = function($index) {
