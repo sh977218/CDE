@@ -1,7 +1,7 @@
-<label ng-if="options.showTitle">{{options.title}}:</label>
-<div class="quickBoardArraySeparate">
+<label for="historyCompare_{{options.title}}" ng-if="options.showTitle">{{options.title}}:</label>
+<div class="quickBoardArraySeparate" id="historyCompare_{{options.title}}">
     <div ng-if="options.result.match === false">
-        <div class="col-xs-6 quickBoardContentCompareCol overflowHidden">{{left}}</div>
-        <div class="col-xs-6 quickBoardContentCompareCol overflowHidden">{{right}}</div>
+        <div class="col-xs-6 quickBoardContentCompareCol overflowHidden left">{{left}}</div>
+        <div class="col-xs-6 quickBoardContentCompareCol overflowHidden right">{{right}}</div>
     </div>
 </div>

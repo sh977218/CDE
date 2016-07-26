@@ -17,6 +17,11 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
         hideSame: true,
         tooltip: ''
     };
+    $scope.stewardOrgNameOption = {
+        title: 'StewardOrg Name',
+        hideSame: true,
+        tooltip: ''
+    };
     $scope.namingOption = {
         equal: function (a, b) {
             return a.designation === b.designation &&
