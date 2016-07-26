@@ -24,7 +24,7 @@ mongoConn.once('open', function callback() {
 });
 
 // LOINC
-exports.MigrationLoincModal = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
     strict: false,
     collection: 'loinc'
 }));
@@ -56,9 +56,13 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
 }));
 
 //NEW BORN SCREENING
-exports.MigrationNewBornScreeningLoincModel = migrationConn.model('NewBornScreening', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new mongoose.Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_LOINC'
+    collection: 'NewBornScreening_CDE'
+}));
+exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'NewBornScreening_Form'
 }));
 exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new mongoose.Schema({}, {
     strict: false,

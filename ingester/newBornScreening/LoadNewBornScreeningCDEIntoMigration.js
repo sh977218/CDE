@@ -1,13 +1,14 @@
 var async = require('async'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationNewBornScreeningLoincModel = require('./../createConnection').MigrationNewBornScreeningLoincModel,
+    MigrationLoincModel = require('./../createConnection').MigrationLoincModel,
+    MigrationNewBornScreeningCDEModel = require('./../createConnection').MigrationNewBornScreeningCDEModel,
     MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
-    MigrationLoincModal = require('./../createConnection').MigrationLoincModal,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-const orgName = "NICHD";
+const stewardOrgName = "LOINC";
+const classificationOrgName = 'NICHD';
 
 var cdeCounter = 0;
 var newBornScreeningOrg = null;
@@ -30,7 +31,7 @@ var uom_datatype_map = {
     'mm Hg': 'Text'
 };
 
-function createCde(eyeGene, loinc) {
+function createCde(newBornScreening, loinc) {
     var naming = [];
     if ((loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0 ) || ( loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0)) {
         if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
@@ -122,24 +123,16 @@ function createCde(eyeGene, loinc) {
         naming: naming,
         ids: ids,
         properties: properties,
-        classification: []
+        classification: [{stewardOrg: {name: classificationOrgName}, elements: []}]
     };
-    var componentToAdd = ['Component'];
-    var componentArray = eyeGene.COMPONENT.split('^');
-    componentArray.forEach(function (component) {
-        componentToAdd.push(component);
-    });
-
-    classificationShared.classifyItem(newCde, orgName, componentToAdd);
-    classificationShared.addCategory({elements: eyeGeneOrg.classifications}, componentToAdd);
-    var classificationToAdd = ['Classification'];
-    var classificationArray = eyeGene.CLASS.split('^');
+    var classificationToAdd = ['Classification', 'Newborn Screening'];
+    var classificationArray = newBornScreening.CLASS.split('^');
     classificationArray.forEach(function (classification) {
         classificationToAdd.push(classification);
     });
 
-    classificationShared.classifyItem(newCde, orgName, classificationToAdd);
-    classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
+    classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
+    classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
 
 
     newCde.valueDomain = {};
@@ -153,10 +146,8 @@ function createCde(eyeGene, loinc) {
             return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
         });
     } else {
-        newCde.valueDomain.datatype = uom_datatype_map[eyeGene.EXAMPLE_UNITS];
+        newCde.valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
     }
-
-
     return newCde;
 }
 function run() {
@@ -166,7 +157,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: orgName, classifications: []}).save(function (e, o) {
+                    new MigrationOrgModel({name: stewardOrgName, classifications: []}).save(function (e, o) {
                         if (e) throw e;
                         cb();
                     });
@@ -174,36 +165,36 @@ function run() {
             });
         },
         function (cb) {
-            MigrationOrgModel.findOne({"name": orgName}).exec(function (error, org) {
+            MigrationOrgModel.findOne({"name": stewardOrgName}).exec(function (error, org) {
                 newBornScreeningOrg = org;
                 cb();
             });
         },
         function (cb) {
-            var stream = MigrationNewBornScreeningLoincModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).stream();
-            stream.on('data', function (eyeGene) {
-                console.log("doing eyegene");
+            var stream = MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).stream();
+            stream.on('data', function (newBornScreening) {
+                console.log("doing new born screening");
                 stream.pause();
-                if (eyeGene.toObject) eyeGene = eyeGene.toObject();
-                MigrationDataElementModel.find({'ids.id': eyeGene.LOINC_NUM}, function (err, existingCdes) {
+                if (newBornScreening.toObject) newBornScreening = newBornScreening.toObject();
+                MigrationDataElementModel.find({'ids.id': newBornScreening.LOINC_NUM}, function (err, existingCdes) {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
-                        MigrationLoincModal.find({
-                            loincId: eyeGene.LOINC_NUM,
+                        MigrationLoincModel.find({
+                            loincId: newBornScreening.LOINC_NUM,
                             info: {$not: /^no loinc name/i}
                         }, function (er, existingLoinc) {
                             if (er) throw er;
                             if (existingLoinc.length === 0) {
-                                console.log("Cannot find loinc CDE for " + eyeGene.LOINC_NUM);
+                                console.log("Cannot find loinc CDE for " + newBornScreening.LOINC_NUM);
                                 //TODO: How to handle this?
                                 stream.resume();
                             } else {
                                 var loinc = existingLoinc[0].toObject();
-                                var newCde = createCde(eyeGene, loinc);
-                                if (eyeGene.EXAMPLE_UNITS)
-                                    newCde.valueDomain.uom = eyeGene.EXAMPLE_UNITS;
-                                else if (eyeGene.EXAMPLE_UCUM_UNITS)
-                                    newCde.valueDomain.uom = eyeGene.EXAMPLE_UCUM_UNITS;
+                                var newCde = createCde(newBornScreening, loinc);
+                                if (newBornScreening.EXAMPLE_UNITS)
+                                    newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
+                                else if (newBornScreening.EXAMPLE_UCUM_UNITS)
+                                    newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
                                 else newCde.valueDomain.uom = '';
                                 var newCdeObj = new MigrationDataElementModel(newCde);
                                 newCdeObj.save(function (err) {
@@ -215,7 +206,7 @@ function run() {
                             }
                         });
                     } else {
-                        throw 'duplicated id: ' + eyeGene.LOINC_NUM;
+                        throw 'duplicated id: ' + newBornScreening.LOINC_NUM;
                     }
                 });
             });

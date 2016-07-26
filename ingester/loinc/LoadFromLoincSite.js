@@ -3,6 +3,8 @@ var async = require('async'),
     MigrationLoincModal = require('../createConnection').MigrationLoincModal
     ;
 
+var loincCount = 0;
+
 var url_prefix = 'http://r.details.loinc.org/LOINC/';
 var url_postfix = '.html';
 var url_postfix_para = '?sections=Comprehensive';
@@ -658,25 +660,42 @@ function parsingHtml(driver, loincId, cb) {
     });
 }
 
-exports.runArray = function (loincIdArray, next) {
+exports.runArray = function (loincIdArray, removeMigration, next) {
     async.series([
         function (cb) {
-            MigrationLoincModal.remove({}, function (err) {
-                if (err) throw err;
-                console.log('removed migration loinc collection.');
+            if (removeMigration) {
+                MigrationLoincModal.remove({}, function (err) {
+                    if (err) throw err;
+                    console.log('removed migration loinc collection.');
+                    cb();
+                });
+            }
+            else {
+                console.log('do not remove migration loinc collection.');
                 cb();
-            });
+            }
         },
         function (cb) {
-            var driver = new webdriver.Builder().forBrowser('firefox').build();
+            var driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEach(loincIdArray, function (loincId, doneOneLoinc) {
-                var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-                driver.get(url).then(function () {
-                    parsingHtml(driver, loincId, function (obj) {
-                        new MigrationLoincModal(obj).save(function () {
-                            doneOneLoinc();
+                MigrationLoincModal.find({loincId: loincId}).exec(function (err, existingLoincs) {
+                    if (err) throw err;
+                    if (existingLoincs.length === 0) {
+                        var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+                        driver.get(url).then(function () {
+                            parsingHtml(driver, loincId, function (obj) {
+                                new MigrationLoincModal(obj).save(function (e) {
+                                    if (e) throw e;
+                                    loincCount++;
+                                    console.log('loincCount: ' + loincCount);
+                                    doneOneLoinc();
+                                });
+                            });
                         });
-                    });
+                    } else if (existingLoincs > 0) {
+                        console.log('already exist loincId: ' + obj.loincId + ' in migration loinc.');
+                        doneOneLoinc();
+                    }
                 });
             }, function doneAllLoinc() {
                 console.log('finished all');
