@@ -56,6 +56,44 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
             }, {label: 'OriginId', property: 'originId'}
         ]
     };
+    $scope.propertyConceptOption = {
+        equal: function (a, b) {
+            return a.name === b.name &&
+                a.origin === b.origin &&
+                a.originId === b.originId;
+        },
+        sort: function (a, b) {
+            return a.name - b.name;
+        },
+        tooltip: 'propertyConcept are sorted by name, compared by it\'s all properties',
+        title: 'Property Concept',
+        hideSame: true,
+        properties: [
+            {label: 'Name', property: 'name'}, {
+                label: 'Origin',
+                property: 'origin'
+            }, {label: 'OriginId', property: 'originId'}
+        ]
+    };
+    $scope.objectClassConceptOption = {
+        equal: function (a, b) {
+            return a.name === b.name &&
+                a.origin === b.origin &&
+                a.originId === b.originId;
+        },
+        sort: function (a, b) {
+            return a.name - b.name;
+        },
+        tooltip: 'objectClassConcept are sorted by name, compared by it\'s all properties',
+        title: 'ObjectClass Concept',
+        hideSame: true,
+        properties: [
+            {label: 'Name', property: 'name'}, {
+                label: 'Origin',
+                property: 'origin'
+            }, {label: 'OriginId', property: 'originId'}
+        ]
+    };
     $scope.referenceDocumentsOption = {
         equal: function (a, b) {
             return a.title === b.title;

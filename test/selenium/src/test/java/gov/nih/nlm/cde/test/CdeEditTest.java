@@ -16,7 +16,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeDefinitionChange = "[def change number 1]";
         goToCdeByName(cdeName);
         clickElement(By.cssSelector("i.fa-edit"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys();
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(cdeNameChange);
         clickElement(By.cssSelector(".fa-check"));
         clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//div/div[2]/textarea")).sendKeys(cdeDefinitionChange);
