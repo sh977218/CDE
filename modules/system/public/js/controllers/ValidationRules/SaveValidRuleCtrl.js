@@ -6,24 +6,20 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 $scope.userOrgs[orgName] = o.data.cdeStatusValidationRules;
             });
         });
-        console.log($scope.userOrgs);
         $scope.removeRule = function(o, i){
             var key = $scope.userOrgs[o][i].field.replace(/[^\w]/g,"")+$scope.userOrgs[o][i].rule.regex.replace(/[^\w]/g,"");
-            $http.post('/removeRule', {orgName:o, rule: key}, function(response){
-                console.log(response.data);
-                console.log('removed');
+            $http.post('/removeRule', {orgName:o, rule: key}, function(){
             });
         };
 
         $scope.ruleEnabled = function(orgName, rule){
-            var ruleIds = $scope.userOrgs[orgName].map(function(rule){return rule.id});
+            var ruleIds = $scope.userOrgs[orgName].map(function(rule){return rule.id;});
             return ruleIds.indexOf(rule.id) > -1;
         };
 
 
         $scope.disableRule = function(orgName, rule){
             var modalInstance = $modal.open({
-                //animation: false,
                 templateUrl: '/system/public/html/statusRules/removeRule.html',
                 controller: 'RemoveRuleCtrl'
             });
@@ -31,7 +27,7 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
                     $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
                 });
-            }, function(reason) {
+            }, function() {
 
             });
 
@@ -53,8 +49,7 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
             });
             modalInstance.result.then(function (rule) {
                 $scope.enableRule(rule.org, rule);
-            }, function(reason) {
-
+            }, function() {
             });
         };
     }]);

@@ -279,8 +279,7 @@ angular.module('resourcesSystem', ['ngResource'])
 
         var cdePassingRule = function (cde, rule) {
             function checkRe(field, rule) {
-                var re = new RegExp(rule.rule.regex);
-                return re.test(field);
+                return new RegExp(rule.rule.regex).test(field);
             }
             function checkSubTree(object, rule, level) {
                 var key = rule.field.split(".")[level];
@@ -288,15 +287,16 @@ angular.module('resourcesSystem', ['ngResource'])
                 if (level === rule.field.split(".").length - 1) return checkRe(object[key], rule);
                 if (!Array.isArray(object[key])) return checkSubTree(object[key], rule, level + 1);
                 if (Array.isArray(object[key])) {
+                    var result;
                     if (rule.occurence === "atLeastOne") {
-                        var result = false;
+                        result = false;
                         object[key].forEach(function (subTree) {
                             result = result || checkSubTree(subTree, rule, level + 1);
                         });
                         return result;
                     }
                     if (rule.occurence === "all") {
-                        var result = true;
+                        result = true;
                         object[key].forEach(function (subTree) {
                             result = result && checkSubTree(subTree, rule, level + 1);
                         });

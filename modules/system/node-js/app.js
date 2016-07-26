@@ -815,16 +815,18 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
+        if (!req.isAuthenticated() || !req.user.siteAdmin) return res.status(403).send("Please login");
         mongo_data_system.disableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
-            res.send(org);
+            else res.send(org);
         });
     });
 
     app.post('/enableRule', function(req, res){
+        if (!req.isAuthenticated() || !req.user.siteAdmin) return res.status(403).send("Please login");
         mongo_data_system.enableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
-            res.send(org);
+            else res.send(org);
         });
     });
 };

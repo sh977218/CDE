@@ -29,7 +29,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeSearch();
         findElement(By.id("browseOrg-TEST")).click();
-        hangon(2);
+        textPresent("Incomplete");
         findElement(By.id("export")).click();
         findElement(By.id("exportValidRule")).click();
         findElement(By.id("selectStatus")).click();
