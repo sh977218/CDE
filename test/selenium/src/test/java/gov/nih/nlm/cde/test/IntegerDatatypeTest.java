@@ -21,6 +21,7 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         showAllTabs();
+        clickElement(By.id("history_tab"));
         checkInHistory("Permissible Values - Value List", "", "Custom Datatype");
 
         clickElement(By.linkText("Permissible Values"));

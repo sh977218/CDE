@@ -24,10 +24,11 @@ public class PvTest extends NlmCdeBaseTest {
         Assert.assertTrue(textPresent("added to pv"));
 
         showAllTabs();
+        clickElement(By.id("history_tab"));
         checkInHistory("Permissible Values", "Indeterminate", "Indeterminate added to pv");
-        
-    }    
-    
+
+    }
+
     @Test
     public void longPvList() {
         goToCdeByName("Common Toxicity Criteria Adverse Event Short Name Type");
@@ -37,5 +38,5 @@ public class PvTest extends NlmCdeBaseTest {
         clickElement(By.id("showMorePvs"));
         textPresent("Hypermagnesemia");
     }
-    
+
 }

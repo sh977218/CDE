@@ -28,6 +28,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         showAllTabs();
+        clickElement(By.id("history_tab"));
         checkInHistory("Permissible Values - Number", "", "123");
         checkInHistory("Permissible Values - Number", "", "456");
         checkInHistory("Permissible Values - Value Type", "", "Number");

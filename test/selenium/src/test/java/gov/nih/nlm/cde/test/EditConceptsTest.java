@@ -45,6 +45,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent("OC_CODE_111");
         textPresent("Prop_CODE_111");
 
+        clickElement(By.id("history)tab"));
         checkInHistory("Concepts", "", "DEC_CODE_111");
         checkInHistory("Concepts", "", "OC_CODE_111");
         checkInHistory("Concepts", "", "Prop_CODE_111");
@@ -62,6 +63,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
 
         showAllTabs();
+        clickElement(By.id("history_tab"));
         checkInHistory("Concepts", "DEC_CODE_111", "");
         checkInHistory("Concepts", "OC_CODE_111", "");
         checkInHistory("Concepts", "Prop_CODE_111", "");
