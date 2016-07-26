@@ -64,7 +64,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
         openCdeAudit(cdeName);
         textPresent(cdeName + cdeNameChange);
-        textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
+        textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 
 
     }
