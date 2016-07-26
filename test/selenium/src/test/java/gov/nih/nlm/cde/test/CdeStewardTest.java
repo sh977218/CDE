@@ -30,6 +30,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
         showAllTabs();
         clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Steward", "CTEP", "NINDS");
     }
 }
