@@ -25,8 +25,11 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         newCdeVersion();
 
         showAllTabs();
-        checkInHistory("Permissible Values - Date", "", "format1");
-        checkInHistory("Permissible Values - Value Type", "Value List", "Date");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("format1");
+        textPresent("Value List");
+        textPresent("Date");
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='dateFormat']//i[@title='Edit']"));

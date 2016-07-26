@@ -37,10 +37,7 @@
         <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
                                  options='classificationsOption'></compare-primitive-array>
 
-        <div ng-init="elt = left" class="col-md-6 noLeftRightPadding">
-            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
-        </div>
-        <div ng-init="elt = right" class="col-md-6 noLeftRightPadding">
+        <div ng-repeat="elt in cdes" class="col-md-6 noLeftRightPadding">
             <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
         </div>
     </div>

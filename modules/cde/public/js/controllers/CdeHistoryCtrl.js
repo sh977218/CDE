@@ -26,12 +26,15 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', '$rootScope'
             if ($scope.selectedIds.length === 0) {
                 $scope.addAlert("danger", "Select two to compare.");
             } else {
+                $scope.cdes = [];
                 $rootScope.eltHistoryCompare = {};
                 $scope.priorCdes.forEach(function (o) {
                     if (o._id === $scope.selectedIds[0]) {
+                        $scope.cdes[0] = o;
                         $rootScope.eltHistoryCompare.left = o;
                     }
                     if (o._id === $scope.selectedIds[1]) {
+                        $scope.cdes[1] = o;
                         $rootScope.eltHistoryCompare.right = o;
                     }
                 });

@@ -1,15 +1,13 @@
 package gov.nih.nlm.cde.test.valueDomain;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ValueDomainTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void randomDatatype() {
         mustBeLoggedInAs(ctepCurator_username, password);
@@ -24,9 +22,11 @@ public class ValueDomainTest extends NlmCdeBaseTest {
 
         Assert.assertTrue(textPresent("java.lang.Date"));
         showAllTabs();
-        checkInHistory("Permissible Values - Value Type", "", "java.lang.Date");
-    }  
-    
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("java.lang.Date");
+    }
+
     @Test
     public void textDatatype() {
         mustBeLoggedInAs(ninds_username, password);
@@ -46,6 +46,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Permissible Values - Text", "", "789");
         checkInHistory("Permissible Values - Text", "", "987");
         checkInHistory("Permissible Values - Value Type", "Value List", "Text");
@@ -68,7 +70,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#textMaxLength .fa-check"));
 
         newCdeVersion();
-        
+
         checkInHistory("Permissible Values - Text - Regular Expression", "", "newre");
         checkInHistory("Permissible Values - Text - Freetext Rule", "", "newrule");
         checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
