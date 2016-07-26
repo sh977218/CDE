@@ -764,11 +764,21 @@ exports.init = function (app) {
     });
 
     app.post('/embed/', function (req, res) {
+        // TODO ass security
         mongo_data_system.embeds.save(req.body, function(err, embed) {
             if (err) res.status(500).send("There was an error saving this embed.");
             else res.send(embed);
         });
     });
+
+    app.delete('/embed/:id', function (req, res) {
+        // TODO add security
+        mongo_data_system.embeds.delete(req.params.id, function(err) {
+            if (err) res.status(500).send("There was an error removing this embed.");
+            else res.send();
+        });
+    });
+
 
     app.get('/embed/:id', function (req, res) {
         mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {

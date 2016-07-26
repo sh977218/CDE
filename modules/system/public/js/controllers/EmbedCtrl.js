@@ -53,7 +53,13 @@ angular.module('systemModule').controller('EmbedCtrl',
         $scope.selectedOrg = org;
     };
 
-    $scope.edit = function(org, e) {
+    $scope.edit = function(e) {
+        $http['delete']('/embed/' + e._id).success(function(res) {
+            Alert.addAlert("success", "Removed");
+        });
+    };
+
+        $scope.edit = function(org, e) {
         $scope.selection = e;
         $scope.selectedOrg = org;
     };
