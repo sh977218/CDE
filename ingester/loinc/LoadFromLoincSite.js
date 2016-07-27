@@ -7,8 +7,7 @@ var loincCount = 0;
 
 var url_prefix = 'http://r.details.loinc.org/LOINC/';
 var url_postfix = '.html';
-//var url_postfix_para = '?sections=Comprehensive';
-var url_postfix_para = '';
+var url_postfix_para = '?sections=Comprehensive';
 
 var map = {
     "LOINC#": {
@@ -30,6 +29,10 @@ var map = {
     'BASIC ATTRIBUTES': {
         function: parsingBasicAttributesTable,
         xpath: '//table[.//th[contains(text(),"BASIC ATTRIBUTES")]]'
+    },
+    'EXAMPLE ANSWER LIST': {
+        function: parsingAnswerListTable,
+        xpath: '//table[.//th[contains(text(),"EXAMPLE ANSWER LIST")]]'
     },
     'NORMATIVE ANSWER LIST': {
         function: parsingAnswerListTable,
@@ -58,6 +61,10 @@ var map = {
     'EXAMPLE UNITS': {
         function: parsingExampleUnitsTable,
         xpath: '//table[.//th[contains(text(),"EXAMPLE UNITS")]]'
+    },
+    'WEB CONTENT': {
+        function: parsingWebContentTable,
+        xpath: '//table[.//th[contains(text(),"WEB CONTENT")]]'
     }
 };
 
@@ -241,13 +248,13 @@ function parsingBasicAttributesTable(obj, sectionName, table, cb) {
                 var value = '';
                 async.series([
                     function (doneKey) {
-                        tds[0].getText().then(function (keyText) {
+                        tds[1].getText().then(function (keyText) {
                             key = keyText.replace(/:/g, '').trim();
                             doneKey();
                         });
                     },
                     function (doneValue) {
-                        tds[1].getText().then(function (valueText) {
+                        tds[2].getText().then(function (valueText) {
                             value = valueText.trim();
                             doneValue();
                         });
@@ -578,6 +585,11 @@ function parsingExampleUnitsTable(obj, sectionName, table, cb) {
             cb();
         });
     });
+}
+
+function parsingWebContentTable(obj, sectionName, table, cb) {
+    
+    cb();
 }
 
 function findTableAndParsing(driver, loincId, sectionName, obj, cb) {
