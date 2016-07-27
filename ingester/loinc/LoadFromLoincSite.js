@@ -684,6 +684,7 @@ exports.runArray = function (loincIdArray, removeMigration, next) {
                         var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
                         driver.get(url).then(function () {
                             parsingHtml(driver, loincId, function (obj) {
+                                obj.url = url;
                                 new MigrationLoincModel(obj).save(function (e) {
                                     if (e) throw e;
                                     loincCount++;
