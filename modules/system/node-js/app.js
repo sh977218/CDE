@@ -399,8 +399,7 @@ exports.init = function (app) {
     });
 
     app.post('/addOrgAdmin', function (req, res) {
-        if (req.isAuthenticated() &&
-            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.org)) {
             usersrvc.addOrgAdmin(req, res);
         } else {
             res.status(401).send();
@@ -408,8 +407,7 @@ exports.init = function (app) {
     });
 
     app.post('/removeOrgAdmin', function (req, res) {
-        if (req.isAuthenticated() &&
-            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.orgName)) {
             usersrvc.removeOrgAdmin(req, res);
         } else {
             res.status(401).send();
@@ -417,7 +415,7 @@ exports.init = function (app) {
     });
 
     app.post('/addOrgCurator', function (req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.org)) {
             usersrvc.addOrgCurator(req, res);
         } else {
             res.status(401).send();
@@ -425,7 +423,7 @@ exports.init = function (app) {
     });
 
     app.post('/removeOrgCurator', function (req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.orgName)) {
             usersrvc.removeOrgCurator(req, res);
         } else {
             res.status(401).send();
@@ -764,26 +762,37 @@ exports.init = function (app) {
     });
 
     app.post('/embed/', function (req, res) {
-        // TODO ass security
-        mongo_data_system.embeds.save(req.body, function(err, embed) {
-            if (err) res.status(500).send("There was an error saving this embed.");
-            else res.send(embed);
-        });
+        if (authorization.isOrgAdmin(req, req.body.org)) {
+            mongo_data_system.embeds.save(req.body, function(err, embed) {
+                if (err) res.status(500).send("There was an error saving this embed.");
+                else res.send(embed);
+            });
+        } else {
+            res.status(401).send();
+        }
     });
 
     app.delete('/embed/:id', function (req, res) {
-        // TODO add security
-        mongo_data_system.embeds.delete(req.params.id, function(err) {
-            if (err) res.status(500).send("There was an error removing this embed.");
-            else res.send();
+        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+            if (err) return res.status(500).send();
+            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
+            var embed = embeds[0];
+            if (authorization.isOrgAdmin(req, embed.org)) {
+                mongo_data_system.embeds.delete(req.params.id, function(err) {
+                    if (err) res.status(500).send("There was an error removing this embed.");
+                    else res.send();
+                });
+            } else {
+                res.status(401).send();
+            }
         });
     });
 
 
     app.get('/embed/:id', function (req, res) {
         mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
-            if (err) res.status(500).send();
-            if (embeds.length !== 1) res.status.send("Expectation not met: one document.");
+            if (err) return res.status(500).send();
+            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
             else res.send(embeds[0]);
         });
 

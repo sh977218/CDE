@@ -1,5 +1,5 @@
 angular.module('systemModule').controller('EmbedCtrl',
-    function($scope, OrgHelpers, $http, Alert, $timeout) {
+    function($scope, OrgHelpers, $http, Alert) {
 
     var defaultCommon = {
         lowestRegistrationStatus: 'Qualified',
@@ -8,11 +8,15 @@ angular.module('systemModule').controller('EmbedCtrl',
 
     $scope.embeds = {};
 
-    $scope.myOrgs.forEach(function(o) {
-        $http.get('/embeds/' + encodeURIComponent(o)).success(function(res) {
-            $scope.embeds[o] = res;
+    function reloadEmbeds()  {
+            $scope.myOrgs.forEach(function(o) {
+            $http.get('/embeds/' + encodeURIComponent(o)).success(function(res) {
+                $scope.embeds[o] = res;
+            });
         });
-    });
+    }
+
+    reloadEmbeds();
 
     $scope.save = function() {
         $http.post('/embed', $scope.selection)
@@ -53,13 +57,14 @@ angular.module('systemModule').controller('EmbedCtrl',
         $scope.selectedOrg = org;
     };
 
-    $scope.edit = function(e) {
-        $http['delete']('/embed/' + e._id).success(function(res) {
+    $scope.remove = function(e) {
+        $http['delete']('/embed/' + e._id).success(function() {
             Alert.addAlert("success", "Removed");
+            reloadEmbeds();
         });
     };
 
-        $scope.edit = function(org, e) {
+    $scope.edit = function(org, e) {
         $scope.selection = e;
         $scope.selectedOrg = org;
     };
