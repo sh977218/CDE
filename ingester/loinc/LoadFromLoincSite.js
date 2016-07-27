@@ -78,16 +78,21 @@ function parsingLOINCTable(driver, loincId, sectionName, obj, cb) {
 }
 
 function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
-    driver.findElements(By.xpath('//*[@class="Section40000000000000"]')).then(function (divs) {
-        if (divs.length === 0) {
-            logMessage(obj, 'No loinc name found');
+    driver.findElements(By.xpath('(//table)[1]')).then(function (divs) {
+        //noinspection JSUnresolvedVariable
+        var divLength = divs.length;
+        if (divLength === 0) {
+            logMessage(obj, 'No loinc name found.');
             cb();
-        } else if (divs.length > 0) {
-            if (divs.length > 1) logMessage(obj, 'More than one loinc name found');
+        } else if (divLength === 1) {
             divs[0].getText().then(function (text) {
                 obj[sectionName] = text.trim();
                 cb();
             });
+        }
+        else {
+            logMessage(obj, divLength + ' loinc name found.');
+            cb();
         }
     });
 }
@@ -357,7 +362,43 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
                         async.forEach(trs, function (tr, doneOneTr) {
                             var answerListItem = {};
                             tr.findElements(By.xpath('td')).then(function (tds) {
-                                if (tds.length === 9) {
+                                if (tds.length === 11) {
+                                    async.parallel([
+                                        function (doneParsingTd) {
+                                            tds[1].getText().then(function (text) {
+                                                answerListItem['SEQ#'] = text.trim();
+                                                doneParsingTd();
+                                            });
+                                        },
+                                        function (doneParsingTd) {
+                                            tds[3].getText().then(function (text) {
+                                                answerListItem['Answer'] = text.trim();
+                                                doneParsingTd();
+                                            });
+                                        },
+                                        function (doneParsingTd) {
+                                            tds[5].getText().then(function (text) {
+                                                answerListItem['Global ID'] = text.trim();
+                                                doneParsingTd();
+                                            });
+                                        },
+                                        function (doneParsingTd) {
+                                            tds[7].getText().then(function (text) {
+                                                answerListItem['Global ID Code System'] = text.trim();
+                                                doneParsingTd();
+                                            });
+                                        },
+                                        function (doneParsingTd) {
+                                            tds[9].getText().then(function (text) {
+                                                answerListItem['Answer ID'] = text.trim();
+                                                doneParsingTd();
+                                            });
+                                        }
+                                    ], function () {
+                                        answerListArray.push(answerListItem);
+                                        doneOneTr();
+                                    });
+                                } else if (tds.length === 9) {
                                     async.parallel([
                                         function (doneParsingTd) {
                                             tds[1].getText().then(function (text) {
@@ -387,8 +428,7 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
                                         answerListArray.push(answerListItem);
                                         doneOneTr();
                                     });
-                                }
-                                else if (tds.length === 7) {
+                                } else if (tds.length === 7) {
                                     async.parallel([
                                         function (doneParsingTd) {
                                             tds[1].getText().then(function (text) {
