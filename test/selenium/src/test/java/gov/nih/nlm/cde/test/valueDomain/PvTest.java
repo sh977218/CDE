@@ -26,8 +26,8 @@ public class PvTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        checkInHistory("Permissible Values", "Indeterminate", "Indeterminate added to pv");
-
+        textPresent("Indeterminate added to pv", By.xpath("//*[@class='historyCompare_pvs_0']"));
+        textPresent("Indeterminate", By.xpath("//*[@class='historyCompare_pvs_1']"));
     }
 
     @Test
