@@ -7,7 +7,8 @@ var loincCount = 0;
 
 var url_prefix = 'http://r.details.loinc.org/LOINC/';
 var url_postfix = '.html';
-var url_postfix_para = '?sections=Comprehensive';
+//var url_postfix_para = '?sections=Comprehensive';
+var url_postfix_para = '';
 
 var map = {
     "LOINC#": {
@@ -28,7 +29,7 @@ var map = {
     },
     'BASIC ATTRIBUTES': {
         function: parsingBasicAttributesTable,
-        xpath: '//*[@class="Section1000000F00"]/table'
+        xpath: '//table[.//th[contains(text(),"BASIC ATTRIBUTES")]]'
     },
     'NORMATIVE ANSWER LIST': {
         function: parsingAnswerListTable,
@@ -40,27 +41,23 @@ var map = {
     },
     'SURVEY QUESTION': {
         function: parsingSurveyQuestionTable,
-        xpath: '//*[@class="Section200000"]/table'
+        xpath: '//table[.//th[contains(text(),"SURVEY QUESTION")]]'
     },
     'MEMBER OF THESE PANELS': {
         function: parsingMemberOfThesePanelsTable,
-        xpath: '//*[@class="Section2000000"]/table'
+        xpath: '///table[.//th[contains(text(),"MEMBER OF THESE PANELS")]]'
     },
     'LANGUAGE VARIANTS': {
         function: parsingLanguageVariantsTable,
-        xpath: '//*[@class="Section10000000"]/table'
+        xpath: '//table[.//th[contains(text(),"LANGUAGE VARIANTS")]]'
     },
     'RELATED NAMES': {
         function: parsingRelatedNamesTable,
-        xpath: '//*[@class="Section20000000"]/table'
+        xpath: '//table[.//th[contains(text(),"RELATED NAMES")]]'
     },
     'EXAMPLE UNITS': {
         function: parsingExampleUnitsTable,
-        xpath: '//*[@class="Section40000000"]/table'
-    },
-    'EXAMPLE UNITS': {
-        function: parsingExampleUnitsTable,
-        xpath: '//*[@class="Section40000000"]/table'
+        xpath: '//table[.//th[contains(text(),"EXAMPLE UNITS")]]'
     }
 };
 
