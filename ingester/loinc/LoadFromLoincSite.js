@@ -45,7 +45,7 @@ var map = {
     },
     'MEMBER OF THESE PANELS': {
         function: parsingMemberOfThesePanelsTable,
-        xpath: '///table[.//th[contains(text(),"MEMBER OF THESE PANELS")]]'
+        xpath: '//table[.//th[contains(text(),"MEMBER OF THESE PANELS")]]'
     },
     'LANGUAGE VARIANTS': {
         function: parsingLanguageVariantsTable,
