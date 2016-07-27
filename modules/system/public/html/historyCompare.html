@@ -42,8 +42,11 @@
         <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
                                  options='classificationsOption'></compare-primitive-array>
 
+        <compare-primitive left='left.valueDomain.datatype' right='right.valueDomain.datatype'
+                           options='valueDomainDatatypeOption'></compare-primitive>
+
         <div ng-repeat="elt in cdes" class="col-md-6 noLeftRightPadding">
-            <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+            <div class="historyCompare_pvs_{{$index}}" ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
         </div>
     </div>
 </div>

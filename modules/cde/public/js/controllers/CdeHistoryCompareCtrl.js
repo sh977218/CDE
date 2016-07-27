@@ -154,4 +154,9 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
         title: 'Classifications',
         hideSame: true
     };
+    $scope.valueDomainDatatypeOption = {
+        title: 'Value Type',
+        hideSame: false,
+        tooltip: ''
+    };
 }]);

@@ -33,10 +33,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Code Name 1",By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
-        textPresent("Code ID 1",By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
-        textPresent("Alternative Name 1",By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'designation')]"));
-        textPresent("Alternative Definition 1",By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'definition')]"));
+        textPresent("Code Name 1", By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent("Code ID 1", By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+        textPresent("Alternative Name 1", By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'designation')]"));
+        textPresent("Alternative Definition 1", By.xpath("//*[@id='historyCompare_Names_2']/div[contains(@class,'left')]//div[contains(@class,'definition')]"));
 
         goToCdeByName(cdeName);
         showAllTabs();
@@ -47,6 +47,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("saveRegStatus"));
         modalGone();
 
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Registration State", "Qualified", "Recorded");
 
         clickElement(By.id("ids_tab"));

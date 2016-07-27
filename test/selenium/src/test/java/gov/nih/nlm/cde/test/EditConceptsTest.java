@@ -45,7 +45,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent("OC_CODE_111");
         textPresent("Prop_CODE_111");
 
-        clickElement(By.id("history)tab"));
+        clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         checkInHistory("Concepts", "", "DEC_CODE_111");
         checkInHistory("Concepts", "", "OC_CODE_111");

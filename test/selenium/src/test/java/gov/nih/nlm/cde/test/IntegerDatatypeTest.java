@@ -12,8 +12,9 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
     public void integerDatatype() {
         mustBeLoggedInAs(ninds_username, password);
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Tobacco product fail control indicator";
+        String newDatatype = "Custom Datatype";
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Custom Datatype");
         clickElement(By.cssSelector("#listDatatype .fa-check"));
@@ -23,15 +24,21 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        checkInHistory("Permissible Values - Value List", "", "Custom Datatype");
+        textPresent(newDatatype, By.xpath("//*[@class='historyCompare_pvs_0']//*[@id='listDatatype']/span/span/i"));
+        textPresent("N/A", By.xpath("//*[@class='historyCompare_pvs_1']//*[@id='listDatatype']/span/span/i"));
 
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Other Datatype");
         clickElement(By.cssSelector("#listDatatype .fa-check"));
 
         newCdeVersion();
-        checkInHistory("Permissible Values - Value List", "Custom Datatype", "Other Datatype");
+        goToCdeByName(cdeName);
+        showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent(newDatatype, By.xpath("//*[@class='historyCompare_pvs_0']//*[@id='listDatatype']/span/span/i"));
+        textPresent("N/A", By.xpath("//*[@class='historyCompare_pvs_1']//*[@id='listDatatype']/span/span/i"));
     }
 
 }
