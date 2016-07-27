@@ -12,16 +12,16 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         goToCdeByName("Reg Status Lift");
         showAllTabs();
         findElement(By.id("status_tab")).click();
-        elementVisible(By.cssSelector("#rule_Candidate_0 .fa-check"));
+        findElement(By.cssSelector("#rule_Candidate_0 .fa-check"));
 
-        elementVisible(By.cssSelector("#rule_Recorded_0 .fa-times"));
-        elementVisible(By.cssSelector("#rule_Recorded_1 .fa-times"));
-        elementVisible(By.cssSelector("#rule_Recorded_2 .fa-check"));
-        elementVisible(By.cssSelector("#rule_Recorded_3 .fa-times"));
+        findElement(By.cssSelector("#rule_Recorded_0 .fa-times"));
+        findElement(By.cssSelector("#rule_Recorded_1 .fa-times"));
+        findElement(By.cssSelector("#rule_Recorded_2 .fa-check"));
+        findElement(By.cssSelector("#rule_Recorded_3 .fa-times"));
 
-        elementVisible(By.cssSelector("#rule_Qualified_0 .fa-check"));
-        elementVisible(By.cssSelector("#rule_Qualified_1 .fa-check"));
-        elementVisible(By.cssSelector("#rule_Qualified_2 .fa-times"));
+        findElement(By.cssSelector("#rule_Qualified_0 .fa-check"));
+        findElement(By.cssSelector("#rule_Qualified_1 .fa-check"));
+        findElement(By.cssSelector("#rule_Qualified_2 .fa-times"));
     }
 
     @Test

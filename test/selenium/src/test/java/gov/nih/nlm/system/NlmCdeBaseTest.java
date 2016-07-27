@@ -800,9 +800,4 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
-
-    protected void elementVisible(By selector){
-        findElement(selector);
-    }
-
 }
