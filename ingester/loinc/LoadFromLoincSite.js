@@ -1,5 +1,6 @@
 var async = require('async'),
     webdriver = require('selenium-webdriver'),
+    By = webdriver.By,
     MigrationLoincModel = require('../createConnection').MigrationLoincModel
     ;
 
@@ -77,7 +78,7 @@ function parsingLOINCTable(driver, loincId, sectionName, obj, cb) {
 }
 
 function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
-    driver.findElements(webdriver.By.xpath('//*[@class="Section40000000000000"]')).then(function (divs) {
+    driver.findElements(By.xpath('//*[@class="Section40000000000000"]')).then(function (divs) {
         if (divs.length === 0) {
             logMessage(obj, 'No loinc name found');
             cb();
@@ -94,14 +95,14 @@ function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
 function parsingNameTable(obj, sectionName, table, cb) {
     obj[sectionName] = {};
     var nameObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         async.parallel([
             function (cb) {
-                trs[1].findElements(webdriver.By.xpath('td')).then(function (tds) {
-                    tds[2].findElements(webdriver.By.xpath('table/tbody/tr')).then(function (innerTrs) {
+                trs[1].findElements(By.xpath('td')).then(function (tds) {
+                    tds[2].findElements(By.xpath('table/tbody/tr')).then(function (innerTrs) {
                         if (innerTrs) {
                             nameObj['Fully-Specified Name'] = {};
-                            innerTrs[1].findElements(webdriver.By.xpath('td')).then(function (innerTds) {
+                            innerTrs[1].findElements(By.xpath('td')).then(function (innerTds) {
                                 async.parallel([
                                     function (innerCb) {
                                         innerTds[0].getText().then(function (text) {
@@ -153,7 +154,7 @@ function parsingNameTable(obj, sectionName, table, cb) {
                 });
             },
             function (cb) {
-                trs[2].findElements(webdriver.By.xpath('td')).then(function (tds) {
+                trs[2].findElements(By.xpath('td')).then(function (tds) {
                     tds[2].getText().then(function (text) {
                         nameObj['Long Common Name'] = text.trim();
                         cb();
@@ -161,7 +162,7 @@ function parsingNameTable(obj, sectionName, table, cb) {
                 });
             },
             function (cb) {
-                trs[3].findElements(webdriver.By.xpath('td')).then(function (tds) {
+                trs[3].findElements(By.xpath('td')).then(function (tds) {
                     tds[2].getText().then(function (text) {
                         nameObj['Shortname'] = text.trim();
                         cb();
@@ -177,7 +178,7 @@ function parsingNameTable(obj, sectionName, table, cb) {
 function parsingTermDefinitionDescriptionsTable(obj, sectionName, table, cb) {
     obj[sectionName] = {};
     var termDefinitionDescriptionsObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         async.parallel([
             function (done) {
@@ -201,7 +202,7 @@ function parsingTermDefinitionDescriptionsTable(obj, sectionName, table, cb) {
 function parsingPartDefinitionDescriptionsTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
     var partDefinitionDescriptionsArray = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr[not(contains(@class,"half_space"))]')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr[not(contains(@class,"half_space"))]')).then(function (trs) {
         trs.shift();
         var definitionArray = [];
         for (var i = 0; i < trs.length / 2; i++) {
@@ -240,10 +241,10 @@ function parsingPartDefinitionDescriptionsTable(obj, sectionName, table, cb) {
 function parsingBasicAttributesTable(obj, sectionName, table, cb) {
     obj[sectionName] = {};
     var basicAttributesObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         async.forEach(trs, function (tr, doneOneTr) {
-            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+            tr.findElements(By.xpath('td')).then(function (tds) {
                 var key = '';
                 var value = '';
                 async.series([
@@ -281,12 +282,12 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
     var externalDefinedExist = false;
     async.series([
         function (next) {
-            table.findElements(webdriver.By.css('table')).then(function (innerTable) {
+            table.findElements(By.css('table')).then(function (innerTable) {
                 if (innerTable.length > 0) {
                     externalDefinedExist = true;
-                    innerTable[0].findElements(webdriver.By.xpath('tbody/tr')).then(function (innerTrs) {
+                    innerTable[0].findElements(By.xpath('tbody/tr')).then(function (innerTrs) {
                         async.forEach(innerTrs, function (innerTr, doneOneInnerTr) {
-                            innerTr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+                            innerTr.findElements(By.xpath('td')).then(function (tds) {
                                 var key = '';
                                 var value = '';
                                 async.series([
@@ -318,10 +319,10 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
             });
         },
         function (next) {
-            table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+            table.findElements(By.xpath('tbody/tr')).then(function (trs) {
                 async.series([
                     function (done) {
-                        trs[0].findElement(webdriver.By.css('a')).then(function (a) {
+                        trs[0].findElement(By.css('a')).then(function (a) {
                             async.parallel([
                                     function (doneHref) {
                                         a.getAttribute('href').then(function (urlText) {
@@ -355,7 +356,7 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
                         trs.shift();
                         async.forEach(trs, function (tr, doneOneTr) {
                             var answerListItem = {};
-                            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+                            tr.findElements(By.xpath('td')).then(function (tds) {
                                 if (tds.length === 9) {
                                     async.parallel([
                                         function (doneParsingTd) {
@@ -435,10 +436,10 @@ function parsingAnswerListTable(obj, sectionName, table, cb) {
 function parsingSurveyQuestionTable(obj, sectionName, table, cb) {
     obj[sectionName] = {};
     var surveyQuestionObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         async.forEach(trs, function (tr, doneOneTr) {
-            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+            tr.findElements(By.xpath('td')).then(function (tds) {
                 tds[1].getText().then(function (keyText) {
                     tds[2].getText().then(function (valueText) {
                         surveyQuestionObj[keyText.replace(/:/g, '').trim()] = valueText.trim();
@@ -455,11 +456,11 @@ function parsingSurveyQuestionTable(obj, sectionName, table, cb) {
 function parsingMemberOfThesePanelsTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
     var memberOfThesePanelsObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         async.forEach(trs, function (tr, doneOneTr) {
             var panel = {};
-            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+            tr.findElements(By.xpath('td')).then(function (tds) {
                 async.parallel([
                     function (cb) {
                         tds[1].getText().then(function (idText) {
@@ -474,7 +475,7 @@ function parsingMemberOfThesePanelsTable(obj, sectionName, table, cb) {
                         });
                     },
                     function (cb) {
-                        tds[1].findElement(webdriver.By.xpath('a')).then(function (a) {
+                        tds[1].findElement(By.xpath('a')).then(function (a) {
                             a.getAttribute('href').then(function (urlText) {
                                 panel.url = urlText.trim();
                                 cb();
@@ -496,7 +497,7 @@ function parsingMemberOfThesePanelsTable(obj, sectionName, table, cb) {
 function parsingLanguageVariantsTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
     var languageVariantsObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         var languageArray = [];
         for (var i = 0; i < trs.length / 2; i++) {
@@ -533,10 +534,10 @@ function parsingLanguageVariantsTable(obj, sectionName, table, cb) {
 function parsingRelatedNamesTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
     var relatedNamesObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         async.forEach(trs, function (tr, doneOneTr) {
-            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+            tr.findElements(By.xpath('td')).then(function (tds) {
                 tds.shift();
                 async.forEach(tds, function (td, doneOneTd) {
                         td.getText().then(function (text) {
@@ -557,12 +558,12 @@ function parsingRelatedNamesTable(obj, sectionName, table, cb) {
 function parsingExampleUnitsTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
     var exampleUnitsObj = obj[sectionName];
-    table.findElements(webdriver.By.xpath('tbody/tr')).then(function (trs) {
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         trs.shift();
         async.forEach(trs, function (tr, doneOneTr) {
             var exampleUnit = {};
-            tr.findElements(webdriver.By.xpath('td')).then(function (tds) {
+            tr.findElements(By.xpath('td')).then(function (tds) {
                 async.parallel([
                     function (cb) {
                         tds[1].getText().then(function (unitText) {
@@ -588,13 +589,50 @@ function parsingExampleUnitsTable(obj, sectionName, table, cb) {
 }
 
 function parsingWebContentTable(obj, sectionName, table, cb) {
-    
-    cb();
+    obj[sectionName] = [];
+    table.findElements(By.xpath('tbody/tr')).then(function (trs) {
+        trs.shift();
+        trs.pop();
+        var dividedTrs = [];
+        for (var i = 0; i < trs.length / 2; i++) {
+            dividedTrs.push({
+                odd: trs[2 * i],
+                even: trs[2 * i + 1]
+            });
+        }
+        async.forEachSeries(dividedTrs, function (dividedTr, doneOneTr) {
+                var webContent = {};
+                async.parallel([
+                    function (doneOne) {
+                        dividedTr.odd.getText().then(function (text) {
+                            webContent.value = text.trim();
+                            doneOne();
+                        })
+                    },
+                    function (doneTwo) {
+                        dividedTr.even.getText().then(function (text) {
+                            webContent.source = text.trim();
+                            doneTwo();
+                        });
+                    },
+                    function (doneThree) {
+                        dividedTr.even.findElements(By.css('a').then(function (a) {
+                            a.getAttribute('href').getText().then(function (text) {
+                                webContent.link = text.trim();
+                                doneThree();
+                            });
+                        }))
+                    }])
+            },
+            function doneAllDividedTrs() {
+                cb();
+            })
+    });
 }
 
 function findTableAndParsing(driver, loincId, sectionName, obj, cb) {
     var xpath = map[sectionName].xpath;
-    driver.findElements(webdriver.By.xpath(xpath)).then(function (tables) {
+    driver.findElements(By.xpath(xpath)).then(function (tables) {
         if (tables && tables.length === 0) {
             var message = 'cannot find ' + sectionName + ' for loinc: ' + loincId;
             console.log(message);
