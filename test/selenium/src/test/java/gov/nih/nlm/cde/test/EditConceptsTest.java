@@ -69,20 +69,25 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
         
         clickElement(By.id("concepts_tab"));
-        clickElement(By.id("removedataElementConcept-0"));
+        clickElement(By.id("removedataElementConcept-1"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
 
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
-
         showAllTabs();
+        clickElement(By.id("concepts_tab"));
+        textNotPresent(newDataElementConceptName);
+        textNotPresent(newDataElementConceptId);
+        textNotPresent(newObjectClassConceptName);
+        textNotPresent(newObjectClassConceptId);
+        textNotPresent(newPropertyConceptName);
+        textNotPresent(newPropertyConceptId);
+
+
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
+        selectHistoryAndCompare(1, 3);
         checkInHistory("Concepts", "DEC_CODE_111", "");
         checkInHistory("Concepts", "OC_CODE_111", "");
         checkInHistory("Concepts", "Prop_CODE_111", "");

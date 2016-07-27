@@ -712,9 +712,8 @@ public class NlmCdeBaseTest {
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
-        hangon(1);
         clickElement(By.id("historyCompareBtn"));
-
+        textPresent("Differences");
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {

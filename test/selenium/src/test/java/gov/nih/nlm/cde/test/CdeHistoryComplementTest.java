@@ -65,10 +65,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
-        checkInHistory("Identifiers", "", "Origin 1");
-        checkInHistory("Identifiers", "", "Identifier 1");
-        checkInHistory("Identifiers", "", "Version 1");
+        selectHistoryAndCompare(1, 4);
+        textPresent("Origin 1", By.xpath("//*[@id='historyCompare_IDs_1']/div[contains(@class,'left')]//div[contains(@class,'source')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='historyCompare_IDs_1']/div[contains(@class,'left')]//div[contains(@class,'id')]"));
+        textPresent("Version 1", By.xpath("//*[@id='historyCompare_IDs_1']/div[contains(@class,'left')]//div[contains(@class,'version')]"));
     }
 
 
