@@ -47,7 +47,7 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         clickElement(By.id("addClassification"));
         findElement(By.id("classif.0.label")).sendKeys("Classification");
-        findElement(By.id("classif.0.startingWith")).sendKeys("NINDS;Disease;");
+        findElement(By.id("classif.0.startsWith")).sendKeys("NINDS;Disease;");
         findElement(By.id("classif.0.exclude")).sendKeys("^NINDS;Disease;.+;Domain");
         clickElement(By.id("classif.0.selectedOnly"));
 

@@ -15,7 +15,6 @@
             <th ng-if="searchViewSettings.tableViewFields.source" class="source">Source</th>
             <th ng-if="searchViewSettings.tableViewFields.updated" class="updated">Updated</th>
             <th ng-if="searchViewSettings.tableViewFields.tinyId" class="tinyId">NLM ID</th>
-            <th ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{customField.label}}</th>
         </tr>
         </thead>
         <tbody>
@@ -73,7 +72,6 @@
                 <td ng-if="searchViewSettings.tableViewFields.tinyId">
                     {{c.tinyId}}
                 </td>
-                <td ng-repeat="customField in searchViewSettings.tableViewFields.customFields">{{c.embed[customField.key]}}</td>
             </tr>
         </tbody>
     </table>
