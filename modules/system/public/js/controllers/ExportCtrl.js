@@ -112,7 +112,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
         $scope.displayValidation = function(){
             var org = $scope.searchSettings.selectedOrg;
             var curatorOf = [].concat(userResource.user.orgAdmin).concat(userResource.user.orgCurator);
-            return curatorOf.indexOf(org)>-1;
+            return curatorOf.indexOf(org)>-1 || exports.hasRole(userResource.user, "OrgAuthority");
         };
 
         $scope.openValidRulesModal = function(){
