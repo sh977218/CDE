@@ -1,6 +1,6 @@
 var async = require('async'),
     webdriver = require('selenium-webdriver'),
-    MigrationLoincModal = require('../createConnection').MigrationLoincModal
+    MigrationLoincModel = require('../createConnection').MigrationLoincModel
     ;
 
 var loincCount = 0;
@@ -664,7 +664,7 @@ exports.runArray = function (loincIdArray, removeMigration, next) {
     async.series([
         function (cb) {
             if (removeMigration) {
-                MigrationLoincModal.remove({}, function (err) {
+                MigrationLoincModel.remove({}, function (err) {
                     if (err) throw err;
                     console.log('removed migration loinc collection.');
                     cb();
@@ -678,13 +678,13 @@ exports.runArray = function (loincIdArray, removeMigration, next) {
         function (cb) {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEach(loincIdArray, function (loincId, doneOneLoinc) {
-                MigrationLoincModal.find({loincId: loincId}).exec(function (err, existingLoincs) {
+                MigrationLoincModel.find({loincId: loincId}).exec(function (err, existingLoincs) {
                     if (err) throw err;
                     if (existingLoincs.length === 0) {
                         var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
                         driver.get(url).then(function () {
                             parsingHtml(driver, loincId, function (obj) {
-                                new MigrationLoincModal(obj).save(function (e) {
+                                new MigrationLoincModel(obj).save(function (e) {
                                     if (e) throw e;
                                     loincCount++;
                                     console.log('loincCount: ' + loincCount);
@@ -712,7 +712,7 @@ exports.runArray = function (loincIdArray, removeMigration, next) {
 exports.runOne = function (loincId, next) {
     async.series([
         function (cb) {
-            MigrationLoincModal.remove({}, function (err) {
+            MigrationLoincModel.remove({}, function (err) {
                 if (err) throw err;
                 console.log('removed migration loinc collection.');
                 cb();
@@ -723,7 +723,7 @@ exports.runOne = function (loincId, next) {
             var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
             driver.get(url).then(function () {
                 parsingHtml(driver, loincId, function (obj) {
-                    new MigrationLoincModal(obj).save(function () {
+                    new MigrationLoincModel(obj).save(function () {
                         driver.quit();
                         cb();
                     });
