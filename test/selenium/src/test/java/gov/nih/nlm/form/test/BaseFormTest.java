@@ -54,6 +54,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
             new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
             clickElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']"));
         }
+
+        //  for some reason, the click to save sometimes does not open save. Maybe the click is being swallowed by the closing select above.
+        hangon(1);
     }
 
 }
