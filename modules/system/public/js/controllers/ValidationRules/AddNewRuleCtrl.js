@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'myOrgs', function($scope, $modalInstance, myOrgs){
+angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'userOrgs', function($scope, $modalInstance, userOrgs){
     $scope.fields = [
         'stewardOrg.name'
         , 'properties.key'
@@ -12,7 +12,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'naming.context.contextName'
         , 'valueDomain.datatype'
     ];
-    $scope.myOrgs = myOrgs;
+    $scope.userOrgs = userOrgs;
     $scope.cancel = function(){
         $modalInstance.dismiss();
     };

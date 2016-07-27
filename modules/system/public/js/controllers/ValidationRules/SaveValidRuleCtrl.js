@@ -1,11 +1,16 @@
 angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http', '$uibModal',
     function ($scope, OrgHelpers, Organization, $http, $modal) {
         $scope.userOrgs = {};
-        $scope.myOrgs.forEach(function(orgName){
-            Organization.getByName(orgName, function(o){
-                $scope.userOrgs[orgName] = o.data.cdeStatusValidationRules;
-            });
+        console.log(OrgHelpers.orgsDetailedInfo);
+        Object.keys(OrgHelpers.orgsDetailedInfo).forEach(function(orgName){
+            $scope.userOrgs[orgName] = OrgHelpers.orgsDetailedInfo[orgName].cdeStatusValidationRules;
         });
+        //$scope.myOrgs.forEach(function(orgName){
+        //    Organization.getByName(orgName, function(o){
+        //        $scope.userOrgs[orgName] = o.data.cdeStatusValidationRules;
+        //    });
+        //});
+        console.log($scope.userOrgs);
         $scope.removeRule = function(o, i){
             var key = $scope.userOrgs[o][i].field.replace(/[^\w]/g,"")+$scope.userOrgs[o][i].rule.regex.replace(/[^\w]/g,"");
             $http.post('/removeRule', {orgName:o, rule: key}, function(){
@@ -44,7 +49,7 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
                 templateUrl: '/system/public/html/statusRules/addNewRule.html',
                 controller: 'AddNewRuleCtrl',
                 resolve: {
-                    myOrgs: function(){return $scope.myOrgs}
+                    userOrgs: function(){return $scope.userOrgs;}
                 }
             });
             modalInstance.result.then(function (rule) {

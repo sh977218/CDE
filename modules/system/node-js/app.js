@@ -815,7 +815,7 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
-        if (!req.isAuthenticated() || !req.user.siteAdmin) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
         mongo_data_system.disableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -823,7 +823,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', function(req, res){
-        if (!req.isAuthenticated() || !req.user.siteAdmin) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
         mongo_data_system.enableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
