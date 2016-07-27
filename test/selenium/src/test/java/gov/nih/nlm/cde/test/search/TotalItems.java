@@ -1,7 +1,8 @@
 package gov.nih.nlm.cde.test.search;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import junit.framework.Assert;
+import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TotalItems extends NlmCdeBaseTest {
