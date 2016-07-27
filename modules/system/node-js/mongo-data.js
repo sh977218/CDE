@@ -66,6 +66,9 @@ exports.embeds = {
     },
     find: function(crit, cb) {
         Embeds.find(crit, cb);
+    },
+    delete: function(id, cb) {
+        Embeds.remove({_id: id}, cb);
     }
 };
 

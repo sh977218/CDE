@@ -195,6 +195,10 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                         c.embed.primaryDefinition = c.naming[0].definition;
                     }
 
+                    if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {
+                        c.embed.registrationStatus = c.registrationState.registrationStatus;
+                    }
+
                     if (embed4Type.classifications && embed4Type.classifications.length > 0) {
                         embed4Type.classifications.forEach(function (eCl) {
                             var flatClassifs = flattenClassification(c);
@@ -254,10 +258,6 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             }
         });
 
-        //embed4Type.properties.forEach(function (eProp) {
-        //    $scope.searchViewSettings.tableViewFields.customFields.push({key: eProp.label, label: eProp.label});
-        //});
-
         embed4Type.otherNames.forEach(function (eName) {
             $scope.searchViewSettings.tableViewFields.customFields.push({key: eName.label, label: eName.label});
         });
@@ -266,6 +266,11 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
         if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
             $scope.searchViewSettings.tableViewFields.customFields.push({key: "primaryDefinition",
                 label: embed4Type.primaryDefinition.label, style: embed4Type.primaryDefinition.style});
+        }
+
+        if (embed4Type.registrationStatus && embed4Type.registrationStatus.show) {
+            $scope.searchViewSettings.tableViewFields.customFields.push({key: "registrationStatus",
+                label: embed4Type.registrationStatus.label});
         }
 
     })

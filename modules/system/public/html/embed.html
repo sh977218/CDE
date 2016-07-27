@@ -2,20 +2,21 @@
     <h3>Embed CDE / Form Search on your site</h3>
 
     <div ng-repeat="org in myOrgs" ng-hide="selection">
-        <h4>Embeds for {{org}} <button ng-click="addEmbed(org)" id="addEmbed" class="btn btn-sm btn-default">
+        <h4>Embeds for {{org}} <button ng-click="addEmbed(org)" id="{{org}}_addEmbed" class="btn btn-sm btn-default">
             <i class="fa fa-plus-square-o"></i> Add
         </button></h4>
         <span ng-if="embeds[org].length > 0">
             <ul>
                 <li ng-repeat="e in embeds[org]">
                     <span ng-show="showDelete">Confirm Delete
-                        <a class="fa fa-check" ng-click="showDelete = false; remove(org, e)"
+                        <a class="fa fa-check" ng-click="showDelete = false; remove(e)"
                            id="confirmRemoveMappingSpecification-{{$index}}" title="OK" href=""></a>
                         <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                     </span>
                     <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
                        id="removeMappingSpecification-{{$index}}" title="Remove" href=""></a>
-                    <a title="editEmbed" class="fa fa-pencil" ng-click="edit(org, e)" href=""> </a> {{e.name}}
+                    <a title="editEmbed" class="fa fa-pencil" ng-click="edit(org, e)"
+                       id="{{org}}.{{$index}}.editEmbed" href=""> </a> {{e.name}}
                 (id = {{e._id}})</li>
             </ul>
         </span>
@@ -68,76 +69,62 @@
                     <br>
                     <div class="boxed-div">
                         <h4>Names (besides primary)</h4>
-                        <button ng-click="addCdeName()" class="btn btn-default">Add Name</button>
+                        <button ng-click="addCdeName()" class="btn btn-default" id="addName">Add Name</button>
                         <div ng-repeat="thisName in selection.cde.otherNames" class="boxed-div">
-                            <button ng-click="selection.cde.otherNames.splice($index, 1)" title="Remove">
+                            <button ng-click="selection.cde.otherNames.splice($index, 1)"
+                                    id="name.{{$index}}.remove" title="Remove">
                                 <i class="fa fa-trash"></i></button>
-                            <label for="thisName.contextName">Name Context:</label>
-                            <input ng-model="thisName.contextName" id="thisName.contextName" class="form-control" required>
+                            <label for="name.{{$index}}.contextName">Name Context:</label>
+                            <input ng-model="thisName.contextName" id="name.{{$index}}.contextName"
+                                   class="form-control" required>
                             <br>
-                            <label for="thisName.label">Choose a label for the Name:</label>
-                            <input ng-model="thisName.label" id="thisName.label" class="form-control" required>
+                            <label for="name.{{$index}}.label">Choose a label for the Name:</label>
+                            <input ng-model="thisName.label" id="name.{{$index}}.label" class="form-control" required>
                             <br>
                         </div>
                     </div>
                     <br>
                     <div class="boxed-div">
                         <h4>Identifiers</h4>
-                        <button ng-click="addCdeId()" class="btn btn-default">Add ID</button>
+                        <button ng-click="addCdeId()" class="btn btn-default" id="addId">Add ID</button>
                         <div ng-repeat="thisId in selection.cde.ids" class="boxed-div">
-                            <button ng-click="selection.cde.ids.splice($index, 1)" title="Remove">
+                            <button ng-click="selection.cde.ids.splice($index, 1)"
+                                    id="id.{{$index}}.remove" title="Remove">
                                 <i class="fa fa-trash"></i></button>
-                            <label for="thisId.source">ID Source Name:</label>
-                            <input ng-model="thisId.source" id="thisId.source" class="form-control" required>
+                            <label for="id.{{$index}}.source">ID Source Name:</label>
+                            <input ng-model="thisId.source" id="id.{{$index}}.source" class="form-control" required>
                             <br>
-                            <label for="thisId.idLabel">Choose a label for the ID column:</label>
-                            <input ng-model="thisId.idLabel" id="thisId.idLabel" class="form-control" required>
+                            <label for="id.{{$index}}.idLabel">Choose a label for the ID column:</label>
+                            <input ng-model="thisId.idLabel" id="id.{{$index}}.idLabel" class="form-control" required>
                             <br>
-                            <input type="checkbox" ng-model="thisId.version" id="cde.sourceVersion">
-                            <label for="cde.sourceVersion">Also see version number</label>
+                            <input type="checkbox" ng-model="thisId.version" id="id.{{$index}}.sourceVersion">
+                            <label for="id.{{$index}}.sourceVersion">Also see version number</label>
                             <span ng-if="thisId.version">
                                 <br>
-                                <label for="thisId.versionLabel">Choose a label for the version column:</label>
-                                <input ng-model="thisId.versionLabel" id="thisId.versionLabel" class="form-control" required>
+                                <label for="id.{{$index}}.versionLabel">Choose a label for the version column:</label>
+                                <input ng-model="thisId.versionLabel" id="id.{{$index}}.versionLabel" class="form-control" required>
                             </span>
                         </div>
                     </div>
                     <br>
-                    <!--<div class="boxed-div">-->
-                        <!--<h4>Properties</h4>-->
-                        <!--<button ng-click="addCdeProperty()" class="btn btn-default">Add Property</button>-->
-                        <!--<div ng-repeat="thisProp in selection.cde.properties" class="boxed-div">-->
-                            <!--<button ng-click="selection.cde.properties.splice($index, 1)" title="Remove">-->
-                                <!--<i class="fa fa-trash"></i></button>-->
-                            <!--<label for="thisProp.key">Property Key:</label>-->
-                            <!--<input ng-model="thisProp.key" id="thisProp.key" class="form-control" required>-->
-                            <!--<br>-->
-                            <!--<label for="thisProp.label">Choose a label for the Property:</label>-->
-                            <!--<input ng-model="thisProp.label" id="thisProp.label" class="form-control" required>-->
-                            <!--<br>-->
-                            <!--<label for="thisProp.limit">Truncate this property to Property: (chars)</label>-->
-                            <!--<input ng-model="thisProp.limit" id="thisProp.limit" class="form-control" type="number" required>-->
-                            <!--<br>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<br>-->
                     <div class="boxed-div">
                         <h4>Classifications</h4>
-                        <button ng-click="addCdeClassification()" class="btn btn-default">Add Classification</button>
+                        <button ng-click="addCdeClassification()" class="btn btn-default" id="addClassification">Add Classification</button>
                         <div ng-repeat="thisClassif in selection.cde.classifications" class="boxed-div">
-                            <button ng-click="selection.cde.classifications.splice($index, 1)" title="Remove">
+                            <button ng-click="selection.cde.classifications.splice($index, 1)"
+                                    id="classif.{{$index}}.remove" title="Remove">
                                 <i class="fa fa-trash"></i></button>
-                            <label for="thisClassif.label">Choose a label:</label>
-                            <input ng-model="thisClassif.label" id="thisClassif.label" class="form-control" required>
+                            <label for="classif.{{$index}}.label">Choose a label:</label>
+                            <input ng-model="thisClassif.label" id="classif.{{$index}}.label" class="form-control" required>
                             <br>
-                            <label for="thisClassif.startsWith">Include classifications starting with: </label>
-                            <input ng-model="thisClassif.startsWith" id="thisClassif.startsWith" class="form-control">
+                            <label for="classif.{{$index}}.startsWith">Include classifications starting with: </label>
+                            <input ng-model="thisClassif.startsWith" id="classif.{{$index}}.startsWith" class="form-control">
                             <br>
-                            <label for="thisClassif.exclude">Exclude classifications with regEx: </label>
-                            <input ng-model="thisClassif.exclude" id="thisClassif.exclude" class="form-control">
+                            <label for="classif.{{$index}}.exclude">Exclude classifications with regEx: </label>
+                            <input ng-model="thisClassif.exclude" id="classif.{{$index}}.exclude" class="form-control">
                             <br>
-                            <input type="checkbox" ng-model="thisClassif.selectedOnly" id="thisClassif.selectedOnly">
-                            <label for="thisClassif.selectedOnly">Only show selected classifications </label>
+                            <input type="checkbox" ng-model="thisClassif.selectedOnly" id="classif.{{$index}}.selectedOnly">
+                            <label for="classif.{{$index}}.selectedOnly">Only show selected classifications </label>
                         </div>
                     </div>
                     <div class="boxed-div">
@@ -145,6 +132,7 @@
                         <input type="checkbox" ng-model="selection.cde.linkedForms.show"
                                id="cde.linkedForms">
                         <label for="cde.linkedForms">See Linked Forms</label>
+                        <br>
                         <span ng-show="selection.cde.linkedForms.show">
                             <label for="cde.linkedForms.label">Choose a label:</label>
                             <input ng-model="selection.cde.linkedForms.label" id="cde.linkedForms.label" class="form-control">
@@ -194,81 +182,20 @@
                     <label for="cde.registrationStatus.label">Definition Label: </label>
                     <input ng-model="selection.cde.registrationStatus.label"
                            id="cde.registrationStatus.label"
-                           class="form-control">
+                           class="form-control" required>
                 </div>
                 <br>
             </div>
-
-            <!--<div class="col-md-5 boxed-div" style="margin-left: 15px">-->
-                <!--<h2>Form Search-->
-                    <!--<span class="btn-group">-->
-                        <!--<button id="formEnabled" class="btn btn-sm" ng-class="{'btn-success':selection.form}"-->
-                                <!--ng-click="enableForm(true)"> On-->
-                        <!--</button>-->
-                        <!--<button id="formDisabled" class="btn btn-sm" ng-class="{'btn-danger':!selection.form}"-->
-                                <!--ng-click="enableForm(false)"> Off-->
-                        <!--</button>-->
-                    <!--</span>-->
-                <!--</h2>-->
-                <!--<div ng-show="selection.form">-->
-                    <!--<input type="checkbox" id="form.primaryDefinition"  ng-model="selection.form.primaryDefinition">-->
-                    <!--<label for="form.primaryDefinition">See Primary Definition</label>-->
-                    <!--<br>-->
-                    <!--<input type="checkbox" ng-model="selection.sourceId" id="form.sourceId">-->
-                    <!--<label for="form.sourceId">See Source ID</label>-->
-                    <!--<br>-->
-                    <!--<input type="checkbox" ng-model="selection.sourceVersion" id="form.sourceVersion">-->
-                    <!--<label for="form.sourceVersion">See Source Version</label>-->
-
-                    <!--<br>-->
-                    <!--<br>-->
-
-                    <!--<label for="form.pageSize">Number of results per page</label>-->
-                    <!--<input type="number" ng-model="selection.pageSize" class="form-control" id="form.pageSize">-->
-
-                    <!--<h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>-->
-                    <!--<div class="form-group">-->
-                        <!--<span>I want my search results to include these statuses</span>-->
-                        <!--<div class="radio indent">-->
-                            <!--<label>-->
-                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Qualified"-->
-                                       <!--value="Qualified">-->
-                                <!--Preferred Standard, Standard, Qualified-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="radio indent">-->
-                            <!--<label>-->
-                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Recorded"-->
-                                       <!--value="Recorded">-->
-                                <!--Preferred Standard, Standard, Qualified, Recorded-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="radio indent">-->
-                            <!--<label>-->
-                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Candidate"-->
-                                       <!--value="Candidate">-->
-                                <!--Preferred Standard, Standard, Qualified, Recorded, Candidate-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="radio indent">-->
-                            <!--<label>-->
-                                <!--<input type="radio" ng-model="selection.form.lowestRegistrationStatus" id="form.minStatus-Incomplete"-->
-                                       <!--value="Incomplete">-->
-                                <!--Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete-->
-                            <!--</label>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
 
         <button class="btn btn-default" ng-click="save()" ng-show="selection.cde || selection.form"
-                ng-disabled="isClean() || editEmbed.$invalid">
+                ng-disabled="isClean() || editEmbed.$invalid" id="saveEmbed">
             <i class="fa fa-save"></i> Save</button>
 
         <button class="btn btn-default" ng-click="cancel()" ng-show="selection.cde || selection.form">
             <i class="fa fa-close"></i> Cancel</button>
-        <br>
+
+        <br><br>
 
         <div> preview:
             <span class="btn-group">
