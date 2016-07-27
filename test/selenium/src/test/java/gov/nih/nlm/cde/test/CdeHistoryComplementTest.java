@@ -12,6 +12,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
+        String newStatus = "Recorded";
+        String oldStatus = "Qualified";
         goToCdeByName(cdeName);
 
         showAllTabs();
@@ -43,13 +45,14 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
-        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByValue("Recorded");
+        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByValue(newStatus);
         clickElement(By.id("saveRegStatus"));
         modalGone();
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        checkInHistory("Registration State", "Qualified", "Recorded");
+        textPresent(newStatus, By.xpath("//*[@id='historyCompare_Status']//div[contains(@class,'left')]"));
+        textPresent(oldStatus, By.xpath("//*[@id='historyCompare_Status']//div[contains(@class,'right')]"));
 
         clickElement(By.id("ids_tab"));
         closeAlert();
@@ -61,6 +64,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         modalGone();
         goToCdeByName(cdeName);
         showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Identifiers", "", "Origin 1");
         checkInHistory("Identifiers", "", "Identifier 1");
         checkInHistory("Identifiers", "", "Version 1");

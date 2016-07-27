@@ -13,25 +13,34 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Patient Photograph Malignant Neoplasm Assessment Date";
 
+        String newDataElementConceptName = "DEC1";
+        String newDataElementConceptId = "DEC_CODE_111";
+
+        String newObjectClassConceptName = "OC1";
+        String newObjectClassConceptId = "OC_CODE_111";
+
+        String newPropertyConceptName = "Prop1";
+        String newPropertyConceptId = "Prop_CODE_111";
+
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("concepts_tab"));
 
         clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys("DEC1");
-        findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
+        findElement(By.name("name")).sendKeys(newDataElementConceptName);
+        findElement(By.name("codeId")).sendKeys(newDataElementConceptId);
         clickElement(By.id("createConcept"));
 //        hangon(2);
         clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys("OC1");
-        findElement(By.name("codeId")).sendKeys("OC_CODE_111");
+        findElement(By.name("name")).sendKeys(newObjectClassConceptName);
+        findElement(By.name("codeId")).sendKeys(newObjectClassConceptId);
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
         clickElement(By.id("createConcept"));
 //        hangon(2);
 
         clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys("Prop1");
-        findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
+        findElement(By.name("name")).sendKeys(newPropertyConceptName);
+        findElement(By.name("codeId")).sendKeys(newPropertyConceptId);
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
         clickElement(By.id("createConcept"));
 //        hangon(2);
@@ -41,16 +50,24 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("concepts_tab"));
-        textPresent("DEC_CODE_111");
-        textPresent("OC_CODE_111");
-        textPresent("Prop_CODE_111");
+        textPresent(newDataElementConceptName);
+        textPresent(newDataElementConceptId);
+        textPresent(newObjectClassConceptName);
+        textPresent(newObjectClassConceptId);
+        textPresent(newPropertyConceptName);
+        textPresent(newPropertyConceptId);
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        checkInHistory("Concepts", "", "DEC_CODE_111");
-        checkInHistory("Concepts", "", "OC_CODE_111");
-        checkInHistory("Concepts", "", "Prop_CODE_111");
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
 
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+        
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));
