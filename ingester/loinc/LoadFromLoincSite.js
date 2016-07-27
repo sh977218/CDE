@@ -78,20 +78,17 @@ function parsingLOINCTable(driver, loincId, sectionName, obj, cb) {
 }
 
 function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
-    driver.findElements(By.xpath('(//table)[1]')).then(function (divs) {
-        //noinspection JSUnresolvedVariable
-        var divLength = divs.length;
-        if (divLength === 0) {
-            logMessage(obj, 'No loinc name found.');
+    driver.findElements(webdriver.By.xpath('//((//table)[1])//*[@class="Section40000000000000"]')).then(function (divs) {
+        if (divs.length === 0) {
+            logMessage(obj, 'No loinc name found');
             cb();
-        } else if (divLength === 1) {
+        } else if (divs.length === 1) {
             divs[0].getText().then(function (text) {
                 obj[sectionName] = text.trim();
                 cb();
             });
-        }
-        else {
-            logMessage(obj, divLength + ' loinc name found.');
+        } else {
+            logMessage(obj, 'More than one loinc name found');
             cb();
         }
     });

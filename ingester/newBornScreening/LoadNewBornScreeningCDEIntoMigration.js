@@ -7,8 +7,8 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-const stewardOrgName = "LOINC";
-const classificationOrgName = 'NICHD';
+const source = "LOINC";
+const stewardOrgName = 'NLM';
 
 var cdeCounter = 0;
 var newBornScreeningOrg = null;
@@ -29,6 +29,10 @@ var uom_datatype_map = {
     'ft/ft': 'Text',
     'cells': 'Text',
     'mm Hg': 'Text'
+};
+
+var statusMap = {
+    'Active': 'Qualified'
 };
 
 function createCde(newBornScreening, loinc) {
@@ -112,20 +116,26 @@ function createCde(newBornScreening, loinc) {
         table = table + '</table>';
         properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
+    if (loinc['NAME']['Fully-Specified Name']) {
+        Object.keys(loinc['NAME']['Fully-Specified Name']).forEach(function (key) {
+            var value = loinc['NAME']['Fully-Specified Name'][key];
+            properties.push({key: key, value: value, source: 'LOINC'});
+        });
+    }
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
-        stewardOrg: {name: "LOINC"},
-        createdBy: {username: 'batchloader'},
+        createdBy: {username: 'BatchLoader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
-        source: 'LOINC',
+        source: source,
         naming: naming,
         ids: ids,
         properties: properties,
-        classification: [{stewardOrg: {name: classificationOrgName}, elements: []}]
+        stewardOrg: {name: stewardOrgName},
+        classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
-    var classificationToAdd = ['Classification', 'Newborn Screening'];
+    var classificationToAdd = ['Classification'];
     var classificationArray = newBornScreening.CLASS.split('^');
     classificationArray.forEach(function (classification) {
         classificationToAdd.push(classification);

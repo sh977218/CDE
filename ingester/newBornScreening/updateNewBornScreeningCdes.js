@@ -1,17 +1,17 @@
 var async = require('async');
-var mongo_cde = require('../modules/cde/node-js/mongo-cde');
-var cdesvc = require('../modules/cde/node-js/cdesvc');
-var classificationShared = require('../modules/system/shared/classificationShared');
-var MigrationDataElement = require('./createConnection').MigrationDataElementModel;
-var DataElement = require('./createConnection').DataElementModel;
-var MigrationOrg = require('./createConnection').MigrationOrgModel;
-var Org = require('./createConnection').OrgModel;
-var updateShare = require('./updateShare');
-var logger = require('../log');
+var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var cdesvc = require('../../modules/cde/node-js/cdesvc');
+var classificationShared = require('../../modules/system/shared/classificationShared');
+var MigrationDataElement = require('../createConnection').MigrationDataElementModel;
+var DataElement = require('../createConnection').DataElementModel;
+var MigrationOrg = require('../createConnection').MigrationOrgModel;
+var Org = require('../createConnection').OrgModel;
+var updateShare = require('../updateShare');
+//var logger = require('../log');
 
 
 var source = 'LOINC';
-var classificationStewardOrgName = 'NICHD';
+var stewardOrgName = 'NLM';
 
 var today = new Date().toJSON();
 var lastEightHours = new Date();
@@ -250,7 +250,7 @@ function streamOnClose() {
     DataElement.find({
         'imported': {$lt: lastEightHours},
         'source': source,
-        'classification.stewardOrg.name': classificationStewardOrgName,
+        'classification.stewardOrg.name': stewardOrgName,
         'archived': null
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
@@ -282,7 +282,7 @@ function streamOnClose() {
                             }
                         });
                     }, function doneAllOrgs() {
-                        logger.info('createdCDE: ' + JSON.stringify(createdCDE));
+                        //logger.info('createdCDE: ' + JSON.stringify(createdCDE));
                         console.log(" changed: " + changed + " same: " + same + " created: " + created);
                         process.exit(0);
                     });
