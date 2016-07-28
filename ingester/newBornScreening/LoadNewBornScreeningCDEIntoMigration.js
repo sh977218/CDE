@@ -143,7 +143,7 @@ function createCde(newBornScreening, loinc) {
         stewardOrg: {name: stewardOrgName},
         classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
-    var classificationToAdd = ['Classification'];
+    var classificationToAdd = ['Newborn Screening', 'Classification'];
     var classificationArray = newBornScreening.CLASS.split('^');
     classificationArray.forEach(function (classification) {
         classificationToAdd.push(classification);
@@ -161,7 +161,12 @@ function createCde(newBornScreening, loinc) {
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
         newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function (a) {
-            return {permissibleValue: a['Answer'], valueMeaningName: a['Answer'], valueMeaningCode: a['Answer ID']}
+            return {
+                permissibleValue: a['Answer'],
+                valueMeaningName: a['Answer'],
+                valueMeaningCode: a['Answer ID'],
+                codeSystemName: 'LOINC'
+            }
         });
     } else {
         newCde.valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
