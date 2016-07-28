@@ -151,7 +151,7 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
             {label: 'Version', property: 'version'}
         ]
     };
-    $scope.classificationOption = {
+    $scope.classificationsOption = {
         title: 'Classifications',
         hideSame: true
     };
