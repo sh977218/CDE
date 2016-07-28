@@ -204,7 +204,8 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                             var flatClassifs = flattenClassification(c);
                             var exclude = new RegExp(eCl.exclude);
                             c.embed[eCl.label] = flatClassifs.filter(function (cl) {
-                                result = cl.indexOf(eCl.startsWith) === 0 && !cl.match(exclude);
+                                result = cl.indexOf(eCl.startsWith) === 0;
+                                if (eCl.exclude) result = result && !cl.match(exclude);
                                 if (eCl.selectedOnly) {
                                     result = result && cl.indexOf($scope.embed.org + ";" + $scope.searchSettings.classification.join(";")) === 0;
                                 }
