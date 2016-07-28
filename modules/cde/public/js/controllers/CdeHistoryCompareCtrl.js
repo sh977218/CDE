@@ -27,7 +27,8 @@ angular.module('cdeModule').controller('CdeHistoryCompareCtrl',
             return a.designation === b.designation &&
                 a.definition === b.definition &&
                 a.languageCode === b.languageCode &&
-                JSON.stringify(a.context) === JSON.stringify(b.context);
+                a.context.acceptability === b.context.acceptability &&
+                a.context.contextName === b.context.contextName;
         },
         sort: function (a, b) {
             return a.designation - b.designation;
