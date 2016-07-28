@@ -43,7 +43,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("id.1.idLabel")).sendKeys("Variable Name");
 
         clickElement(By.id("addId"));
-        clickElement(By.id("id.1.remove"));
+        clickElement(By.id("id.2.remove"));
 
         clickElement(By.id("addClassification"));
         findElement(By.id("classif.0.label")).sendKeys("Classification");
