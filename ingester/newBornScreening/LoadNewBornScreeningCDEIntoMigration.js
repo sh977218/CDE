@@ -28,7 +28,7 @@ var uom_datatype_map = {
     'logMAR': 'Text',
     'ft/ft': 'Text',
     'cells': 'Text',
-    'mm Hg': 'Text'
+    'mm Hg': 'Number'
 };
 
 var statusMap = {
@@ -117,10 +117,18 @@ function createCde(newBornScreening, loinc) {
         properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['NAME']['Fully-Specified Name']) {
+        var table = '<table class="table table-striped">';
+        var ths = '';
+        var tds = '';
         Object.keys(loinc['NAME']['Fully-Specified Name']).forEach(function (key) {
+            var th = '<th>' + key + '</th>';
+            ths = ths + th;
             var value = loinc['NAME']['Fully-Specified Name'][key];
-            properties.push({key: key, value: value, source: 'LOINC'});
+            var td = '<td>' + value + '</td>';
+            tds = tds + td;
         });
+        table = table + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        properties.push({key: 'Fully-Specified Name', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     var newCde = {
         tinyId: mongo_data.generateTinyId(),

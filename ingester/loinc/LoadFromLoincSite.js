@@ -78,7 +78,7 @@ function parsingLOINCTable(driver, loincId, sectionName, obj, cb) {
 }
 
 function parsingLoincNameTable(driver, loincId, sectionName, obj, cb) {
-    driver.findElements(webdriver.By.xpath('//((//table)[1])//*[@class="Section40000000000000"]')).then(function (divs) {
+    driver.findElements(webdriver.By.xpath('((//table)[1])//*[@class="Section40000000000000"]')).then(function (divs) {
         if (divs.length === 0) {
             logMessage(obj, 'No loinc name found');
             cb();
