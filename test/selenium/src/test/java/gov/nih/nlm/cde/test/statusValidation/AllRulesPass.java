@@ -8,8 +8,9 @@ public class AllRulesPass extends NlmCdeBaseTest {
 
     @Test
     public void allRulesPass() {
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeSearch();
-        clickElement(By.id("browseOrg-TEST"));
+        clickElement(By.id("browseOrg-caBIG"));
         findElement(By.id("pinAll"));
         clickElement(By.id("export"));
         findElement(By.id("exportValidRule")).click();
