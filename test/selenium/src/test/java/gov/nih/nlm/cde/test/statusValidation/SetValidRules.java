@@ -23,7 +23,7 @@ public class SetValidRules extends BaseClassificationTest {
         findElement(By.id("saveRule")).click();
         goToCdeSearch();
         findElement(By.id("browseOrg-TEST")).click();
-
+        findElement(By.id("pinAll"));
         findElement(By.id("export")).click();
         findElement(By.id("exportValidRule")).click();
         findElement(By.id("selectStatus")).click();

@@ -20,4 +20,5 @@ public class ExportValidRules extends BaseClassificationTest {
         textPresent("Distance from Closest Margin");
         textPresent("Neoadjuvant Therapy Specify");
     }
+
 }
