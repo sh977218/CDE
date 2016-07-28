@@ -48,11 +48,8 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("concepts_tab"));
-        textPresent(newDataElementConceptName);
         textPresent(newDataElementConceptId);
-        textPresent(newObjectClassConceptName);
         textPresent(newObjectClassConceptId);
-        textPresent(newPropertyConceptName);
         textPresent(newPropertyConceptId);
 
         clickElement(By.id("history_tab"));

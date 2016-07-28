@@ -48,8 +48,8 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("789", By.xpath("//*[@class='historyCompare_pvs_0']"));
-        textPresent("987", By.xpath("//*[@class='historyCompare_pvs_0']"));
+        textPresent("789", By.xpath("//*[@id='historyCompare_pvs_0']"));
+        textPresent("987", By.xpath("//*[@id='historyCompare_pvs_0']"));
 
         textPresent("Text", By.xpath("//*[@id='historyCompare_Value Type']//*[contains(@class,'left')]"));
         textPresent("Value List", By.xpath("//*[@id='historyCompare_Value Type']//*[contains(@class,'right')]"));
