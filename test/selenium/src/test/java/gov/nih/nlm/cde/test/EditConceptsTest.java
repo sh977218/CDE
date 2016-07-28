@@ -72,12 +72,6 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         showAllTabs();
-        clickElement(By.id("concepts_tab"));
-        textNotPresent(newDataElementConceptName);
-        textNotPresent(newObjectClassConceptName);
-        textNotPresent(newPropertyConceptName);
-
-
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 3);
         checkInHistory("Concepts", "DEC_CODE_111", "");

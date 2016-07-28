@@ -43,7 +43,7 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
+        selectHistoryAndCompare(1, 3);
         checkInHistory("Permissible Values - Date - Format", "format1", "format2");
     }
 }

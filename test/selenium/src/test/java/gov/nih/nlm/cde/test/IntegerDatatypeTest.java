@@ -24,8 +24,8 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@class='historyCompare_pvs_0']//*[@id='listDatatype']/span/span/i"));
-        textPresent("N/A", By.xpath("//*[@class='historyCompare_pvs_1']//*[@id='listDatatype']/span/span/i"));
+        textPresent(newDatatype, By.xpath("//*[@id='historyCompare_pvs_0']//*[@id='listDatatype']/span/span"));
+        textPresent("N/A", By.xpath("//*[@id='historyCompare_pvs_1']//*[@id='listDatatype']/span/span"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
