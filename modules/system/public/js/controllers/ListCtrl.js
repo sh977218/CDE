@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
+        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log)
+                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
 
 {
 
@@ -387,9 +387,9 @@ angular.module('systemModule').controller('ListCtrl',
                     , itemType: $scope.module
                 };
                 data.query.resultPerPage = window.maxPin;
-                $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
+                $http.post('/pinEntireSearchToBoard', data).success(function() {
                     $scope.addAlert("success", "All elements pinned.");
-                    $scope.loadMyBoards(filter);
+                    ElasticBoard.loadMyBoards(filter);
                 }).error(function() {
                     $scope.addAlert("danger", "Not all elements were not pinned!");
                 });

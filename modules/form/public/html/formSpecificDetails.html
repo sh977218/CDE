@@ -1,0 +1,10 @@
+<dl class="dl-horizontal">
+    <dt tabindex="0" ng-show="elt.imported">Last import:</dt>
+    <dd tabindex="0" ng-show="elt.imported">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    <dt tabindex="0" ng-show="elt.created">Date Created:</dt>
+    <dd tabindex="0" ng-show="elt.created">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    <dt tabindex="0" id="dt_updated" ng-show="elt.updated">Updated:</dt>
+    <dd tabindex="0" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    <dt tabindex="0" id="dt_createdBy" ng-show="elt.createdBy">Created By:</dt>
+    <dd tabindex="0" id="dd_createdBy">{{elt.createdBy.username}}</dd>
+</dl>
