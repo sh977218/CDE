@@ -21,6 +21,10 @@ angular.module('systemModule').controller('PropertiesCtrl',
                 },
                 module: function () {
                     return $scope.module;
+                },
+                orgPropertyKeys: function () {
+                    OrgHelpers.getOrgsDetailedInfoAPI();
+                    return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
                 }
             }
         });
@@ -72,11 +76,11 @@ angular.module('systemModule').controller('PropertiesCtrl',
 
 }]);
 
-angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$uibModalInstance', '$http','module', 'elt','OrgHelpers',
-    function($scope, $modalInstance, $http, module, elt, OrgHelpers) {
+angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$uibModalInstance', '$http', 'module', 'elt', 'orgPropertyKeys',
+    function ($scope, $modalInstance, $http, module, elt, orgPropertyKeys) {
     $scope.elt = elt;
     $scope.newProperty = {};
-    $scope.orgPropertyKeys =  OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+        $scope.orgPropertyKeys = orgPropertyKeys;
 
     $scope.okCreate = function () {
         $modalInstance.close($scope.newProperty);

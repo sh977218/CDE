@@ -1,12 +1,11 @@
 angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde', 'OrgHelpers',
-function($scope, $modalInstance, cde, OrgHelpers) {
-
-
+    function ($scope, $modalInstance, cde, orgHelpers) {
+        
     $scope.newNamePair = {
-        "languageCode" : "EN-US"
-        , context: {
-            contextName: ""
-            , "acceptability" : "preferred"
+        "languageCode": "EN-US",
+        "context": {
+            "contextName": "",
+            "acceptability": "preferred"
         }
     };
     $scope.elt = cde;
@@ -15,7 +14,7 @@ function($scope, $modalInstance, cde, OrgHelpers) {
         $modalInstance.dismiss('cancel');
     };
 
-    $scope.orgContexts =  function() {return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts};
+    $scope.orgContexts = orgContexts;
 
     $scope.okCreate = function() {
         cde.naming.push($scope.newNamePair);

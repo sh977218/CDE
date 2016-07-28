@@ -34,7 +34,7 @@ angular.module('OrgFactories', ['ngResource'])
             if (!this.orgsDetailedInfo) return false;
             return this.orgsDetailedInfo[orgName].workingGroupOf && this.orgsDetailedInfo[orgName].workingGroupOf.trim()!=='';
         }
-        , getOrgsDetailedInfoAPI : function() {
+        , getOrgsDetailedInfoAPI: function (cb) {
             var OrgHelpers = this;
             $http.get('/listOrgsDetailedInfo').success(function(response) {
                 // Transforms response to object literal notation
@@ -44,6 +44,7 @@ angular.module('OrgFactories', ['ngResource'])
                     }
                 });
                 OrgHelpers.deferred.resolve();
+                if (cb)cb();
             }).error(function() {
             });
         }

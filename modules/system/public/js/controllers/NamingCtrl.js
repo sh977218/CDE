@@ -14,6 +14,11 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
             resolve: {
                 cde: function() {
                     return $scope.elt;
+                },
+                orgHelpers: function () {
+                    return OrgHelpers.getOrgsDetailedInfoAPI(function () {
+                        return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts
+                    });
                 }
             }
         });
