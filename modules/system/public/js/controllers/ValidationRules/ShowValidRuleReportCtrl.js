@@ -8,14 +8,13 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
             cdes[0].validationRules.forEach(function(r, i){
                 $scope.gridOptionsReport.columnDefs.push({field: 'rule' + i, displayName: r.ruleName});
             });
-            var exportFormat = cdes.map(function(cde){
+            $scope.cdes = cdes.map(function(cde){
                 var output = {cdeName: cde.cdeName, tinyId: cde.tinyId};
                 cde.validationRules.forEach(function(rule, i){
                     output['rule' + i] = rule.cdePassingRule?"Yes":"No";
                 });
                 return output;
             });
-            $scope.cdes = exportFormat;
             $scope.cdes.length = 100;
         };
         $scope.module = 'cde';

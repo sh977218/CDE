@@ -63,9 +63,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 angular.module('resourcesSystem', ['ngResource'])
     .factory('Auth', function ($http) {
         return {
-            register: function (user, success, error) {
-                $http.post('/register', user).success(success).error(error);
-            },
             login: function (user, success, error) {
                 $http.post('/login', user).success(success).error(error);
             },
@@ -179,22 +176,6 @@ angular.module('resourcesSystem', ['ngResource'])
         };
         return this;
     })
-    .factory("CsvDownload", function () {
-        return {
-            export: function (elts) {
-                var str = '';
-                for (var i = 0; i < elts.length; i++) {
-                    var line = '';
-                    elts.forEach(function (elt) {
-                        line += '"' + elt[index] + '",';
-                    });
-                    line.slice(0, line.Length - 1);
-                    str += line + '\r\n';
-                }
-                return str;
-            }
-        };
-    })
     .factory("AutoCompleteResource", function ($http) {
         return {
             suggest: function (searchTerm) {
@@ -263,10 +244,9 @@ angular.module('resourcesSystem', ['ngResource'])
                 return true;
             });
             if (rules.length === 0) return [];
-            var results = rules.map(function (r) {
+            return rules.map(function (r) {
                 return {ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)};
             });
-            return results;
         };
 
         var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
@@ -281,30 +261,30 @@ angular.module('resourcesSystem', ['ngResource'])
             function checkRe(field, rule) {
                 return new RegExp(rule.rule.regex).test(field);
             }
-            function checkSubTree(object, rule, level) {
+            function lookForPropertyInNestedObject(object, rule, level) {
                 var key = rule.field.split(".")[level];
                 if (!object[key]) return false;
                 if (level === rule.field.split(".").length - 1) return checkRe(object[key], rule);
-                if (!Array.isArray(object[key])) return checkSubTree(object[key], rule, level + 1);
+                if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
                 if (Array.isArray(object[key])) {
                     var result;
                     if (rule.occurence === "atLeastOne") {
                         result = false;
                         object[key].forEach(function (subTree) {
-                            result = result || checkSubTree(subTree, rule, level + 1);
+                            result = result || lookForPropertyInNestedObject(subTree, rule, level + 1);
                         });
                         return result;
                     }
                     if (rule.occurence === "all") {
                         result = true;
                         object[key].forEach(function (subTree) {
-                            result = result && checkSubTree(subTree, rule, level + 1);
+                            result = result && lookForPropertyInNestedObject(subTree, rule, level + 1);
                         });
                         return result;
                     }
                 }
             }
-            return checkSubTree(cde, rule, 0);
+            return lookForPropertyInNestedObject(cde, rule, 0);
         };
 
         var getOrgRulesForCde = function(cde){
