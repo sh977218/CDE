@@ -251,6 +251,7 @@ function streamOnClose() {
         'imported': {$lt: lastEightHours},
         'source': source,
         'classification.stewardOrg.name': stewardOrgName,
+        'classification.elements.name': 'Newborn Screening',
         'archived': null
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
