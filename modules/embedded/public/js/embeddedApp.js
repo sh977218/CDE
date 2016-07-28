@@ -1,5 +1,5 @@
 angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFactories'])
-    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http) {
+    .controller('SearchCtrl', function($scope, Elastic, OrgHelpers, $http, SearchSettings) {
 
         $scope.args = {};
         $scope.clLimit = 3;
@@ -95,10 +95,19 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             var type = $scope.searchType;
 
             $scope.searchSettings.resultPerPage = $scope.embed[$scope.searchType].pageSize;
+            var embed4Type = $scope.embed[$scope.searchType];
 
             var timestamp = new Date().getTime();
             $scope.lastQueryTimeStamp = timestamp;
             $scope.accordionListStyle = "semi-transparent";
+
+            for (var i = 0; i < exports.statusList.length; i++) {
+                $scope.searchSettings.regStatuses.push(exports.statusList[i]);
+                if (exports.statusList[i] === embed4Type.minStatus) {
+                    i = exports.statusList.length;
+                }
+            }
+
             var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
 
             Elastic.generalSearchQuery(settings, type, function (err, result) {
@@ -146,7 +155,6 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
                 OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
                 // Decorate
-                var embed4Type = $scope.embed[$scope.searchType];
                 $scope.elts.forEach(function (c) {
                     c.embed = {
                         ids: []

@@ -24,6 +24,7 @@ angular.module('ElasticSearchResource')
             };
         };
 
+
         this.getUserDefaultStatuses = function() {
             var searchSettings = this.getDefault();
 
