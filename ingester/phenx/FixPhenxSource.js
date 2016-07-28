@@ -10,12 +10,22 @@ DataElement.find({
     'classification.stewardOrg.name': 'PhenX',
     archived: null,
     'registrationState.registrationStatus': {$ne: "Retired"}
-}, function (err, DEs) {
+}, function (err, DEs) { 
     if (err) throw err;
     async.forEach(DEs, function (de, doneOneDe) {
         de.source = 'LOINC';
+        de.stewardOrg.name = 'LOINC';
         de.updatedBy = user;
         de.updated = new Date().toJSON();
+        if (de.properties) {
+            de.properties.forEach(function (p) {
+                if (p.key === 'PhenX Variables') {
+                    p.source = 'PhenX';
+                }
+                else if (p.key === 'LOINC Fields')
+                    p.source = 'LOINC';
+            })
+        }
         de.save(function () {
             elastic.updateOrInsert(de, function () {
                 deCounter++;

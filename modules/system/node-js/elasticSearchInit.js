@@ -1,7 +1,6 @@
 var config = require('config'),
     hash = require("crypto");
 
-
 exports.createIndexJson = {
     "mappings": {
         "dataelement": {
@@ -86,8 +85,9 @@ exports.createIndexJson = {
         }
     }, settings: {
         index: {
+            "number_of_replicas" : config.elastic.number_of_replicas,
             analysis: {
-                analyzer:{
+                analyzer: {
                     default: {
                         type: 'snowball'
                         , language: 'English'
@@ -99,6 +99,7 @@ exports.createIndexJson = {
 };
 
 
+//noinspection JSAnnotator
 exports.createFormIndexJson = {
     "mappings": {
         "form": {
@@ -108,7 +109,7 @@ exports.createFormIndexJson = {
                 , "classification": {
                     properties: {
                         "stewardOrg": {
-                            "properties" : {
+                            "properties": {
                                 "name": {"type": "string", "index": "not_analyzed"}
                             }
                         }
@@ -137,8 +138,12 @@ exports.createFormIndexJson = {
                         "version": {"type": "string"}
                     }
                 }, "views": {"type": "integer"}
-                , "numQuestions": {"type":"integer"}
+                , "numQuestions": {"type": "integer"}
             }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas" : config.elastic.number_of_replicas
         }
     }
 };
@@ -244,7 +249,7 @@ exports.riverFunction = function (elt) {
     }
     elt.flatProperties = [];
     if (elt.properties) {
-        elt.properties.forEach(function(p) {
+        elt.properties.forEach(function (p) {
             elt.flatProperties.push(p.key + ' ' + p.value);
         });
     }
@@ -258,7 +263,16 @@ exports.riverFunction = function (elt) {
 
 exports.createBoardIndexJson = {
     "mappings": {
-        "board": {}
+        "board": {
+            "properties": {
+                "tags": {"type": "string", "index": "not_analyzed"},
+                "shareStatus": {"type": "string", "index": "not_analyzed"}
+            }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas" : config.elastic.number_of_replicas
+        }
     }
 };
 
@@ -285,6 +299,10 @@ exports.createStoredQueryIndexJson = {
                     "payloads": true
                 }
             }
+        }
+    }, settings: {
+        index: {
+            "number_of_replicas" : config.elastic.number_of_replicas
         }
     }
 };
@@ -331,7 +349,6 @@ exports.indices = [
         indexName: config.elastic.storedQueryIndex.name,
         indexJson: exports.createStoredQueryIndexJson,
         filter: exports.storedQueryRiverFunction
-
     }
 ];
 

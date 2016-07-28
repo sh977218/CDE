@@ -24,16 +24,22 @@ exports.DataElement = DataElement;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
+exports.PinningBoard = PinningBoard;
 
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     elastic.updateOrInsert(self);
     next();
 });
 
-schemas.pinningBoardSchema.pre('save', function(next) {
+schemas.pinningBoardSchema.pre('save', function (next) {
     var self = this;
     elastic.boardUpdateOrInsert(self);
+    next();
+});
+schemas.pinningBoardSchema.pre('remove', function (next) {
+    var self = this;
+    elastic.boardDelete(self);
     next();
 });
 
@@ -43,12 +49,12 @@ exports.exists = function (condition, callback) {
     });
 };
 
-exports.getStream = function(condition) {
+exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
 exports.boardsDao = {
-    getStream: function() {
+    getStream: function () {
         return PinningBoard.find({}).sort({_id: -1}).stream();
     }
 };
@@ -56,6 +62,12 @@ exports.boardsDao = {
 exports.boardsByUserId = function (userId, callback) {
     PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
+    });
+};
+
+exports.boardCount = function (callback) {
+    PinningBoard.count({}).exec(function (err, count) {
+        callback(count);
     });
 };
 
@@ -245,12 +257,6 @@ exports.boardById = function (boardId, callback) {
     });
 };
 
-exports.removeBoard = function (boardId, callback) {
-    PinningBoard.remove({'_id': boardId}, function (err) {
-        if (callback) callback(err);
-    });
-};
-//TODO: Consider moving
 exports.addToViewHistory = function (cde, user) {
     if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
         origin: "cde.mongo-cde.addToViewHistory",
@@ -464,12 +470,23 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
     });
 };
 
-exports.byOtherIdAndVersion = function (source, id, version, cb) {
+exports.bySourceIdVersion = function (source, id, version, cb) {
     DataElement.find({archived: null}).elemMatch("ids", {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
+    });
+};
+exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
+    //noinspection JSUnresolvedFunction
+    DataElement.find({
+        "archived": null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {
+        source: source, id: id, version: version
+    }).exec(function (err, cdes) {
+        cb(err, cdes);
     });
 };
 
@@ -499,6 +516,7 @@ schemas.dataElementSchema.post('save', function (doc) {
 
 var cj = new CronJob({
     cronTime: '00 00 4 * * *',
+    //noinspection JSUnresolvedFunction
     onTick: function () {
         console.log("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
@@ -520,21 +538,6 @@ var cj = new CronJob({
     timeZone: "America/New_York"
 });
 cj.start();
-
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
-
-var statusCdeTinyId;
-
-exports.upsertStatusCde = function (cde, cb) {
-    var query = statusCdeTinyId ?
-    {"tinyId": statusCdeTinyId} :
-    {"naming.designation": "NLM_APP_Status_Report_" + config.hostname.replace(/[^A-z|0-9]/g, "")};
-
-    DataElement.update(query, cde, {upsert: true}, function (err, cde) {
-        statusCdeTinyId = cde.tinyId;
-        if (cb) cb(err, cde);
-    });
-};
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);

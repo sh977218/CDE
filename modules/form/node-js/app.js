@@ -20,6 +20,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/form', formCtrl.save);
     app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
@@ -47,9 +48,7 @@ exports.init = function (app, daoManager) {
     });
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
-    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
-        res.send("");
-    });
+    app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
@@ -140,7 +139,7 @@ exports.init = function (app, daoManager) {
                     var fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
-                    usersvc.pinAllToBoard(req, fakeCdes, res)
+                    usersvc.pinAllToBoard(req, fakeCdes, res);
                 } else {
                     res.status(404).end();
                 }

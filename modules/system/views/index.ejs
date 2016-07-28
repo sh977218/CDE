@@ -18,10 +18,6 @@
 	</script>
 	<![endif]-->
 
-	<!-- build:css /cde/public/css/style.concat.min.css -->
-	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
-	<!-- endbuild -->
-
 	<!--[if IE]><!-->
 	<style>
 		.ieFix {
@@ -30,7 +26,9 @@
 	</style>
 	<!--<![endif]-->
 
-	<!-- build:css /system/public/assets/css/vendor.css -->
+	<!-- build:css /system/public/assets/css/styles.css -->
+	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+
 	<!-- bower:css -->
 	<link rel='stylesheet' href='/components/font-awesome/css/font-awesome.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
@@ -58,6 +56,18 @@
 
 <body role="application" id="top">
 <div ng-controller="MainCtrl" itemscope>
+
+
+	<!-- Google Tag Manager -->
+	<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NPVRL3"
+					  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-NPVRL3');</script>
+	<!-- End Google Tag Manager -->
+	
 
 	<!-- Navigation bar -->
 	<%- include navigation.html %>
@@ -144,6 +154,9 @@
 <script src="/components/traverse/traverse.js"></script>
 <script src="/components/lodash/lodash.js"></script>
 <script src="/components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
+<script src="/components/checklist-model/checklist-model.js"></script>
+<script src="/components/angular-ui-sortable/sortable.js"></script>
+<script src="/components/async/dist/async.js"></script>
 <!-- endbower -->
 
 
@@ -151,19 +164,19 @@
 
 <script src="/cde/public/assets/js/diff_match_patch.js"></script>
 <script src="/cde/public/assets/js/match-media.js"></script>
-<script src="/cde/public/assets/js/sortable.js"></script>
 <script src="/cde/public/assets/js/scrollfix.js"></script>
 <script src="/cde/public/assets/js/FileSaver.js"></script>
 <script src="/system/public/js/ng-display-object.js"></script>
 <script src="/system/public/js/ng-compare-side-by-side.js"></script>
 <script src="/system/public/js/ng-text-truncate.js"></script>
 <script src="/article/public/js/articleConfig.js"></script>
-<!-- endbuild -->
+
 
 <script src="/article/public/js/angularTemplates.js"></script>
 <script src="/cde/public/js/angularTemplates.js"></script>
 <script src="/form/public/js/angularTemplates.js"></script>
 <script src="/system/public/js/angularTemplates.js"></script>
+<!-- endbuild -->
 
 <%- include includeFrontEndJS.ejs %>
 <%- include ../../cde/views/includeCdeFrontEndJS.ejs %>

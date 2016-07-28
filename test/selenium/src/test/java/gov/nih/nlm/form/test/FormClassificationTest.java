@@ -22,28 +22,5 @@ public class FormClassificationTest extends BaseFormTest {
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         clickElement(By.id("classification_tab"));
         new ClassificationTest().addClassificationMethod(new String[]{"NINDS","Disease","Traumatic Brain Injury"});          
-    }  
-    
-    @Test
-    public void classifyFormCdes() {
-        mustBeLoggedInAs("ctepOnlyCurator", password);
-
-        goToFormByName("Deployment Risk and Resiliency Inventory, Version 2 (Combat)");
-        clickElement(By.id("classification_tab"));
-        clickElement(By.id("classifyAllCdes"));
-        clickElement(By.cssSelector("[id='addClassification-ABTC'] span.fake-link"));
-        clickElement(By.cssSelector("[id='addClassification-ABTC 0904'] button"));
-        
-        // Verify
-        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Combat patrol frequency scale");
-        clickElement(By.id("classification_tab"));
-        textPresent("ABTC");
-        textPresent("ABTC 0904");
-
-        goToCdeByName("Deployment Risk and Resilience Inventory 2 (DRRI-2) - Combat Experiences - Witness enemy serious injury casuality frequency scale");
-        clickElement(By.id("classification_tab"));
-        textPresent("ABTC");
-        textPresent("ABTC 0904");
-
     }
 }

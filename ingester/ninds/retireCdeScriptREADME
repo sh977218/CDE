@@ -1,5 +1,5 @@
-# format: 2015-09-16
-$loadDay
+$loadDay format: 2015-09-16
+
 
 db.dataelements.update({
 	"source" : "NINDS",

@@ -9,6 +9,16 @@
   "umls": {
     "wsHost": "https://localhost:4000"
   },
+  "database": {
+    "local": {
+      "db": "local",
+      "username": "siteRootAdmin",
+      "password": "password",
+      "options": {
+        "auth": {"authdb": "admin"}
+      }
+    }
+  },
   "vsac": {
     "username": "user",
     "password": "pass",
@@ -31,17 +41,13 @@
   },
   "oauth": {
     "enabled": "true"
-//    ,"serverBaseURL": "http://localhost:3005"
   },
   "elastic": {
     "index": {"name": "cdetest"},
-    "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
-    "formRiver": {"name": "formtest"},
     "boardIndex": {"name": "boardtest"},
-    "boardRiver": {"name": "boardtest"},
     "storedQueryIndex": {"name": "storedquerytest"},
-    "storedQueryRiver": {"name": "storedquerytest"}
+    "number_of_replicas" : 1
   }
 }
 

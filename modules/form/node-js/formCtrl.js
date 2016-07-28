@@ -5,7 +5,9 @@ var mongo_data_form = require('./mongo-form'),
     JXON = require('jxon'),
     sdc = require('./sdcForm'),
     redCap = require('./redCapForm'),
-    archiver = require('archiver')
+    archiver = require('archiver'),
+    async = require('async'),
+    authorization = require('../../system/node-js/authorization')
     ;
 
 exports.findForms = function (req, res) {
@@ -41,7 +43,7 @@ var getFormJson = function (form, req, res) {
             cdes.forEach(function (formCde) {
                 currCdes.forEach(function (systemCde) {
                     if (formCde.tinyId === systemCde.tinyId) {
-                        if (formCde.version !== systemCde.version) {
+                        if (formCde.version != systemCde.version) {
                             formCde.outdated = true;
                             form.outdated = true;
                         }
@@ -53,6 +55,7 @@ var getFormJson = function (form, req, res) {
         });
     };
     adminSvc.hideUnapprovedComments(form);
+    if (!req.user) adminSvc.hideProprietaryIds(form);
     var resForm = form.toObject();
     markCDE(resForm, function () {
         res.send(resForm);
@@ -62,6 +65,7 @@ var getFormJson = function (form, req, res) {
 var getFormPlainXml = function (form, req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (!form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
         res.setHeader("Content-Type", "application/xml");
         var exportForm = form.toObject();
         delete exportForm._id;
@@ -74,31 +78,126 @@ var getFormPlainXml = function (form, req, res) {
     });
 };
 
+function wipeRenderDisallowed (form, req, cb) {
+    if (form && form.noRenderAllowed) {
+        authorization.checkOwnership(mongo_data_form, form._id, req, function(err, isYouAllowed) {
+            if (!isYouAllowed) form.formElements = [];
+            cb();
+        });
+    } else {
+        cb();
+    }
+}
+
 exports.formById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') {
-            formShared.getFormOdm(form, function (err, xmlForm) {
-                if (err) res.status(err).send(xmlForm);
-                else {
-                    res.set('Content-Type', 'text/xml');
-                    res.send(JXON.jsToString({element: xmlForm}));
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        wipeRenderDisallowed(form, req, function() {
+            if (req.query.type === 'xml' && req.query.subtype === 'odm') {
+                formShared.getFormOdm(form, function (err, xmlForm) {
+                    if (err) res.status(err).send(xmlForm);
+                    else {
+                        res.set('Content-Type', 'text/xml');
+                        res.send(JXON.jsToString({element: xmlForm}));
+                    }
+                });
+            }
+            else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
+            else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
+            else getFormJson(form, req, res);
+        });
+    });
+};
+
+exports.formByTinyIdVersion = function (req, res) {
+    if (req.params.version !== 'undefined') {
+        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                if (!req.user) adminSvc.hideProprietaryIds(elt);
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    } else {
+        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                if (!req.user) adminSvc.hideProprietaryIds(elt);
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    }
+};
+
+
+function fetchWholeForm(Form, callback) {
+    var maxDepth = 8;
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_data_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
+                            fe.formElements = result.formElements;
+                            fe.label = result.naming[0].designation;
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
                 }
+            }, function doneAll() {
+                cb();
             });
         }
-        else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
-        else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-        else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
-        else getFormJson(form, req, res);
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+}
+
+exports.wholeFormById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        fetchWholeForm(form, function (f) {
+            if (!req.user) adminSvc.hideProprietaryIds(f);
+            res.send(f);
+        });
     });
 };
 
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
-    res.send(sdc.formToSDC(form));
+    fetchWholeForm(form, function (wholeForm) {
+        if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+        res.send(sdc.formToSDC(wholeForm));
+    });
 };
+
 var exportWarnings = {
     'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
     'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
@@ -106,6 +205,7 @@ var exportWarnings = {
     'nestedSection': 'REDCap cannot support nested section.',
     'unknownElementType': 'This form has error.'
 };
+
 function loopForm(form) {
     function loopFormElements(fe, insideSection) {
         for (var i = 0; i < fe.formElements.length; i++) {
@@ -120,9 +220,7 @@ function loopForm(form) {
                 else {
                     return loopFormElements(e, true);
                 }
-            } else if (e.elementType === 'question') {
-                continue;
-            } else {
+            } else if (e.elementType !== 'question') {
                 console.log('unknown element type in form: ' + form);
                 return 'unknownElementType';
             }
@@ -132,6 +230,7 @@ function loopForm(form) {
 
     return loopFormElements(form, false);
 }
+
 var getFormRedCap = function (form, response) {
     if (exportWarnings[form.stewardOrg.name]) {
         response.status(500).send(exportWarnings[form.stewardOrg.name]);
@@ -176,3 +275,4 @@ exports.priorForms = function (req, res) {
         }
     });
 };
+

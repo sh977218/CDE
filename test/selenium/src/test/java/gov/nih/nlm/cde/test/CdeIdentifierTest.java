@@ -16,12 +16,20 @@ public class CdeIdentifierTest extends IdentifiersTest {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName("Ohio State TBI Method Short Form (OSUTBIMS) - ask question category");
         showAllTabs();
-        // same ID as cadsr Person Gender Text Type
+        // same ID as "more injuries loss of consciousness number"
         addId("FAKE", "C18059", "3");
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
         clickElement(By.cssSelector("i.fa-search"));
+
+        try {
+            textPresent("2 results for");
+        } catch (Exception e) {
+            goToCdeSearch();
+            findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
+            clickElement(By.cssSelector("i.fa-search"));
+        }
         textPresent("2 results for");
 
         findElement(By.id("ftsearch-input")).clear();

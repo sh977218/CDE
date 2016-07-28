@@ -65,6 +65,14 @@ body {
     padding-left: 5px;
 }
 
+.pr5 {
+    padding-right: 5px;
+}
+
+.pr20 {
+    padding-right: 20px;
+}
+
 .mt20 {
     margin-top: 20px;
 }
@@ -892,6 +900,10 @@ div + .questionPlaceholder {
     padding-right: 0 !important;
 }
 
+.noLeftMargin {
+    margin-left: 0 !important;
+}
+
 #export {
     margin-left: 10px;
 }
@@ -1004,4 +1016,111 @@ div + .questionPlaceholder {
 
 .betaFeature {
     color: green
+}
+
+#sidebar-wrapper {
+    /*border: 1px solid rgb(220, 220, 220);*/
+    border-radius: 5px;
+    position: fixed;
+    width: inherit;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.my-board-card {
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 5px;
+    margin: 3px;
+    padding: 15px;
+    word-wrap: break-word;
+    min-height: 160px;
+}
+
+.pinToBoard-card {
+    min-height: 80px;
+}
+
+.my-board-tag {
+    display: block;
+}
+
+.public-board-tag {
+    display: block;
+}
+
+#my-board-container {
+    min-height: 450px;
+}
+
+.fa.fa-arrows {
+    cursor: move;
+}
+
+.select2-search-field input {
+    width: 100% !important;
+}
+
+.select2-search-field {
+    width: 100% !important;
+}
+
+.myBoardEditButtons {
+    margin: 0px;
+}
+
+.myBoardName {
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.myBoardTags {
+    position: absolute;
+    bottom: 7px;
+}
+
+.myBoardLastModified {
+    position: absolute;
+    bottom: 5px;
+    right: 25px;
+}
+
+.ui-select-container {
+    z-index: 1000;
+}
+
+.formRenderPanel {
+    margin-left: 10px;
+}
+
+.pdtp9 {
+    padding-top: 9px;
+}
+
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 3px 4px !important;
+        font-size: 80% !important;
+        line-height: 1 !important;
+        border-radius: 3px !important;
+    }
+
+    .navbar-toggle {
+        margin: 0px !important;
+    }
+
+    .navbar-header > input {
+        padding: 0px !important;
+    }
+
+    .nav > li {
+        float: left !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .btn-responsive {
+        padding: 4px 9px !important;
+        font-size: 90% !important;
+        line-height: 1.2 !important;
+    }
 }

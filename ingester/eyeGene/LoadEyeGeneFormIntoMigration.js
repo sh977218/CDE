@@ -162,7 +162,6 @@ function run() {
                     }
                 });
             });
-
             stream.on('end', function (err) {
                 if (err) throw err;
                 driver.quit();
