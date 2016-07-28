@@ -44,6 +44,7 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 3);
-        checkInHistory("Permissible Values - Date - Format", "format1", "format2");
+        textPresent("format2", By.xpath("//*[@id='historyCompare_pvs_0']//*[@id='dateFormat']/span/span"));
+        textPresent("format1", By.xpath("//*[@id='historyCompare_pvs_1']//*[@id='dateFormat']/span/span"));
     }
 }

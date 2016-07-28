@@ -49,8 +49,11 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 3);
-        checkInHistory("Permissible Values - Number - Minimum Value", "123", "789");
-        checkInHistory("Permissible Values - Number - Maximum Value", "456", "987");
+
+        textPresent("789", By.xpath("//*[@id='historyCompare_pvs_0']"));
+        textPresent("987", By.xpath("//*[@id='historyCompare_pvs_0']"));
+        textPresent("123", By.xpath("//*[@id='historyCompare_pvs_1']"));
+        textPresent("456", By.xpath("//*[@id='historyCompare_pvs_1']"));
     }
 
 }

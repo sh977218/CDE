@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class EditConceptsTest extends NlmCdeBaseTest {
@@ -62,7 +61,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
         textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
-        
+
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));
@@ -74,13 +73,13 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 3);
-        checkInHistory("Concepts", "DEC_CODE_111", "");
-        checkInHistory("Concepts", "OC_CODE_111", "");
-        checkInHistory("Concepts", "Prop_CODE_111", "");
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]"));
 
         openCdeAudit(cdeName);
-        textPresent("DEC_CODE_111");
-        textPresent("OC_CODE_111");
-        textPresent("Prop_CODE_111");
+        textPresent(newDataElementConceptId);
+        textPresent(newObjectClassConceptId);
+        textPresent(newPropertyConceptId);
     }
 }
