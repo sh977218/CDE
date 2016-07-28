@@ -5,6 +5,10 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
             columnDefs: [{field: "cdeName", displayName: "CDE Name"}, {field: 'tinyId', displayName: "NLM ID"}]
         };
         $routeParams.cb = function(cdes){
+            if (cdes.length === 0) {
+                $scope.cdes = [];
+                return;
+            }
             cdes[0].validationRules.forEach(function(r, i){
                 $scope.gridOptionsReport.columnDefs.push({field: 'rule' + i, displayName: r.ruleName});
             });
