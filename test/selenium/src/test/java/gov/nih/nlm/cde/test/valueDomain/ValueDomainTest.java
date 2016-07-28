@@ -76,9 +76,9 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 2);
-        checkInHistory("Permissible Values - Text - Regular Expression", "", "newre");
-        checkInHistory("Permissible Values - Text - Freetext Rule", "", "newrule");
+        selectHistoryAndCompare(1, 3);
+        checkInHistory("Permissible Values - Text - Regular Expression", "", "");
+        checkInHistory("Permissible Values - Text - Freetext Rule", "", "");
         checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
         checkInHistory("Permissible Values - Text - Minimum Length", "987", "321");
 

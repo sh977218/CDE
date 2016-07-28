@@ -64,7 +64,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
         
         clickElement(By.id("concepts_tab"));
-        clickElement(By.id("removedataElementConcept-1"));
+        clickElement(By.id("removedataElementConcept-0"));
         clickElement(By.id("removeobjectClass-1"));
         clickElement(By.id("removeproperty-3"));
 
@@ -74,11 +74,8 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("concepts_tab"));
         textNotPresent(newDataElementConceptName);
-        textNotPresent(newDataElementConceptId);
         textNotPresent(newObjectClassConceptName);
-        textNotPresent(newObjectClassConceptId);
         textNotPresent(newPropertyConceptName);
-        textNotPresent(newPropertyConceptId);
 
 
         clickElement(By.id("history_tab"));

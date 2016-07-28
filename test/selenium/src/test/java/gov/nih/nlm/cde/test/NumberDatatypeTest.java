@@ -30,9 +30,9 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        checkInHistory("Permissible Values - Number", "", "123");
-        checkInHistory("Permissible Values - Number", "", "456");
-        checkInHistory("Permissible Values - Value Type", "", "Number");
+        textPresent("123", By.xpath("//*[@id='historyCompare_pvs_0']"));
+        textPresent("456", By.xpath("//*[@id='historyCompare_pvs_0']"));
+        textPresent("Number", By.xpath("//*[@id='historyCompare_Value Type']//*[contains(@class,'left')]"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='numberMinValue']//i[@title='Edit']"));
@@ -47,10 +47,10 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Permissible Values - Number - Minimum Value", "123", "789");
         checkInHistory("Permissible Values - Number - Maximum Value", "456", "987");
-
-        clickElement(By.id("pvs_tab"));
     }
 
 }

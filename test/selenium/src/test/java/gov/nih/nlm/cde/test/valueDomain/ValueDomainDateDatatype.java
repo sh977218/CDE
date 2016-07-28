@@ -24,6 +24,7 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#dateFormat .fa-check"));
         newCdeVersion();
 
+        goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
@@ -39,6 +40,10 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
 
         newCdeVersion();
 
+        goToCdeByName(cdeName);
+        showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
         checkInHistory("Permissible Values - Date - Format", "format1", "format2");
     }
 }
