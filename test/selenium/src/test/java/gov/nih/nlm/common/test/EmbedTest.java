@@ -72,7 +72,8 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         // driver switchto iframe doesn't seem to work, so we see the page without iframe.
         driver.get(url);
-        clickElement(By.id("search.submit"));
+
+        findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");
 
         Assert.assertEquals(findElements(By.cssSelector("#gridList tbody td")), 6);
@@ -98,11 +99,11 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Demographics");
 
         goHome();
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Account Management"));
-        clickElement(By.id("embeddingTab"));
-        clickElement(By.id("removeMappingSpecification-0"));
-        clickElement(By.id("confirmRemoveMappingSpecification-0"));
+        findElement(By.id("username_link")).click();
+        findElement(By.linkText("Account Management")).click();
+        findElement(By.id("embeddingTab")).click();
+        findElement(By.id("removeMappingSpecification-0")).click();
+        findElement(By.id("confirmRemoveMappingSpecification-0")).click();
         textPresent("Removed");
 
     }
