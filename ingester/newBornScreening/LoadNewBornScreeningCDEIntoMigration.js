@@ -16,12 +16,17 @@ var cdeCounter = 0;
 var newBornScreeningOrg = null;
 var today = new Date().toJSON();
 
-var classificationMap = {};
+var CLASSIFICATION_TYPE_MAP = {
+    "1": "Laboratory Term Class",
+    "2": "Clinical Term Class",
+    "3": "Attachment Term Class",
+    "4": "Survey Term Class"
+};
 var statusMap = {
     'Active': 'Qualified'
 };
 
-function createCde(newBornScreening, loinc) {
+function createCde(newBornScreening, loinc, cb) {
     var naming = [];
     if ((loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0 ) || ( loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0)) {
         if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
@@ -129,16 +134,6 @@ function createCde(newBornScreening, loinc) {
         stewardOrg: {name: stewardOrgName},
         classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
-    var classificationToAdd = ['Newborn Screening', 'Classification'];
-    var classificationArray = newBornScreening.CLASS.split('^');
-    classificationArray.forEach(function (classification) {
-        classificationToAdd.push(classificationMap[classification]);
-    });
-
-    classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
-    classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
-
-
     newCde.valueDomain = {};
 
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
@@ -146,6 +141,11 @@ function createCde(newBornScreening, loinc) {
         var type;
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
+        newCde.valueDomain.ids = [{
+            id: loinc[type].answerListId.id,
+            source: 'LOINC',
+            version: loinc['BASIC ATTRIBUTES']['Last Updated in Version']
+        }];
         newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function (a) {
             return {
                 permissibleValue: a['Answer'],
@@ -157,24 +157,31 @@ function createCde(newBornScreening, loinc) {
     } else {
         newCde.valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
     }
-    return newCde;
+
+    var classificationType = CLASSIFICATION_TYPE_MAP[newBornScreening.CLASSTYPE];
+    var classificationToAdd = ['Newborn Screening', 'Classification'];
+    var classificationArray = newBornScreening.CLASS.split('^');
+    async.forEachSeries(classificationArray, function (classification, doneOneClassification) {
+        MigrationLoincClassMappingModel.find({
+            type: classificationType,
+            key: classification
+        }).exec(function (err, mappings) {
+            if (err) throw err;
+            else if (mappings.length === 0) throw "Can not find classification map.";
+            else if (mappings.length > 1) throw "More than one classification map found";
+            else {
+                classificationToAdd.push(mappings[0].get('value'));
+                doneOneClassification();
+            }
+        })
+    }, function doneAllClassifications() {
+        classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
+        classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
+        return cb(newCde);
+    });
 }
 function run() {
     async.series([
-        function (cb) {
-            MigrationLoincClassMappingModel.find({}).exec(function (err, mappings) {
-                if (err) throw err;
-                else {
-                    mappings.forEach(function (map) {
-                        classificationMap[map.key] = map.value
-                    });
-                    if (Object.keys(classificationMap).length !== mappings.length) {
-                        throw "Classification Mapping length not match.";
-                    }
-                    cb();
-                }
-            })
-        },
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
                 if (err) throw err;
@@ -213,18 +220,19 @@ function run() {
                                 stream.resume();
                             } else {
                                 var loinc = existingLoinc[0].toObject();
-                                var newCde = createCde(newBornScreening, loinc);
-                                if (newBornScreening.EXAMPLE_UNITS)
-                                    newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
-                                else if (newBornScreening.EXAMPLE_UCUM_UNITS)
-                                    newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
-                                else newCde.valueDomain.uom = '';
-                                var newCdeObj = new MigrationDataElementModel(newCde);
-                                newCdeObj.save(function (err) {
-                                    if (err) throw err;
-                                    cdeCounter++;
-                                    console.log('cdeCounter: ' + cdeCounter);
-                                    stream.resume();
+                                createCde(newBornScreening, loinc, function (newCde) {
+                                    if (newBornScreening.EXAMPLE_UNITS)
+                                        newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
+                                    else if (newBornScreening.EXAMPLE_UCUM_UNITS)
+                                        newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
+                                    else newCde.valueDomain.uom = '';
+                                    var newCdeObj = new MigrationDataElementModel(newCde);
+                                    newCdeObj.save(function (err) {
+                                        if (err) throw err;
+                                        cdeCounter++;
+                                        console.log('cdeCounter: ' + cdeCounter);
+                                        stream.resume();
+                                    });
                                 });
                             }
                         });
