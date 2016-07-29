@@ -1,9 +1,11 @@
 var async = require('async'),
+    uom_datatype_map = require('../loinc/LOINC_UOM_DATATYPE_MAP').map,
     mongo_data = require('../../modules/system/node-js/mongo-data'),
     MigrationLoincModel = require('./../createConnection').MigrationLoincModel,
     MigrationNewBornScreeningCDEModel = require('./../createConnection').MigrationNewBornScreeningCDEModel,
     MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
+    MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassMappingModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
@@ -14,23 +16,7 @@ var cdeCounter = 0;
 var newBornScreeningOrg = null;
 var today = new Date().toJSON();
 
-var uom_datatype_map = {
-    'cm': 'Number',
-    'years': 'Date',
-    'mm': 'Number',
-    'ratio': 'Text',
-    'mv': 'Number',
-    'ms': 'Number',
-    'Diopter': 'Text',
-    'um': 'Number',
-    'log': 'text',
-    'deg': 'Number',
-    'logMAR': 'Text',
-    'ft/ft': 'Text',
-    'cells': 'Text',
-    'mm Hg': 'Number'
-};
-
+var classificationMap = {};
 var statusMap = {
     'Active': 'Qualified'
 };
@@ -146,7 +132,7 @@ function createCde(newBornScreening, loinc) {
     var classificationToAdd = ['Newborn Screening', 'Classification'];
     var classificationArray = newBornScreening.CLASS.split('^');
     classificationArray.forEach(function (classification) {
-        classificationToAdd.push(classification);
+        classificationToAdd.push(classificationMap[classification]);
     });
 
     classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
@@ -175,6 +161,20 @@ function createCde(newBornScreening, loinc) {
 }
 function run() {
     async.series([
+        function (cb) {
+            MigrationLoincClassMappingModel.find({}).exec(function (err, mappings) {
+                if (err) throw err;
+                else {
+                    mappings.forEach(function (map) {
+                        classificationMap[map.key] = map.value
+                    });
+                    if (Object.keys(classificationMap).length !== mappings.length) {
+                        throw "Classification Mapping length not match.";
+                    }
+                    cb();
+                }
+            })
+        },
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
                 if (err) throw err;

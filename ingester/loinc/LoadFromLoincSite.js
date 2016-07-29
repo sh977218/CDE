@@ -203,41 +203,82 @@ function parsingTermDefinitionDescriptionsTable(obj, sectionName, table, cb) {
 
 function parsingPartDefinitionDescriptionsTable(obj, sectionName, table, cb) {
     obj[sectionName] = [];
-    var partDefinitionDescriptionsArray = obj[sectionName];
-    table.findElements(By.xpath('tbody/tr[not(contains(@class,"half_space"))]')).then(function (trs) {
-        trs.shift();
-        var definitionArray = [];
-        for (var i = 0; i < trs.length / 2; i++) {
-            definitionArray.push({
-                Definition: trs[2 * i],
-                Source: trs[2 * i + 1]
+    var numTrsPerDefinition = 4;
+    async.series([
+        function (doneCheck) {
+            table.getText().then(function (tableText) {
+                if (tableText.indexOf('Copyright:') !== -1) {
+                    numTrsPerDefinition = 5;
+                }
+                doneCheck();
+            });
+        },
+        function (doneParsing) {
+            var partDefinitionDescriptionsArray = obj[sectionName];
+            table.findElements(By.xpath('tbody/tr')).then(function (trs) {
+                trs.shift();
+
+                var numDefinition = trs.length / numTrsPerDefinition;
+
+                var definitionArray = [];
+                for (var i = 0; i < numDefinition; i++) {
+                    var definition = {
+                        Part: trs[numTrsPerDefinition * i],
+                        Definition: trs[numTrsPerDefinition * i + 1],
+                        Source: trs[numTrsPerDefinition * i + 2]
+                    };
+                    if (numTrsPerDefinition === 4) {
+                        definition.Copyright = trs[numTrsPerDefinition * i + 3]
+                    }
+                    definitionArray.push(definition);
+                }
+                async.forEach(definitionArray, function (definition, doneOneDefinition) {
+                    var partDefinitionDescriptionsObj = {};
+                    async.parallel([
+                        function (donePart) {
+                            definition.Part.getText().then(function (text) {
+                                partDefinitionDescriptionsObj['Part'] = text.trim();
+                                donePart();
+                            });
+                        },
+                        function (doneDefinition) {
+                            definition.Definition.getText().then(function (text) {
+                                partDefinitionDescriptionsObj['Description'] = text.trim();
+                                doneDefinition();
+                            });
+                        },
+                        function (doneSource) {
+                            if (!definition.Source) return cb();
+                            definition.Source.getText().then(function (text) {
+                                partDefinitionDescriptionsObj['Source'] = text.trim();
+                                doneSource();
+                            });
+                        },
+                        function (doneCopyright) {
+                            if (numTrsPerDefinition === 4) {
+                                definition.Copyright.getText().then(function (text) {
+                                    partDefinitionDescriptionsObj['Copyright'] = text.trim();
+                                    doneCopyright();
+                                });
+                            } else {
+                                doneCopyright();
+                            }
+                        }
+                    ], function () {
+                        partDefinitionDescriptionsArray.push(partDefinitionDescriptionsObj);
+                        doneOneDefinition();
+                    });
+                }, function () {
+                    doneParsing();
+            });
             });
         }
-        async.forEach(definitionArray, function (definition, doneOneDefinition) {
-            var partDefinitionDescriptionsObj = {};
-            async.parallel([
-                function (cb) {
-                    definition.Definition.getText().then(function (text) {
-                        partDefinitionDescriptionsObj['Description'] = text.trim();
-                        cb();
-                    });
-                },
-                function (cb) {
-                    if (!definition.Source) return cb();
-
-                    definition.Source.getText().then(function (text) {
-                        partDefinitionDescriptionsObj['Source'] = text.trim();
-                        cb();
-                    });
-                }
-            ], function () {
-                partDefinitionDescriptionsArray.push(partDefinitionDescriptionsObj);
-                doneOneDefinition();
-            });
-        }, function () {
+        ,
+        function () {
             cb();
-        });
-    });
+        }
+    ])
+    ;
 }
 
 function parsingBasicAttributesTable(obj, sectionName, table, cb) {
@@ -804,7 +845,7 @@ exports.runOne = function (loincId, next) {
             });
         },
         function (cb) {
-            var driver = new webdriver.Builder().forBrowser('firefox').build();
+            var driver = new webdriver.Builder().forBrowser('chrome').build();
             var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
             driver.get(url).then(function () {
                 parsingHtml(driver, loincId, function (obj) {

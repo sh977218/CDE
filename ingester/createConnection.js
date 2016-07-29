@@ -28,6 +28,11 @@ exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose
     strict: false,
     collection: 'loinc'
 }));
+exports.MigrationLoincClassMappingModel = migrationConn.model('MigrationLoincClassMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincMapping'
+}));
+
 
 // NINDS
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
