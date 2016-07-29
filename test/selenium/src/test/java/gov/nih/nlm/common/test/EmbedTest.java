@@ -71,7 +71,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         String url = findElement(By.tagName("iFrame")).getAttribute("src");
 
         // driver switchto iframe doesn't seem to work, so we see the page without iframe.
-        driver.get(url);
+        driver.get(baseUrl + url);
 
         findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");
