@@ -68,7 +68,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        driver.switchTo().frame(findElement(By.tagName("iframe")));
+        String url = findElement(By.tagName("iFrame")).getAttribute("src");
+
+        // driver switchto iframe doesn't seem to work, so we see the page without iframe.
+        driver.get(url);
         clickElement(By.id("search.submit"));
         textPresent("Ethnicity");
 
@@ -93,6 +96,14 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         textPresent("Amyotrophic Lateral Sclerosis;Classification;Core");
         textPresent("Demographics");
+
+        goHome();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Account Management"));
+        clickElement(By.id("embeddingTab"));
+        clickElement(By.id("removeMappingSpecification-0"));
+        clickElement(By.id("confirmRemoveMappingSpecification-0"));
+        textPresent("Removed");
 
     }
 

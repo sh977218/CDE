@@ -1058,6 +1058,12 @@ div + .questionPlaceholder {
     z-index: 1000;
 }
 
+.cdeStatusReportGrid {
+    border: 1px solid rgb(212, 212, 212);
+    width: auto;
+    height: 600px
+}
+
 .formRenderPanel {
     margin-left: 10px;
 }
