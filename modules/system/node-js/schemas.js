@@ -259,6 +259,12 @@ schemas.classificationAudit = new mongoose.Schema({
     , path: [String]
 });
 
+
+schemas.meshClassification = new mongoose.Schema({
+    flatClassification: String,
+    meshTree: [String]
+});
+
 schemas.classificationAudit.set('collection', 'classificationAudit');
 
 schemas.fs_files.set('collection', 'fs.files');
