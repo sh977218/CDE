@@ -68,7 +68,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        scrollTo(1000);
+        scrollTo(3000);
         driver.switchTo().frame("previewFrame");
 
         findElement(By.id("search.submit")).click();
