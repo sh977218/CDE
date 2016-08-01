@@ -261,8 +261,9 @@ schemas.classificationAudit = new mongoose.Schema({
 
 
 schemas.meshClassification = new mongoose.Schema({
+    org: String,
     flatClassification: String,
-    meshTree: [String]
+    meshDescriptors: [String]
 });
 
 schemas.classificationAudit.set('collection', 'classificationAudit');

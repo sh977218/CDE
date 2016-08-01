@@ -829,4 +829,14 @@ exports.init = function (app) {
             else res.send(org);
         });
     });
+
+    app.get('/meshMappings', function(req, res) {
+        if (!req.params.org) return res.status(400).send("Missing Org Parameter");
+        if (!req.params.classification) return res.status(400).send("Missing Classification Parameter");
+        mongo_data_system.getMeshMappings(req.params.org, req.params.classification, function(err, mm) {
+            if (err) return res.status(500).send();
+            return res.send(mm);
+        });
+    });
+
 };

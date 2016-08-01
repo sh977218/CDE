@@ -1,17 +1,27 @@
 <div class="modal-header">
     <h3>Mesh Mappings</h3>
-    <p>Here are Mesh Terms mapped to {{path}}</strong></p>
 </div>
 <div class="modal-body" id="addClassificationModalBody">
-    <form role="form" name="newClassifForm" class="form-inline pt20" novalidate>
+
+    <p>Here are MeSH Terms mapped to {{path}}</strong></p>
+    <div ng-repeat="desc in mapping.meshDescriptors">
+        <a href="" ng-click="removeDescriptor($index)" class="fa fa-trash" title="remove"></a> {{desc}} - {{descToName[desc]}}
+    </div>
+
+    <form role="form" name="newMeshDescForm" class="form-inline pt20" novalidate>
         <div class="form-group">
-            <label for="addNewCatName"></label>
-            <input ng-model="parentScope.newClassifName" id="addNewCatName" name="cName" class="form-control" required ng-pattern="/^[^;]+$/">
+            <label for="mesh.id">MeSH ID: </label>
+            <input ng-model="meshID" id="mesh.id" class="form-control" required ng-change="loadDescriptor()">
         </div>
-        <button type="submit" class="btn btn-success" id="addNewCatButton" ng-click="addClassification()" ng-disabled="newClassifForm.cName.$error.pattern || newClassifForm.cName.$invalid">Add</button>
-        <div ng-show="newClassifForm.cName.$error.pattern" class="error-block">May not contain ; character</div>
+        <div>
+            {{descriptorName}}
+            <button type="submit" class="btn btn-default btn-sm"
+                    id="addMeshDescButton" ng-click="addMeshDescriptor()"
+                    ng-if="descriptorName.length > 0">Add</button>
+
+        </div>
     </form>
 </div>
-<div class="modal-footer" id="addClassificationModalFooter">
+<div class="modal-footer">
     <button class="btn btn-default done" ng-click="close()" id="closeModal">Close</button>
 </div>
