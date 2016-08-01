@@ -1,5 +1,6 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q',
-    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q) {
+angular.module('formModule').controller
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard',
+    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
@@ -502,9 +503,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 board: selectedBoard,
                 formTinyId: $scope.elt.tinyId
             };
-            $http({method: 'post', url: '/pinFormCdes', data: data}).success(function () {
+            $http.post('/pinFormCdes', data).success(function () {
                 $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards(filter);
+                ElasticBoard.loadMyBoards(filter);
             }).error(function () {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });

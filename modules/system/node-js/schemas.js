@@ -26,6 +26,17 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+schemas.statusValidationRuleSchema = new mongoose.Schema({
+    field: String
+    , id: Number
+    , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]}
+    , ruleName: String
+    , rule: {
+        regex:  String
+    }
+    , occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
+});
+
 schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
@@ -36,7 +47,9 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
+    , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 });
+
 
 schemas.userSchema = new mongoose.Schema({
     username: String

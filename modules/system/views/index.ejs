@@ -57,6 +57,18 @@
 <body role="application" id="top">
 <div ng-controller="MainCtrl" itemscope>
 
+
+	<!-- Google Tag Manager -->
+	<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NPVRL3"
+					  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+				'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-NPVRL3');</script>
+	<!-- End Google Tag Manager -->
+	
+
 	<!-- Navigation bar -->
 	<%- include navigation.html %>
 
@@ -92,12 +104,10 @@
 <script src="/components/microplugin/src/microplugin.js"></script>
 <script src="/components/selectize/dist/js/selectize.js"></script>
 <script src="/components/angular-ui-select/dist/select.js"></script>
-<script src="/components/rangy/rangy-core.js"></script>
-<script src="/components/rangy/rangy-classapplier.js"></script>
-<script src="/components/rangy/rangy-highlighter.js"></script>
-<script src="/components/rangy/rangy-selectionsaverestore.js"></script>
-<script src="/components/rangy/rangy-serializer.js"></script>
-<script src="/components/rangy/rangy-textrange.js"></script>
+<script src="/components/rangy/rangy-core.min.js"></script>
+<script src="/components/rangy/rangy-cssclassapplier.min.js"></script>
+<script src="/components/rangy/rangy-selectionsaverestore.min.js"></script>
+<script src="/components/rangy/rangy-serializer.min.js"></script>
 <script src="/components/textAngular/src/textAngular.js"></script>
 <script src="/components/textAngular/src/textAngular-sanitize.js"></script>
 <script src="/components/textAngular/src/textAngularSetup.js"></script>
