@@ -68,10 +68,8 @@ public class EmbedTest extends NlmCdeBaseTest {
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        String url = findElement(By.tagName("iFrame")).getAttribute("src");
-
-        // driver switchto iframe doesn't seem to work, so we see the page without iframe.
-        driver.get(baseUrl + url);
+        scrollTo(1000);
+        driver.switchTo().frame("previewFrame");
 
         findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");

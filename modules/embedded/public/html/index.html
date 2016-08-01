@@ -2,7 +2,7 @@
 <html lang="en" ng-app="embeddedApp">
 <head>
     <meta charset="UTF-8">
-    <title>this is a sample</title>
+    <title>CDE Embedded Search</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.js"></script>
@@ -25,10 +25,6 @@
         body {
             padding: 0px 0px 0px 0px;
         }
-        .extraPadding {
-            margin-top: 30px!important;
-            margin-left: 50px!important;margin-right: 50px!important;
-        }
         #pageWrapper{
             height: 97%;
             width: 99%;
@@ -49,7 +45,6 @@
             margin: 0px 0px 5px 0px;
         }
 
-
         .gridListView .name {width: auto;}
 
         #searchResult table{width: auto;}
@@ -57,12 +52,6 @@
         #searchCdesFormsHeading{
             margin-top: 90px;
         }
-
-        #selectCdeForms{
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        .halfOpacity{opacity: 0.5!important;}
     </style>
 </head>
 <body>
@@ -70,17 +59,6 @@
 <div ng-controller="SearchCtrl" id="pageWrapper" class="boxed-div" style="border: none">
 
     <h2 class="text-center" ng-if="!searchStarted" id="searchCdesFormsHeading">Search CDEs</h2>
-
-    <!--<div id="selectCdeForms"  ng-if="!searchStarted" class="text-center">-->
-        <!--<div class="btn-group">-->
-            <!--<button id="betaDisabled" class="btn" ng-class="{'btn-primary':searchType === 'cde'}"-->
-                    <!--ng-click="searchCDEs()"> CDEs-->
-            <!--</button>-->
-            <!--<button id="searchForm" class="btn" ng-class="{'btn-primary':searchType === 'form'}"-->
-                    <!--ng-click="searchForms()"> Forms-->
-            <!--</button>-->
-        <!--</div>-->
-    <!--</div>-->
 
     <form name="advSearchForm" id="advSearchForm" novalidate="" class="ng-pristine ng-valid ng-valid-maxlength"
           ng-class="{'extraPadding': !searchStarted }" ng-action="">
