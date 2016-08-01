@@ -797,6 +797,4 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
-
-
 }
