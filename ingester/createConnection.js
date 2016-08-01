@@ -28,9 +28,13 @@ exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose
     strict: false,
     collection: 'loinc'
 }));
-exports.MigrationLoincClassMappingModel = migrationConn.model('MigrationLoincClassMapping', new mongoose.Schema({}, {
+exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new mongoose.Schema({}, {
     strict: false,
-    collection: 'LoincMapping'
+    collection: 'LoincClassificationMapping'
+}));
+exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincScaleMapping'
 }));
 
 

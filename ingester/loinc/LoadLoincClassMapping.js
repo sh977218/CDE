@@ -2,7 +2,7 @@ var lineReader = require('readline').createInterface({
     input: require('fs').createReadStream('./ingester/loinc/Classes Mapping')
 });
 
-var MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassMappingModel;
+var MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassificationMappingModel;
 
 var num = 0;
 var allTypes = ['Clinical Term Class', 'Laboratory Term Class', 'Attachment Term Class', 'Survey Term Class'];

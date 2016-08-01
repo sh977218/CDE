@@ -5,7 +5,8 @@ var async = require('async'),
     MigrationNewBornScreeningCDEModel = require('./../createConnection').MigrationNewBornScreeningCDEModel,
     MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
     MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
-    MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassMappingModel,
+    MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassificationMappingModel,
+    MigrationLoincScaleMappingModel = require('./../createConnection').MigrationLoincScaleMappingModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
@@ -202,7 +203,7 @@ function parseReferenceDoc(newBornScreening, loinc) {
 }
 
 function parseValueDomain(newBornScreening, loinc) {
-    var valueDomain = {};
+    var valueDomain = {datatype: 'Text'};
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
@@ -224,7 +225,9 @@ function parseValueDomain(newBornScreening, loinc) {
             }
         });
     } else {
-        valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
+        if (uom_datatype_map[newBornScreening.EXAMPLE_UNITS]) {
+            valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
+        }
     }
     return valueDomain;
 }
@@ -319,20 +322,34 @@ function run() {
                                 stream.resume();
                             } else {
                                 var loinc = existingLoinc[0].toObject();
-                                createCde(newBornScreening, loinc, function (newCde) {
-                                    if (newBornScreening.EXAMPLE_UNITS)
-                                        newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
-                                    else if (newBornScreening.EXAMPLE_UCUM_UNITS)
-                                        newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
-                                    else newCde.valueDomain.uom = '';
-                                    var newCdeObj = new MigrationDataElementModel(newCde);
-                                    newCdeObj.save(function (err) {
-                                        if (err) throw err;
-                                        cdeCounter++;
-                                        console.log('cdeCounter: ' + cdeCounter);
-                                        stream.resume();
+                                if (loinc['PARTS']) {
+                                    async.forEach(loinc['PARTS']['PARTS'], function (p, doneOneP) {
+                                        if (p['Part Type'] === 'Scale') {
+                                            MigrationLoincScaleMappingModel.findOne({key: p['Part Name']}).exec(function (e, scaleMap) {
+                                                if (e) throw e;
+                                                p['Part Name'] = p['Part Name'] + ' <i>[' + scaleMap.get('Scale Type') + ']</i>';
+                                                doneOneP();
+                                            })
+                                        } else {
+                                            doneOneP();
+                                        }
+                                    }, function doneAllPs() {
+                                        createCde(newBornScreening, loinc, function (newCde) {
+                                            if (newBornScreening.EXAMPLE_UNITS)
+                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
+                                            else if (newBornScreening.EXAMPLE_UCUM_UNITS)
+                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
+                                            else newCde.valueDomain.uom = '';
+                                            var newCdeObj = new MigrationDataElementModel(newCde);
+                                            newCdeObj.save(function (err) {
+                                                if (err) throw err;
+                                                cdeCounter++;
+                                                console.log('cdeCounter: ' + cdeCounter);
+                                                stream.resume();
+                                            });
+                                        });
                                     });
-                                });
+                                }
                             }
                         });
                     } else {
