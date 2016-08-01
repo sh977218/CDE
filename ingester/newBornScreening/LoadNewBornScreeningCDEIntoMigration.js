@@ -22,77 +22,102 @@ var CLASSIFICATION_TYPE_MAP = {
     "3": "Attachment Term Class",
     "4": "Survey Term Class"
 };
+
+var CONCEPT_MAP = {
+    "Component": 'objectClass',
+    "Fragments for synonyms": 'property',
+    "Property": 'property',
+    "Scale": 'property',
+    "System": 'property',
+    "Time": 'property',
+    "Super System": 'property',
+    "Divisors": 'property',
+    "Method": 'property',
+    "Multipart": 'property',
+    "Challenge": 'property',
+    "Suffix": 'property',
+    "Quotients": 'property'
+};
 var statusMap = {
     'Active': 'Qualified'
 };
 
-function createCde(newBornScreening, loinc, cb) {
+function parseNaming(newBornScreening, loinc) {
     var naming = [];
-    if ((loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0 ) || ( loinc['TERM DEFINITION/DESCRIPTION(S)'] && loinc['TERM DEFINITION/DESCRIPTION(S)'].length > 0)) {
-        if (loinc['PART DEFINITION/DESCRIPTION(S)'] && loinc['PART DEFINITION/DESCRIPTION(S)'].length > 0) {
-            loinc['PART DEFINITION/DESCRIPTION(S)'].forEach(function (defintion) {
-                var name = {
-                    definition: defintion.Description,
-                    languageCode: "EN-US",
-                    context: {
-                        contextName: "Long Common Name",
-                        acceptability: "preferred"
-                    }
-                };
-                if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
-                else name.designation = loinc['LOINC NAME'];
-                naming.push(name);
-            });
-        }
-        if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
+    var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
+    if (LOINCNAME) {
+        naming.push({
+            designation: LOINCNAME,
+            definition: '',
+            languageCode: 'EN-US',
+            context: {
+                contextName: '',
+                acceptability: 'preferred'
+            }
+        })
+    }
 
-            var name = {
-                definition: loinc['TERM DEFINITION/DESCRIPTION(S)'].Description,
+    var NAME = loinc['NAME']['NAME'];
+    if (NAME) {
+        if (NAME['Long Common Name']) {
+            naming.push({
+                designation: NAME['Long Common Name'],
+                definition: '',
                 languageCode: "EN-US",
                 context: {
                     contextName: "Long Common Name",
-                    acceptability: "preferred"
+                    acceptability: 'preferred'
                 }
-            };
-            if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
-            else name.designation = loinc['LOINC NAME'];
-            naming.push(name);
+            });
         }
-    } else {
-        var name = {
-            designation: loinc.NAME['LOINC NAME'],
-            definition: '',
-            languageCode: "EN-US",
-            context: {
-                contextName: "Long Common Name",
-                acceptability: 'preferred'
-            }
-        };
-        if (loinc.NAME['LOINC NAME']) name.designation = loinc.NAME['LOINC NAME'];
-        else name.designation = loinc['LOINC NAME'];
+        if (NAME['Shortname']) {
+            naming.push({
+                designation: NAME['Shortname'],
+                definition: '',
+                languageCode: "EN-US",
+                context: {
+                    contextName: "Shortname",
+                    acceptability: 'preferred'
+                }
+            });
+        }
+    }
+    if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
+        loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (t) {
+            naming.push({
+                designation: '',
+                definition: t.Description,
+                languageCode: "EN-US",
+                context: {
+                    contextName: t.Source,
+                    acceptability: 'preferred'
+                }
+            })
+        })
+    }
+    return naming;
+}
 
-        if (loinc['TERM DEFINITION/DESCRIPTION(S)']) name.definition = loinc['TERM DEFINITION/DESCRIPTION(S)'].Description;
-        naming.push(name);
+function parseConcepts(newBornScreening, loinc) {
+    var concepts = {objectClass: [], property: [], dataElementConcept: []};
+    if (loinc['PARTS']) {
+        loinc['PARTS']['PARTS'].forEach(function (p) {
+            concepts[CONCEPT_MAP[p['Part Type'].trim()]].push({
+                name: p['Part Name'].replace('<i>', '').replace('</i>', '').trim(),
+                origin: 'LOINC - Part - ' + p['Part Type'],
+                originId: p['Part No']
+            })
+        })
     }
-    if (!loinc.NAME) {
-        console.log(loinc);
-        throw "no NAME";
-    }
-    naming.push({
-        designation: loinc.NAME.Shortname,
-        definition: '',
-        languageCode: "EN-US",
-        context: {
-            contextName: "Shortname",
-            acceptability: 'preferred'
-        }
-    });
-    var ids = [{source: 'LOINC', id: loinc.loincId}];
+    return concepts;
+}
+
+function parseProperties(newBornScreening, loinc) {
     var properties = [];
-    if (loinc['RELATED NAMES'] && loinc['RELATED NAMES'].length > 0) {
+    if (loinc['RELATED NAMES']) {
         var table = '<table class="table table-striped">';
         var tr = '';
-        loinc['RELATED NAMES'].forEach(function (n, i) {
+        loinc['RELATED NAMES']['RELATED NAMES'].forEach(function (n, i) {
             var j = i % 3;
             var td = '<td>' + n + '</td>';
             if (j === 0) {
@@ -107,20 +132,112 @@ function createCde(newBornScreening, loinc, cb) {
         table = table + '</table>';
         properties.push({key: 'RELATED NAMES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
-    if (loinc['NAME']['Fully-Specified Name']) {
-        var table = '<table class="table table-striped">';
+    if (loinc['NAME']['NAME']['Fully-Specified Name']) {
         var ths = '';
         var tds = '';
-        Object.keys(loinc['NAME']['Fully-Specified Name']).forEach(function (key) {
+        Object.keys(loinc['NAME']['NAME']['Fully-Specified Name']).forEach(function (key) {
             var th = '<th>' + key + '</th>';
             ths = ths + th;
-            var value = loinc['NAME']['Fully-Specified Name'][key];
+            var value = loinc['NAME']['NAME']['Fully-Specified Name'][key];
             var td = '<td>' + value + '</td>';
             tds = tds + td;
         });
-        table = table + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'Fully-Specified Name', value: table, source: 'LOINC', valueFormat: 'html'});
     }
+    if (loinc['BASIC ATTRIBUTES']) {
+        var ths = '';
+        var tds = '';
+        Object.keys(loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']).forEach(function (key) {
+            var th = '<th>' + key + '</th>';
+            ths = ths + th;
+            var value = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES'][key];
+            var td = '<td>' + value + '</td>';
+            tds = tds + td;
+        });
+        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
+    }
+    if (loinc['EXAMPLE UNITS']) {
+        var trs = '<tr><th>Source Type</th><th>Unit</th></tr>';
+        loinc['EXAMPLE UNITS']['EXAMPLE UNITS'].forEach(function (eu) {
+            trs = trs + '<tr><td>' + eu['Source Type'] + '</td><td>' + eu['Unit'] + '</td></tr>';
+        });
+        var table = '<table class="table table-striped">' + trs + '</table>';
+        properties.push({key: 'EXAMPLE UNITS', value: table, source: 'LOINC', valueFormat: 'html'});
+    }
+    if (loinc['COPYRIGHT']) {
+        properties.push({
+            key: 'COPYRIGHT',
+            value: loinc['COPYRIGHT']['COPYRIGHT'],
+            source: 'LOINC'
+        })
+    }
+    return properties;
+}
+
+function parseReferenceDoc(newBornScreening, loinc) {
+    var referenceDocuments = [];
+    if (loinc['ARTICLE']) {
+        loinc['ARTICLE']['ARTICLE'].forEach(function (article) {
+            referenceDocuments.push({
+                uri: article.SourceLink,
+                providerOrg: article.Source,
+                title: article.Description,
+                document: article.DescriptionLink
+            });
+        })
+    }
+    if (loinc['WEB CONTENT'] && loinc['WEB CONTENT']['WEB CONTENT']) {
+        loinc['WEB CONTENT']['WEB CONTENT'].forEach(function (webContent) {
+            var referenceDoc = {
+                uri: webContent.SourceLink,
+                providerOrg: webContent.Source,
+                title: webContent.Copyright
+            };
+            referenceDocuments.push(referenceDoc);
+        })
+    }
+    return referenceDocuments;
+}
+
+function parseValueDomain(newBornScreening, loinc) {
+    var valueDomain = {};
+    var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
+    var version = versionStr.substring(0, versionStr.length - 1);
+    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
+        valueDomain.datatype = 'Value List';
+        var type;
+        if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
+        if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
+        valueDomain.ids = [{
+            id: loinc[type][type].answerListId.id,
+            source: 'LOINC',
+            version: version
+        }];
+        valueDomain.permissibleValues = loinc[type][type].answerList.sort('SEQ#').map(function (a) {
+            return {
+                permissibleValue: a['Answer'],
+                valueMeaningName: a['Answer'],
+                valueMeaningCode: a['Answer ID'],
+                codeSystemName: 'LOINC'
+            }
+        });
+    } else {
+        valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
+    }
+    return valueDomain;
+}
+
+function createCde(newBornScreening, loinc, cb) {
+    var naming = parseNaming(newBornScreening, loinc);
+    var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
+    var version = versionStr.substring(0, versionStr.length - 1);
+    var ids = [{source: 'LOINC', id: loinc.loincId, version: version}];
+    var properties = parseProperties(newBornScreening, loinc);
+    var referenceDocuments = parseReferenceDoc(newBornScreening, loinc);
+    var valueDomain = parseValueDomain(newBornScreening, loinc);
+    var concepts = parseConcepts(newBornScreening, loinc);
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
@@ -131,32 +248,14 @@ function createCde(newBornScreening, loinc, cb) {
         naming: naming,
         ids: ids,
         properties: properties,
+        referenceDocuments: referenceDocuments,
+        objectClass: {concepts: concepts.objectClass},
+        property: {concepts: concepts.property},
+        dataElementConcept: {concepts: concepts.dataElementConcept},
         stewardOrg: {name: stewardOrgName},
+        valueDomain: valueDomain,
         classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
-    newCde.valueDomain = {};
-
-    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
-        newCde.valueDomain.datatype = 'Value List';
-        var type;
-        if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
-        if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
-        newCde.valueDomain.ids = [{
-            id: loinc[type].answerListId.id,
-            source: 'LOINC',
-            version: loinc['BASIC ATTRIBUTES']['Last Updated in Version']
-        }];
-        newCde.valueDomain.permissibleValues = loinc[type].answerList.sort('SEQ#').map(function (a) {
-            return {
-                permissibleValue: a['Answer'],
-                valueMeaningName: a['Answer'],
-                valueMeaningCode: a['Answer ID'],
-                codeSystemName: 'LOINC'
-            }
-        });
-    } else {
-        newCde.valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
-    }
 
     var classificationType = CLASSIFICATION_TYPE_MAP[newBornScreening.CLASSTYPE];
     var classificationToAdd = ['Newborn Screening', 'Classification'];
@@ -203,7 +302,7 @@ function run() {
         function (cb) {
             var stream = MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).stream();
             stream.on('data', function (newBornScreening) {
-                console.log("doing new born screening");
+                console.log("Doing new born screening");
                 stream.pause();
                 if (newBornScreening.toObject) newBornScreening = newBornScreening.toObject();
                 MigrationDataElementModel.find({'ids.id': newBornScreening.LOINC_NUM}, function (err, existingCdes) {
@@ -237,13 +336,13 @@ function run() {
                             }
                         });
                     } else {
-                        throw 'duplicated id: ' + newBornScreening.LOINC_NUM;
+                        throw 'Duplicated id: ' + newBornScreening.LOINC_NUM;
                     }
                 });
             });
 
             stream.on('end', function (err) {
-                console.log("End of EyeGene stream.");
+                console.log("End of Newborn Screening stream.");
                 if (err) throw err;
                 newBornScreeningOrg.markModified('classifications');
                 newBornScreeningOrg.save(function (e) {
