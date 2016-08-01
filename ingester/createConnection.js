@@ -75,7 +75,7 @@ exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornS
 }));
 
 // MIGRATION
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJsonSchema));
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
 
