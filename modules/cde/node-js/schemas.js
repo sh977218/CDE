@@ -160,5 +160,4 @@ schemas.cdeAuditSchema = new mongoose.Schema({
 }, {strict: false});
 
 schemas.cdeAuditSchema.set('collection', 'cdeAudit');
-exports.deJsonSchema = deJsonSchema;
 module.exports = schemas;
