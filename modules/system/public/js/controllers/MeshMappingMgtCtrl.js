@@ -1,9 +1,10 @@
-angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org', 'pathArray', '$http', '$timeout',
-    function ($scope, org, pathArray, $http, $timeout) {
+angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org', 'pathArray', '$http', '$timeout', 'Alert',
+    function ($scope, org, pathArray, $http, $timeout, Alert) {
 
         $scope.path = pathArray.join(" / ");
 
         $scope.descToName = {};
+        $scope.meshSearch = pathArray[pathArray.length - 1];
 
         $http.get('/meshMappings?org=' + encodeURIComponent(org) + "&classification=" +
             encodeURIComponent(pathArray.join(";"))).success(function(result) {
@@ -28,24 +29,46 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
 
             $timeout(function() {
                 // @TODO replace with config
-                $http.get("https://meshb-qa.nlm.nih.gov/api/record/ui/" + $scope.meshID).success(function (result) {
+                $http.get("https://meshb-qa.nlm.nih.gov/api/fieldSearch/record?searchInField=termDescriptor" +
+                    "&searchType=exactMatch&q=" + $scope.meshSearch).success(function (result) {
                     try {
-                        $scope.descriptorName = result.DescriptorName.String.t;
+                        if (result.hits.hits.length === 1) {
+                            var desc = result.hits.hits[0]._source;
+                            $scope.descriptorName = desc.DescriptorName.String.t;
+                            $scope.descriptorID = desc.DescriptorUI.t;
+                        }
                     } catch (e) {
                         delete $scope.descriptorName;
                     }
                 }).error(function() {
                     delete $scope.descriptorName;
                 });
+                //$http.get("https://meshb-qa.nlm.nih.gov/api/record/ui/" + $scope.meshID).success(function (result) {
+                //    try {
+                //        $scope.descriptorName = result.DescriptorName.String.t;
+                //    } catch (e) {
+                //        delete $scope.descriptorName;
+                //    }
+                //}).error(function() {
+                //    delete $scope.descriptorName;
+                //});
             }, 0);
 
         };
 
+        $scope.loadDescriptor();
+
         $scope.addMeshDescriptor = function () {
-            $scope.mapping.meshDescriptors.push($scope.meshID);
-            $scope.descToName[$scope.meshID] = $scope.descriptorName;
-            delete $scope.meshID;
+            $scope.mapping.meshDescriptors.push($scope.descriptorID);
+            $scope.descToName[$scope.descriptorID] = $scope.descriptorName;
+            delete $scope.descriptorID;
             delete $scope.descriptorName;
+
+
+            $http.post("/meshClassification", $scope.mapping).success(function() {
+                Alert.addAlert("success", "Saved");
+            });
+
         };
 
     }]);
