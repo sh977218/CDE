@@ -60,12 +60,14 @@
                         options.results.push({leftIndex: leftIndex, match: false});
                         if (leftIndex === leftArray.length - 1) {
                             for (var j = 0; j < rightArrayCopy.length; j++) {
+                                options.showTitle = true;
                                 options.results.push({rightIndex: j + beginRightIndex, match: false});
                             }
                         }
                     } else {
                         options.matchCount++;
                         for (var i = 0; i < foundInRight; i++) {
+                            options.showTitle = true;
                             options.results.push({rightIndex: i + beginRightIndex, match: false});
                         }
                         options.results.push({
@@ -74,6 +76,12 @@
                             match: true
                         });
                         beginRightIndex = beginRightIndex + foundInRight + 1;
+                        if (leftIndex === leftArray.length - 1) {
+                            for (var j = 0; j < rightArrayCopy.length; j++) {
+                                options.showTitle = true;
+                                options.results.push({rightIndex: j + beginRightIndex, match: false});
+                            }
+                        }
                     }
                 });
             }

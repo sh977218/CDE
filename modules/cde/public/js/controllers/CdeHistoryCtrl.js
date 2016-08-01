@@ -46,7 +46,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', '$rootScope'
             if (!$scope.priorCdes) {
                 if ($scope.elt.history && $scope.elt.history.length > 0) {
                     $http.get('/priorcdes/' + $scope.elt._id).success(function (result) {
-                        $scope.priorCdes = result;
+                        $scope.priorCdes = result.reverse();
                         $scope.priorCdes.splice(0, 0, $scope.elt);
                     });
                 }
