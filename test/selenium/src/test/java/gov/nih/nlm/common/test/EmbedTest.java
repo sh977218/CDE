@@ -68,8 +68,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        scrollTo(3000);
+        scrollTo(2000);
         driver.switchTo().frame("previewFrame");
+
+        System.out.println(driver.getPageSource());
 
         findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");
@@ -96,6 +98,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Amyotrophic Lateral Sclerosis;Classification;Core");
         textPresent("Demographics");
 
+        driver.switchTo().defaultContent();
         goHome();
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
