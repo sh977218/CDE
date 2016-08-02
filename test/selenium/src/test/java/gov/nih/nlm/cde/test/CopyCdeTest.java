@@ -22,7 +22,9 @@ public class CopyCdeTest extends BaseClassificationTest {
         showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
         textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("nameEdit"));
-        
+        clickElement(By.id("status_tab"));
+        textPresent("Copy of: xug6J6R8fkf");
+
     }
 
 }
