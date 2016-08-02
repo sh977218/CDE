@@ -25,7 +25,7 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl',
 
     elt.ids = [];
     elt.registrationState.registrationStatus = "Incomplete";
-    elt.registrationState.administrativeNote = "Copy of: " + elt.naming[0].designation;
+    elt.registrationState.administrativeNote = "Copy of: " + elt.tinyId;
 
     delete elt.registrationState.administrativeStatus;
     $scope.elt = JSON.parse(JSON.stringify(elt));

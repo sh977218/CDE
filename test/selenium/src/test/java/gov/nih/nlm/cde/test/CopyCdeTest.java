@@ -19,8 +19,10 @@ public class CopyCdeTest extends BaseClassificationTest {
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Population", "Adult"});
         clickElement(By.id("saveCopy"));
         hangon(1);
+        showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
         textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("nameEdit"));
+        
     }
 
 }
