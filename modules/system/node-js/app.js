@@ -830,18 +830,30 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/meshMappings', function(req, res) {
-        if (!req.params.org) return res.status(400).send("Missing Org Parameter");
-        if (!req.params.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data_system.getMeshMappings(req.params.org, req.params.classification, function(err, mm) {
+    app.get('/meshClassification', function(req, res) {
+        if (!req.query.org) return res.status(400).send("Missing Org Parameter");
+        if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
+        mongo_data_system.getMeshClassification(req.query.org, req.query.classification, function(err, mm) {
             if (err) return res.status(500).send();
-            return res.send(mm);
+            return res.send(mm[0]);
         });
     });
 
-    app.post('/meshMapping', function (req, res) {
-        
-    })
+    app.post('/meshClassification', function (req, res) {
+        if (req.body._id) {
+            var id = req.body._id;
+            delete req.body._id;
+            mongo_data_system.MeshClassification.update({_id: id}, req.body, function (err) {
+                if (err) res.status(500).send();
+                else res.send();
+            });
+        } else {
+            new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
+                if (err) res.status(500).send();
+                else res.send(obj);
+            });
+        }
+    });
 
 
 };

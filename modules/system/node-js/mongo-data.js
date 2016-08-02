@@ -16,6 +16,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
+    MeshClassification = conn.model('meshClassification', schemas.meshClassification),
     ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
     gfs = Grid(conn.db, mongoose.mongo),
@@ -28,6 +29,7 @@ exports.sessionStore = sessionStore;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
+exports.MeshClassification = MeshClassification;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
@@ -52,6 +54,10 @@ exports.updateClusterHostStatus = function(status, callback) {
         }
         if (callback) callback(err);
     });
+};
+
+exports.getMeshClassification = function(org, classif, cb) {
+    MeshClassification.find({org: org, flatClassification: classif}, cb);
 };
 
 exports.org_autocomplete = function(name, callback) {

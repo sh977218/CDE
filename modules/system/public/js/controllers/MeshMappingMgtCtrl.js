@@ -6,20 +6,22 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
         $scope.descToName = {};
         $scope.meshSearch = pathArray[pathArray.length - 1];
 
-        $http.get('/meshMappings?org=' + encodeURIComponent(org) + "&classification=" +
+        $scope.mapping = {
+            org: org,
+            flatClassification: pathArray.join(";"),
+            meshDescriptors: []
+        };
+
+        $http.get('/meshClassification?org=' + encodeURIComponent(org) + "&classification=" +
             encodeURIComponent(pathArray.join(";"))).success(function(result) {
-            $scope.mapping = result;
-            $scope.mapping.result.meshDescriptors.forEach(function(desc) {
-                $http.get("https://meshb-qa.nlm.nih.gov/api/record/ui/" + desc).success(function (result) {
-                    $scope.descToName[desc] = result.DescriptorName.String.t;
+            if (result) {
+                $scope.mapping = result;
+                $scope.mapping.meshDescriptors.forEach(function(desc) {
+                    $http.get("https://meshb-qa.nlm.nih.gov/api/record/ui/" + desc).success(function (result) {
+                        $scope.descToName[desc] = result.DescriptorName.String.t;
+                    });
                 });
-            });
-        }).error(function() {
-            $scope.mapping = {
-                org: org,
-                flatClassification: pathArray.join(";"),
-                meshDescriptors: []
-            };
+            }
         });
 
         var currentTimeout = null;
@@ -43,15 +45,6 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
                 }).error(function() {
                     delete $scope.descriptorName;
                 });
-                //$http.get("https://meshb-qa.nlm.nih.gov/api/record/ui/" + $scope.meshID).success(function (result) {
-                //    try {
-                //        $scope.descriptorName = result.DescriptorName.String.t;
-                //    } catch (e) {
-                //        delete $scope.descriptorName;
-                //    }
-                //}).error(function() {
-                //    delete $scope.descriptorName;
-                //});
             }, 0);
 
         };
@@ -64,9 +57,11 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
             delete $scope.descriptorID;
             delete $scope.descriptorName;
 
-
-            $http.post("/meshClassification", $scope.mapping).success(function() {
+            $http.post("/meshClassification", $scope.mapping).success(function(result) {
                 Alert.addAlert("success", "Saved");
+                $scope.mapping = result;
+            }).error(function() {
+                Alert.addAlert("danger", "There was an issue saving this record.");
             });
 
         };

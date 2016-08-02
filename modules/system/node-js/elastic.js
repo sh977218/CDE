@@ -1,6 +1,6 @@
 var config = require('./parseConfig')
     , logging = require('./logging')
-    , regStatusShared = require('../shared/regStatusShared')
+    , regStatusShared = require('../shared/regStatusShared') // jshint ignore:line
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
