@@ -147,7 +147,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
 });
 
 gulp.task('emptyTemplates', ['usemin'], function() {
-    ['cde', 'form', 'system', 'article'].forEach(function(module) {
+    ['cde', 'form', 'system', 'article', 'embedded'].forEach(function(module) {
         return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
     });

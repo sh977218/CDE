@@ -71,8 +71,6 @@ public class EmbedTest extends NlmCdeBaseTest {
         scrollTo(2000);
         driver.switchTo().frame("previewFrame");
 
-        System.out.println(driver.getPageSource());
-
         findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");
 
