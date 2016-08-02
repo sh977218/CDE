@@ -2,7 +2,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive', 'comparePrimitiveArray', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
+    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive', 'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])

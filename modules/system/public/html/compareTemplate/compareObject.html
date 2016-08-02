@@ -1,7 +1,13 @@
-<div class="overflowHidden" ng-repeat="r in result"
-     ng-class="{quickBoardContentCompareModifiedObject:r.match===false,quickBoardContentCompareSameObject:r.match===true}">
-    <div class="col-xs-6 quickBoardContentCompareCol leftObj" ng-display-object ng-display-object-obj="left"
-         ng-display-object-properties="r"></div>
-    <div class="col-xs-6 quickBoardContentCompareCol rightObj" ng-display-object ng-display-object-obj="right"
-         ng-display-object-properties="r"></div>
+<label ng-if="options.showTitle" uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
+<div class="row">
+    <div class="col-md-6">
+        <div class="col-md-12" ng-repeat="result in options.results" ng-if="!result.match">
+            <label>{{result.label}}: </label><span>{{left[result.property]}}</span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-12" ng-repeat="result in options.results" ng-if="!result.match">
+            <label>{{result.label}}: </label><span>{{right[result.property]}}</span>
+        </div>
+    </div>
 </div>

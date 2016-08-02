@@ -7,46 +7,63 @@
             <div class="col-xs-6"><h5>Updated: {{left.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
             <div class="col-xs-6"><h5>Updated: {{right.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
         </div>
-        <compare-primitive left='left.version' right='right.version' options='versionOption'></compare-primitive>
+        <compare-primitive left='left.version' right='right.version' options='versionOptions'></compare-primitive>
 
         <compare-primitive left='left.registrationState.registrationStatus'
                            right='right.registrationState.registrationStatus'
-                           options='statusOption'></compare-primitive>
+                           options='statusOptions'></compare-primitive>
 
         <compare-primitive left='left.stewardOrg.name'
                            right='right.stewardOrg.name'
-                           options='stewardOrgNameOption'></compare-primitive>
+                           options='stewardOrgNameOptions'></compare-primitive>
 
         <compare-object-array left='left.naming' right='right.naming'
-                              options='namingOption'></compare-object-array>
+                              options='namingOptions'></compare-object-array>
 
         <compare-object-array left='left.dataElementConcept.concepts' right='right.dataElementConcept.concepts'
-                              options='dataElementConceptOption'></compare-object-array>
+                              options='dataElementConceptOptions'></compare-object-array>
 
         <compare-object-array left='left.property.concepts' right='right.property.concepts'
-                              options='propertyConceptOption'></compare-object-array>
+                              options='propertyConceptOptions'></compare-object-array>
 
         <compare-object-array left='left.objectClass.concepts' right='right.objectClass.concepts'
-                              options='objectClassConceptOption'></compare-object-array>
+                              options='objectClassConceptOptions'></compare-object-array>
 
         <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
-                              options='referenceDocumentsOption'></compare-object-array>
+                              options='referenceDocumentsOptions'></compare-object-array>
 
         <compare-object-array left='left.ids' right='right.ids'
-                              options='idsOption'></compare-object-array>
+                              options='idsOptions'></compare-object-array>
 
         <compare-object-array left='left.properties' right='right.properties'
-                              options='propertiesOption'></compare-object-array>
+                              options='propertiesOptions'></compare-object-array>
 
         <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
-                                 options='classificationsOption'></compare-primitive-array>
+                                 options='classificationsOptions'></compare-primitive-array>
 
         <compare-primitive left='left.valueDomain.datatype' right='right.valueDomain.datatype'
-                           options='valueDomainDatatypeOption'></compare-primitive>
+                           options='valueDomainDatatypeOptions'></compare-primitive>
 
-        <div ng-repeat="elt in cdes" class="col-md-6 noLeftRightPadding">
-            <div id="historyCompare_pvs_{{$index}}" ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
+        <div ng-if="left.valueDomain.datatype === right.valueDomain.datatype">
+            <compare-object ng-if="left.valueDomain.datatype !=='Value List'" left="leftDatatypeObj.obj"
+                            right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object>
+            <compare-object-array ng-if="left.valueDomain.datatype ==='Value List'" left="leftDatatypeObj.obj"
+                                  right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object-array>
         </div>
+        <div ng-if="left.valueDomain.datatype !== right.valueDomain.datatype">
+            <div class="col-md-6">
+                <div class="col-md-12" ng-repeat="p in leftDatatypeObj.p.properties">
+                    <label>{{p.label}}:</label><span>{{leftDatatypeObj.obj[p.property]}}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-12" ng-repeat="p in rightDatatypeObj.p.properties">
+                    <label>{{p.label}}:</label><span>{{rightDatatypeObj.obj[p.property]}}</span>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 

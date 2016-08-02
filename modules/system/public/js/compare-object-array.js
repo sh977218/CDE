@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     angular.module('compareObjectArray', []).directive("compareObjectArray", ["$compile", "ObjectArrayComparison",
-        function ($compile, PrimitiveComparison) {
+        function ($compile, ObjectArrayComparison) {
             return {
                 restrict: "E",
                 scope: {
@@ -17,8 +17,8 @@
                         $scope.err = {error: true, errorMessage: "left and right are not type of array"};
                     }
                     if (!$scope.options) $scope.options = {};
-                    PrimitiveComparison.loadDefaultOptions($scope.options);
-                    PrimitiveComparison.primitiveArrayCompare($scope.left, $scope.right, $scope.options);
+                    ObjectArrayComparison.loadDefaultOptions($scope.options);
+                    ObjectArrayComparison.objectArrayCompare($scope.left, $scope.right, $scope.options);
                 }
             };
         }]).factory("ObjectArrayComparison", ["$compile", function () {
@@ -34,53 +34,45 @@
                         return a - b;
                     }
                 }
-            },
-            primitiveArrayCompare: function (leftArray, rightArray, options) {
-                function findIndexInArray(array, item, equalFn) {
-                    if (!array || array.length === 0)return -1;
-                    for (var index = 0; index < array.length; index++) {
-                        if (equalFn(item, array[index])) return index;
-                    }
-                    return -1;
-                };
                 options.matchCount = 0;
                 options.results = [];
                 options.showTitle = false;
-
+            },
+            objectArrayCompare: function (leftArray, rightArray, options) {
+                function findIndexInArray(array, beginRightIndex, item, equalFn) {
+                    if (!array || array.length === 0 || beginRightIndex === array.length)
+                        return -1;
+                    for (var index = beginRightIndex; index < array.length; index++) {
+                        if (equalFn(item, array[index])) return index;
+                    }
+                    return -1;
+                }
                 leftArray.sort(options.sort);
                 rightArray.sort(options.sort);
 
-                var rightArrayCopy = angular.copy(rightArray);
                 var beginRightIndex = 0;
                 leftArray.forEach(function (leftItem, leftIndex) {
-                    rightArrayCopy = rightArray.slice(beginRightIndex, rightArray.length);
-                    var foundInRight = findIndexInArray(rightArrayCopy, leftItem, options.equal);
+                    var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
                         options.showTitle = true;
                         options.results.push({leftIndex: leftIndex, match: false});
-                        if (leftIndex === leftArray.length - 1) {
-                            for (var j = 0; j < rightArrayCopy.length; j++) {
-                                options.showTitle = true;
-                                options.results.push({rightIndex: j + beginRightIndex, match: false});
-                            }
-                        }
                     } else {
                         options.matchCount++;
-                        for (var i = 0; i < foundInRight; i++) {
+                        for (var i = beginRightIndex; i < foundInRight; i++) {
                             options.showTitle = true;
-                            options.results.push({rightIndex: i + beginRightIndex, match: false});
+                            options.results.push({rightIndex: i, match: false});
                         }
                         options.results.push({
                             leftIndex: leftIndex,
-                            rightIndex: foundInRight + beginRightIndex,
+                            rightIndex: foundInRight,
                             match: true
                         });
-                        beginRightIndex = beginRightIndex + foundInRight + 1;
-                        if (leftIndex === leftArray.length - 1) {
-                            for (var j = 0; j < rightArrayCopy.length; j++) {
-                                options.showTitle = true;
-                                options.results.push({rightIndex: j + beginRightIndex, match: false});
-                            }
+                        beginRightIndex = foundInRight + 1;
+                    }
+                    if (leftIndex === leftArray.length - 1) {
+                        for (var j = beginRightIndex; j < rightArray.length; j++) {
+                            options.showTitle = true;
+                            options.results.push({rightIndex: j, match: false});
                         }
                     }
                 });
