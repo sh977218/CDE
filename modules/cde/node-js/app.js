@@ -167,10 +167,7 @@ exports.init = function (app, daoManager) {
         mongo_data.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
-
                     if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
-                        console.log(board.owner.userId);
-                        //console.log(req.user._id);
                         return res.status(403).end();
                     }
                 }
@@ -187,7 +184,7 @@ exports.init = function (app, daoManager) {
                         res.setHeader("Content-Type", "application/xml");
                         var exportBoard ={
                             board: exportShared.stripBsonIds(board.toObject()),
-                            cdes: cdesvc.hideProprietaryPvs(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
+                            cdes: cdesvc.hideProprietaryCodes(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
                             totalItems: totalItems
                         };
                         exportBoard = exportShared.stripBsonIds(exportBoard);
