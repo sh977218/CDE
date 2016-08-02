@@ -15,7 +15,8 @@ public class BoardXMLExportTest  extends BoardTest {
         String url = findElement(By.id("xmlExport")).getAttribute("href");
 
         System.out.println("BoardXMLExportTest driver.get");
-        driver.get(baseUrl + url);
+        System.out.println(url);
+        driver.get(url);
         System.out.println("BoardXMLExportTest Assert");
 
         Assert.assertTrue(driver.getPageSource().contains("<primaryDefinitionCopy>Name of pathologist who diagnosed the case</primaryDefinitionCopy>"));
