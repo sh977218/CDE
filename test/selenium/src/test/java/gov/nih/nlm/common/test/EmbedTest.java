@@ -64,6 +64,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("cde.registrationStatus.label")).sendKeys("Status");
 
         clickElement(By.id("saveEmbed"));
+        closeAlert();
 
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
