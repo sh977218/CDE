@@ -156,7 +156,6 @@ exports.init = function (app, daoManager) {
         });
     });
     app.get('/board/:boardId/:start/:size?/', exportShared.nocacheMiddleware, function (req, res) {
-        console.log(req.user);
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -169,7 +168,7 @@ exports.init = function (app, daoManager) {
             if (board) {
                 if (board.shareStatus !== "Public") {
 
-                    if (!req.isAuthenticated() || board.owner.userId !== req.user._id) {
+                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
                         console.log(board.owner.userId);
                         //console.log(req.user._id);
                         return res.status(403).end();
@@ -203,9 +202,6 @@ exports.init = function (app, daoManager) {
             } else {
                 res.status(404).end();
             }
-
-
-
 
 
         });
