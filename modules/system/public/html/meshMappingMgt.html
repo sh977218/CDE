@@ -3,7 +3,11 @@
 </div>
 <div class="modal-body" id="addClassificationModalBody">
 
-    <p>Here are MeSH Terms mapped to {{path}}</strong></p>
+    <p>Here are MeSH Terms mapped to {{path}} :</strong></p>
+    <div ng-if="mapping.meshDescriptors.length === 0">
+        No mapping. Add more below.
+    </div>
+
     <div ng-repeat="desc in mapping.meshDescriptors">
         <a href="" ng-click="removeDescriptor($index)" class="fa fa-trash" title="remove"></a> {{desc}} - {{descToName[desc]}}
     </div>
