@@ -40,10 +40,7 @@ angular.module('embeddedApp', ['ElasticSearchResource', 'ui.bootstrap', 'OrgFact
             $scope.search();
         };
 
-
-
-
-
+        $scope.reset = function() {
             $scope.searchSettings.q = "";
             $scope.searchSettings.page = 1;
             $scope.searchSettings.classification = [];
