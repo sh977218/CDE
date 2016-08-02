@@ -44,6 +44,7 @@ exports.init = function (app) {
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
+        "/cdeStatusReport", "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
@@ -811,5 +812,21 @@ exports.init = function (app) {
 
     app.get('/uploadLoincCsvStatus', function (req, res) {
         res.send(loincUploadStatus);
+    });
+
+    app.post('/disableRule', function(req, res){
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        mongo_data_system.disableRule(req.body, function(err, org){
+            if (err) res.status(500).send(org);
+            else res.send(org);
+        });
+    });
+
+    app.post('/enableRule', function(req, res){
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        mongo_data_system.enableRule(req.body, function(err, org){
+            if (err) res.status(500).send(org);
+            else res.send(org);
+        });
     });
 };

@@ -80,6 +80,10 @@ angular.module('OrgFactories', ['ngResource'])
                 return arr.filter(function (item, pos) {return arr.indexOf(item) === pos;});
             } else return [];
         }
+        , getStatusValidationRules: function(orgName){
+            if (this.orgsDetailedInfo[orgName]) return this.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+            else return [];
+        }
     };
     orgHelpers.getOrgsDetailedInfoAPI();
     return orgHelpers;

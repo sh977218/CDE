@@ -12,8 +12,8 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.customClasses = "navbar-btn";
 
     $scope.exporters = {
-        json: {id: "jsonExport", display: "JSON Export"},
-        xml: {id: "xmlExport", display: "XML Export"}
+        json: {id: "jsonExport", display: "JSON Export"}
+        , xml: {id: "xmlExport", display: "XML Export"}
     };
 
     if ($route.current.subCtrl) {
@@ -201,6 +201,8 @@ angular.module('systemModule').controller('ListCtrl',
         $log.debug("running query");
         $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result) {
+            //
+            $window.scrollTo(0, 0);
             $log.debug("query complete");
             $log.debug(result);
             if (err) {
