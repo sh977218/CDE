@@ -69,10 +69,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         clickElement(By.id("NINDS.0.editEmbed"));
         clickElement(By.id("previewEnabled"));
 
-        scrollTo(2000);
+        scrollTo(2500);
         driver.switchTo().frame("previewFrame");
 
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("Ethnicity");
 
         Assert.assertEquals(findElements(By.cssSelector("#gridList tbody tr")).size(), 6);
