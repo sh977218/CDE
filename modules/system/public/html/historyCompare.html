@@ -54,13 +54,13 @@
                                   right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object-array>
         </div>
         <div ng-if="left.valueDomain.datatype !== right.valueDomain.datatype">
-            <div class="col-md-6">
+            <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}">
                 <div class="col-md-12" ng-repeat="p in leftDatatypeObj.p.properties">
                     <label>{{p.label}}:</label><span>{{leftDatatypeObj.obj[p.property]}}</span>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="col-md-12" ng-repeat="p in rightDatatypeObj.p.properties">
+            <div class="col-md-6" id="historyCompareLeft_{{right.valueDomain.datatype}}">
+                <div class=" col-md-12" ng-repeat="p in rightDatatypeObj.p.properties">
                     <label>{{p.label}}:</label><span>{{rightDatatypeObj.obj[p.property]}}</span>
                 </div>
             </div>

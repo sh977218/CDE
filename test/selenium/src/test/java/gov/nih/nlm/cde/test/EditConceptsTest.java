@@ -53,14 +53,14 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Concept_1']//div[contains(@class,'name')]"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_ConceptLeft_1']//div[contains(@class,'originId')]"));
 
-        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concept_1']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
 
-        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'name')]"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concept_3']/div[contains(@class,'left')]//div[contains(@class,'originId')]"));
 
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));

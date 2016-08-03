@@ -42,12 +42,3 @@
     </div>
     </div>
 </div>
-
-<script type="text/ng-template" id="/propertyDiff.html">
-    <span tabindex="0" ng-if="values.removed.length>0">Removed: </span><span ng-repeat="pv in values.removed">
-        {{ renderValue(pv) }};
-    </span>
-    <span tabindex="0" ng-if="values.added.length>0">Added: </span><span ng-repeat="pv in values.added">
-        {{ renderValue(pv) }};
-    </span>
-</script>
