@@ -21,7 +21,8 @@
             </thead>
             <tbody>
             <tr ng-repeat="priorCde in priorCdes track by $index"
-                ng-show="!showVersioned || priorCde.version !== priorCdes[$index-1].version" ng-click="setSelected(priorCde._id);"
+                ng-show="!showVersioned || priorCde.version !== priorCdes[$index+1].version"
+                ng-click="setSelected(priorCde._id);"
                 ng-class="{selectedRow:isSelected(priorCde._id)}">
                 <td tabindex="0">{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}
                     <a tabindex="0" href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"
