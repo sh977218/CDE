@@ -7,13 +7,12 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
         $scope.meshSearch = pathArray[pathArray.length - 1];
 
         $scope.mapping = {
-            org: org,
             flatClassification: pathArray.join(";"),
             meshDescriptors: []
         };
 
-        $http.get('/meshClassification?org=' + encodeURIComponent(org) + "&classification=" +
-            encodeURIComponent(pathArray.join(";"))).success(function(result) {
+        $http.get('/meshClassification?classification=' +
+            encodeURIComponent($scope.mapping.org + ";" + pathArray.join(";"))).success(function(result) {
             if (result) {
                 $scope.mapping = result;
                 $scope.mapping.meshDescriptors.forEach(function(desc) {

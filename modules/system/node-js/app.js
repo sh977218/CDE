@@ -831,9 +831,8 @@ exports.init = function (app) {
     });
 
     app.get('/meshClassification', function(req, res) {
-        if (!req.query.org) return res.status(400).send("Missing Org Parameter");
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data_system.getMeshClassification(req.query.org, req.query.classification, function(err, mm) {
+        mongo_data_system.getMeshClassification(req.query.classification, function(err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
