@@ -5,38 +5,41 @@
         <input id="showVersionedHistory" type="checkbox" ng-model="showVersioned">
         <label for="showVersionedHistory">Only show versioned revisions.</label>
             <table class="table" id="historyTable">
-            <caption tabindex="0">List of previous versions. Click rows to select them.
+                <caption>List of previous versions. Click rows to select them.
                 <button ng-if="selectedIds.length === 2" id="historyCompareBtn"
-                        tabindex="0" class="btn btn-default" ng-click="viewDiff()">
+                        class="btn btn-default" ng-click="viewDiff()">
                     <i class="fa fa-files-o"></i> Compare</button>
 
             </caption>
             <thead>
             <tr>
-                <th tabindex="0">Updated</th>
-                <th tabindex="0">Updated by</th>
-                <th tabindex="0">Change Note</th>
-                <th tabindex="0">Version:</th>
+                <th>Updated</th>
+                <th>Updated by</th>
+                <th>Change Note</th>
+                <th>Version:</th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="priorCde in priorCdes track by $index"
-                ng-show="!showVersioned || priorCde.version !== priorCdes[$index-1].version"
-                ng-click="setSelected(priorCde._id);"
-                ng-class="{selectedRow:isSelected(priorCde._id)}">
-                <td tabindex="0">{{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}
-                    <a tabindex="0" href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"
+                ng-show="!showVersioned || priorCde.version !== priorCdes[$index-1].version">
+                <td>
+                    <i class="fa fa-check-square-o" ng-click="setSelected(priorCde._id);"
+                       ng-if="isSelected(priorCde._id)" aria-hidden="true"></i>
+                    <i class="fa fa-square-o" ng-click="setSelected(priorCde._id);"
+                       ng-if="!isSelected(priorCde._id)" aria-hidden="true"></i>
+                    {{priorCde.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                    <a href="/#/deview?cdeId={{priorCde._id}}" id="prior-{{$index}}" class="fa fa-eye"
                        target="_blank" ng-if="$index > 0">View</a>
                 </td>
-                <td tabindex="0">{{priorCde.updatedBy.username}}</td>
-                <td tabindex="0">{{priorCde.changeNote}}</td>
-                <td tabindex="0">{{priorCde.version}}</td>
+                <td>{{priorCde.updatedBy.username}}</td>
+                <td>{{priorCde.changeNote}}</td>
+                <td>{{priorCde.version}}</td>
             </tr>
             </tbody>
 
         </table>
     </div>
-        <div tabindex="0" class="col-md-4" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
+        <div class="col-md-4" ng-hide="priorCdes.length > 0">This Data Element has no history</div>
     <div class="col-md-8">
         <div ng-include="'/system/public/html/historyCompare.html'"></div>
     </div>

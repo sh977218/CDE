@@ -710,8 +710,8 @@ public class NlmCdeBaseTest {
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]//i[contains(@class,'fa fa-square')]"));
         clickElement(By.id("historyCompareBtn"));
         textPresent("Differences");
     }

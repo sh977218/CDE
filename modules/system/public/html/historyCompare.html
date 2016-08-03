@@ -54,14 +54,68 @@
                                   right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object-array>
         </div>
         <div ng-if="left.valueDomain.datatype !== right.valueDomain.datatype">
-            <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}">
+            <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}"
+                 ng-if="left.valueDomain.datatype !== 'Value List'">
                 <div class="col-md-12" ng-repeat="p in leftDatatypeObj.p.properties">
                     <label>{{p.label}}:</label><span>{{leftDatatypeObj.obj[p.property]}}</span>
                 </div>
             </div>
-            <div class="col-md-6" id="historyCompareLeft_{{right.valueDomain.datatype}}">
+            <div class="col-md-6" id="historyCompareLeft_Value List"
+                 ng-if="left.valueDomain.datatype === 'Value List'">
+                <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
+                    <div class="row">
+                        <label class="col-xs-6">Value</label>
+                        <div class="col-xs-6">{{pv.permissibleValue}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code Name</label>
+                        <div class="col-xs-6">{{pv.valueMeaningName}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code</label>
+                        <div class="col-xs-6">{{pv.valueMeaningCode}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code System</label>
+                        <div class="col-xs-6">{{pv.codeSystemName}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code Description</label>
+                        <div class="col-xs-6">{{pv.valueMeaningDefinition}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" id="historyCompareRight_{{right.valueDomain.datatype}}"
+                 ng-if="right.valueDomain.datatype !== 'Value List'">
                 <div class=" col-md-12" ng-repeat="p in rightDatatypeObj.p.properties">
                     <label>{{p.label}}:</label><span>{{rightDatatypeObj.obj[p.property]}}</span>
+                </div>
+            </div>
+            <div class="col-md-6" id="historyCompareRight_Value List"
+                 ng-if="right.valueDomain.datatype !== 'Value List'">
+                <div ng-repeat="pv in  right.valueDomain.permissibleValues">
+                    <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
+                        <div class="row">
+                            <label class="col-xs-6">Value</label>
+                            <div class="col-xs-6">{{pv.permissibleValue}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code Name</label>
+                            <div class="col-xs-6">{{pv.valueMeaningName}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code</label>
+                            <div class="col-xs-6">{{pv.valueMeaningCode}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code System</label>
+                            <div class="col-xs-6">{{pv.codeSystemName}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code Description</label>
+                            <div class="col-xs-6">{{pv.valueMeaningDefinition}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

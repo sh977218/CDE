@@ -47,8 +47,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 3);
-
+        selectHistoryAndCompare(1, 2);
         textPresent("789", By.xpath("//*[@id='historyCompareLeft_Number']"));
         textPresent("987", By.xpath("//*[@id='historyCompareLeft_Number']"));
         textPresent("123", By.xpath("//*[@id='historyCompareRight_Number']"));

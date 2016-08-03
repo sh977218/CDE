@@ -47,8 +47,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeName);
         textPresent("Change note for change number 1");
         selectHistoryAndCompare(1, 2);
-        textPresent(cdeName + "[name change number 1]", By.xpath("//*[@id='historyCompare_Names_0']//div[contains(@class,'designation')]"));
-        textPresent(cdeDefinitionChange, By.xpath("//*[@id='historyCompare_Names_0']//div[contains(@class,'definition')]"));
+        textPresent(cdeName + "[name change number 1]", By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[contains(@class,'designation')]"));
+        textPresent(cdeDefinitionChange, By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[contains(@class,'definition')]"));
 
 
         // View Prior Version

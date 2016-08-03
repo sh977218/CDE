@@ -242,17 +242,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
         };
         $scope.attachmentsOptions = {
             equal: function (a, b) {
-                return a.fileid === b.fileid &&
-                    a.filename === b.filename &&
-                    a.filetype === b.filetype &&
-                    a.uploadDate === b.uploadDate &&
-                    a.comment === b.comment &&
-                    a.uploadedBy === b.uploadedBy &&
-                    a.userId.username === b.userId.username &&
-                    a.filesize === b.filesize &&
-                    a.isDefault === b.isDefault &&
-                    a.pendingApproval === b.pendingApproval &&
-                    a.scanned === b.scanned;
+                return a.fileid === b.fileid;
             },
             sort: function (a, b) {
                 return a.filename - b.filename;
