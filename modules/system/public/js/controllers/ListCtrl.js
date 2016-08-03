@@ -201,6 +201,8 @@ angular.module('systemModule').controller('ListCtrl',
         $log.debug("running query");
         $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result) {
+            //
+            $window.scrollTo(0, 0);
             $log.debug("query complete");
             $log.debug(result);
             if (err) {

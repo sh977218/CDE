@@ -23,14 +23,28 @@ mongoConn.once('open', function callback() {
     console.log('mongodb ' + config.database.appData.db + ' connection open');
 });
 
-exports.MigrationLoincModal = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+// LOINC
+exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
     strict: false,
     collection: 'loinc'
 }));
+exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincClassificationMapping'
+}));
+exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincScaleMapping'
+}));
+
+
+// NINDS
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
     strict: false,
     collection: 'ninds'
 }));
+
+// NCI
 exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new mongoose.Schema({}, {
     strict: false,
     collection: 'nciFormXml'
@@ -39,6 +53,8 @@ exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new 
     strict: false,
     collection: 'nciCdeXml'
 }));
+
+// EYE GENE
 exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
     strict: false,
     collection: 'EyeGENE_LOINC'
@@ -48,9 +64,26 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
     collection: 'EyeGENE_AnswerList'
 }));
 
+//NEW BORN SCREENING
+exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'NewBornScreening_CDE'
+}));
+exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'NewBornScreening_Form'
+}));
+exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'NewBornScreening_AnswerList'
+}));
+
+// MIGRATION
 exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
+
+// MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new mongoose.Schema({}, {
     strict: false,
     collection: 'PhenxToLoincMapping'
@@ -60,6 +93,7 @@ exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVar
     collection: 'VariableCrossReference'
 }));
 
+// NLM CDE
 exports.DataElementModel = mongo_cde.DataElement;
 exports.FormModel = mongo_form.Form;
 exports.BoardModel = mongo_cde.PinningBoard;
