@@ -1,5 +1,5 @@
-var xmlbuilder = require("xmlbuilder")
-    , JXON = require('jxon')
+var JXON = require('jxon'),
+    validator = require('xsd-schema-validator')
     ;
 
 
@@ -70,7 +70,7 @@ function doQuestion(parent, question) {
                                 if (question.label === "" || question.hideLabel) {
                                     li.ListItemResponseField = {
                                         Response: {string: ""}
-                                    }
+                                    };
                                 } else {
                                     if (li.ChildItems === undefined) li.ChildItems = [];
                                     addQuestion(li.ChildItems, question);
@@ -144,7 +144,14 @@ exports.formToSDC = function (form) {
 
     idToName = {};
 
-    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" +
-        JXON.jsToString(root);
+    var xmlStr = JXON.jsToString(root);
+
+    console.log(xmlStr);
+
+    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
+        console.log("Is Export Valid: " + JSON.stringify(result));
+    });
+
+    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
 
 };
