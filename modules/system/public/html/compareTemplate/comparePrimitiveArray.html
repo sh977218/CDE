@@ -1,7 +1,6 @@
 <label ng-if="options.showTitle">{{options.title}}:</label>
 <div class="row">
     <div class="col-md-6">
-        <h4 ng-if="options.showTitle">New</h4>
         <div class="col-xs-12 quickBoardContentCompareCol overflowHidden" ng-repeat="result in options.results"
          ng-if="result.match === false && left[result.leftIndex]">
         <div>
@@ -10,7 +9,6 @@
     </div>
     </div>
     <div class="col-md-6">
-        <h4 ng-if="options.showTitle">Removed</h4>
         <div class="col-xs-12 quickBoardContentCompareCol overflowHidden" ng-repeat="result in options.results"
          ng-if="result.match === false && right[result.rightIndex]">
         <div>

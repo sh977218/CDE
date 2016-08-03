@@ -154,8 +154,8 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             sort: function (a, b) {
                 return a.designation - b.designation;
             },
-            tooltip: 'Names are sorted by designation, compared by it\'s all properties',
-            title: 'Names',
+            tooltip: "Sorted by name. New/Removed if any value is modified",
+            title: 'Naming',
             hideSame: true,
             properties: [
                 {label: 'Name', property: 'designation'}, {
@@ -173,8 +173,8 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             sort: function (a, b) {
                 return a.name - b.name;
             },
-            tooltip: 'dataElementConcept are sorted by name, compared by it\'s all properties',
-            title: 'Concept',
+            tooltip: 'Sorted by name, New/Removed if any value is modified',
+            title: 'Data Element Concepts',
             hideSame: true,
             properties: [
                 {label: 'Name', property: 'name'}, {
@@ -192,8 +192,8 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             sort: function (a, b) {
                 return a.name - b.name;
             },
-            tooltip: 'propertyConcept are sorted by name, compared by it\'s all properties',
-            title: 'Property Concept',
+            tooltip: 'Sorted by name, New/Removed if any value is modified',
+            title: 'Property Concepts',
             hideSame: true,
             properties: [
                 {label: 'Name', property: 'name'}, {
@@ -211,8 +211,8 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             sort: function (a, b) {
                 return a.name - b.name;
             },
-            tooltip: 'objectClassConcept are sorted by name, compared by it\'s all properties',
-            title: 'ObjectClass Concept',
+            tooltip: 'Sorted by name, New/Removed if any value is modified',
+            title: 'ObjectClass Concepts',
             hideSame: true,
             properties: [
                 {label: 'Name', property: 'name'}, {
@@ -264,7 +264,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             sort: function (a, b) {
                 return a.id - b.id;
             },
-            title: 'IDs',
+            title: 'Identifiers',
             hideSame: true,
             properties: [
                 {label: 'Source', property: 'source'},

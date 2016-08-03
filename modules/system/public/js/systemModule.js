@@ -235,9 +235,10 @@ angular.module('systemModule').factory('ClassificationUtil', function () {
             doRecurse(classif);
         });
     };
+
     factoryObj.doClassif = function(currentString, classif, result) {
         if (currentString.length > 0) {
-            currentString = currentString + ';';
+            currentString = currentString + ' | ';
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
@@ -262,42 +263,6 @@ angular.module('systemModule').factory('ClassificationUtil', function () {
         }
         return result;
     };
-
-    //
-    //factoryObj.getFlatClassifications = function (elt) {
-    //    var classificationArray = [];
-    //    if (elt.classification && elt.classification.length > 0) {
-    //        elt.classification.forEach(function (classification) {
-    //            var loopElements = function (elements, innerClassificationArray) {
-    //                var temp = angular.copy(innerClassificationArray);
-    //                var more = false;
-    //                if (elements && elements.length > 0) {
-    //                    for (var i = 0; i < elements.length; i++) {
-    //                        var element = elements[i];
-    //                        if (element.name || element.stewardOrg.name) {
-    //                            var name = element.name || element.stewardOrg.name;
-    //                            innerClassificationArray.push(name);
-    //                        }
-    //                        if (!element.elements || element.elements.length === 0) {
-    //                            more = false;
-    //                            classificationArray.push(innerClassificationArray.join(";"));
-    //                            return;
-    //                        }
-    //                        else {
-    //                            more = true;
-    //                            loopElements(element.elements, innerClassificationArray);
-    //                        }
-    //                        if (more)
-    //                            innerClassificationArray = angular.copy(temp);
-    //                    }
-    //                }
-    //            };
-    //            var a = [angular.copy(classification.stewardOrg.name)];
-    //            loopElements(classification.elements, a);
-    //        })
-    //    }
-    //    return classificationArray;
-    //};
 
     return factoryObj;
 });
