@@ -24,13 +24,11 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#dateFormat .fa-check"));
         newCdeVersion();
 
-        goToCdeByName(cdeName);
-        showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("format1");
-        textPresent("Value List");
-        textPresent("Date");
+        textPresent("Date", By.xpath("//*[@id='historyCompareLeft_Date']"));
+        textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
+        textPresent("format1", By.xpath("//*[@id='historyCompareLeft_Date']"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='dateFormat']//i[@title='Edit']"));
@@ -40,11 +38,9 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        goToCdeByName(cdeName);
-        showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 3);
-        textPresent("format2", By.xpath("//*[@id='historyCompare_pvs_0']//*[@id='dateFormat']/span/span"));
-        textPresent("format1", By.xpath("//*[@id='historyCompare_pvs_1']//*[@id='dateFormat']/span/span"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("format2", By.xpath("//*[@id='historyCompareLeft_Date']"));
+        textPresent("format1", By.xpath("//*[@id='historyCompareRight_Date']"));
     }
 }

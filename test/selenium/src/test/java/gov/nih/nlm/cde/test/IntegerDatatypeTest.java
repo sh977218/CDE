@@ -33,7 +33,6 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#listDatatype .fa-check"));
 
         newCdeVersion();
-        goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
