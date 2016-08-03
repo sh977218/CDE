@@ -81,7 +81,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         Assert.assertEquals(ths.size(), 9);
 
         Assert.assertEquals(ths.get(0).getText(), "Name");
-        Assert.assertEquals(ths.get(1).getText(), "CDE  ID");
+        Assert.assertEquals(ths.get(1).getText(), "CDE ID");
         Assert.assertEquals(ths.get(2).getText(), "Version");
         Assert.assertEquals(ths.get(3).getText(), "Variable Name");
         Assert.assertEquals(ths.get(4).getText(), "Question");
