@@ -72,7 +72,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         scrollTo(2500);
         driver.switchTo().frame("previewFrame");
 
-        clickElement(By.id("search.submit"));
+        findElement(By.id("search.submit")).click();
         textPresent("Ethnicity");
 
         Assert.assertEquals(findElements(By.cssSelector("#gridList tbody tr")).size(), 6);
