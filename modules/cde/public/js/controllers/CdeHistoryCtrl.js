@@ -21,22 +21,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
         $scope.isSelected = function (id) {
             return $scope.selectedIds.indexOf(id) > -1;
         };
-
-        function loadPriorCdes() {
-            if (!$scope.priorCdes) {
-                if ($scope.elt.history && $scope.elt.history.length > 0) {
-                    $http.get('/priorcdes/' + $scope.elt._id).success(function (result) {
-                        $scope.priorCdes = result.reverse();
-                        $scope.priorCdes.splice(0, 0, $scope.elt);
-                    });
-                }
-            }
-        }
-
-        $scope.$on('loadPriorCdes', loadPriorCdes);
-
-        $scope.historyCtrlLoadedPromise.resolve();
-
+        
         var datatypeCompareMap = {
             'Value List': {
                 obj: 'permissibleValues', options: {
@@ -253,6 +238,32 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             properties: [
                 {label: 'Key', property: 'key'},
                 {label: 'Value', property: 'value'}
+            ]
+        };
+        $scope.attachmentsOptions = {
+            equal: function (a, b) {
+                return a.fileid === b.fileid &&
+                    a.filename === b.filename &&
+                    a.filetype === b.filetype &&
+                    a.uploadDate === b.uploadDate &&
+                    a.comment === b.comment &&
+                    a.uploadedBy === b.uploadedBy &&
+                    a.userId.username === b.userId.username &&
+                    a.filesize === b.filesize &&
+                    a.isDefault === b.isDefault &&
+                    a.pendingApproval === b.pendingApproval &&
+                    a.scanned === b.scanned;
+            },
+            sort: function (a, b) {
+                return a.filename - b.filename;
+            },
+            title: 'Attachments',
+            hideSame: true,
+            properties: [
+                {label: 'Filename', property: 'filename'},
+                {label: 'Size', property: 'filesize'},
+                {label: 'Uploaded date', property: 'uploadDate'},
+                {label: 'Uploaded by', property: 'uploadedBy.username'}
             ]
         };
         $scope.idsOptions = {
