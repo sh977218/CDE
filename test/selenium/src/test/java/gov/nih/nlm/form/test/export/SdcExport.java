@@ -29,7 +29,7 @@ public class SdcExport extends NlmCdeBaseTest {
         clickElement(By.id("sdcExport"));
         switchTab(1);
         textPresent("Hormone production");
-        findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));
+        textPresent("Additional dimensions (repeat");
         textPresent("Distance from Closest Margin");
         switchTabAndClose(0);
     }
