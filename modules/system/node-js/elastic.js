@@ -97,7 +97,25 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-
+function injectDataToIndex(indexName, indexMapping, dao, riverFunction) {
+    var startTime = new Date().getTime();
+    var indexType = Object.keys(indexMapping.mappings)[0];
+    // start re-index all
+    var injector = new EsInjector(esClient, indexName, indexType);
+    var stream = dao.getStream({archived: null});
+    var total = dao;
+    stream.on('data', function (elt) {
+        stream.pause();
+        injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+            stream.resume();
+        });
+    });
+    stream.on('end', function () {
+        injector.inject(function () {
+            console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+        });
+    });
+}
 
 function createIndex(indexName, indexMapping, dao, riverFunction) {
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
@@ -112,22 +130,7 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
                         console.log("error creating index. " + error);
                     } else {
                          console.log("index Created");
-                         var startTime = new Date().getTime();
-                         var indexType = Object.keys(indexMapping.mappings)[0];
-                         // start re-index all
-                         var injector = new EsInjector(esClient, indexName, indexType);
-                         var stream = dao.getStream({archived: null});
-                         stream.on('data', function(elt) {
-                             stream.pause();
-                             injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
-                                 stream.resume();
-                             });
-                         });
-                         stream.on('end', function() {
-                             injector.inject(function() {
-                                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-                             });
-                         });
+                        injectDataToIndex(indexName, indexMapping, dao, riverFunction)
                     }
                 });
         }
@@ -153,23 +156,8 @@ exports.reIndex = function(index) {
     var indexMapping = index.indexJson;
     var dao = daos[index.name];
     var riverFunction = index.filter;
-    console.log("reindex without delete");
-    var startTime = new Date().getTime();
-    var indexType = Object.keys(indexMapping.mappings)[0];
-    // start re-index all
-    var injector = new EsInjector(esClient, indexName, indexType);
-    var stream = dao.getStream({archived: null});
-    stream.on('data', function (elt) {
-        stream.pause();
-        injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
-            stream.resume();
-        });
-    });
-    stream.on('end', function () {
-        injector.inject(function () {
-            console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-        });
-    });
+    console.log("inject data into index: " + indexName);
+    injectDataToIndex(indexName, indexMapping, dao, riverFunction)
 };
 
 exports.completionSuggest = function (term, cb) {
