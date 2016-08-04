@@ -149,11 +149,26 @@ exports.initEs = function () {
 
 // pass index as defined in elasticSearchInit.indices
 exports.reIndex = function(index) {
-    esClient.indices.delete({index: index.indexName}, function(err) {
-        if (err) console.log("unable to delete index: " + index.indexName + " " + err);
-        else {
-            createIndex(index.indexName, index.indexJson, daos[index.name], index.filter);
-        }
+    var indexName = index.indexName;
+    var indexMapping = index.indexJson;
+    var dao = daos[index.name];
+    var riverFunction = index.filter;
+    console.log("reindex without delete");
+    var startTime = new Date().getTime();
+    var indexType = Object.keys(indexMapping.mappings)[0];
+    // start re-index all
+    var injector = new EsInjector(esClient, indexName, indexType);
+    var stream = dao.getStream({archived: null});
+    stream.on('data', function (elt) {
+        stream.pause();
+        injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+            stream.resume();
+        });
+    });
+    stream.on('end', function () {
+        injector.inject(function () {
+            console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+        });
     });
 };
 
