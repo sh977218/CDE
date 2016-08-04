@@ -8,8 +8,6 @@ test-console.o
 bower_components
 modules/components/
 modules/system/views/version.html
-modules/components/
-
 
 ## Secret Config Files
 views/version.html
@@ -51,6 +49,7 @@ Thumbs.db
 test/selenium/nlm-cde-test.iml
 /ingesters/.nb-gradle/private/
 /ingesters/build/
+
 .gradle/
 chromedriver.exe
 config/cluster.json
@@ -59,7 +58,6 @@ debug.log
 dependencies/
 gradle setting.txt
 groovy/out/
-huangs8@130.14.153.2
 ingester/debug.log
 ingester/loinc/Classes Mapping
 ingester/loinc/LoincScaleTypeMapping.json
@@ -84,3 +82,5 @@ test/bin/
 test/build/
 test/selenium/IntegerDatatypeTest_integerDatatype.gif
 test/selenium/dependency/
+modules/embedded/public/js/angularTemplates.js
+modules/embedded/public/js/bkup/

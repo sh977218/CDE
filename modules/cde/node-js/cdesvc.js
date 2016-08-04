@@ -6,10 +6,10 @@ var mongo_data = require('./mongo-cde')
 
 exports.forks = function(req, res) {
     var cdeId = req.params.id;
-    
+
     if (!cdeId) {
         res.send("No Element Id");
-    }  
+    }
     mongo_data.forks(cdeId, function(err, forks) {
        if (err) {
            res.send("ERROR");
@@ -22,10 +22,10 @@ exports.forks = function(req, res) {
 
 exports.priorCdes = function(req, res) {
     var cdeId = req.params.id;
-    
+
     if (!cdeId) {
         res.send("No Data Element Id");
-    }  
+    }
     mongo_data.priorCdes(cdeId, function(err, priorCdes) {
        if (err) {
            res.send("ERROR");
@@ -35,6 +35,15 @@ exports.priorCdes = function(req, res) {
     });
 };
 
+exports.byId = function (req, res) {
+    mongo_data.byId(req.params.id, function (err, de) {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.send(de);
+        }
+    })
+};
 exports.show = function(req, res, cb) {
     var cdeId = req.params.id;
     if (!cdeId) {
@@ -72,7 +81,7 @@ exports.diff = function(newCde, oldCde) {
       delete cde.__v;
       delete cde.views;
       delete cde.comments;
-  });  
+  });
   return deepDiff(oldCdeObj, newCdeObj);
 };
 
@@ -85,15 +94,15 @@ exports.hideProprietaryCodes = function(cdes, user) {
         , "SOP"
         , "AHRQ"
         , "HL7"
-        , "CDC Race and Ethnicity"  
+        , "CDC Race and Ethnicity"
         , "NCI"
         , "UMLS"
     ];
     this.censorPv = function(pvSet) {
         var toBeCensored = true;
         this.systemWhitelist.forEach(function(system) {
-            if (!pvSet.codeSystemName) toBeCensored = false;            
-            else if (pvSet.codeSystemName.indexOf(system)>=0) toBeCensored = false;            
+            if (!pvSet.codeSystemName) toBeCensored = false;
+            else if (pvSet.codeSystemName.indexOf(system)>=0) toBeCensored = false;
         });
         if (toBeCensored) {
             pvSet.valueMeaningName = hiddenFieldMessage;
@@ -112,13 +121,13 @@ exports.hideProprietaryCodes = function(cdes, user) {
         return cde;
     };
     if (!cdes) return cdes;
-    if (user) return cdes;   
+    if (user) return cdes;
     if (!Array.isArray(cdes)) {
         return this.checkCde(cdes);
     }
     var self = this;
     cdes.forEach(function(cde) {
         self.checkCde(cde);
-    }); 
+    });
     return cdes;
 };

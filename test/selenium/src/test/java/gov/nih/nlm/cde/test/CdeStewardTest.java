@@ -12,23 +12,27 @@ public class CdeStewardTest extends NlmCdeBaseTest {
     public void changeCDESteward() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         String cdeName = "Patient Tissue Specimen Colorectal Research Consent Ind-2";
-
+        String oldStewardOrgName = "CTEP";
+        String newStewardOrgName = "NINDS";
         goToCdeByName(cdeName);
 
         // Changes Steward and cancels
         clickElement(By.id("dd_edit_steward"));
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(newStewardOrgName);
         clickElement(By.id("elt.stewardOrg.name.cancel"));
-        textPresent("CTEP");
+        textPresent(oldStewardOrgName);
 
         // Changes Steward and save
         clickElement(By.id("dd_edit_steward"));
-        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("NINDS");
+        new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText(newStewardOrgName);
         clickElement(By.id("elt.stewardOrg.name.ok"));
-        textPresent("NINDS");
+        textPresent(newStewardOrgName);
         newCdeVersion();
-        Assert.assertEquals("NINDS", findElement(By.id("dd_general_steward")).getText());
+        Assert.assertEquals(newStewardOrgName, findElement(By.id("dd_general_steward")).getText());
         showAllTabs();
-        checkInHistory("Steward", "CTEP", "NINDS");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent(newStewardOrgName, By.xpath("//*[@id='historyCompareLeft_StewardOrg Name']"));
+        textPresent(oldStewardOrgName, By.xpath("//*[@id='historyCompareRight_StewardOrg Name']"));
     }
 }
