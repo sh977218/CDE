@@ -7,8 +7,6 @@ public class ListTourTest extends TourTest {
 
     @Test
     public void listTour() {
-        //This test is failing because we took away the ng-init in the formSummaryList.html page
-
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
@@ -25,7 +23,7 @@ public class ListTourTest extends TourTest {
         getNext("Personalize your search results. Include more registration statuses or configure how results are shown.");
         getNext("Enter one or more search terms. For example, search for \"Ethnicity\".");
         getNext("This is your search result. It will show a combination of most relevant and higher status CDEs first.");
-        getNext("The plus sign will add a CDE to your Quick Board."); //Right here
+        getNext("The plus sign will add a CDE to your Quick Board.");
         getNext("The grid view shows all search results (max 1000) in a single page. From there, results can be downloaded in CSV format.");
         getNext("If your screen is small and the filters on the left end bother you, you can hide them here.");
         getNext("Navigate the classification tree to filter results by context, domain, or other type of data element classification or grouping.");
