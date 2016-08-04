@@ -58,7 +58,6 @@ debug.log
 dependencies/
 gradle setting.txt
 groovy/out/
-huangs8@130.14.153.2
 ingester/debug.log
 ingester/loinc/Classes Mapping
 ingester/loinc/LoincScaleTypeMapping.json
@@ -86,7 +85,6 @@ test/selenium/dependency/
 /migration/
 /my-single-test-instance.sh
 /my-test-instance.sh
-/huangs8@130.14.153.2
 /debug.log
 /chromedriver.exe
 /temp/

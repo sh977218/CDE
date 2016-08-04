@@ -1,11 +1,12 @@
-angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'ClassificationUtil', '$http',
-    function ($scope, ClassificationUtil, $http) {
+angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'ClassificationUtil',
+    function ($scope, ClassificationUtil) {
         $scope.showVersioned = false;
         $scope.showHistory = false;
         $scope.selectedObjs = {length: 0, selected: {}};
         $scope.selectedIds = [];
 
         $scope.setSelected = function (id) {
+            $scope.showHistory = false;
             var index = $scope.selectedIds.indexOf(id);
             if (index === -1) {
                 $scope.selectedIds.splice(0, 0, id);
@@ -286,5 +287,5 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             title: 'Value List Data Type',
             hideSame: false,
             tooltip: ''
-        }
+        };
     }]);

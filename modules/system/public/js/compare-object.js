@@ -24,12 +24,12 @@
                 if (!options.equal) {
                     options.equal = function (a, b) {
                         return a === b;
-                    }
+                    };
                 }
                 if (!options.sort) {
                     options.sort = function (a, b) {
                         return a - b;
-                    }
+                    };
                 }
             },
             objectCompare: function (leftObj, rightObj, options) {
@@ -39,13 +39,13 @@
                 options.properties.forEach(function (p) {
                     if (leftObj[p.property] === rightObj[p.property]) {
                         options.matchCount++;
-                        options.results.push({label: p.label, property: p.property, match: true})
+                        options.results.push({label: p.label, property: p.property, match: true});
                     } else {
                         options.showTitle = true;
-                        options.results.push({label: p.label, property: p.property, match: false})
+                        options.results.push({label: p.label, property: p.property, match: false});
                     }
-                })
+                });
             }
         };
-    }])
+    }]);
 }());

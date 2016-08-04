@@ -27,7 +27,7 @@
                 if (!options.equal) {
                     options.equal = function (a, b) {
                         return a === b;
-                    }
+                    };
                 }
             },
             primitiveCompare: function (leftString, rightString, options) {
@@ -43,5 +43,5 @@
                 }
             }
         };
-    }])
+    }]);
 }());

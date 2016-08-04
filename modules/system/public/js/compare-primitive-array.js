@@ -27,12 +27,12 @@
                 if (!options.equal) {
                     options.equal = function (a, b) {
                         return a === b;
-                    }
+                    };
                 }
                 if (!options.sort) {
                     options.sort = function (a, b) {
                         return a.localeCompare(b);
-                    }
+                    };
                 }
                 options.matchCount = 0;
                 options.results = [];
@@ -78,5 +78,5 @@
                 });
             }
         };
-    }])
+    }]);
 }());

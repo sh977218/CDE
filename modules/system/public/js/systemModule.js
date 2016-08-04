@@ -338,31 +338,6 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
         "");
 }]);
 
-
-angular.module('systemModule').directive('diff', function () {
-    return {
-        restrict: 'AE'
-        , scope: {
-            values: '='
-        }
-        , templateUrl: '/propertyDiff.html'
-        , controller: function ($scope) {
-            $scope.renderValue = function (value) {
-                var output = "";
-                for (prop in value) {
-                    if (prop === "$$hashKey") continue;
-                    var v = value[prop];
-                    if (v) {
-                        if (output !== "") output += ", ";
-                        output += v;
-                    }
-                }
-                return output;
-            };
-        }
-    };
-});
-
 angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
