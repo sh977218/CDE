@@ -73,9 +73,12 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]"));
+        textPresent("Patient Photograph Malignant Neoplasm Assessment", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_0']//*[contains(@class,'name')]"));
+        textPresent("2640357v1", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_0']//*[contains(@class,'originId')]"));
+        textPresent("Photograph", By.xpath("//*[@id='historyCompareRight_Property Concepts_0']//*[contains(@class,'name')]"));
+        textPresent("C86035", By.xpath("//*[@id='historyCompareRight_Property Concepts_0']//*[contains(@class,'originId')]"));
+        textPresent("Patient", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_0']//*[contains(@class,'name')]"));
+        textPresent("C16960", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_0']//*[contains(@class,'originId')]"));
 
         openCdeAudit(cdeName);
         textPresent(newDataElementConceptId);
