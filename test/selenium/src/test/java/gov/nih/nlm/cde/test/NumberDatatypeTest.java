@@ -48,10 +48,10 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("789", By.xpath("//*[@id='historyCompareLeft_Number']"));
-        textPresent("987", By.xpath("//*[@id='historyCompareLeft_Number']"));
-        textPresent("123", By.xpath("//*[@id='historyCompareRight_Number']"));
-        textPresent("456", By.xpath("//*[@id='historyCompareRight_Number']"));
+        textPresent("789", By.xpath("//*[@id='historyCompareLeft_Data Type Number']//*[contains(@class,'minValue')]"));
+        textPresent("987", By.xpath("//*[@id='historyCompareLeft_Data Type Number']//*[contains(@class,'maxValue')]"));
+        textPresent("123", By.xpath("//*[@id='historyCompareRight_Data Type Number']//*[contains(@class,'minValue')]"));
+        textPresent("456", By.xpath("//*[@id='historyCompareRight_Data Type Number']//*[contains(@class,'maxValue')]"));
     }
 
 }

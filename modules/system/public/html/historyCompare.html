@@ -57,7 +57,7 @@
             <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}"
                  ng-if="left.valueDomain.datatype !== 'Value List'">
                 <div class="col-md-12" ng-repeat="p in leftDatatypeObj.p.properties">
-                    <label>{{p.label}}:</label><span>{{leftDatatypeObj.obj[p.property]}}</span>
+                    <label class="{{p.label}}">{{p.label}}:</label><span class="{{p.property}}">{{leftDatatypeObj.obj[p.property]}}</span>
                 </div>
             </div>
             <div class="col-md-6" id="historyCompareLeft_Value List"
@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="col-md-6" id="historyCompareRight_Value List"
-                 ng-if="right.valueDomain.datatype !== 'Value List'">
+                 ng-if="right.valueDomain.datatype === 'Value List'">
                 <div ng-repeat="pv in  right.valueDomain.permissibleValues">
                     <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
                         <div class="row">
