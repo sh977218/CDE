@@ -172,6 +172,11 @@ exports.storedQueriesDao = {
         return StoredQueryModel.find({}).sort({_id: -1}).stream();
     }
 };
+exports.storedQueriesCount = function (callback) {
+    StoredQueryModel.find({}).count().exec(function (err, count) {
+        callback(count);
+    });
+};
 
 exports.log = function(message, callback) {
     if (isNaN(message.responseTime)) {

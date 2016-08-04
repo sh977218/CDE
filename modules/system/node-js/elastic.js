@@ -97,22 +97,23 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-function injectDataToIndex(indexName, indexMapping, dao, riverFunction) {
+function injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress) {
     var startTime = new Date().getTime();
     var indexType = Object.keys(indexMapping.mappings)[0];
     // start re-index all
     var injector = new EsInjector(esClient, indexName, indexType);
-    var stream = dao.getStream({archived: null});
-    var total = dao;
-    stream.on('data', function (elt) {
-        stream.pause();
-        injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
-            stream.resume();
+    var stream = dao.dao.getStream({archived: null});
+    dao.count(function (totalCount) {
+        stream.on('data', function (elt) {
+            stream.pause();
+            injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+                stream.resume();
+            });
         });
-    });
-    stream.on('end', function () {
-        injector.inject(function () {
-            console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+        stream.on('end', function () {
+            injector.inject(function () {
+                console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+            });
         });
     });
 }
@@ -138,10 +139,22 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
 }
 
 var daos = {
-    "cde": require("../../cde/node-js/mongo-cde"),
-    "form": require("../../form/node-js/mongo-form"),
-    "board": require("../../cde/node-js/mongo-cde").boardsDao,
-    "storedQuery": require("./dbLogger").storedQueriesDao
+    "cde": {
+        dao: require("../../cde/node-js/mongo-cde"),
+        count: require("../../cde/node-js/mongo-cde").deCount
+    },
+    "form": {
+        dao: require("../../form/node-js/mongo-form"),
+        count: require("../../form/node-js/mongo-form").count
+    },
+    "board": {
+        dao: require("../../cde/node-js/mongo-cde").boardsDao,
+        count: require("../../cde/node-js/mongo-cde").boardCount
+    },
+    "storedQuery": {
+        dao: require("./dbLogger").storedQueriesDao,
+        count: require("./dbLogger").storedQueriesCount
+    }
 };
 
 exports.initEs = function () {
