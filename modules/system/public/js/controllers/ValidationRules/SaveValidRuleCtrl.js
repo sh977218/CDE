@@ -1,8 +1,11 @@
 angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHelpers', 'Organization', '$http', '$uibModal',
     function ($scope, OrgHelpers, Organization, $http, $modal) {
         $scope.userOrgs = {};
-        Object.keys(OrgHelpers.orgsDetailedInfo).forEach(function(orgName){
-            $scope.userOrgs[orgName] = OrgHelpers.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+
+        OrgHelpers.deferred.promise.then(function() {
+            Object.keys(OrgHelpers.orgsDetailedInfo).forEach(function (orgName) {
+                $scope.userOrgs[orgName] = OrgHelpers.orgsDetailedInfo[orgName].cdeStatusValidationRules;
+            });
         });
         $scope.removeRule = function(o, i){
             var key = $scope.userOrgs[o][i].field.replace(/[^\w]/g,"")+$scope.userOrgs[o][i].rule.regex.replace(/[^\w]/g,"");
