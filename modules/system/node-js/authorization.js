@@ -22,6 +22,11 @@ exports.isSiteOrgAdmin = function(req) {
     return !!(req.isAuthenticated() && (req.user.siteAdmin || (req.user.orgAdmin && req.user.orgAdmin.length >= 0)));
 };
 
+exports.isOrgAdmin = function(req, org) {
+    return req.isAuthenticated() &&
+        (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(org) >= 0);
+};
+
 exports.checkSiteAdmin = function(req, res, next) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         next();

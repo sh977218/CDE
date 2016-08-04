@@ -18,6 +18,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     Message = conn.model('Message', schemas.message),
     ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
+    Embeds = conn.model('Embed', schemas.embedSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
         mongooseConnection: conn
@@ -52,6 +53,24 @@ exports.updateClusterHostStatus = function(status, callback) {
         }
         if (callback) callback(err);
     });
+};
+
+exports.embeds = {
+    save: function(embed, cb) {
+        if (embed._id) {
+            var _id = embed._id;
+            delete embed._id;
+            Embeds.update({_id: _id}, embed, cb);
+        } else {
+            new Embeds(embed).save(cb);
+        }
+    },
+    find: function(crit, cb) {
+        Embeds.find(crit, cb);
+    },
+    delete: function(id, cb) {
+        Embeds.remove({_id: id}, cb);
+    }
 };
 
 exports.org_autocomplete = function(name, callback) {
@@ -140,7 +159,7 @@ exports.listOrgsLongName = function(callback) {
 };
 
 exports.listOrgsDetailedInfo = function(callback) {
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1,
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, embeds: 1,
         "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1, "cdeStatusValidationRules": 1}).exec(function(err, result) {
         callback("", result);
     });
