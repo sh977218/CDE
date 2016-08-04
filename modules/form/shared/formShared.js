@@ -1,22 +1,25 @@
 if (typeof(exports) === "undefined") {exports = {};}
 
-
 var _crypto;
 if (typeof(window) === "undefined") {
     // This will be executed in NodeJS
     _crypto = require('crypto');
 } else {
     // This will be executed in Chrome
-    _crypto = jscrypto;
+    try {
+        _crypto = jscrypto;
+    } catch (e) {}
 }
 
 exports.getFormQuestions = function(form){
     var getQuestions = function(fe){
         var qs = [];
-        fe.formElements.forEach(function(e){
-            if (e.elementType === 'question') qs.push(e.question);
-            else qs = qs.concat(getQuestions(e));
-        });
+        if (fe.formElements) {
+            fe.formElements.forEach(function(e){
+                if (e.elementType === 'question') qs.push(e.question);
+                else qs = qs.concat(getQuestions(e));
+            });
+        }
         return qs;
     };
     return getQuestions(form);
