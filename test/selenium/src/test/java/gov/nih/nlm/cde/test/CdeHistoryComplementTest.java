@@ -51,8 +51,8 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newStatus, By.xpath("//*[@id='historyCompare_Status']//div[contains(@class,'left')]"));
-        textPresent(oldStatus, By.xpath("//*[@id='historyCompare_Status']//div[contains(@class,'right')]"));
+        textPresent(newStatus, By.xpath("//*[@id='historyCompareLeft_Status']]"));
+        textPresent(oldStatus, By.xpath("//*[@id='historyCompareRight_Status']"));
 
         clickElement(By.id("ids_tab"));
         closeAlert();

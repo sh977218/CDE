@@ -72,7 +72,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
-        selectHistoryAndCompare(1, 3);
+        selectHistoryAndCompare(1, 2);
         textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompare_Concept_1']/div[contains(@class,'left')]"));
         textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompare_ObjectClass Concept_1']/div[contains(@class,'left')]"));
         textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompare_Property Concept_3']/div[contains(@class,'left')]"));
