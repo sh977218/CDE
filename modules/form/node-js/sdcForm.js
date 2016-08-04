@@ -152,10 +152,12 @@ exports.formToSDC = function (form) {
 
     idToName = {};
 
-    var xmlStr = JXON.jsToString(root,"http://healthIT.gov/sdc" );
+    var xmlStr = JXON.jsToString(root, "http://healthIT.gov/sdc" );
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-        console.log("Is Export Valid: " + JSON.stringify(result));
+        if (!result.valid) {
+            console.log(JSON.stringify(result));
+        }
     });
 
     return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;

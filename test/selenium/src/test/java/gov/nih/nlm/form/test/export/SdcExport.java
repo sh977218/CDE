@@ -13,11 +13,12 @@ public class SdcExport extends NlmCdeBaseTest {
     public void sdcXmlExport() {
         String response = get(baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc").asString();
 
-        Assert.assertTrue(response.contains("<FormDesign xmlns:sdc=\"http://healthIT.gov/sdc\""));
-        Assert.assertTrue(response.contains("<Section title=\"CLINICAL\">"));
-        Assert.assertTrue(response.contains("<ListItem title=\"Intact\"/>"));
+        Assert.assertTrue(response.contains("<FormDesign xmlns=\"http://healthIT.gov/sdc\""));
+        Assert.assertTrue(response.contains("<Section ID"));
+        Assert.assertTrue(response.contains("title=\"CLINICAL\">"));
+        Assert.assertTrue(response.contains("<ListItem ID="));
+        Assert.assertTrue(response.contains("title=\"Intact\"/>"));
         Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"));
-
     }
 
     @Test
@@ -30,7 +31,6 @@ public class SdcExport extends NlmCdeBaseTest {
         textPresent("Hormone production");
         findElement(By.cssSelector(".HeaderGroup .QuestionInSection input[name='7yN4tn_EW']"));
         textPresent("Distance from Closest Margin");
-
         switchTabAndClose(0);
     }
 
