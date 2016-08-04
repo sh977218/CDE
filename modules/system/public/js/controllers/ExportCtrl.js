@@ -10,7 +10,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             }
 
             try {
-                !!new Blob;
+                !!new Blob; //jshint ignore:line
             } catch (e) {
                 return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
             }
@@ -107,8 +107,6 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             });
         };
 
-
-
         $scope.displayValidation = function(){
             var org = $scope.searchSettings.selectedOrg;
             var curatorOf = [].concat(userResource.user.orgAdmin).concat(userResource.user.orgCurator);
@@ -116,20 +114,16 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
         };
 
         $scope.openValidRulesModal = function(){
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/validRuleExp.html',
                 controller: 'ValidRuleExpCtrl',
                 resolve: {
                 }
-            });
-
-            modalInstance.result.then(function (report) {
+            }).result.then(function (report) {
                 report.searchSettings = $scope.searchSettings;
                 var uri = $httpParamSerializer(report);
                 $location.url('/cdeStatusReport?' + uri);
-            }, function(reason) {
-
             });
         };
     }]);

@@ -20,16 +20,13 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
 
 
         $scope.disableRule = function(orgName, rule){
-            var modalInstance = $modal.open({
+            $modal.open({
                 templateUrl: '/system/public/html/statusRules/removeRule.html',
                 controller: 'RemoveRuleCtrl'
-            });
-            modalInstance.result.then(function () {
+            }).result.then(function () {
                 $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
                     $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
                 });
-            }, function() {
-
             });
 
         };
@@ -40,17 +37,15 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
         };
 
         $scope.openAddRuleModal = function(){
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/statusRules/addNewRule.html',
                 controller: 'AddNewRuleCtrl',
                 resolve: {
                     userOrgs: function(){return $scope.userOrgs;}
                 }
-            });
-            modalInstance.result.then(function (rule) {
+            }).result.then(function (rule) {
                 $scope.enableRule(rule.org, rule);
-            }, function() {
             });
         };
     }]);
