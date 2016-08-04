@@ -97,7 +97,7 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-function injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress) {
+exports.injectDataToIndex = function (indexName, indexMapping, dao, riverFunction, progress, cb) {
     var startTime = new Date().getTime();
     var indexType = Object.keys(indexMapping.mappings)[0];
     // start re-index all
@@ -107,16 +107,20 @@ function injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress
         stream.on('data', function (elt) {
             stream.pause();
             injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+                progress.count++;
+                progress.total = totalCount;
+                cb();
                 stream.resume();
             });
         });
         stream.on('end', function () {
             injector.inject(function () {
                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                done();
             });
         });
     });
-}
+};
 
 function createIndex(indexName, indexMapping, dao, riverFunction) {
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
@@ -131,7 +135,7 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
                         console.log("error creating index. " + error);
                     } else {
                          console.log("index Created");
-                        injectDataToIndex(indexName, indexMapping, dao, riverFunction)
+                        exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction, {})
                     }
                 });
         }
@@ -156,6 +160,7 @@ var daos = {
         count: require("./dbLogger").storedQueriesCount
     }
 };
+exports.daos = daos;
 
 exports.initEs = function () {
     esInit.indices.forEach(function(i) {
@@ -164,13 +169,13 @@ exports.initEs = function () {
 };
 
 // pass index as defined in elasticSearchInit.indices
-exports.reIndex = function(index) {
+exports.reIndex = function (index, progress, done) {
     var indexName = index.indexName;
     var indexMapping = index.indexJson;
     var dao = daos[index.name];
     var riverFunction = index.filter;
     console.log("inject data into index: " + indexName);
-    injectDataToIndex(indexName, indexMapping, dao, riverFunction)
+    exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress, done)
 };
 
 exports.completionSuggest = function (term, cb) {
