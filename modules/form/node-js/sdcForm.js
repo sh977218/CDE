@@ -13,31 +13,35 @@ var JXON = require('jxon'),
 function addQuestion(parent, question) {
 
     var newQuestion = {
-        "Question": {
-            "@ID": question.question.cde.tinyId
-        }
+        "$ID": question.question.cde.tinyId
     };
 
     if (question.label !== undefined && !question.hideLabel) {
-        newQuestion.Question["@title"] = question.label;
+        newQuestion["$title"] = question.label;
     }
 
     if (question.instructions) {
-        newQuestion.Question.OtherText = {"@val": question.instructions};
+        newQuestion.OtherText = {"$val": question.instructions};
     }
 
     if (question.question.datatype === 'Value List') {
-        newQuestion.Question.ListField = {"List": {"ListItem": []}};
-        if (question.question.multiselect) newQuestion.Question.ListField["@multiSelect"] = "true";
+        newQuestion.ListField = {"List": {"ListItem": []}};
+        if (question.question.multiselect) newQuestion.ListField["$multiSelect"] = "true";
 
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
                 var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                newQuestion.Question.ListField.List.ListItem.push({"@title": title});
+                newQuestion.ListField.List.ListItem.push({
+                    "$ID": "NA_" + Math.random(),
+                    "$title": title});
             });
         }
     } else {
-        newQuestion.Question.ResponseField = {"Response": ""};
+        newQuestion.ResponseField = {
+            "Response": {
+                "string": {"$name": "NA_" + Math.random(), "$maxLength": "4000"}
+            }
+        };
     }
 
     idToName[question.question.cde.tinyId] = question.label;
@@ -61,19 +65,19 @@ function doQuestion(parent, question) {
                 if (terms.length === 2) {
                     var qToAddTo = questionsInSection[terms[0]].Question;
                     qToAddTo.ListField.List.ListItem.forEach(function (li) {
-                        if (li["@title"] === terms[1]) {
+                        if (li["$title"] === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
                                 if (li.ChildItems === undefined) li.ChildItems = [];
-                                addQuestion(li.ChildItems, question);
+                                addQuestion(li.ChildItems.Question, question);
                             } else {
                                 if (question.label === "" || question.hideLabel) {
                                     li.ListItemResponseField = {
-                                        Response: {string: ""}
+                                        //Response: {string: ""}
                                     };
                                 } else {
                                     if (li.ChildItems === undefined) li.ChildItems = [];
-                                    addQuestion(li.ChildItems, question);
+                                    addQuestion(li.ChildItems.Question, question);
                                 }
                             }
                         }
@@ -85,26 +89,28 @@ function doQuestion(parent, question) {
 
     }
 
-    if (!embed)
+    if (!embed) {
         addQuestion(parent, question);
-
+    }
 }
 
 var questionsInSection = {};
 
 var doSection = function (parent, section) {
     var newSection = {
-        "Section": {
-            "@title": section.label,
-            "ChildItems": []
+        "$ID": "NA_" + Math.random(),
+        "$title": section.label,
+        "ChildItems": {
+            "Question": [],
+            "Section": []
         }
     };
 
     section.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'question') {
-            doQuestion(newSection.Section.ChildItems, formElement);
+            doQuestion(newSection.ChildItems.Question, formElement);
         } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(newSection.Section.ChildItems, formElement);
+            doSection(newSection.ChildItems.Section, formElement);
         }
     });
 
@@ -120,33 +126,33 @@ var idToName = {};
 exports.formToSDC = function (form) {
     var root = {
         "FormDesign": {
-            "@xmlns:sdc": "http://healthIT.gov/sdc",
-            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
-            "@formID": form.tinyId + "v" + form.version,
-            "@baseItemURI": "https://cap.org/ecc/sdc",
+            "$xmlns": "http://healthIT.gov/sdc",
+            "$xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "$xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
+            "$ID": form.tinyId + "v" + form.version,
             "Header": {
-                "@ID": "S1",
-                "@title": form.naming[0].designation,
-                "@styleClass": "left"
+                "$ID": "S1",
+                "$title": form.naming[0].designation,
+                "$styleClass": "left"
             },
             "Body": {
-                "ChildItems": []
+                "$ID": "NA_" + Math.random(),
+                "ChildItems": {
+                    Section: []
+                }
             }
         }
     };
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(root.FormDesign.Body.ChildItems, formElement);
+            doSection(root['FormDesign'].Body.ChildItems.Section, formElement);
         }
     });
 
     idToName = {};
 
-    var xmlStr = JXON.jsToString(root);
-
-    console.log(xmlStr);
+    var xmlStr = JXON.jsToString(root,"http://healthIT.gov/sdc" );
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
         console.log("Is Export Valid: " + JSON.stringify(result));

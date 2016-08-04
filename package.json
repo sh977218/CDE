@@ -53,7 +53,7 @@
     "fstream": "1.0.4",
     "streamifier": "0.1.1",
     "js2xmlparser": "1.0.0",
-    "jxon": "git://github.com/ludetc/jxon.git#98cbeac7990d2c959e980dd2e96f82cbf897c484",
+    "jxon": "2.0.0-beta.2",
     "xsd-schema-validator": "0.3.1",
     "csv": "0.4.6",
     "byline": "4.2.1",
