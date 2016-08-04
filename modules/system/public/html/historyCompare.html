@@ -50,8 +50,13 @@
         <div ng-if="left.valueDomain.datatype === right.valueDomain.datatype">
             <compare-object ng-if="left.valueDomain.datatype !=='Value List'" left="leftDatatypeObj.obj"
                             right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object>
-            <compare-object-array ng-if="left.valueDomain.datatype ==='Value List'" left="leftDatatypeObj.obj"
-                                  right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object-array>
+            <div ng-if="left.valueDomain.datatype ==='Value List'">
+                <compare-primitive left='left.valueDomain.datatypeValueList.datatype'
+                                   right='right.valueDomain.datatypeValueList.datatype'
+                                   options='datatypeValueListOptions'></compare-primitive>
+                <compare-object-array left="leftDatatypeObj.obj" right="rightDatatypeObj.obj"
+                                      options="leftDatatypeObj.p"></compare-object-array>
+            </div>
         </div>
         <div ng-if="left.valueDomain.datatype !== right.valueDomain.datatype">
             <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}"
@@ -62,6 +67,10 @@
             </div>
             <div class="col-md-6" id="historyCompareLeft_Value List"
                  ng-if="left.valueDomain.datatype === 'Value List'">
+                <div class="row">
+                    <label class="col-xs-6">Value List Data Type</label>
+                    <div class="col-xs-6">{{left.valueDomain.datatypeValueList.datatype}}</div>
+                </div>
                 <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
                     <div class="row">
                         <label class="col-xs-6">Value</label>
@@ -93,6 +102,10 @@
             </div>
             <div class="col-md-6" id="historyCompareRight_Value List"
                  ng-if="right.valueDomain.datatype === 'Value List'">
+                <div class="row">
+                    <label class="col-xs-6">Value List Data Type</label>
+                    <div class="col-xs-6">{{right.valueDomain.datatypeValueList.datatype}}</div>
+                </div>
                 <div ng-repeat="pv in  right.valueDomain.permissibleValues">
                     <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
                         <div class="row">

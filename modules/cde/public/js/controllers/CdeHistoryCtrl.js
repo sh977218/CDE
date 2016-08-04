@@ -282,4 +282,9 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
             hideSame: false,
             tooltip: ''
         };
+        $scope.datatypeValueListOptions = {
+            title: 'Value List Data Type',
+            hideSame: false,
+            tooltip: ''
+        }
     }]);

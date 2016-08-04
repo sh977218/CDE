@@ -24,20 +24,20 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@id='historyCompare_pvs_0']//*[@id='listDatatype']/span/span"));
-        textPresent("N/A", By.xpath("//*[@id='historyCompare_pvs_1']//*[@id='listDatatype']/span/span"));
+        textPresent(newDatatype, By.xpath("//*[@id='historyCompareLeft_Value List Data Type']"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='listDatatype']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='listDatatype']//input")).sendKeys("Other Datatype");
         clickElement(By.cssSelector("#listDatatype .fa-check"));
-
         newCdeVersion();
+
+        goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDatatype, By.xpath("//*[@id='historyCompare_pvs_0']//*[@id='listDatatype']/span/span/i"));
-        textPresent("N/A", By.xpath("//*[@id='historyCompare_pvs_1']//*[@id='listDatatype']/span/span/i"));
+        textPresent("Other Datatype", By.xpath("//*[@id='historyCompareLeft_Value List Data Type']"));
+        textPresent(newDatatype, By.xpath("//*[@id='historyCompareRight_Value List Data Type']"));
     }
 
 }
