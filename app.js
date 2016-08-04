@@ -139,6 +139,13 @@ app.use("/system/public", express.static(path.join(__dirname,'/modules/system/pu
 app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
 app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
 
+app.use("/embedded/public",
+    function(req, res, next) {
+        res.removeHeader("x-frame-options");
+        next();
+    },
+    express.static(path.join(__dirname,'/modules/embedded/public')));
+
 app.use(flash());
 auth.init(app);
 
