@@ -26,7 +26,7 @@ function addQuestion(parent, question) {
 
     if (question.question.datatype === 'Value List') {
         newQuestion.ListField = {"List": {"ListItem": []}};
-        if (question.question.multiselect) newQuestion.ListField["$multiSelect"] = "true";
+        if (question.question.multiselect) newQuestion.ListField["$maxSelections"] = "0";
 
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
