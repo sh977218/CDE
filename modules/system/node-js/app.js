@@ -84,6 +84,28 @@ exports.init = function (app) {
         res.send(token);
     });
 
+    app.get('/indexTotalNumDoc/:indexPosition', function (req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            var index = esInit.indices[req.params.indexPosition];
+            var dao = elastic.daos[index.name];
+            dao.countFn(function (totalCount) {
+                res.status(200).send({totalCount: totalCount});
+            })
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            var index = esInit.indices[req.params.indexPosition];
+            var dao = elastic.daos[index.name];
+            res.status(200).send({count: dao.count});
+        } else {
+            res.status(401).send();
+        }
+    });
+
     app.post('/reindex/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];

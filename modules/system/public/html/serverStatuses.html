@@ -11,9 +11,9 @@
             <div ng-repeat="i in esIndices">
                 <button class="btn btn-default" ng-click="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b> /
                     {{i.indexName}}</button>
-                <uib-progressbar ng-if="totalCount >0 && count > 0" class="progress-striped active" max="100"
-                                 value="{{totalCount}}" type="danger">
-                    {{count}} / {{totalCount}}
+                <uib-progressbar ng-if="i.totalCount > 0 && i.count > 0" class="progress-striped active"
+                                 max="i.totalCount" value="i.count" type="success">
+                    {{i.count}} / {{i.totalCount}}
                 </uib-progressbar>
             </div>
         </div>

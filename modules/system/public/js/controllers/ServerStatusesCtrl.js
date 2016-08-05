@@ -11,14 +11,25 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         };
 
         $scope.reIndex = function(i) {
+            $scope.esIndices[i].count = 0;
             $uibModal.open({
                 animation: false,
                 templateUrl: 'confirmReindex.html',
                 controller: function(i) {
                     $scope.i = i;
                     $scope.okReIndex = function() {
-                        $http.post("/reindex/" + i).success(function (progress) {
-                            console.log("done");
+                        $http.get("/indexTotalNumDoc/" + i).success(function (result) {
+                            $scope.esIndices[i].totalCount = result.totalCount;
+                            $http.post('/reindex/' + i).success(function () {
+                                console.log('reindexing');
+                            });
+                            var indexFn = setInterval(function () {
+                                $http.get("indexCurrentNumDoc/" + i).success(function (result) {
+                                    $scope.esIndices[i].count = result.count;
+                                    if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount)
+                                        clearInterval(indexFn);
+                                })
+                            }, 5000);
                         });
                     };
                 },

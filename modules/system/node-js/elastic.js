@@ -103,15 +103,20 @@ exports.injectDataToIndex = function (indexName, indexMapping, dao, riverFunctio
     // start re-index all
     var injector = new EsInjector(esClient, indexName, indexType);
     var stream = dao.dao.getStream({archived: null});
-    stream.on('data', function (elt) {
-        stream.pause();
-        injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
-            stream.resume();
+    dao.count = 0;
+    dao.countFn(function (totalCount) {
+        dao.totalCount = totalCount;
+        stream.on('data', function (elt) {
+            stream.pause();
+            injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+                dao.count++;
+                stream.resume();
+            });
         });
-    });
-    stream.on('end', function () {
-        injector.inject(function () {
-            console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+        stream.on('end', function () {
+            injector.inject(function () {
+                console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+            });
         });
     });
 };
@@ -139,19 +144,27 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
 var daos = {
     "cde": {
         dao: require("../../cde/node-js/mongo-cde"),
-        count: require("../../cde/node-js/mongo-cde").deCount
+        countFn: require("../../cde/node-js/mongo-cde").deCount,
+        count: 0,
+        totalCount: 0
     },
     "form": {
         dao: require("../../form/node-js/mongo-form"),
-        count: require("../../form/node-js/mongo-form").count
+        countFn: require("../../form/node-js/mongo-form").count,
+        count: 0,
+        totalCount: 0
     },
     "board": {
         dao: require("../../cde/node-js/mongo-cde").boardsDao,
-        count: require("../../cde/node-js/mongo-cde").boardCount
+        countFn: require("../../cde/node-js/mongo-cde").boardCount,
+        count: 0,
+        totalCount: 0
     },
     "storedQuery": {
         dao: require("./dbLogger").storedQueriesDao,
-        count: require("./dbLogger").storedQueriesCount
+        countFn: require("./dbLogger").storedQueriesCount,
+        count: 0,
+        totalCount: 0
     }
 };
 exports.daos = daos;
@@ -169,7 +182,7 @@ exports.reIndex = function (index, progress, done) {
     var dao = daos[index.name];
     var riverFunction = index.filter;
     console.log("inject data into index: " + indexName);
-    exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress, done)
+    exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction)
 };
 
 exports.completionSuggest = function (term, cb) {
