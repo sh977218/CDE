@@ -91,13 +91,7 @@ exports.init = function (app) {
             var indexMapping = index.indexJson;
             var dao = elastic.daos[index.name];
             var riverFunction = index.filter;
-            elastic.daos[index.name].count(function (totalCount) {
-                var progress = {count: 0, total: totalCount};
-                res.send(progress);
-                elastic.injectDataToIndex(indexName, indexMapping, dao, riverFunction, progress, function () {
-                    res.send(progress);
-                })
-            })
+            elastic.injectDataToIndex(indexName, indexMapping, dao, riverFunction);
         } else {
             res.status(401).send();
         }
