@@ -38,10 +38,6 @@ angular.module('resourcesCde', ['ngResource'])
             }
         };
     })
-    .factory('PriorCdes', function ($resource) {
-        return $resource('/priorcdes/:cdeId', {cdeId: '@cdeId'},
-            {'getCdes': {method: 'GET', isArray: true}});
-    })
     .factory('CdeDiff', function ($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'}, {get: {isArray: true}});
     })

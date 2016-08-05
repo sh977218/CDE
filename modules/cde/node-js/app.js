@@ -59,6 +59,8 @@ exports.init = function (app, daoManager) {
 
     app.get('/priorcdes/:id', exportShared.nocacheMiddleware, cdesvc.priorCdes);
 
+    app.get('/cdeById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
+
     app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
 
     app.post('/dataelement/fork', function (req, res) {
@@ -259,6 +261,7 @@ exports.init = function (app, daoManager) {
                 if (!board) {
                     res.status(500).send("Can not find board with id:" + req.params.boardId);
                     return;
+                    
                 }
                 if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                     res.send("You must own the board that you wish to delete.");

@@ -1,0 +1,140 @@
+<div class="panel panel-default" ng-if="showHistory">
+    <div class="panel-heading">
+        <h3 class="panel-title">Differences (Left side are new, right side are removed )</h3>
+    </div>
+    <div class="panel-body">
+        <div>
+            <div class="col-xs-6"><h5>Updated: {{left.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
+            <div class="col-xs-6"><h5>Updated: {{right.updated | date: 'MM/dd/yyyy @ h:mma'}}</h5></div>
+        </div>
+        <compare-primitive left='left.version' right='right.version' options='versionOptions'></compare-primitive>
+
+        <compare-primitive left='left.registrationState.registrationStatus'
+                           right='right.registrationState.registrationStatus'
+                           options='statusOptions'></compare-primitive>
+
+        <compare-primitive left='left.stewardOrg.name'
+                           right='right.stewardOrg.name'
+                           options='stewardOrgNameOptions'></compare-primitive>
+
+        <compare-object-array left='left.naming' right='right.naming'
+                              options='namingOptions'></compare-object-array>
+
+        <compare-object-array left='left.dataElementConcept.concepts' right='right.dataElementConcept.concepts'
+                              options='dataElementConceptOptions'></compare-object-array>
+
+        <compare-object-array left='left.property.concepts' right='right.property.concepts'
+                              options='propertyConceptOptions'></compare-object-array>
+
+        <compare-object-array left='left.objectClass.concepts' right='right.objectClass.concepts'
+                              options='objectClassConceptOptions'></compare-object-array>
+
+        <compare-object-array left='left.referenceDocuments' right='right.referenceDocuments'
+                              options='referenceDocumentsOptions'></compare-object-array>
+
+        <compare-object-array left='left.ids' right='right.ids'
+                              options='idsOptions'></compare-object-array>
+
+        <compare-object-array left='left.properties' right='right.properties'
+                              options='propertiesOptions'></compare-object-array>
+
+        <compare-object-array left='left.attachments' right='right.attachments'
+                              options='attachmentsOptions'></compare-object-array>
+
+        <compare-primitive-array left='left.flatClassifications' right='right.flatClassifications'
+                                 options='classificationsOptions'></compare-primitive-array>
+
+        <compare-primitive left='left.valueDomain.datatype' right='right.valueDomain.datatype'
+                           options='valueDomainDatatypeOptions'></compare-primitive>
+
+        <div ng-if="left.valueDomain.datatype === right.valueDomain.datatype">
+            <compare-object ng-if="left.valueDomain.datatype !=='Value List'" left="leftDatatypeObj.obj"
+                            right="rightDatatypeObj.obj" options="leftDatatypeObj.p"></compare-object>
+            <div ng-if="left.valueDomain.datatype ==='Value List'">
+                <compare-primitive left='left.valueDomain.datatypeValueList.datatype'
+                                   right='right.valueDomain.datatypeValueList.datatype'
+                                   options='datatypeValueListOptions'></compare-primitive>
+                <compare-object-array left="leftDatatypeObj.obj" right="rightDatatypeObj.obj"
+                                      options="leftDatatypeObj.p"></compare-object-array>
+            </div>
+        </div>
+        <div ng-if="left.valueDomain.datatype !== right.valueDomain.datatype">
+            <div class="col-md-6" id="historyCompareLeft_{{left.valueDomain.datatype}}"
+                 ng-if="left.valueDomain.datatype !== 'Value List'">
+                <div class="col-md-12" ng-repeat="p in leftDatatypeObj.p.properties">
+                    <label class="{{p.label}}">{{p.label}}:</label><span class="{{p.property}}">{{leftDatatypeObj.obj[p.property]}}</span>
+                </div>
+            </div>
+            <div class="col-md-6" id="historyCompareLeft_Value List"
+                 ng-if="left.valueDomain.datatype === 'Value List'">
+                <div class="row">
+                    <label class="col-xs-6">Value List Data Type</label>
+                    <div class="col-xs-6">{{left.valueDomain.datatypeValueList.datatype}}</div>
+                </div>
+                <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
+                    <div class="row">
+                        <label class="col-xs-6">Value</label>
+                        <div class="col-xs-6">{{pv.permissibleValue}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code Name</label>
+                        <div class="col-xs-6">{{pv.valueMeaningName}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code</label>
+                        <div class="col-xs-6">{{pv.valueMeaningCode}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code System</label>
+                        <div class="col-xs-6">{{pv.codeSystemName}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-6">Code Description</label>
+                        <div class="col-xs-6">{{pv.valueMeaningDefinition}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" id="historyCompareRight_{{right.valueDomain.datatype}}"
+                 ng-if="right.valueDomain.datatype !== 'Value List'">
+                <div class=" col-md-12" ng-repeat="p in rightDatatypeObj.p.properties">
+                    <label>{{p.label}}:</label><span>{{rightDatatypeObj.obj[p.property]}}</span>
+                </div>
+            </div>
+            <div class="col-md-6" id="historyCompareRight_Value List"
+                 ng-if="right.valueDomain.datatype === 'Value List'">
+                <div class="row">
+                    <label class="col-xs-6">Value List Data Type</label>
+                    <div class="col-xs-6">{{right.valueDomain.datatypeValueList.datatype}}</div>
+                </div>
+                <div ng-repeat="pv in  right.valueDomain.permissibleValues">
+                    <div class="col-xs-12 boxed-div" ng-repeat="pv in  left.valueDomain.permissibleValues">
+                        <div class="row">
+                            <label class="col-xs-6">Value</label>
+                            <div class="col-xs-6">{{pv.permissibleValue}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code Name</label>
+                            <div class="col-xs-6">{{pv.valueMeaningName}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code</label>
+                            <div class="col-xs-6">{{pv.valueMeaningCode}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code System</label>
+                            <div class="col-xs-6">{{pv.codeSystemName}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xs-6">Code Description</label>
+                            <div class="col-xs-6">{{pv.valueMeaningDefinition}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
