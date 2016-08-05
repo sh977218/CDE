@@ -25,8 +25,11 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         newCdeVersion();
 
         showAllTabs();
-        checkInHistory("Permissible Values - Date", "", "format1");
-        checkInHistory("Permissible Values - Value Type", "Value List", "Date");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("Date", By.xpath("//*[@id='historyCompareLeft_Date']"));
+        textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
+        textPresent("format1", By.xpath("//*[@id='historyCompareLeft_Date']"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='dateFormat']//i[@title='Edit']"));
@@ -36,6 +39,11 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        checkInHistory("Permissible Values - Date - Format", "format1", "format2");
+        goToCdeByName(cdeName);
+        showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("format2", By.xpath("//*[@id='historyCompareLeft_Data Type Date']//*[contains(@class,'format')]"));
+        textPresent("format1", By.xpath("//*[@id='historyCompareRight_Data Type Date']//*[contains(@class,'format')]"));
     }
 }

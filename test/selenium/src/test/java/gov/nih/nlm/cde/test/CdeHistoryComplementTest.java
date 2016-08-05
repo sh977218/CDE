@@ -8,10 +8,12 @@ import org.testng.annotations.Test;
 
 public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
-    @Test(priority = -1)
+    @Test
     public void cdeHistoryComplement() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
+        String newStatus = "Recorded";
+        String oldStatus = "Qualified";
         goToCdeByName(cdeName);
 
         showAllTabs();
@@ -31,21 +33,26 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        checkInHistory("Concepts", "", "Code Name 1");
-        checkInHistory("Concepts", "", "Code ID 1");
-        checkInHistory("Naming", "", "Alternative Name 1");
-        checkInHistory("Naming", "", "Alternative Definition 1");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("Alternative Name 1", By.xpath("//*[@id='historyCompareLeft_Naming_2']//div[contains(@class,'designation')]"));
+        textPresent("Alternative Definition 1", By.xpath("//*[@id='historyCompareLeft_Naming_2']//div[contains(@class,'definition')]"));
+        textPresent("Code Name 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_1']//div[contains(@class,'name')]"));
+        textPresent("Code ID 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_1']//div[contains(@class,'originId')]"));
 
         goToCdeByName(cdeName);
         showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
-        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByValue("Recorded");
+        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByValue(newStatus);
         clickElement(By.id("saveRegStatus"));
         modalGone();
 
-        checkInHistory("Registration State", "Qualified", "Recorded");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent(newStatus, By.xpath("//*[@id='historyCompareLeft_Status']"));
+        textPresent(oldStatus, By.xpath("//*[@id='historyCompareRight_Status']"));
 
         clickElement(By.id("ids_tab"));
         closeAlert();
@@ -57,9 +64,11 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         modalGone();
         goToCdeByName(cdeName);
         showAllTabs();
-        checkInHistory("Identifiers", "", "Origin 1");
-        checkInHistory("Identifiers", "", "Identifier 1");
-        checkInHistory("Identifiers", "", "Version 1");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("Origin 1", By.xpath("//*//*[@id='historyCompareLeft_Identifiers_1']//*[contains(@class,'source')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_1']//*[contains(@class,'id')]"));
+        textPresent("Version 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_1']//*[contains(@class,'version')]"));
     }
 
 

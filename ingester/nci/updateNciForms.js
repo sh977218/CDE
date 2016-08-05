@@ -9,7 +9,8 @@ var MigrationFormModel = require('../createConnection').MigrationFormModel,
     OrgModel = require('../createConnection').OrgModel,
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     classificationShared = require('../../modules/system/shared/classificationShared'),
-    updateShare = require('../updateShare')
+    updateShare = require('../updateShare'),
+    logger = require('../log')
     ;
 
 var importDate = new Date().toJSON();
@@ -20,6 +21,11 @@ var createdForm = [];
 var same = 0;
 
 var source = 'caDSR';
+
+function output() {
+    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+    logger.info(" changed: " + changed + " same: " + same + " created: " + created);
+}
 
 function findXml(id, version, cb) {
     MigrationNCIFormXmlModel.find({'form.publicID': id, 'form.version': version}).exec(function (err, xmls) {
