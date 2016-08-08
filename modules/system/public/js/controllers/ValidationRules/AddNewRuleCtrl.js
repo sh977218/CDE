@@ -11,6 +11,34 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'ids.source'
         , 'naming.context.contextName'
         , 'valueDomain.datatype'
+        , 'source'
+        , 'origin'
+
+        , 'objectClass.concepts.name'
+        , 'objectClass.concepts.origin'
+        , 'objectClass.concepts.originId'
+
+        , 'property.concepts.name'
+        , 'property.concepts.origin'
+        , 'property.concepts.originId'
+
+        , 'dataElementConcept.concepts.name'
+        , 'dataElementConcept.concepts.origin'
+        , 'dataElementConcept.concepts.originId'
+
+        , 'dataElementConcept.conceptualDomain.vsac.id'
+        , 'dataElementConcept.conceptualDomain.vsac.name'
+        , 'dataElementConcept.conceptualDomain.vsac.version'
+
+        , 'valueDomain.uom'
+        , 'valueDomain.ids.source'
+        , 'valueDomain.ids.id'
+        , 'valueDomain.ids.version'
+
+        , 'referenceDocuments.referenceDocumentId'
+        , 'referenceDocuments.document'
+        , 'referenceDocuments.uri'
+        , 'referenceDocuments.title'
     ];
     $scope.userOrgs = userOrgs;
     $scope.cancel = function(){
