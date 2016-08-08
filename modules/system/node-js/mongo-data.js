@@ -57,8 +57,8 @@ exports.updateClusterHostStatus = function(status, callback) {
     });
 };
 
-exports.getMeshClassification = function(org, classif, cb) {
-    MeshClassification.find({org: org, flatClassification: classif}, cb);
+exports.getMeshClassification = function(classif, cb) {
+    MeshClassification.find({flatClassification: classif}, cb);
 };
 
 exports.embeds = {
