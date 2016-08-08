@@ -7,7 +7,7 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
-const orgName = "EyeGene";
+var orgName = 'eyeGENE';
 
 var cdeCounter = 0;
 var eyeGeneOrg = null;
@@ -114,7 +114,7 @@ function createCde(eyeGene, loinc) {
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "LOINC"},
-        createdBy: {username: 'batchloader'},
+        createdBy: {username: 'batchLoader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},

@@ -8,6 +8,7 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+var orgName = 'eyeGENE';
 
 var formCounter = 0;
 var eyeGeneOrg = null;
@@ -30,7 +31,7 @@ function createForm(eyeGene) {
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "LOINC"},
-        createdBy: {username: 'batchloader'},
+        createdBy: {username: 'batchLoader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
@@ -45,14 +46,14 @@ function createForm(eyeGene) {
     componentArray.forEach(function (component) {
         componentToAdd.push(component);
     });
-    classificationShared.classifyItem(newForm, "EyeGene", componentToAdd);
+    classificationShared.classifyItem(newForm, orgName, componentToAdd);
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, componentToAdd);
     var classificationToAdd = ['Classification'];
     var classificationArray = eyeGene.CLASS.split('^');
     classificationArray.forEach(function (classification) {
         classificationToAdd.push(classification);
     });
-    classificationShared.classifyItem(newForm, "EyeGene", classificationToAdd);
+    classificationShared.classifyItem(newForm, orgName, classificationToAdd);
     classificationShared.addCategory({elements: eyeGeneOrg.classifications}, classificationToAdd);
 
     return newForm;
@@ -64,7 +65,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: 'EyeGene'}).save(function (e) {
+                    new MigrationOrgModel({name: orgName}).save(function (e) {
                         if (e) throw e;
                         cb();
                     });
@@ -72,7 +73,7 @@ function run() {
             });
         },
         function (cb) {
-            MigrationOrgModel.findOne({"name": 'EyeGene'}).exec(function (error, org) {
+            MigrationOrgModel.findOne({"name": orgName}).exec(function (error, org) {
                 eyeGeneOrg = org;
                 cb();
             });
