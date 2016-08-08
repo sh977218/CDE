@@ -31,6 +31,7 @@ async.series([
                         user.orgAdmin[i] = orgName;
                     }
                 });
+                user.markModified("orgAdmin");
                 user.save(function (err) {
                     if (err) throw err;
                     doneOneUser();
@@ -50,6 +51,7 @@ async.series([
                         user.orgCurator[i] = orgName;
                     }
                 });
+                user.markModified("orgCurator");
                 user.save(function (err) {
                     if (err) throw err;
                     doneOneUser();
