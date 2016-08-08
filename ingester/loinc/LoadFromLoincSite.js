@@ -86,7 +86,7 @@ var tasks = [
     {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: '//table[.//th[contains(text(),"EXAMPLE ANSWER LIST")]]'
+        xpath: '//*[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',
