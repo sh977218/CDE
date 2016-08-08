@@ -15,48 +15,50 @@ async.series([
                 org.save(function (err) {
                     if (err) throw err;
                     doneOneOrg();
-                })
+                });
             }, function doneAllUsers() {
                 console.log('Fixed org');
                 cb();
             });
-        })
+        });
     },
     function (cb) {
         mongo_cde.User.find({orgAdmin: wrongOrgName}).exec(function (err, users) {
             if (err) throw err;
             async.forEach(users, function (user, doneOneUser) {
-                user.orgAdmin.forEach(function (oa) {
-                    if (oa === wrongOrgName)
-                        oa = orgName;
+                user.orgAdmin.forEach(function (oa, i) {
+                    if (oa === wrongOrgName) {
+                        user.orgAdmin[i] = orgName;
+                    }
                 });
                 user.save(function (err) {
                     if (err) throw err;
                     doneOneUser();
-                })
+                });
             }, function doneAllUsers() {
                 console.log('Fixed user orgAdmin');
                 cb();
             });
-        })
+        });
     },
     function (cb) {
         mongo_cde.User.find({orgCurator: wrongOrgName}).exec(function (err, users) {
             if (err) throw err;
             async.forEach(users, function (user, doneOneUser) {
-                user.orgCurator.forEach(function (oa) {
-                    if (oa === wrongOrgName)
-                        oa = orgName;
+                user.orgCurator.forEach(function (oa, i) {
+                    if (oa === wrongOrgName) {
+                        user.orgCurator[i] = orgName;
+                    }
                 });
                 user.save(function (err) {
                     if (err) throw err;
                     doneOneUser();
-                })
+                });
             }, function doneAllUsers() {
                 console.log('Fixed user orgCurator');
                 cb();
             });
-        })
+        });
     },
     function (cb) {
         var deCount = 0;
@@ -72,7 +74,7 @@ async.series([
             if (doc.valueDomain.datatype === 'Value List') {
                 doc.valueDomain.permissibleValues.forEach(function (pv) {
                     pv.codeSystemName = 'LOINC';
-                })
+                });
             }
             doc.save(function (err) {
                 if (err) throw err;
