@@ -2,13 +2,11 @@ var async = require('async');
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var cdesvc = require('../../modules/cde/node-js/cdesvc');
 var classificationShared = require('../../modules/system/shared/classificationShared');
-var MigrationDataElement = require('../createConnection').MigrationDataElementModel;
-var DataElement = require('../createConnection').DataElementModel;
-var MigrationOrg = require('../createConnection').MigrationOrgModel;
-var Org = require('../createConnection').OrgModel;
+var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
+var DataElement = mongo_cde.DataElement;
+var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
+var Org = require('../../modules/system/node-js/mongo-data').Org;
 var updateShare = require('../updateShare');
-//var logger = require('../log');
-
 
 var source = 'LOINC';
 var stewardOrgName = 'NLM';

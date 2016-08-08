@@ -1,8 +1,7 @@
-var async = require('async'),
-    DataElementModel = require('./createConnection').DataElementModel,
-    FormModel = require('./createConnection').FormModel,
-    BoardModel = require('./createConnection').BoardModel
-    ;
+var async = require('async');
+var DataElementModel = require('../modules/cde/node-js/mongo-cde').DataElement;
+var FormModel = require('../modules/form/node-js/mongo-form').Form;
+var BoardModel = require('../modules/cde/node-js/mongo-cde').PinningBoard;
 
 var cdeCount = 0;
 

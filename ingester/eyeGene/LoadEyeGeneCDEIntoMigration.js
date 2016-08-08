@@ -1,9 +1,9 @@
 var async = require('async'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationEyeGeneLoincModel = require('./../createConnection').MigrationEyeGeneLoincModel,
-    MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
-    MigrationLoincModal = require('./../createConnection').MigrationLoincModal,
+    MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGeneLoincModel,
+    MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
+    MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
@@ -49,7 +49,6 @@ function createCde(eyeGene, loinc) {
             });
         }
         if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
-
             var name = {
                 definition: loinc['TERM DEFINITION/DESCRIPTION(S)'].Description,
                 languageCode: "EN-US",
@@ -166,7 +165,7 @@ function run() {
                 if (err) throw err;
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
-                    new MigrationOrgModel({name: orgName, classifications: []}).save(function (e, o) {
+                    new MigrationOrgModel({name: orgName, classifications: []}).save(function (e) {
                         if (e) throw e;
                         cb();
                     });
@@ -188,7 +187,7 @@ function run() {
                 MigrationDataElementModel.find({'ids.id': eyeGene.LOINC_NUM}, function (err, existingCdes) {
                     if (err) throw err;
                     if (existingCdes.length === 0) {
-                        MigrationLoincModal.find({
+                        MigrationLoincModel.find({
                             loincId: eyeGene.LOINC_NUM,
                             info: {$not: /^no loinc name/i}
                         }, function (er, existingLoinc) {

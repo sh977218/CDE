@@ -1,22 +1,8 @@
-var config = require('../../modules/system/node-js/parseConfig'),
-    mongoose = require('mongoose'),
-    NindsModel = require('./../createConnection').MigrationNindsModel,
-    form_schemas = require('../../modules/form/node-js/schemas')
-    ;
+var mongoose = require('mongoose');
+var config = require('../../modules/system/node-js/parseConfig');
+var NindsModel = require('../createMigrationConnection').MigrationNindsModel;
+var Form = require('../../modules/form/node-js/mongo-form').Form;
 
-
-var mongoUri = config.mongoUri;
-
-var conn = mongoose.createConnection(mongoUri);
-conn.on('error', console.error.bind(console, 'appData connection error:'));
-conn.on('error', function () {
-    process.exit(1);
-});
-conn.once('open', function callback() {
-    console.log('mongodb connection open');
-});
-
-var Form = conn.model('Form', form_schemas.formSchema);
 
 function run() {
     var stream = Form.find({'stewardOrg.name': 'NINDS', archived: null}).stream();

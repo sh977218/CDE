@@ -1,6 +1,5 @@
-var async = require('async'),
-    DataElementModel = require('./../createConnection').DataElementModel
-    ;
+var async = require('async');
+var DataElementModel = require('../../modules/cde/node-js/mongo-cde').DataElement;
 
 var batchUser = {username: 'batchLoader'};
 var today = new Date().toJSON();
