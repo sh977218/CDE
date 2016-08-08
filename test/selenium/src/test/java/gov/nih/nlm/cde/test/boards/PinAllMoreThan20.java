@@ -9,7 +9,6 @@ public class PinAllMoreThan20 extends BoardTest {
     @Test
     public void pinAllMoreThan20() {
         String board_name = "Pin All More Than 20 Test Board";
-        String board_description = "This board is only for pin all more than 20 test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));

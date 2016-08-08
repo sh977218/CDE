@@ -109,11 +109,12 @@ var deJsonSchema = {
 };
 
 var pinSchema = new mongoose.Schema({
-    name: String,
-    pinnedDate: Date,
-    deTinyId: String,
-    deName: String
-});
+    name: String
+    , pinnedDate: Date
+    , deTinyId: String
+    , deName: String
+}, {_id: false});
+
 
 schemas.pinningBoardSchema = new mongoose.Schema({
     name: String,
