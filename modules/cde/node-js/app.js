@@ -94,7 +94,6 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
-        console.log(req.user);
         function sendNativeJson(cde, res) {
             res.send(cde);
         }
