@@ -119,5 +119,6 @@ async.series([
         });
     }
 ], function () {
-
+    console.log('Finished');
+    process.exit(1);
 });
