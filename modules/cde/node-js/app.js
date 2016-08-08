@@ -19,7 +19,8 @@ var cdesvc = require('./cdesvc')
     , exportShared = require('../../system/shared/exportShared')
     , js2xml = require('js2xmlparser')
     , usersrvc = require('../../system/node-js/usersrvc')
-    ;
+
+;
 
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
@@ -155,8 +156,7 @@ exports.init = function (app, daoManager) {
             res.send(result);
         });
     });
-
-    app.get('/board/:boardId/:start/:size?', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/board/:boardId/:start/:size?/', exportShared.nocacheMiddleware, function (req, res) {
         var size = 20;
         if (req.params.size) {
             size = req.params.size;
@@ -164,6 +164,7 @@ exports.init = function (app, daoManager) {
         if (size > 500) {
             return res.status(403).send("Request too large");
         }
+
         mongo_data.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
@@ -172,18 +173,35 @@ exports.init = function (app, daoManager) {
                     }
                 }
                 var totalItems = board.pins.length;
-                var pins = board.pins.splice(req.params.start, size);
-                board.pins = pins;
-                var idList = [];
-                for (var i = 0; i < pins.length; i++) {
-                    idList.push(pins[i].deTinyId);
-                }
+                board.pins = board.pins.splice(req.params.start, size).map(function(a) {
+                    return a.toObject();
+                });
+                delete board._doc.owner.userId;
+                var idList = board.pins.map(function(p) {
+                    return p.deTinyId;
+                });
                 mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
-                    res.send({board: board, cdes: cdesvc.hideProprietaryCodes(cdes, req.user), totalItems: totalItems});
+                    if (req.query.type === "xml"){
+                        res.setHeader("Content-Type", "application/xml");
+                        var exportBoard ={
+                            board: exportShared.stripBsonIds(board.toObject()),
+                            cdes: cdesvc.hideProprietaryCodes(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
+                            totalItems: totalItems
+                        };
+                        exportBoard = exportShared.stripBsonIds(exportBoard);
+
+                        res.send(js2xml("export", exportBoard));
+
+                    }
+                    else {
+                        res.send({board: board, cdes: cdesvc.hideProprietaryCodes(cdes, req.user), totalItems: totalItems});
+                    }
                 });
             } else {
                 res.status(404).end();
             }
+
+
         });
     });
 
@@ -289,7 +307,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.delete('/pincde/:pinId/:boardId', function (req, res) {
+    app.delete('/pincde/:deTinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             usersvc.removePinFromBoard(req, res);
         } else {
