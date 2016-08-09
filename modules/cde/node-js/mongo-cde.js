@@ -21,6 +21,7 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
+exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
