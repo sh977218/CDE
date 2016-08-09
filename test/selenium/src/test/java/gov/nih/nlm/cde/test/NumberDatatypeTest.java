@@ -26,11 +26,12 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#numberMaxValue .fa-check"));
         newCdeVersion();
 
-        goToCdeByName(cdeName);
         showAllTabs();
-        checkInHistory("Permissible Values - Number", "", "123");
-        checkInHistory("Permissible Values - Number", "", "456");
-        checkInHistory("Permissible Values - Value Type", "", "Number");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("123", By.xpath("//*[@id='historyCompareLeft_Number']"));
+        textPresent("456", By.xpath("//*[@id='historyCompareLeft_Number']"));
+        textPresent("Number", By.xpath("//*[@id='historyCompareLeft_Value Type']"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='numberMinValue']//i[@title='Edit']"));
@@ -45,10 +46,12 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         showAllTabs();
-        checkInHistory("Permissible Values - Number - Minimum Value", "123", "789");
-        checkInHistory("Permissible Values - Number - Maximum Value", "456", "987");
-
-        clickElement(By.id("pvs_tab"));
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("789", By.xpath("//*[@id='historyCompareLeft_Data Type Number']//*[contains(@class,'minValue')]"));
+        textPresent("987", By.xpath("//*[@id='historyCompareLeft_Data Type Number']//*[contains(@class,'maxValue')]"));
+        textPresent("123", By.xpath("//*[@id='historyCompareRight_Data Type Number']//*[contains(@class,'minValue')]"));
+        textPresent("456", By.xpath("//*[@id='historyCompareRight_Data Type Number']//*[contains(@class,'maxValue')]"));
     }
 
 }

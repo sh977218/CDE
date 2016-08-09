@@ -1,22 +1,19 @@
 package gov.nih.nlm.cde.test.valueDomain;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ValueDomainTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void randomDatatype() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "CTC Adverse Event Apnea Grade";
         goToCdeByName(cdeName);
         clickElement(By.linkText("Permissible Values"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editDatatype")));
         clickElement(By.id("editDatatype"));
         findElement(By.name("datatypeFreeText")).clear();
         findElement(By.name("datatypeFreeText")).sendKeys("java.lang.Date");
@@ -25,9 +22,11 @@ public class ValueDomainTest extends NlmCdeBaseTest {
 
         Assert.assertTrue(textPresent("java.lang.Date"));
         showAllTabs();
-        checkInHistory("Permissible Values - Value Type", "", "java.lang.Date");
-    }  
-    
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("java.lang.Date");
+    }
+
     @Test
     public void textDatatype() {
         mustBeLoggedInAs(ninds_username, password);
@@ -47,9 +46,13 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         showAllTabs();
-        checkInHistory("Permissible Values - Text", "", "789");
-        checkInHistory("Permissible Values - Text", "", "987");
-        checkInHistory("Permissible Values - Value Type", "Value List", "Text");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("789", By.xpath("//*[@id='historyCompareLeft_Text']"));
+        textPresent("987", By.xpath("//*[@id='historyCompareLeft_Text']"));
+
+        textPresent("Text", By.xpath("//*[@id='historyCompareLeft_Value Type']"));
+        textPresent("Value List", By.xpath("//*[@id='historyCompareRight_Value Type']"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//div[@id='textRegex']//i[@title='Edit']"));
@@ -69,11 +72,14 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#textMaxLength .fa-check"));
 
         newCdeVersion();
-        
-        checkInHistory("Permissible Values - Text - Regular Expression", "", "newre");
-        checkInHistory("Permissible Values - Text - Freetext Rule", "", "newrule");
-        checkInHistory("Permissible Values - Text - Maximum Length", "789", "123");
-        checkInHistory("Permissible Values - Text - Minimum Length", "987", "321");
 
+        goToCdeByName(cdeName);
+        showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("123", By.xpath("//*[@id='historyCompareLeft_Data Type Text']//*[contains(@class,'minLength')]"));
+        textPresent("321", By.xpath("//*[@id='historyCompareLeft_Data Type Text']//*[contains(@class,'maxLength')]"));
+        textPresent("789", By.xpath("//*[@id='historyCompareRight_Data Type Text']//*[contains(@class,'minLength')]"));
+        textPresent("987", By.xpath("//*[@id='historyCompareRight_Data Type Text']//*[contains(@class,'maxLength')]"));
     }
 }

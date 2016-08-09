@@ -21,6 +21,7 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
+exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
@@ -114,7 +115,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(null)
         .exec(function (err, cdes) {
@@ -186,10 +187,9 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
 exports.priorCdes = function (cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({}, "updated updatedBy changeNote")
-                .where("_id").in(dataElement.history).exec(function (err, cdes) {
-                    callback(err, cdes);
-                });
+            return DataElement.find({}).where("_id").in(dataElement.history).exec(function (err, cdes) {
+                callback(err, cdes);
+            });
         }
     });
 };
@@ -330,9 +330,10 @@ exports.update = function (elt, user, callback, special) {
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         elt.updated = new Date().toJSON();
-        elt.updatedBy = {};
-        elt.updatedBy.userId = user._id;
-        elt.updatedBy.username = user.username;
+        elt.updatedBy = {
+            userId: user._id,
+            username: user.username
+        };
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
@@ -342,7 +343,7 @@ exports.update = function (elt, user, callback, special) {
             special(newDe, dataElement);
         }
 
-        if (newDe.naming.length < 1) {
+        if (!newDe.naming || newDe.naming.length === 0) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
                 origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,

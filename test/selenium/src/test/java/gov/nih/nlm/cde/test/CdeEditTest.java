@@ -7,29 +7,22 @@ import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
 
-@Test(groups="CdeEditTest")
 public class CdeEditTest extends NlmCdeBaseTest {
-
-    private void confirmCdeModification(String field, String oldValue,
-                                          String newValue) {
-        textPresent(field, By.cssSelector("#modificationsList"));
-        textPresent(oldValue, By.cssSelector("#modificationsList"));
-        textPresent(newValue, By.cssSelector("#modificationsList"));
-    }
-
     @Test
     public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
+        String cdeNameChange = "[name change number 1]";
+        String cdeDefinitionChange = "[def change number 1]";
         goToCdeByName(cdeName);
         clickElement(By.cssSelector("i.fa-edit"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
+        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(cdeNameChange);
         clickElement(By.cssSelector(".fa-check"));
         clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
+        findElement(By.xpath("//div/div[2]/textarea")).sendKeys(cdeDefinitionChange);
         clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
 
-        clickElement(By.linkText("Permissible Values"));
+        clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
         findElement(By.xpath("//*[@id = 'dd_uom']//input")).sendKeys("myUom");
         clickElement(By.cssSelector("#dd_uom .fa-check"));
@@ -37,8 +30,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         newCdeVersion("Change note for change number 1");
 
         goToCdeByName(cdeName);
-        textPresent("[name change number 1]");
-        textPresent("[def change number 1]");
+        textPresent(cdeNameChange);
+        textPresent(cdeDefinitionChange);
         // test that label and its value are aligned.
         Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
@@ -53,31 +46,25 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("history_tab"));
         textPresent(cdeName);
         textPresent("Change note for change number 1");
-        hangon(1);
-        showHistoryDiff(0);
-        textPresent(cdeName + "[name change number 1]");
-        textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
-
-        confirmCdeModification("Primary Name", cdeName, cdeName + "[name change number 1]");
-        confirmCdeModification("Primary Definition", "the free text field to specify the other type of mediastinal lymph node dissection.", "the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
+        selectHistoryAndCompare(1, 2);
+        textPresent(cdeName + "[name change number 1]", By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[contains(@class,'designation')]"));
+        textPresent(cdeDefinitionChange, By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[contains(@class,'definition')]"));
 
 
         // View Prior Version
-        clickElement(By.id("history_tab"));
-        showHistoryFull(1);
-        textPresent("1");
+        clickElement(By.xpath("//*[@id='prior-1']"));
+        switchTab(1);
         textPresent("Warning: this data element is archived.");
-
         clickElement(By.linkText("view the current version here"));
-        textPresent("[name change number 1]");
-        textPresent("[def change number 1]");
+        textPresent(cdeNameChange);
+        textPresent(cdeDefinitionChange);
 
         clickElement(By.id("pvs_tab"));
         textPresent("myUom");
 
         openCdeAudit(cdeName);
-        textPresent(cdeName + "[name change number 1]");
-        textPresent("the free text field to specify the other type of mediastinal lymph node dissection.[def change number 1]");
+        textPresent(cdeName + cdeNameChange);
+        textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 
 
     }

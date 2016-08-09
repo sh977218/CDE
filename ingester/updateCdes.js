@@ -2,10 +2,10 @@ var async = require('async'),
     mongo_cde = require('../modules/cde/node-js/mongo-cde'),
     cdesvc = require('../modules/cde/node-js/cdesvc'),
     classificationShared = require('../modules/system/shared/classificationShared'),
-    MigrationDataElement = require('./createConnection').MigrationDataElementModel,
-    DataElement = require('./createConnection').DataElementModel,
-    MigrationOrg = require('./createConnection').MigrationOrgModel,
-    Org = require('./createConnection').OrgModel,
+    MigrationDataElement = require('./createMigrationConnection').MigrationDataElementModel,
+    DataElement = mongo_cde.DataElement,
+    MigrationOrg = require('./createMigrationConnection').MigrationOrgModel,
+    Org = require('../modules/system/node-js/mongo-data').Org,
     updateShare = require('./updateShare')
     ;
 

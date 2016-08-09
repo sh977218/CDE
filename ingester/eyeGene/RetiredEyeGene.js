@@ -4,10 +4,12 @@ var async = require('async'),
     elastic = require('../../modules/cde/node-js/elastic')
     ;
 
+var orgName = 'eyeGENE';
+
 var user = {username: 'BatchLoader'};
 var deCounter = 0;
 DataElement.find({
-    'classification.stewardOrg.name': 'EyeGene',
+    'classification.stewardOrg.name': orgName,
     archived: null,
     'registrationState.registrationStatus': {$ne: "Retired"}
 }, function (err, DEs) {

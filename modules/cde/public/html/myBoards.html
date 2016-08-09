@@ -53,8 +53,7 @@
                         <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"
                            ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                     </span>
-                    <a href="/board/{{board._id}}" id="viewBoard_{{board.name}}" target="_blank"
-                       ng-bind="board.name"></a>
+                    <a href="/board/{{board._id}}" id="viewBoard_{{board.name}}" ng-bind="board.name" target="_blank"></a>
                 </h4>
                 <div ng-include="'/cde/public/html/boardTemplate.html'"></div>
             </div>

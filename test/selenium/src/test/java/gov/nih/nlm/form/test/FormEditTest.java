@@ -25,6 +25,7 @@ public class FormEditTest extends BaseFormTest {
         editSection();
         editQuestion();
         saveForm();
+        goHome();
     }
 
     private void editSection() {
