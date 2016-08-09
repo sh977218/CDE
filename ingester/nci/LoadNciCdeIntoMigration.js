@@ -1,9 +1,9 @@
 var fs = require('fs'),
     async = require('async'),
     entities = require("entities"),
-    MigrationDataElementModel = require('../createConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('../createConnection').MigrationOrgModel,
-    MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel,
+    MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel,
+    MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
     classificationMapping = require('./caDSRClassificationMapping.json')

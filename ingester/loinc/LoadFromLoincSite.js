@@ -2,7 +2,7 @@ var async = require('async');
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
-var MigrationLoincModel = require('../createConnection').MigrationLoincModel;
+var MigrationLoincModel = require('../createMigrationConnection').MigrationLoincModel;
 
 var ParseLoincNameTable = require('./ParseLoincNameTable');
 var ParseNameTable = require('./ParseNameTable');

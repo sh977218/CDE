@@ -1,4 +1,4 @@
-var MigrationEyeGeneLoincModel = require('./../createConnection').MigrationEyeGeneLoincModel,
+var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGeneLoincModel,
     Loinc = require('../loinc/LoadFromLoincSite')
     ;
 

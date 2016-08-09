@@ -21,6 +21,7 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
+exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
@@ -114,7 +115,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(null)
         .exec(function (err, cdes) {

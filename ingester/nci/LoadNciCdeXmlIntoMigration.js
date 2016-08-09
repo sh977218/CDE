@@ -2,7 +2,7 @@ var fs = require('fs'),
     async = require('async'),
     xml2js = require('xml2js'),
     parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString,
-    MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel
+    MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel
     ;
 
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
