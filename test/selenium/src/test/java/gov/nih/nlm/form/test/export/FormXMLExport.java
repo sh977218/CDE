@@ -18,6 +18,8 @@ public class FormXMLExport extends NlmCdeBaseTest {
         findElement(By.id("export")).click();
         String url = findElement(By.id("nihXml")).getAttribute("href");
         String response = get(url).asString();
+
+
         Assert.assertTrue(response.replaceAll("\\s+","").contains(("<naming>\n" +
                 "<designation>Parenchymal Imaging</designation>\n" +
                 "<definition>\n" +
