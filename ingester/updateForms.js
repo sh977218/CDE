@@ -2,11 +2,11 @@
  TODO
  this script does not update org
  */
-var MigrationFormModel = require('./createConnection').MigrationFormModel,
-    MigrationOrgModel = require('./createConnection').MigrationOrgModel,
-    FormModel = require('./createConnection').FormModel,
-    OrgModel = require('./createConnection').OrgModel,
+var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel,
+    MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel,
+    OrgModel = require('../modules/system/node-js/mongo-data').Org,
     mongo_form = require('../modules/form/node-js/mongo-form'),
+    FormModel = mongo_form.Form,
     classificationShared = require('../modules/system/shared/classificationShared'),
     updateShare = require('./updateShare')
     ;

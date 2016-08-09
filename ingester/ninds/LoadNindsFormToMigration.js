@@ -1,8 +1,8 @@
 var async = require('async'),
-    NindsModel = require('./../createConnection').MigrationNindsModel,
+    NindsModel = require('./../createMigrationConnection').MigrationNindsModel,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    FormModel = require('./../createConnection').MigrationFormModel,
+    FormModel = require('./../createMigrationConnection').MigrationFormModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 

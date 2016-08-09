@@ -1,7 +1,7 @@
 var async = require('async'),
-    MigrationNindsModel = require('./../createConnection').MigrationNindsModel,
-    MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
+    MigrationNindsModel = require('./../createMigrationConnection').MigrationNindsModel,
+    MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
     mongo_data = require('../../modules/system/node-js/mongo-data'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;

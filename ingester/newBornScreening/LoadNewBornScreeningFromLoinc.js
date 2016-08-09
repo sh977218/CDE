@@ -1,5 +1,5 @@
-var MigrationNewBornScreeningCDEModel = require('./../createConnection').MigrationNewBornScreeningCDEModel;
-var MigrationLoincModel = require('.././createConnection').MigrationLoincModel;
+var MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewBornScreeningCDEModel;
+var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
 var LoadFromLoincSite = require('../loinc/LoadFromLoincSite');
 
