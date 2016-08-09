@@ -75,8 +75,6 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             , {fieldName: "Naming - Other Name - Context", path: ["naming", -1, "context", "contextName"]}
             , {fieldName: "Properties - Object Class - Name", path: ["objectClass", "concepts", -1, "name"]}
             
-            
-            
         ]
     };
     

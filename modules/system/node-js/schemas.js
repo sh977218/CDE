@@ -1,7 +1,6 @@
 var mongoose = require('mongoose')
     , authorizationShared = require('../shared/authorizationShared')
-    , config = require("config")
-    , regStatusShared = require("../shared/regStatusShared")
+    , regStatusShared = require("../shared/regStatusShared") // jshint ignore:line
     ;
 
 var schemas = {};
@@ -26,6 +25,76 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+var commonEmbedSchema = {
+    nameLabel: String,
+    pageSize: Number,
+    primaryDefinition: {
+        show: Boolean,
+        label: String,
+        style: String
+    },
+    registrationStatus: {
+        show: Boolean,
+        label: String
+    },
+    lowestRegistrationStatus: {type: String, enum:regStatusShared.statusList},
+    properties: [
+        {
+            label: String,
+            key: String,
+            limit: Number
+        }
+    ],
+    otherNames: [{
+        label: String,
+        contextName: String
+    }],
+    classifications: [{
+        label: String,
+        startsWith: String,
+        exclude: String,
+        selectedOnly: Boolean
+    }],
+    ids: [
+        {
+            idLabel: String,
+            source: String,
+            version: Boolean,
+            versionLabel: String
+        }
+    ]
+};
+
+var embedJson = {
+    org: String,
+    name: String,
+    height: Number,
+    width: Number,
+    cde: commonEmbedSchema,
+    form: commonEmbedSchema
+};
+embedJson.cde.permissibleValues = Boolean;
+embedJson.cde.linkedForms = {
+    show: Boolean,
+    label: String
+};
+embedJson.form.sdcLink = Boolean;
+embedJson.form.nbOfQuestions = Boolean;
+embedJson.form.cdes = Boolean;
+
+schemas.embedSchema = new mongoose.Schema(embedJson);
+
+schemas.statusValidationRuleSchema = new mongoose.Schema({
+    field: String
+    , id: Number
+    , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]}
+    , ruleName: String
+    , rule: {
+        regex:  String
+    }
+    , occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
+});
+
 schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
@@ -36,7 +105,9 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
+    , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 });
+
 
 schemas.userSchema = new mongoose.Schema({
     username: String

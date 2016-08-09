@@ -709,17 +709,14 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }
 
-    protected void showHistoryDiff(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
-    }
-
-    protected void showHistoryFull(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
+    protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.id("historyCompareBtn"));
+        textPresent("Differences");
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        clickElement(By.id("history_tab"));
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));
@@ -800,6 +797,4 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
-
-
 }

@@ -169,7 +169,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/cdeHistory.html'],
             select: function () {
                 setCurrentTab();
-                $scope.historyCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorCdes');});
+                if ($scope.elt.history && $scope.elt.history.length > 0) {
+                    $http.get('/priorcdes/' + $scope.elt._id).success(function (result) {
+                        $scope.priorCdes = result.reverse();
+                        $scope.priorCdes.splice(0, 0, $scope.elt);
+                    });
+                }
             },
             show: false,
             hideable: true

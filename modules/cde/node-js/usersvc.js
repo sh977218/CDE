@@ -33,14 +33,14 @@ exports.pinToBoard = function(req, res) {
 
 exports.removePinFromBoard = function(req, res) {
     var boardId = req.params.boardId;
-    var pinId = req.params.pinId;
+    var deTinyId = req.params.deTinyId;
     mongo_data.boardById(boardId, function(err, board) {
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");
         } else {
             var modified;
             for (var i = 0; i < board.pins.length; i++) {
-                if (JSON.stringify(board.pins[i]._id) === JSON.stringify(pinId)) {
+                if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(deTinyId)) {
                     board.pins.splice(i, 1);
                     modified = true;
                 }

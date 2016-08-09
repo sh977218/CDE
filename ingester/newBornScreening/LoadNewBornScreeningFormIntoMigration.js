@@ -2,9 +2,8 @@ var async = require('async'),
     webdriver = require('selenium-webdriver'),
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationNewBornScreeningLoincModel = require('./../createConnection').MigrationNewBornScreeningLoincModel,
-    MigrationFormModel = require('./../createConnection').MigrationFormModel,
-    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
+    MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel,
+    MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 

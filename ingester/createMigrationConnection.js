@@ -3,10 +3,7 @@ var mongoose = require('mongoose'),
     cde_schemas = require('../modules/cde/node-js/schemas'),
     form_schemas = require('../modules/form/node-js/schemas'),
     sharedSchemas = require('../modules/system/node-js/schemas.js'),
-    Schema = mongoose.Schema,
-    mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    mongo_form = require('../modules/form/node-js/mongo-form'),
-    mongo_data = require('../modules/system/node-js/mongo-data')
+    Schema = mongoose.Schema
     ;
 
 
@@ -16,18 +13,20 @@ migrationConn.once('open', function callback() {
     console.log('mongodb ' + config.database.migration.db + ' connection open');
 });
 
-
-var mongoUri = config.mongoUri;
-var mongoConn = mongoose.createConnection(mongoUri);
-mongoConn.once('open', function callback() {
-    console.log('mongodb ' + config.database.appData.db + ' connection open');
-});
-
 // LOINC
 exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
     strict: false,
     collection: 'loinc'
 }));
+exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincClassificationMapping'
+}));
+exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new mongoose.Schema({}, {
+    strict: false,
+    collection: 'LoincScaleMapping'
+}));
+
 
 // NINDS
 exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
@@ -83,9 +82,3 @@ exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVar
     strict: false,
     collection: 'VariableCrossReference'
 }));
-
-// NLM CDE
-exports.DataElementModel = mongo_cde.DataElement;
-exports.FormModel = mongo_form.Form;
-exports.BoardModel = mongo_cde.PinningBoard;
-exports.OrgModel = mongo_data.Org;

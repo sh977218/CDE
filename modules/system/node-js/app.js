@@ -44,6 +44,7 @@ exports.init = function (app) {
 
     ["/cde/search", "/form/search", "/home", "/stats", "/help/:title", "/createForm", "/createCde", "/boardList",
         "/board/:id", "/deview", "/myboards", "/sdcview",
+        "/cdeStatusReport", "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
         "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
         app.get(path, function (req, res) {
@@ -399,8 +400,7 @@ exports.init = function (app) {
     });
 
     app.post('/addOrgAdmin', function (req, res) {
-        if (req.isAuthenticated() &&
-            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.org)) {
             usersrvc.addOrgAdmin(req, res);
         } else {
             res.status(401).send();
@@ -408,8 +408,7 @@ exports.init = function (app) {
     });
 
     app.post('/removeOrgAdmin', function (req, res) {
-        if (req.isAuthenticated() &&
-            (authorizationShared.hasRole(req.user, "OrgAuthority") || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.orgName)) {
             usersrvc.removeOrgAdmin(req, res);
         } else {
             res.status(401).send();
@@ -417,7 +416,7 @@ exports.init = function (app) {
     });
 
     app.post('/addOrgCurator', function (req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.org) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.org)) {
             usersrvc.addOrgCurator(req, res);
         } else {
             res.status(401).send();
@@ -425,7 +424,7 @@ exports.init = function (app) {
     });
 
     app.post('/removeOrgCurator', function (req, res) {
-        if (req.isAuthenticated() && (req.user.siteAdmin || req.user.orgAdmin.indexOf(req.body.orgName) >= 0)) {
+        if (authorization.isOrgAdmin(req, req.body.orgName)) {
             usersrvc.removeOrgCurator(req, res);
         } else {
             res.status(401).send();
@@ -763,6 +762,50 @@ exports.init = function (app) {
         });
     });
 
+    app.post('/embed/', function (req, res) {
+        if (authorization.isOrgAdmin(req, req.body.org)) {
+            mongo_data_system.embeds.save(req.body, function(err, embed) {
+                if (err) res.status(500).send("There was an error saving this embed.");
+                else res.send(embed);
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
+    app.delete('/embed/:id', function (req, res) {
+        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+            if (err) return res.status(500).send();
+            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
+            var embed = embeds[0];
+            if (authorization.isOrgAdmin(req, embed.org)) {
+                mongo_data_system.embeds.delete(req.params.id, function(err) {
+                    if (err) res.status(500).send("There was an error removing this embed.");
+                    else res.send();
+                });
+            } else {
+                res.status(401).send();
+            }
+        });
+    });
+
+
+    app.get('/embed/:id', function (req, res) {
+        mongo_data_system.embeds.find({_id: req.params.id}, function(err, embeds) {
+            if (err) return res.status(500).send();
+            if (embeds.length !== 1) return res.status.send("Expectation not met: one document.");
+            else res.send(embeds[0]);
+        });
+
+    });
+
+    app.get('/embeds/:org', function(req, res) {
+        mongo_data_system.embeds.find({org: req.params.org}, function(err, embeds) {
+            if (err) res.status(500).send();
+            else res.send(embeds);
+        });
+    });
+
     app.post('/feedback/report', function (req, res) {
         dbLogger.saveFeedback(req, function () {
             res.send({});
@@ -811,5 +854,21 @@ exports.init = function (app) {
 
     app.get('/uploadLoincCsvStatus', function (req, res) {
         res.send(loincUploadStatus);
+    });
+
+    app.post('/disableRule', function(req, res){
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        mongo_data_system.disableRule(req.body, function(err, org){
+            if (err) res.status(500).send(org);
+            else res.send(org);
+        });
+    });
+
+    app.post('/enableRule', function(req, res){
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        mongo_data_system.enableRule(req.body, function(err, org){
+            if (err) res.status(500).send(org);
+            else res.send(org);
+        });
     });
 };
