@@ -48,7 +48,7 @@ fs.readFile(process.argv[2], function(err, result) {
         tinyId: shortid.generate()
         , created: Date.now()
         , source: globals.orgName
-        , sourceId: data["Data Element ID:"] + "v" + data["Version:"]
+        //, sourceId: data["Data Element ID:"] + "v" + data["Version:"]
         , stewardOrg: {
             name: globals.orgName
         }
