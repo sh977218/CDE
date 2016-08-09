@@ -17,17 +17,20 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void saveForm() {
-        clickElement(By.id("openSaveBottom"));
-        textPresent("has already been used");
+        try {
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        } catch (Exception e) {
+            // known error spot. Seems the button does not always get clicked.
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        }
         findElement(By.name("version")).sendKeys("1");
         textNotPresent("has already been used");
         hangon(2);
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
-        // This is not the right place for waitForES
-        waitForESUpdate();
-        scrollToTop();
     }
 
     public void searchForm(String query) {

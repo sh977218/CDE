@@ -1,8 +1,7 @@
-var async = require('async'),
-    DataElementModel = require('./../createConnection').DataElementModel,
-    MigrationPhenxToLoincMappingModel = require('./../createConnection').MigrationPhenxToLoincMappingModel,
-    MigrationVariableCrossReferenceModel = require('./../createConnection').MigrationVariableCrossReferenceModel
-    ;
+var async = require('async');
+var DataElementModel = require('../../modules/cde/node-js/mongo-cde').DataElement;
+var MigrationPhenxToLoincMappingModel = require('./../createMigrationConnection').MigrationPhenxToLoincMappingModel;
+var MigrationVariableCrossReferenceModel = require('./../createMigrationConnection').MigrationVariableCrossReferenceModel;
 
 var studyUrlPre = "http://www.ncbi.nlm.nih.gov/gap/?term=";
 

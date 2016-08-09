@@ -1,12 +1,12 @@
 var async = require('async'),
     uom_datatype_map = require('../loinc/LOINC_UOM_DATATYPE_MAP').map,
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationLoincModel = require('./../createConnection').MigrationLoincModel,
-    MigrationNewBornScreeningCDEModel = require('./../createConnection').MigrationNewBornScreeningCDEModel,
-    MigrationDataElementModel = require('./../createConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('./../createConnection').MigrationOrgModel,
-    MigrationLoincClassMappingModel = require('./../createConnection').MigrationLoincClassificationMappingModel,
-    MigrationLoincScaleMappingModel = require('./../createConnection').MigrationLoincScaleMappingModel,
+    MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel,
+    MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewBornScreeningCDEModel,
+    MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel,
+    MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
+    MigrationLoincClassMappingModel = require('./../createMigrationConnection').MigrationLoincClassificationMappingModel,
+    MigrationLoincScaleMappingModel = require('./../createMigrationConnection').MigrationLoincScaleMappingModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
