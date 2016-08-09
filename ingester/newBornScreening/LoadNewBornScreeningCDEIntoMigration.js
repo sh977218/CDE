@@ -208,7 +208,10 @@ function parseReferenceDoc(loinc) {
 }
 
 function parseValueDomain(loinc) {
-    var valueDomain = {datatype: 'Text'};
+    var valueDomain = {
+        datatype: 'Text',
+        uom: ''
+    };
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
     if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST'] || loinc['EXAMPLE ANSWER LIST']) {
@@ -345,11 +348,6 @@ function run() {
                                         }
                                     }, function doneAllPs() {
                                         createCde(newBornScreening, loinc, function (newCde) {
-                                            if (newBornScreening.EXAMPLE_UNITS)
-                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
-                                            else if (newBornScreening.EXAMPLE_UCUM_UNITS)
-                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
-                                            else newCde.valueDomain.uom = '';
                                             var newCdeObj = new MigrationDataElementModel(newCde);
                                             newCdeObj.save(function (err) {
                                                 if (err) throw err;
