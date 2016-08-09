@@ -104,9 +104,10 @@ exports.reIndex = function (index, cb) {
     var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
     var injector = new EsInjector(esClient, index.indexName, indexType);
-    var stream = index.dao.getStream({archived: null});
+    var condition = {archived: null};
+    var stream = index.dao.getStream(condition);
     index.count = 0;
-    index.countFn(function (totalCount) {
+    index.countFn(condition, function (totalCount) {
         index.totalCount = totalCount;
         stream.on('data', function (elt) {
             stream.pause();
