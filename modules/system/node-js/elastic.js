@@ -97,19 +97,20 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-exports.injectDataToIndex = function (indexName, indexMapping, dao, riverFunction) {
+exports.injectDataToIndex = function (index) {
+    var riverFunction = index.filter;
     var startTime = new Date().getTime();
-    var indexType = Object.keys(indexMapping.mappings)[0];
+    var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
     var injector = new EsInjector(esClient, indexName, indexType);
     var stream = dao.dao.getStream({archived: null});
-    dao.count = 0;
-    dao.countFn(function (totalCount) {
-        dao.totalCount = totalCount;
+    index.count = 0;
+    index.countFn(function (totalCount) {
+        index.totalCount = totalCount;
         stream.on('data', function (elt) {
             stream.pause();
             injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
-                dao.count++;
+                index.count++;
                 stream.resume();
             });
         });
@@ -121,7 +122,11 @@ exports.injectDataToIndex = function (indexName, indexMapping, dao, riverFunctio
     });
 };
 
-function createIndex(indexName, indexMapping, dao, riverFunction) {
+function createIndex(index) {
+    var indexName = index.indexName;
+    var indexMapping = index.indexJson;
+    var dao = index.dao;
+    var riverFunction = index.filter;
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
         if (doesIt) {
             console.log("index already exists.");
@@ -141,48 +146,16 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
     });
 }
 
-var daos = {
-    "cde": {
-        dao: require("../../cde/node-js/mongo-cde"),
-        countFn: require("../../cde/node-js/mongo-cde").deCount,
-        count: 0,
-        totalCount: 0
-    },
-    "form": {
-        dao: require("../../form/node-js/mongo-form"),
-        countFn: require("../../form/node-js/mongo-form").count,
-        count: 0,
-        totalCount: 0
-    },
-    "board": {
-        dao: require("../../cde/node-js/mongo-cde").boardsDao,
-        countFn: require("../../cde/node-js/mongo-cde").boardCount,
-        count: 0,
-        totalCount: 0
-    },
-    "storedQuery": {
-        dao: require("./dbLogger").storedQueriesDao,
-        countFn: require("./dbLogger").storedQueriesCount,
-        count: 0,
-        totalCount: 0
-    }
-};
-exports.daos = daos;
-
 exports.initEs = function () {
-    esInit.indices.forEach(function(i) {
-        createIndex(i.indexName, i.indexJson, daos[i.name], i.filter);
+    esInit.indices.forEach(function (index) {
+        createIndex(index);
     });
 };
 
 // pass index as defined in elasticSearchInit.indices
-exports.reIndex = function (index, progress, done) {
-    var indexName = index.indexName;
-    var indexMapping = index.indexJson;
-    var dao = daos[index.name];
-    var riverFunction = index.filter;
-    console.log("inject data into index: " + indexName);
-    exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction)
+exports.reIndex = function (index) {
+    console.log("inject data into index: " + index.indexName);
+    exports.injectDataToIndex(index);
 };
 
 exports.completionSuggest = function (term, cb) {
