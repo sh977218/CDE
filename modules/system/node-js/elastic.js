@@ -1,4 +1,5 @@
-var config = require('./parseConfig')
+var async = require('async')
+    , config = require('./parseConfig')
     , logging = require('./logging')
     , regStatusShared = require('../shared/regStatusShared')
     , usersvc = require("./usersrvc")
@@ -97,13 +98,13 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
-exports.injectDataToIndex = function (index) {
+exports.reIndex = function (index, cb) {
     var riverFunction = index.filter;
     var startTime = new Date().getTime();
     var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
-    var injector = new EsInjector(esClient, indexName, indexType);
-    var stream = dao.dao.getStream({archived: null});
+    var injector = new EsInjector(esClient, index.indexName, indexType);
+    var stream = index.dao.getStream({archived: null});
     index.count = 0;
     index.countFn(function (totalCount) {
         index.totalCount = totalCount;
@@ -117,16 +118,15 @@ exports.injectDataToIndex = function (index) {
         stream.on('end', function () {
             injector.inject(function () {
                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                if (cb) cb();
             });
         });
     });
 };
 
-function createIndex(index) {
+function createIndex(index, cb) {
     var indexName = index.indexName;
     var indexMapping = index.indexJson;
-    var dao = index.dao;
-    var riverFunction = index.filter;
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
         if (doesIt) {
             console.log("index already exists.");
@@ -139,23 +139,19 @@ function createIndex(index) {
                         console.log("error creating index. " + error);
                     } else {
                          console.log("index Created");
-                        exports.injectDataToIndex(indexName, indexMapping, dao, riverFunction)
+                        exports.reindex(index, cb);
                     }
                 });
         }
     });
 }
 
-exports.initEs = function () {
-    esInit.indices.forEach(function (index) {
-        createIndex(index);
-    });
-};
-
-// pass index as defined in elasticSearchInit.indices
-exports.reIndex = function (index) {
-    console.log("inject data into index: " + index.indexName);
-    exports.injectDataToIndex(index);
+exports.initEs = function (cb) {
+    async.forEach(esInit.indices, function (index, doneOneIndex) {
+        createIndex(index, doneOneIndex);
+    }, function doneAllIndices() {
+        if (cb) cb();
+    })
 };
 
 exports.completionSuggest = function (term, cb) {

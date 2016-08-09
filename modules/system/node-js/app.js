@@ -86,8 +86,7 @@ exports.init = function (app) {
     app.get('/indexTotalNumDoc/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
-            var dao = elastic.daos[index.name];
-            dao.countFn(function (totalCount) {
+            index.countFn(function (totalCount) {
                 res.status(200).send({totalCount: totalCount});
             })
         } else {
@@ -98,8 +97,7 @@ exports.init = function (app) {
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
-            var dao = elastic.daos[index.name];
-            res.status(200).send({count: dao.count});
+            res.status(200).send({count: index.count});
         } else {
             res.status(401).send();
         }
@@ -108,11 +106,9 @@ exports.init = function (app) {
     app.post('/reindex/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
-            var indexName = index.indexName;
-            var indexMapping = index.indexJson;
-            var dao = elastic.daos[index.name];
-            var riverFunction = index.filter;
-            elastic.injectDataToIndex(indexName, indexMapping, dao, riverFunction);
+            elastic.reIndex(index, function () {
+                res.status(200).send("finished reindex");
+            });
         } else {
             res.status(401).send();
         }

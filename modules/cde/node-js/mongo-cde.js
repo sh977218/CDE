@@ -54,21 +54,9 @@ exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
-exports.boardsDao = {
-    getStream: function () {
-        return PinningBoard.find({}).sort({_id: -1}).stream();
-    }
-};
-
 exports.boardsByUserId = function (userId, callback) {
     PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
-    });
-};
-
-exports.boardCount = function (callback) {
-    PinningBoard.count({}).exec(function (err, count) {
-        callback(count);
     });
 };
 
@@ -88,9 +76,9 @@ exports.userTotalSpace = function (name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
-exports.deCount = function (callback) {
-    DataElement.find({"archived": null}).count().exec(function (err, count) {
-        callback(count);
+exports.count = function (condition, callback) {
+    DataElement.count(condition).count().exec(function (err, count) {
+        callback(err, count);
     });
 };
 

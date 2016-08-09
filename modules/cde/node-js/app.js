@@ -429,7 +429,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/deCount', function (req, res) {
-        mongo_data.deCount(function (result) {
+        mongo_data.count(function (result) {
             res.send({count: result});
         });
     });

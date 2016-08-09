@@ -37,6 +37,46 @@ exports.boardRefresh = function (cb) {
     esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
 };
 
+exports.storedQueryUpdateOrInsert = function (elt) {
+    if (elt) {
+        var doc = elt.toObject();
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.storedQueryIndex.name,
+            type: "storedquery",
+            id: elt._id.toString(),
+            body: doc
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to Index document: " + elt._id.toString(),
+                    origin: "storedQuery.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.storedQueryDelete = function (elt) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.storedQueryIndex.name,
+            type: "storedquery",
+            id: elt._id.toString()
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete storedQuery: " + elt._id.toString(),
+                    origin: "cde.elastic.storeQueryDelete",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
 exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();

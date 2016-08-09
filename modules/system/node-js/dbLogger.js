@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
     , logging = require('./logging')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
+    , schemas_system = require('../../system/node-js/schemas')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
     ;
@@ -11,88 +12,13 @@ var mongoose = require('mongoose')
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
-
-// w = 0 means write very fast. It's ok if it fails.   
-// capped means no more than 5 gb for that collection.
-var logSchema = new mongoose.Schema(
-{
-    level: String
-    , remoteAddr: {type: String, index: true}
-    , url: String
-    , method: String
-    , httpStatus: String
-    , date: {type: Date, index: true}
-    , referrer: String
-    , responseTime: Number
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var logErrorSchema = new mongoose.Schema(
-{
-    message: String
-    , date: {type: Date, index: true}
-    , origin: String
-    , stack: String
-    , details: String
-    , request: {
-        url: String
-        , method: String
-        , params: String
-        , body: String
-        , username: String
-        , userAgent: String
-        , ip: String
-    }
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var clientErrorSchema= new mongoose.Schema(
-{
-    message: String
-    , date: {type: Date, index: true}
-    , origin: String
-    , name: String
-    , stack: String
-    , userAgent: String
-    , url: String
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var storedQuerySchema = new mongoose.Schema(
-    {
-        searchTerm: {type: String, lowercase: true, trim: true}
-        , date: {type: Date, default: Date.now}
-        , searchToken: String
-        , username: String
-        , remoteAddr: String
-        , isSiteAdmin: Boolean
-        , regStatuses: [String]
-        , selectedOrg1: String
-        , selectedOrg2: String
-        , selectedElements1: [String]
-        , selectedElements2: [String]
-    }, { safe: {w: 0}});
-
-var feedbackIssueSchema = new mongoose.Schema({
-    date: { type: Date, default: Date.now, index: true }
-    , user: {
-        username: String
-        , ip: String
-    }
-    , screenshot: {
-        id: String
-        , content: String
-    }
-    , rawHtml: String
-    , userMessage: String
-    , browser: String
-    , reportedUrl: String
-});
-
 var conn = connHelper.establishConnection(config.database.log);
 
-var LogModel = conn.model('DbLogger', logSchema);
-var LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
-var StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
-var FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
+var LogModel = conn.model('DbLogger', schemas_system.logSchema);
+var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
+var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
+var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
+var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 
 exports.StoredQueryModel = StoredQueryModel;
 
@@ -117,17 +43,6 @@ function sqEsUpdate(elt) {
         });
     }
 }
-
-storedQuerySchema.pre('save', function(next) {
-    sqEsUpdate(this);
-    next();
-});
-
-storedQuerySchema.pre('update', function(next) {
-    sqEsUpdate(this);
-    next();
-});
-
 
 exports.storeQuery = function(settings, callback) {
     var storedQuery = {
@@ -165,17 +80,6 @@ exports.storeQuery = function(settings, callback) {
 
         //
     }
-};
-
-exports.storedQueriesDao = {
-    getStream: function() {
-        return StoredQueryModel.find({}).sort({_id: -1}).stream();
-    }
-};
-exports.storedQueriesCount = function (callback) {
-    StoredQueryModel.find({}).count().exec(function (err, count) {
-        callback(count);
-    });
 };
 
 exports.log = function(message, callback) {

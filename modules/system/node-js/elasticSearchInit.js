@@ -1,5 +1,5 @@
-var config = require('config'),
-    hash = require("crypto");
+var config = require('config');
+var hash = require("crypto");
 
 exports.createIndexJson = {
     "mappings": {
@@ -333,7 +333,7 @@ exports.indices = [
         indexJson: exports.createIndexJson,
         filter: exports.riverFunction,
         dao: require("../../cde/node-js/mongo-cde"),
-        countFn: require("../../cde/node-js/mongo-cde").deCount,
+        countFn: require("../../cde/node-js/mongo-cde").count,
         count: 0,
         totalCount: 0
     },
@@ -351,8 +351,8 @@ exports.indices = [
         name: "board",
         indexName: config.elastic.boardIndex.name,
         indexJson: exports.createBoardIndexJson,
-        dao: require("../../cde/node-js/mongo-cde").boardsDao,
-        countFn: require("../../cde/node-js/mongo-cde").boardCount,
+        dao: require("../../cde/node-js/mongo-board"),
+        countFn: require("../../cde/node-js/mongo-board").count,
         count: 0,
         totalCount: 0
     },
@@ -361,8 +361,8 @@ exports.indices = [
         indexName: config.elastic.storedQueryIndex.name,
         indexJson: exports.createStoredQueryIndexJson,
         filter: exports.storedQueryRiverFunction,
-        dao: require("./dbLogger").storedQueriesDao,
-        countFn: require("./dbLogger").storedQueriesCount,
+        dao: require("../../cde/node-js/mongo-storedquery"),
+        countFn: require("../../cde/node-js/mongo-storedquery").count,
         count: 0,
         totalCount: 0
     }

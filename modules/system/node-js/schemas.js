@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+    , config = require('../../system/node-js/parseConfig')
     , authorizationShared = require('../shared/authorizationShared')
     , regStatusShared = require("../shared/regStatusShared") // jshint ignore:line
     ;
@@ -316,6 +317,83 @@ schemas.classificationAudit = new mongoose.Schema({
     , action: {type: String, enum: ["add", "delete", "rename", "reclassify"]}
     , path: [String]
 });
+
+
+schemas.logSchema = new mongoose.Schema(
+    {
+        level: String
+        , remoteAddr: {type: String, index: true}
+        , url: String
+        , method: String
+        , httpStatus: String
+        , date: {type: Date, index: true}
+        , referrer: String
+        , responseTime: Number
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.logErrorSchema = new mongoose.Schema(
+    {
+        message: String
+        , date: {type: Date, index: true}
+        , origin: String
+        , stack: String
+        , details: String
+        , request: {
+        url: String
+        , method: String
+        , params: String
+        , body: String
+        , username: String
+        , userAgent: String
+        , ip: String
+    }
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.clientErrorSchema = new mongoose.Schema(
+    {
+        message: String
+        , date: {type: Date, index: true}
+        , origin: String
+        , name: String
+        , stack: String
+        , userAgent: String
+        , url: String
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.storedQuerySchema = new mongoose.Schema(
+    {
+        searchTerm: {type: String, lowercase: true, trim: true}
+        , date: {type: Date, default: Date.now}
+        , searchToken: String
+        , username: String
+        , remoteAddr: String
+        , isSiteAdmin: Boolean
+        , regStatuses: [String]
+        , selectedOrg1: String
+        , selectedOrg2: String
+        , selectedElements1: [String]
+        , selectedElements2: [String]
+    }, {safe: {w: 0}});
+
+schemas.feedbackIssueSchema = new mongoose.Schema({
+    date: {type: Date, default: Date.now, index: true}
+    , user: {
+        username: String
+        , ip: String
+    }
+    , screenshot: {
+        id: String
+        , content: String
+    }
+    , rawHtml: String
+    , userMessage: String
+    , browser: String
+    , reportedUrl: String
+});
+
+
+
+
 
 schemas.classificationAudit.set('collection', 'classificationAudit');
 
