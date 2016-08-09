@@ -159,13 +159,8 @@ exports.listOrgsLongName = function(callback) {
 };
 
 exports.listOrgsDetailedInfo = function(callback) {
-<<<<<<< HEAD
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1,
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1,"embeds": 1,
         "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1, "cdeStatusValidationRules": 1,"propertyKeys": 1}).exec(function(err, result) {
-=======
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, embeds: 1,
-        "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1, "cdeStatusValidationRules": 1}).exec(function(err, result) {
->>>>>>> 3118cd463d000494fc9538a5cd5e7ffe53b17bae
         callback("", result);
     });
 };
