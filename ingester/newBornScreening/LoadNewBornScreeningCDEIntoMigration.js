@@ -10,6 +10,11 @@ var async = require('async'),
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
+var loinc_num_datatype_map = {
+    '62317-3': 'Date',
+    '62328-0': 'Number'
+};
+
 const source = "LOINC";
 const stewardOrgName = 'NLM';
 
@@ -43,7 +48,7 @@ var statusMap = {
     'Active': 'Qualified'
 };
 
-function parseNaming(newBornScreening, loinc) {
+function parseNaming(loinc) {
     var naming = [];
     var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
     if (LOINCNAME) {
@@ -99,7 +104,7 @@ function parseNaming(newBornScreening, loinc) {
     return naming;
 }
 
-function parseConcepts(newBornScreening, loinc) {
+function parseConcepts(loinc) {
     var concepts = {objectClass: [], property: [], dataElementConcept: []};
     if (loinc['PARTS']) {
         loinc['PARTS']['PARTS'].forEach(function (p) {
@@ -113,7 +118,7 @@ function parseConcepts(newBornScreening, loinc) {
     return concepts;
 }
 
-function parseProperties(newBornScreening, loinc) {
+function parseProperties(loinc) {
     var properties = [];
     if (loinc['RELATED NAMES']) {
         var table = '<table class="table table-striped">';
@@ -177,7 +182,7 @@ function parseProperties(newBornScreening, loinc) {
     return properties;
 }
 
-function parseReferenceDoc(newBornScreening, loinc) {
+function parseReferenceDoc(loinc) {
     var referenceDocuments = [];
     if (loinc['ARTICLE']) {
         loinc['ARTICLE']['ARTICLE'].forEach(function (article) {
@@ -202,15 +207,19 @@ function parseReferenceDoc(newBornScreening, loinc) {
     return referenceDocuments;
 }
 
-function parseValueDomain(newBornScreening, loinc) {
-    var valueDomain = {datatype: 'Text'};
+function parseValueDomain(loinc) {
+    var valueDomain = {
+        datatype: 'Text',
+        uom: ''
+    };
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
-    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
+    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST'] || loinc['EXAMPLE ANSWER LIST']) {
         valueDomain.datatype = 'Value List';
         var type;
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
+        if (loinc['EXAMPLE ANSWER LIST']) type = 'EXAMPLE ANSWER LIST';
         valueDomain.ids = [{
             id: loinc[type][type].answerListId.id,
             source: 'LOINC',
@@ -225,22 +234,26 @@ function parseValueDomain(newBornScreening, loinc) {
             }
         });
     } else {
-        if (uom_datatype_map[newBornScreening.EXAMPLE_UNITS]) {
-            valueDomain.datatype = uom_datatype_map[newBornScreening.EXAMPLE_UNITS];
+        if (loinc['EXAMPLE UNITS'] && loinc['EXAMPLE UNITS']['EXAMPLE UNITS']) {
+            var unit = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
+            valueDomain.datatype = uom_datatype_map[unit];
         }
+    }
+    if (loinc_num_datatype_map[loinc.loincId]) {
+        valueDomain.datatype = loinc_num_datatype_map[loinc.loincId];
     }
     return valueDomain;
 }
 
 function createCde(newBornScreening, loinc, cb) {
-    var naming = parseNaming(newBornScreening, loinc);
+    var naming = parseNaming(loinc);
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
     var ids = [{source: 'LOINC', id: loinc.loincId, version: version}];
-    var properties = parseProperties(newBornScreening, loinc);
-    var referenceDocuments = parseReferenceDoc(newBornScreening, loinc);
-    var valueDomain = parseValueDomain(newBornScreening, loinc);
-    var concepts = parseConcepts(newBornScreening, loinc);
+    var properties = parseProperties(loinc);
+    var referenceDocuments = parseReferenceDoc(loinc);
+    var valueDomain = parseValueDomain(loinc);
+    var concepts = parseConcepts(loinc);
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
@@ -335,11 +348,6 @@ function run() {
                                         }
                                     }, function doneAllPs() {
                                         createCde(newBornScreening, loinc, function (newCde) {
-                                            if (newBornScreening.EXAMPLE_UNITS)
-                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UNITS;
-                                            else if (newBornScreening.EXAMPLE_UCUM_UNITS)
-                                                newCde.valueDomain.uom = newBornScreening.EXAMPLE_UCUM_UNITS;
-                                            else newCde.valueDomain.uom = '';
                                             var newCdeObj = new MigrationDataElementModel(newCde);
                                             newCdeObj.save(function (err) {
                                                 if (err) throw err;
