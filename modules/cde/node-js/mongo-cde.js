@@ -115,7 +115,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(null)
         .exec(function (err, cdes) {
