@@ -6,7 +6,6 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl',
     delete elt.tinyId;
     delete elt._id;
     delete elt.source;
-    delete elt.sourceId;
     delete elt.origin;
     delete elt.created;
     delete elt.updated;
