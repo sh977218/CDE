@@ -130,7 +130,7 @@ exports.reIndex = function (index, cb) {
         });
         stream.on('end', function () {
             injector.inject(function () {
-                console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                console.log("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                 if (cb) cb();
             });
         });
