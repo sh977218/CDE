@@ -23,7 +23,6 @@ var derivationRuleSchema = new mongoose.Schema(
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]
     , source: String
-    , sourceId: String
     , origin: String
     , stewardOrg: {
         name: String
