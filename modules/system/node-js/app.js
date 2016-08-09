@@ -25,7 +25,6 @@ var passport = require('passport')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     , app_status = require("./status.js")
-    , async = require('async')
     ;
 
 exports.init = function (app) {
