@@ -18,19 +18,17 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                 controller: function(i) {
                     $scope.i = i;
                     $scope.okReIndex = function() {
-                        $http.get("/indexTotalNumDoc/" + i).success(function (result) {
-                            $scope.esIndices[i].totalCount = result.totalCount;
-                            $http.post('/reindex/' + i).success(function () {
-                                console.log('reindexing');
-                            });
-                            var indexFn = setInterval(function () {
-                                $http.get("indexCurrentNumDoc/" + i).success(function (result) {
-                                    $scope.esIndices[i].count = result.count;
-                                    if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount)
-                                        clearInterval(indexFn);
-                                })
-                            }, 5000);
+                        $http.post('/reindex/' + i).success(function () {
+                            console.log('reindexing');
                         });
+                        var indexFn = setInterval(function () {
+                            $http.get("indexCurrentNumDoc/" + i).success(function (result) {
+                                $scope.esIndices[i].count = result.count;
+                                $scope.esIndices[i].totalCount = result.totalCount;
+                                if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount)
+                                    clearInterval(indexFn);
+                            })
+                        }, 5000);
                     };
                 },
                 resolve: {

@@ -83,22 +83,10 @@ exports.init = function (app) {
         res.send(token);
     });
 
-    app.get('/indexTotalNumDoc/:indexPosition', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
-            var index = esInit.indices[req.params.indexPosition];
-            index.countFn({archived: null}, function (err, totalCount) {
-                if (err) res.status(500).send(err);
-                else res.status(200).send({totalCount: totalCount});
-            })
-        } else {
-            res.status(401).send();
-        }
-    });
-
     app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
             var index = esInit.indices[req.params.indexPosition];
-            res.status(200).send({count: index.count});
+            res.status(200).send({count: index.count, totalCount: index.totalCount});
         } else {
             res.status(401).send();
         }

@@ -6,6 +6,10 @@ var async = require('async')
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
     , dbLogger = require('../../system/node-js/dbLogger.js')
+    , mongo_cde = require("../../cde/node-js/mongo-cde")
+    , mongo_form = require("../../form/node-js/mongo-form")
+    , mongo_board = require("../../cde/node-js/mongo-board")
+    , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     ;
 
 var esClient = new elasticsearch.Client({
@@ -98,6 +102,14 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
+exports.daoMap = {
+    "cde": mongo_cde,
+    "form": mongo_form,
+    "board": mongo_board,
+    "storedQuery": mongo_storedQuery
+};
+
+
 exports.reIndex = function (index, cb) {
     var riverFunction = index.filter;
     var startTime = new Date().getTime();
@@ -105,9 +117,9 @@ exports.reIndex = function (index, cb) {
     // start re-index all
     var injector = new EsInjector(esClient, index.indexName, indexType);
     var condition = {archived: null};
-    var stream = index.dao.getStream(condition);
+    var stream = exports.daoMap[index.name].getStream(condition);
     index.count = 0;
-    index.countFn(condition, function (totalCount) {
+    exports.daoMap[index.name].count(condition, function (err, totalCount) {
         index.totalCount = totalCount;
         stream.on('data', function (elt) {
             stream.pause();

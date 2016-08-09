@@ -3,8 +3,8 @@ var elastic = require('./elastic');
 var schemas_system = require('../../system/node-js/schemas');
 var connHelper = require('../../system/node-js/connections');
 
-exports.type = "storedquery";
-exports.name = "storedqueries";
+exports.type = "storedQuery";
+exports.name = "storedQueries";
 
 var conn = connHelper.establishConnection(config.database.log);
 var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);

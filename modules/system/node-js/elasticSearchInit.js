@@ -331,40 +331,24 @@ exports.indices = [
         name: "cde",
         indexName: config.elastic.index.name,
         indexJson: exports.createIndexJson,
-        filter: exports.riverFunction,
-        dao: require("../../cde/node-js/mongo-cde"),
-        countFn: require("../../cde/node-js/mongo-cde").count,
-        count: 0,
-        totalCount: 0
+        filter: exports.riverFunction
     },
     {
         name: "form",
         indexName: config.elastic.formIndex.name,
         indexJson: exports.createFormIndexJson,
-        filter: exports.riverFunction,
-        dao: require("../../form/node-js/mongo-form"),
-        countFn: require("../../form/node-js/mongo-form").count,
-        count: 0,
-        totalCount: 0
+        filter: exports.riverFunction
     },
     {
         name: "board",
         indexName: config.elastic.boardIndex.name,
-        indexJson: exports.createBoardIndexJson,
-        dao: require("../../cde/node-js/mongo-board"),
-        countFn: require("../../cde/node-js/mongo-board").count,
-        count: 0,
-        totalCount: 0
+        indexJson: exports.createBoardIndexJson
     },
     {
         name: "storedQuery",
         indexName: config.elastic.storedQueryIndex.name,
         indexJson: exports.createStoredQueryIndexJson,
-        filter: exports.storedQueryRiverFunction,
-        dao: require("../../cde/node-js/mongo-storedquery"),
-        countFn: require("../../cde/node-js/mongo-storedquery").count,
-        count: 0,
-        totalCount: 0
+        filter: exports.storedQueryRiverFunction
     }
 ];
 
