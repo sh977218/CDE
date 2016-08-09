@@ -206,11 +206,12 @@ function parseValueDomain(newBornScreening, loinc) {
     var valueDomain = {datatype: 'Text'};
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
-    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST']) {
+    if (loinc['NORMATIVE ANSWER LIST'] || loinc['PREFERRED ANSWER LIST'] || loinc['EXAMPLE ANSWER LIST']) {
         valueDomain.datatype = 'Value List';
         var type;
         if (loinc['NORMATIVE ANSWER LIST']) type = 'NORMATIVE ANSWER LIST';
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
+        if (loinc['EXAMPLE ANSWER LIST']) type = 'EXAMPLE ANSWER LIST';
         valueDomain.ids = [{
             id: loinc[type][type].answerListId.id,
             source: 'LOINC',
