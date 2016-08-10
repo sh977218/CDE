@@ -40,6 +40,8 @@ angular.module('OrgFactories', ['ngResource'])
                 // Transforms response to object literal notation
                 response.forEach(function(org) {
                     if(org) {
+                        if (!org.propertyKeys) org.propertyKeys = [];
+                        if (!org.nameContexts) org.nameContexts = [];
                         OrgHelpers.orgsDetailedInfo[org.name] = org;
                     }
                 });

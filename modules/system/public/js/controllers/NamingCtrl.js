@@ -1,12 +1,14 @@
-angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers',
-    function($scope, $modal, OrgHelpers)
-{
+angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert',
+    function ($scope, $modal, OrgHelpers, Alert) {
 
-    $scope.allContexts = function() {
-        return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
-    };
+        $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
 
-    $scope.openNewNamePair = function () {
+        $scope.openNewNamePair = function () {
+            if (!$scope.allContexts || $scope.allContexts.length === 0) {
+                Alert.addAlert("warning", "No valid context present, have an Org Admin go to Org Management > List Management to add one");
+                return;
+            }
+
         $modal.open({
             animation: false,
             templateUrl: 'newNamePairModalContent.html',
@@ -15,10 +17,8 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                 cde: function() {
                     return $scope.elt;
                 },
-                orgHelpers: function () {
-                    return OrgHelpers.getOrgsDetailedInfoAPI(function () {
-                        return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts
-                    });
+                context: function () {
+                    return $scope.allContexts;
                 }
             }
         });
