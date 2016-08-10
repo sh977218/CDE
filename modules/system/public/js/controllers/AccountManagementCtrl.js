@@ -84,7 +84,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     
     // Retrieve orgs user is curator of
     $scope.getOrgCurators = function() {
-        $http.get("/orgcurators").then(function(response) {
+        $http.get("/orgCurators").then(function(response) {
             $scope.orgCurators = response.data.orgs;
         });
     };
@@ -202,23 +202,26 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
 
-    $scope.getExistingKeys = function (newKey) {
-        var result = allPropertyKeys.slice(0);
-        result.push(newKey);
+    $scope.getExistingKeys = function (search) {
+        var result = allPropertyKeys.slice();
+        if (search && result.indexOf(search) === -1) {
+            result.unshift(search);
+        }
         return result;
     };
 
-    $scope.getExistingContexts = function (newContext) {
-        var result = allContexts.slice(0);
-        result.push(newContext);
+    $scope.getExistingContexts = function (search) {
+        var result = allContexts.slice();
+        if (search && result.indexOf(search) === -1) {
+            result.unshift(search);
+        }
         return result;
     };
 
 
-
-    $scope.updateOrg = function(c) {
+    $scope.updateOrg = function (org) {
         $timeout(function(){
-            AccountManagement.updateOrg(c,
+            AccountManagement.updateOrg(org,
                 function(res) {
                     $scope.addAlert("success", res);
                     $scope.orgs = $scope.getOrgs();
