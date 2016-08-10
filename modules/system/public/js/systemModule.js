@@ -36,7 +36,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/classificationmanagement', {
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
-        }).when('/orgauthority', {
+        }).when('/orgAuthority', {
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAuthority.html'
         }).when('/profile', {
