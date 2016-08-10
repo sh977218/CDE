@@ -9,7 +9,7 @@ var async = require('async')
     , mongo_cde = require("../../cde/node-js/mongo-cde")
     , mongo_form = require("../../form/node-js/mongo-form")
     , mongo_board = require("../../cde/node-js/mongo-board")
-    , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery11111")
+    , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     ;
 
 var esClient = new elasticsearch.Client({
