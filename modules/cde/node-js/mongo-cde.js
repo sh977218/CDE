@@ -26,6 +26,7 @@ var mongo_data = this;
 exports.DataElement = DataElement;
 exports.PinningBoard = PinningBoard;
 
+// @TODO update meshTree here.
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
     elastic.updateOrInsert(self);

@@ -33,6 +33,10 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
             });
         };
 
+        $scope.syncMesh = function() {
+            $http.post("syncWithMesh");
+        };
+
         $scope.getNodeStatus = function (status) {
             if (status.nodeStatus === 'Running' && (new Date().getTime() - new Date(status.lastUpdate).getTime()) > (45 * 1000)) {
                 return 'Not Responding';

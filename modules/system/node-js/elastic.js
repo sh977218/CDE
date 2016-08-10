@@ -255,6 +255,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
+    // filter by topic
+    if (settings.meshTree) {
+        queryStuff.query.bool.must.push({term: {"flatMeshTrees": settings.meshTree}});
+    }
+
     // Filter by selected Statuses
     var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
@@ -368,6 +373,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
         if (settings.selectedOrgAlt !== undefined) {
             flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
+
+        queryStuff.aggregations.meshTrees = {
+            terms: {
+                size: 500,
+                field: "flatMeshTrees",
+                include: "[^;]+"
+            }
+        };
+
     }
 
     if (queryStuff.query.bool.must.length === 0) {
@@ -418,6 +432,89 @@ var searchTemplate = {
         index: config.elastic.formIndex.name,
         type: "form"
     }
+};
+
+
+// TODO something is worng because you can't search after running this.
+exports.syncWithMesh = function(allMappings) {
+
+    var classifToTrees = {};
+    allMappings.forEach(function(m) {
+        // from a;b;c to a a;b a;b;c
+        classifToTrees[m.flatClassification] = [];
+        m.flatTrees.forEach(function (treeNode) {
+            classifToTrees[m.flatClassification].push(treeNode);
+            while(treeNode.indexOf(";") > -1) {
+                treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
+                classifToTrees[m.flatClassification].push(treeNode);
+            }
+        });
+    });
+
+    var search = JSON.stringify(JSON.parse(searchTemplate.cde));
+    search.scroll = '1m';
+    search.search_type = 'scan';
+    search.body = {};
+
+    var scrollThrough = function (scrollId) {
+        esClient.scroll({scrollId: scrollId, scroll: '1m'},
+            function (err, response) {
+                if (err) {
+                    lock = false;
+                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                        {
+                            origin: "system.elastic.syncWithMesh", stack: new Error().stack
+                        });
+                } else {
+                    var newScrollId = response._scroll_id;
+                    if (response.hits.hits.length > 0) {
+                        response.hits.hits.forEach(function (hit) {
+                            var thisElt = hit._source;
+                            var trees = new Set();
+                            thisElt.flatClassifications.forEach(function (fc) {
+                                if (classifToTrees[fc]) {
+                                    classifToTrees[fc].forEach(function (node) {
+                                        trees.add(node);
+                                    });
+                                }
+                            });
+                            if (trees.size > 0) {
+                                esClient.update({
+                                    index: config.elastic.index.name,
+                                    type: "dataelement",
+                                    id: thisElt.tinyId,
+                                    body: {
+                                        doc: {flatMeshTrees: Array.from(trees)}
+                                    }
+                                }, function (err, response) {
+                                    if (err) console.log("ERR: " + err);
+                                    else {
+                                        console.log(JSON.stringify(response));
+                                    }
+                                });
+                            }
+                        });
+                        scrollThrough(newScrollId);
+                    } else {
+                        console.log("done");
+                    }
+                }
+            });
+    };
+
+    esClient.search(search, function (err, response) {
+        if (err) {
+            lock = false;
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                {
+                    origin: "system.elastic.syncWithMesh", stack: new Error().stack,
+                    details: ""
+                });
+        } else {
+            scrollThrough(response._scroll_id);
+        }
+    });
+
 };
 
 

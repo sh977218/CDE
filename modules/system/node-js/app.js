@@ -25,6 +25,8 @@ var passport = require('passport')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     , app_status = require("./status.js")
+    , async = require('async')
+    , request = require('request')
     ;
 
 exports.init = function (app) {
@@ -857,7 +859,7 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
         mongo_data_system.disableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -865,7 +867,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', function(req, res){
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
         mongo_data_system.enableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -874,27 +876,90 @@ exports.init = function (app) {
 
     app.get('/meshClassification', function(req, res) {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        mongo_data_system.getMeshClassification(req.query.classification, function(err, mm) {
+        mongo_data_system.findMeshClassification({flatClassification: req.query.classification}, function(err, mm) {
             if (err) return res.status(500).send();
             return res.send(mm[0]);
         });
     });
 
+    var meshTopTreeMap = {
+        'A': "Anatomy",
+        'B': "Organisms",
+        'C': "Diseases",
+        'D': "Chemicals and Drugs",
+        'E': "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
+        'F': "Psychiatry and Psychology",
+        'G': "Phenomena and Processes",
+        'H': "Disciplines and Occupations",
+        'I': "Anthropology, Education, Sociology, and Social Phenomena",
+        'J': "Technology, Industry, and Agriculture",
+        'K': "Humanities",
+        'L': "Information Science",
+        'M': "Named Groups",
+        'N': "Health Care",
+        'V': "Publication Characteristics",
+        'Z': "Geographicals"
+    };
+
+    function flatTreesFromMeshDescriptorArray(descArr, cb) {
+        async.each(descArr, function(desc, oneDescDone) {
+            // @TODO make as config
+            request("https://meshb-qa.nlm.nih.gov/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
+                async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
+                    var allTrees = [treeNumber.substr(0, 1)];
+                    request("https://meshb-qa.nlm.nih.gov/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
+                        allTrees.push(oneTreeBody.parents.map(function(a) {
+                            return a._generated.RecordName;
+                        }).join(";"));
+                        tnDone();
+                    });
+                }, function allTnDone() {
+                    oneDescDone();
+                });
+            });
+        }, function allDescDone() {
+            cb(allTrees);
+        });
+    }
+
     app.post('/meshClassification', function (req, res) {
         if (req.body._id) {
             var id = req.body._id;
             delete req.body._id;
-            mongo_data_system.MeshClassification.update({_id: id}, req.body, function (err) {
-                if (err) res.status(500).send();
-                else res.send();
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+                req.body.flatTrees = trees;
+                mongo_data_system.MeshClassification.update({_id: id}, req.body, function (err) {
+                    if (err) res.status(500).send();
+                    else {
+                        res.send();
+                    }
+                });
             });
         } else {
-            new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
-                if (err) res.status(500).send();
-                else res.send(obj);
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+                req.body.flatTrees = trees;
+                new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
+                    if (err) res.status(500).send();
+                    else {
+                        res.send(obj);
+                    }
+                });
             });
         }
     });
 
+    app.post("/syncWithMesh", function (req, res) {
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+        syncWithMesh();
+        res.send();
+    });
+
+   function syncWithMesh() {
+       mongo_data_system.findMeshClassification({}, function (err, allMappings) {
+           elastic.syncWithMesh(allMappings);
+       });
+   }
+
+    setInterval(syncWithMesh, 5 * 60 * 1000);
 
 };

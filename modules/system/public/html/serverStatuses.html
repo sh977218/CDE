@@ -12,6 +12,9 @@
                 <button class="btn btn-default" ng-click="reIndex($index)"><i class="fa fa-refresh"></i> Re-index: <b>{{i.name}}</b> /
                     {{i.indexName}}</button>
             </div>
+            <div>
+                <button class="btn btn-default" ng-click="syncMesh()">Sync with MeSH</button>
+            </div>
         </div>
 
         <script type="text/ng-template" id="confirmReindex.html">

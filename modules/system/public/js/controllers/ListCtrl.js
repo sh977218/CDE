@@ -262,7 +262,7 @@ angular.module('systemModule').controller('ListCtrl',
             filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg) {
+            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg || settings.meshTree) {
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
@@ -304,6 +304,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
+        $scope.searchSettings.meshTree = $routeParams.topic;
         $scope.reload(type);
     };
 

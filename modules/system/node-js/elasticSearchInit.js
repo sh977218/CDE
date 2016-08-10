@@ -11,6 +11,7 @@ exports.createIndexJson = {
                     }
                 }
                 , "flatClassifications": {"type": "string", "index": "not_analyzed"}
+                , "flatMeshTrees": {"type": "string", "index": "not_analyzed"}
                 , "classification": {
                     properties: {
                         "stewardOrg": {

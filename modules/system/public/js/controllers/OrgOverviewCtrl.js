@@ -28,6 +28,11 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
         }
     });
 
+    $scope.browseTopic = function(topic) {
+        $location.url($scope.module + "/search?topic=" + encodeURIComponent(topic));
+        $anchorScroll('top');
+    };
+
     $scope.browseOrg = function(orgName) {
         if ($scope.embedded) {
             $scope.searchSettings.selectedOrg = orgName;
@@ -36,6 +41,10 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
             $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
             $anchorScroll('top');
         }
+    };
+
+    $scope.browseByTopic = function () {
+        $scope.byTopic = true;
     };
 
 }]);
