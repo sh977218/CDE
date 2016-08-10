@@ -152,7 +152,7 @@ function createIndex(index, cb) {
                         console.log("error creating index. " + error);
                     } else {
                          console.log("index Created");
-                        exports.reindex(index, cb);
+                        exports.reIndex(index, cb);
                     }
                 });
         }
