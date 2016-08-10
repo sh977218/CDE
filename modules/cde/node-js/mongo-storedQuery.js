@@ -8,6 +8,7 @@ exports.name = "storedQueries";
 
 var conn = connHelper.establishConnection(config.database.log);
 var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
+exports.StoredQueryModel = StoredQueryModel;
 
 schemas_system.storedQuerySchema.pre('save', function (next) {
     var self = this;

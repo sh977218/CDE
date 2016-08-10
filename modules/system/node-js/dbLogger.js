@@ -3,6 +3,7 @@ var mongoose = require('mongoose')
     , connHelper = require('./connections')
     , logging = require('./logging')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_storedQuery = require('../../cde/node-js/mongo-storedQuery')
     , email = require('../../system/node-js/email')
     , schemas_system = require('../../system/node-js/schemas')
     , elasticsearch = require('elasticsearch')
@@ -17,10 +18,8 @@ var conn = connHelper.establishConnection(config.database.log);
 var LogModel = conn.model('DbLogger', schemas_system.logSchema);
 var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
 var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
-var StoredQueryModel = conn.model('StoredQuery', schemas_system.storedQuerySchema);
+var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
-
-exports.StoredQueryModel = StoredQueryModel;
 
 function sqEsUpdate(elt) {
     var doc = esInit.storedQueryRiverFunction(elt.toObject());
