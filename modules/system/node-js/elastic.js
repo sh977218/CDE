@@ -1,7 +1,7 @@
 var async = require('async')
     , config = require('./parseConfig')
     , logging = require('./logging')
-    , regStatusShared = require('../shared/regStatusShared')
+    , regStatusShared = require('../shared/regStatusShared') //jshint ignore:line
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
@@ -117,10 +117,14 @@ exports.reIndex = function (index, cb) {
     // start re-index all
     var injector = new EsInjector(esClient, index.indexName, indexType);
     var condition = {archived: null};
-    var stream = exports.daoMap[index.name].getStream(condition);
     index.count = 0;
     exports.daoMap[index.name].count(condition, function (err, totalCount) {
+        if (err) {
+            console.log("Error getting count: " + err);
+        }
+        console.log("Total count for " + index.name + " is " + totalCount);
         index.totalCount = totalCount;
+        var stream = exports.daoMap[index.name].getStream(condition);
         stream.on('data', function (elt) {
             stream.pause();
             injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
@@ -133,6 +137,9 @@ exports.reIndex = function (index, cb) {
                 console.log("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
                 if (cb) cb();
             });
+        });
+        stream.on('error', function(err) {
+           console.log("Error getting stream: " + err);
         });
     });
 };
@@ -164,7 +171,7 @@ exports.initEs = function (cb) {
         createIndex(index, doneOneIndex);
     }, function doneAllIndices() {
         if (cb) cb();
-    })
+    });
 };
 
 exports.completionSuggest = function (term, cb) {
