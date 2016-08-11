@@ -39,7 +39,7 @@ exports.boardRefresh = function (cb) {
 
 exports.storedQueryUpdateOrInsert = function (elt) {
     if (elt) {
-        var doc = elt.toObject();
+        var doc =  esInit.storedQueryRiverFunction(elt.toObject());
         delete doc._id;
         esClient.index({
             index: config.elastic.storedQueryIndex.name,
