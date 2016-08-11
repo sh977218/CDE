@@ -221,7 +221,7 @@ function parseValueDomain(loinc) {
         if (loinc['PREFERRED ANSWER LIST']) type = 'PREFERRED ANSWER LIST';
         if (loinc['EXAMPLE ANSWER LIST']) type = 'EXAMPLE ANSWER LIST';
         valueDomain.ids = [{
-            id: loinc[type][type].answerListId.id,
+            id: loinc[type][type].answerListId.ID,
             source: 'LOINC',
             version: version
         }];
