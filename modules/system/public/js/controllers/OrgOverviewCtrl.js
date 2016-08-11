@@ -28,6 +28,19 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
         }
     });
 
+    $scope.$watch('aggregations.meshTrees.buckets', function() {
+        $scope.topics = {};
+        if ($scope.aggregations) {
+            $scope.aggregations.meshTrees.buckets.forEach(function (term) {
+                var spli = term.key.split(";");
+                if (!$scope.topics[spli[0]]) {
+                    $scope.topics[spli[0]] = [];
+                }
+                $scope.topics[spli[0]].push(spli[1]);
+            });
+        }
+    });
+
     $scope.browseTopic = function(topic) {
         $location.url($scope.module + "/search?topic=" + encodeURIComponent(topic));
         $anchorScroll('top');

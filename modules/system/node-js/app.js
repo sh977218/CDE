@@ -902,13 +902,13 @@ exports.init = function (app) {
     };
 
     function flatTreesFromMeshDescriptorArray(descArr, cb) {
+        var allTrees = new Set();
         async.each(descArr, function(desc, oneDescDone) {
             // @TODO make as config
             request("https://meshb-qa.nlm.nih.gov/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
                 async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
-                    var allTrees = [treeNumber.substr(0, 1)];
                     request("https://meshb-qa.nlm.nih.gov/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
-                        allTrees.push(oneTreeBody.parents.map(function(a) {
+                        allTrees.add(meshTopTreeMap[treeNumber.t.substr(0, 1)] + ";" + oneTreeBody.parents.map(function(a) {
                             return a._generated.RecordName;
                         }).join(";"));
                         tnDone();
@@ -918,7 +918,7 @@ exports.init = function (app) {
                 });
             });
         }, function allDescDone() {
-            cb(allTrees);
+            cb(Array.from(allTrees));
         });
     }
 
@@ -960,6 +960,7 @@ exports.init = function (app) {
        });
    }
 
+    // TODO set proper interval / cron
     setInterval(syncWithMesh, 5 * 60 * 1000);
 
 };

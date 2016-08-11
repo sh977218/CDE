@@ -58,9 +58,17 @@
                 </div>
             </div>
         </div>
+        <!-- TODO Sort the top topics -->
         <div ng-show="byTopic">
             <ul>
-                <li ng-repeat="topic in aggregations.meshTrees.buckets"><a href="" ng-click="browseTopic(topic.key)">{{topic.key}}</a></li>
+                <li ng-repeat="(key, value) in topics">
+                    {{key}}
+                    <ul>
+                        <li ng-repeat="t in value">
+                            <a href="" ng-click="browseTopic(topic.key)">{{t}}</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <small><span id="totalItems">{{totalItems}}</span> elements across all classifications</small>

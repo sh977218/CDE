@@ -378,7 +378,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             terms: {
                 size: 500,
                 field: "flatMeshTrees",
-                include: "[^;]+"
+                include: "[^;]+;[^;]+"
             }
         };
 
@@ -451,7 +451,7 @@ exports.syncWithMesh = function(allMappings) {
         });
     });
 
-    var search = JSON.stringify(JSON.parse(searchTemplate.cde));
+    var search = JSON.parse(JSON.stringify(searchTemplate.cde));
     search.scroll = '1m';
     search.search_type = 'scan';
     search.body = {};
