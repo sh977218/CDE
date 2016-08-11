@@ -38,8 +38,8 @@ exports.boardRefresh = function (cb) {
 };
 
 exports.storedQueryUpdateOrInsert = function (elt) {
-    if (elt) {
-        var doc =  esInit.storedQueryRiverFunction(elt.toObject());
+    var doc = esInit.storedQueryRiverFunction(elt.toObject());
+    if (doc) {
         delete doc._id;
         esClient.index({
             index: config.elastic.storedQueryIndex.name,
@@ -48,8 +48,8 @@ exports.storedQueryUpdateOrInsert = function (elt) {
             body: doc
         }, function (err) {
             if (err) {
-                dbLogger.logError({
-                    message: "Unable to Index document: " + elt._id.toString(),
+                exports.logError({
+                    message: "Unable to Index document: " + doc.tinyId,
                     origin: "storedQuery.elastic.updateOrInsert",
                     stack: err,
                     details: ""
