@@ -243,20 +243,30 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.openCloseAll($scope[type + 's'], "list");
             $scope.aggregations = result.aggregations;
 
-            if (result.aggregations !== undefined && result.aggregations.flatClassifications !== undefined) {
-                $scope.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
-                    return {name: c.key.split(';').pop(), count: c.doc_count};
-                });
-            } else {
-                $scope.aggregations.flatClassifications = [];
-            }
+            if (result.aggregations !== undefined) {
+                if (result.aggregations.flatClassifications !== undefined) {
+                    $scope.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassifications = [];
+                }
 
-            if (result.aggregations !== undefined && result.aggregations.flatClassificationsAlt !== undefined) {
-                $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
-                    return {name: c.key.split(';').pop(), count: c.doc_count};
-                });
-            } else {
-                $scope.aggregations.flatClassificationsAlt = [];
+                if (result.aggregations.flatClassificationsAlt !== undefined) {
+                    $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassificationsAlt = [];
+                }
+
+                //if (result.aggregations.meshTrees !== undefined) {
+                //    $scope.aggregations.meshTrees = result.aggregations.meshTrees.buckets.map(function (c) {
+                //        return {name: c.key.split(';').pop(), count: c.doc_count};
+                //    });
+                //} else {
+                //    $scope.aggregations.flatClassifications = [];
+                //}
             }
 
             filterOutWorkingGroups($scope.aggregations);

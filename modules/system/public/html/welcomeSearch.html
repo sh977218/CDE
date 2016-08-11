@@ -31,6 +31,7 @@
         <div>
             <div class="pull-left">
                 <h3 class="">Browse by classification or
+                    <!-- TODO add to url to support back button -->
                     <a href="" ng-click="browseByTopic()">by Topic</a>
                 </h3></div>
             <div id="exportEverything" class="pull-right" ng-if="!embedded">
@@ -65,7 +66,7 @@
                     {{key}}
                     <ul>
                         <li ng-repeat="t in value">
-                            <a href="" ng-click="browseTopic(topic.key)">{{t}}</a>
+                            <a href="" ng-click="browseTopic(key + ';' + t)">{{t}}</a>
                         </li>
                     </ul>
                 </li>
