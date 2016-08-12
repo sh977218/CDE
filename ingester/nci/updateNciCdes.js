@@ -2,13 +2,14 @@
 var async = require('async');
 
 // mongoose schema
-var MigrationNCICdeXmlModel = require('../createConnection').MigrationNCICdeXmlModel;
-var MigrationDataElement = require('../createConnection').MigrationDataElementModel;
-var DataElement = require('../createConnection').DataElementModel;
-var MigrationOrg = require('../createConnection').MigrationOrgModel;
-var Org = require('../createConnection').OrgModel;
+var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel;
+var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
+
+var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
 
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
+var DataElement = mongo_cde.DataElement;
+var Org = require('../../modules/system/node-js/mongo-data').Org;
 var cdesvc = require('../../modules/cde/node-js/cdesvc');
 var classificationShared = require('../../modules/system/shared/classificationShared');
 var updateShare = require('../updateShare');

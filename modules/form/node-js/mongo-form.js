@@ -31,9 +31,9 @@ exports.getStream = function (condition) {
     return Form.find(condition).sort({_id: -1}).stream();
 };
 
-exports.count = function (callback) {
-    Form.find({"archived": null}).count().exec(function (err, count) {
-        callback(count);
+exports.count = function (condition, callback) {
+    Form.count(condition).exec(function (err, count) {
+        callback(err, count);
     });
 };
 

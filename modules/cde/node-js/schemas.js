@@ -23,7 +23,6 @@ var derivationRuleSchema = new mongoose.Schema(
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]
     , source: String
-    , sourceId: String
     , origin: String
     , stewardOrg: {
         name: String
@@ -109,11 +108,12 @@ var deJsonSchema = {
 };
 
 var pinSchema = new mongoose.Schema({
-    name: String,
-    pinnedDate: Date,
-    deTinyId: String,
-    deName: String
-});
+    name: String
+    , pinnedDate: Date
+    , deTinyId: String
+    , deName: String
+}, {_id: false});
+
 
 schemas.pinningBoardSchema = new mongoose.Schema({
     name: String,

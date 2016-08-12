@@ -85,10 +85,25 @@ exports.init = function (app) {
         res.send(token);
     });
 
+    app.get('/indexCurrentNumDoc/:indexPosition', function (req, res) {
+        if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
+            var index = esInit.indices[req.params.indexPosition];
+            res.status(200).send({count: index.count, totalCount: index.totalCount});
+        } else {
+            res.status(401).send();
+        }
+    });
+
     app.post('/reindex/:indexPosition', function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.isAuthenticated() && req.user.siteAdmin) {
-            elastic.reIndex(esInit.indices[req.params.indexPosition]);
-            res.send();
+            var index = esInit.indices[req.params.indexPosition];
+            elastic.reIndex(index, function () {
+                res.status(200).send("finished reindex");
+                setTimeout(function () {
+                    index.count = 0;
+                    index.totalCount = 0;
+                }, 5000);
+            });
         } else {
             res.status(401).send();
         }

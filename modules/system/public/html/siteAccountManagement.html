@@ -1,41 +1,10 @@
 <div class="container">
     <uib-tabset class="pt40 pb40">
         <div uib-tab heading="Broadcast">
-            <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
-                <div class="form-group long-field" ng-class="{error: form.version.$invalid}">
-                    <input class="form-control" name="message" type="text" ng-model="broadcast.message"
-                           placeholder="Broadcast a message to all users..."/>
-                </div>
-                <button class="btn btn-warning" ng-click="saveMessage()" id="saveMessage">Broadcast</button>
-            </form>
+            <div ng-include="'/system/public/html/broadcast.html'"></div>
         </div>
         <div uib-tab heading="Site Admins">
-            <form name="form" role="form" class="form-inline pt40 pb40" novalidate>
-                Make
-                <div class="form-group">
-                    <input class="form-control" name="message" type="text" ng-model="admin.username"
-                           placeholder="enter user name"
-                           uib-typeahead="username for username in allUsernames | filter:$viewValue | limitTo:100"
-                           uib-typeahead-min-length="3" required/>
-                </div>
-                a site admin
-                <button class="btn btn-warning" ng-click="addSiteAdmin()" id="saveMessage">Make Admin</button>
-            </form>
-
-            <table class="table table-border table-responsive">
-                <tr>
-                    <th>Site Admins:</th>
-                </tr>
-                <tr>
-                    <td>
-                        <div ng-repeat="user in siteAdmins">
-                            <span id="existingOrgAdminUsername-{{$parent.$index}}-{{$index}}">{{user.username}}
-                            </span> <i class="fa fa-trash-o hand-cursor" ng-click="removeSiteAdmin(user._id)"
-                                       id="removeOrgAdminUsername-{{$parent.$index}}-{{$index}}" title="Remove"></i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            <div ng-include="'/system/public/html/siteAdmin.html'"></div>
         </div>
         <div uib-tab heading="Users">
             <div ng-include="'/system/public/html/usersMgt.html'"></div>

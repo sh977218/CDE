@@ -2,12 +2,10 @@
  TODO
  this script does not update org
  */
-var MigrationFormModel = require('../createConnection').MigrationFormModel,
-    MigrationOrgModel = require('../createConnection').MigrationOrgModel,
-    MigrationNCIFormXmlModel = require('../createConnection').MigrationNCIFormXmlModel,
-    FormModel = require('../createConnection').FormModel,
-    OrgModel = require('../createConnection').OrgModel,
+var MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
+    MigrationNCIFormXmlModel = require('../createMigrationConnection').MigrationNCIFormXmlModel,
     mongo_form = require('../../modules/form/node-js/mongo-form'),
+    FormModel = mongo_form.Form,
     classificationShared = require('../../modules/system/shared/classificationShared'),
     updateShare = require('../updateShare'),
     logger = require('../log')

@@ -39,7 +39,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-OHSU Knight"));
         textPresent("4 results for");
-        clickElement(By.id("addToCompare_0"));
+        clickElement(By.id("addToCompare_0")); //right here
         closeAlert();
         clickElement(By.id("addToCompare_1"));
         closeAlert();

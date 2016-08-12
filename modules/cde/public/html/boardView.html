@@ -3,10 +3,22 @@
     <div ng-controller="SwitchListViewCtrl">
         <div class="searchInfo">
             <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                <button id="mb.export" value="Export Board" ng-click="exportBoard()"
-                        class="btn btn-default">
-                    <i class="fa fa-download"></i> Export Board
-                </button>
+                <div class="btn-group">
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-download"></i>
+                        Export Board<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+
+                        <li><a id="csvExport"  ng-click="exportBoard()" onmouseover="" style="cursor: pointer;"> CSV File, NIH/CDE</a></li>
+                        <li><a id='jsonExport' ng-href="/board/{{board._id}}/0/500/?type=json" target="_blank">JSON File, NIH/CDE
+                            Schema</a></li>
+                        <li><a id='xmlExport' ng-href="/board/{{board._id}}/0/500/?type=xml" target="_blank">XML File, NIH/CDE
+                            Schema</a></li>
+                    </ul>
+                </div>
+
                 <button id="board.classifyAll" class="btn btn-default" ng-click="classifyBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All CDEs
                 </button>

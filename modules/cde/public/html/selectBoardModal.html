@@ -1,24 +1,22 @@
+<span ng-controller="MyBoardsCtrl">
 <div class="modal-header">
-    <h3>Choose a Board to pin this CDE to</h3>
-</div>
-<div ng-switch="boards.length" class="row" style="margin-top: 10px" ng-controller="MyBoardsCtrl">
-    <div ng-switch-when="0">
-        <div class="col-md-12">
-            <div style="margin-left: 10px"> You don't have any boards</div>
+    <h3>Choose a Board to pin this CDE to
+
             <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()"
                     id="addBoard" style="margin-bottom: 10px;">
                 <i class="fa fa-plus"> </i> Add Board
             </button>
-            <i ng-show="reloading" class="fa fa-spinner fa-spin"></i>
-        </div>
+
+    </h3>
+</div>
+<div ng-switch="boards.length"  style="margin-top: 10px">
+    <i ng-show="reloading" class="fa fa-spinner fa-spin"></i>
+    <div ng-switch-when="0">
+        <div style="margin-left: 10px"> You don't have any boards</div>
+        <i ng-show="reloading" class="fa fa-spinner fa-spin"></i>
     </div>
     <div ng-switch-default >
-        <div class="col-md-3">
             <div style="padding-left: 10px">
-                <form id="searchBoardsForm">
-                    <input ng-model="filter.search" name="search" class="form-control"
-                           id="searchDescriptorsFormInput" placeholder="Search...">
-                </form>
                 <div ng-if="filter.tags.length > 0">
                     <h4>Tags</h4>
                     <label ng-repeat="tag in filter.tags" class="my-board-tag">
@@ -37,8 +35,7 @@
                     </label>
                 </div>
             </div>
-        </div>
-        <div class="col-md-9" id="my-board-container" style="padding-left: 5px">
+        <div class="row">
             <div ng-repeat="board in boards" class="col-md-6">
                 <div class="pinToBoard-card my-board-card" data-id="boardDiv_{{board.name}}">
                     <h5 class="myBoardName" id="board_name_{{$index}}">
@@ -66,3 +63,4 @@
 <div class="modal-footer">
     <button class="btn btn-warning" ng-click="cancel()" id="cancelSelect">Cancel</button>
 </div>
+</span>

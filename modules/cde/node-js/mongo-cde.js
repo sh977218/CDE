@@ -21,6 +21,7 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
+exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
@@ -54,21 +55,9 @@ exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
-exports.boardsDao = {
-    getStream: function () {
-        return PinningBoard.find({}).sort({_id: -1}).stream();
-    }
-};
-
 exports.boardsByUserId = function (userId, callback) {
     PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
         callback(result);
-    });
-};
-
-exports.boardCount = function (callback) {
-    PinningBoard.count({}).exec(function (err, count) {
-        callback(count);
     });
 };
 
@@ -88,9 +77,9 @@ exports.userTotalSpace = function (name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
-exports.deCount = function (callback) {
-    DataElement.find({"archived": null}).count().exec(function (err, count) {
-        callback(count);
+exports.count = function (condition, callback) {
+    DataElement.count(condition).count().exec(function (err, count) {
+        callback(err, count);
     });
 };
 
@@ -115,7 +104,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(null)
         .exec(function (err, cdes) {

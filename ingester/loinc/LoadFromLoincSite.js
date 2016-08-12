@@ -2,7 +2,7 @@ var async = require('async');
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
-var MigrationLoincModel = require('../createConnection').MigrationLoincModel;
+var MigrationLoincModel = require('../createMigrationConnection').MigrationLoincModel;
 
 var ParseLoincNameTable = require('./ParseLoincNameTable');
 var ParseNameTable = require('./ParseNameTable');
@@ -86,7 +86,7 @@ var tasks = [
     {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: '//table[.//th[contains(text(),"EXAMPLE ANSWER LIST")]]'
+        xpath: '//*[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',

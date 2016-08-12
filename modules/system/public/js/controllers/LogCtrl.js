@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDownload', function($scope, $http) {
+angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', function($scope, $http) {
         
     $scope.gridLogEvents = [];
     $scope.gridOptions = {

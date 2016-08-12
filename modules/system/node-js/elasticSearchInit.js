@@ -1,5 +1,5 @@
-var config = require('config'),
-    hash = require("crypto");
+var config = require('config');
+var hash = require("crypto");
 
 exports.createIndexJson = {
     "mappings": {

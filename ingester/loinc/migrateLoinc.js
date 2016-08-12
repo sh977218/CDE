@@ -1,7 +1,7 @@
 //This scripts converts Loinc collection from LoadFromLoincSite into a data element collection
 
-var MigrationLoincModal = require('../createConnection').MigrationLoincModal
-    , MigrationDataElementModel = require('../createConnection').MigrationDataElementModel
+var MigrationLoincModal = require('../createMigrationConnection').MigrationLoincModal
+    , MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel
     ;
 
 MigrationLoincModal.find({info: {$not:/^no loinc name/i}}).stream().on('data', function(cde){ // let's skip the CDEs which are not on the website

@@ -1,10 +1,15 @@
-var config = require('./parseConfig')
+var async = require('async')
+    , config = require('./parseConfig')
     , logging = require('./logging')
-    , regStatusShared = require('../shared/regStatusShared') // jshint ignore:line
+    , regStatusShared = require('../shared/regStatusShared') //jshint ignore:line
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
     , esInit = require('./elasticSearchInit')
     , dbLogger = require('../../system/node-js/dbLogger.js')
+    , mongo_cde = require("../../cde/node-js/mongo-cde")
+    , mongo_form = require("../../form/node-js/mongo-form")
+    , mongo_board = require("../../cde/node-js/mongo-board")
+    , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     ;
 
 var esClient = new elasticsearch.Client({
@@ -97,9 +102,51 @@ function EsInjector(esClient, indexName, documentType) {
     };
 }
 
+exports.daoMap = {
+    "cde": mongo_cde,
+    "form": mongo_form,
+    "board": mongo_board,
+    "storedQuery": mongo_storedQuery
+};
 
 
-function createIndex(indexName, indexMapping, dao, riverFunction) {
+exports.reIndex = function (index, cb) {
+    var riverFunction = index.filter;
+    var startTime = new Date().getTime();
+    var indexType = Object.keys(index.indexJson.mappings)[0];
+    // start re-index all
+    var injector = new EsInjector(esClient, index.indexName, indexType);
+    var condition = {archived: null};
+    index.count = 0;
+    exports.daoMap[index.name].count(condition, function (err, totalCount) {
+        if (err) {
+            console.log("Error getting count: " + err);
+        }
+        console.log("Total count for " + index.name + " is " + totalCount);
+        index.totalCount = totalCount;
+        var stream = exports.daoMap[index.name].getStream(condition);
+        stream.on('data', function (elt) {
+            stream.pause();
+            injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+                index.count++;
+                stream.resume();
+            });
+        });
+        stream.on('end', function () {
+            injector.inject(function () {
+                console.log("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                if (cb) cb();
+            });
+        });
+        stream.on('error', function(err) {
+           console.log("Error getting stream: " + err);
+        });
+    });
+};
+
+function createIndex(index, cb) {
+    var indexName = index.indexName;
+    var indexMapping = index.indexJson;
     esClient.indices.exists({index: indexName}, function (error, doesIt) {
         if (doesIt) {
             console.log("index already exists.");
@@ -112,48 +159,18 @@ function createIndex(indexName, indexMapping, dao, riverFunction) {
                         console.log("error creating index. " + error);
                     } else {
                          console.log("index Created");
-                         var startTime = new Date().getTime();
-                         var indexType = Object.keys(indexMapping.mappings)[0];
-                         // start re-index all
-                         var injector = new EsInjector(esClient, indexName, indexType);
-                         var stream = dao.getStream({archived: null});
-                         stream.on('data', function(elt) {
-                             stream.pause();
-                             injector.queueDocument(riverFunction?riverFunction(elt.toObject()):elt.toObject(), function() {
-                                 stream.resume();
-                             });
-                         });
-                         stream.on('end', function() {
-                             injector.inject(function() {
-                                 console.log("done ingesting in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
-                             });
-                         });
+                        exports.reIndex(index, cb);
                     }
                 });
         }
     });
 }
 
-var daos = {
-    "cde": require("../../cde/node-js/mongo-cde"),
-    "form": require("../../form/node-js/mongo-form"),
-    "board": require("../../cde/node-js/mongo-cde").boardsDao,
-    "storedQuery": require("./dbLogger").storedQueriesDao
-};
-
-exports.initEs = function () {
-    esInit.indices.forEach(function(i) {
-        createIndex(i.indexName, i.indexJson, daos[i.name], i.filter);
-    });
-};
-
-// pass index as defined in elasticSearchInit.indices
-exports.reIndex = function(index) {
-    esClient.indices.delete({index: index.indexName}, function(err) {
-        if (err) console.log("unable to delete index: " + index.indexName + " " + err);
-        else {
-            createIndex(index.indexName, index.indexJson, daos[index.name], index.filter);
-        }
+exports.initEs = function (cb) {
+    async.forEach(esInit.indices, function (index, doneOneIndex) {
+        createIndex(index, doneOneIndex);
+    }, function doneAllIndices() {
+        if (cb) cb();
     });
 };
 
