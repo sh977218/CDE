@@ -1,8 +1,11 @@
 var config = require('./parseConfig')
     , mongo_cde = require('./../../cde/node-js/mongo-cde')
     , mongo_form = require('../../form/node-js/mongo-form')
+    , mongo_board = require('./../../cde/node-js/mongo-board')
+    , mongo_storedQuery = require('./../../cde/node-js/mongo-storedQuery')
     , mongo_data_system = require('./mongo-data')
     , elastic = require('./elastic')
+    , esInit = require('./elasticSearchInit')
     , email = require('./email')
     , async = require('async')
 ;
@@ -78,9 +81,11 @@ app_status.getStatus = function(done) {
     app_status.isElasticUp(function() {
         if (app_status.statusReport.elastic.up) {
             app_status.statusReport.elastic.indices = [];
+            var condition = {archived: null};
             async.series([
                 function(done) {
-                    mongo_cde.deCount(function(deCount) {
+                    mongo_cde.count(condition, function (err, deCount) {
+                        esInit.indices[0].totalCount = deCount;
                         app_status.checkElasticCount(deCount, config.elastic.index.name, "dataelement", function(up, message) {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.index.name,
@@ -92,8 +97,9 @@ app_status.getStatus = function(done) {
                     });
                 },
                 function(done) {
-                    mongo_form.count(function(count) {
-                        app_status.checkElasticCount(count, config.elastic.formIndex.name, "form", function(up, message) {
+                    mongo_form.count(condition, function (err, formCount) {
+                        esInit.indices[1].totalCount = formCount;
+                        app_status.checkElasticCount(formCount, config.elastic.formIndex.name, "form", function (up, message) {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.formIndex.name,
                                 up: up,
@@ -104,10 +110,24 @@ app_status.getStatus = function(done) {
                     });
                 },
                 function(done) {
-                    mongo_cde.boardCount(function(count) {
-                        app_status.checkElasticCount(count, config.elastic.boardIndex.name, "board", function(up, message) {
+                    mongo_board.count(condition, function (err, boardCount) {
+                        esInit.indices[2].totalCount = boardCount;
+                        app_status.checkElasticCount(boardCount, config.elastic.boardIndex.name, "board", function (up, message) {
                             app_status.statusReport.elastic.indices.push({
                                 name: config.elastic.boardIndex.name,
+                                up: up,
+                                message: message
+                            });
+                            done();
+                        });
+                    });
+                },
+                function (done) {
+                    mongo_storedQuery.count(condition, function (err, storedQueryCount) {
+                        esInit.indices[3].totalCount = storedQueryCount;
+                        app_status.checkElasticCount(storedQueryCount, config.elastic.storedQueryIndex.name, "storedquery", function (up, message) {
+                            app_status.statusReport.elastic.indices.push({
+                                name: config.elastic.storedQueryIndex.name,
                                 up: up,
                                 message: message
                             });

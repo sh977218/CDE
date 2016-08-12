@@ -1,6 +1,6 @@
 var cdesvc = require('./cdesvc')
     , usersvc = require('./usersvc')
-    , mongo_data = require('./mongo-cde')
+    , mongo_cde = require('./mongo-cde')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
     , xml2js = require('xml2js')
@@ -25,7 +25,7 @@ var cdesvc = require('./cdesvc')
 exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
-    daoManager.registerDao(mongo_data);
+    daoManager.registerDao(mongo_cde);
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
@@ -46,7 +46,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
-        mongo_data.cdesByTinyIdList(req.body, function (err, cdes) {
+        mongo_cde.cdesByTinyIdList(req.body, function (err, cdes) {
             cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
@@ -65,15 +65,15 @@ exports.init = function (app, daoManager) {
     app.get('/forks/:id', exportShared.nocacheMiddleware, cdesvc.forks);
 
     app.post('/dataelement/fork', function (req, res) {
-        adminItemSvc.fork(req, res, mongo_data);
+        adminItemSvc.fork(req, res, mongo_cde);
     });
 
     app.post('/acceptFork', function (req, res) {
-        adminItemSvc.acceptFork(req, res, mongo_data);
+        adminItemSvc.acceptFork(req, res, mongo_cde);
     });
 
     app.get('/forkroot/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.forkRoot(req, res, mongo_data);
+        adminItemSvc.forkRoot(req, res, mongo_cde);
     });
 
     app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
@@ -88,7 +88,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/deExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
+        mongo_cde.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
             res.send(result);
         });
     });
@@ -115,14 +115,14 @@ exports.init = function (app, daoManager) {
             else return res.status(404).send("Cannot recognize export type.");
 
             if (req.isAuthenticated()) {
-                mongo_data.addToViewHistory(cde, req.user);
+                mongo_cde.addToViewHistory(cde, req.user);
             }
-            mongo_data.incDeView(cde);
+            mongo_cde.incDeView(cde);
         };
         if (!req.params.version) {
-            mongo_data.eltByTinyId(req.params.tinyId, serveCde);
+            mongo_cde.eltByTinyId(req.params.tinyId, serveCde);
         } else {
-            mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
+            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
         }
     });
 
@@ -139,20 +139,20 @@ exports.init = function (app, daoManager) {
             for (var i = 0; i < splicedArray.length; i++) {
                 if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
             }
-            mongo_data.cdesByTinyIdListInOrder(idList, function (err, cdes) {
+            mongo_cde.cdesByTinyIdListInOrder(idList, function (err, cdes) {
                 res.send(cdesvc.hideProprietaryCodes(cdes, req.user));
             });
         }
     });
 
     app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.boardsByUserId(req.params.userId, function (result) {
+        mongo_cde.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
+        mongo_cde.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
         });
     });
@@ -165,7 +165,7 @@ exports.init = function (app, daoManager) {
             return res.status(403).send("Request too large");
         }
 
-        mongo_data.boardById(req.params.boardId, function (err, board) {
+        mongo_cde.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
                     if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
@@ -180,7 +180,7 @@ exports.init = function (app, daoManager) {
                 var idList = board.pins.map(function(p) {
                     return p.deTinyId;
                 });
-                mongo_data.cdesByTinyIdList(idList, function (err, cdes) {
+                mongo_cde.cdesByTinyIdList(idList, function (err, cdes) {
                     if (req.query.type === "xml"){
                         res.setHeader("Content-Type", "application/xml");
                         var exportBoard ={
@@ -221,9 +221,9 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                mongo_data.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                mongo_cde.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_data.newBoard(board, function (err) {
+                        mongo_cde.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             elastic.boardRefresh(function () {
                                 res.send();
@@ -234,7 +234,7 @@ exports.init = function (app, daoManager) {
                     }
                 });
             } else {
-                mongo_data.boardById(board._id, function (err, b) {
+                mongo_cde.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
                             origin: "cde.app.board",
@@ -275,7 +275,7 @@ exports.init = function (app, daoManager) {
 
     app.delete('/board/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_data.boardById(req.params.boardId, function (err, board) {
+            mongo_cde.boardById(req.params.boardId, function (err, board) {
                 if (!board) {
                     res.status(500).send("Can not find board with id:" + req.params.boardId);
                     return;
@@ -324,17 +324,17 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.org_autocomplete(req.params.name, function (result) {
+        mongo_cde.org_autocomplete(req.params.name, function (result) {
             res.send(result);
         });
     });
 
     app.get('/cdediff/:deId', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.deId) res.status(404).send("Please specify CDE id.");
-        mongo_data.byId(req.params.deId, function (err, dataElement) {
+        mongo_cde.byId(req.params.deId, function (err, dataElement) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
             if (!dataElement.history || dataElement.history.length < 1) return res.send([]);
-            mongo_data.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
+            mongo_cde.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
                 var diff = cdesvc.diff(dataElement, priorDe);
                 res.send(diff);
             });
@@ -363,36 +363,36 @@ exports.init = function (app, daoManager) {
 
     if (config.modules.cde.attachments) {
         app.post('/attachments/cde/add', multer(config.multer), function (req, res) {
-            adminItemSvc.addAttachment(req, res, mongo_data);
+            adminItemSvc.addAttachment(req, res, mongo_cde);
         });
 
         app.post('/attachments/cde/remove', function (req, res) {
-            adminItemSvc.removeAttachment(req, res, mongo_data);
+            adminItemSvc.removeAttachment(req, res, mongo_cde);
         });
 
         app.post('/attachments/cde/setDefault', function (req, res) {
-            adminItemSvc.setAttachmentDefault(req, res, mongo_data);
+            adminItemSvc.setAttachmentDefault(req, res, mongo_cde);
         });
     }
 
     if (config.modules.cde.comments) {
         app.post('/comments/cde/add', function (req, res) {
-            adminItemSvc.addComment(req, res, mongo_data);
+            adminItemSvc.addComment(req, res, mongo_cde);
         });
 
         app.post('/comments/cde/remove', function (req, res) {
-            adminItemSvc.removeComment(req, res, mongo_data);
+            adminItemSvc.removeComment(req, res, mongo_cde);
         });
 
         app.post('/comments/cde/approve', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
                 elt.comments[req.body.comment.index].pendingApproval = false;
                 delete elt.comments[req.body.comment.index].pendingApproval;
             }, "Comment approved!");
         });
 
         app.post('/comments/cde/decline', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
                 elt.comments.splice(req.body.comment.index, 1);
             }, "Comment declined!");
         });
@@ -400,7 +400,7 @@ exports.init = function (app, daoManager) {
 
 
     app.get('/userTotalSpace/:uname', function (req, res) {
-        return mongo_data.userTotalSpace(req.params.uname, function (space) {
+        return mongo_cde.userTotalSpace(req.params.uname, function (space) {
             return res.send({username: req.params.uname, totalSize: space});
         });
     });
@@ -413,7 +413,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get("/cde/derivationOutputs/:inputCdeTinyId", function (req, res) {
-        mongo_data.derivationOutputs(req.params.inputCdeTinyId, function (err, cdes) {
+        mongo_cde.derivationOutputs(req.params.inputCdeTinyId, function (err, cdes) {
             if (err) res.status(500).send();
             else {
                 res.send(cdes);
@@ -422,14 +422,14 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/desByConcept', function (req, res) {
-        mongo_data.desByConcept(req.body, function (result) {
+        mongo_cde.desByConcept(req.body, function (result) {
             result.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdesvc.hideProprietaryCodes(result, req.user));
         });
     });
 
     app.get('/deCount', function (req, res) {
-        mongo_data.deCount(function (result) {
+        mongo_cde.count({archived: null}, function (err, result) {
             res.send({count: result});
         });
     });
@@ -492,7 +492,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/retireCde', function (req, res) {
         req.params.type = "received";
-        mongo_data.byId(req.body._id, function (err, cde) {
+        mongo_cde.byId(req.body._id, function (err, cde) {
             if (err) res.status(404).send(err);
             // TODO JSHint: Thanks, looks like we wanted this rule but messed it up. Do we want the rule?
             //if (!cde.registrationState.administrativeStatus === "Retire Candidate")
@@ -545,11 +545,11 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/cde/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
+        adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
     });
 
     app.get('/cde/mappingSpecifications/types', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.getDistinct("mappingSpecifications.spec_type", function (err, types) {
+        mongo_cde.getDistinct("mappingSpecifications.spec_type", function (err, types) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(types);
@@ -558,7 +558,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/cde/mappingSpecifications/contents', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.getDistinct("mappingSpecifications.content", function (err, contents) {
+        mongo_cde.getDistinct("mappingSpecifications.content", function (err, contents) {
             if (err) res.status(500).send("Unexpected Error");
             else {
                 res.send(contents);
@@ -568,7 +568,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/getCdeAuditLog', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
-            mongo_data.getCdeAuditLog(req.body, function (err, result) {
+            mongo_cde.getCdeAuditLog(req.body, function (err, result) {
                 res.send(result);
             });
         } else {
@@ -630,7 +630,7 @@ exports.init = function (app, daoManager) {
         if (dstring[8] !== "0" && dstring[8] !== "1" && dstring[8] !== "2" && dstring[8] !== "3") badDate();
 
         var date = new Date(dstring);
-        mongo_data.findModifiedElementsSince(date, function (err, elts) {
+        mongo_cde.findModifiedElementsSince(date, function (err, elts) {
             res.send(elts);
         });
     });
