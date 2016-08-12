@@ -47,7 +47,7 @@
     "formIndex": {"name": "formtest"},
     "boardIndex": {"name": "boardtest"},
     "storedQueryIndex": {"name": "storedquerytest"},
-    "number_of_replicas" : 1
+    "number_of_replicas" : 0
   }
 }
 
