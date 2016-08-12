@@ -167,28 +167,29 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <strong tabindex="0" ng-show="aggregations.meshTrees.statuses.buckets" id="meshTrees_filter">Topics</strong>
+            <br/>
+            <div> <!-- TOPIC AGGREGATIONS -->
+                <strong tabindex="0" ng-show="aggregations.topics" id="meshTrees_filter">Topics</strong>
                 <div class="pl5" id="meshTreesListHolder">
-                    <a tabindex="0" href class="nonLinkAnchor displayBlock"
-                       ng-repeat="t in aggregations.meshTrees.buckets | orderBy:'key'"
-                       ng-switch="t.key === getCurrentSelectedOrg()"
-                       ng-click="alterOrgFilter(t.key)"
-                       ng-show="t.key === getCurrentSelectedOrg() || !getCurrentSelectedOrg()">
-                        <span class="hand-cursor" uib-tooltip="{{t.longName}}" tooltip-popup-delay="500"
-                              tooltip-placement="right" tooltip-append-to-body="true">
-                            <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>
-                            <i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>
-                            <small id="classifications-text-{{t.key}}"> {{t.key}} (<span ng-bind="t.doc_count"
-                                                                                         id="nbOfClassifElts-{{t.key}}"></span>)
-                            </small>
-                        </span>
-                    </a>
-                    <div id="classification-facets">
+                    <!--<a tabindex="0" href class="nonLinkAnchor displayBlock"-->
+                       <!--ng-repeat="t in aggregations.meshTrees.buckets | orderBy:'key'"-->
+                       <!--ng-switch="t.key === getCurrentSelectedTopic()"-->
+                       <!--ng-click="alterTopicFilter(t.key)"-->
+                       <!--ng-show="t.key === getCurrentSelectedTopic() || !getCurrentSelectedTopic()">-->
+                        <!--<span class="hand-cursor" uib-tooltip="{{t.longName}}" tooltip-popup-delay="500"-->
+                              <!--tooltip-placement="right" tooltip-append-to-body="true">-->
+                            <!--<i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>-->
+                            <!--<i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>-->
+                            <!--<small id="classifications-text-{{t.key}}"> {{t.key}} (<span ng-bind="t.doc_count"-->
+                                                                                         <!--id="nbOfClassifElts-{{t.key}}"></span>)-->
+                            <!--</small>-->
+                        <!--</span>-->
+                    <!--</a>-->
+                    <div id="topic-facets">
                         <a tabindex="0" href class="nonLinkAnchor displayBlock"
-                           ng-repeat="e in getCurrentSelectedClassification()"
-                           ng-click="selectElement(e)" style="margin-left:{{($index + 1) * 10}}px;">
-                            <span class="hand-cursor" ng-switch="getCurrentSelectedClassification().indexOf(e) > -1">
+                           ng-repeat="e in getCurrentSelectedTopic()"
+                           ng-click="selectTopic(e)" style="margin-left:{{($index + 1) * 10}}px;">
+                            <span class="hand-cursor" ng-switch="getCurrentSelectedTopic().indexOf(e) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}"></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{e}}"></i>
                                 <span>
@@ -196,11 +197,11 @@
                                 </span>
                             </span>
                         </a>
-                        <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectElement(b.name)"
-                           ng-repeat="b in (altClassificationFilterMode?aggregations.flatClassificationsAlt:aggregations.flatClassifications) | orderBy:'name'"
-                           style="margin-left:{{(getCurrentSelectedClassification().length + 1) * 10}}px;">
+                        <a tabindex="0" href class="nonLinkAnchor displayBlock" ng-click="selectTopic(b.name)"
+                           ng-repeat="b in aggregations.topics | orderBy:'name'"
+                           style="margin-left:{{(getCurrentSelectedTopic().length + 1) * 10}}px;">
                             <span class="hand-cursor"
-                                  ng-switch="getCurrentSelectedClassification().length.indexOf(b.name) > -1">
+                                  ng-switch="getCurrentSelectedTopic().length.indexOf(b.name) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{b.name}}"></i>
                                 <i ng-switch-when="false" class="fa fa-chevron-right" id="li-blank-{{b.name}}"></i>
                                 <span>
@@ -212,6 +213,7 @@
                     </div>
                 </div>
             </div>
+            <br/>
             <strong tabindex="0" ng-show="aggregations.statuses.statuses.buckets" id="status_filter">Registration
                 Status</strong>
 

@@ -44,6 +44,12 @@ angular.module('systemModule').controller('ListCtrl',
         $('#classif_filter_title').focus(); // jshint ignore:line
     };
 
+    var focusTopic = function(){
+        //any good angular way to do this?
+        $('#meshTrees_filter').focus(); // jshint ignore:line
+    };
+
+
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
             $scope.filterMode = false;
@@ -98,6 +104,11 @@ angular.module('systemModule').controller('ListCtrl',
         return $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
     };
 
+    $scope.getCurrentSelectedTopic = function() {
+        return $scope.searchSettings.meshTree?$scope.searchSettings.meshTree.split(";"):[];
+    };
+
+
     $scope._alterOrgFiler = function(orgName) {
         var orgToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
         var classifToAlter = $scope.getCurrentSelectedClassification();
@@ -123,6 +134,23 @@ angular.module('systemModule').controller('ListCtrl',
         $scope._alterOrgFiler(orgName);
         doSearch();
         focusClassification();
+    };
+
+    $scope._selectTopic = function(topic) {
+        var toSelect = !$scope.searchSettings.meshTree?[]:$scope.searchSettings.meshTree.split(";");
+            var i = toSelect.indexOf(topic);
+            if (i > -1) {
+                toSelect.length = i;
+            } else {
+                toSelect.push(topic);
+            }
+        $scope.searchSettings.meshTree = toSelect.join(";");
+    };
+
+    $scope.selectTopic = function(topic) {
+        $scope._selectTopic(topic);
+        doSearch();
+        focusTopic();
     };
 
     $scope._selectElement = function(e) {
@@ -241,6 +269,14 @@ angular.module('systemModule').controller('ListCtrl',
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope[type + 's'], "list");
+
+            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg || settings.meshTree) {
+                $scope.selectedMainAreaMode = mainAreaModes.searchResult;
+            } else {
+                $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
+                if ($scope.elts.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
+            }
+
             $scope.aggregations = result.aggregations;
 
             if (result.aggregations !== undefined) {
@@ -260,24 +296,25 @@ angular.module('systemModule').controller('ListCtrl',
                     $scope.aggregations.flatClassificationsAlt = [];
                 }
 
-                //if (result.aggregations.meshTrees !== undefined) {
-                //    $scope.aggregations.meshTrees = result.aggregations.meshTrees.buckets.map(function (c) {
-                //        return {name: c.key.split(';').pop(), count: c.doc_count};
-                //    });
-                //} else {
-                //    $scope.aggregations.flatClassifications = [];
-                //}
+                if (result.aggregations.meshTrees !== undefined) {
+                    if ($scope.searchSettings.meshTree) {
+                        $scope.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                            return {name: c.key.split(';').pop(), count: c.doc_count};
+                        });
+                    } else {
+                        $scope.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                            return {name: c.key.split(';')[0], count: c.doc_count};
+                        });
+                    }
+                } else {
+                    $scope.aggregations.topics = [];
+                }
+
             }
 
             filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg || settings.meshTree) {
-                $scope.selectedMainAreaMode = mainAreaModes.searchResult;
-            } else {
-                $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
-                if ($scope.elts.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
-            }
         });
 
     };
@@ -302,6 +339,9 @@ angular.module('systemModule').controller('ListCtrl',
         }
         if ($scope.searchSettings.page)
             searchLink += "&page=" + $scope.searchSettings.page;
+        if ($scope.searchSettings.meshTree) {
+            searchLink += "&topic=" + encodeURIComponent($scope.searchSettings.meshTree);
+        }
         return searchLink;
     };
 

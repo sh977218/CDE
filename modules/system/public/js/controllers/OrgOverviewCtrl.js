@@ -1,9 +1,11 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', 'userResource', '$routeParams', '$anchorScroll',
-    function($scope, OrgHelpers, $location, AutoCompleteResource, userResource, $routeParams, $anchorScroll)
+    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', '$routeParams', '$anchorScroll',
+    function($scope, OrgHelpers, $location, AutoCompleteResource, $routeParams, $anchorScroll)
 {
     $scope.orgs = [];
     $scope.autocomplete = AutoCompleteResource;
+
+    $scope.byTopic = $routeParams.byTopic;
 
     $scope.$watch('aggregations.orgs.buckets', function() {
         $scope.orgs = [];
@@ -28,15 +30,15 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
         }
     });
 
-    $scope.$watch('aggregations.meshTrees.buckets', function() {
+    $scope.$watch('aggregations.twoLevelMesh', function() {
         $scope.topics = {};
         if ($scope.aggregations) {
-            $scope.aggregations.meshTrees.buckets.forEach(function (term) {
+            $scope.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(function (term) {
                 var spli = term.key.split(";");
                 if (!$scope.topics[spli[0]]) {
                     $scope.topics[spli[0]] = [];
                 }
-                $scope.topics[spli[0]].push(spli[1]);
+                $scope.topics[spli[0]].push({name: spli[1], count: term.doc_count});
             });
         }
     });
@@ -56,8 +58,9 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
         }
     };
 
-    $scope.browseByTopic = function () {
-        $scope.byTopic = true;
+    $scope.browseByTopic = function (b) {
+        $location.search('byTopic', b);
+        $scope.byTopic =b;
     };
 
 }]);

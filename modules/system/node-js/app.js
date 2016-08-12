@@ -905,12 +905,17 @@ exports.init = function (app) {
         var allTrees = new Set();
         async.each(descArr, function(desc, oneDescDone) {
             // @TODO make as config
-            request("https://meshb-qa.nlm.nih.gov/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
+            request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
                 async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
-                    request("https://meshb-qa.nlm.nih.gov/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
-                        allTrees.add(meshTopTreeMap[treeNumber.t.substr(0, 1)] + ";" + oneTreeBody.parents.map(function(a) {
-                            return a._generated.RecordName;
-                        }).join(";"));
+                    request(config.mesh.baseUrl + "/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
+                        var flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                        if (oneTreeBody.parents && oneTreeBody.parents.length > 0) {
+                            flatTree = flatTree +  ";" + oneTreeBody.parents.map(function(a) {
+                                    return a._generated.RecordName;
+                                }).join(";");
+                        }
+                        flatTree = flatTree + ";" + oneDescBody.DescriptorName.String.t;
+                        allTrees.add(flatTree);
                         tnDone();
                     });
                 }, function allTnDone() {
@@ -961,6 +966,6 @@ exports.init = function (app) {
    }
 
     // TODO set proper interval / cron
-    setInterval(syncWithMesh, 5 * 60 * 1000);
+    setInterval(syncWithMesh, 30 * 60 * 1000);
 
 };

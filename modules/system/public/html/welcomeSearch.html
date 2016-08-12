@@ -29,10 +29,11 @@
 
     <div>
         <div>
-            <div class="pull-left">
-                <h3 class="">Browse by classification or
-                    <!-- TODO add to url to support back button -->
-                    <a href="" ng-click="browseByTopic()">by Topic</a>
+            <div class="pull-left" ng-switch="byTopic">
+                <h3>Browse <span ng-switch-default>by classification</span>
+                    <a href="" ng-click="browseByTopic(false)" ng-switch-when="true">by classification</a> or
+                    <span ng-switch-when="true">by Topic</span>
+                    <a href="" ng-click="browseByTopic(true)" ng-switch-default>by Topic</a>
                 </h3></div>
             <div id="exportEverything" class="pull-right" ng-if="!embedded">
                 <div class="btn-group pull-right" ng-controller="ExportCtrl"
@@ -59,14 +60,13 @@
                 </div>
             </div>
         </div>
-        <!-- TODO Sort the top topics -->
         <div ng-show="byTopic">
             <ul>
-                <li ng-repeat="(key, value) in topics">
+                <li ng-repeat="(key, value) in topics'">
                     {{key}}
                     <ul>
-                        <li ng-repeat="t in value">
-                            <a href="" ng-click="browseTopic(key + ';' + t)">{{t}}</a>
+                        <li ng-repeat="t in value | orderBy: 'name'">
+                            <a href="" ng-click="browseTopic(key + ';' + t.name)">{{t.name}} ({{t.count}})</a>
                         </li>
                     </ul>
                 </li>

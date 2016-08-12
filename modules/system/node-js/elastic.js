@@ -375,12 +375,36 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
 
         queryStuff.aggregations.meshTrees = {
-            terms: {
-                size: 500,
-                field: "flatMeshTrees",
-                include: "[^;]+;[^;]+"
+            "filter": settings.filter,
+            aggs: {
+                "meshTrees": {
+                    terms: {
+                        size: 50,
+                        field: "flatMeshTrees",
+                        include: "[^;]+"
+                    }
+                }
             }
         };
+
+        if (settings.meshTree && settings.meshTree.length > 0) {
+            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = queryBuilder.escapeRegExp(settings.meshTree) + ";[^;]+";
+        }
+
+        queryStuff.aggregations.twoLevelMesh = {
+            "filter": settings.filter,
+            aggs: {
+                twoLevelMesh: {
+                    terms: {
+                        size: 500,
+                        field: "flatMeshTrees",
+                        //include: "[^;]+"
+                        include: "[^;]+;[^;]+"
+                    }
+                }
+            }
+        };
+
 
     }
 
