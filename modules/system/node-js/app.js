@@ -97,6 +97,10 @@ exports.init = function (app) {
             var index = esInit.indices[req.params.indexPosition];
             elastic.reIndex(index, function () {
                 res.status(200).send("finished reindex");
+                setTimeout(function () {
+                    index.count = 0;
+                    index.totalCount = 0;
+                }, 5000);
             });
         } else {
             res.status(401).send();
