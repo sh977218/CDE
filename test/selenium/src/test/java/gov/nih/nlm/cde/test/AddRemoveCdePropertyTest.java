@@ -17,7 +17,7 @@ public class AddRemoveCdePropertyTest extends PropertyTest {
 
     @Test
     public void addRemoveCdeProperty() {
-        addRemoveProperty("Test CDE Properties", null);
+        addRemoveProperty("Adrenal Gland Received Other Specify", null);
     }
 
 }
