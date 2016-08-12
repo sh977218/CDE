@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http', '$upload', '$uibModal',
-    function ($scope, $http, $upload, $uibModal) {
+angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$http', '$upload', '$uibModal', 'Alert',
+    function ($scope, $http, $upload, $uibModal, Alert) {
 
         $scope.statuses = [];
 
@@ -11,15 +11,31 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         };
 
         $scope.reIndex = function(i) {
+            $scope.esIndices[i].count = 0;
             $uibModal.open({
                 animation: false,
                 templateUrl: 'confirmReindex.html',
                 controller: function(i) {
+                    var isDone = false;
                     $scope.i = i;
                     $scope.okReIndex = function() {
-                        $http.post("/reindex/" + i).success(function() {
-                            console.log("done");
+                        $http.post('/reindex/' + i).success(function () {
+                            isDone = true;
                         });
+                        var indexFn = setInterval(function () {
+                            $http.get("indexCurrentNumDoc/" + i).success(function (result) {
+                                $scope.esIndices[i].count = result.count;
+                                $scope.esIndices[i].totalCount = result.totalCount;
+                                if ($scope.esIndices[i].count >= $scope.esIndices[i].totalCount && isDone) {
+                                    clearInterval(indexFn);
+                                    Alert.addAlert("success", "Finished reindex " + $scope.esIndices[i].name);
+                                    setTimeout(function () {
+                                        $scope.esIndices[i].count = 0;
+                                        $scope.esIndices[i].totalCount = 0;
+                                    }, 2000);
+                                }
+                            })
+                        }, 5000);
                     };
                 },
                 resolve: {

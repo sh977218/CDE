@@ -49,7 +49,7 @@ Thumbs.db
 test/selenium/nlm-cde-test.iml
 /ingesters/.nb-gradle/private/
 /ingesters/build/
-/node_modules/
+
 .gradle/
 chromedriver.exe
 config/cluster.json
@@ -82,9 +82,5 @@ test/bin/
 test/build/
 test/selenium/IntegerDatatypeTest_integerDatatype.gif
 test/selenium/dependency/
-/migration/
-/my-single-test-instance.sh
-/my-test-instance.sh
-/debug.log
-/chromedriver.exe
-/temp/
+modules/embedded/public/js/angularTemplates.js
+modules/embedded/public/js/bkup/
