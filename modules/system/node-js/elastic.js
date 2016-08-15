@@ -216,19 +216,21 @@ exports.buildElasticSearchQuery = function (user, settings) {
     };
 
     // Increase ranking score for high registration status
-    var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
     queryStuff.query.bool.must = [];
 
-    queryStuff.query.bool.must.push({
-        "dis_max": {
-            "queries": [
-                {"function_score": {"script_score": {"script": script}}}
-            ]
-        }
-    });
+
 
     if (searchQ !== undefined && searchQ !== "") {
+        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": script}}}
+                ]
+            }
+        });
+
         // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
@@ -260,8 +262,14 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     }
     else {
-        //noinspection JSAnnotator
-        queryStuff.sort = {"views": {order: "desc"}};
+        var flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatClassifScript}}}
+                ]
+            }
+        });
     }
 
     // Filter by selected org
@@ -430,6 +438,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     queryStuff.from = (settings.page - 1) * settings.resultPerPage;
+    queryStuff.explain = true;
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
@@ -475,8 +484,10 @@ var searchTemplate = {
     }
 };
 
+exports.meshSyncStatus = {
 
-// TODO something is worng because you can't search after running this.
+};
+
 exports.syncWithMesh = function(allMappings) {
 
     var classifToTrees = {};
@@ -492,10 +503,17 @@ exports.syncWithMesh = function(allMappings) {
         });
     });
 
+    var classifToSimpleTrees = {};
+    allMappings.forEach(function(m) {
+        classifToSimpleTrees[m.flatClassification] = m.flatTrees;
+    });
+
     var search = JSON.parse(JSON.stringify(searchTemplate.cde));
     search.scroll = '1m';
     search.search_type = 'scan';
     search.body = {};
+
+    exports.meshSyncStatus.done = 0;
 
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
@@ -508,14 +526,21 @@ exports.syncWithMesh = function(allMappings) {
                         });
                 } else {
                     var newScrollId = response._scroll_id;
+                    exports.meshSyncStatus.total = response.hits.total;
                     if (response.hits.hits.length > 0) {
                         response.hits.hits.forEach(function (hit) {
                             var thisElt = hit._source;
                             var trees = new Set();
+                            var simpleTrees = new Set();
                             thisElt.flatClassifications.forEach(function (fc) {
                                 if (classifToTrees[fc]) {
                                     classifToTrees[fc].forEach(function (node) {
                                         trees.add(node);
+                                    });
+                                }
+                                if (classifToSimpleTrees[fc]) {
+                                    classifToSimpleTrees[fc].forEach(function (node) {
+                                        simpleTrees.add(node);
                                     });
                                 }
                             });
@@ -525,19 +550,20 @@ exports.syncWithMesh = function(allMappings) {
                                     type: "dataelement",
                                     id: thisElt.tinyId,
                                     body: {
-                                        doc: {flatMeshTrees: Array.from(trees)}
+                                        doc: {
+                                            flatMeshTrees: Array.from(trees),
+                                            flatMeshSimpleTrees: Array.from(simpleTrees)
+                                        }
                                     }
-                                }, function (err, response) {
+                                }, function (err) {
                                     if (err) console.log("ERR: " + err);
-                                    else {
-                                        console.log(JSON.stringify(response));
-                                    }
                                 });
                             }
+                            exports.meshSyncStatus.done++;
                         });
                         scrollThrough(newScrollId);
                     } else {
-                        console.log("done");
+                        console.log("done syncing with MeSH");
                     }
                 }
             });
@@ -668,5 +694,4 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             scrollThrough(response._scroll_id);
         }
     });
-
 };

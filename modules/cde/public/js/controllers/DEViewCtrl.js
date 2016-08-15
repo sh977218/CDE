@@ -267,6 +267,13 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
             }
+            $http.get('/esRecord/' + de.tinyId).success(function (response) {
+                var s = new Set();
+                response._source.flatMeshSimpleTrees.forEach(function (t) {
+                    s.add(t.split(";").pop());
+                });
+                $scope.elt.flatMeshSimpleTrees = Array.from(s);
+            });
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);

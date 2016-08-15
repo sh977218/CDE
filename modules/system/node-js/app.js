@@ -27,6 +27,7 @@ var passport = require('passport')
     , app_status = require("./status.js")
     , async = require('async')
     , request = require('request')
+    , CronJob = require('cron').CronJob
     ;
 
 exports.init = function (app) {
@@ -974,6 +975,10 @@ exports.init = function (app) {
         res.send();
     });
 
+    app.get('/syncWithMesh', function (req, res) {
+        res.send(elastic.meshSyncStatus);
+    });
+
    function syncWithMesh() {
        mongo_data_system.findMeshClassification({}, function (err, allMappings) {
            elastic.syncWithMesh(allMappings);
@@ -982,5 +987,15 @@ exports.init = function (app) {
 
     // TODO set proper interval / cron
     setInterval(syncWithMesh, 30 * 60 * 1000);
+
+    new CronJob({
+        cronTime: '00 00 4 * * *',
+        //noinspection JSUnresolvedFunction
+        onTick: function () {
+            syncWithMesh();
+        },
+        start: false,
+        timeZone: "America/New_York"
+    }).start();
 
 };

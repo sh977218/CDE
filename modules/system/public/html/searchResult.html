@@ -91,6 +91,7 @@
                 </i>
             </span>
         </span>
+        | <span class="label label-success" id="topic_crumb" ng-bind="selectedTopicsAsString()"></span>
         | {{getSelectedStatuses()}}
     </span>
     <small> ({{took / 1000}} secs)</small>
@@ -169,25 +170,12 @@
             </div>
             <br/>
             <div> <!-- TOPIC AGGREGATIONS -->
-                <strong tabindex="0" ng-show="aggregations.topics" id="meshTrees_filter">Topics</strong>
+                <strong tabindex="0" ng-show="searchSettings.meshTree.length > 0 || aggregations.topics.length > 0"
+                        id="meshTrees_filter">Topics</strong>
                 <div class="pl5" id="meshTreesListHolder">
-                    <!--<a tabindex="0" href class="nonLinkAnchor displayBlock"-->
-                       <!--ng-repeat="t in aggregations.meshTrees.buckets | orderBy:'key'"-->
-                       <!--ng-switch="t.key === getCurrentSelectedTopic()"-->
-                       <!--ng-click="alterTopicFilter(t.key)"-->
-                       <!--ng-show="t.key === getCurrentSelectedTopic() || !getCurrentSelectedTopic()">-->
-                        <!--<span class="hand-cursor" uib-tooltip="{{t.longName}}" tooltip-popup-delay="500"-->
-                              <!--tooltip-placement="right" tooltip-append-to-body="true">-->
-                            <!--<i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{t.key}}"></i>-->
-                            <!--<i ng-switch-default class="fa fa-chevron-right" id="li-blank-{{t.key}}"></i>-->
-                            <!--<small id="classifications-text-{{t.key}}"> {{t.key}} (<span ng-bind="t.doc_count"-->
-                                                                                         <!--id="nbOfClassifElts-{{t.key}}"></span>)-->
-                            <!--</small>-->
-                        <!--</span>-->
-                    <!--</a>-->
                     <div id="topic-facets">
                         <a tabindex="0" href class="nonLinkAnchor displayBlock"
-                           ng-repeat="e in getCurrentSelectedTopic()"
+                           ng-repeat="e in getCurrentSelectedTopic() track by $index"
                            ng-click="selectTopic(e)" style="margin-left:{{($index + 1) * 10}}px;">
                             <span class="hand-cursor" ng-switch="getCurrentSelectedTopic().indexOf(e) > -1">
                                 <i ng-switch-when="true" class="fa fa-chevron-down" id="li-checked-{{e}}"></i>

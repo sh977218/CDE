@@ -59,8 +59,8 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
     };
 
     $scope.browseByTopic = function (b) {
-        $location.search('byTopic', b);
-        $scope.byTopic =b;
+        b?$location.search('byTopic', true):$location.search('byTopic', null);
+        $scope.byTopic = b;
     };
 
 }]);

@@ -34,7 +34,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                                         $scope.esIndices[i].totalCount = 0;
                                     }, 2000);
                                 }
-                            })
+                            });
                         }, 5000);
                     };
                 },
@@ -51,6 +51,15 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
 
         $scope.syncMesh = function() {
             $http.post("syncWithMesh");
+            var indexFn = setInterval(function () {
+                $http.get('/syncWithMesh').success(function (result) {
+                    $scope.meshSync = result;
+                    if (result.done === result.total) {
+                        clearInterval(indexFn);
+                        delete $scope.meshSync;
+                    }
+                });
+            }, 1000);
         };
 
         $scope.getNodeStatus = function (status) {

@@ -187,6 +187,14 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
+    $scope.selectedTopicsAsString = function() {
+        if ($scope.searchSettings.meshTree && $scope.searchSettings.meshTree.length > 0) {
+            return $scope.searchSettings.meshTree.split(";").join(" > ");
+        } else {
+            return "All Topics";
+        }
+    };
+
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
         if ($scope.searchSettings.selectedOrg) {
