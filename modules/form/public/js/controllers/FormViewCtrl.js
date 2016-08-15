@@ -47,6 +47,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
             },
             show: true
         },
@@ -101,6 +102,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
             },
             show: false,
             hideable: true

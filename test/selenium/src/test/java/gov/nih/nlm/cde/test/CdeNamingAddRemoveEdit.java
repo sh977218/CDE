@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 public class CdeNamingAddRemoveEdit extends CdeNamingTest {
 
     @Test
-    @RecordVideo
     public void addRemoveEdit() {
         addRemoveEditTest();
     }

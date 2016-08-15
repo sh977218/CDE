@@ -11,10 +11,9 @@ public abstract class NamingTest extends CommonTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         String cdeName = "Principal Investigator State java.lang.String";
         goToCdeByName(cdeName);
-        clickElement(By.linkText("Naming"));
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("removeNaming-0")));
+        clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
-        wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createNamePair"))));
+        textPresent("Contexts are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("New Name");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("createNamePair")));
         findElement(By.name("definition")).sendKeys("New Definition");
