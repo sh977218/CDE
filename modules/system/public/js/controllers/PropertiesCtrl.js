@@ -3,7 +3,11 @@ angular.module('systemModule').controller('PropertiesCtrl',
     function($scope, $modal, $location, $timeout, OrgHelpers, Alert)
 {
 
-    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+    $scope.$on('elementReloaded', function() {
+        OrgHelpers.deferred.promise.then(function () {
+            $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+        });
+    });
 
     $scope.openNewProperty = function () {
         if (!$scope.allKeys || $scope.allKeys.length === 0) {
