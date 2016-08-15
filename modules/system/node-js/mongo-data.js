@@ -173,9 +173,7 @@ exports.listOrgsDetailedInfo = function (callback) {
         "cdeStatusValidationRules": 1,
         "propertyKeys": 1,
         "nameContexts": 1
-    }).exec(function (err, result) {
-        callback("", result);
-    });
+    }).exec(callback);
 };
 
 exports.managedOrgs = function(callback) {
