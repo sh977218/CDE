@@ -22,6 +22,7 @@ public class FormNamingTest extends BaseFormTest {
         goToFormByName("Study Drug Compliance");
         clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
+        textPresent("Contexts are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
         new Select(findElement(By.name("context"))).selectByVisibleText("Great CTX");
