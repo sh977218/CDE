@@ -28,22 +28,6 @@
     </div>
 
     <div>
-        <!--<div>-->
-            <!--<div class="pull-left" ng-switch="byTopic">-->
-                <!--<h3>Browse <span ng-switch-default>by classification</span>-->
-                    <!--<a href="" ng-click="browseByTopic(false)" ng-switch-when="true">by classification</a>-->
-                    <!--or <span ng-switch-when="true">by Topic</span>-->
-                        <!--<a href="" ng-click="browseByTopic(true)" ng-switch-default>by Topic</a>-->
-                <!--</h3></div>-->
-            <!--<div id="exportEverything" class="pull-right" ng-if="!embedded">-->
-                <!--<div class="btn-group pull-right" ng-controller="ExportCtrl"-->
-                     <!--ng-include="'/' + module + '/public/html/searchExportButton.html'">-->
-
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="clearfix"></div>-->
-
         <div uib-tabset>
             <div class="row" uib-tab heading="Browse by Classification" ng-click="browseByTopic(false)">
                 <span ng-if="orgs.length === 0"><h1 class="pl130"><i class="fa fa-spinner fa-pulse"></i> Searching...</h1></span>
@@ -62,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div uib-tab heading="Browse by Topic" active="byTopic"  ng-click="browseByTopic(true)">
+            <div ng-if="topics.Diseases" uib-tab heading="Browse by Topic" active="byTopic"  ng-click="browseByTopic(true)">
                 <div ng-repeat="(key, value) in topics">
                     <div ng-class="{'row':$index %3 === 2}">
                         <div class="col-md-4">
