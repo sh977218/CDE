@@ -10,7 +10,6 @@ public abstract class PropertyTest extends CommonTest {
         mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
         showAllTabs();
-
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");

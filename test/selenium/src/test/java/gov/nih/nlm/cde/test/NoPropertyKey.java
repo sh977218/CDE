@@ -8,8 +8,8 @@ public class NoPropertyKey extends NlmCdeBaseTest {
 
     @Test
     public void noPropertyKey() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToCdeByName("Positron Emission Tomography Upper Jugular Lymph Node Left Uptake Result Scale");
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToCdeByName("Neoadjuvant Therapy");
         showAllTabs();
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));

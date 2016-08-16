@@ -1,6 +1,6 @@
 angular.module('formModule').controller
-('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard',
-    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard) {
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
