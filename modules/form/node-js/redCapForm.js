@@ -99,6 +99,5 @@ function getRedCap(form) {
 
 exports.formToRedCap = function (form) {
     var instrumentResult = getRedCap(form);
-    console.log(instrumentResult);
     return exportShared.exportHeader.redCapHeader + instrumentResult;
 };
