@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.form.test.BaseFormTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
@@ -12,7 +11,7 @@ public class RedCapExportTest extends BaseFormTest {
 
     @Test
     public void checkRedCapExportZipFileSize() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Frontal Behavioral Inventory (FBI)");
         enableBetaFeature();
         clickElement(By.id("export"));
