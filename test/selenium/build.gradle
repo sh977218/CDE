@@ -29,7 +29,7 @@ tasks.withType(Test) {
     systemProperty 'timeout', System.getProperty('timeout', timeout)
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome";
     systemProperty 'seleniumDownloadFolder', project.hasProperty('downloadFolder') ? downloadFolder : "/usr/nlm/selenium/cde/downloads/";
-    systemProperty 'chromeDownloadFolder', project.hasProperty('chromeDownloadFolder') ? downloadFolder : "T:\\CDE\\downloads";
+    systemProperty 'chromeDownloadFolder', project.hasProperty('chromeDownloadFolder') ? chromeDownloadFolder : "T:\\CDE\\downloads";
     systemProperty 'tempFolder', project.hasProperty('tempFolder') ? tempFolder : "/tmp/";
 }
 
