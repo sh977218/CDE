@@ -167,6 +167,9 @@ public class NlmCdeBaseTest {
         if (baseUrl.contains("local-cde-dev-1")) {
             downloadFolder = "/usr/nlm/selenium/cde/downloads/ci01";
         } else downloadFolder = "/usr/nlm/selenium/cde/downloads/ci02";
+        if (baseUrl.contains("local-cde-dev-1")) {
+            chromeDownloadFolder = "T://CDE/downloads/ci01";
+        } else chromeDownloadFolder = "T://CDE/downloads/ci02";
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
