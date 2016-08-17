@@ -164,8 +164,14 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 
+        if (baseUrl.contains("local-cde-dev-1")) {
+            downloadFolder = "/usr/nlm/selenium/cde/downloads/ci01";
+        } else downloadFolder = "/usr/nlm/selenium/cde/downloads/ci02";
+
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
+
+
     }
 
     @BeforeMethod
