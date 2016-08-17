@@ -163,7 +163,9 @@ public class NlmCdeBaseTest {
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
-//        textPresent("has been designed to provide access");
+
+        System.out.println("downloadFolder: " + downloadFolder);
+        System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
     }
 
     @BeforeMethod
