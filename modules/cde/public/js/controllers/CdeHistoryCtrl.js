@@ -138,7 +138,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     a.context.contextName === b.context.contextName;
             },
             sort: function (a, b) {
-                return a.designation - b.designation;
+                return a.designation.localeCompare(b.designation);
             },
             tooltip: "Sorted by name. New/Removed if any value is modified",
             title: 'Naming',
@@ -157,7 +157,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     a.originId === b.originId;
             },
             sort: function (a, b) {
-                return a.name - b.name;
+                return a.name.localeCompare(b.name);
             },
             tooltip: 'Sorted by name, New/Removed if any value is modified',
             title: 'Data Element Concepts',
@@ -176,7 +176,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     a.originId === b.originId;
             },
             sort: function (a, b) {
-                return a.name - b.name;
+                return a.name.localeCompare(b.name);
             },
             tooltip: 'Sorted by name, New/Removed if any value is modified',
             title: 'Property Concepts',
@@ -195,7 +195,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     a.originId === b.originId;
             },
             sort: function (a, b) {
-                return a.name - b.name;
+                return a.name.localeCompare(b.name);
             },
             tooltip: 'Sorted by name, New/Removed if any value is modified',
             title: 'ObjectClass Concepts',
@@ -212,7 +212,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                 return a.title === b.title;
             },
             sort: function (a, b) {
-                return a.title - b.title;
+                return a.title.localeCompare(b.title);
             },
             title: 'Reference Documents',
             hideSame: true,
@@ -229,10 +229,12 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
         };
         $scope.propertiesOptions = {
             equal: function (a, b) {
-                return a.key === b.key;
+                return a.key === b.key &&
+                    a.value === b.value &&
+                    a.valueFormat === b.valueFormat;
             },
             sort: function (a, b) {
-                return a.key - b.key;
+                return a.key.localeCompare(b.key);
             },
             title: 'Properties',
             hideSame: true,
@@ -246,7 +248,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                 return a.fileid === b.fileid;
             },
             sort: function (a, b) {
-                return a.filename - b.filename;
+                return a.filename.localeCompare(b.filename);
             },
             title: 'Attachments',
             hideSame: true,
@@ -264,7 +266,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     a.version === b.version;
             },
             sort: function (a, b) {
-                return a.id - b.id;
+                return a.id.localeCompare(b.id);
             },
             title: 'Identifiers',
             hideSame: true,
