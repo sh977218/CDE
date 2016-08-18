@@ -16,8 +16,16 @@ public class RedCapExportTest extends BaseFormTest {
         enableBetaFeature();
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
-        hangon(10);
-        long zipSize = new File(downloadFolder + "Frontal Behavioral Inventory (FBI).zip").length();
+        long zipSize = 0;
+        for (int i = 0; i < 30; i++) {
+            zipSize = new File(downloadFolder + "Frontal Behavioral Inventory (FBI).zip").length();
+            if (zipSize == 2894) {
+                System.out.println("Wait for zip file to appear: " + i);
+                i = 30;
+            } else {
+                hangon(5);
+            }
+        }
         Assert.assertEquals(zipSize, 2894);
     }
 }
