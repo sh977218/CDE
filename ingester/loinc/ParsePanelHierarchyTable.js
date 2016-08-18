@@ -26,48 +26,48 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                                             endLevel = true;
                                         }
                                         done();
-                                    })
+                                    });
                                 });
                             });
-                        })
+                        });
                     },
                     function (done) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
                             done();
-                        })
+                        });
                     },
                     function (done) {
                         tds[1].findElement(By.css('a')).then(function (a) {
                             a.getAttribute('href').then(function (url) {
                                 row['link'] = url.trim();
                                 done();
-                            })
-                        })
+                            });
+                        });
                     },
                     function (done) {
                         tds[2].getText().then(function (text) {
                             row['LOINC Name'] = text.trim();
                             done();
-                        })
+                        });
                     },
                     function (done) {
                         tds[3].getText().then(function (text) {
                             row['R/O/C '] = text.trim();
                             done();
-                        })
+                        });
                     },
                     function (done) {
                         tds[4].getText().then(function (text) {
                             row['Cardinality'] = text.trim();
                             done();
-                        })
+                        });
                     },
                     function (done) {
                         tds[5].getText().then(function (text) {
                             row['Ex UCUM Units'] = text.trim();
                             done();
-                        })
+                        });
                     }
                 ], function () {
                     var temp;
@@ -85,11 +85,11 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         elements = [];
                     }
                     doneOneTr();
-                })
+                });
             });
         }, function doneAllTrs() {
             obj[sectionName][sectionName] = PanelHierarchyArray;
             cb();
         });
-    })
+    });
 };
