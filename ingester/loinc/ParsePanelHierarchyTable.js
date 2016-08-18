@@ -7,37 +7,34 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         trs.pop();
-        var elements = [];
+        var currentLevels = [];
+        var currentDepth;
         async.forEachSeries(trs, function (tr, doneOneTr) {
             var row = {elements: []};
-            var depth = 0;
-            var endLevel = false;
+            var depth;
             tr.findElements(By.xpath('td')).then(function (tds) {
                 async.series([
-                    function (done) {
+                    function getDepth (done) {
                         tds[1].findElement(By.xpath('span')).then(function (span) {
                             span.getText().then(function (spanText) {
                                 span.findElement(By.xpath('a')).then(function (a) {
                                     a.getText().then(function (aText) {
-                                        var lastDepth = depth;
                                         var spaces = spanText.replace(aText, '');
                                         depth = spaces.length / 5;
-                                        if (lastDepth === depth) {
-                                            endLevel = true;
-                                        }
                                         done();
                                     });
                                 });
                             });
                         });
                     },
-                    function (done) {
+                    function getLoincID (done) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
+                            console.log(row['LOINC#'])
                             done();
                         });
                     },
-                    function (done) {
+                    function getLoincLink (done) {
                         tds[1].findElement(By.css('a')).then(function (a) {
                             a.getAttribute('href').then(function (url) {
                                 row['link'] = url.trim();
@@ -70,19 +67,21 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         });
                     }
                 ], function () {
-                    var temp;
                     if (depth === 0) {
-                        PanelHierarchyArray.push(row);
-                        temp = row;
-                    } else if (depth === 1) {
-                        temp.elements.push(row);
-                    } else if (depth === 2) {
-                        elements.push(row);
-                    } else if (depth === 3) {
-                        elements.push(row);
-                    }
-                    if (endLevel) {
-                        elements = [];
+                        currentLevels[0] = row;
+                        currentDepth = 0;
+                    } else if (depth > currentDepth) {
+                        currentLevels[currentDepth].elements.push(row);
+                        currentLevels[depth] = row;
+                        currentDepth = depth;
+                    } else if (depth === currentDepth) {
+                        currentLevels[depth - 1].elements.push(row);
+                        currentLevels[depth] = row;
+                    } else if(depth < currentDepth) {
+                        currentLevels[currentDepth] = null;
+                        currentLevels[depth] = row;
+                        currentLevels[depth - 1].elements.push(row);
+                        currentDepth = depth;
                     }
                     doneOneTr();
                 });

@@ -15,7 +15,7 @@ MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}})
         var obj = new MigrationLoincModel(one);
         obj.save(function (err) {
             if (err) throw err;
-        })
+        });
     }, function () {
     });
 
