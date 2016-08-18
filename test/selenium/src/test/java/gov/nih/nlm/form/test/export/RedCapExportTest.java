@@ -21,3 +21,4 @@ public class RedCapExportTest extends BaseFormTest {
         Assert.assertEquals(zipSize, 2894);
     }
 }
+
