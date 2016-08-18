@@ -189,7 +189,8 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.selectedTopicsAsString = function() {
         if ($scope.searchSettings.meshTree && $scope.searchSettings.meshTree.length > 0) {
-            return $scope.searchSettings.meshTree.split(";").join(" > ");
+            var res = $scope.searchSettings.meshTree.split(";").join(" > ");
+            return res.length > 50?res.substr(0, 49) + "...":res;
         } else {
             return "All Topics";
         }

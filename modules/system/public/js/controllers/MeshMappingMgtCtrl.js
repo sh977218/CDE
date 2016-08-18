@@ -62,7 +62,16 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
             }).error(function() {
                 Alert.addAlert("danger", "There was an issue saving this record.");
             });
+        };
 
+        $scope.removeDescriptor = function(i) {
+            $scope.mapping.meshDescriptors.splice(i, 1);
+            $http.post("/meshClassification", $scope.mapping).success(function(result) {
+                Alert.addAlert("success", "Saved");
+                $scope.mapping = result;
+            }).error(function() {
+                Alert.addAlert("danger", "There was an issue saving this record.");
+            });
         };
 
     }]);

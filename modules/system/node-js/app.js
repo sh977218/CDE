@@ -985,9 +985,6 @@ exports.init = function (app) {
        });
    }
 
-    // TODO set proper interval / cron
-    setInterval(syncWithMesh, 30 * 60 * 1000);
-
     new CronJob({
         cronTime: '00 00 4 * * *',
         //noinspection JSUnresolvedFunction
