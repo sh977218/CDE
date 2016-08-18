@@ -26,6 +26,8 @@ exports.removeElasticFields = function(elt) {
     delete elt.flatProperties;
     if (elt.valueDomain) delete elt.valueDomain.nbOfPVs;
     delete elt.primaryDefinitionCopy;
+    delete elt.flatMeshSimpleTrees;
+    delete elt.flatMeshTrees;
     delete elt.flatIds;
     delete elt.usedByOrgs;
     delete elt.registrationState.registrationStatusSortOrder;
