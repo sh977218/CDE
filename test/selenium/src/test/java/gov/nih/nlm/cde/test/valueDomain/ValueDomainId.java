@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class ValueDomainId extends NlmCdeBaseTest {
 
     @Test
-    public void randomDatatype() {
+    public void valueDomainIdVisible() {
         mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Gender Self-Identified";
         goToCdeByName(cdeName);
