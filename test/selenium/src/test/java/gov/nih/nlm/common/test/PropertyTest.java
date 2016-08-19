@@ -2,49 +2,34 @@ package gov.nih.nlm.common.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 
 public abstract class PropertyTest extends CommonTest {
 
-    public void autocomplete(String eltName, String checkString, String expected) {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToEltByName(eltName);
-        showAllTabs();
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys(checkString);
-        try {
-            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
-        } catch (Exception e) {
-            System.out.println("Re-typing autocomplete text");
-            findElement(By.name("key")).clear();
-            findElement(By.name("key")).sendKeys(checkString);
-            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
-        }
-        goHome();
-    }
-
     public void addRemoveProperty(String eltName, String status) {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
         showAllTabs();
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey1");
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
+        findElement(By.name("value")).sendKeys("MyValue0");
+        clickElement(By.id("createProperty"));
+        textPresent("Property Added");
+        closeAlert();
+        modalGone();
+
+        clickElement(By.id("addProperty"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
+
         clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey2");
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
-        clickElement(By.id("createProperty"));
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
-        clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey3");
-        findElement(By.name("value")).sendKeys("MyValue3");
         clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
@@ -58,12 +43,12 @@ public abstract class PropertyTest extends CommonTest {
         goToEltByName(eltName, status);
         showAllTabs();
         clickElement(By.id("properties_tab"));
-        textPresent("MyKey1");
-        textPresent("MyKey3");
-        textPresent("MyValue1");
-        textPresent("MyValue3");
-        textNotPresent("MyValue2");
-        textNotPresent("MyValue2");
+        textPresent("propKey0");
+        textPresent("propKey2");
+        textPresent("MyValue0");
+        textPresent("MyValue2");
+        textNotPresent("propKey1");
+        textNotPresent("MyValue1");
     }
 
     public void richText(String eltName, String status) {

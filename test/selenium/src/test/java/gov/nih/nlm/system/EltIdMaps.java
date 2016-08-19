@@ -42,6 +42,8 @@ public class EltIdMaps {
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
 
 
         // Forms
@@ -64,7 +66,7 @@ public class EltIdMaps {
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
-        eltMap.put("Reg Status Lift","mJmg93zRW");
+        eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
 
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");

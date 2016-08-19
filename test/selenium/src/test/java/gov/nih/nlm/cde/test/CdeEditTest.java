@@ -85,7 +85,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
         clickElement(By.cssSelector(".fa-check"));
         clickElement(By.linkText("Classification"));
-
         Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
         showAllTabs();
         clickElement(By.id("properties_tab"));
@@ -100,7 +99,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("confirmRemoveProperty-0"));
         textPresent("Property removed. Save to confirm.");
         closeAlert();
-
         clickElement(By.linkText("Identifiers"));
         clickElement(By.id("addId"));
         findElement(By.name("source")).sendKeys("MyOrigin1");
