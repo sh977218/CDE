@@ -1,6 +1,6 @@
 angular.module('formModule').controller
-('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard',
-    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard) {
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
@@ -47,6 +47,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
             },
             show: true
         },
@@ -101,6 +102,7 @@ angular.module('formModule').controller
             includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
             },
             show: false,
             hideable: true
@@ -267,6 +269,7 @@ angular.module('formModule').controller
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
+                $scope.$broadcast("elementReloaded");
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

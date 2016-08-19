@@ -107,7 +107,7 @@ exports.formById = function (req, res) {
             }
             else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
             else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form, res);
+            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form.toObject(), res);
             else getFormJson(form, req, res);
         });
     });
@@ -236,7 +236,7 @@ var getFormRedCap = function (form, response) {
         response.status(500).send(exportWarnings[form.stewardOrg.name]);
         return;
     }
-    var validationErr = loopForm(form.toObject());
+    var validationErr = loopForm(form);
     if (validationErr) {
         response.status(500).send(exportWarnings[validationErr]);
     } else {
@@ -255,7 +255,7 @@ var getFormRedCap = function (form, response) {
         });
         zip.pipe(response);
         zip.append('NLM', {name: 'AuthorID.txt'})
-            .append(form.get('tinyId'), {name: 'InstrumentID.txt'})
+            .append(form.tinyId, {name: 'InstrumentID.txt'})
             .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
             .finalize();
     }
