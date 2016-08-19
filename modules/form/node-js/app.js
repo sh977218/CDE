@@ -94,10 +94,6 @@ exports.init = function (app, daoManager) {
         }, "Comment declined!");
     });
 
-    app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
-    });
-
     app.post('/elasticSearchExport/form', function (req, res) {
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         var exporters = {

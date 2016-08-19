@@ -105,6 +105,14 @@ schemas.orgSchema = new mongoose.Schema({
     , uri: String
     , classifications: [csEltSchema]
     , workingGroupOf: String
+    , propertyKeys: {
+        type: Array,
+        default: []
+    }
+    , nameContexts: {
+        type: Array,
+        default: []
+    }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 });

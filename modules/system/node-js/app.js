@@ -49,7 +49,7 @@ exports.init = function (app) {
         "/board/:id", "/deview", "/myboards", "/sdcview",
         "/cdeStatusReport", "/board/:id", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgauthority"].forEach(function (path) {
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority"].forEach(function (path) {
         app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });

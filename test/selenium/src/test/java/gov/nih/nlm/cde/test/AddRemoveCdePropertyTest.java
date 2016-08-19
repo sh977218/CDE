@@ -17,7 +17,7 @@ public class AddRemoveCdePropertyTest extends PropertyTest {
 
     @Test
     public void addRemoveCdeProperty() {
-        addRemoveProperty("Aromatase Inhibitor Most Recent Received Text", null);
+        addRemoveProperty("Adrenal Gland Received Other Specify", null);
     }
 
 }
