@@ -24,7 +24,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent( "| Standard, Candidate" );
         scrollToTop();
         findElement(By.id("menu_cdes_link")).click();
-        textPresent( "Browse by classification" );
+        textPresent( "Browse by Classification" );
     }
     
 }
