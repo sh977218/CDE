@@ -375,13 +375,15 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
 });
 
 
-angular.module('systemModule').run(function ($rootScope) {
-    var timeout;
-    $rootScope.$on("$routeChangeSuccess", function (event, next, current) {
-        if (!submitWebtrends) return;
-        clearTimeout(timeout);
-        timeout = setTimeout(function () {
-            submitWebtrends();
-        }, 4000);
+angular.module('systemModule').run(function ($rootScope, $location) {
+    var dataLayer = window.dataLayer = window.dataLayer || [];
+
+    $rootScope.$on("$routeChangeSuccess", function () {
+        dataLayer.push({
+            event: 'ngRouteChange',
+            attributes: {
+                route: $location.path()
+            }
+        });
     });
 });
