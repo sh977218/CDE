@@ -16,10 +16,6 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         String today_string = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale");
-        clickElement(By.id("browseOrg-NINDS"));
-        textPresent("results for All Terms | NINDS |");
-        clickElement(By.id("linkToElt_0"));
-        textPresent("General Details");
         showAllTabs();
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");

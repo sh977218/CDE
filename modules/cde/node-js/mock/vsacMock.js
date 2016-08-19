@@ -104,15 +104,20 @@ var meshTrees = {
 };
 
 app.get("/api/fieldSearch/record", function (req, res) {
-    console.log("q = " + req.query.q)
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.send(meshRecordSearch[req.query.q]);
 });
 
 app.get("/api/record/ui/:desc", function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.send(meshUiRecords[req.params.desc]);
 });
 
 app.get("/api/tree/:tn", function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.send(meshTrees[req.params.tn]);
 });
 
