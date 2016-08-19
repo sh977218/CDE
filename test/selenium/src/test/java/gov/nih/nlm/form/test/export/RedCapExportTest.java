@@ -6,6 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class RedCapExportTest extends BaseFormTest {
 
@@ -18,9 +19,9 @@ public class RedCapExportTest extends BaseFormTest {
         clickElement(By.id("nihRedCap"));
         long zipSize = 0;
         for (int i = 0; i < 30; i++) {
-            zipSize = new File(downloadFolder + "Frontal Behavioral Inventory (FBI).zip").length();
+            zipSize = new File(downloadFolder + "/Frontal Behavioral Inventory (FBI).zip").length();
+            System.out.println("Wait for zip file to appear: " + i);
             if (zipSize == 2894) {
-                System.out.println("Wait for zip file to appear: " + i);
                 i = 30;
             } else {
                 hangon(5);
