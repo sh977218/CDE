@@ -122,6 +122,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 }
             }).result.then(function (report) {
                 report.searchSettings = $scope.searchSettings;
+                delete report.searchSettings.resultPerPage;
                 var uri = $httpParamSerializer(report);
                 $location.url('/cdeStatusReport?' + uri);
             });

@@ -41,6 +41,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'referenceDocuments.title'
     ];
     $scope.userOrgs = userOrgs;
+    $scope.userOrgsArray = Object.keys(userOrgs).sort();
     $scope.cancel = function(){
         $modalInstance.dismiss();
     };
