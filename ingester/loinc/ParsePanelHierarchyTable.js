@@ -3,7 +3,6 @@ var By = require('selenium-webdriver').By;
 
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
     var sectionName = task.sectionName;
-    var PanelHierarchyArray = [];
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
         trs.pop();
@@ -30,7 +29,6 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                     function getLoincID (done) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
-                            console.log(row['LOINC#'])
                             done();
                         });
                     },
@@ -83,11 +81,12 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         currentLevels[depth - 1].elements.push(row);
                         currentDepth = depth;
                     }
+                    console.log(row['LOINC#']);
                     doneOneTr();
                 });
             });
         }, function doneAllTrs() {
-            obj[sectionName][sectionName] = PanelHierarchyArray;
+            obj[sectionName][sectionName] = currentLevels[0];
             cb();
         });
     });
