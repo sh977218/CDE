@@ -10,7 +10,7 @@ var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-exports.updateOrInsert = function(elt) {
+exports.updateOrInsert = function (elt, cb) {
     var doc = esInit.riverFunction(elt.toObject());
     if (doc) {
         delete doc._id;
@@ -28,11 +28,56 @@ exports.updateOrInsert = function(elt) {
                     details: ""
                 });
             }
+            if (cb) cb(err);
         });
     }
 };
 
-exports.boardUpdateOrInsert = function(elt) {
+exports.boardRefresh = function (cb) {
+    esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
+};
+
+exports.storedQueryUpdateOrInsert = function (elt) {
+    var doc = esInit.storedQueryRiverFunction(elt.toObject());
+    if (doc) {
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.storedQueryIndex.name,
+            type: "storedquery",
+            id: elt._id.toString(),
+            body: doc
+        }, function (err) {
+            if (err) {
+                exports.logError({
+                    message: "Unable to Index document: " + doc.tinyId,
+                    origin: "storedQuery.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.storedQueryDelete = function (elt) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.storedQueryIndex.name,
+            type: "storedquery",
+            id: elt._id.toString()
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete storedQuery: " + elt._id.toString(),
+                    origin: "cde.elastic.storeQueryDelete",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+exports.boardUpdateOrInsert = function (elt) {
     if (elt) {
         var doc = elt.toObject();
         delete doc._id;
@@ -44,8 +89,27 @@ exports.boardUpdateOrInsert = function(elt) {
         }, function (err) {
             if (err) {
                 dbLogger.logError({
-                    message: "Unable to index board: " + doc.tinyId,
+                    message: "Unable to index board: " + elt._id.toString(),
                     origin: "cde.elastic.boardUpdateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+};
+
+exports.boardDelete = function (elt) {
+    if (elt) {
+        esClient.delete({
+            index: config.elastic.boardIndex.name,
+            type: "board",
+            id: elt._id.toString()
+        }, function (err) {
+            if (err) {
+                dbLogger.logError({
+                    message: "Unable to delete board: " + elt._id.toString(),
+                    origin: "cde.elastic.boardDelete",
                     stack: err,
                     details: ""
                 });
@@ -58,10 +122,12 @@ exports.elasticsearch = function (user, settings, cb) {
     var query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(function (field) {
-            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {delete query.highlight.fields[field];}
+            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
+                delete query.highlight.fields[field];
+            }
         });
     }
-    sharedElastic.elasticsearch(query, 'cde', function(err, result) {
+    sharedElastic.elasticsearch(query, 'cde', function (err, result) {
         if (result && result.cdes && result.cdes.length > 0) {
             dbLogger.storeQuery(settings);
         }
@@ -101,12 +167,13 @@ exports.morelike = function (id, callback) {
                 },
                 "filter": {
                     bool: {
-                        must_not: [{
-                            term: {
-                                "registrationState.registrationStatus": "Retired"
-                            }
-                        }
-                            , {
+                        must_not: [
+                            {
+                                term: {
+                                    "registrationState.registrationStatus": "Retired"
+                                }
+                            },
+                            {
                                 term: {
                                     "isFork": "true"
                                 }
@@ -152,12 +219,12 @@ exports.morelike = function (id, callback) {
 
 exports.DataElementDistinct = function (field, cb) {
     var distinctQuery = {
-        "size": 0
-        , "aggs": {
+        "size": 0,
+        "aggs": {
             "aggregationsName": {
                 "terms": {
-                    "field": field
-                    , "size": 1000
+                    "field": field,
+                    "size": 1000
                 }
             }
         }
@@ -178,6 +245,170 @@ exports.DataElementDistinct = function (field, cb) {
                 return b.key;
             });
             cb(list);
+        }
+    });
+};
+exports.boardSearch = function (filter, cb) {
+    var query = {
+        "size": 100,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "match": {"shareStatus": 'Public'}
+                    },
+                    {
+                        "match": {"_all": filter.search}
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "aggregationsName": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
+            }
+        }
+    };
+    if (filter.selectedTags) {
+        filter.selectedTags.forEach(function (t) {
+            if (t !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "tags": {
+                                value: t
+                            }
+                        }
+                    });
+            }
+        });
+    }
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: query
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.boardSearch",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(query) + "error " + error + "response" + JSON.stringify(response)
+            });
+            cb("Unable to query");
+        } else {
+            delete response._shards;
+            cb(null, response);
+        }
+    });
+};
+
+exports.myBoards = function (user, filter, cb) {
+    if (!user) return cb("no user provided");
+    if (!filter) {
+        filter = {
+            sortDirection: '',
+            selectedTags: ['All'],
+            selectedShareStatus: ['All']
+        };
+    }
+    var query = {
+        "size": 100,
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "term": {
+                            "owner.username": {
+                                value: user.username.toLowerCase()
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "aggs": {
+            "tagAgg": {
+                "terms": {
+                    "field": "tags",
+                    "size": 50
+                }
+            },
+            "ssAgg": {
+                "terms": {
+                    "field": "shareStatus",
+                    "size": 2
+                }
+            }
+        },
+        "sort": []
+    };
+    var sort = {};
+    if (filter.sortBy) {
+        sort[filter.sortBy] = {};
+        if (filter && filter.sortDirection)
+            sort[filter.sortBy].order = filter.sortDirection;
+        else
+            sort[filter.sortBy].order = "asc";
+    }
+    else {
+        sort['updatedDate'] = {"order": "asc"};
+        query.sort.push(sort);
+    }
+    if (filter.boardName) {
+        query.query.bool.must.push({
+            "query_string": {
+                "fields": ["name"]
+                , "query": filter.booardName
+            }
+        });
+    }
+    query.sort.push(sort);
+    if (filter.selectedTags) {
+        filter.selectedTags.forEach(function (t) {
+            if (t !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "tags": {
+                                value: t
+                            }
+                        }
+                    });
+            }
+        });
+    }
+    if (filter.selectedShareStatus) {
+        filter.selectedShareStatus.forEach(function (ss) {
+            if (ss !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "shareStatus": {
+                                value: ss
+                            }
+                        }
+                    });
+            }
+        });
+    }
+    esClient.search({
+        index: config.elastic.boardIndex.name,
+        type: "board",
+        body: query
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error BoardDistinct", {
+                origin: "cde.elastic.myBoards",
+                stack: new Error().stack,
+                details: "query " + JSON.stringify(query) + "error " + error + "response" + JSON.stringify(response)
+            });
+            cb("Unable to query");
+        } else {
+            delete response._shards;
+            cb(null, response);
         }
     });
 };

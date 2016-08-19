@@ -33,13 +33,22 @@ var questionSchema = {
 };
 
 var sectionSchema = {};
+
+var inFormSchema = {
+    form: {
+        tinyId: String,
+        version: String,
+        name: String
+    }
+};
+
 var cardinalitySchema = {
     min: Number,
     max: Number
 };
 
 var formElementTreeRoot = {
-    elementType: {type: String, enum: ['section', 'question']}
+    elementType: {type: String, enum: ['section', 'question', 'form']}
     , label: String
     , instructions: sharedSchemas.instructionSchema
     , cardinality: cardinalitySchema
@@ -47,6 +56,7 @@ var formElementTreeRoot = {
     , showIfExpression: String
     , section: sectionSchema
     , question: questionSchema
+    , inForm: inFormSchema
     , formElements: []
     , skipLogic: {
         action: {type: String, enum: ['show', 'enable']}
@@ -66,6 +76,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , showIfExpression: String
         , section: sectionSchema
         , question: questionSchema
+        , form: inFormSchema
         , formElements: []
         , skipLogic: {
             action: {type: String, enum: ['show', 'enable']}
@@ -79,17 +90,16 @@ currentLevel.push(new mongoose.Schema({}, {strict: false}));
 
 var formElementSchema = new Schema(formElementTreeRoot, {_id: false});
 
-exports.formSchema = new Schema({
+exports.formJson = {
     tinyId: String
     , naming: [sharedSchemas.namingSchema]
     , stewardOrg: {
         name: String
     }
+    , source: String
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
-    , properties: [
-        {key: String, value: String, valueFormat: String, _id: false}
-    ]
+    , properties: [sharedSchemas.propertySchema]
     , ids: [
         {source: String, id: String, version: String, _id: false}
     ]
@@ -103,6 +113,7 @@ exports.formSchema = new Schema({
     , attachments: [sharedSchemas.attachmentSchema]
     , comments: [sharedSchemas.commentSchema]
     , history: [mongoose.Schema.Types.ObjectId]
+    , changeNote: String
     , created: Date
     , updated: Date
     , imported: Date
@@ -125,7 +136,9 @@ exports.formSchema = new Schema({
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
-});
+};
+
+exports.formSchema = new Schema(exports.formJson);
 
 exports.formSchema.set('collection', 'forms');
 

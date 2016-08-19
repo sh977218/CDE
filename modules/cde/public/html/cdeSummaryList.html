@@ -1,9 +1,7 @@
-<div ng-repeat="elt in cdes track by elt.tinyId" ng-init="acc_index = $index">
-
+<div ng-repeat="elt in cdes track by elt.tinyId">
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
     </div>
-
     <div class="singleSearchResult" id="searchResult_{{$index}}">
         <h4>
             <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
@@ -27,8 +25,5 @@
                      ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
             </div>
         </div>
-
     </div>
-
-
 </div>

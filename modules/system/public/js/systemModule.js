@@ -1,13 +1,13 @@
 angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'formModule', 'cdeModule', 'articleModule',
-        'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
-        'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
-        'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate'
-        , 'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'lformsWidget', 'infinite-scroll'])
+    'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
+    'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
+    'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
+    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive', 'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
-    .config(['$rootScopeProvider', function($rootScopeProvider){
-        $rootScopeProvider.digestTtl(20);
+    .config(['$rootScopeProvider', function ($rootScopeProvider) {
+        $rootScopeProvider.digestTtl(50);
     }])
     .config(function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({enabled: true, requireBase: false});
@@ -50,23 +50,35 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             templateUrl: '/system/public/html/searchSettings.html'
         });
     })
-    .directive('inlineEdit', function () {
+    .directive('inlineEdit', function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
-                model: '='
-                , inputType: '=?'
-                , isAllowed: '&'
-                , onOk: '&'
-                , typeaheadSource: '='
+                model: '=',
+                inputType: '=?',
+                isAllowed: '&',
+                onOk: '&',
+                typeaheadSource: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
+                $scope.value = $scope.model;
+                $scope.discard = function () {
+                    $scope.editMode = false;
+                };
+                $scope.save = function () {
+                    $scope.model = angular.copy($scope.value);
+                    $scope.editMode = false;
+                    $timeout($scope.onOk, 0);
+                };
+                $scope.edit = function () {
+                    $scope.editMode = true;
+                };
             }
         };
     })
-    .directive('inlineAreaEdit', function () {
+    .directive('inlineAreaEdit', function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -115,7 +127,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     } else {
                         $scope.model = $scope.inScope.value;
                         $scope.editMode = false;
-                        $scope.onOk();
+                        $timeout($scope.onOk, 0);
                     }
                 };
                 $scope.cancel = function () {
@@ -196,6 +208,64 @@ angular.module('systemModule').filter('bytes', function () {
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
 });
+angular.module('systemModule').factory('ClassificationUtil', function () {
+    var factoryObj = {};
+    factoryObj.sortClassification = function (elt) {
+        elt.classification = elt.classification.sort(function (c1, c2) {
+            return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
+        });
+        var sortSubClassif = function (classif) {
+            if (classif.elements) {
+                classif.elements = classif.elements.sort(function (c1, c2) {
+                    if (!c1.name)
+                        console.log('h');
+                    return c1.name.localeCompare(c2.name);
+                });
+            }
+        };
+        var doRecurse = function (classif) {
+            sortSubClassif(classif);
+            if (classif.elements) {
+                classif.elements.forEach(function (subElt) {
+                    doRecurse(subElt);
+                });
+            }
+        };
+        elt.classification.forEach(function (classif) {
+            doRecurse(classif);
+        });
+    };
+
+    factoryObj.doClassif = function(currentString, classif, result) {
+        if (currentString.length > 0) {
+            currentString = currentString + ' | ';
+        }
+        currentString = currentString + classif.name;
+        if (classif.elements && classif.elements.length > 0) {
+            classif.elements.forEach(function(cl) {
+                factoryObj.doClassif(currentString, cl, result);
+            });
+        } else {
+            result.push(currentString);
+        }
+    };
+
+    factoryObj.flattenClassification = function(elt) {
+        var result = [];
+        if (elt.classification) {
+            elt.classification.forEach(function (cl) {
+                if (cl.elements) {
+                    cl.elements.forEach(function (subCl) {
+                        factoryObj.doClassif(cl.stewardOrg.name, subCl, result);
+                    });
+                }
+            });
+        }
+        return result;
+    };
+
+    return factoryObj;
+});
 
 angular.module('systemModule').factory('isAllowedModel', function (userResource) {
     var isAllowedModel = {};
@@ -268,78 +338,38 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
         "");
 }]);
 
-
-angular.module('systemModule').directive('diff', function () {
-    return {
-        restrict: 'AE'
-        , scope: {
-            values: '='
-        }
-        , templateUrl: '/propertyDiff.html'
-        , controller: function ($scope) {
-            $scope.renderValue = function (value) {
-                var output = "";
-                for (prop in value) {
-                    if (prop === "$$hashKey") continue;
-                    var v = value[prop];
-                    if (v) {
-                        if (output !== "") output += ", ";
-                        output += v;
-                    }
-                }
-                return output;
-            };
-        }
-    };
-});
-
 angular.module('systemModule').config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|blob):|data:text\//);
 }]);
 
-angular.module('systemModule').config(function ($provide) {
-    $provide.decorator('uiSortableDirective', function ($delegate) {
-        var directive = $delegate[0];
-        var link = directive.link;
-        directive.compile = function () {
-            return function (scope, element, attrs, ngModel) {
-                if (scope.dragEnabled) {
-                    link(scope, element, attrs, ngModel);
-                }
-            };
-        };
-        return $delegate;
-    });
-});
 
 angular.module('systemModule').config(function ($provide) {
     var previousException;
     var http;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
         function ($delegate, $injector) {
-        return function (exception, cause) {
-            $delegate(exception, cause);
-            if (previousException && exception.toString() === previousException.toString()) return;
-            previousException = exception;
-            if (!http) {
-                http = $injector.get('$http');
-            }
-            try {
-                if (exception.message.indexOf("[$compile:tpload]") > -1) return;
-                http.post('/logClientException', {
-                    stack: exception.stack,
-                    message: exception.message,
-                    name: exception.name,
-                    url: window.location.pathname
-                });
-            } catch (e) {
+            return function (exception, cause) {
+                $delegate(exception, cause);
+                if (previousException && exception.toString() === previousException.toString()) return;
+                previousException = exception;
+                if (!http) {
+                    http = $injector.get('$http');
+                }
+                try {
+                    if (exception.message.indexOf("[$compile:tpload]") > -1) return;
+                    http.post('/logClientException', {
+                        stack: exception.stack,
+                        message: exception.message,
+                        name: exception.name,
+                        url: window.location.href
+                    });
+                } catch (e) {
 
-            }
-        };
-    }]);
+                }
+            };
+        }]);
 });
 
 angular.module('systemModule').config(function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('nlmcde');
 });
-

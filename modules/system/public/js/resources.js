@@ -19,7 +19,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
             this.elts.forEach(function(elt) {
                 if (!elt.primaryNameCopy) elt.primaryNameCopy = elt.naming[0].designation;
                 if (!elt.primaryDefinitionCopy) elt.primaryDefinitionCopy = elt.naming[0].definition;
-            })
+            });
         },
         elts: [],
         loading: false,
@@ -57,15 +57,12 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
                 return false;
             }
         }
-    }
+    };
 }
 
 angular.module('resourcesSystem', ['ngResource'])
     .factory('Auth', function ($http) {
         return {
-            register: function (user, success, error) {
-                $http.post('/register', user).success(success).error(error);
-            },
             login: function (user, success, error) {
                 $http.post('/login', user).success(success).error(error);
             },
@@ -147,7 +144,7 @@ angular.module('resourcesSystem', ['ngResource'])
 
         $http.get('/user/me').then(function (response) {
             var u = response.data;
-            if (u == "Not logged in.") {
+            if (u === "Not logged in.") {
                 userResource.user = {userLoaded: true};
             } else {
                 userResource.user = u;
@@ -179,22 +176,6 @@ angular.module('resourcesSystem', ['ngResource'])
         };
         return this;
     })
-    .factory("CsvDownload", function () {
-        return {
-            export: function (elts) {
-                var str = '';
-                for (var i = 0; i < elts.length; i++) {
-                    var line = '';
-                    elts.forEach(function (elt) {
-                        line += '"' + elt[index] + '",';
-                    });
-                    line.slice(0, line.Length - 1);
-                    str += line + '\r\n';
-                }
-                return str;
-            }
-        };
-    })
     .factory("AutoCompleteResource", function ($http) {
         return {
             suggest: function (searchTerm) {
@@ -202,12 +183,12 @@ angular.module('resourcesSystem', ['ngResource'])
                     return response.data;
                 });
             }
-        }
+        };
     })
     .factory("SearchResultResource", function () {
         return {
             elts: []
-        }
+        };
     })
     .factory('LoginRedirect', function ($location) {
         var lastRoute;
@@ -247,7 +228,98 @@ angular.module('resourcesSystem', ['ngResource'])
                 }
             }, window.userAlertTime);
         };
-        var mapAlerts = function(){return alerts;}
+        var mapAlerts = function() {return alerts;};
         return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
+    })
+    .factory("RegStatusValidator", function(OrgHelpers){
+        var evalCde = function (cde, orgName, status, cdeOrgRules) {
+            var orgRules = cdeOrgRules[orgName];
+            var rules = orgRules.filter(function (r) {
+                var s = r.targetStatus;
+                if (status === 'Incomplete') return s === 'Incomplete';
+                if (status === 'Candidate') return s === 'Incomplete' || s === 'Candidate';
+                if (status === 'Recorded') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded';
+                if (status === 'Qualified') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
+                if (status === 'Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
+                return true;
+            });
+            if (rules.length === 0) return [];
+            return rules.map(function (r) {
+                return {ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)};
+            });
+        };
+
+        var conditionsMetForStatusWithinOrg = function (cde, orgName, status, cdeOrgRules) {
+            if (!cdeOrgRules[orgName]) return true;
+            var results = evalCde(cde, orgName, status, cdeOrgRules);
+            return results.every(function (x) {
+                return x.passing;
+            });
+        };
+
+        var cdePassingRule = function (cde, rule) {
+            function checkRe(field, rule) {
+                return new RegExp(rule.rule.regex).test(field);
+            }
+            function lookForPropertyInNestedObject(object, rule, level) {
+                var key = rule.field.split(".")[level];
+                if (!object[key]) return false;
+                if (level === rule.field.split(".").length - 1) return checkRe(object[key], rule);
+                if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
+                if (Array.isArray(object[key])) {
+                    var result;
+                    if (rule.occurence === "atLeastOne") {
+                        result = false;
+                        object[key].forEach(function (subTree) {
+                            result = result || lookForPropertyInNestedObject(subTree, rule, level + 1);
+                        });
+                        return result;
+                    }
+                    if (rule.occurence === "all") {
+                        result = true;
+                        object[key].forEach(function (subTree) {
+                            result = result && lookForPropertyInNestedObject(subTree, rule, level + 1);
+                        });
+                        return result;
+                    }
+                }
+            }
+            return lookForPropertyInNestedObject(cde, rule, 0);
+        };
+
+        var getOrgRulesForCde = function(cde){
+            var result = {};
+            cde.classification.forEach(function(org){
+                result[org.stewardOrg.name] = OrgHelpers.getStatusValidationRules(org.stewardOrg.name);
+            });
+            return result;
+        };
+
+        var getStatusRules = function(cdeOrgRules){
+            var cdeStatusRules = {
+                Incomplete: {},
+                Candidate: {},
+                Recorded: {},
+                Qualified: {},
+                Standard: {},
+                "Preferred Standard": {}
+            };
+
+            Object.keys(cdeOrgRules).forEach(function (orgName) {
+                cdeOrgRules[orgName].forEach(function (rule) {
+                    if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
+                    cdeStatusRules[rule.targetStatus][orgName].push(rule);
+                });
+            });
+            return cdeStatusRules;
+        };
+
+        return {
+            conditionsMetForStatusWithinOrg: conditionsMetForStatusWithinOrg
+            , cdePassingRule: cdePassingRule
+            , getOrgRulesForCde: getOrgRulesForCde
+            , getStatusRules: getStatusRules
+            , evalCde: evalCde
+        };
     })
 ;

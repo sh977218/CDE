@@ -42,7 +42,7 @@ public class NlmCdeBaseTest {
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
-    protected static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    private static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
     private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
     protected static String tempFolder = System.getProperty("tempFolder");
@@ -55,7 +55,7 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    protected static String history_username = "historyuser";
+    static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
@@ -80,18 +80,22 @@ public class NlmCdeBaseTest {
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
     protected static String testAdmin_username = "testAdmin";
-    protected static String oldUser_username = "oldUser";
+    protected static String classifyBoardUser_username = "classifyBoardUser";
+    static String oldUser_username = "oldUser";
+    protected static String boardPublisherTest_username = "boardPublisherTest";
+    protected static String doublepinuser_username = "doublepinuser";
+    protected static String boardBot_username = "boardBot";
 
     protected static String password = "pass";
 
-    private Set<PosixFilePermission> filePerms = new HashSet();
+    private HashSet<PosixFilePermission> filePerms;
 
-    String className = this.getClass().getSimpleName();
+    private String className = this.getClass().getSimpleName();
     private ScheduledExecutorService videoExec;
 
-    int videoRate = 300;
-    int totalCdes = 11700;
-    int totalForms = 815;
+    private int videoRate = 300;
+    private int totalCdes = 11700;
+    private int totalForms = 815;
 
     private void countElasticElements(Method m) {
         int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
@@ -157,13 +161,14 @@ public class NlmCdeBaseTest {
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
-        shortWait = new WebDriverWait(driver, 2);
+        shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 //        textPresent("has been designed to provide access");
     }
 
     @BeforeMethod
     public void setUp(Method m) {
+        filePerms = new HashSet();
         countElasticElements(m);
         setDriver();
         filePerms.add(PosixFilePermission.OWNER_READ);
@@ -200,6 +205,7 @@ public class NlmCdeBaseTest {
                 File gif = new File("build/gif/" + className + "/" + methodName + ".gif");
                 File srcFile = new File(className + "_" + methodName + ".gif");
                 GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, videoRate, false);
+                assert inputScreenshotsArray != null;
                 for (File screenshotFile : inputScreenshotsArray) {
                     writer.writeToSequence(ImageIO.read(screenshotFile));
                 }
@@ -305,7 +311,7 @@ public class NlmCdeBaseTest {
         goToElementByName(name, "form");
     }
 
-    protected void goToElementByName(String name, String type) {
+    private void goToElementByName(String name, String type) {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
@@ -338,17 +344,19 @@ public class NlmCdeBaseTest {
         searchElt(formName, "form");
     }
 
-    public void assertNoElt(By by) {
+    protected void assertNoElt(By by) {
         driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         Assert.assertEquals(driver.findElements(by).size(), 0);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
     }
 
-    public void searchElt(String name, String type) {
+    protected void searchElt(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+
+        // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+        hangon(0.5);
         clickElement(By.id("search.submit"));
         try {
             textPresent("1 results for");
@@ -470,7 +478,7 @@ public class NlmCdeBaseTest {
         Sleeper.sleepTight((long) (i * 1000));
     }
 
-    public boolean classPresent(String text, By by) {
+    private boolean classPresent(String text, By by) {
         return findElement(by).getAttribute("class").contains(text);
     }
 
@@ -492,7 +500,7 @@ public class NlmCdeBaseTest {
         return true;
     }
 
-    public boolean classNotPresent(String text, By by) {
+    private boolean classNotPresent(String text, By by) {
         return !findElement(by).getAttribute("class").contains(text);
     }
 
@@ -566,7 +574,7 @@ public class NlmCdeBaseTest {
         textPresent(quickBoardTabText);
     }
 
-    public void emptyQuickBoardByModule(String module) {
+    protected void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
@@ -621,7 +629,7 @@ public class NlmCdeBaseTest {
         action.perform();
     }
 
-    public void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -661,7 +669,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        List<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
@@ -701,17 +709,14 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }
 
-    protected void showHistoryDiff(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
-    }
-
-    protected void showHistoryFull(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
+    protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.id("historyCompareBtn"));
+        textPresent("Differences");
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        clickElement(By.id("history_tab"));
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[1]//td[4]/a"));
         textPresent(field, By.cssSelector("#modificationsList"));
         textPresent(oldValue, By.cssSelector("#modificationsList"));
         textPresent(newValue, By.cssSelector("#modificationsList"));
@@ -792,6 +797,4 @@ public class NlmCdeBaseTest {
         textPresent("Settings saved!");
         closeAlert();
     }
-
-
 }

@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
+        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log)
+                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
 
 {
 
@@ -12,8 +12,8 @@ angular.module('systemModule').controller('ListCtrl',
     $scope.customClasses = "navbar-btn";
 
     $scope.exporters = {
-        json: {id: "jsonExport", display: "JSON Export"},
-        xml: {id: "xmlExport", display: "XML Export"}
+        json: {id: "jsonExport", display: "JSON Export"}
+        , xml: {id: "xmlExport", display: "XML Export"}
     };
 
     if ($route.current.subCtrl) {
@@ -201,6 +201,8 @@ angular.module('systemModule').controller('ListCtrl',
         $log.debug("running query");
         $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result) {
+            //
+            $window.scrollTo(0, 0);
             $log.debug("query complete");
             $log.debug(result);
             if (err) {
@@ -371,15 +373,25 @@ angular.module('systemModule').controller('ListCtrl',
             });
 
             modalInstance.result.then(function (selectedBoard) {
+                var filter = {
+                    reset: function () {
+                        this.tags = [];
+                        this.sortBy = 'updatedDate';
+                        this.sortDirection = 'desc';
+                    },
+                    sortBy: '',
+                    sortDirection: '',
+                    tags: []
+                };
                 var data = {
                     query: Elastic.buildElasticQuerySettings($scope.searchSettings)
                     , board: selectedBoard
                     , itemType: $scope.module
                 };
                 data.query.resultPerPage = window.maxPin;
-                $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
+                $http.post('/pinEntireSearchToBoard', data).success(function() {
                     $scope.addAlert("success", "All elements pinned.");
-                    $scope.loadMyBoards();
+                    ElasticBoard.loadMyBoards(filter);
                 }).error(function() {
                     $scope.addAlert("danger", "Not all elements were not pinned!");
                 });

@@ -1,14 +1,10 @@
-angular.module('formModule').controller('FormViewCtrl',
-    ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-        '$http', '$timeout', 'userResource', '$log', '$q',
-        function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-                  $http, $timeout, userResource, $log, $q) {
-
+angular.module('formModule').controller
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard',
+    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
     $scope.openCdeInNewTab = true;
-    $scope.dragEnabled = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
@@ -193,7 +189,7 @@ angular.module('formModule').controller('FormViewCtrl',
     $scope.renderPreview = function () {
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
-        converter.convert('form/' + $scope.elt.tinyId, function (lfData) {
+        converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
                 $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
@@ -211,32 +207,67 @@ angular.module('formModule').controller('FormViewCtrl',
         }
     };
 
-    //function setDefaultValues() {
-    //    $scope.elt.questions.forEach(function(q) {
-    //        q.question.value = q.question.defaultAnswer;
-    //    });
-    //}
+    function fetchWholeForm(form, callback) {
+        var maxDepth = 8;
+        var depth = 0;
+        var loopFormElements = function (form, cb) {
+            if (form.formElements) {
+                async.forEach(form.formElements, function (fe, doneOne) { // jshint ignore:line
+                    if (fe.elementType === 'form') {
+                        depth++;
+                        if (depth < maxDepth) {
+                            $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version).then(function (result) {
+                                fe.formElements = result.data.formElements;
+                                loopFormElements(fe, function () {
+                                    depth--;
+                                    doneOne();
+                                });
+                            });
+                        }
+                        else doneOne();
+                    } else if (fe.elementType === 'section') {
+                        loopFormElements(fe, function () {
+                            doneOne();
+                        });
+                    } else {
+                        doneOne();
+                    }
+                }, function doneAll() {
+                    cb();
+                });
+            }
+            else {
+                cb();
+            }
+        };
+        loopFormElements(form, function () {
+            callback(form);
+        });
+    }
 
     $scope.reload = function () {
         Form.get(query, function (form) {
-            $scope.elt = form;
-            if (exports.hasRole(userResource.user, "FormEditor")) {
-                isAllowedModel.setCanCurate($scope);
-            }
-            $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
-                return c.tinyId;
-            });
-            isAllowedModel.setDisplayStatusWarning($scope);
-            areDerivationRulesSatisfied();
-            //setDefaultValues();
-            if ($scope.formCdeIds.length < 21) $scope.renderPreview();
+            var formCopy = angular.copy(form);
+            fetchWholeForm(formCopy, function (wholeForm) {
+                $scope.elt = wholeForm;
+                if (exports.hasRole(userResource.user, "FormEditor")) {
+                    isAllowedModel.setCanCurate($scope);
+                }
+                $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+                    return c.tinyId;
+                });
+                isAllowedModel.setDisplayStatusWarning($scope);
+                areDerivationRulesSatisfied();
+                //setDefaultValues();
+                if ($scope.formCdeIds.length < 21) $scope.renderPreview();
 
-            if (route.tab) {
-                $scope.tabs.more.select();
-                $timeout(function () {
-                    $scope.tabs[route.tab].active = true;
-                }, 0);
-            }
+                if (route.tab) {
+                    $scope.tabs.more.select();
+                    $timeout(function () {
+                        $scope.tabs[route.tab].active = true;
+                    }, 0);
+                }
+            });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
@@ -458,13 +489,23 @@ angular.module('formModule').controller('FormViewCtrl',
         });
 
         modalInstance.result.then(function (selectedBoard) {
+            var filter = {
+                reset: function () {
+                    this.tags = [];
+                    this.sortBy = 'updatedDate';
+                    this.sortDirection = 'desc';
+                },
+                sortBy: '',
+                sortDirection: '',
+                tags: []
+            };
             var data = {
                 board: selectedBoard,
                 formTinyId: $scope.elt.tinyId
             };
-            $http({method: 'post', url: '/pinFormCdes', data: data}).success(function () {
+            $http.post('/pinFormCdes', data).success(function () {
                 $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards();
+                ElasticBoard.loadMyBoards(filter);
             }).error(function () {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });

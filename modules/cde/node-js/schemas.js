@@ -23,7 +23,6 @@ var derivationRuleSchema = new mongoose.Schema(
 var deJsonSchema = {
     naming: [sharedSchemas.namingSchema]
     , source: String
-    , sourceId: String
     , origin: String
     , stewardOrg: {
         name: String
@@ -55,6 +54,8 @@ var deJsonSchema = {
     , property: {concepts: [conceptSchema]}
     , valueDomain: {
         name: String
+        , identifiers: [sharedSchemas.idSchema]
+        , ids: [sharedSchemas.idSchema]
         , definition: String
         , uom: String
         , vsacOid: String
@@ -91,9 +92,7 @@ var deJsonSchema = {
     , cadsrRegStatus: String
     , registrationState: sharedSchemas.registrationStateSchema
     , classification: [sharedSchemas.classificationSchema]
-    , properties: [
-        {key: String, value: String, valueFormat: String, _id: false}
-    ]
+    , properties: [sharedSchemas.propertySchema]
     , ids: [sharedSchemas.idSchema]
     , dataSets: [sharedSchemas.dataSetSchema]
     , mappingSpecifications: [
@@ -113,19 +112,21 @@ var pinSchema = new mongoose.Schema({
     , pinnedDate: Date
     , deTinyId: String
     , deName: String
-});
+}, {_id: false});
+
 
 schemas.pinningBoardSchema = new mongoose.Schema({
-    name: String
-    , description: String
-    , shareStatus: String
-    , createdDate: Date
-    , updatedDate: Date
-    , owner: {
-        userId: mongoose.Schema.Types.ObjectId
-        , username: String
-    }
-    , pins: [pinSchema]
+    name: String,
+    description: String,
+    tags: [String],
+    shareStatus: String,
+    createdDate: Date,
+    updatedDate: Date,
+    owner: {
+        userId: mongoose.Schema.Types.ObjectId,
+        username: String
+    },
+    pins: [pinSchema]
 });
 
 schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);
@@ -159,5 +160,4 @@ schemas.cdeAuditSchema = new mongoose.Schema({
 }, {strict: false});
 
 schemas.cdeAuditSchema.set('collection', 'cdeAudit');
-
 module.exports = schemas;

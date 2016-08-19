@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
+    , config = require('../../system/node-js/parseConfig')
     , authorizationShared = require('../shared/authorizationShared')
-    , config = require("config")
-    , regStatusShared = require("../shared/regStatusShared")
+    , regStatusShared = require("../shared/regStatusShared") // jshint ignore:line
     ;
 
 var schemas = {};
@@ -26,6 +26,76 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+var commonEmbedSchema = {
+    nameLabel: String,
+    pageSize: Number,
+    primaryDefinition: {
+        show: Boolean,
+        label: String,
+        style: String
+    },
+    registrationStatus: {
+        show: Boolean,
+        label: String
+    },
+    lowestRegistrationStatus: {type: String, enum:regStatusShared.statusList},
+    properties: [
+        {
+            label: String,
+            key: String,
+            limit: Number
+        }
+    ],
+    otherNames: [{
+        label: String,
+        contextName: String
+    }],
+    classifications: [{
+        label: String,
+        startsWith: String,
+        exclude: String,
+        selectedOnly: Boolean
+    }],
+    ids: [
+        {
+            idLabel: String,
+            source: String,
+            version: Boolean,
+            versionLabel: String
+        }
+    ]
+};
+
+var embedJson = {
+    org: String,
+    name: String,
+    height: Number,
+    width: Number,
+    cde: commonEmbedSchema,
+    form: commonEmbedSchema
+};
+embedJson.cde.permissibleValues = Boolean;
+embedJson.cde.linkedForms = {
+    show: Boolean,
+    label: String
+};
+embedJson.form.sdcLink = Boolean;
+embedJson.form.nbOfQuestions = Boolean;
+embedJson.form.cdes = Boolean;
+
+schemas.embedSchema = new mongoose.Schema(embedJson);
+
+schemas.statusValidationRuleSchema = new mongoose.Schema({
+    field: String
+    , id: Number
+    , targetStatus: {type: String, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]}
+    , ruleName: String
+    , rule: {
+        regex:  String
+    }
+    , occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
+});
+
 schemas.orgSchema = new mongoose.Schema({
     name: String
     , longName: String
@@ -36,7 +106,9 @@ schemas.orgSchema = new mongoose.Schema({
     , classifications: [csEltSchema]
     , workingGroupOf: String
     , extraInfo: String
+    , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 });
+
 
 schemas.userSchema = new mongoose.Schema({
     username: String
@@ -119,6 +191,8 @@ schemas.registrationStateSchema = {
 
 schemas.instructionSchema = {value: String, valueFormat: String};
 
+schemas.propertySchema = {key: String, value: String, source: String, valueFormat: String, _id: false};
+
 schemas.idSchema = {source: String, id: String, version: String, _id: false};
 
 schemas.commentSchema = new mongoose.Schema({
@@ -185,10 +259,13 @@ schemas.clusterStatus = mongoose.Schema({
     , lastUpdate: Date
     , startupDate: Date
     , elastic: {
-        up: Boolean
-        , results: Boolean
-        , sync: Boolean
-        , updating: Boolean
+        up: Boolean,
+        message: String,
+        indices: [{
+            name: String,
+            up: Boolean,
+            message: String
+        }]
     }
 });
 
@@ -240,6 +317,83 @@ schemas.classificationAudit = new mongoose.Schema({
     , action: {type: String, enum: ["add", "delete", "rename", "reclassify"]}
     , path: [String]
 });
+
+
+schemas.logSchema = new mongoose.Schema(
+    {
+        level: String
+        , remoteAddr: {type: String, index: true}
+        , url: String
+        , method: String
+        , httpStatus: String
+        , date: {type: Date, index: true}
+        , referrer: String
+        , responseTime: Number
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.logErrorSchema = new mongoose.Schema(
+    {
+        message: String
+        , date: {type: Date, index: true}
+        , origin: String
+        , stack: String
+        , details: String
+        , request: {
+        url: String
+        , method: String
+        , params: String
+        , body: String
+        , username: String
+        , userAgent: String
+        , ip: String
+    }
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.clientErrorSchema = new mongoose.Schema(
+    {
+        message: String
+        , date: {type: Date, index: true}
+        , origin: String
+        , name: String
+        , stack: String
+        , userAgent: String
+        , url: String
+    }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+
+schemas.storedQuerySchema = new mongoose.Schema(
+    {
+        searchTerm: {type: String, lowercase: true, trim: true}
+        , date: {type: Date, default: Date.now}
+        , searchToken: String
+        , username: String
+        , remoteAddr: String
+        , isSiteAdmin: Boolean
+        , regStatuses: [String]
+        , selectedOrg1: String
+        , selectedOrg2: String
+        , selectedElements1: [String]
+        , selectedElements2: [String]
+    }, {safe: {w: 0}});
+
+schemas.feedbackIssueSchema = new mongoose.Schema({
+    date: {type: Date, default: Date.now, index: true}
+    , user: {
+        username: String
+        , ip: String
+    }
+    , screenshot: {
+        id: String
+        , content: String
+    }
+    , rawHtml: String
+    , userMessage: String
+    , browser: String
+    , reportedUrl: String
+});
+
+
+
+
 
 schemas.classificationAudit.set('collection', 'classificationAudit');
 

@@ -15,7 +15,7 @@ var Form = conn.model('Form', schemas.formSchema);
 
 exports.Form = Form;
 
-schemas.formSchema.pre('save', function(next) {
+schemas.formSchema.pre('save', function (next) {
     var self = this;
     elastic.updateOrInsert(self);
     next();
@@ -27,8 +27,14 @@ exports.idExists = function (id, callback) {
     });
 };
 
-exports.getStream = function(condition) {
+exports.getStream = function (condition) {
     return Form.find(condition).sort({_id: -1}).stream();
+};
+
+exports.count = function (condition, callback) {
+    Form.count(condition).exec(function (err, count) {
+        callback(err, count);
+    });
 };
 
 exports.priorForms = function (formId, callback) {
@@ -145,8 +151,15 @@ exports.transferSteward = function (from, to, callback) {
 };
 
 exports.byTinyIdAndVersion = function (tinyId, version, callback) {
-    Form.findOne({'tinyId': tinyId, "version": version}).exec(function (err, elt) {
-        callback("", elt);
+    var query = {'tinyId': tinyId};
+    if (version) {
+        query.version = version;
+    } else {
+        query.archived = null;
+    }
+    Form.findOne(query).exec(function (err, elt) {
+        if (err) callback(err);
+        else callback("", elt);
     });
 };
 

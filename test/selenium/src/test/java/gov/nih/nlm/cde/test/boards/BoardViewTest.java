@@ -29,7 +29,6 @@ public class BoardViewTest extends BoardTest {
     public void showGridView() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Test Board";
-        createBoard(boardName, "Test");
 
         attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
         attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);

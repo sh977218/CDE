@@ -6,15 +6,27 @@ import org.testng.annotations.Test;
 public class PublicBoardsTest extends BoardTest {
 
     @Test
-    public void editBoard() {
+    public void searchPublicBoard() {
         mustBeLoggedOut();
-        findElement(By.id("boardsLink")).click();
-        findElement(By.name("search")).sendKeys("Depression");
-        findElement(By.id("search.submit")).click();
-        textPresent("Schizophrenia");
-        textPresent("Bipolar Disorder");
-        textPresent("Geriatric Depression Scale (GDS) - empty life indicator");
-        textPresent("Psychiatric history psychotic diagnosis type");
-        textPresent("Hamilton Depression Rating Scale (HDRS) - suicide indicator");
+        clickElement(By.id("boardsLink"));
+        findElement(By.name("search")).sendKeys("board");
+        clickElement(By.id("search.submit"));
+        textPresent("Leukemia Board");
+        textPresent("Epilepsy Board");
+        clickElement(By.id("tag_Cancer"));
+        textNotPresent("Epilepsy Board");
+        clickElement(By.id("tag_Cancer"));
+        textPresent("Epilepsy Board");
+    }
+
+    @Test
+    public void searchPublicBoardNoResult() {
+        mustBeLoggedOut();
+        clickElement(By.id("boardsLink"));
+        findElement(By.name("search")).sendKeys("noResultSearch");
+        clickElement(By.id("search.submit"));
+        textPresent("No results were found. Try other criteria.");
+        findElement(By.name("search")).sendKeys("\u0008");
+        textNotPresent("No board(s) found with search: noResultSearch");
     }
 }

@@ -12,7 +12,6 @@ public class PublicVsPrivateBoard extends BoardTest {
         String boardName = "Public Board";
         String boardDef = "This board will be public";
 
-        createBoard(boardName, "This board will be public");
         pinTo("Heart MUGA", boardName);
         // by default, board is private.
 
@@ -65,10 +64,6 @@ public class PublicVsPrivateBoard extends BoardTest {
         driver.get(baseUrl + "/#/board/" + boardId);
         // private again, I can't see
         textNotPresent("Not a very useful");
-
-        loginAs(boardUser, password);
-
-        removeBoard(boardName);
     }
 
 }

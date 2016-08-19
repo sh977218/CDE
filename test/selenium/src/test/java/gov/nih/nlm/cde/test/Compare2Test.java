@@ -13,12 +13,16 @@ public class Compare2Test extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("mlt_tab"));
         clickElement(By.id("addToQuickBoard"));
+        textPresent("Added to QuickBoard");
+        closeAlert();
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addToQuickBoard")));
         clickElement(By.linkText("Common Toxicity Criteria Adverse Event Platelet Count Grade"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("compare_0")));
         // accordion expands
-        hangon(1);
+        hangon(2);
         clickElement(By.id("compare_0"));
+        textPresent("Added to QuickBoard");
+        closeAlert();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("compare_0")));
         clickElement(By.linkText("Quick Board (2)"));
         wait.until(ExpectedConditions.elementToBeClickable(By.id("qb_cde_compare")));
@@ -39,6 +43,5 @@ public class Compare2Test extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("addNamePair")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//a[@title='Remove']")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("fa-edit")));
-
     }
 }

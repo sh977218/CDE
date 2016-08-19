@@ -2,15 +2,11 @@ var schemas = require('./schemas')
     , mongoose = require('mongoose')
     , config = require('./parseConfig')
     , Grid = require('gridfs-stream')
-    , fs = require('fs')
     , connHelper = require('./connections')
-    , express = require('express')
     , session = require('express-session')
     , MongoStore = require('connect-mongo')(session)
     , shortid = require("shortid")
     , logging = require('../../system/node-js/logging.js')
-    , email = require('../../system/node-js/email')
-    , adminItemSvc = require('./adminItemSvc')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
     , async = require('async')
@@ -20,7 +16,9 @@ var conn = connHelper.establishConnection(config.database.appData),
     Org = conn.model('Org', schemas.orgSchema),
     User = conn.model('User', schemas.userSchema),
     Message = conn.model('Message', schemas.message),
+    ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
+    Embeds = conn.model('Embed', schemas.embedSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
         mongooseConnection: conn
@@ -34,7 +32,6 @@ exports.Org = Org;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
-var localConn = connHelper.establishConnection(config.database.local);
 
 exports.getClusterHostStatus = function(server, callback) {
     ClusterStatus.findOne({hostname: server.hostname, port: server.port}).exec(function(err, result) {
@@ -58,10 +55,28 @@ exports.updateClusterHostStatus = function(status, callback) {
     });
 };
 
+exports.embeds = {
+    save: function(embed, cb) {
+        if (embed._id) {
+            var _id = embed._id;
+            delete embed._id;
+            Embeds.update({_id: _id}, embed, cb);
+        } else {
+            new Embeds(embed).save(cb);
+        }
+    },
+    find: function(crit, cb) {
+        Embeds.find(crit, cb);
+    },
+    delete: function(id, cb) {
+        Embeds.remove({_id: id}, cb);
+    }
+};
+
 exports.org_autocomplete = function(name, callback) {
     Org.find({"name": new RegExp(name, 'i')}, function(err, orgs) {
         callback(orgs);
-    }); 
+    });
 };
 
 exports.orgNames = function(callback) {
@@ -72,7 +87,7 @@ exports.orgNames = function(callback) {
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(function (err, u) {
-       callback(err, u); 
+       callback(err, u);
     });
 };
 
@@ -81,19 +96,19 @@ exports.usersByPartialName = function(name, callback) {
         for (var i = 0; i < users.length; i++) {
             delete users[i].password;
         }
-        callback(err, users); 
+        callback(err, users);
     });
 };
 
 exports.usernamesByIp = function(ip, callback) {
     User.find({"knownIPs": {$in: [ip]}}, {username: 1}).exec(function (err, usernames) {
-       callback(usernames); 
+       callback(usernames);
     });
 };
 
 exports.userById = function(id, callback) {
     User.findOne({'_id': id}).exec(function (err, u) {
-       callback("", u); 
+       callback("", u);
     });
 };
 
@@ -144,8 +159,8 @@ exports.listOrgsLongName = function(callback) {
 };
 
 exports.listOrgsDetailedInfo = function(callback) {
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1,
-        "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1}).exec(function(err, result) {
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, embeds: 1,
+        "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1, "cdeStatusValidationRules": 1}).exec(function(err, result) {
         callback("", result);
     });
 };
@@ -161,7 +176,7 @@ exports.findOrCreateOrg = function(newOrg, cb) {
         if (err) {
             cb(err);
             logging.errorLogger.error("Cannot add org.",
-                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrgArg + "Error: " + err});
+                {origin: "system.mongo.addOrg", stack: new Error().stack, details: "orgName: " + newOrg.name + "Error: " + err});
         } else if (found) {
             cb(null, found);
         } else {
@@ -211,8 +226,8 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
 
     var linkAttachmentToAdminItem = function(attachment, elt, newFileCreated, cb) {
         elt.attachments.push(attachment);
-        elt.save(function() {
-            if (cb) cb(attachment, newFileCreated);
+        elt.save(function(err) {
+            if (cb) cb(attachment, newFileCreated,err);
         });
     };
 
@@ -240,32 +255,32 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         });
 
         stream.pipe(writestream);
-    };    
+    };
 
     var attachment = {
         fileid: null
         , filename: file.originalname
         , filetype: file.type
         , uploadDate: Date.now()
-        , comment: comment 
+        , comment: comment
         , filesize: file.size
     };
 
-    if (user) { 
+    if (user) {
         attachment.uploadedBy = {
             userId: user._id
             , username: user.username
-        }
-    }       
-    
+        };
+    }
+
     gfs.findOne({md5: file.md5}, function (err, f) {
         if (!f) addNewFile(file.stream, attachment, elt, user, cb);
         else {
             attachment.fileid = f._id;
             linkAttachmentToAdminItem(attachment, elt, false, cb);
         }
-    });       
-    
+    });
+
 };
 
 exports.deleteFileById = function(id, cb) {
@@ -281,11 +296,11 @@ exports.alterAttachmentStatus = function(id, status, cb) {
     if (status === "approved") {
         daoManager.getDaoList().forEach(function(dao){
             dao.setAttachmentApproved(id);
-        });    
+        });
     }
 };
 
-exports.removeAttachmentIfNotUsed = function(id) {    
+exports.removeAttachmentIfNotUsed = function(id) {
     async.map(daoManager.getDaoList(), function(dao, cb) {
         dao.fileUsed(id, cb);
     }, function(err, results){
@@ -303,8 +318,8 @@ exports.getFile = function(user, id, res) {
             if (file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer")) gfs.createReadStream({ _id: id }).pipe(res);
             else res.status(403).send("This file has not been approved yet.");
         });
-                
-    });        
+
+    });
 };
 
 exports.updateOrg = function(org, res) {
@@ -317,36 +332,6 @@ exports.updateOrg = function(org, res) {
             res.send('Org does not exist.');
         }
     });
-};
-
-exports.rsStatus = function (cb) {
-    var db = localConn.db;
-    db.admin().command({"replSetGetStatus": 1}, function (err, doc) {
-        cb(err, doc);        
-    });
-};
-
-exports.rsConf = function(cb) {
-    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
-       cb(err, conf); 
-    });
-};
-
-exports.switchToReplSet = function (replConfig, force, cb) {
-    localConn.db.collection('system.replset').findOne({}, function(err, conf) {
-        if (err) cb(err);
-        else {
-            replConfig.version = conf.version + 1;        
-            conn.db.admin().command({"replSetReconfig": replConfig, force: force}, function (err, doc) {
-                if (err) {
-                    mongoose.disconnect();
-                    cb(err, doc);
-                } else {
-                    cb(err, doc);
-                }
-            });
-        }
-    });   
 };
 
 exports.getAllUsernames = function(callback) {
@@ -364,8 +349,8 @@ exports.createMessage = function(msg, cb) {
         action: "Filed"
         , date: new Date()
         , comment: "cmnt"
-    }];      
-    var message = new Message(msg);  
+    }];
+    var message = new Message(msg);
     message.save(function() {
         if (cb) cb();
     });
@@ -376,7 +361,7 @@ exports.updateMessage = function(msg, cb) {
     delete msg._id;
     Message.update({_id: id}, msg).exec(function(err) {
         cb(err);
-    });    
+    });
 };
 
 exports.getMessages = function(req, callback) {
@@ -391,23 +376,23 @@ exports.getMessages = function(req, callback) {
                     , {
                         "recipient.recipientType": "user"
                         , "recipient.name": req.user.username
-                    }                   
+                    }
                 ]
             },
             {
                 "states.0.action": null
             }
         ]
-    };      
-    
+    };
+
     req.user.roles.forEach(function(r){
         var roleFilter = {
             "recipient.recipientType": "role"
             , "recipient.name": r
-        };        
+        };
         authorRecipient["$and"][0]["$or"].push(roleFilter);
     });
-    
+
     switch (req.params.type) {
        case "received":
             authorRecipient["$and"][1]["states.0.action"] = "Filed";
@@ -425,16 +410,16 @@ exports.getMessages = function(req, callback) {
                     }
                 ]
             };
-            break; 
+            break;
         case "archived":
-            authorRecipient["$and"][1]["states.0.action"] = "Approved";            
+            authorRecipient["$and"][1]["states.0.action"] = "Approved";
             break;
     }
     if (!authorRecipient) {
         callback("Type not specified!");
         return;
     }
-    
+
     Message.find(authorRecipient).where().exec(function(err, result) {
         if (!err) callback(null, result);
         else callback(err);
@@ -453,7 +438,7 @@ exports.addUserRole = function(request, cb) {
 exports.usersByRole = function(role, cb) {
     User.find({roles:role}).exec(function(err, users) {
         cb(err, users);
-    });    
+    });
 };
 
 exports.mailStatus = function(user, cb){
@@ -468,7 +453,7 @@ exports.addToClassifAudit = function(msg) {
         msg.elements[0].name = elt.naming[0].designation;
         msg.elements[0].status = elt.registrationState.registrationStatus;
         var classifRecord = new classificationAudit(msg);
-        classifRecord.save(function(err,r){});
+        classifRecord.save();
     };
     daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
@@ -484,4 +469,29 @@ exports.getClassificationAuditLog = function(params, callback){
         .exec(function(err, logs){
             callback(err, logs);
         });
+};
+
+exports.getAllRules = function(cb){
+    ValidationRule.find().exec(function(err, rules){
+        cb(err, rules);
+    });
+};
+
+exports.disableRule = function(params, cb){
+    exports.orgByName(params.orgName, function(org){
+        org.cdeStatusValidationRules.forEach(function(rule,i){
+            if (rule.id === params.rule.id) {
+                org.cdeStatusValidationRules.splice(i, 1);
+            }
+        });
+        org.save(cb);
+    });
+};
+
+exports.enableRule = function(params, cb){
+    exports.orgByName(params.orgName, function(org){
+        delete params.rule._id;
+        org.cdeStatusValidationRules.push(params.rule);
+        org.save(cb);
+    });
 };

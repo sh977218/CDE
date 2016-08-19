@@ -65,6 +65,14 @@ body {
     padding-left: 5px;
 }
 
+.pr5 {
+    padding-right: 5px;
+}
+
+.pr20 {
+    padding-right: 20px;
+}
+
 .mt20 {
     margin-top: 20px;
 }
@@ -82,8 +90,8 @@ body {
 }
 
 .searchInfoHr {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .gray {
@@ -107,7 +115,7 @@ body {
 
 .edit-button {
     position: absolute;
-    right: 0px;
+    right: 0;
     width: 300px;
     background-color: #b0e0e6;
 }
@@ -313,36 +321,6 @@ dd.formViewDetails {
     padding: 10px;
 }
 
-.fa-cb {
-    display: none;
-}
-
-/* to hide the checkbox itself */
-.fa-cb + label:before {
-    font-family: FontAwesome;
-    display: inline-block;
-}
-
-.fa-cb + label:before {
-    content: "\f096";
-}
-
-/* unchecked icon */
-.fa-cb + label:before {
-    letter-spacing: 10px;
-}
-
-/* space between checkbox and label */
-
-.fa-cb:checked + label:before {
-    content: "\f046";
-}
-
-/* checked icon */
-.fa-cb:checked + label:before {
-    letter-spacing: 5px;
-}
-
 .formSectionArea {
     min-height: 700px;
 }
@@ -462,7 +440,7 @@ button#selectDefault {
 .userIcon {
     position: absolute;
     top: 19px;
-    left: 0px;
+    left: 0;
 }
 
 #incomingMessage {
@@ -477,9 +455,9 @@ button#selectDefault {
     margin-left: 20px;
 }
 
-@media (min-width: 0px) {
+@media (min-width: 0) {
     #quickSearchForm {
-        margin: 40px 0px;
+        margin: 40px 0;
     }
 }
 
@@ -603,7 +581,7 @@ button#selectDefault {
     display: block;
     overflow: hidden;
     max-height: 165px;
-    box-shadow: 0px 9px 7px -5px #969696;
+    box-shadow: 0 9px 7px -5px #969696;
 }
 
 .expandText {
@@ -631,13 +609,13 @@ button#selectDefault {
 
 .cdeTable th, .cdeTable td {
     overflow: hidden;
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .generalDetailsTable th, .generalDetailsTable td {
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     padding-left: 2px !important;
     padding-right: 2px !important;
     font-size: small;
@@ -708,13 +686,13 @@ button#selectDefault {
 .welcomeSearchOrganizationBox {
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.16);
-    margin: 10px 0px 10px 0px;
-    padding: 0px 10px;
+    margin: 10px 0 10px 0;
+    padding: 0 10px;
     height: 140px;
 }
 
 .welcomeSearchSearch {
-    margin: 65px 0px;
+    margin: 65px 0;
 }
 
 .dvText {
@@ -892,6 +870,10 @@ div + .questionPlaceholder {
     padding-right: 0 !important;
 }
 
+.noLeftMargin {
+    margin-left: 0 !important;
+}
+
 #export {
     margin-left: 10px;
 }
@@ -935,7 +917,7 @@ div + .questionPlaceholder {
 }
 
 #searchInfo {
-    border-radius: 0px;
+    border-radius: 0;
     margin-left: -2px;
     margin-right: -2px;
 }
@@ -946,16 +928,16 @@ div + .questionPlaceholder {
 }
 
 .navbar-btn {
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 #searchDiv {
-    margin: 30px 0px 30px 0px;
+    margin: 30px 0 30px 0;
 }
 
 .navbar {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 
 #searchInfoBar {
@@ -1005,3 +987,118 @@ div + .questionPlaceholder {
 .betaFeature {
     color: green
 }
+
+#sidebar-wrapper {
+    /*border: 1px solid rgb(220, 220, 220);*/
+    border-radius: 5px;
+    position: fixed;
+    width: inherit;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.my-board-card {
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 5px;
+    margin: 3px;
+    padding: 15px;
+    word-wrap: break-word;
+    min-height: 160px;
+}
+
+.pinToBoard-card {
+    min-height: 80px;
+}
+
+.my-board-tag {
+    display: block;
+}
+
+.public-board-tag {
+    display: block;
+}
+
+#my-board-container {
+    min-height: 450px;
+}
+
+.fa.fa-arrows {
+    cursor: move;
+}
+
+.select2-search-field input {
+    width: 100% !important;
+}
+
+.select2-search-field {
+    width: 100% !important;
+}
+
+.myBoardEditButtons {
+    margin: 0;
+}
+
+.myBoardName {
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.myBoardTags {
+    position: absolute;
+    bottom: 7px;
+}
+
+.myBoardLastModified {
+    position: absolute;
+    bottom: 5px;
+    right: 25px;
+}
+
+.ui-select-container {
+    z-index: 1000;
+}
+
+.cdeStatusReportGrid {
+    border: 1px solid rgb(212, 212, 212);
+    width: auto;
+    height: 600px
+}
+
+.formRenderPanel {
+    margin-left: 10px;
+}
+
+.pdtp9 {
+    padding-top: 9px;
+}
+
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 3px 4px !important;
+        font-size: 80% !important;
+        line-height: 1 !important;
+        border-radius: 3px !important;
+    }
+
+    .navbar-toggle {
+        margin: 0 !important;
+    }
+
+    .navbar-header > input {
+        padding: 0 !important;
+    }
+
+    .nav > li {
+        float: left !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .btn-responsive {
+        padding: 4px 9px !important;
+        font-size: 90% !important;
+        line-height: 1.2 !important;
+    }
+}
+
+#searchBoardsForm {margin-right: 10px;}

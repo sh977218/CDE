@@ -28,16 +28,18 @@ done
 
 mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password 
 
-mongorestore -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password
-mongorestore -d test -c forms test/data/nindsDump/test/forms.bson -u $db_user -p $db_password
-mongorestore -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password
-mongoimport --drop -d test -c orgs test/data/cdedump/orgs.json -u $db_user -p $db_password
+mongorestore --drop -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password
+mongorestore --drop -d test -c forms test/data/formDump/forms.bson -u $db_user -p $db_password
+mongorestore --drop -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password
+mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson -u $db_user -p $db_password
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password 
 mongo test test/createManyBoards.js -u $db_user -p $db_password
 
-gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=/usr/nlm/selenium/cde/downloads/ test &
+gulp es
+
+#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=./ test &
 #gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &
-#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *gridVi* &
+gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 test --tests *BoardXMLExportTest* &
 export NODE_ENV=test
-/c/tools/Node/4.1.2/node -prof $NODE_LOC/app > test-console.o
+node app

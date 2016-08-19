@@ -17,15 +17,20 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void saveForm() {
-        clickElement(By.id("openSaveBottom"));
+        try {
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        } catch (Exception e) {
+            // known error spot. Seems the button does not always get clicked.
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        }
         findElement(By.name("version")).sendKeys("1");
-        hangon(3);
+        textNotPresent("has already been used");
+        hangon(2);
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
-        // This is not the right place for waitForES
-        waitForESUpdate();
-        scrollToTop();
     }
 
     public void searchForm(String query) {
@@ -52,6 +57,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
             new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
             clickElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']"));
         }
+
+        //  for some reason, the click to save sometimes does not open save. Maybe the click is being swallowed by the closing select above.
+        hangon(1);
     }
 
 }

@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDownload', function($scope, $http, CsvDownload) {
+angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', function($scope, $http) {
         
     $scope.gridLogEvents = [];
     $scope.gridOptions = {
@@ -14,10 +14,6 @@ angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', 'CsvDow
         $scope.search.remoteAddr = args.IP;
         $scope.searchLogs();
     });
-    
-    $scope.downloadCsv = function() {
-       CsvDownload.export($scope.gridLogEvents); 
-    };
     
     $scope.pageChanged = function() {
         $scope.searchLogs();

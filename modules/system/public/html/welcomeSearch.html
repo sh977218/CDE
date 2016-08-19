@@ -20,7 +20,6 @@
                             <i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
-
                 <!-- Error display area -->
                 <span ng-show="quickSearchForm.searchTerms.$invalid && !quickSearchForm.searchTerms.$pristine">
                     <p class="error-block"><small>Query terms must be 500 characters or less.</small></p></span>
@@ -56,6 +55,7 @@
                 </div>
             </div>
         </div>
+        <small><span id="totalItems">{{totalItems}}</span> elements across all classifications</small>
     </div>
 </div>
 

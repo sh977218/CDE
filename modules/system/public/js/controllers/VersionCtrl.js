@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal', '$location', '$log',
-    function ($scope, $modal, $log) {
+angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal', '$location',
+    function ($scope, $modal) {
         $scope.stageElt = function (elt) {
             elt.unsaved = true;
         };
@@ -17,8 +17,7 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal',
             });
             modalInstance.result.then(function () {
                 $scope.save();
-            }, function (reason) {
-                $log.info("CDE save modal dismissed.");
+            }, function () {
             });
         };
     }
