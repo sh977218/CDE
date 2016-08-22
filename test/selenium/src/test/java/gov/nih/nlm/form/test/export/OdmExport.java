@@ -140,7 +140,7 @@ public class OdmExport extends BaseFormTest {
                 };
 
         for (String expectedResult : expectedResults) {
-            Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult);
+            Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);
         }
 
         for (int i = 0; i < expectedResults.length - 2; i++) {

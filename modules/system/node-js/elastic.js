@@ -217,13 +217,15 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
 
-    // Increase ranking score for high registration status
+
+    // last resort, we sort.
+    var sort = true;
 
     queryStuff.query.bool.must = [];
 
-
-
     if (searchQ !== undefined && searchQ !== "") {
+        sort = false;
+        // Increase ranking score for high registration status
         var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
         queryStuff.query.bool.must.push({
             "dis_max": {
@@ -263,16 +265,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
     }
-    else {
-        var flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
-        queryStuff.query.bool.must.push({
-            "dis_max": {
-                "queries": [
-                    {"function_score": {"script_score": {"script": flatClassifScript}}}
-                ]
-            }
-        });
-    }
 
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
@@ -284,6 +276,16 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // filter by topic
     if (settings.meshTree) {
+        sort = false;
+        // boost for those with fewer mesh trees
+        var flatMeshScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatMeshScript}}}
+                ]
+            }
+        });
         queryStuff.query.bool.must.push({term: {"flatMeshTrees": settings.meshTree}});
     }
 
@@ -321,6 +323,16 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
+        sort = false;
+        // boost for those elts classified fewer times
+        var flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatClassifScript}}}
+                ]
+            }
+        });
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
@@ -345,6 +357,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
         usersvc.myOrgs(user).forEach(function(myOrg) {
             regStatusAggFilter.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
         });
+    }
+
+    if (sort) {
+        queryStuff.sort = {"views": {order: "desc"}};
     }
 
     // Get aggregations on classifications and statuses
@@ -487,7 +503,6 @@ var searchTemplate = {
 };
 
 exports.meshSyncStatus = {
-
 };
 
 exports.syncWithMesh = function(allMappings) {

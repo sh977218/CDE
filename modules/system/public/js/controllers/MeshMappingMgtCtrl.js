@@ -16,7 +16,7 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
             if (result) {
                 $scope.mapping = result;
                 $scope.mapping.meshDescriptors.forEach(function(desc) {
-                    $http.get(meshUrl + "/api/record/ui/" + desc).success(function (result) {
+                    $http.get(meshUrl + "/api/record/ui/" + desc).success(function (result) { // jshint ignore:line
                         $scope.descToName[desc] = result.DescriptorName.String.t;
                     });
                 });
@@ -30,7 +30,7 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
 
             $timeout(function() {
                 // @TODO replace with config
-                $http.get(meshUrl + "/api/fieldSearch/record?searchInField=termDescriptor" +
+                $http.get(meshUrl + "/api/fieldSearch/record?searchInField=termDescriptor" + // jshint ignore:line
                     "&searchType=exactMatch&q=" + $scope.meshSearch).success(function (result) {
                     try {
                         if (result.hits.hits.length === 1) {
@@ -40,9 +40,11 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
                         }
                     } catch (e) {
                         delete $scope.descriptorName;
+                        delete $scope.descriptorID;
                     }
                 }).error(function() {
                     delete $scope.descriptorName;
+                    delete $scope.descriptorID;
                 });
             }, 0);
 
