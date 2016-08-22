@@ -1,6 +1,6 @@
 var MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewBornScreeningCDEModel;
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
-
+var LoadFromLoincSite = require('../loinc/LoadFromLoincSite');
 var LoadLOINC = require('../loinc/LoadLOINC');
 
 MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).exec(function (err, dataArray) {
@@ -11,7 +11,8 @@ MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).ex
         newArray.push(data.LOINC_NUM.trim());
     });
 //    newArray = ['54089-8'];
-    LoadLOINC.runArray(newArray, function (one, next) {
+    LoadFromLoincSite.runArray(newArray, 'Comprehensive', function (one, next) {
+//    LoadLOINC.runArray(newArray, function (one, next) {
         var obj = new MigrationLoincModel(one);
         obj.save(function (err) {
             if (err) throw err;

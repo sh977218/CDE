@@ -21,6 +21,7 @@ var ParseWebContentTable = require('./ParseWebContentTable');
 var ParseArticleTable = require('./ParseArticleTable');
 var ParseCopyright = require('./ParseCopyright');
 var ParsingVersion = require('./ParseVersion');
+var ParseQuestion = require('./ParseQuestion');
 
 var loincCount = 0;
 
@@ -130,7 +131,11 @@ var tasks = [
         xpath: '//p[contains(text(),"Generated from LOINC version")]'
     }
 ];
-
+var specialTasks = [
+    {
+        function: ParseQuestion.parseQuestion
+    }
+];
 function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
 }
@@ -179,11 +184,14 @@ exports.runArray = function (array, section, doneItem, doneArray) {
                     async.forEach(tasks, function (task, doneOneTask) {
                         doTask(driver, task, obj, doneOneTask);
                     }, function doneAllTasks() {
-                        loincCount++;
-                        console.log('loincCount: ' + loincCount);
-                        results.push(obj);
-                        doneItem(obj);
-                        doneOneLoinc();
+                        async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
+                            specialTask.function(obj, doneOneSpecialTask);
+                        }, function doneAllSpecialTasks() {
+                            loincCount++;
+                            console.log('loincCount: ' + loincCount);
+                            results.push(obj);
+                            doneItem(obj, doneOneLoinc);
+                        });
                     });
                 });
             }, function doneAllLoinc() {

@@ -81,7 +81,6 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         currentLevels[depth - 1].elements.push(row);
                         currentDepth = depth;
                     }
-                    console.log(row['LOINC#']);
                     doneOneTr();
                 });
             });
