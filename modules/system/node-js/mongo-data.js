@@ -158,11 +158,22 @@ exports.listOrgsLongName = function(callback) {
     });
 };
 
-exports.listOrgsDetailedInfo = function(callback) {
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1, 'mailAddress':1, "emailAddress":1, embeds: 1,
-        "phoneNumber":1, "uri":1, "workingGroupOf":1, "extraInfo": 1, "cdeStatusValidationRules": 1}).exec(function(err, result) {
-        callback("", result);
-    });
+exports.listOrgsDetailedInfo = function (callback) {
+    Org.find({}, {
+        '_id': 0,
+        'name': 1,
+        'longName': 1,
+        'mailAddress': 1,
+        "emailAddress": 1,
+        "embeds": 1,
+        "phoneNumber": 1,
+        "uri": 1,
+        "workingGroupOf": 1,
+        "extraInfo": 1,
+        "cdeStatusValidationRules": 1,
+        "propertyKeys": 1,
+        "nameContexts": 1
+    }).exec(callback);
 };
 
 exports.managedOrgs = function(callback) {

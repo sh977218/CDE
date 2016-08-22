@@ -34,16 +34,19 @@ angular.module('OrgFactories', ['ngResource'])
             if (!this.orgsDetailedInfo) return false;
             return this.orgsDetailedInfo[orgName].workingGroupOf && this.orgsDetailedInfo[orgName].workingGroupOf.trim()!=='';
         }
-        , getOrgsDetailedInfoAPI : function() {
+        , getOrgsDetailedInfoAPI: function (cb) {
             var OrgHelpers = this;
             $http.get('/listOrgsDetailedInfo').success(function(response) {
                 // Transforms response to object literal notation
                 response.forEach(function(org) {
                     if(org) {
+                        if (!org.propertyKeys) org.propertyKeys = [];
+                        if (!org.nameContexts) org.nameContexts = [];
                         OrgHelpers.orgsDetailedInfo[org.name] = org;
                     }
                 });
                 OrgHelpers.deferred.resolve();
+                if (cb)cb();
             }).error(function() {
             });
         }
