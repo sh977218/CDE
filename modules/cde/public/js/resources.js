@@ -85,7 +85,4 @@ angular.module('resourcesCde', ['ngResource'])
                 });
             }
         };
-    }])
-
-
-;
+    }]);
