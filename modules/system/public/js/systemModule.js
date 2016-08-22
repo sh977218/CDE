@@ -378,11 +378,13 @@ angular.module('systemModule').config(function (localStorageServiceProvider) {
 angular.module('systemModule').run(function ($rootScope, $location) {
     var dataLayer = window.dataLayer = window.dataLayer || [];
 
-    $rootScope.$on("$routeChangeSuccess", function () {
+    $rootScope.$on("$locationChangeSuccess", function () {
+        console.log("route change");
+        console.log($location.search());
         dataLayer.push({
             event: 'ngRouteChange',
             attributes: {
-                route: $location.path()
+                route: $location.url()
             }
         });
     });
