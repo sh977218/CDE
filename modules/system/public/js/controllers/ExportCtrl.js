@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$location', '$httpParamSerializer',
-    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $location, $httpParamSerializer) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$location', '$httpParamSerializer', '$window',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $location, $httpParamSerializer, $window) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
@@ -124,7 +124,7 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
                 report.searchSettings = $scope.searchSettings;
                 delete report.searchSettings.resultPerPage;
                 var uri = $httpParamSerializer(report);
-                $location.url('/cdeStatusReport?' + uri);
+                $window.location.href = '/cdeStatusReport?' + uri;
             });
         };
     }]);
