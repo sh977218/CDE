@@ -11,6 +11,7 @@ MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).ex
         newArray.push(data.LOINC_NUM.trim());
     });
 //    newArray = ['54089-8'];
+    newArray = ['74495-3'];
     LoadFromLoincSite.runArray(newArray, 'Comprehensive', function (one, next) {
 //    LoadLOINC.runArray(newArray, function (one, next) {
         var obj = new MigrationLoincModel(one);

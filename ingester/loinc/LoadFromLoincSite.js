@@ -185,7 +185,7 @@ exports.runArray = function (array, section, doneItem, doneArray) {
                         doTask(driver, task, obj, doneOneTask);
                     }, function doneAllTasks() {
                         async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
-                            specialTask.function(obj, doneOneSpecialTask);
+                            specialTask.function(driver, obj, doneOneSpecialTask);
                         }, function doneAllSpecialTasks() {
                             loincCount++;
                             console.log('loincCount: ' + loincCount);
