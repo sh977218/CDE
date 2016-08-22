@@ -25,10 +25,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
                 },
                 module: function () {
                     return $scope.module;
-                },
-                orgPropertyKeys: function () {
-                    OrgHelpers.getOrgsDetailedInfoAPI();
-                    return OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
                 }
             }
         });
@@ -80,17 +76,22 @@ angular.module('systemModule').controller('PropertiesCtrl',
 
 }]);
 
-angular.module('systemModule').controller('NewPropertyModalCtrl', ['$scope', '$uibModalInstance', '$http', 'module', 'elt', 'orgPropertyKeys',
-    function ($scope, $modalInstance, $http, module, elt, orgPropertyKeys) {
-    $scope.elt = elt;
-    $scope.newProperty = {};
-        $scope.orgPropertyKeys = orgPropertyKeys;
+angular.module('systemModule').controller('NewPropertyModalCtrl',
+    ['$scope', '$uibModalInstance', 'module', 'elt', 'OrgHelpers',
+    function ($scope, $modalInstance, module, elt, OrgHelpers) {
 
-    $scope.okCreate = function () {
-        $modalInstance.close($scope.newProperty);
-    };    
-    
-    $scope.cancelCreate = function() {
-        $modalInstance.dismiss("Cancel");
-    };
+        OrgHelpers.deferred.promise.then(function () {
+            $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+        });
+
+        $scope.elt = elt;
+        $scope.newProperty = {};
+
+        $scope.okCreate = function () {
+            $modalInstance.close($scope.newProperty);
+        };
+
+        $scope.cancelCreate = function() {
+            $modalInstance.dismiss("Cancel");
+        };
 }]);
