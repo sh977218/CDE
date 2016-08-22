@@ -6,6 +6,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'valueDomain.permissibleValues.permissibleValue'
         , 'valueDomain.permissibleValues.valueMeaningName'
         , 'valueDomain.permissibleValues.valueMeaningCode'
+        , 'valueDomain.uom'
         , 'version'
         , 'ids.version'
         , 'ids.source'
