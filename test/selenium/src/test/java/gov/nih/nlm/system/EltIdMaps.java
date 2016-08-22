@@ -25,7 +25,7 @@ public class EltIdMaps {
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
-        eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
+        eltMap.put("If Yes Please Enter the Date", "UDUXvtj1RM2");
         eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
         eltMap.put("Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode", "qPsdBFBSTRc");
         eltMap.put("Person Birth Date", "2yWPshAKKN7");
@@ -44,6 +44,7 @@ public class EltIdMaps {
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
+        eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
 
 
         // Forms
