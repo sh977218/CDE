@@ -53,14 +53,14 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_1']//*[contains(@class,'name')]"));
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_1']//*[contains(@class,'originId')]"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[contains(@class,'name')]"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[contains(@class,'originId')]"));
 
         textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[contains(@class,'name')]"));
         textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[contains(@class,'originId')]"));
 
-        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_1']//*[contains(@class,'name')]"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_1']//*[contains(@class,'originId')]"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[contains(@class,'name')]"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[contains(@class,'originId')]"));
 
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
