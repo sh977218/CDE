@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -19,32 +20,32 @@ public class FormNamingTest extends BaseFormTest {
     public void formNaming() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
-        findElement(By.id("addNamePair")).click();
+        clickElement(By.id("naming_tab"));
+        clickElement(By.id("addNamePair"));
+        textPresent("Contexts are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
-        findElement(By.name("context")).clear();
-        findElement(By.name("context")).sendKeys("Great CTX");
-        findElement(By.id("createNamePair")).click();
+        new Select(findElement(By.name("context"))).selectByVisibleText("Great CTX");
+        clickElement(By.id("createNamePair"));
         modalGone();
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         textPresent("This new form Name");
         textPresent("A lazy definition");
         textPresent("Great CTX");
 
-        findElement(By.id("removeNaming-1")).click();
+        clickElement(By.id("removeNaming-1"));
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         textNotPresent("\"A lazy definition\"");
 
         mustBeLoggedOut();
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }

@@ -4,7 +4,7 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', 
         $scope.elt = {
             classification: [], stewardOrg: {}, naming: [{
                 designation: "", definition: "", context: {
-                    contextName: "Health"
+                    contextName: ""
                     , acceptability: "preferred"
                 }
             }]
