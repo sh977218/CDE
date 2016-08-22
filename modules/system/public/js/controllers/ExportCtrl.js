@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$location', '$httpParamSerializer', '$window',
-    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $location, $httpParamSerializer, $window) {
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window',
+    function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $httpParamSerializer, $window) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
 
