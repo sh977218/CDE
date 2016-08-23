@@ -116,7 +116,8 @@ exports.parseQuestion = function (driver, obj, cb) {
             var newArray = array.filter(function (item) {
                 return item.length > 2;
             });
-            loadQuestionInformation(obj['PANEL HIERARCHY']['PANEL HIERARCHY'], newArray, 0, cb);
+            var j = 0;
+            loadQuestionInformation(obj['PANEL HIERARCHY']['PANEL HIERARCHY'], newArray, j, cb);
         })
     })
 };
