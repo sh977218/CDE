@@ -97,18 +97,20 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                     }
                 });
                 $scope.showHistory = true;
-                ClassificationUtil.sortClassification($scope.left);
-                ClassificationUtil.sortClassification($scope.right);
-                $scope.left.flatClassifications = ClassificationUtil.flattenClassification($scope.left);
-                $scope.right.flatClassifications = ClassificationUtil.flattenClassification($scope.right);
+                $scope.leftCopy = angular.copy($scope.left);
+                $scope.rightCopy = angular.copy($scope.right);
+                ClassificationUtil.sortClassification($scope.leftCopy);
+                ClassificationUtil.sortClassification($scope.rightCopy);
+                $scope.leftCopy.flatClassifications = ClassificationUtil.flattenClassification($scope.leftCopy);
+                $scope.rightCopy.flatClassifications = ClassificationUtil.flattenClassification($scope.rightCopy);
 
                 $scope.leftDatatypeObj = {
-                    obj: $scope.left.valueDomain[datatypeCompareMap[$scope.left.valueDomain.datatype].obj],
-                    p: datatypeCompareMap[$scope.left.valueDomain.datatype].options
+                    obj: $scope.leftCopy.valueDomain[datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].obj],
+                    p: datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].options
                 };
                 $scope.rightDatatypeObj = {
-                    obj: $scope.right.valueDomain[datatypeCompareMap[$scope.right.valueDomain.datatype].obj],
-                    p: datatypeCompareMap[$scope.right.valueDomain.datatype].options
+                    obj: $scope.rightCopy.valueDomain[datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].obj],
+                    p: datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].options
                 };
 
             }
