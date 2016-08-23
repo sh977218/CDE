@@ -2,6 +2,7 @@ var path = require('path');
 
 var express = require('express')
     , https = require('https')
+    , http = require('http')
     , fs = require('fs')
     , config = require('../../../system/node-js/parseConfig')
     , bodyParser = require('body-parser')
@@ -146,7 +147,11 @@ var options = {
 };
 
 https.createServer(options, app).listen(app.get('port'), function(){
-  console.log('VSAC Mock listening on port: ' + app.get('port'));
+  console.log('HTTPS Mock listening on port: ' + app.get('port'));
+});
+
+http.createServer(app).listen(config.mesh.mockPort, function() {
+    console.log("HTTP Mock listening on port: " + config.mesh.mockPort);
 });
 
 var net = require('net');
