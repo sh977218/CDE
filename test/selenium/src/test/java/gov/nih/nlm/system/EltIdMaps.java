@@ -72,6 +72,8 @@ public class EltIdMaps {
 
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
 
+        eltMap.put("Gender Self-Identified", "7yXnzmPgZ");
+
     }
 
 }

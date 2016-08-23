@@ -41,6 +41,7 @@ public class BoardExportTest extends BoardTest {
                     i = 30;
                 }
             } catch (IOException e) {
+                hangon(2);
             }
         }
 
