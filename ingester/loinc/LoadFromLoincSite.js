@@ -33,7 +33,7 @@ var tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
         function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
-        xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
+        xpath: 'html/body/div[@class="Section1"]/table[.//th[text()="PANEL HIERARCHY"]]/following-sibling::table[1]'
     },
     {
         sectionName: 'LOINC NAME',
@@ -43,17 +43,17 @@ var tasks = [
     {
         sectionName: 'NAME',
         function: ParseNameTable.parseNameTable,
-        xpath: '//*[@class="Section1000000F00"]/table'
+        xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
-        xpath: 'html/body/div[@class="Section0"]/table[.//th[contains(text(),"PART DEFINITION/DESCRIPTION(S)")]]'
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'TERM DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
-        xpath: 'html/body/div[@class="Section0"]/table[.//th[contains(text(),"TERM DEFINITION/DESCRIPTION(S)")]]'
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="TERM DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'PARTS',
@@ -63,62 +63,62 @@ var tasks = [
     {
         sectionName: 'BASIC ATTRIBUTES',
         function: ParseBasicAttributesTable.parseBasicAttributesTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"BASIC ATTRIBUTES")]]'
+        xpath: 'html/body/div/table[.//th[text()="BASIC ATTRIBUTES"]]'
     },
     {
         sectionName: 'SUBMITTER\'S INFORMATION',
         function: ParseSubmittersInformationTable.parseSubmittersInformationTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"SUBMITTER\'S INFORMATION")]]'
+        xpath: 'html/body/div/table[.//th[text()="SUBMITTER\'S INFORMATION"]]'
     },
     {
         sectionName: 'MEMBER OF THESE PANELS',
         function: ParseMemberOfThesePanelsTable.parseMemberOfThesePanelsTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"MEMBER OF THESE PANELS")]]'
+        xpath: 'html/body/div/table[.//th[text()="MEMBER OF THESE PANELS"]]'
     },
     {
         sectionName: 'LANGUAGE VARIANTS',
         function: ParseLanguageVariantsTable.parseLanguageVariantsTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"LANGUAGE VARIANTS")]]'
+        xpath: 'html/body/div/table[.//th[text()="LANGUAGE VARIANTS"]]'
     },
     {
         sectionName: 'RELATED NAMES',
         function: ParseRelatedNamesTable.parseRelatedNamesTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"RELATED NAMES")]]'
+        xpath: 'html/body/div/table[.//th[text()="RELATED NAMES"]]'
     },
     {
         sectionName: 'EXAMPLE UNITS',
         function: ParseExampleUnitsTable.parseExampleUnitsTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"EXAMPLE UNITS")]]'
+        xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
     {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="EXAMPLE ANSWER LIST"]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"NORMATIVE ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="NORMATIVE ANSWER LIST"]]'
     },
     {
         sectionName: 'PREFERRED ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"PREFERRED ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="PREFERRED ANSWER LIST"]]'
     },
     {
         sectionName: 'SURVEY QUESTION',
         function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"SURVEY QUESTION")]]'
+        xpath: 'html/body/div/table[.//th[text()="SURVEY QUESTION"]]'
     },
     {
         sectionName: 'WEB CONTENT',
         function: ParseWebContentTable.parseWebContentTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"WEB CONTENT")]]'
+        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]'
     },
     {
         sectionName: 'ARTICLE',
         function: ParseArticleTable.parseArticleTable,
-        xpath: 'html/body/div/table[.//th[contains(text(),"ARTICLE")]]'
+        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
     },
     {
         sectionName: 'COPYRIGHT',

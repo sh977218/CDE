@@ -1,7 +1,7 @@
 var async = require('async');
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
-MigrationLoincClassMappingModel = require('./../createMigrationConnection').MigrationLoincClassificationMappingModel;
+var MigrationLoincClassMappingModel = require('./../createMigrationConnection').MigrationLoincClassificationMappingModel;
 var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel;
@@ -22,6 +22,11 @@ var CLASSIFICATION_TYPE_MAP = {
     "PANEL.HEM/BC/Lab": "Hematology & blood count order set",
     "PANEL.H&P/Clinical": "History & Physical order set",
     "PANEL.MICRO/Lab": "Microbiology order set"
+};
+var CARDINALITY_MAP = {
+    "0..1": {
+        min: 0, max: 1
+    }
 };
 
 var statusMap = {
@@ -173,64 +178,62 @@ function parseReferenceDoc(loinc) {
     return referenceDocuments;
 }
 
-function parseFormElements(loinc, newCde, cb) {
-    var penalHierarchy = loinc['PANEL HIERARCHY']['PANEL HIERARCHY'];
-    var cardinality = {};
-    if (penalHierarchy.Cardinality.length > 0) {
-        if (penalHierarchy.Cardinality === '0..1') {
-            cardinality.min = 0;
-            cardinality.max = 1;
-        }
-    }
-    newCde.formElements = [{
-        elementType: 'section',
-        instructions: {value: ''},
-        label: '',
-        cardinality: cardinality,
-        formElements: []
-    }];
+function loadFormElements(loinc, form, cb) {
+    var loopFormElements = function (fe, f, next) {
+        var formElements = [];
+        if (fe.elements.length > 0) {
+            async.forEach(fe.elements, function (element, doneOneElement) {
+                formElements.push({
+                    elementType: 'section',
+                    instructions: {value: ''},
+                    label: fe.label ? fe.label : '',
+                    cardinality: CARDINALITY_MAP[fe.Cardinality],
+                    formElements: []
+                });
+                doneOneElement();
 
-    async.forEach(penalHierarchy.elements, function (element, doneOneElement) {
-
-    }, function doneAllElements() {
-        cb(newCde);
-    });
-    mongo_cde.byOtherIdAndNotRetired('LOINC', loincId, function (err, existingCde) {
-        if (err) {
-            console.log(err + ' cdeId: ' + loincId);
-            throw err;
-        }
-        if (!existingCde) {
-            console.log('cannot find this cde with loincId: ' + loincId);
-            console.log('formId: ' + eyeGene.LOINC_NUM);
-            process.exit(1);
+            }, function doneAllElements() {
+                f.formElements = formElements;
+                next();
+            });
         } else {
-            var question = {
-                cde: {
-                    tinyId: existingCde.tinyId,
-                    name: existingCde.naming[0].designation,
-                    version: existingCde.version,
-                    permissibleValues: existingCde.valueDomain.permissibleValues,
-                    ids: existingCde.ids
-                },
-                datatype: existingCde.valueDomain.datatype,
-                datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                datatypeText: existingCde.valueDomain.datatypeText,
-                uom: existingCde.valueDomain.uom,
-                answers: existingCde.valueDomain.permissibleValues
-            };
-            var formElement = {
-                elementType: 'question',
-                label: existingCde.naming[0].designation,
-                question: question,
-                formElements: []
-            };
-            newForm.formElements[0].formElements.push(formElement);
+            mongo_cde.byOtherIdAndNotRetired('LOINC', fe['LOINC#'], function (err, existingCde) {
+                if (err) throw err;
+                if (!existingCde) {
+                    console.log('cannot find this cde with loincId: ' + fe['LOINC#']);
+                    console.log('formId: ' + form.ids[0].id);
+                    process.exit(1);
+                } else {
+                    var question = {
+                        cde: {
+                            tinyId: existingCde.tinyId,
+                            name: existingCde.naming[0].designation,
+                            version: existingCde.version,
+                            permissibleValues: existingCde.valueDomain.permissibleValues,
+                            ids: existingCde.ids
+                        },
+                        datatype: existingCde.valueDomain.datatype,
+                        datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                        datatypeText: existingCde.valueDomain.datatypeText,
+                        uom: existingCde.valueDomain.uom,
+                        answers: existingCde.valueDomain.permissibleValues
+                    };
+                    var formElement = {
+                        elementType: 'question',
+                        label: existingCde.naming[0].designation,
+                        question: question,
+                        formElements: []
+                    };
+                    formElements.push(formElement);
+                }
+            });
         }
-    });
+    };
+
+    loopFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'], form, cb);
 }
 
-function createForm(loinc, cb) {
+function createForm(loinc) {
     var naming = parseNaming(loinc);
     var versionStr = loinc['VERSION']['VERSION'].replace('Generated from LOINC version', '').trim();
     var version = versionStr.substring(0, versionStr.length - 1);
@@ -238,7 +241,7 @@ function createForm(loinc, cb) {
     var properties = parseProperties(loinc);
     var referenceDocuments = parseReferenceDoc(loinc);
     var tinyId = mongo_data.generateTinyId();
-    var newCde = {
+    var newForm = {
         tinyId: tinyId,
         createdBy: {username: 'BatchLoader'},
         created: today,
@@ -257,9 +260,7 @@ function createForm(loinc, cb) {
     var classificationToAdd = ['Newborn Screening', 'Classification', classificationType];
     classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
     classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
-    parseFormElements(loinc, newCde, function (cde) {
-        cb(cde)
-    });
+    return newForm;
 }
 function run() {
     async.series([
@@ -281,20 +282,12 @@ function run() {
                 if (err) throw err;
                 async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
                     if (loinc.toObject) loinc = loinc.toObject();
-                    createForm(loinc, function (o) {
-                        MigrationFormModel.find({'ids.id': loinc.loincId}).exec(function (e, existingForms) {
+                    var form = createForm(loinc);
+                    loadFormElements(loinc, form, function () {
+                        var obj = new MigrationFormModel(form);
+                        obj.save(function (e) {
                             if (e) throw e;
-                            if (existingForms.length === 0) {
-                                var obj = new MigrationFormModel(o);
-                                obj.save(function (e) {
-                                    if (e) throw e;
-                                    doneOneLoinc();
-                                })
-                            }
-                            else {
-                                console.log('loinc id: ' + loinc.loincId + ' has already created');
-                                doneOneLoinc();
-                            }
+                            else doneOneLoinc()
                         })
                     });
                 }, function doneAllLoincs() {
