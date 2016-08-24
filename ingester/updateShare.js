@@ -54,7 +54,6 @@ exports.wipeUseless = function (toWipe) {
     delete toWipe.registrationState;
     delete toWipe.tinyId;
     delete toWipe.changeNote;
-    delete toWipe.valueDomain.datatypeValueList;
     delete toWipe.attachments;
     if (toWipe.valueDomain)
         delete toWipe.valueDomain.datatypeValueList;

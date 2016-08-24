@@ -14,56 +14,56 @@ migrationConn.once('open', function callback() {
 });
 
 // LOINC
-exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new Schema({}, {
     strict: false,
     collection: 'loinc'
 }));
-exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new mongoose.Schema({}, {
+exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new Schema({}, {
     strict: false,
     collection: 'LoincClassificationMapping'
 }));
-exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new mongoose.Schema({}, {
+exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new Schema({}, {
     strict: false,
     collection: 'LoincScaleMapping'
 }));
 
 
 // NINDS
-exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
+exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({}, {
     strict: false,
     collection: 'ninds'
 }));
 
 // NCI
-exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new mongoose.Schema({}, {
+exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new Schema({}, {
     strict: false,
     collection: 'nciFormXml'
 }));
-exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new mongoose.Schema({}, {
+exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new Schema({}, {
     strict: false,
     collection: 'nciCdeXml'
 }));
 
 // EYE GENE
-exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
+exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_LOINC'
 }));
-exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new mongoose.Schema({}, {
+exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_AnswerList'
 }));
 
 //NEW BORN SCREENING
-exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new Schema({}, {
     strict: false,
     collection: 'NewBornScreening_CDE'
 }));
-exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new Schema({}, {
     strict: false,
     collection: 'NewBornScreening_Form'
 }));
-exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new Schema({}, {
     strict: false,
     collection: 'NewBornScreening_AnswerList'
 }));
@@ -74,11 +74,11 @@ exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(for
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
 
 // MIGRATION REFERENCE COLLECTION
-exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new mongoose.Schema({}, {
+exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
     strict: false,
     collection: 'PhenxToLoincMapping'
 }));
-exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new mongoose.Schema({}, {
+exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new Schema({}, {
     strict: false,
     collection: 'VariableCrossReference'
 }));

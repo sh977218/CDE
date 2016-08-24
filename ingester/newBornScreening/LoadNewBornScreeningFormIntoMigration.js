@@ -1,7 +1,6 @@
 var async = require('async');
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
 var mongo_data = require('../../modules/system/node-js/mongo-data');
-var MigrationLoincClassMappingModel = require('./../createMigrationConnection').MigrationLoincClassificationMappingModel;
 var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel;
@@ -11,7 +10,7 @@ var classificationShared = require('../../modules/system/shared/classificationSh
 const source = "LOINC";
 const stewardOrgName = 'NLM';
 
-var orgName = 'Newborn Screening';
+var orgName = 'NLM';
 var formCounter = 0;
 var newBornScreeningOrg = null;
 var today = new Date().toJSON();
@@ -28,10 +27,6 @@ var CARDINALITY_MAP = {
         min: 0, max: 1
     },
     undefined: {}
-};
-
-var statusMap = {
-    'Active': 'Qualified'
 };
 
 function parseNaming(loinc) {
@@ -180,8 +175,7 @@ function parseReferenceDoc(loinc) {
 }
 
 function loadFormElements(loinc, formElements, form, cb) {
-
-    function loadCde(element, fe, next) {
+    var loadCde = function (element, fe, next) {
         mongo_cde.byOtherIdAndNotRetired('LOINC', element['LOINC#'], function (err, existingCde) {
             if (err) throw err;
             if (!existingCde) {
@@ -214,37 +208,61 @@ function loadFormElements(loinc, formElements, form, cb) {
             }
         });
     };
-
-    var loopFormElements = function (ph, fe, next) {
-        if (ph && ph.length > 0) {
-            async.forEach(ph, function (element, doneOneElement) {
-                if (element.elements.length > 0) {
-                    var formElements = [];
-                    fe.push({
-                        elementType: 'section',
-                        instructions: {value: ''},
-                        cardinality: CARDINALITY_MAP[ph.Cardinality],
-                        label: element['label'],
-                        formElements: formElements
+    var loopFormElements = function (loincElements, fe, next) {
+        if (loincElements && loincElements.length > 0) {
+            async.forEachSeries(loincElements, function (loincElement, doneOneElement) {
+                if (loincElement.elements.length > 0) {
+                    MigrationFormModel.find({'ids.id': loincElement['LOINC#']}).exec(function (err, existingForms) {
+                        if (err) throw err;
+                        if (existingForms.length === 0) {
+                            console.log('some Inner forms need to be created');
+                            var foundInnerFormFn = setInterval(function () {
+                                MigrationFormModel.find({'ids.id': loincElement['LOINC#']}).exec(function (err, existingInnerForms) {
+                                    if (existingInnerForms.length > 0) {
+                                        existingForms = existingInnerForms;
+                                        clearInterval(foundInnerFormFn);
+                                        doneOneElement();
+                                    }
+                                })
+                            }, 5000);
+                        } else if (existingForms.length === 1) {
+                            var existingForm = existingForms[0];
+                            fe.push({
+                                elementType: 'form',
+                                instructions: {value: ''},
+                                cardinality: CARDINALITY_MAP[loincElement.Cardinality],
+                                label: loincElement['LOINC Name'],
+                                formElements: [],
+                                inForm: {
+                                    form: {
+                                        tinyId: existingForm.tinyId,
+                                        version: existingForm.version,
+                                        name: existingForm.naming[0].designation
+                                    }
+                                }
+                            });
+                            doneOneElement();
+                        } else {
+                            console.log('More than 1 existing form found. loinc id: ' + loincElement['LOINC#']);
+                            process.exit(1);
+                        }
                     });
-                    loopFormElements(element.elements, formElements, doneOneElement);
                 } else {
-                    loadCde(element, fe, function () {
+                    loadCde(loincElement, fe, function () {
                         doneOneElement();
                     });
                 }
             }, function doneAllElements() {
-                f.formElements = formElements;
                 next();
             });
         } else {
-            loadCde(ph, fe, function () {
+            loadCde(loincElements, fe, function () {
                 next();
             });
         }
     };
 
-    loopFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, formElements, cb);
+    loopFormElements(loinc, formElements, cb);
 }
 
 function createForm(loinc) {
@@ -257,6 +275,7 @@ function createForm(loinc) {
     var tinyId = mongo_data.generateTinyId();
     var newForm = {
         tinyId: tinyId,
+        version: version,
         createdBy: {username: 'BatchLoader'},
         created: today,
         imported: today,
@@ -289,29 +308,54 @@ function run() {
             MigrationFormModel.remove({}, function (err) {
                 if (err) throw err;
                 console.log('Removed migration form');
-                MigrationOrgModel.remove({}, function (er) {
-                    if (er) throw er;
-                    console.log('Removed migration org');
-                    new MigrationOrgModel({name: orgName}).save(function (e, org) {
-                        if (e) throw e;
-                        console.log('Created migration org of ' + orgName);
-                        newBornScreeningOrg = org;
-                        cb();
-                    });
-                });
+                cb();
+            });
+        },
+        function (cb) {
+            MigrationOrgModel.remove({}, function (er) {
+                if (er) throw er;
+                console.log('Removed migration org');
+                cb();
+            });
+        },
+        function (cb) {
+            new MigrationOrgModel({name: orgName}).save(function (e, org) {
+                if (e) throw e;
+                console.log('Created migration org of ' + orgName);
+                newBornScreeningOrg = org;
+                cb();
+            });
+        },
+        function (cb) {
+            MigrationOrgModel.find({name: orgName}).exec(function (e, orgs) {
+                if (e) throw e;
+                console.log('Found migration org of ' + orgName);
+                newBornScreeningOrg = orgs[0];
+                cb();
             });
         },
         function (cb) {
             MigrationLoincModel.find({}).exec(function (err, loincs) {
                 if (err) throw err;
-                async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
+                async.forEach(loincs, function (loinc, doneOneLoinc) {
                     if (loinc.toObject) loinc = loinc.toObject();
                     var form = createForm(loinc);
-                    loadFormElements(loinc, form.formElements[0].formElements, form, function () {
-                        var obj = new MigrationFormModel(form);
-                        obj.save(function (e) {
+                    loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
+                        MigrationFormModel.find({'ids.id': form.ids[0].id}).exec(function (e, existingForms) {
                             if (e) throw e;
-                            else doneOneLoinc()
+                            if (existingForms.length === 0) {
+                                var obj = new MigrationFormModel(form);
+                                obj.save(function (e) {
+                                    if (e) throw e;
+                                    else {
+                                        formCounter++;
+                                        console.log('formCounter: ' + formCounter);
+                                        doneOneLoinc()
+                                    }
+                                })
+                            } else {
+                                doneOneLoinc()
+                            }
                         })
                     });
                 }, function doneAllLoincs() {
@@ -319,7 +363,7 @@ function run() {
                     newBornScreeningOrg.save(function (e) {
                         if (e) throw e;
                         if (cb) cb();
-                        //noinspection JSUnresolvedVariable
+                        console.log('Finished Load');
                         process.exit(0);
                     });
                 })

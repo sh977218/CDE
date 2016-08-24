@@ -448,7 +448,7 @@ exports.byOtherIdAndNotRetired = function (source, id, cb) {
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
-            cb("Multiple results, returning first", cdes[0]);
+            cb("Multiple results, returning first. source: " + source + " id: " + id, cdes[0]);
         else cb(err, cdes[0]);
     });
 };

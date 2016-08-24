@@ -67,7 +67,7 @@ var formElementTreeRoot = {
 var currentLevel = formElementTreeRoot.formElements;
 for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
     currentLevel.push({
-        elementType: {type: String, enum: ['section', 'question']}
+        elementType: {type: String, enum: ['section', 'question', 'form']}
         , label: String
         , hideLabel: {type: Boolean, default: false}
         , instructions: sharedSchemas.instructionSchema
