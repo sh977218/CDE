@@ -4,7 +4,7 @@
   "userAlertTime": 6000,
   "publicUrl": "http://localhost:3001",
   "debugEnabled": true,
-  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
+  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.5.4-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
   "umls": {
     "wsHost": "https://localhost:4000"
