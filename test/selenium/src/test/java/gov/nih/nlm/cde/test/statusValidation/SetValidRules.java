@@ -16,7 +16,7 @@ public class SetValidRules extends BaseClassificationTest {
 
         new Select(driver.findElement(By.id("org"))).selectByVisibleText("TEST");
         findElement(By.id("ruleName")).sendKeys("Test Rule #1");
-        new Select(driver.findElement(By.id("field"))).selectByVisibleText("properties.key");
+        new Select(driver.findElement(By.id("field"))).selectByIndex(1);
         new Select(driver.findElement(By.id("targetStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("regex")).sendKeys("non-existent");
         new Select(driver.findElement(By.id("occurence"))).selectByVisibleText("All Elements");
