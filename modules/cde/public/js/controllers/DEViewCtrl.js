@@ -271,9 +271,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
             $http.get('/esRecord/' + de.tinyId).success(function (response) {
                 var s = new Set();
-                response._source.flatMeshSimpleTrees.forEach(function (t) {
-                    s.add(t.split(";").pop());
-                });
+                if (response._source.flatMeshSimpleTrees) {
+                    response._source.flatMeshSimpleTrees.forEach(function (t) {
+                        s.add(t.split(";").pop());
+                    });
+                }
                 $scope.elt.flatMeshSimpleTrees = Array.from(s);
             });
         }, function (err) {
