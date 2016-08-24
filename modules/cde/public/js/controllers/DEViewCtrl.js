@@ -262,7 +262,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.elt.usedBy = OrgHelpers.getUsedBy($scope.elt, userResource.user);
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            OrgHelpers.deferred.promise.then(function() {
+                $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            });
             $scope.resolveCdeLoaded();
             $scope.$broadcast("elementReloaded");
             if (route.tab) {
