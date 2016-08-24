@@ -22,8 +22,8 @@ public class RedCapExportErrorTest extends BaseFormTest {
     @Test
     public void phenxCanNotExportRedCap() {
         mustBeLoggedInAs(testAdmin_username, password);
-        enableBetaFeature();
         goToFormByName("PhenX Form RedCAP Export");
+        enableBetaFeature();
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
         switchTab(1);
