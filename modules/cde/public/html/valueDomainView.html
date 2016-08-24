@@ -31,6 +31,10 @@
             <div inline-edit id="uomEdit" model="elt.valueDomain.uom" is-allowed="canCurate"
                  on-ok="stageElt(elt)"></div>
         </dd>
+        <dt tabindex="0">Ids:</dt>
+        <dd tabindex="0">
+            <div ng-repeat="id in elt.valueDomain.ids">{{id.source}}: {{id.id}}<span ng-if="id.version">, version: </span>{{id.version}}</div>
+        </dd>
     </dl>
 
     <div ng-include="'/cde/public/html/valueDomainSwitch.html'"></div>
