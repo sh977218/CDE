@@ -36,7 +36,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
         }).when('/classificationmanagement', {
             controller: 'ClassificationManagementCtrl',
             templateUrl: '/system/public/html/classificationManagement.html'
-        }).when('/orgauthority', {
+        }).when('/orgAuthority', {
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/orgAuthority.html'
         }).when('/profile', {
@@ -63,6 +63,32 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
+                $scope.value = $scope.model;
+                $scope.discard = function () {
+                    $scope.editMode = false;
+                };
+                $scope.save = function () {
+                    $scope.model = angular.copy($scope.value);
+                    $scope.editMode = false;
+                    $timeout($scope.onOk, 0);
+                };
+                $scope.edit = function () {
+                    $scope.editMode = true;
+                };
+            }
+        };
+    })
+    .directive('inlineSelectEdit', function($timeout) {
+        return {
+            restrict: 'AE',
+            scope: {
+                model: '=',
+                isAllowed: '&',
+                onOk: '&',
+                allOptions: '='
+            },
+            templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
+            controller: function ($scope) {
                 $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;

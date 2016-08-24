@@ -56,6 +56,7 @@ angular.module('systemModule').controller('MainCtrl',
                 return exports.isOrgAdmin(userResource.user);
             };
 
+
             $scope.isOrgAuthority = function() {
                 return exports.hasRole(userResource.user, "OrgAuthority");
             };

@@ -6,7 +6,7 @@ angular.module('cdeModule').controller('CreateCdeCtrl',
     $scope.elt = {
         classification: [], stewardOrg: {}, naming: [{
             designation: "", definition: "", context: {
-                contextName: "Health"
+                contextName: ""
                 , acceptability: "preferred"
             }
         }]

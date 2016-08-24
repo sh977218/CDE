@@ -15,10 +15,6 @@ public class CdePropertyTest extends PropertyTest {
         goToCdeSearch();
     }
 
-    @Test
-    public void autocomplete() {
-        autocomplete("Retinoblastoma History Ind-3", "NINDS G", "NINDS Guidelines");
-    }
 
     @Test
     public void richPropText() {
