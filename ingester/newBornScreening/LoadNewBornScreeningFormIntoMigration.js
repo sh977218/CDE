@@ -26,7 +26,8 @@ var CLASSIFICATION_TYPE_MAP = {
 var CARDINALITY_MAP = {
     "0..1": {
         min: 0, max: 1
-    }
+    },
+    undefined: {}
 };
 
 var statusMap = {
@@ -178,59 +179,72 @@ function parseReferenceDoc(loinc) {
     return referenceDocuments;
 }
 
-function loadFormElements(loinc, form, cb) {
-    var loopFormElements = function (fe, f, next) {
-        var formElements = [];
-        if (fe.elements.length > 0) {
-            async.forEach(fe.elements, function (element, doneOneElement) {
-                formElements.push({
-                    elementType: 'section',
-                    instructions: {value: ''},
-                    label: fe.label ? fe.label : '',
-                    cardinality: CARDINALITY_MAP[fe.Cardinality],
-                    formElements: []
-                });
-                doneOneElement();
+function loadFormElements(loinc, formElements, form, cb) {
 
+    var loadCde = function (element, fe, next) {
+        mongo_cde.byOtherIdAndNotRetired('LOINC', element['LOINC#'], function (err, existingCde) {
+            if (err) throw err;
+            if (!existingCde) {
+                console.log('cannot find this cde with loincId: ' + element['LOINC#']);
+                console.log('formId: ' + form.ids[0].id);
+                process.exit(1);
+            } else {
+                var question = {
+                    cde: {
+                        tinyId: existingCde.tinyId,
+                        name: existingCde.naming[0].designation,
+                        version: existingCde.version,
+                        permissibleValues: existingCde.valueDomain.permissibleValues,
+                        ids: existingCde.ids
+                    },
+                    datatype: existingCde.valueDomain.datatype,
+                    datatypeNumber: existingCde.valueDomain.datatypeNumber,
+                    datatypeText: existingCde.valueDomain.datatypeText,
+                    uom: existingCde.valueDomain.uom,
+                    answers: existingCde.valueDomain.permissibleValues
+                };
+                var formElement = {
+                    elementType: 'question',
+                    label: existingCde.naming[0].designation,
+                    question: question,
+                    formElements: []
+                };
+                fe.push(formElement);
+                next();
+            }
+        });
+    };
+
+    var loopFormElements = function (ph, fe, next) {
+        if (ph.elements && ph.elements.length > 0) {
+            async.forEach(ph.elements, function (element, doneOneElement) {
+                if (element.elements.length > 0) {
+                    var formElements = [];
+                    fe.push({
+                        elementType: 'section',
+                        instructions: {value: ''},
+                        cardinality: CARDINALITY_MAP[ph.Cardinality],
+                        label: ph['label'],
+                        formElements: formElements
+                    });
+                    loopFormElements(element, formElements, doneOneElement);
+                } else {
+                    loadCde(element, fe, function () {
+                        doneOneElement();
+                    });
+                }
             }, function doneAllElements() {
                 f.formElements = formElements;
                 next();
             });
         } else {
-            mongo_cde.byOtherIdAndNotRetired('LOINC', fe['LOINC#'], function (err, existingCde) {
-                if (err) throw err;
-                if (!existingCde) {
-                    console.log('cannot find this cde with loincId: ' + fe['LOINC#']);
-                    console.log('formId: ' + form.ids[0].id);
-                    process.exit(1);
-                } else {
-                    var question = {
-                        cde: {
-                            tinyId: existingCde.tinyId,
-                            name: existingCde.naming[0].designation,
-                            version: existingCde.version,
-                            permissibleValues: existingCde.valueDomain.permissibleValues,
-                            ids: existingCde.ids
-                        },
-                        datatype: existingCde.valueDomain.datatype,
-                        datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                        datatypeText: existingCde.valueDomain.datatypeText,
-                        uom: existingCde.valueDomain.uom,
-                        answers: existingCde.valueDomain.permissibleValues
-                    };
-                    var formElement = {
-                        elementType: 'question',
-                        label: existingCde.naming[0].designation,
-                        question: question,
-                        formElements: []
-                    };
-                    formElements.push(formElement);
-                }
+            loadCde(formElements, fe, function () {
+                next();
             });
         }
     };
 
-    loopFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'], form, cb);
+    loopFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, formElements, cb);
 }
 
 function createForm(loinc) {
@@ -253,12 +267,19 @@ function createForm(loinc) {
         properties: properties,
         referenceDocuments: referenceDocuments,
         stewardOrg: {name: stewardOrgName},
-        classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
+        classification: [{stewardOrg: {name: stewardOrgName}, elements: []}],
+        formElements: [{
+            elementType: 'section',
+            instructions: {value: ''},
+            cardinality: CARDINALITY_MAP[loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].Cardinality],
+            label: loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['LOINC Name'],
+            formElements: []
+        }]
     };
     var classType = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Class/Type'];
     var classificationType = CLASSIFICATION_TYPE_MAP[classType];
     var classificationToAdd = ['Newborn Screening', 'Classification', classificationType];
-    classificationShared.classifyItem(newCde, stewardOrgName, classificationToAdd);
+    classificationShared.classifyItem(newForm, stewardOrgName, classificationToAdd);
     classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
     return newForm;
 }
@@ -267,10 +288,13 @@ function run() {
         function (cb) {
             MigrationFormModel.remove({}, function (err) {
                 if (err) throw err;
+                console.log('Removed migration form');
                 MigrationOrgModel.remove({}, function (er) {
                     if (er) throw er;
+                    console.log('Removed migration org');
                     new MigrationOrgModel({name: orgName}).save(function (e, org) {
                         if (e) throw e;
+                        console.log('Created migration org of ' + orgName);
                         newBornScreeningOrg = org;
                         cb();
                     });
@@ -283,7 +307,7 @@ function run() {
                 async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
                     if (loinc.toObject) loinc = loinc.toObject();
                     var form = createForm(loinc);
-                    loadFormElements(loinc, form, function () {
+                    loadFormElements(loinc, form.formElements[0].formElements, form, function () {
                         var obj = new MigrationFormModel(form);
                         obj.save(function (e) {
                             if (e) throw e;

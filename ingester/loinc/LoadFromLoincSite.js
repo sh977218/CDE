@@ -33,7 +33,7 @@ var tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
         function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
-        xpath: 'html/body/div[@class="Section1"]/table[.//th[text()="PANEL HIERARCHY"]]/following-sibling::table[1]'
+        xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
     },
     {
         sectionName: 'LOINC NAME',
