@@ -181,7 +181,7 @@ function parseReferenceDoc(loinc) {
 
 function loadFormElements(loinc, formElements, form, cb) {
 
-    var loadCde = function (element, fe, next) {
+    function loadCde(element, fe, next) {
         mongo_cde.byOtherIdAndNotRetired('LOINC', element['LOINC#'], function (err, existingCde) {
             if (err) throw err;
             if (!existingCde) {
@@ -216,18 +216,18 @@ function loadFormElements(loinc, formElements, form, cb) {
     };
 
     var loopFormElements = function (ph, fe, next) {
-        if (ph.elements && ph.elements.length > 0) {
-            async.forEach(ph.elements, function (element, doneOneElement) {
+        if (ph && ph.length > 0) {
+            async.forEach(ph, function (element, doneOneElement) {
                 if (element.elements.length > 0) {
                     var formElements = [];
                     fe.push({
                         elementType: 'section',
                         instructions: {value: ''},
                         cardinality: CARDINALITY_MAP[ph.Cardinality],
-                        label: ph['label'],
+                        label: element['label'],
                         formElements: formElements
                     });
-                    loopFormElements(element, formElements, doneOneElement);
+                    loopFormElements(element.elements, formElements, doneOneElement);
                 } else {
                     loadCde(element, fe, function () {
                         doneOneElement();
@@ -238,7 +238,7 @@ function loadFormElements(loinc, formElements, form, cb) {
                 next();
             });
         } else {
-            loadCde(formElements, fe, function () {
+            loadCde(ph, fe, function () {
                 next();
             });
         }
