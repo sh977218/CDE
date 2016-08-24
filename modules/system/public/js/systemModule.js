@@ -405,12 +405,10 @@ angular.module('systemModule').run(function ($rootScope, $location) {
     var dataLayer = window.dataLayer = window.dataLayer || [];
 
     $rootScope.$on("$locationChangeSuccess", function () {
-        console.log("route change");
-        console.log($location.search());
         dataLayer.push({
             event: 'ngRouteChange',
             attributes: {
-                route: $location.url()
+                route: $location.path()
             }
         });
     });
