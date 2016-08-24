@@ -290,7 +290,10 @@ angular.module('resourcesSystem', ['ngResource'])
         var getOrgRulesForCde = function(cde){
             var result = {};
             cde.classification.forEach(function(org){
-                result[org.stewardOrg.name] = OrgHelpers.getStatusValidationRules(org.stewardOrg.name);
+                OrgHelpers.deferred.promise.then(function(){
+                    result[org.stewardOrg.name] = OrgHelpers.getStatusValidationRules(org.stewardOrg.name);
+                });
+
             });
             return result;
         };
