@@ -448,7 +448,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
             }
         };
 
-
     }
 
     if (queryStuff.query.bool.must.length === 0) {
@@ -456,7 +455,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     queryStuff.from = (settings.page - 1) * settings.resultPerPage;
-    queryStuff.explain = true;
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {

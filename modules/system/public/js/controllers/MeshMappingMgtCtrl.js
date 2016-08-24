@@ -29,7 +29,6 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
             if (currentTimeout) currentTimeout.cancel();
 
             $timeout(function() {
-                // @TODO replace with config
                 $http.get(meshUrl + "/api/fieldSearch/record?searchInField=termDescriptor" + // jshint ignore:line
                     "&searchType=exactMatch&q=" + $scope.meshSearch).success(function (result) {
                     try {

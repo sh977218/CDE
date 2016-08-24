@@ -920,7 +920,6 @@ exports.init = function (app) {
     function flatTreesFromMeshDescriptorArray(descArr, cb) {
         var allTrees = new Set();
         async.each(descArr, function(desc, oneDescDone) {
-            // @TODO make as config
             request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
                 async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
                     request(config.mesh.baseUrl + "/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
