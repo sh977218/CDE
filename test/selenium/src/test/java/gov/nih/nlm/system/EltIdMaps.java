@@ -44,6 +44,7 @@ public class EltIdMaps {
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
+        eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
 
 
         // Forms
@@ -70,6 +71,8 @@ public class EltIdMaps {
         eltMap.put("Form Board", "5751ee614184ddb440886745");
 
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
+
+        eltMap.put("Gender Self-Identified", "7yXnzmPgZ");
 
     }
 
