@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'userOrgs', function($scope, $modalInstance, userOrgs){
+angular.module('systemModule').controller('AddNewRuleCtrl',
+    ['$scope', '$uibModalInstance', 'userOrgs', function($scope, $modalInstance, userOrgs){
     $scope.fields = [
         'stewardOrg.name'
         , 'properties.key'
@@ -6,12 +7,10 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'valueDomain.permissibleValues.permissibleValue'
         , 'valueDomain.permissibleValues.valueMeaningName'
         , 'valueDomain.permissibleValues.valueMeaningCode'
-        , 'valueDomain.uom'
         , 'version'
         , 'ids.version'
         , 'ids.source'
         , 'naming.context.contextName'
-        , 'valueDomain.datatype'
         , 'source'
         , 'origin'
 
@@ -31,6 +30,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'dataElementConcept.conceptualDomain.vsac.name'
         , 'dataElementConcept.conceptualDomain.vsac.version'
 
+        , 'valueDomain.datatype'
         , 'valueDomain.uom'
         , 'valueDomain.ids.source'
         , 'valueDomain.ids.id'

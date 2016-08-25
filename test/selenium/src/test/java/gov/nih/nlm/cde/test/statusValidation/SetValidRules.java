@@ -13,11 +13,10 @@ public class SetValidRules extends BaseClassificationTest {
         findElement(By.id("user_org_authority")).click();
         findElement(By.linkText("Status Validation Rules")).click();
         findElement(By.id("addRule")).click();
-
-        new Select(driver.findElement(By.id("org"))).selectByVisibleText("TEST");
+        new Select(findElement(By.id("org"))).selectByVisibleText("TEST");
         findElement(By.id("ruleName")).sendKeys("Test Rule #1");
-        new Select(driver.findElement(By.id("field"))).selectByVisibleText("properties.key");
-        new Select(driver.findElement(By.id("targetStatus"))).selectByVisibleText("Recorded");
+        new Select(findElement(By.id("field"))).selectByVisibleText("properties.key");
+        new Select(findElement(By.id("targetStatus"))).selectByVisibleText("Recorded");
         findElement(By.id("regex")).sendKeys("non-existent");
         new Select(driver.findElement(By.id("occurence"))).selectByVisibleText("All Elements");
         findElement(By.id("saveRule")).click();
