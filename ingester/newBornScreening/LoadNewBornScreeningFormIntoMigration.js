@@ -221,9 +221,13 @@ function loadFormElements(loinc, formElements, form, cb) {
                     datatype: existingCde.valueDomain.datatype,
                     datatypeNumber: existingCde.valueDomain.datatypeNumber,
                     datatypeText: existingCde.valueDomain.datatypeText,
-                    uom: element['Ex UCUM Units'],
-                    answers: existingCde.valueDomain.permissibleValues
+                    answers: existingCde.valueDomain.permissibleValues,
+                    uoms: []
                 };
+                if (element['Ex UCUM Units']) {
+                    question.uoms.push(element['Ex UCUM Units']);
+                }
+
                 existingCde.naming.forEach(function (n) {
                     if (n.context.contextName === "Source: Regenstrief LOINC") {
                         question.instructions.value = n.context.contextName;
@@ -355,6 +359,9 @@ function createForm(loinc) {
             formElements: []
         }]
     };
+    if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
+        newForm.formElements[0].instructions.value = loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'][0].Description;
+    }
     var classType = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Class/Type'];
     var classificationType = CLASSIFICATION_TYPE_MAP[classType];
     var classificationToAdd = ['Newborn Screening', 'Classification', classificationType];
