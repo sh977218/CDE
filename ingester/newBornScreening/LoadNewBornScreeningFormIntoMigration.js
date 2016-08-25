@@ -26,7 +26,31 @@ var CARDINALITY_MAP = {
     "0..1": {
         min: 0, max: 1
     },
-    undefined: {}
+    "0..*": {
+        min: 0
+    },
+    "1..1": {
+        min: 1, max: 1
+    },
+    "1..*": {
+        min: 1
+    },
+    "": {}
+};
+
+var MULTISELECT_MAP = {
+    "": false,
+    "0..1": false,
+    "0..*": true,
+    "1..1": false,
+    "1..*": true
+};
+var REQUIRED_MAP = {
+    "": false,
+    "0..1": false,
+    "0..*": false,
+    "1..1": true,
+    "1..*": true
 };
 
 function parseNaming(loinc) {
@@ -191,6 +215,8 @@ function loadFormElements(loinc, formElements, form, cb) {
                         permissibleValues: existingCde.valueDomain.permissibleValues,
                         ids: existingCde.ids
                     },
+                    required: REQUIRED_MAP[element['ANSWER CARDINALITY']],
+                    multiselect: MULTISELECT_MAP[element['ANSWER CARDINALITY']],
                     datatype: existingCde.valueDomain.datatype,
                     datatypeNumber: existingCde.valueDomain.datatypeNumber,
                     datatypeText: existingCde.valueDomain.datatypeText,
