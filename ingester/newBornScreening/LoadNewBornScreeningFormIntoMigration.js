@@ -220,7 +220,7 @@ function loadFormElements(loinc, formElements, form, cb) {
                     datatype: existingCde.valueDomain.datatype,
                     datatypeNumber: existingCde.valueDomain.datatypeNumber,
                     datatypeText: existingCde.valueDomain.datatypeText,
-                    uom: existingCde.valueDomain.uom,
+                    uom: loinc['Ex UCUM Units'],
                     answers: existingCde.valueDomain.permissibleValues
                 };
                 var formElement = {
@@ -241,16 +241,32 @@ function loadFormElements(loinc, formElements, form, cb) {
                     MigrationFormModel.find({'ids.id': loincElement['LOINC#']}).exec(function (err, existingForms) {
                         if (err) throw err;
                         if (existingForms.length === 0) {
-                            console.log('some Inner forms need to be created');
-                            var foundInnerFormFn = setInterval(function () {
+                            console.log('Wait for inner form ' + loincElement['LOINC#'] + ' to be created.');
+                            /*var foundInnerFormFn = setInterval(function () {
                                 MigrationFormModel.find({'ids.id': loincElement['LOINC#']}).exec(function (err, existingInnerForms) {
                                     if (existingInnerForms.length > 0) {
+                             console.log('Inner form ' + loincElement['LOINC#'] + ' created.');
                                         existingForms = existingInnerForms;
                                         clearInterval(foundInnerFormFn);
                                         doneOneElement();
                                     }
                                 })
-                            }, 5000);
+                             }, 5000);*/
+                            fe.push({
+                                elementType: 'form',
+                                instructions: {value: ''},
+                                cardinality: CARDINALITY_MAP[loincElement.Cardinality],
+                                label: loincElement['LOINC Name'],
+                                formElements: [],
+                                inForm: {
+                                    form: {
+                                        tinyId: 'LOINCID-' + loincElement['LOINC#'],
+                                        version: '2.56',
+                                        name: loincElement['LOINC Name']
+                                    }
+                                }
+                            });
+                            doneOneElement();
                         } else if (existingForms.length === 1) {
                             var existingForm = existingForms[0];
                             fe.push({
@@ -390,10 +406,46 @@ function run() {
                         if (e) throw e;
                         if (cb) cb();
                         console.log('Finished Load');
-                        process.exit(0);
                     });
                 })
             });
+        },
+        function (cb) {
+            MigrationFormModel.find({}).exec(function (err, forms) {
+                if (err) throw err;
+                async.forEach(forms, function (form, doneOneForm) {
+                    async.forEach(form.formElements[0].formElements, function (formElement, doneOneFormElement) {
+                        if (formElement.elementType === 'form' && formElement.inForm.form.tinyId.indexOf('LOINCID-') !== -1) {
+                            var innerFormLOINC = formElement.inForm.form.tinyId.replace('LOINCID-', '');
+                            MigrationFormModel.find({'ids.id': innerFormLOINC}).exec(function (e, f) {
+                                if (e) throw e;
+                                if (f.length === 0) {
+                                    console.log('Cannot find form id: ' + formElement.inForm.tinyId);
+                                    process.exit(1);
+                                } else if (f.length === 1) {
+                                    formElement.inForm.form.tinyId = f[0].tinyId;
+                                    doneOneFormElement()
+                                } else {
+                                    console.log('Found multiple form id: ' + formElement.inForm.tinyId);
+                                    process.exit(1);
+                                }
+                            })
+                        } else {
+                            doneOneFormElement();
+                        }
+                    }, function doneAllFormElements() {
+                        form.save(function (error) {
+                            if (error) throw error;
+                            doneOneForm();
+                        });
+                    })
+                }, function () {
+                    cb();
+                })
+            })
+        },
+        function () {
+            process.exit(0);
         }]);
 }
 

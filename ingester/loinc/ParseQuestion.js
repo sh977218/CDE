@@ -29,6 +29,11 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                                                     element['ANSWER CARDINALITY'] = text.trim();
                                                     doneOneSection();
                                                 })
+                                            } else if (sectionHeader === 'QUESTION CARDINALITY') {
+                                                section.findElement(By.xpath('table/tbody/tr[2]')).getText().then(function (text) {
+                                                    element['QUESTION CARDINALITY'] = text.trim();
+                                                    doneOneSection();
+                                                })
                                             } else {
                                             doneOneSection();
                                             }
