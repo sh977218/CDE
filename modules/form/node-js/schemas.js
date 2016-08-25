@@ -76,7 +76,7 @@ for (var i = 0; i < config.modules.forms.sectionLevels; i++) {
         , showIfExpression: String
         , section: sectionSchema
         , question: questionSchema
-        , form: inFormSchema
+        , inForm: inFormSchema
         , formElements: []
         , skipLogic: {
             action: {type: String, enum: ['show', 'enable']}
