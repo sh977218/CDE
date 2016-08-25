@@ -93,6 +93,7 @@ function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDo
             var mForm = JSON.parse(JSON.stringify(migrationForm.toObject()));
             delete mForm._id; //use mForm below!!!
             var createForm = new FormModel(mForm);
+            createForm.tinyId = mForm.tinyId;
             createForm.imported = importDate;
             createForm.created = importDate;
             createForm.save(function (err) {

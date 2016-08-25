@@ -81,6 +81,8 @@
                      ng-init="parent = section; question = formElement;"></div>
                 <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
                      ng-init="parent = section; section = formElement;isSubSection = true;"></div>
+                <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formRenderForm.html'"
+                     ng-init="parent = section; section = formElement;isSubSection = true;"></div>
             </div>
             <div ng-if="section.formElements.length > nbOfEltsLimit">
                 <i class="fa fa-2x">Scroll down to see more ...</i>

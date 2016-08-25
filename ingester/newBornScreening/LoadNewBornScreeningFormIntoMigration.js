@@ -208,6 +208,7 @@ function loadFormElements(loinc, formElements, form, cb) {
                 process.exit(1);
             } else {
                 var question = {
+                    instructions: {value: ''},
                     cde: {
                         tinyId: existingCde.tinyId,
                         name: existingCde.naming[0].designation,
@@ -220,9 +221,14 @@ function loadFormElements(loinc, formElements, form, cb) {
                     datatype: existingCde.valueDomain.datatype,
                     datatypeNumber: existingCde.valueDomain.datatypeNumber,
                     datatypeText: existingCde.valueDomain.datatypeText,
-                    uom: loinc['Ex UCUM Units'],
+                    uom: element['Ex UCUM Units'],
                     answers: existingCde.valueDomain.permissibleValues
                 };
+                existingCde.naming.forEach(function (n) {
+                    if (n.context.contextName === "Source: Regenstrief LOINC") {
+                        question.instructions.value = n.context.contextName;
+                    }
+                });
                 var formElement = {
                     elementType: 'question',
                     label: existingCde.naming[0].designation,
@@ -242,31 +248,43 @@ function loadFormElements(loinc, formElements, form, cb) {
                         if (err) throw err;
                         if (existingForms.length === 0) {
                             console.log('Wait for inner form ' + loincElement['LOINC#'] + ' to be created.');
-                            /*var foundInnerFormFn = setInterval(function () {
-                                MigrationFormModel.find({'ids.id': loincElement['LOINC#']}).exec(function (err, existingInnerForms) {
-                                    if (existingInnerForms.length > 0) {
-                             console.log('Inner form ' + loincElement['LOINC#'] + ' created.');
-                                        existingForms = existingInnerForms;
-                                        clearInterval(foundInnerFormFn);
-                                        doneOneElement();
-                                    }
-                                })
-                             }, 5000);*/
-                            fe.push({
-                                elementType: 'form',
-                                instructions: {value: ''},
-                                cardinality: CARDINALITY_MAP[loincElement.Cardinality],
-                                label: loincElement['LOINC Name'],
-                                formElements: [],
-                                inForm: {
-                                    form: {
-                                        tinyId: 'LOINCID-' + loincElement['LOINC#'],
-                                        version: '2.56',
-                                        name: loincElement['LOINC Name']
-                                    }
+                            MigrationLoincModel.find({'loincId': loincElement['LOINC#']}).exec(function (e, innerFormLoincs) {
+                                if (e) throw e;
+                                else {
+                                    var innerFormLoinc = innerFormLoincs[0];
+                                    if (innerFormLoinc.toObject) innerFormLoinc = innerFormLoinc.toObject();
+                                    var innerForm = createForm(innerFormLoinc);
+                                    loadFormElements(innerFormLoinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, innerForm.formElements[0].formElements, form, function () {
+                                        var obj = new MigrationFormModel(innerForm);
+                                        obj.save(function (e, innerFormObj) {
+                                            if (e) throw e;
+                                            else {
+                                                formCounter++;
+                                                console.log('formCounter: ' + formCounter);
+                                                var innerFe = {
+                                                    elementType: 'form',
+                                                    instructions: {value: ''},
+                                                    cardinality: CARDINALITY_MAP[loincElement.Cardinality],
+                                                    label: loincElement['LOINC Name'],
+                                                    formElements: [],
+                                                    inForm: {
+                                                        form: {
+                                                            tinyId: innerFormObj.tinyId,
+                                                            version: '2.56',
+                                                            name: loincElement['LOINC Name']
+                                                        }
+                                                    }
+                                                };
+                                                if (innerFormLoinc['TERM DEFINITION/DESCRIPTION(S)']) {
+                                                    innerFe.instructions.value = innerFormLoinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'][0].Description;
+                                                }
+                                                fe.push(innerFe);
+                                                doneOneElement();
+                                            }
+                                        })
+                                    });
                                 }
                             });
-                            doneOneElement();
                         } else if (existingForms.length === 1) {
                             var existingForm = existingForms[0];
                             fe.push({
@@ -379,13 +397,13 @@ function run() {
         function (cb) {
             MigrationLoincModel.find({}).exec(function (err, loincs) {
                 if (err) throw err;
-                async.forEach(loincs, function (loinc, doneOneLoinc) {
+                async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
                     if (loinc.toObject) loinc = loinc.toObject();
-                    var form = createForm(loinc);
-                    loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
-                        MigrationFormModel.find({'ids.id': form.ids[0].id}).exec(function (e, existingForms) {
-                            if (e) throw e;
-                            if (existingForms.length === 0) {
+                    MigrationFormModel.find({'ids.id': loinc['loincId']}).exec(function (e, existingForms) {
+                        if (e) throw e;
+                        if (existingForms.length === 0) {
+                            var form = createForm(loinc);
+                            loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
                                 var obj = new MigrationFormModel(form);
                                 obj.save(function (e) {
                                     if (e) throw e;
@@ -395,11 +413,11 @@ function run() {
                                         doneOneLoinc()
                                     }
                                 })
-                            } else {
-                                doneOneLoinc()
-                            }
-                        })
-                    });
+                            });
+                        } else {
+                            doneOneLoinc()
+                        }
+                    })
                 }, function doneAllLoincs() {
                     newBornScreeningOrg.markModified('classifications');
                     newBornScreeningOrg.save(function (e) {
@@ -409,40 +427,6 @@ function run() {
                     });
                 })
             });
-        },
-        function (cb) {
-            MigrationFormModel.find({}).exec(function (err, forms) {
-                if (err) throw err;
-                async.forEach(forms, function (form, doneOneForm) {
-                    async.forEach(form.formElements[0].formElements, function (formElement, doneOneFormElement) {
-                        if (formElement.elementType === 'form' && formElement.inForm.form.tinyId.indexOf('LOINCID-') !== -1) {
-                            var innerFormLOINC = formElement.inForm.form.tinyId.replace('LOINCID-', '');
-                            MigrationFormModel.find({'ids.id': innerFormLOINC}).exec(function (e, f) {
-                                if (e) throw e;
-                                if (f.length === 0) {
-                                    console.log('Cannot find form id: ' + formElement.inForm.tinyId);
-                                    process.exit(1);
-                                } else if (f.length === 1) {
-                                    formElement.inForm.form.tinyId = f[0].tinyId;
-                                    doneOneFormElement()
-                                } else {
-                                    console.log('Found multiple form id: ' + formElement.inForm.tinyId);
-                                    process.exit(1);
-                                }
-                            })
-                        } else {
-                            doneOneFormElement();
-                        }
-                    }, function doneAllFormElements() {
-                        form.save(function (error) {
-                            if (error) throw error;
-                            doneOneForm();
-                        });
-                    })
-                }, function () {
-                    cb();
-                })
-            })
         },
         function () {
             process.exit(0);
