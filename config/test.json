@@ -10,8 +10,7 @@
     "wsHost": "https://localhost:4000"
   },
   "mesh": {
-    "baseUrl": "http://localhost:10081"
-    , "mockPort": 10081
+    "mockPort": 10081
   },
   "database": {
     "local": {

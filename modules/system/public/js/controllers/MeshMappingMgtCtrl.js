@@ -51,6 +51,10 @@ angular.module('systemModule').controller('MeshMappingMgtCtrl', ['$scope', 'org'
 
         $scope.loadDescriptor();
 
+        $scope.isDescriptorAlreadyMapped = function(desc) {
+            return $scope.mapping.meshDescriptors.indexOf(desc) > -1;
+        };
+
         $scope.addMeshDescriptor = function () {
             $scope.mapping.meshDescriptors.push($scope.descriptorID);
             $scope.descToName[$scope.descriptorID] = $scope.descriptorName;

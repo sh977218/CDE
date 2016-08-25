@@ -948,11 +948,12 @@ exports.init = function (app) {
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
                 req.body.flatTrees = trees;
-                mongo_data_system.MeshClassification.update({_id: id}, req.body, function (err) {
-                    if (err) res.status(500).send();
-                    else {
-                        res.send();
-                    }
+                mongo_data_system.MeshClassification.findOne({_id: id}, function(err, elt) {
+                    elt.meshDescriptors = req.body.meshDescriptors;
+                    elt.flatTrees = req.body.flatTrees;
+                    elt.save(function (err, o) {
+                        res.send(o);
+                    })
                 });
             });
         } else {
