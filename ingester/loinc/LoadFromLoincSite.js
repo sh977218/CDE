@@ -178,21 +178,29 @@ exports.runArray = function (array, section, doneItem, doneArray) {
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEach(array, function (loincId, doneOneLoinc) {
-                var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-                driver.get(url).then(function () {
-                    var obj = {URL: url, loincId: loincId, info: ''};
-                    async.forEach(tasks, function (task, doneOneTask) {
-                        doTask(driver, task, obj, doneOneTask);
-                    }, function doneAllTasks() {
-                        async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
-                            specialTask.function(driver, obj, doneOneSpecialTask);
-                        }, function doneAllSpecialTasks() {
-                            loincCount++;
-                            console.log('loincCount: ' + loincCount);
-                            results.push(obj);
-                            doneItem(obj, doneOneLoinc);
+                MigrationLoincModel.find({loincId: loincId}).exec(function (error, existingLoincs) {
+                    if (error) throw error;
+                    if (existingLoincs.length === 0) {
+                        var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+                        driver.get(url).then(function () {
+                            var obj = {URL: url, loincId: loincId, info: ''};
+                            async.forEach(tasks, function (task, doneOneTask) {
+                                doTask(driver, task, obj, doneOneTask);
+                            }, function doneAllTasks() {
+                                async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
+                                    specialTask.function(driver, obj, doneOneSpecialTask);
+                                }, function doneAllSpecialTasks() {
+                                    loincCount++;
+                                    console.log('loincCount: ' + loincCount);
+                                    results.push(obj);
+                                    doneItem(obj, doneOneLoinc);
+                                });
+                            });
                         });
-                    });
+                    } else {
+                        console.log('loinc id: ' + loincId + ' exists');
+                        doneOneLoinc();
+                    }
                 });
             }, function doneAllLoinc() {
                 console.log('Finished all. loincCount: ' + loincCount);
