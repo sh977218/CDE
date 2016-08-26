@@ -136,6 +136,12 @@ var specialTasks = [
         function: ParseQuestion.parseQuestion
     }
 ];
+var currentVersion = '2.56';
+
+exports.setCurrentVersion = function (v) {
+    currentVersion = v;
+};
+
 function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
 }
@@ -178,7 +184,10 @@ exports.runArray = function (array, section, doneItem, doneArray) {
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEach(array, function (loincId, doneOneLoinc) {
-                MigrationLoincModel.find({loincId: loincId}).exec(function (error, existingLoincs) {
+                MigrationLoincModel.find({
+                    loincId: loincId,
+                    version: currentVersion
+                }).exec(function (error, existingLoincs) {
                     if (error) throw error;
                     if (existingLoincs.length === 0) {
                         var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
@@ -204,6 +213,7 @@ exports.runArray = function (array, section, doneItem, doneArray) {
                 });
             }, function doneAllLoinc() {
                 console.log('Finished all. loincCount: ' + loincCount);
+                driver.quit();
                 if (doneArray) doneArray(results);
                 else process.exit(1);
             });
