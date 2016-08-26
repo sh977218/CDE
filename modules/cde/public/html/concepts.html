@@ -9,20 +9,20 @@
                     ng-show="canCurate"><i class="fa fa-plus"> </i> Add Concept
             </button>
         </div>
-        <div class="col-md-7" ng-show="cdes">
-            <h4 tabindex="0">Sharing Concept</h4>
-            <uib-accordion>
-                <uib-accordion-group ng-repeat="elt in cdes" heading="{{elt.naming[0].designation}}">
-                    <div class="row">
-                        <div ng-include="'/cde/public/html/cdegeneraldetails.html'"></div>
-                    </div>
-                    <div class="row">
-                        <a class='btn btn-default' ng-href="/#/deview?tinyId={{elt.tinyId}}">
-                            <i class="fa fa-eye"></i>View Full Detail</a>
-                    </div>
-                </uib-accordion-group>
-            </uib-accordion>
-        </div>
+        <!--<div class="col-md-7" ng-show="cdes">-->
+            <!--<h4 tabindex="0">Sharing Concept</h4>-->
+            <!--<uib-accordion>-->
+                <!--<uib-accordion-group ng-repeat="elt in cdes" heading="{{elt.naming[0].designation}}">-->
+                    <!--<div class="row">-->
+                        <!--<div ng-include="'/cde/public/html/cdegeneraldetails.html'"></div>-->
+                    <!--</div>-->
+                    <!--<div class="row">-->
+                        <!--<a class='btn btn-default' ng-href="/#/deview?tinyId={{elt.tinyId}}">-->
+                            <!--<i class="fa fa-eye"></i>View Full Detail</a>-->
+                    <!--</div>-->
+                <!--</uib-accordion-group>-->
+            <!--</uib-accordion>-->
+        <!--</div>-->
     </div>
 
     <script type="text/ng-template" id="newConceptModalContent.html">
