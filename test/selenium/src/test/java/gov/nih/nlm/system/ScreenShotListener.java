@@ -39,6 +39,12 @@ public class ScreenShotListener extends TestListenerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            System.out.println("Alert TEXT: " + driver.switchTo().alert().getText());
+        } catch(Exception e) {
+            System.out.println("Could not switch to alert");
+        }
+
     }
 
     public void onTestSuccess(ITestResult itr) {

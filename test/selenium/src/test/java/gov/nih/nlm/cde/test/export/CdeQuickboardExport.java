@@ -38,6 +38,8 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
                 "\"User Login Name java.lang.String\",\"\",\"java.lang.String\",\"\",\"0\",\"caCORE\",\"caBIG; caCORE\",\"Qualified\",\"caDSR: 2223533 v3"
         };
 
+        waitForDownload("QuickBoardExport.csv");
+
         try {
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/QuickBoardExport.csv")));
             for (String s : expected) {
