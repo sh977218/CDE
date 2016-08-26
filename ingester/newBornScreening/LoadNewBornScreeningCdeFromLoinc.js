@@ -1,7 +1,7 @@
 var MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewBornScreeningCDEModel;
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
-var LoadFromLoincSite = require('../loinc/LoadFromLoincSite');
+var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
 
 MigrationNewBornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!(panel)).)*$'}})
     .sort({'LOINC_NUM': 1}).exec(function (err, dataArray) {

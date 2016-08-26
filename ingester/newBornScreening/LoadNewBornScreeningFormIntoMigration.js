@@ -15,44 +15,6 @@ var formCounter = 0;
 var newBornScreeningOrg = null;
 var today = new Date().toJSON();
 
-
-var CLASSIFICATION_TYPE_MAP = {
-    "PANEL.CHEM/Lab": "Chemistry order set",
-    "PANEL.HEM/BC/Lab": "Hematology & blood count order set",
-    "PANEL.H&P/Clinical": "History & Physical order set",
-    "PANEL.MICRO/Lab": "Microbiology order set"
-};
-var CARDINALITY_MAP = {
-    "0..1": {
-        min: 0, max: 1
-    },
-    "0..*": {
-        min: 0
-    },
-    "1..1": {
-        min: 1, max: 1
-    },
-    "1..*": {
-        min: 1
-    },
-    "": {}
-};
-
-var MULTISELECT_MAP = {
-    "": false,
-    "0..1": false,
-    "0..*": true,
-    "1..1": false,
-    "1..*": true
-};
-var REQUIRED_MAP = {
-    "": false,
-    "0..1": false,
-    "0..*": false,
-    "1..1": true,
-    "1..*": true
-};
-
 function parseNaming(loinc) {
     var naming = [];
     var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];

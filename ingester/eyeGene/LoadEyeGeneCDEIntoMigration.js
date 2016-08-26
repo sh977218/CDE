@@ -1,34 +1,17 @@
-var async = require('async'),
-    mongo_data = require('../../modules/system/node-js/mongo-data'),
-    MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGeneLoincModel,
-    MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel,
-    MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel,
-    MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel,
-    classificationShared = require('../../modules/system/shared/classificationShared')
-    ;
+var async = require('async');
+var mongo_data = require('../../modules/system/node-js/mongo-data');
+var uom_datatype_map = require('../loinc/Mapping/LOINC_UOM_DATATYPE_MAP').map;
+var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGeneLoincModel;
+var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
+var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
+var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel;
+var classificationShared = require('../../modules/system/shared/classificationShared');
 
 var orgName = 'eyeGENE';
 
 var cdeCounter = 0;
 var eyeGeneOrg = null;
 var today = new Date().toJSON();
-
-var uom_datatype_map = {
-    'cm': 'Number',
-    'years': 'Date',
-    'mm': 'Number',
-    'ratio': 'Text',
-    'mv': 'Number',
-    'ms': 'Number',
-    'Diopter': 'Text',
-    'um': 'Number',
-    'log': 'text',
-    'deg': 'Number',
-    'logMAR': 'Text',
-    'ft/ft': 'Text',
-    'cells': 'Text',
-    'mm Hg': 'Text'
-};
 
 function createCde(eyeGene, loinc) {
     var naming = [];

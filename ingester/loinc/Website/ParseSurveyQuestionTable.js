@@ -1,4 +1,4 @@
-var shared = require('./LOINCShared');
+var shared = require('./../Shared/LOINCShared');
 
 exports.parseSurveyQuestionTable = function (obj, task, table, cb) {
     var sectionName = task.sectionName;

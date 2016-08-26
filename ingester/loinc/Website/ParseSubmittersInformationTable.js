@@ -1,7 +1,7 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
 
-var shared = require('./LOINCShared');
+var shared = require('./../Shared/LOINCShared');
 
 exports.parseSubmittersInformationTable = function (obj, task, element, cb) {
     var sectionName = task.sectionName;

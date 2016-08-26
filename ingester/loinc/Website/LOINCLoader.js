@@ -2,7 +2,7 @@ var async = require('async');
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
-var MigrationLoincModel = require('../createMigrationConnection').MigrationLoincModel;
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 var ParseLoincNameTable = require('./ParseLoincNameTable');
 var ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
@@ -174,13 +174,6 @@ var results = [];
 
 exports.runArray = function (array, section, doneItem, doneArray) {
     async.series([
-        function (doneRemoveMigrationLoinc) {
-            MigrationLoincModel.remove({}, function (removeMigrationLoincError) {
-                if (removeMigrationLoincError) throw removeMigrationLoincError;
-                console.log('Removed migration loinc collection.');
-                doneRemoveMigrationLoinc();
-            });
-        },
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
             async.forEach(array, function (loincId, doneOneLoinc) {

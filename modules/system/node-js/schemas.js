@@ -167,6 +167,7 @@ schemas.namingSchema = new mongoose.Schema({
         contextName: String
         , acceptability: String
     }
+    , source: {type: String}
 }, {_id: false});
 
 var attachmentSchema = {
