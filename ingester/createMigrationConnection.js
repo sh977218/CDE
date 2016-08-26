@@ -55,17 +55,17 @@ exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerLis
 }));
 
 //NEW BORN SCREENING
-exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new Schema({}, {
+exports.MigrationNewbornScreeningCDEModel = migrationConn.model('NewbornScreening_CDE', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_CDE'
+    collection: 'NewbornScreening_CDE'
 }));
-exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new Schema({}, {
+exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewbornScreening_Form', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_Form'
+    collection: 'NewbornScreening_Form'
 }));
-exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new Schema({}, {
+exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewbornScreening_AnswerList', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_AnswerList'
+    collection: 'NewbornScreening_AnswerList'
 }));
 
 // MIGRATION

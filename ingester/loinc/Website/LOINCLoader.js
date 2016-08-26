@@ -172,7 +172,7 @@ function doTask(driver, task, obj, cb) {
 
 var results = [];
 
-exports.runArray = function (array, section, doneItem, doneArray) {
+exports.runArray = function (array, doneItem, doneArray) {
     async.series([
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
