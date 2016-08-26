@@ -399,3 +399,17 @@ angular.module('systemModule').config(function ($provide) {
 angular.module('systemModule').config(function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('nlmcde');
 });
+
+
+angular.module('systemModule').run(function ($rootScope, $location) {
+    var dataLayer = window.dataLayer = window.dataLayer || [];
+
+    $rootScope.$on("$locationChangeSuccess", function () {
+        dataLayer.push({
+            event: 'ngRouteChange',
+            attributes: {
+                route: $location.path()
+            }
+        });
+    });
+});
