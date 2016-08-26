@@ -56,7 +56,7 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
         //            }
         //        }
         //    });
-        $location.url('/cde/search?q=' + $scope.conceptConfigurations[type].path + ':' + concept);
+        $location.url('/cde/search?q=' + $scope.conceptConfigurations[type].path + ':"' + concept + '"');
     };
 }
 ]);
