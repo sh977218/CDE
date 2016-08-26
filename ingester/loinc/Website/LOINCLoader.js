@@ -170,9 +170,8 @@ function doTask(driver, task, obj, cb) {
     });
 }
 
-var results = [];
-
 exports.runArray = function (array, doneItem, doneArray) {
+    var results = [];
     async.series([
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
@@ -190,7 +189,12 @@ exports.runArray = function (array, doneItem, doneArray) {
                                 doTask(driver, task, obj, doneOneTask);
                             }, function doneAllTasks() {
                                 async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
-                                    specialTask.function(driver, obj, doneOneSpecialTask);
+                                    if (obj['LOINC NAME']['LOINC NAME']['LOINC NAME'].indexOf('panel') !== -1) {
+                                        specialTask.function(driver, obj, doneOneSpecialTask);
+                                    }
+                                    else {
+                                        doneOneSpecialTask();
+                                    }
                                 }, function doneAllSpecialTasks() {
                                     loincCount++;
                                     console.log('loincCount: ' + loincCount);

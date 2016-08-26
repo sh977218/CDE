@@ -9,7 +9,8 @@ exports.parseNaming = function (loinc) {
             context: {
                 contextName: '',
                 acceptability: 'preferred'
-            }
+            },
+            source: 'LOINC'
         })
     }
 
@@ -23,7 +24,8 @@ exports.parseNaming = function (loinc) {
                 context: {
                     contextName: "Long Common Name",
                     acceptability: 'preferred'
-                }
+                },
+                source: 'LOINC'
             });
         }
         if (NAME['Shortname']) {
@@ -34,7 +36,8 @@ exports.parseNaming = function (loinc) {
                 context: {
                     contextName: "Shortname",
                     acceptability: 'preferred'
-                }
+                },
+                source: 'LOINC'
             });
         }
     }
@@ -45,9 +48,10 @@ exports.parseNaming = function (loinc) {
                 definition: t.Description,
                 languageCode: "EN-US",
                 context: {
-                    contextName: t.Source,
+                    contextName: 'TERM DEFINITION/DESCRIPTION(S)',
                     acceptability: 'preferred'
-                }
+                },
+                source: 'LOINC'
             })
         })
     }

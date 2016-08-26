@@ -1,6 +1,6 @@
 var async = require('async');
 var CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
-var MigrationLoincClassMappingModel = require('./../createMigrationConnection').MigrationLoincClassificationMappingModel;
+var MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
 var classificationShared = require('../../../modules/system/shared/classificationShared');
 
 var classificationOrgName = '';

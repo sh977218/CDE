@@ -3,11 +3,18 @@ var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection'
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
+var LoadLoincCdeIntoMigration = require('../loinc/Format/LoadLoincCdeIntoMigration');
+
 var orgName = 'Newborn Screening';
 var org;
 
 function run() {
     async.series([
+        function (cb) {
+            LoadLoincCdeIntoMigration.setStewardOrg('NLM');
+            LoadLoincCdeIntoMigration.setClassificationOrgName('orgName');
+            cb(null, 'Finished set parameters');
+        },
         function (cb) {
             MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
                 if (removeMigrationDataelementError) throw removeMigrationDataelementError;
@@ -31,8 +38,29 @@ function run() {
             });
         },
         function (cb) {
-            MigrationNewbornScreeningCDEModel.find({}).exec(function (findNewborn) {
-                
+            MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).exec(function (findNewbornScreeningCdeError, newbornScreeningCdes) {
+                if (findNewbornScreeningCdeError) throw findNewbornScreeningCdeError;
+                var loincIdArray = [];
+                newbornScreeningCdes.forEach(function (n) {
+                    loincIdArray.push(n.get('LOINC_NUM'));
+                });
+                LoadLoincCdeIntoMigration.runArray(loincIdArray, org, function (one, next) {
+                        MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
+                            if (findMigrationDataElementError) throw findMigrationDataElementError;
+                            if (existingCdes.length === 0) {
+                                var obj = new MigrationDataElementModel(one);
+                                obj.save(function (e) {
+                                    if (e) throw e;
+                                    next();
+                                })
+                            } else {
+                                next();
+                            }
+                        });
+                    }, function (results) {
+                        cb();
+                    }
+                )
             })
         }
     ], function (err, results) {
