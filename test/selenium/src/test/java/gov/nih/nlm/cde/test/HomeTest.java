@@ -25,7 +25,7 @@ public class HomeTest extends NlmCdeBaseTest {
     public void loggedInHomeIsSearch() {
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl);
-        textPresent("Browse by classification");
+        textPresent("Browse by Classification");
     }
 
     @Test

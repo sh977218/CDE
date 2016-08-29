@@ -421,3 +421,11 @@ exports.fetchPVCodeSystemList = function () {
         elastic.pVCodeSystemList = result;
     });
 };
+
+exports.get= function(id, cb) {
+    esClient.get({
+        index: config.elastic.index.name,
+        type: "dataelement",
+        id: id
+    }, cb);
+};

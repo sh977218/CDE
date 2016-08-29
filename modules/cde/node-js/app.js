@@ -635,4 +635,11 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.get('/esRecord/:id', function(req, res) {
+        elastic.get(req.params.id, function (err, result) {
+            if (err) throw err;
+            else res.send(result);
+        });
+    });
+
 };

@@ -8,7 +8,7 @@ db_password='password'
 
 target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
 
-gradle -b test/selenium/build.gradle -PhubUrl=any -PtestUrl=any -PforkNb=8 -Ptimeout=8 -Pbrowser=any -PdownloadFolder=c:\temp\downloads -PchromeDownloadFolder=c:\temp\downloads -Dorg.gradle.project.downloadFolder=c:\temp\downloads -Dorg.gradle.project.chromeDownloadFolder=c:\temp\downloads clean compileTest &
+
 
 mongo test deploy/dbInit.js -u $db_user -p $db_password
 
@@ -26,20 +26,18 @@ while [ $COUNTER -lt 2 ]; do
     fi
 done
 
-mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password 
+mongo cde-logs-test deploy/logInit.js -u $db_user -p $db_password
 
 mongorestore --drop -d test -c dataelements test/data/cdedump/dataelements.bson -u $db_user -p $db_password
 mongorestore --drop -d test -c forms test/data/formDump/forms.bson -u $db_user -p $db_password
 mongorestore --drop -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password
 mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson -u $db_user -p $db_password
+mongorestore --drop -d test -c meshclassifications test/data/meshclassifications.bson -u $db_user -p $db_password
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password
 
 gulp es
 
-#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=$NB_OF_FORKS -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=./ test &
-#gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -PforkNb=6 -Ptimeout=8 -Pbrowser=chrome -PdownloadFolder=S://data test &
-gradle -b test/selenium/build.gradle -PhubUrl=$HUB_URL -PtestUrl=$TEST_URL -Pbrowser=chrome -PforkNb=2 -Ptimeout=8 -PdownloadFolder=C:\temp\Downloads\ -PchromeDownloadFolder=c:\temp\downloads -Dorg.gradle.project.downloadFolder=c:\temp\downloads -Dorg.gradle.project.chromeDownloadFolder=c:\temp\downloads test --tests *reorderConcept* &
-export NODE_ENV=test
-node app
+
+

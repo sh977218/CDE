@@ -155,7 +155,7 @@ exports.formToSDC = function (form) {
     var xmlStr = JXON.jsToString(root, "http://healthIT.gov/sdc" );
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-        if (!result.valid) {
+        if (result && !result.valid) {
             console.log(JSON.stringify(result));
         }
     });
