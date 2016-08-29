@@ -106,7 +106,7 @@ public class MiscTests extends NlmCdeBaseTest {
         alert = driver.switchTo().alert();
         Assert.assertTrue(alert.getText().contains("are you sure you want to leave"));
         alert.accept();
-        textPresent("Browse by classification");
+        textPresent("Browse by Classification");
     }
 
 }

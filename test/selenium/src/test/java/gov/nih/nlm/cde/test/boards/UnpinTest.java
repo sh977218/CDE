@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 public class UnpinTest extends BoardTest {
     @Test
-    @RecordVideo
     public void unpin() {
         mustBeLoggedInAs(unpinUser, password);
         String cdeName = "Imaging volumetric result";

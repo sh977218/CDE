@@ -19,6 +19,7 @@ angular.module('ElasticSearchResource', ['ngResource'])
                 , selectedElementsAlt: queryParams.classificationAlt
                 , page: queryParams.page
                 , includeAggregations: true
+                , meshTree: queryParams.meshTree
                 , selectedStatuses: regStatuses
                 , visibleStatuses: SearchSettings.getUserDefaultStatuses()
                 , searchToken: this.searchToken

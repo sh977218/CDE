@@ -9,6 +9,9 @@
   "umls": {
     "wsHost": "https://localhost:4000"
   },
+  "mesh": {
+    "mockPort": 10081
+  },
   "database": {
     "local": {
       "db": "local",
