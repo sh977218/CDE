@@ -72,6 +72,23 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
         });
     };
 
+    $scope.openMeshMapping = function(orgName, pathArray) {
+        $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/meshMappingMgt.html',
+            controller: 'MeshMappingMgtCtrl',
+            resolve: {
+                org: function() {
+                    return orgName;
+                } ,
+                pathArray: function() {
+                    return pathArray;
+                }
+            }
+        });
+    };
+
+
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             animation: false,

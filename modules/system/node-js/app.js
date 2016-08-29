@@ -25,6 +25,9 @@ var passport = require('passport')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     , app_status = require("./status.js")
+    , async = require('async')
+    , request = require('request')
+    , CronJob = require('cron').CronJob
     ;
 
 exports.init = function (app) {
@@ -872,7 +875,7 @@ exports.init = function (app) {
     });
 
     app.post('/disableRule', function(req, res){
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
         mongo_data_system.disableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
@@ -880,10 +883,116 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', function(req, res){
-        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Please login");
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
         mongo_data_system.enableRule(req.body, function(err, org){
             if (err) res.status(500).send(org);
             else res.send(org);
         });
     });
+
+    app.get('/meshClassification', function(req, res) {
+        if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
+        mongo_data_system.findMeshClassification({flatClassification: req.query.classification}, function(err, mm) {
+            if (err) return res.status(500).send();
+            return res.send(mm[0]);
+        });
+    });
+
+    var meshTopTreeMap = {
+        'A': "Anatomy",
+        'B': "Organisms",
+        'C': "Diseases",
+        'D': "Chemicals and Drugs",
+        'E': "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
+        'F': "Psychiatry and Psychology",
+        'G': "Phenomena and Processes",
+        'H': "Disciplines and Occupations",
+        'I': "Anthropology, Education, Sociology, and Social Phenomena",
+        'J': "Technology, Industry, and Agriculture",
+        'K': "Humanities",
+        'L': "Information Science",
+        'M': "Named Groups",
+        'N': "Health Care",
+        'V': "Publication Characteristics",
+        'Z': "Geographicals"
+    };
+
+    function flatTreesFromMeshDescriptorArray(descArr, cb) {
+        var allTrees = new Set();
+        async.each(descArr, function(desc, oneDescDone) {
+            request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
+                async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
+                    request(config.mesh.baseUrl + "/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
+                        var flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                        if (oneTreeBody.parents && oneTreeBody.parents.length > 0) {
+                            flatTree = flatTree +  ";" + oneTreeBody.parents.map(function(a) {
+                                    return a._generated.RecordName;
+                                }).join(";");
+                        }
+                        flatTree = flatTree + ";" + oneDescBody.DescriptorName.String.t;
+                        allTrees.add(flatTree);
+                        tnDone();
+                    });
+                }, function allTnDone() {
+                    oneDescDone();
+                });
+            });
+        }, function allDescDone() {
+            cb(Array.from(allTrees));
+        });
+    }
+
+    app.post('/meshClassification', function (req, res) {
+        if (req.body._id) {
+            var id = req.body._id;
+            delete req.body._id;
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+                req.body.flatTrees = trees;
+                mongo_data_system.MeshClassification.findOne({_id: id}, function(err, elt) {
+                    elt.meshDescriptors = req.body.meshDescriptors;
+                    elt.flatTrees = req.body.flatTrees;
+                    elt.save(function (err, o) {
+                        res.send(o);
+                    })
+                });
+            });
+        } else {
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function(trees) {
+                req.body.flatTrees = trees;
+                new mongo_data_system.MeshClassification(req.body).save(function (err, obj) {
+                    if (err) res.status(500).send();
+                    else {
+                        res.send(obj);
+                    }
+                });
+            });
+        }
+    });
+
+    app.post("/syncWithMesh", function (req, res) {
+        if (!authorizationShared.hasRole(req.user, "OrgAuthority")) return res.status(403).send("Not Authorized");
+        syncWithMesh();
+        res.send();
+    });
+
+    app.get('/syncWithMesh', function (req, res) {
+        res.send(elastic.meshSyncStatus);
+    });
+
+   function syncWithMesh() {
+       mongo_data_system.findMeshClassification({}, function (err, allMappings) {
+           elastic.syncWithMesh(allMappings);
+       });
+   }
+
+    new CronJob({
+        cronTime: '00 00 4 * * *',
+        //noinspection JSUnresolvedFunction
+        onTick: function () {
+            syncWithMesh();
+        },
+        start: false,
+        timeZone: "America/New_York"
+    }).start();
+
 };

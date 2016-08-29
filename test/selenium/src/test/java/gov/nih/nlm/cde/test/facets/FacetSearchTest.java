@@ -16,7 +16,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         clickElement(By.id("li-blank-All Candidates"));
 
-        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Statuses");
+        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Topics | All Statuses");
     }
 
     @Test

@@ -21,17 +21,17 @@ public class SaveSearchState extends NlmCdeBaseTest {
         textNotPresent(numRes + " results for");
         clickElement(By.id("li-blank-Qualified"));
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | Standard, Qualified");
+        textPresent("results for All Terms | CTEP > CATEGORY | All Topics | Standard, Qualified");
         clickElement(By.id("li-checked-Qualified"));
         scrollToTop();
-        textPresent("results for All Terms | CTEP > CATEGORY | Standard");
+        textPresent("results for All Terms | CTEP > CATEGORY | All Topics | Standard");
         findElement(By.name("q")).sendKeys("name");
         findElement(By.id("search.submit")).click();
-        textPresent("results for name | CTEP | All Statuses");
+        textPresent("results for name | CTEP | All Topics | All Statuses");
         findElement(By.linkText("Forms")).click();
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        textPresent("results for name | CTEP | All Statuses");
+        textPresent("results for name | CTEP | All Topics | All Statuses");
     }
 }

@@ -33,6 +33,7 @@ public class EltIdMaps {
         eltMap.put("Principal Investigator State java.lang.String", "71Tn0ywTKNO");
         eltMap.put("Psychiatric history clinical depression past year indicator", "ryD6agS7yuQ");
         eltMap.put("PvValidatorCde", "7Jn4ByTd_");
+        eltMap.put("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale", "7k_flGOZ_3de");
         eltMap.put("SDC Adrenal", "XySUBn_NZ");
         eltMap.put("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator", "NuQwuCAZrz5");
         eltMap.put("Service Item Display Name java.lang.String", "_Qg5FbwRP98");

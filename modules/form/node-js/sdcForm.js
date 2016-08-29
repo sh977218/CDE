@@ -156,7 +156,7 @@ exports.formToSDC = function (form) {
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
         if (err) console.log('Validate SDC error: ' + err);
-        if (!result.valid) {
+        if (result && !result.valid) {
             console.log(JSON.stringify(result));
         }
     });

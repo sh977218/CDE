@@ -328,6 +328,12 @@ schemas.classificationAudit = new mongoose.Schema({
 });
 
 
+schemas.meshClassification = new mongoose.Schema({
+    flatClassification: String,
+    meshDescriptors: [String],
+    flatTrees: [String]
+});
+
 schemas.logSchema = new mongoose.Schema(
     {
         level: String
@@ -399,10 +405,6 @@ schemas.feedbackIssueSchema = new mongoose.Schema({
     , browser: String
     , reportedUrl: String
 });
-
-
-
-
 
 schemas.classificationAudit.set('collection', 'classificationAudit');
 

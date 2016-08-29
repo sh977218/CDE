@@ -7,7 +7,7 @@ if (typeof(window) === "undefined") {
 } else {
     // This will be executed in Chrome
     try {
-        _crypto = jscrypto;
+        _crypto = jscrypto; // jshin ignore:line
     } catch (e) {}
 }
 
@@ -70,7 +70,7 @@ exports.getFormOdm = function(form, cb) {
     }
 
     function escapeHTML(text){
-        return text.replace(/\<.+?\>/gi, "");
+        return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
     }
 
     for (var i = 0; i < form.formElements.length; i++) {
@@ -142,7 +142,7 @@ exports.getFormOdm = function(form, cb) {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en'
-                        , 'keyValue': escapeHTML(q1.label)
+                        , '_': escapeHTML(q1.label)
                     }
                 },
                 '$DataType': cdeToOdmDatatype(q1.question.datatype)
@@ -153,7 +153,7 @@ exports.getFormOdm = function(form, cb) {
                 var codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
                     var codeListInHouse = cl.CodeListItem.map(function (i) {
-                        return i.Decode.TranslatedText.keyValue;
+                        return i.Decode.TranslatedText._;
                     }).sort();
                     var codeListToAdd = q1.question.answers.map(function (a) {
                         return a.valueMeaningName;
@@ -179,7 +179,7 @@ exports.getFormOdm = function(form, cb) {
                             Decode: {
                                 TranslatedText: {
                                     '$xml:lang': 'en'
-                                    , 'keyValue': pv.valueMeaningName
+                                    , '_': pv.valueMeaningName
                                 }
                             }
                         };
@@ -207,7 +207,7 @@ exports.getFormOdm = function(form, cb) {
             , Description: {
                 TranslatedText: {
                     '$xml:lang':'en',
-                    'keyValue': s1.label}
+                    '_': s1.label}
             }
             , ItemRef: childrenOids.map(function (oid, i) {
                 return {

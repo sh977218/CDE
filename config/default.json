@@ -13,6 +13,9 @@
       "SNOMEDCT_US": {"requiresLogin": true}
     }
   },
+  "mesh": {
+    "baseUrl": "https://meshb-qa.nlm.nih.gov"
+  },
   "internalIP": "130.14.",
   "banEndsWith": [
     ".php",
