@@ -20,7 +20,7 @@
                     <span tabindex="0" href id="remove{{conceptConf.type}}-{{$index}}" class="btn-default fa fa-trash-o"
                           ng-click="removeConcept(conceptConf.type)" title="Remove" href></span>
 
-                    <div sortable-array="elt[conceptConf.type].concepts" index="$index" cb="stageElt(elt)"></div>
+                    <div sortable-array="elt[type].concepts" index="$index" cb="stageElt(elt)"></div>
                 </td>
             </tr>
             </tbody>
