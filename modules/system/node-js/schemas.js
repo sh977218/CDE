@@ -96,7 +96,7 @@ schemas.statusValidationRuleSchema = new mongoose.Schema({
     , occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
 });
 
-schemas.orgSchema = new mongoose.Schema({
+var orgJson = {
     name: String
     , longName: String
     , mailAddress: String
@@ -115,7 +115,10 @@ schemas.orgSchema = new mongoose.Schema({
     }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
-});
+};
+exports.orgJson = orgJson;
+
+schemas.orgSchema = new mongoose.Schema(orgJson);
 
 
 schemas.userSchema = new mongoose.Schema({

@@ -1,11 +1,10 @@
-var mongoose = require('mongoose'),
-    config = require('../modules/system/node-js/parseConfig'),
-    cde_schemas = require('../modules/cde/node-js/schemas'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    sharedSchemas = require('../modules/system/node-js/schemas.js'),
-    Schema = mongoose.Schema
-    ;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
+var config = require('../modules/system/node-js/parseConfig');
+var cde_schemas = require('../modules/cde/node-js/schemas');
+var form_schemas = require('../modules/form/node-js/schemas');
+var sharedSchemas = require('../modules/system/node-js/schemas.js');
 
 var mongoMigrationUri = config.mongoMigrationUri;
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
@@ -69,9 +68,9 @@ exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewbornS
 }));
 
 // MIGRATION
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson));
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
-exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
+exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson));
 
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
