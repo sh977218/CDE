@@ -18,6 +18,7 @@ var express = require('express')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
+    , kibanaProxy = require("./modules/system/node-js/kibanaProxy")
     ;
 
 require('./modules/system/node-js/elastic').initEs();
@@ -30,10 +31,7 @@ app.use(helmet());
 app.use(auth.ticketAuth);
 app.use(compress());
 
-var request = require('request');
-app.use('/kibana/', function(req, res) {
-    req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500);}).pipe(res);
-});
+kibanaProxy.setUp(app);
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
