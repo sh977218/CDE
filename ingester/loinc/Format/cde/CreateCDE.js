@@ -41,7 +41,7 @@ exports.createCde = function (loinc) {
         dataElementConcept: {concepts: concepts.dataElementConcept},
         stewardOrg: {name: stewardOrgName},
         valueDomain: valueDomain,
-        classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
+        classification: []
     };
     return newCde;
 };

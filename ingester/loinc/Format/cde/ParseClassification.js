@@ -8,7 +8,7 @@ exports.setClassificationOrgName = function (o) {
     classificationOrgName = o;
 };
 
-exports.parseClassification = function (loinc, newCde, org, cb) {
+exports.parseClassification = function (loinc, elt, org, cb) {
     var classTypeString = '';
     var classification = '';
     var classificationType = '';
@@ -33,7 +33,7 @@ exports.parseClassification = function (loinc, newCde, org, cb) {
         console.log('classificationOrgName is empty. Please set it first.');
         process.exit(1);
     }
-    var classificationToAdd = ['NLM', classificationOrgName, 'Classification'];
+    var classificationToAdd = ['Newborn screening', 'Classification'];
     MigrationLoincClassMappingModel.find({
         type: CLASSIFICATION_TYPE_MAP[classificationType],
         key: classification
@@ -49,7 +49,7 @@ exports.parseClassification = function (loinc, newCde, org, cb) {
             console.log("More than one classification map found");
             process.exit(1);
         }
-        classificationShared.classifyItem(newCde, classificationOrgName, classificationToAdd);
+        classificationShared.classifyItem(elt, classificationOrgName, classificationToAdd);
         classificationShared.addCategory({elements: org.classifications}, classificationToAdd);
         return cb();
     });

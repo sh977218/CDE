@@ -21,7 +21,7 @@ exports.createForm = function (loinc) {
     var ids = ParseIds.parseIds(loinc);
     var properties = ParseProperties.parseProperties(loinc);
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
-    var newCde = {
+    var newForm = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
         created: today,
@@ -32,12 +32,8 @@ exports.createForm = function (loinc) {
         ids: ids,
         properties: properties,
         referenceDocuments: referenceDocuments,
-        objectClass: {concepts: concepts.objectClass},
-        property: {concepts: concepts.property},
-        dataElementConcept: {concepts: concepts.dataElementConcept},
         stewardOrg: {name: stewardOrgName},
-        valueDomain: valueDomain,
         classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
-    return newCde;
+    return newForm;
 };

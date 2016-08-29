@@ -341,6 +341,7 @@ var LoadLoincFormIntoMigration = require('../loinc/Format/form/LoadLoincCFormInt
 
 var orgName = 'NLM';
 var org;
+var loincIdArray = [];
 
 function run() {
     async.series([
@@ -374,16 +375,19 @@ function run() {
         function (cb) {
             MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).exec(function (findNewbornScreeningFormError, newbornScreeningForms) {
                 if (findNewbornScreeningFormError) throw findNewbornScreeningFormError;
-                var loincIdArray = [];
                 newbornScreeningForms.forEach(function (n) {
                     loincIdArray.push(n.get('LOINC_NUM'));
                 });
-                LoadLoincFormIntoMigration.runArray(loincIdArray, org, function (one, next) {
-
-                }, function (results) {
-
-                })
+                cb(null, 'Finished retrieving all newborn screening form id.');
             })
+        },
+        function (cb) {
+            LoadLoincFormIntoMigration.runArray(loincIdArray, org, function (one, next) {
+
+            }, function (results) {
+
+            })
+
         }
     ], function (err, results) {
         process.exit(0);
