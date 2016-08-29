@@ -1,14 +1,14 @@
 var async = require('async');
-var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
-var CreateCDE = require('./createCDE');
+var MigrationLoincModel = require('../../../createMigrationConnection').MigrationLoincModel;
+var CreateCDE = require('./CreateCDE');
 var ParseClassification = require('./ParseClassification');
 
 exports.setStewardOrg = function (s) {
-    CreateCDE.setStewardOrg('NLM');
+    CreateCDE.setStewardOrg(s);
 };
 
-exports.setClassificationOrgName = function (o) {
-    ParseClassification.setClassificationOrgName(o);
+exports.setClassificationOrgName = function (c) {
+    ParseClassification.setClassificationOrgName(c);
 };
 
 exports.runArray = function (loincIdArray, org, doneItem, doneAllArray) {

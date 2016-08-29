@@ -1,11 +1,9 @@
-var mongo_data = require('../../../modules/system/node-js/mongo-data');
+var mongo_data = require('../../../../modules/system/node-js/mongo-data');
 
-var ParseNaming = require('./ParseNaming');
-var ParseIds = require('./ParseIds');
-var ParseProperties = require('./ParseProperties');
-var ParseReferenceDocuments = require('./ParseReferenceDocuments');
-var ParseValueDomain = require('./ParseValueDomain');
-var ParseConcept = require('./ParseConcept');
+var ParseNaming = require('./../Shared/ParseNaming');
+var ParseIds = require('./../Shared/ParseIds');
+var ParseProperties = require('./../Shared/ParseProperties');
+var ParseReferenceDocuments = require('./../Shared/ParseReferenceDocuments');
 
 var today = new Date().toJSON();
 var stewardOrgName = 'NLM';
@@ -14,7 +12,7 @@ exports.setStewardOrg = function (o) {
     var stewardOrgName = o;
 };
 
-exports.createCde = function (loinc) {
+exports.createForm = function (loinc) {
     if (stewardOrgName === '') {
         console.log('StewardOrgName is empty. Please set it first.');
         process.exit(1);
@@ -23,8 +21,6 @@ exports.createCde = function (loinc) {
     var ids = ParseIds.parseIds(loinc);
     var properties = ParseProperties.parseProperties(loinc);
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
-    var valueDomain = ParseValueDomain.parseValueDomain(loinc);
-    var concepts = ParseConcept.parseConcepts(loinc);
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},

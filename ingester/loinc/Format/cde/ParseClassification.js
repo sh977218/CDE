@@ -1,7 +1,7 @@
 var async = require('async');
-var CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
-var MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
-var classificationShared = require('../../../modules/system/shared/classificationShared');
+var CLASSIFICATION_TYPE_MAP = require('../../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
+var MigrationLoincClassMappingModel = require('../../../createMigrationConnection').MigrationLoincClassificationMappingModel;
+var classificationShared = require('../../../../modules/system/shared/classificationShared');
 
 var classificationOrgName = '';
 exports.setClassificationOrgName = function (o) {
@@ -33,7 +33,7 @@ exports.parseClassification = function (loinc, newCde, org, cb) {
         console.log('classificationOrgName is empty. Please set it first.');
         process.exit(1);
     }
-    var classificationToAdd = [classificationOrgName, 'Classification'];
+    var classificationToAdd = ['NLM', classificationOrgName, 'Classification'];
     MigrationLoincClassMappingModel.find({
         type: CLASSIFICATION_TYPE_MAP[classificationType],
         key: classification
@@ -49,7 +49,7 @@ exports.parseClassification = function (loinc, newCde, org, cb) {
             console.log("More than one classification map found");
             process.exit(1);
         }
-        classificationShared.classifyItem(newCde, newCde.stewardOrg.name, classificationToAdd);
+        classificationShared.classifyItem(newCde, classificationOrgName, classificationToAdd);
         classificationShared.addCategory({elements: org.classifications}, classificationToAdd);
         return cb();
     });

@@ -1,4 +1,4 @@
-var uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
+var uom_datatype_map = require('../../Mapping/LOINC_UOM_DATATYPE_MAP').map;
 var loinc_num_datatype_map = {
     '62317-3': 'Date',
     '62328-0': 'Number'

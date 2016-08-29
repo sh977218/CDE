@@ -3,16 +3,16 @@ var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection'
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
-var LoadLoincCdeIntoMigration = require('../loinc/Format/LoadLoincCdeIntoMigration');
+var LoadLoincCdeIntoMigration = require('../loinc/Format/cde/LoadLoincCdeIntoMigration');
 
-var orgName = 'Newborn Screening';
+var orgName = 'NLM';
 var org;
 
 function run() {
     async.series([
         function (cb) {
-            LoadLoincCdeIntoMigration.setStewardOrg('NLM');
-            LoadLoincCdeIntoMigration.setClassificationOrgName('orgName');
+            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
+            LoadLoincCdeIntoMigration.setClassificationOrgName('Newborn screening');
             cb(null, 'Finished set parameters');
         },
         function (cb) {
@@ -40,6 +40,7 @@ function run() {
         function (cb) {
             MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).exec(function (findNewbornScreeningCdeError, newbornScreeningCdes) {
                 if (findNewbornScreeningCdeError) throw findNewbornScreeningCdeError;
+                console.log('Total # Cde: ' + newbornScreeningCdes.length);
                 var loincIdArray = [];
                 newbornScreeningCdes.forEach(function (n) {
                     loincIdArray.push(n.get('LOINC_NUM'));
@@ -58,7 +59,11 @@ function run() {
                             }
                         });
                     }, function (results) {
+                    org.markModified('classifications');
+                    org.save(function (err) {
+                        if (err) throw err;
                         cb();
+                    })
                     }
                 )
             })

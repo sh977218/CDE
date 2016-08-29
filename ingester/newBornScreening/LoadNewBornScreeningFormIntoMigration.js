@@ -331,75 +331,95 @@ function createForm(loinc) {
     classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
     return newForm;
 }
+
+var async = require('async');
+var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewbornScreeningCDEModel;
+var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
+var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
+
+var LoadLoincFormIntoMigration = require('../loinc/Format/form/LoadLoincCFormIntoMigration');
+
+var orgName = 'NLM';
+var org;
+
 function run() {
     async.series([
         function (cb) {
-            MigrationFormModel.remove({}, function (err) {
-                if (err) throw err;
-                console.log('Removed migration form');
-                cb();
+            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
+            LoadLoincCdeIntoMigration.setClassificationOrgName('Newborn screening');
+            cb(null, 'Finished set parameters');
+        },
+        function (cb) {
+            MigrationFormModel.remove({}, function (removeMigrationFormModelError) {
+                if (removeMigrationFormModelError) throw removeMigrationFormModelError;
+                console.log('Removed all migration form');
+                cb(null, 'Finished removing migration form');
             });
         },
         function (cb) {
-            MigrationOrgModel.remove({}, function (er) {
-                if (er) throw er;
-                console.log('Removed migration org');
-                cb();
-            });
+            MigrationOrgModel.remove({}, function (removeMigrationOrgError) {
+                if (removeMigrationOrgError) throw removeMigrationOrgError;
+                console.log('Removed all migration org');
+                cb(null, 'Finished removing migration org');
+            })
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (e, org) {
-                if (e) throw e;
+            new MigrationOrgModel({name: orgName}).save(function (createMigrationOrgError, o) {
+                if (createMigrationOrgError) throw createMigrationOrgError;
                 console.log('Created migration org of ' + orgName);
-                newBornScreeningOrg = org;
-                cb();
+                org = o;
+                cb(null, 'Finished creating migration org');
             });
         },
         function (cb) {
-            MigrationOrgModel.find({name: orgName}).exec(function (e, orgs) {
-                if (e) throw e;
-                console.log('Found migration org of ' + orgName);
-                newBornScreeningOrg = orgs[0];
-                cb();
-            });
-        },
-        function (cb) {
-            MigrationLoincModel.find({}).exec(function (err, loincs) {
-                if (err) throw err;
-                async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
-                    if (loinc.toObject) loinc = loinc.toObject();
-                    MigrationFormModel.find({'ids.id': loinc['loincId']}).exec(function (e, existingForms) {
-                        if (e) throw e;
-                        if (existingForms.length === 0) {
-                            var form = createForm(loinc);
-                            loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
-                                var obj = new MigrationFormModel(form);
-                                obj.save(function (e) {
-                                    if (e) throw e;
-                                    else {
-                                        formCounter++;
-                                        console.log('formCounter: ' + formCounter);
-                                        doneOneLoinc()
-                                    }
-                                })
-                            });
-                        } else {
-                            doneOneLoinc()
-                        }
-                    })
-                }, function doneAllLoincs() {
-                    newBornScreeningOrg.markModified('classifications');
-                    newBornScreeningOrg.save(function (e) {
-                        if (e) throw e;
-                        if (cb) cb();
-                        console.log('Finished Load');
-                    });
+            MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).exec(function (findNewbornScreeningFormError, newbornScreeningForms) {
+                if (findNewbornScreeningFormError) throw findNewbornScreeningFormError;
+                var loincIdArray = [];
+                newbornScreeningForms.forEach(function (n) {
+                    loincIdArray.push(n.get('LOINC_NUM'));
+                });
+                LoadLoincFormIntoMigration.runArray(loincIdArray, org, function (one, next) {
+
+                }, function (results) {
+
                 })
-            });
-        },
-        function () {
-            process.exit(0);
-        }]);
+            })
+        }
+    ], function (err, results) {
+        process.exit(0);
+    });
 }
 
 run();
+
+
+if (err) throw err;
+async.forEachSeries(loincs, function (loinc, doneOneLoinc) {
+    if (loinc.toObject) loinc = loinc.toObject();
+    MigrationFormModel.find({'ids.id': loinc['loincId']}).exec(function (e, existingForms) {
+        if (e) throw e;
+        if (existingForms.length === 0) {
+            var form = createForm(loinc);
+            loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
+                var obj = new MigrationFormModel(form);
+                obj.save(function (e) {
+                    if (e) throw e;
+                    else {
+                        formCounter++;
+                        console.log('formCounter: ' + formCounter);
+                        doneOneLoinc()
+                    }
+                })
+            });
+        } else {
+            doneOneLoinc()
+        }
+    })
+}, function doneAllLoincs() {
+    newBornScreeningOrg.markModified('classifications');
+    newBornScreeningOrg.save(function (e) {
+        if (e) throw e;
+        if (cb) cb();
+        console.log('Finished Load');
+    });
+})
