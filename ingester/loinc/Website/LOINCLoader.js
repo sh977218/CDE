@@ -93,17 +93,17 @@ var tasks = [
     {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="EXAMPLE ANSWER LIST"]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="NORMATIVE ANSWER LIST"]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"NORMATIVE ANSWER LIST")]]'
     },
     {
         sectionName: 'PREFERRED ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: 'html/body/div[@class="Section80000"]/table[.//th[node()="PREFERRED ANSWER LIST"]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"PREFERRED ANSWER LIST")]]'
     },
     {
         sectionName: 'SURVEY QUESTION',
