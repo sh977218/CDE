@@ -497,7 +497,7 @@ schemas.dataElementSchema.post('save', function (doc) {
     correctBoardPinsForCde(doc);
 });
 
-var cj = new CronJob({
+new CronJob({
     cronTime: '00 00 4 * * *',
     //noinspection JSUnresolvedFunction
     onTick: function () {
@@ -519,8 +519,7 @@ var cj = new CronJob({
     },
     start: false,
     timeZone: "America/New_York"
-});
-cj.start();
+}).start();
 
 exports.findModifiedElementsSince = function (date, cb) {
     DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);

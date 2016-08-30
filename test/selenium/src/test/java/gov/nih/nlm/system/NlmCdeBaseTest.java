@@ -21,9 +21,12 @@ import org.testng.annotations.Listeners;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -412,6 +415,20 @@ public class NlmCdeBaseTest {
         return driver.findElement(by);
     }
 
+    public void waitForDownload(String fileName) {
+        for (int i=0; i < 30; i++) {
+            try {
+                String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
+                if (actual.length() > 0) {
+                    i = 30;
+                }
+            } catch (IOException e) {
+                hangon(2);
+            }
+        }
+
+    }
+
     protected List<WebElement> findElements(By by) {
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
         return driver.findElements(by);
@@ -517,10 +534,6 @@ public class NlmCdeBaseTest {
     }
 
     protected void goHome() {
-        // gonowhere gets rid of possible alert.
-//        driver.get(baseUrl + "/gonowhere");
-//        textPresent("Nothing here");
-
         driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
     }
@@ -534,11 +547,9 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToSearch(String type) {
-//        driver.get(baseUrl + "/gonowhere");
-//        textPresent("Nothing here");
         driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
-        textPresent("Browse by classification");
+        textPresent("Browse by Classification");
         if ("form".equals(type)) {
             textPresent("PROMIS / Neuro-QOL");
         }

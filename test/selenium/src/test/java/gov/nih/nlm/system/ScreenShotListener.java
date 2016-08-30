@@ -23,6 +23,7 @@ public class ScreenShotListener extends TestListenerAdapter {
 
     public void onTestFailure(ITestResult itr) {
         String methodName = itr.getName();
+        System.out.println("Test Fail: " + methodName);
         if (!itr.isSuccess()) {
             try {
                 File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -32,12 +33,18 @@ public class ScreenShotListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        saveLogs(methodName, "URL when failed: " + driver.getCurrentUrl());
         try {
+            saveLogs(methodName, "URL when failed: " + driver.getCurrentUrl());
             driver.get(NlmCdeBaseTest.baseUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            System.out.println("Alert TEXT: " + driver.switchTo().alert().getText());
+        } catch(Exception e) {
+            System.out.println("Could not switch to alert");
+        }
+
     }
 
     public void onTestSuccess(ITestResult itr) {

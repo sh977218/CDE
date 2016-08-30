@@ -26,6 +26,8 @@ exports.removeElasticFields = function(elt) {
     delete elt.flatProperties;
     if (elt.valueDomain) delete elt.valueDomain.nbOfPVs;
     delete elt.primaryDefinitionCopy;
+    delete elt.flatMeshSimpleTrees;
+    delete elt.flatMeshTrees;
     delete elt.flatIds;
     delete elt.usedByOrgs;
     delete elt.registrationState.registrationStatusSortOrder;
@@ -215,20 +217,24 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
 
-    // Increase ranking score for high registration status
-    var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+
+    // last resort, we sort.
+    var sort = true;
 
     queryStuff.query.bool.must = [];
 
-    queryStuff.query.bool.must.push({
-        "dis_max": {
-            "queries": [
-                {"function_score": {"script_score": {"script": script}}}
-            ]
-        }
-    });
-
     if (searchQ !== undefined && searchQ !== "") {
+        sort = false;
+        // Increase ranking score for high registration status
+        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": script}}}
+                ]
+            }
+        });
+
         // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
@@ -259,10 +265,6 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
         }
     }
-    else {
-        //noinspection JSAnnotator
-        queryStuff.sort = {"views": {order: "desc"}};
-    }
 
     // Filter by selected org
     if (settings.selectedOrg !== undefined) {
@@ -270,6 +272,21 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
     if (settings.selectedOrgAlt !== undefined) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
+    }
+
+    // filter by topic
+    if (settings.meshTree) {
+        sort = false;
+        // boost for those with fewer mesh trees
+        var flatMeshScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatMeshScript}}}
+                ]
+            }
+        });
+        queryStuff.query.bool.must.push({term: {"flatMeshTrees": settings.meshTree}});
     }
 
     // Filter by selected Statuses
@@ -306,6 +323,16 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
+        sort = false;
+        // boost for those elts classified fewer times
+        var flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatClassifScript}}}
+                ]
+            }
+        });
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
@@ -330,6 +357,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
         usersvc.myOrgs(user).forEach(function(myOrg) {
             regStatusAggFilter.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
         });
+    }
+
+    if (sort) {
+        queryStuff.sort = {"views": {order: "desc"}};
     }
 
     // Get aggregations on classifications and statuses
@@ -385,6 +416,38 @@ exports.buildElasticSearchQuery = function (user, settings) {
         if (settings.selectedOrgAlt !== undefined) {
             flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
+
+        queryStuff.aggregations.meshTrees = {
+            "filter": settings.filter,
+            aggs: {
+                "meshTrees": {
+                    terms: {
+                        size: 50,
+                        field: "flatMeshTrees",
+                        include: "[^;]+"
+                    }
+                }
+            }
+        };
+
+        if (settings.meshTree && settings.meshTree.length > 0) {
+            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = queryBuilder.escapeRegExp(settings.meshTree) + ";[^;]+";
+        }
+
+        queryStuff.aggregations.twoLevelMesh = {
+            "filter": settings.filter,
+            aggs: {
+                twoLevelMesh: {
+                    terms: {
+                        size: 500,
+                        field: "flatMeshTrees",
+                        //include: "[^;]+"
+                        include: "[^;]+;[^;]+"
+                    }
+                }
+            }
+        };
+
     }
 
     if (queryStuff.query.bool.must.length === 0) {
@@ -435,6 +498,105 @@ var searchTemplate = {
         index: config.elastic.formIndex.name,
         type: "form"
     }
+};
+
+exports.meshSyncStatus = {
+};
+
+exports.syncWithMesh = function(allMappings) {
+
+    var classifToTrees = {};
+    allMappings.forEach(function(m) {
+        // from a;b;c to a a;b a;b;c
+        classifToTrees[m.flatClassification] = [];
+        m.flatTrees.forEach(function (treeNode) {
+            classifToTrees[m.flatClassification].push(treeNode);
+            while(treeNode.indexOf(";") > -1) {
+                treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
+                classifToTrees[m.flatClassification].push(treeNode);
+            }
+        });
+    });
+
+    var classifToSimpleTrees = {};
+    allMappings.forEach(function(m) {
+        classifToSimpleTrees[m.flatClassification] = m.flatTrees;
+    });
+
+    var search = JSON.parse(JSON.stringify(searchTemplate.cde));
+    search.scroll = '1m';
+    search.search_type = 'scan';
+    search.body = {};
+
+    exports.meshSyncStatus.done = 0;
+
+    var scrollThrough = function (scrollId) {
+        esClient.scroll({scrollId: scrollId, scroll: '1m'},
+            function (err, response) {
+                if (err) {
+                    lock = false;
+                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                        {
+                            origin: "system.elastic.syncWithMesh", stack: new Error().stack
+                        });
+                } else {
+                    var newScrollId = response._scroll_id;
+                    exports.meshSyncStatus.total = response.hits.total;
+                    if (response.hits.hits.length > 0) {
+                        response.hits.hits.forEach(function (hit) {
+                            var thisElt = hit._source;
+                            var trees = new Set();
+                            var simpleTrees = new Set();
+                            thisElt.flatClassifications.forEach(function (fc) {
+                                if (classifToTrees[fc]) {
+                                    classifToTrees[fc].forEach(function (node) {
+                                        trees.add(node);
+                                    });
+                                }
+                                if (classifToSimpleTrees[fc]) {
+                                    classifToSimpleTrees[fc].forEach(function (node) {
+                                        simpleTrees.add(node);
+                                    });
+                                }
+                            });
+                            if (trees.size > 0) {
+                                esClient.update({
+                                    index: config.elastic.index.name,
+                                    type: "dataelement",
+                                    id: thisElt.tinyId,
+                                    body: {
+                                        doc: {
+                                            flatMeshTrees: Array.from(trees),
+                                            flatMeshSimpleTrees: Array.from(simpleTrees)
+                                        }
+                                    }
+                                }, function (err) {
+                                    if (err) console.log("ERR: " + err);
+                                });
+                            }
+                            exports.meshSyncStatus.done++;
+                        });
+                        scrollThrough(newScrollId);
+                    } else {
+                        console.log("done syncing with MeSH");
+                    }
+                }
+            });
+    };
+
+    esClient.search(search, function (err, response) {
+        if (err) {
+            lock = false;
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                {
+                    origin: "system.elastic.syncWithMesh", stack: new Error().stack,
+                    details: ""
+                });
+        } else {
+            scrollThrough(response._scroll_id);
+        }
+    });
+
 };
 
 
@@ -547,5 +709,4 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             scrollThrough(response._scroll_id);
         }
     });
-
 };

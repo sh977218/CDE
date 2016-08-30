@@ -228,7 +228,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.$on('$locationChangeStart', function( event ) {
         if ($scope.elt && $scope.elt.unsaved) {
-            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+            var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+            if (window.debugEnabled) {
+                txt = txt + window.location.pathname;
+            }
+            var answer = confirm(txt);
             if (!answer) {
                 event.preventDefault();
             }
@@ -262,13 +266,24 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.elt.usedBy = OrgHelpers.getUsedBy($scope.elt, userResource.user);
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            OrgHelpers.deferred.promise.then(function() {
+                $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            });
             $scope.resolveCdeLoaded();
             $scope.$broadcast("elementReloaded");
             if (route.tab) {
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
             }
+            $http.get('/esRecord/' + de.tinyId).success(function (response) {
+                var s = new Set();
+                if (response._source.flatMeshSimpleTrees) {
+                    response._source.flatMeshSimpleTrees.forEach(function (t) {
+                        s.add(t.split(";").pop());
+                    });
+                }
+                $scope.elt.flatMeshSimpleTrees = Array.from(s);
+            });
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);

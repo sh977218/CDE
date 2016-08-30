@@ -34,15 +34,7 @@ public class BoardExportTest extends BoardTest {
                 "\"Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale\",\"My Parkinson�s symptoms cause me to stay away from social gatherings\",\"Value List\",\"Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale\""
         };
 
-        for (int i=0; i < 30; i++) {
-            try {
-                String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/BoardExport.csv")));
-                if (actual.length() > 0) {
-                    i = 30;
-                }
-            } catch (IOException e) {
-            }
-        }
+        waitForDownload("BoardExport.csv");
 
         try {
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/BoardExport.csv")));
