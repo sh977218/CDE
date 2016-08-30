@@ -181,7 +181,7 @@ exports.runArray = function (array, doneItem, doneArray) {
     async.series([
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
-            async.forEach(array, function (loincId, doneOneLoinc) {
+            async.forEachSeries(array, function (loincId, doneOneLoinc) {
                 MigrationLoincModel.find({
                     loincId: loincId,
                     version: currentVersion

@@ -1,5 +1,6 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 var LoadFromLoincSite = require('./LOINCLoader');
 
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
@@ -31,11 +32,22 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
                             if (obj.loincId !== text.trim()) {
-                                var idArray = [text.trim()];
-                                LoadFromLoincSite.runArray(idArray, function (one, next) {
-                                    next();
-                                }, function () {
-                                    done();
+                                var id = text.trim();
+                                var idArray = [id];
+                                MigrationLoincModel.find({loincId: id}).exec(function (e, existingLoincs) {
+                                    if (e) throw e;
+                                    if (existingLoincs.length === 0) {
+                                        LoadFromLoincSite.runArray(idArray, function (one, next) {
+                                            new MigrationLoincModel(one).save(function (er) {
+                                                if (er) throw er;
+                                                next();
+                                            })
+                                        }, function () {
+                                            done();
+                                        })
+                                    } else {
+                                        done();
+                                    }
                                 })
                             } else done();
                         });
