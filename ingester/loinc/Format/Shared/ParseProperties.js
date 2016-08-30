@@ -53,9 +53,22 @@ exports.parseProperties = function (loinc) {
         properties.push({key: 'EXAMPLE UNITS', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['COPYRIGHT']) {
+        var ths = '';
+        var tds = '';
+        Object.keys(loinc['COPYRIGHT']['COPYRIGHT']).forEach(function (key) {
+            var th = '<th>' + key + '</th>';
+            ths = ths + th;
+            var value = loinc['COPYRIGHT']['COPYRIGHT'][key];
+            var td = '<td>' + value + '</td>';
+            tds = tds + td;
+        });
+        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
+        properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
+    }
+    if (loinc['COPYRIGHT TEXT']) {
         properties.push({
-            key: 'COPYRIGHT',
-            value: loinc['COPYRIGHT']['COPYRIGHT'],
+            key: 'COPYRIGHT TEXT',
+            value: loinc['COPYRIGHT TEXT']['COPYRIGHT TEXT'],
             source: 'LOINC'
         })
     }

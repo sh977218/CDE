@@ -1,7 +1,7 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
 
-exports.parseCopyright = function (obj, task, element, cb) {
+exports.parseCopyrightText = function (obj, task, element, cb) {
     var sectionName = task.sectionName;
     var copyright = '';
     element.getText().then(function (text) {

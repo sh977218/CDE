@@ -17,9 +17,10 @@ var ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
 var ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
 var ParseRelatedNamesTable = require('./ParseRelatedNamesTable');
 var ParseExampleUnitsTable = require('./ParseExampleUnitsTable');
+var ParseCopyrightTable = require('./ParseCopyrightTable');
 var ParseWebContentTable = require('./ParseWebContentTable');
 var ParseArticleTable = require('./ParseArticleTable');
-var ParseCopyright = require('./ParseCopyright');
+var ParseCopyrightText = require('./ParseCopyrightText');
 var ParsingVersion = require('./ParseVersion');
 var ParseQuestion = require('./ParseQuestion');
 
@@ -91,6 +92,11 @@ var tasks = [
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
     {
+        sectionName: 'COPYRIGHT',
+        function: ParseCopyrightTable.parseCopyrightTable,
+        xpath: '/html/body/div/table[.//th[text()="COPYRIGHT"]]'
+    },
+    {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
         xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
@@ -121,8 +127,8 @@ var tasks = [
         xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
     },
     {
-        sectionName: 'COPYRIGHT',
-        function: ParseCopyright.parseCopyright,
+        sectionName: 'COPYRIGHT TEXT',
+        function: ParseCopyrightText.parseCopyrightText,
         xpath: '//p[@class="copyright"][1]'
     },
     {
@@ -189,7 +195,7 @@ exports.runArray = function (array, doneItem, doneArray) {
                                 doTask(driver, task, obj, doneOneTask);
                             }, function doneAllTasks() {
                                 async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
-                                    if (obj['LOINC NAME']['LOINC NAME']['LOINC NAME'].indexOf('panel') !== -1) {
+                                    if (obj['PANEL HIERARCHY']) {
                                         specialTask.function(driver, obj, doneOneSpecialTask);
                                     }
                                     else {

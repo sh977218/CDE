@@ -4,6 +4,7 @@ var ParseNaming = require('./../Shared/ParseNaming');
 var ParseIds = require('./../Shared/ParseIds');
 var ParseProperties = require('./../Shared/ParseProperties');
 var ParseReferenceDocuments = require('./../Shared/ParseReferenceDocuments');
+var ParseStewardOrg = require('./../Shared/ParseStewardOrg');
 
 var today = new Date().toJSON();
 var stewardOrgName = 'NLM';
@@ -21,6 +22,8 @@ exports.createForm = function (loinc) {
     var ids = ParseIds.parseIds(loinc);
     var properties = ParseProperties.parseProperties(loinc);
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
+    var stewardOrg = ParseStewardOrg.parseStewardOrg();
+
     var newForm = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
@@ -32,7 +35,7 @@ exports.createForm = function (loinc) {
         ids: ids,
         properties: properties,
         referenceDocuments: referenceDocuments,
-        stewardOrg: {name: stewardOrgName},
+        stewardOrg: stewardOrg,
         classification: [{stewardOrg: {name: stewardOrgName}, elements: []}]
     };
     return newForm;

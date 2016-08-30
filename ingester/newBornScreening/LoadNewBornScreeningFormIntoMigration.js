@@ -1,41 +1,3 @@
-
-
-
-function createForm(loinc) {
-
-    var newForm = {
-        tinyId: tinyId,
-        version: version,
-        createdBy: {username: 'BatchLoader'},
-        created: today,
-        imported: today,
-        registrationState: {registrationStatus: "Qualified"},
-        source: source,
-        naming: naming,
-        ids: ids,
-        properties: properties,
-        referenceDocuments: referenceDocuments,
-        stewardOrg: {name: stewardOrgName},
-        classification: [{stewardOrg: {name: stewardOrgName}, elements: []}],
-        formElements: [{
-            elementType: 'section',
-            instructions: {value: ''},
-            cardinality: CARDINALITY_MAP[loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].Cardinality],
-            label: loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['LOINC Name'],
-            formElements: []
-        }]
-    };
-    if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
-        newForm.formElements[0].instructions.value = loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'][0].Description;
-    }
-    var classType = loinc['BASIC ATTRIBUTES']['BASIC ATTRIBUTES']['Class/Type'];
-    var classificationType = CLASSIFICATION_TYPE_MAP[classType];
-    var classificationToAdd = ['Newborn Screening', 'Classification', classificationType];
-    classificationShared.classifyItem(newForm, stewardOrgName, classificationToAdd);
-    classificationShared.addCategory({elements: newBornScreeningOrg.classifications}, classificationToAdd);
-    return newForm;
-}
-
 var async = require('async');
 var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewbornScreeningCDEModel;
 var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
@@ -51,8 +13,8 @@ var formCount = 0;
 function run() {
     async.series([
         function (cb) {
-            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
-            LoadLoincCdeIntoMigration.setClassificationOrgName('Newborn screening');
+            LoadLoincFormIntoMigration.setStewardOrg(orgName);
+            LoadLoincFormIntoMigration.setClassificationOrgName('Newborn screening');
             cb(null, 'Finished set parameters');
         },
         function (cb) {
@@ -88,8 +50,8 @@ function run() {
         },
         function (cb) {
             LoadLoincFormIntoMigration.runArray(loincIdArray, org, function (form, next) {
-                formCounter++;
-                console.log('formCounter: ' + formCounter);
+                formCount++;
+                console.log('formCount: ' + formCount);
             }, function (results) {
 
             })

@@ -44,11 +44,11 @@ exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new 
 }));
 
 // EYE GENE
-exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new Schema({}, {
+exports.MigrationEyeGENELoincModel = migrationConn.model('EyeGENE_LOINC', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_LOINC'
 }));
-exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new Schema({}, {
+exports.MigrationEyeGENEAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_AnswerList'
 }));
@@ -74,6 +74,7 @@ exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', 
 exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
     collection: 'forms'
 }));
+
 exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
     collection: 'orgs'
 }));

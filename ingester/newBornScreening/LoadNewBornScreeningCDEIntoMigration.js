@@ -5,7 +5,7 @@ var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgMo
 
 var LoadLoincCdeIntoMigration = require('../loinc/Format/cde/LoadLoincCdeIntoMigration');
 
-var orgName = 'NLM';
+var classificationOrgName = 'NLM';
 var org;
 
 var cdeCount = 0;
@@ -28,18 +28,19 @@ function run() {
             })
         },
         function (cb) {
-            var json = {name: orgName, classifications: []};
-            var obj = new MigrationOrgModel(json);
-            obj.save(function (createMigrationOrgError, o) {
+            new MigrationOrgModel({
+                name: classificationOrgName,
+                classifications: []
+            }).save(function (createMigrationOrgError, o) {
                 if (createMigrationOrgError) throw createMigrationOrgError;
-                console.log('Created migration org of ' + orgName);
+                console.log('Created migration org of ' + classificationOrgName);
                 org = o;
                 cb(null, 'Finished creating migration org');
             });
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
-            LoadLoincCdeIntoMigration.setClassificationOrgName('NLM');
+            LoadLoincCdeIntoMigration.setClassificationOrgName(classificationOrgName);
+            LoadLoincCdeIntoMigration.setClassification(['Newborn Screening']);
             cb(null, 'Finished set parameters');
         },
         function (cb) {

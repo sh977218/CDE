@@ -4,6 +4,7 @@ var ParseNaming = require('./../Shared/ParseNaming');
 var ParseIds = require('./../Shared/ParseIds');
 var ParseProperties = require('./../Shared/ParseProperties');
 var ParseReferenceDocuments = require('./../Shared/ParseReferenceDocuments');
+var ParseStewardOrg = require('./../Shared/ParseStewardOrg');
 var ParseValueDomain = require('./ParseValueDomain');
 var ParseConcept = require('./ParseConcept');
 
@@ -25,6 +26,7 @@ exports.createCde = function (loinc) {
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
     var valueDomain = ParseValueDomain.parseValueDomain(loinc);
     var concepts = ParseConcept.parseConcepts(loinc);
+    var stewardOrg = ParseStewardOrg.parseStewardOrg();
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
@@ -39,7 +41,7 @@ exports.createCde = function (loinc) {
         objectClass: {concepts: concepts.objectClass},
         property: {concepts: concepts.property},
         dataElementConcept: {concepts: concepts.dataElementConcept},
-        stewardOrg: {name: stewardOrgName},
+        stewardOrg: stewardOrg,
         valueDomain: valueDomain,
         classification: []
     };

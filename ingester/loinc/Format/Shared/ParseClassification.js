@@ -8,6 +8,11 @@ exports.setClassificationOrgName = function (o) {
     classificationOrgName = o;
 };
 
+var classificationArray = [];
+exports.setClassification = function (c) {
+    classificationArray = c;
+};
+
 exports.parseClassification = function (loinc, elt, org, cb) {
     var classTypeString = '';
     var classification = '';
@@ -33,7 +38,8 @@ exports.parseClassification = function (loinc, elt, org, cb) {
         console.log('classificationOrgName is empty. Please set it first.');
         process.exit(1);
     }
-    var classificationToAdd = ['Newborn screening', 'Classification'];
+    var classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
+    classificationToAdd.push('Classification');
     MigrationLoincClassMappingModel.find({
         type: CLASSIFICATION_TYPE_MAP[classificationType],
         key: classification

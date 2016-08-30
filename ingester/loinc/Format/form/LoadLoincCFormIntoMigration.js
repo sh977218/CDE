@@ -3,7 +3,16 @@ var MigrationLoincModel = require('../../../createMigrationConnection').Migratio
 var MigrationFormModel = require('../../../createMigrationConnection').MigrationFormModel;
 
 var CreateForm = require('./CreateForm');
-var ParseClassification = require('./ParseClassification');
+var ParseClassification = require('../Shared/ParseClassification');
+var ParseFormElement = require('./ParseFormElement');
+
+exports.setStewardOrg = function (s) {
+    CreateForm.setStewardOrg(s);
+};
+
+exports.setClassificationOrgName = function (c) {
+    ParseClassification.setClassificationOrgName(c);
+};
 
 exports.runArray = function (loincIdArray, org, doneItem, doneAllArray) {
     var allNewForms = [];
@@ -22,7 +31,7 @@ exports.runArray = function (loincIdArray, org, doneItem, doneAllArray) {
                         if (e) throw e;
                         if (existingForms.length === 0) {
                             var form = CreateForm.createForm(loinc);
-                            loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
+                            ParseFormElement.parseFormElement(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
                                 var obj = new MigrationFormModel(form);
                                 obj.save(function (e) {
                                     if (e) throw e;

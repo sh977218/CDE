@@ -116,7 +116,7 @@ var orgJson = {
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
 };
-exports.orgJson = orgJson;
+schemas.orgJson = orgJson;
 
 schemas.orgSchema = new mongoose.Schema(orgJson);
 

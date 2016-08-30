@@ -1,14 +1,15 @@
 var async = require('async');
 var MigrationLoincModel = require('../../../createMigrationConnection').MigrationLoincModel;
 var CreateCDE = require('./CreateCDE');
-var ParseClassification = require('./ParseClassification');
+var ParseClassification = require('./../Shared/ParseClassification');
 
-exports.setStewardOrg = function (s) {
-    CreateCDE.setStewardOrg(s);
-};
 
 exports.setClassificationOrgName = function (c) {
     ParseClassification.setClassificationOrgName(c);
+};
+
+exports.setClassification = function (c) {
+    ParseClassification.setClassification(c);
 };
 
 exports.runArray = function (loincIdArray, org, doneItem, doneAllArray) {

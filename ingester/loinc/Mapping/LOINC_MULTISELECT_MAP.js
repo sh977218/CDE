@@ -1,4 +1,4 @@
-exports.MAP = {
+exports.map = {
     "": false,
     "0..1": false,
     "0..*": true,

@@ -1,5 +1,6 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
+var LoadFromLoincSite = require('./LOINCLoader');
 
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
     var sectionName = task.sectionName;
@@ -29,7 +30,14 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                     function getLoincID (done) {
                         tds[1].getText().then(function (text) {
                             row['LOINC#'] = text.trim();
-                            done();
+                            if (obj.loincId !== text.trim()) {
+                                var idArray = [text.trim()];
+                                LoadFromLoincSite.runArray(idArray, function (one, next) {
+                                    next();
+                                }, function () {
+                                    done();
+                                })
+                            } else done();
                         });
                     },
                     function getLoincLink (done) {

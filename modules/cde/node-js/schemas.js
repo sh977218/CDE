@@ -128,7 +128,7 @@ schemas.pinningBoardSchema = new mongoose.Schema({
     },
     pins: [pinSchema]
 });
-exports.deJson = deJson;
+schemas.deJson = deJson;
 schemas.dataElementSchema = new mongoose.Schema(deJson);
 
 schemas.pinningBoardSchema.pre('save', function (next) {

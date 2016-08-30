@@ -1,5 +1,11 @@
 var async = require('async');
 var DataElementModel = require('../../../createNlmcdeConnection').DataElementModel;
+var MigrationFormModel = require('../../../createNlmcdeConnection').MigrationFormModel;
+var MigrationLoincModel = require('../../../createNlmcdeConnection').MigrationLoincModel;
+var REQUIRED_MAP = require('../../Mapping/LOINC_REQUIRED_MAP').map;
+var MULTISELECT_MAP = require('../../Mapping/LOINC_MULTISELECT_MAP').map;
+var CARDINALITY_MAP = require('../../Mapping/LOINC_CARDINALITY_MAP').map;
+var CreateForm = require('./CreateForm');
 
 var parseFormElement = function (loinc, formElements, form, cb) {
     var loadCde = function (element, fe, next) {
@@ -33,18 +39,19 @@ var parseFormElement = function (loinc, formElements, form, cb) {
                 if (element['Ex UCUM Units']) {
                     question.uoms.push(element['Ex UCUM Units']);
                 }
-
-                existingCde.naming.forEach(function (n) {
-                    if (n.context.contextName === "Source: Regenstrief LOINC") {
-                        question.instructions.value = n.context.contextName;
-                    }
-                });
                 var formElement = {
                     elementType: 'question',
                     label: existingCde.naming[0].designation,
                     question: question,
                     formElements: []
                 };
+
+                existingCde.naming.forEach(function (n) {
+                    if (n.context.contextName === "TERM DEFINITION/DESCRIPTION(S)") {
+                        formElement.instructions.value = n.definition;
+                    }
+                });
+
                 fe.push(formElement);
                 next();
             }
@@ -63,14 +70,12 @@ var parseFormElement = function (loinc, formElements, form, cb) {
                                 else {
                                     var innerFormLoinc = innerFormLoincs[0];
                                     if (innerFormLoinc.toObject) innerFormLoinc = innerFormLoinc.toObject();
-                                    var innerForm = createForm(innerFormLoinc);
-                                    loadFormElements(innerFormLoinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, innerForm.formElements[0].formElements, form, function () {
+                                    var innerForm = CreateForm.createForm(innerFormLoinc);
+                                    parseFormElement(innerFormLoinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, innerForm.formElements[0].formElements, form, function () {
                                         var obj = new MigrationFormModel(innerForm);
                                         obj.save(function (e, innerFormObj) {
                                             if (e) throw e;
                                             else {
-                                                formCounter++;
-                                                console.log('formCounter: ' + formCounter);
                                                 var innerFe = {
                                                     elementType: 'form',
                                                     instructions: {value: ''},
