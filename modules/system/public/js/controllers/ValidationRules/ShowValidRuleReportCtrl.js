@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams',
-    function ($scope, $routeParams) {
+angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams', 'OrgHelpers',
+    function ($scope, $routeParams, OrgHelpers) {
         $routeParams.searchSettings  = JSON.parse($routeParams.searchSettings);
         $scope.gridOptionsReport = {
             columnDefs: [{field: "cdeName", displayName: "CDE Name"}, {field: 'tinyId', displayName: "NLM ID"}]
@@ -22,7 +22,10 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
             $scope.cdes.length = 100;
         };
         $scope.module = 'cde';
-        $scope.exportSearchResults('validationRules', $routeParams);
+        OrgHelpers.deferred.promise.then(function() {
+            $scope.exportSearchResults('validationRules', $routeParams);
+        });
+
     }]);
 
 angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibModalInstance',
