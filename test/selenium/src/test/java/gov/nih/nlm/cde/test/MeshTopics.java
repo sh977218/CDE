@@ -20,9 +20,9 @@ public class MeshTopics extends NlmCdeBaseTest {
         findElement(By.id("mesh.search")).clear();
         findElement(By.id("mesh.search")).sendKeys("NINDS");
         clickElement(By.id("addMeshDescButton"));
+        clickElement(By.id("closeModal"));
         textPresent("Saved");
         closeAlert();
-        clickElement(By.id("closeModal"));
 
         // now update index
         mustBeLoggedInAs(nlm_username, nlm_password);
