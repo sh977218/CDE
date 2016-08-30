@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModalInstance', 'userOrgs', function($scope, $modalInstance, userOrgs){
+angular.module('systemModule').controller('AddNewRuleCtrl',
+    ['$scope', '$uibModalInstance', 'userOrgs', function($scope, $modalInstance, userOrgs){
     $scope.fields = [
         'stewardOrg.name'
         , 'properties.key'
@@ -10,7 +11,6 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'ids.version'
         , 'ids.source'
         , 'naming.context.contextName'
-        , 'valueDomain.datatype'
         , 'source'
         , 'origin'
 
@@ -30,6 +30,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'dataElementConcept.conceptualDomain.vsac.name'
         , 'dataElementConcept.conceptualDomain.vsac.version'
 
+        , 'valueDomain.datatype'
         , 'valueDomain.uom'
         , 'valueDomain.ids.source'
         , 'valueDomain.ids.id'
@@ -41,6 +42,7 @@ angular.module('systemModule').controller('AddNewRuleCtrl', ['$scope', '$uibModa
         , 'referenceDocuments.title'
     ];
     $scope.userOrgs = userOrgs;
+    $scope.userOrgsArray = Object.keys(userOrgs).sort();
     $scope.cancel = function(){
         $modalInstance.dismiss();
     };

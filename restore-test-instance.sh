@@ -8,6 +8,8 @@ db_password='password'
 
 target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
 
+
+
 mongo test deploy/dbInit.js -u $db_user -p $db_password
 
 #wait for empty
@@ -36,4 +38,6 @@ mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password
 
 gulp es
+
+
 
