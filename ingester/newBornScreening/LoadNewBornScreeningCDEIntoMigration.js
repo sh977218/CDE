@@ -14,11 +14,6 @@ var loincIdArray = [];
 function run() {
     async.series([
         function (cb) {
-            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
-            LoadLoincCdeIntoMigration.setClassificationOrgName('NLM');
-            cb(null, 'Finished set parameters');
-        },
-        function (cb) {
             MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
                 if (removeMigrationDataelementError) throw removeMigrationDataelementError;
                 console.log('Removed all migration dataelement');
@@ -33,12 +28,19 @@ function run() {
             })
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (createMigrationOrgError, o) {
+            var json = {name: orgName, classifications: []};
+            var obj = new MigrationOrgModel(json);
+            obj.save(function (createMigrationOrgError, o) {
                 if (createMigrationOrgError) throw createMigrationOrgError;
                 console.log('Created migration org of ' + orgName);
                 org = o;
                 cb(null, 'Finished creating migration org');
             });
+        },
+        function (cb) {
+            LoadLoincCdeIntoMigration.setStewardOrg(orgName);
+            LoadLoincCdeIntoMigration.setClassificationOrgName('NLM');
+            cb(null, 'Finished set parameters');
         },
         function (cb) {
             MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).exec(function (findNewbornScreeningCdeError, newbornScreeningCdes) {

@@ -68,9 +68,15 @@ exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewbornS
 }));
 
 // MIGRATION
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson));
-exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
-exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson));
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson, {
+    collection: 'dataelements'
+}));
+exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
+    collection: 'forms'
+}));
+exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
+    collection: 'orgs'
+}));
 
 // MIGRATION REFERENCE COLLECTION
 exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {

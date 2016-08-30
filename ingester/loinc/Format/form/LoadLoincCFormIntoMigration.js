@@ -21,7 +21,7 @@ exports.runArray = function (loincIdArray, org, doneItem, doneAllArray) {
                     MigrationFormModel.find({'ids.id': loincId}).exec(function (e, existingForms) {
                         if (e) throw e;
                         if (existingForms.length === 0) {
-                            var form = createForm(loinc);
+                            var form = CreateForm.createForm(loinc);
                             loadFormElements(loinc['PANEL HIERARCHY']['PANEL HIERARCHY'].elements, form.formElements[0].formElements, form, function () {
                                 var obj = new MigrationFormModel(form);
                                 obj.save(function (e) {
