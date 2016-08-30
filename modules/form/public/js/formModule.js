@@ -1,4 +1,5 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates']).config(function($routeProvider)
+angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates']).config(
+    ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
         when('/form/search', {
@@ -12,4 +13,4 @@ angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates']).conf
         }).
         when('/createForm', {controller: 'CreateFormCtrl', templateUrl: '/form/public/html/createForm.html'}).
         when('/formView', {controller: 'FormViewCtrl', templateUrl: '/form/public/html/formView.html'});
-});
+}]);

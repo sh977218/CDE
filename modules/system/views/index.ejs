@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:ng="http://angularjs.org" ng-app="systemModule" id="ng-app" lang="en">
+<html xmlns:ng="http://angularjs.org" id="ng-app" lang="en">
 <head>
 	<title>NIH Common Data Elements (CDE) Repository</title>
 	<meta name="site-version" content="<%= version %>"/>
@@ -173,6 +173,10 @@
 <%- include includeFrontEndJS.ejs %>
 <%- include ../../cde/views/includeCdeFrontEndJS.ejs %>
 <%- include ../../form/views/includeFormFrontEndJS.ejs %>
+
+<script>
+	angular.bootstrap(document.body, ['systemModule'], {strictDi: true});
+</script>
 
 <script type="application/ld+json">
         {

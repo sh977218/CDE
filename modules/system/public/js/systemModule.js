@@ -2,14 +2,15 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
     'OrgFactories', 'classification', 'ngGrid', 'systemTemplates',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
-    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive', 'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
+    'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
+    'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
     .config(['$rootScopeProvider', function ($rootScopeProvider) {
         $rootScopeProvider.digestTtl(50);
     }])
-    .config(function ($routeProvider, $locationProvider) {
+    .config(["$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode({enabled: true, requireBase: false});
         $routeProvider.when('/', {
             redirectTo: function () {
@@ -49,7 +50,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             controller: 'SearchSettingsCtrl',
             templateUrl: '/system/public/html/searchSettings.html'
         });
-    })
+    }])
     .directive('inlineEdit', function ($timeout) {
         return {
             restrict: 'AE',
