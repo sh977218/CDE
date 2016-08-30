@@ -1,5 +1,5 @@
 angular.module('ElasticSearchResource')
-    .factory('SearchSettings', function (localStorageService, $q, userResource) {
+    .factory('SearchSettings', ["localStorageService", "$q", "userResource", function (localStorageService, $q, userResource) {
         var version = 20160329;
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
@@ -63,4 +63,4 @@ angular.module('ElasticSearchResource')
             searchSettingsFactory.deferred.resolve(searchSettings);
         });
         return this;
-    });
+    }]);

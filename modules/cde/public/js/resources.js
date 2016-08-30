@@ -1,17 +1,17 @@
 angular.module('resourcesCde', ['ngResource'])
-    .factory('BoardSearch', function ($resource) {
+    .factory('BoardSearch', ["$resource", function ($resource) {
         return $resource('/listboards');
-    })
-    .factory('DataElement', function ($resource) {
+    }])
+    .factory('DataElement', ["$resource", function ($resource) {
         return $resource('/dataelement/:deId', {deId: '@deId'}, {
             update: {method: 'PUT'},
             save: {method: 'POST', params: {type: null}}
         });
-    })
-    .factory('DataElementTinyId', function ($resource) {
+    }])
+    .factory('DataElementTinyId', ["$resource", function ($resource) {
         return $resource('/debytinyid/:tinyId/:version', {tinyId: 'tinyId', version: '@version'});
-    })
-    .factory('CdeList', function ($http) {
+    }])
+    .factory('CdeList', ["$http", function ($http) {
         return {
             byTinyIdList: function (ids, cb) {
                 $http.post("/cdesByTinyIdList", ids).then(function (response) {
@@ -19,8 +19,8 @@ angular.module('resourcesCde', ['ngResource'])
                 });
             }
         };
-    })
-    .factory('ElasticBoard', function ($http) {
+    }])
+    .factory('ElasticBoard', ["$http", function ($http) {
         return {
             loadMyBoards: function (filter, cb) {
                 $http.post('/myBoards', filter).success(function (response) {
@@ -37,21 +37,21 @@ angular.module('resourcesCde', ['ngResource'])
                 });
             }
         };
-    })
-    .factory('CdeDiff', function ($resource) {
+    }])
+    .factory('CdeDiff', ["$resource", function ($resource) {
         return $resource('/cdediff/:deId', {deId: '@deId'}, {get: {isArray: true}});
-    })
-    .factory("LinkToVsac", function ($resource) {
+    }])
+    .factory("LinkToVsac", ["$resource", function ($resource) {
         return $resource(
             "/linktovsac",
             {cde_id: '@cde_id', vs_id: '@vs_id'},
             {link: {method: 'POST'}}
         );
-    })
-    .factory('CdesForApproval', function ($resource) {
+    }])
+    .factory('CdesForApproval', ["$resource", function ($resource) {
         return $resource('/cdesforapproval');
-    })
-    .factory('CDE', function ($http) {
+    }])
+    .factory('CDE', ["$http", function ($http) {
         return {
             retire: function (cde, cb) {
                 $http.post("/retireCde", cde).then(function (response) {
@@ -59,7 +59,7 @@ angular.module('resourcesCde', ['ngResource'])
                 });
             }
         };
-    })
+    }])
     .directive('ngVersionAvailable', ['$http', function ($http) {
         return {
             require: 'ngModel',

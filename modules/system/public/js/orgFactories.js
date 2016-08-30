@@ -1,5 +1,5 @@
 angular.module('OrgFactories', ['ngResource'])
-.factory('OrgHelpers', function ($http, $q) {
+.factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
     var orgHelpers = {
         orgsDetailedInfo: {}
         , deferred: $q.defer()
@@ -89,4 +89,4 @@ angular.module('OrgFactories', ['ngResource'])
     };
     orgHelpers.getOrgsDetailedInfoAPI();
     return orgHelpers;
-});
+}]);

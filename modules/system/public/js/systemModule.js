@@ -51,7 +51,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
             templateUrl: '/system/public/html/searchSettings.html'
         });
     }])
-    .directive('inlineEdit', function ($timeout) {
+    .directive('inlineEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -62,7 +62,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 typeaheadSource: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
-            controller: function ($scope) {
+            controller: ["$scope", function ($scope) {
                 $scope.inputType = $scope.inputType || 'text';
                 $scope.value = $scope.model;
                 $scope.discard = function () {
@@ -76,10 +76,10 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.edit = function () {
                     $scope.editMode = true;
                 };
-            }
+            }]
         };
-    })
-    .directive('inlineSelectEdit', function($timeout) {
+    }])
+    .directive('inlineSelectEdit', ["$timeout", function($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -89,7 +89,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 allOptions: '='
             },
             templateUrl: '/system/public/html/systemTemplate/inlineSelectEdit.html',
-            controller: function ($scope) {
+            controller: ["$scope", function ($scope) {
                 $scope.value = $scope.model;
                 $scope.discard = function () {
                     $scope.editMode = false;
@@ -102,10 +102,10 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.edit = function () {
                     $scope.editMode = true;
                 };
-            }
+            }]
         };
-    })
-    .directive('inlineAreaEdit', function ($timeout) {
+    }])
+    .directive('inlineAreaEdit', ["$timeout", function ($timeout) {
         return {
             restrict: 'AE',
             scope: {
@@ -116,7 +116,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 defFormat: '=',
                 inlineAreaVisibility: '='
             },
-            controller: function ($scope, $element, $attrs) {
+            controller: ["$scope", "$element", "$attrs", function ($scope, $element, $attrs) {
                 $scope.clickEdit = function () {
                     $scope.inScope = {
                         value: $scope.model
@@ -160,11 +160,11 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 $scope.cancel = function () {
                     $scope.editMode = false;
                 };
-            },
+            }],
             templateUrl: '/system/public/html/systemTemplate/inlineAreaEdit.html'
         };
-    })
-    .directive('sortableArray', function () {
+    }])
+    .directive('sortableArray', [function () {
         return {
             restrict: 'AE',
             scope: {
@@ -173,7 +173,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                 , cb: '&'
             },
             templateUrl: '/system/public/html/systemTemplate/sortableArray.html',
-            controller: function ($scope) {
+            controller: ["$scope", function ($scope) {
                 $scope.moveUp = function () {
                     $scope.array.splice($scope.index - 1, 0, $scope.array.splice($scope.index, 1)[0]);
                     $scope.cb();
@@ -190,11 +190,11 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem', 'for
                     $scope.array.push($scope.array.shift());
                     $scope.cb();
                 };
-            }
+            }]
         };
-    });
+    }]);
 
-angular.module('systemModule').filter('placeHoldEmpty', function () {
+angular.module('systemModule').filter('placeHoldEmpty', [function () {
     return function (input) {
         if (!(input === undefined || input === null || input === "")) {
             return input;
@@ -202,18 +202,18 @@ angular.module('systemModule').filter('placeHoldEmpty', function () {
             return "N/A";
         }
     };
-});
+}]);
 
-angular.module('systemModule').filter('truncateTo', function () {
+angular.module('systemModule').filter('truncateTo', [function () {
     return function (input, l) {
         if (input && input.length > l) {
             return input.substr(0, l) + '...';
         } else return input;
     };
-});
+}]);
 
 
-angular.module('systemModule').filter('truncateLongUserName', function () {
+angular.module('systemModule').filter('truncateLongUserName', [function () {
     return function (input) {
         if (!(input === undefined || input === null || input === "")) {
             if (input.length > 17) {
@@ -224,9 +224,9 @@ angular.module('systemModule').filter('truncateLongUserName', function () {
             return "N/A";
         }
     };
-});
+}]);
 
-angular.module('systemModule').filter('bytes', function () {
+angular.module('systemModule').filter('bytes', [function () {
     return function (bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
         if (typeof precision === 'undefined') precision = 1;
@@ -234,8 +234,8 @@ angular.module('systemModule').filter('bytes', function () {
             number = Math.floor(Math.log(bytes) / Math.log(1024));
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     };
-});
-angular.module('systemModule').factory('ClassificationUtil', function () {
+}]);
+angular.module('systemModule').factory('ClassificationUtil', [function () {
     var factoryObj = {};
     factoryObj.sortClassification = function (elt) {
         elt.classification = elt.classification.sort(function (c1, c2) {
@@ -292,9 +292,9 @@ angular.module('systemModule').factory('ClassificationUtil', function () {
     };
 
     return factoryObj;
-});
+}]);
 
-angular.module('systemModule').factory('isAllowedModel', function (userResource) {
+angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};
 
     isAllowedModel.isAllowed = function ($scope, CuratedItem) {
@@ -347,7 +347,7 @@ angular.module('systemModule').factory('isAllowedModel', function (userResource)
     };
 
     return isAllowedModel;
-});
+}]);
 
 
 angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function ($templateCache) {
@@ -370,7 +370,7 @@ angular.module('systemModule').config(['$compileProvider', function ($compilePro
 }]);
 
 
-angular.module('systemModule').config(function ($provide) {
+angular.module('systemModule').config(["$provide", function ($provide) {
     var previousException;
     var http;
     $provide.decorator("$exceptionHandler", ['$delegate', '$injector',
@@ -395,14 +395,14 @@ angular.module('systemModule').config(function ($provide) {
                 }
             };
         }]);
-});
+}]);
 
-angular.module('systemModule').config(function (localStorageServiceProvider) {
+angular.module('systemModule').config(["localStorageServiceProvider", function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('nlmcde');
-});
+}]);
 
 
-angular.module('systemModule').run(function ($rootScope, $location) {
+angular.module('systemModule').run(["$rootScope", "$location", function ($rootScope, $location) {
     var dataLayer = window.dataLayer = window.dataLayer || [];
 
     $rootScope.$on("$locationChangeSuccess", function () {
@@ -413,4 +413,4 @@ angular.module('systemModule').run(function ($rootScope, $location) {
             }
         });
     });
-});
+}]);
