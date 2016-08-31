@@ -124,7 +124,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.ids = migrationCde.ids;
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
-        
+
         removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
