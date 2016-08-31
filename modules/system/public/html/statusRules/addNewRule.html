@@ -6,7 +6,7 @@
         <div class="form-group">
             <label for="org">Organization</label>
             <select id="org" ng-model="org" class="form-control">
-                <option ng-repeat="(org,v) in userOrgs">{{org}}</option>
+                <option ng-repeat="org in userOrgsArray">{{org}}</option>
             </select>
         </div>
 
