@@ -135,7 +135,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         }
         newDe._id = existingCde._id;
         try {
-            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
+            mongo_cde.update(newDe, {username: "BatchLoader"}, function (err) {
                 if (err) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
@@ -249,7 +249,7 @@ function streamOnClose() {
         'imported': {$lt: lastEightHours},
         'source': source,
         'classification.stewardOrg.name': stewardOrgName,
-        'classification.elements.name': 'Newborn Screening',
+        'classification.elements.name': 'eyeGENE',
         'archived': null
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
