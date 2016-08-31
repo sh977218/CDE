@@ -898,6 +898,13 @@ exports.init = function (app) {
         });
     });
 
+    app.get('/meshClassifications', function(req, res) {
+        mongo_data_system.findMeshClassification({}, function(err, mm) {
+            if (err) return res.status(500).send();
+            return res.send(mm);
+        });
+    });
+
     var meshTopTreeMap = {
         'A': "Anatomy",
         'B': "Organisms",
