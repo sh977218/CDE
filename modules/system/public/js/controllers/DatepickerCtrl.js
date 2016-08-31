@@ -1,4 +1,4 @@
-angular.module('systemModule').controller('DatepickerCtrl', function ($scope) {
+angular.module('systemModule').controller('DatepickerCtrl', ["$scope", function ($scope) {
     $scope.open = function ($event) {
         $event.preventDefault();
         $event.stopPropagation();
@@ -13,4 +13,4 @@ angular.module('systemModule').controller('DatepickerCtrl', function ($scope) {
     $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
     $scope.format = $scope.formats[0];
 
-});
+}]);
