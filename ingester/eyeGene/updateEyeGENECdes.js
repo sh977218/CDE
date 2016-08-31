@@ -10,7 +10,7 @@ var updateShare = require('../updateShare');
 
 var source = 'LOINC';
 var stewardOrgName = 'NLM';
-var classifOrgName = 'eyeGENE';
+var classificationOrgName = 'eyeGENE';
 
 var today = new Date().toJSON();
 var lastEightHours = new Date();
@@ -19,7 +19,7 @@ var retired = 0;
 
 function removeClassificationTree(cde) {
     for (var i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === classifOrgName) {
+        if (cde.classification[i].stewardOrg.name === classificationOrgName) {
             cde.classification.splice(i, 1);
             return;
         }
