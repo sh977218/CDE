@@ -1,5 +1,5 @@
 angular.module('classification', ['ngResource'])
-.factory('OrgClassification', function($resource, $http) {
+.factory('OrgClassification', ["$resource", "$http", function($resource, $http) {
     return {
         resource: $resource('/classification/org')
         , rename: function(orgName, path, newname, cb) {
@@ -7,19 +7,19 @@ angular.module('classification', ['ngResource'])
             $http.post('/classification/rename', data).success(cb);
         }
     };
-})
-.factory('CdeClassification', function($resource) {
+}])
+.factory('CdeClassification', ["$resource", function($resource) {
     return $resource('/classification/elt');
-})
-.factory('BulkClassification', function($resource, $http) {
+}])
+.factory('BulkClassification', ["$resource", "$http", function($resource, $http) {
     return {
         classifyTinyidList: function(list, newClassif, cb) {
             var data = {classification: newClassif, elements: list};
             $http.post('/classification/bulk/tinyid', data).success(cb);
         }
     };
-})
-.factory("ClassificationTree", function() {
+}])
+.factory("ClassificationTree", [function() {
     return {
         getCategories: function(org, newClassification, level) {
             if (!org) return [];
@@ -44,8 +44,8 @@ angular.module('classification', ['ngResource'])
             newClassification.categories.splice(num,Number.MAX_SAFE_INTEGER);
         }
     };
-})
-.factory('CdeClassificationTransfer', function($http) {
+}])
+.factory('CdeClassificationTransfer', ["$http", function( $http) {
     return {
         byTinyIds: function(tinyIdSource, tinyIdTarget, cb) {
             var request = {
@@ -55,8 +55,8 @@ angular.module('classification', ['ngResource'])
             $http.post('/classification/cde/moveclassif', request).success(cb).error(cb);
         }
     };
-})
-.factory('ClassificationPathBuilder', function() {
+}])
+.factory('ClassificationPathBuilder', [function() {
     return {
         constructPath: function(org, pathArray) {
             var tempPath = org;
@@ -70,5 +70,5 @@ angular.module('classification', ['ngResource'])
             return tempPath;
         }
     };
-})
+}])
 ;
