@@ -65,7 +65,7 @@ exports.parseProperties = function (loinc) {
         var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
-    if (loinc['LOINC_Copyright']) {
+    if (loinc['COPYRIGHT TEXT']) {
         properties.push({
             key: 'LOINC_Copyright',
             value: loinc['COPYRIGHT TEXT']['COPYRIGHT TEXT'],
