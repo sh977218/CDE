@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('LoadLoincPropCtrl', function ($scope, $rootScope, $interval, $http, $timeout) {
+angular.module('systemModule').controller('LoadLoincPropCtrl', ["$scope", "$rootScope", "$interval", "$http", "$timeout",
+    function ($scope, $rootScope, $interval, $http, $timeout) {
     $scope.status = {};
     $scope.setFile = function(file){
         $scope.$apply(function ($scope) {
@@ -51,4 +52,4 @@ angular.module('systemModule').controller('LoadLoincPropCtrl', function ($scope,
             $scope.status.error = "Loinc load failed."
         });
     }
-});
+}]);

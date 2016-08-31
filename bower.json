@@ -14,7 +14,6 @@
     "bootstrap": "3.3.6",
     "font-awesome": "4.6.0",
     "jquery": "~1.10.2",
-    "jquery-ui": "1.11.3",
     "select2": "~3.4.5",
     "selectize": "~0.8.5",
     "angular-ui-select": "0.18.1",
@@ -28,8 +27,8 @@
     "jszip": "2.5.0",
     "jxon": "https://github.com/ludetc/jxon.git#ff0fe536ce798a7dc5174d0c42978f15db766dd5",
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
-    "lforms": "4.2.4",
-    "lforms-converter": "https://github.com/ludetc/lforms-converter.git#91f3c2382ae435ee3d04615fbc2327fa01774632",
+    "lforms": "7.1.0",
+    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#5cfab61ba5b1413dc8e9b3ec3fc496ec21022839",
     "ngInfiniteScroll": "1.2.2",
     "checklist-model": "0.9.0",
     "angular-ui-sortable": "0.14.0",
@@ -40,12 +39,6 @@
     "angular-bootstrap": "1.1.0"
   },
   "overrides": {
-    "jquery-ui": {
-      "main": [
-        "jquery-ui.js",
-        "themes/start/jquery-ui.min.css"
-      ]
-    },
     "font-awesome": {
       "main": [
         "./css/font-awesome.css",
