@@ -116,13 +116,15 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.changeNote = "Bulk update from source";
         newDe.imported = today;
         newDe.dataElementConcept = migrationCde.dataElementConcept;
+        newDe.objectClass = migrationCde.objectClass;
+        newDe.property = migrationCde.property;
         newDe.valueDomain = migrationCde.valueDomain;
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
-
+        
         removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
