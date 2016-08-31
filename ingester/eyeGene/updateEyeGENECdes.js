@@ -10,15 +10,16 @@ var updateShare = require('../updateShare');
 
 var source = 'LOINC';
 var stewardOrgName = 'NLM';
+var classifOrgName = 'eyeGENE';
 
 var today = new Date().toJSON();
 var lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
 var retired = 0;
 
-function removeClassificationTree(cde, org) {
+function removeClassificationTree(cde) {
     for (var i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === org) {
+        if (cde.classification[i].stewardOrg.name === classifOrgName) {
             cde.classification.splice(i, 1);
             return;
         }
@@ -92,7 +93,7 @@ function compareCdes(existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 }
 
-function processCde(migrationCde, existingCde, orgName, processCdeCb) {
+function processCde(migrationCde, existingCde, processCdeCb) {
     // deep copy
     var newDe = existingCde.toObject();
     delete newDe._id;
@@ -122,7 +123,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
 
-        removeClassificationTree(newDe, orgName);
+        removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {
@@ -159,7 +160,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
     }
 }
 
-function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
+function findCde(cdeId, migrationCde, idv, findCdeDone) {
     var cdeCond = {
         archived: null,
         source: source,
@@ -204,7 +205,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     doneOneAttachment();
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
-                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+                    processCde(migrationCde, existingCdes[0], findCdeDone);
                 })
             }
         } else {
@@ -220,8 +221,6 @@ var migStream;
 function streamOnData(migrationCde) {
     migStream.pause();
     classificationShared.sortClassification(migrationCde);
-    var source = migrationCde.source;
-    var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
     var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {
@@ -232,7 +231,7 @@ function streamOnData(migrationCde) {
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, version, function () {
+        findCde(cdeId, migrationCde, source, version, function () {
             migStream.resume();
         });
     } else {
