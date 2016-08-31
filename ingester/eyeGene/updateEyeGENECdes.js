@@ -231,7 +231,7 @@ function streamOnData(migrationCde) {
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, version, function () {
+        findCde(cdeId, migrationCde, version, function () {
             migStream.resume();
         });
     } else {
