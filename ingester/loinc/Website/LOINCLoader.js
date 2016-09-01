@@ -10,6 +10,7 @@ var ParseNameTable = require('./ParseNameTable');
 var ParseDefinitionDescriptionsTable = require('./ParseDefinitionDescriptionsTable');
 var ParsePartTable = require('./ParsePartTable');
 var ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
+var ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
 var ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
 var ParseMemberOfThesePanelsTable = require('./ParseMemberOfThesePanelsTable');
 var ParsingAnswerListTable = require('./ParseAnswerListTable');
@@ -60,11 +61,20 @@ var tasks = [
         sectionName: 'PARTS',
         function: ParsePartTable.parsePartTable,
         xpath: '//*[@class="Section7000"]/div/table'
+    }, {
+        sectionName: 'FORM CODING INSTRUCTIONS',
+        function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
+        xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
     },
     {
         sectionName: 'BASIC ATTRIBUTES',
         function: ParseBasicAttributesTable.parseBasicAttributesTable,
         xpath: 'html/body/div/table[.//th[text()="BASIC ATTRIBUTES"]]'
+    },
+    {
+        sectionName: 'HL7 ATTRIBUTES',
+        function: ParseHL7AttributesTable.parseHL7AttributesTable,
+        xpath: 'html/body/div/table[.//th[contains(node(),"HL7 ATTRIBUTES")]]'
     },
     {
         sectionName: 'SUBMITTER\'S INFORMATION',

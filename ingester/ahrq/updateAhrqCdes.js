@@ -237,9 +237,14 @@ function streamOnData(migrationCde) {
             migStream.resume();
         });
     } else {
-        // No Cde.
-        console.log("CDE with no ID. !! tinyId: " + migrationCde.tinyId);
-        process.exit(1);
+        console.log("CDE with no AHRQ ID. !! tinyId: " + migrationCde.tinyId+" create cde.");
+        var newCde = migrationCde.toObject();
+        new DataElement(newCde).save(function (e,o) {
+            if (e) throw e;
+            changed++;
+            console.log("created cde tinyId: "+o.tinyId);
+            migStream.resume();
+        });
     }
 }
 
