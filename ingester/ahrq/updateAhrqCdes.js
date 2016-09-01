@@ -165,15 +165,15 @@ function processCde(migrationCde, existingCde, processCdeCb) {
 function findCde(cdeId, migrationCde, idv, findCdeDone) {
     var cdeCond = {
         archived: null,
-        source: 'AHRQ',
+        source: 'LOINC',
         "registrationState.registrationStatus": {$not: /Retired/},
         imported: {$ne: today}
     };
     //noinspection JSUnresolvedFunction
     DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
-        elem.where("source").equals('AHRQ');
+        elem.where("source").equals(source);
         elem.where("id").equals(cdeId);
-//        elem.where("version").equals(idv);
+        elem.where("version").equals(idv);
     }).exec(function (err, existingCdes) {
         if (err) throw err;
         if (existingCdes.length === 0) {
@@ -226,7 +226,7 @@ function streamOnData(migrationCde) {
     var cdeId = 0;
     var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {
-        if (migrationCde.ids[i].source === 'AHRQ') {
+        if (migrationCde.ids[i].source === source) {
             cdeId = migrationCde.ids[i].id;
             version = migrationCde.ids[i].version;
         }
@@ -252,11 +252,9 @@ function streamOnClose() {
     // Retire Missing CDEs
 
     DataElement.find({
-        'imported': {$lt: lastEightHours},
-        'source': source,
-        'classification.stewardOrg.name': stewardOrgName,
-        'classification.elements.name': 'eyeGENE',
-        'archived': null
+        'source': 'AHRQ',
+        'archived': null,
+        'stewardOrg.name':'AHRQ'
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
         else {
