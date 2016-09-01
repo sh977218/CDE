@@ -173,7 +173,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
     DataElement.find(cdeCond).where("ids").elemMatch(function (elem) {
         elem.where("source").equals(source);
         elem.where("id").equals(cdeId);
-        elem.where("version").equals(idv);
+//        elem.where("version").equals(idv);
     }).exec(function (err, existingCdes) {
         if (err) throw err;
         if (existingCdes.length === 0) {
