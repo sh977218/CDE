@@ -11,7 +11,7 @@
                         customMoreLabel: "@ngTtMoreLabel",
                         customLessLabel: "@ngTtLessLabel"
                     },
-                    controller: function ($scope, $element) {
+                    controller: ["$scope", "$element", function ($scope, $element) {
                         $scope.threshold = $scope.threshold || 500;
                         $scope.toggleShow = function () {
                             $scope.open = !$scope.open;
@@ -22,7 +22,7 @@
                             if ($scope.textType === 'plainText')
                                 $($element.find('span')[0]).text($scope.text); //jshint ignore:line
                         };
-                    },
+                    }],
                     link: function ($scope, $element, $attrs) {
                         $scope.open = false;
                         $scope.class = 'collapseText';

@@ -1,5 +1,5 @@
 angular.module('ElasticSearchResource', ['ngResource'])
-.factory('Elastic', function($http, SearchSettings) {
+.factory('Elastic', ["$http", "SearchSettings", function($http, SearchSettings) {
     return {
         searchToken: "id" + Math.random().toString(16).slice(2)
         , buildElasticQuerySettings: function(queryParams) {
@@ -112,4 +112,4 @@ angular.module('ElasticSearchResource', ['ngResource'])
             });
         }
     };
-});
+}]);

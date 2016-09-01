@@ -10,7 +10,7 @@
                         properties: '=ngDisplayObjectProperties',
                         showWarningIcon: '=ngDisplayObjectShowWarningIcon'
                     },
-                    controller: function ($scope) {
+                    controller: ["$scope", function ($scope) {
                         $scope.getValueByNestedProperty = function (o, s) {
                             if (!o) return "";
                             // convert indexes to properties
@@ -28,7 +28,7 @@
                             }
                             return o;
                         };
-                    },
+                    }],
                     link: function ($scope, $element) {
                         if (!$scope.obj) return;
                         else $scope.type = typeof $scope.obj;

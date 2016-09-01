@@ -15,7 +15,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
             $uibModal.open({
                 animation: false,
                 templateUrl: 'confirmReindex.html',
-                controller: function(i) {
+                controller: ["i", function(i) {
                     var isDone = false;
                     $scope.i = i;
                     $scope.okReIndex = function() {
@@ -37,7 +37,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
                             });
                         }, 5000);
                     };
-                },
+                }],
                 resolve: {
                     i: function() {return i;}
                 },

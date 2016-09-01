@@ -61,7 +61,7 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
 }
 
 angular.module('resourcesSystem', ['ngResource'])
-    .factory('Auth', function ($http) {
+    .factory('Auth',  ["$http", function ($http) {
         return {
             login: function (user, success, error) {
                 $http.post('/login', user).success(success).error(error);
@@ -70,8 +70,8 @@ angular.module('resourcesSystem', ['ngResource'])
                 $http.post('/logout').success(success).error(error);
             }
         };
-    })
-    .factory("Attachment", function ($http) {
+    }])
+    .factory("Attachment", ["$http", function ($http) {
         return {
             remove: function (dat, success, error) {
                 $http.post('/removeAttachment', dat).success(success).error(error);
@@ -80,8 +80,8 @@ angular.module('resourcesSystem', ['ngResource'])
                 $http.post('/setAttachmentDefault', dat).success(success).error(error);
             }
         };
-    })
-    .factory("AccountManagement", function ($http) {
+    }])
+    .factory("AccountManagement", ["$http", function ($http) {
         return {
             addSiteAdmin: function (user, success, error) {
                 $http.post('/addSiteAdmin', user).success(success).error(error);
@@ -117,12 +117,12 @@ angular.module('resourcesSystem', ['ngResource'])
                 $http.get('/getAllUsernames').success(usernames).error(errorMsg);
             }
         };
-    })
-    .factory('ViewingHistory', function ($resource) {
+    }])
+    .factory('ViewingHistory', ["$resource", function ($resource) {
         return $resource('/viewingHistory/:start', {start: '@start'},
             {'getCdes': {method: 'GET', isArray: true}});
-    })
-    .factory("Organization", function ($http) {
+    }])
+    .factory("Organization", ["$http", function ($http) {
         return {
             getByName: function (orgName, cb) {
                 $http.get("/org/" + encodeURIComponent(orgName)).then(function (response) {
@@ -130,14 +130,14 @@ angular.module('resourcesSystem', ['ngResource'])
                 });
             }
         };
-    })
-    .factory("TourContent", function () {
+    }])
+    .factory("TourContent", [function () {
         return {
             stop: null
             , steps: []
         };
-    })
-    .factory('userResource', function ($http, $q) {
+    }])
+    .factory('userResource', ["$http", "$q", function ($http, $q) {
         var userResource = this;
         this.user = null;
         this.deferred = $q.defer();
@@ -175,8 +175,8 @@ angular.module('resourcesSystem', ['ngResource'])
             $http.post("/user/update/searchSettings", settings);
         };
         return this;
-    })
-    .factory("AutoCompleteResource", function ($http) {
+    }])
+    .factory("AutoCompleteResource", ["$http", function ($http) {
         return {
             suggest: function (searchTerm) {
                 return $http.get('/cdeCompletion/' + encodeURIComponent(searchTerm), {}).then(function (response) {
@@ -184,13 +184,13 @@ angular.module('resourcesSystem', ['ngResource'])
                 });
             }
         };
-    })
-    .factory("SearchResultResource", function () {
+    }])
+    .factory("SearchResultResource", [function () {
         return {
             elts: []
         };
-    })
-    .factory('LoginRedirect', function ($location) {
+    }])
+    .factory('LoginRedirect', ["$location", function ($location) {
         var lastRoute;
         return {
             storeRoute: function () {
@@ -200,19 +200,20 @@ angular.module('resourcesSystem', ['ngResource'])
                 return lastRoute;
             }
         };
-    })
-    .factory("QuickBoard", function ($http, OrgHelpers, userResource, localStorageService, Alert) {
+    }])
+    .factory("QuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+        function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("cde", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
-    })
-    .factory("FormQuickBoard", function ($http, OrgHelpers, userResource, localStorageService, Alert) {
+    }])
+    .factory("FormQuickBoard", ["$http", "OrgHelpers", "userResource", "localStorageService", "Alert",
+        function ($http, OrgHelpers, userResource, localStorageService, Alert) {
         var result = new QuickBoardObj("form", $http, OrgHelpers, userResource, localStorageService, Alert);
         result.restoreFromLocalStorage();
         return result;
-    })
-
-    .factory("Alert", function($timeout){
+    }])
+    .factory("Alert", ["$timeout", function($timeout){
         var alerts = [];
         var closeAlert = function (index) {
             alerts.splice(index, 1);
@@ -230,8 +231,8 @@ angular.module('resourcesSystem', ['ngResource'])
         };
         var mapAlerts = function() {return alerts;};
         return {closeAlert: closeAlert, addAlert: addAlert, mapAlerts: mapAlerts};
-    })
-    .factory("RegStatusValidator", function(OrgHelpers){
+    }])
+    .factory("RegStatusValidator", ["OrgHelpers", function(OrgHelpers){
         var evalCde = function (cde, orgName, status, cdeOrgRules) {
             var orgRules = cdeOrgRules[orgName];
             var rules = orgRules.filter(function (r) {
@@ -324,4 +325,6 @@ angular.module('resourcesSystem', ['ngResource'])
             , getStatusRules: getStatusRules
             , evalCde: evalCde
         };
-    });
+
+    }])
+;
