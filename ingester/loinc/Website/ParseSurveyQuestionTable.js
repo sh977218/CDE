@@ -1,4 +1,6 @@
-var shared = require('./../Shared/LOINCShared');
+var async = require('async');
+var webdriver = require('selenium-webdriver');
+var By = webdriver.By;
 
 exports.parseSurveyQuestionTable = function (obj, task, table, cb) {
     var sectionName = task.sectionName;

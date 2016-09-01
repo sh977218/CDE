@@ -41,15 +41,15 @@ exports.parseClassification = function (loinc, elt, org, cb) {
     var classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
     classificationToAdd.push('Classification');
     MigrationLoincClassMappingModel.find({
-        type: CLASSIFICATION_TYPE_MAP[classificationType],
-        key: classification
+        Type: CLASSIFICATION_TYPE_MAP[classificationType],
+        Abbreviation: classification
     }).exec(function (err, mappings) {
         if (err) throw err;
         else if (mappings.length === 0) {
             console.log("Can not find classification map.");
             process.exit(1);
         } else if (mappings.length === 1) {
-            classificationToAdd.push(mappings[0].get('value'));
+            classificationToAdd.push(mappings[0].get('Value'));
         }
         else {
             console.log("More than one classification map found");

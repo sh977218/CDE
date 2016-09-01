@@ -3,7 +3,13 @@ var By = require('selenium-webdriver').By;
 var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 var LoadFromLoincSite = require('./LOINCLoader');
 
+var orgName = '';
+exports.setOrgName = function (o) {
+    orgName = o;
+};
+
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
+    obj.compoundForm = true;
     var sectionName = task.sectionName;
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
@@ -37,7 +43,7 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                                 MigrationLoincModel.find({loincId: id}).exec(function (e, existingLoincs) {
                                     if (e) throw e;
                                     if (existingLoincs.length === 0) {
-                                        LoadFromLoincSite.runArray(idArray, function (one, next) {
+                                        LoadFromLoincSite.runArray(idArray, orgName, function (one, next) {
                                             new MigrationLoincModel(one).save(function (er) {
                                                 if (er) throw er;
                                                 next();

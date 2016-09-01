@@ -2,6 +2,8 @@ var async = require('async');
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
+
 function loadQuestionInformation(panelHierarchy, array, cb) {
     var j = 0;
     var loopQuestionInformation = function (panelHierarchy, array, next) {
@@ -22,7 +24,24 @@ function loadQuestionInformation(panelHierarchy, array, cb) {
                                             if (sectionHeader === 'OBSERVATION ID IN FORM') {
                                                 section.findElement(By.xpath('table/tbody/tr[2]')).getText().then(function (text) {
                                                     element['OBSERVATION ID IN FORM'] = text.trim();
-                                                    doneOneSection();
+                                                    MigrationLoincModel.find({loincId: element['LOINC#']}).exec(function (e, existingLoincs) {
+                                                        if (e) throw e;
+                                                        if (existingLoincs.length === 0) {
+                                                            console.log('No loinc id: ' + element['LOINC#'] + ' found');
+                                                            process.exit(1);
+                                                        } else if (existingLoincs.length === 1) {
+                                                            var existingLoinc = existingLoincs[0];
+                                                            existingLoinc.set('deId', text.trim());
+                                                            existingLoinc.markModified('deId');
+                                                            existingLoinc.save(function (err) {
+                                                                if (err) throw err;
+                                                                doneOneSection();
+                                                            });
+                                                        } else {
+                                                            console.log('More than one loinc id: ' + element['LOINC#'] + ' found');
+                                                            process.exit(1);
+                                                        }
+                                                    });
                                                 })
                                             } else if (sectionHeader === 'ANSWER CARDINALITY') {
                                                 section.findElement(By.xpath('table/tbody/tr[2]')).getText().then(function (text) {

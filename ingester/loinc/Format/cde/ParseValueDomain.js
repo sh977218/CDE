@@ -37,6 +37,9 @@ exports.parseValueDomain = function (loinc) {
         if (loinc['EXAMPLE UNITS'] && loinc['EXAMPLE UNITS']['EXAMPLE UNITS']) {
             var unit = loinc['EXAMPLE UNITS']['EXAMPLE UNITS'][0].Unit;
             valueDomain.datatype = uom_datatype_map[unit];
+            if (valueDomain.datatype === 'Date') {
+                valueDomain.datatypeDate = {format: unit};
+            }
         }
     }
     if (loinc_num_datatype_map[loinc.loincId]) {

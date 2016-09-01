@@ -114,7 +114,7 @@ var tasks = [
     {
         sectionName: 'SURVEY QUESTION',
         function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
-        xpath: 'html/body/div/table[.//th[text()="SURVEY QUESTION"]]'
+        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]'
     },
     {
         sectionName: 'WEB CONTENT',
@@ -176,7 +176,8 @@ function doTask(driver, task, obj, cb) {
     });
 }
 
-exports.runArray = function (array, doneItem, doneArray) {
+exports.runArray = function (array, orgName, doneItem, doneArray) {
+    ParsePanelHierarchyTable.setOrgName(orgName);
     var results = [];
     async.series([
         function () {
@@ -190,7 +191,7 @@ exports.runArray = function (array, doneItem, doneArray) {
                     if (existingLoincs.length === 0) {
                         var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
                         driver.get(url).then(function () {
-                            var obj = {URL: url, loincId: loincId, info: ''};
+                            var obj = {URL: url, orgName: orgName, loincId: loincId, info: ''};
                             async.forEach(tasks, function (task, doneOneTask) {
                                 doTask(driver, task, obj, doneOneTask);
                             }, function doneAllTasks() {

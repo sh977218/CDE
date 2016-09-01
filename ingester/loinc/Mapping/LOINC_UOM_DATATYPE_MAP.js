@@ -47,5 +47,6 @@ exports.map = {
     "a": "",
     "mv": "",
     "mV": "",
-    "ms": ""
+    "ms": "",
+    "{mm/dd/yyyy}": "Date"
 };

@@ -2,6 +2,7 @@ var MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection'
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
 var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
+var orgName = 'Newborn Screening';
 
 MigrationNewBornScreeningCDEModel.find({}).exec(function (err, dataArray) {
     if (err) throw err;
@@ -10,7 +11,7 @@ MigrationNewBornScreeningCDEModel.find({}).exec(function (err, dataArray) {
         data = data.toObject();
         newArray.push(data.LOINC_NUM.trim());
     });
-    LoadFromLoincSite.runArray(newArray, function (one, next) {
+    LoadFromLoincSite.runArray(newArray, orgName,function (one, next) {
         var obj = new MigrationLoincModel(one);
         obj.save(function (err) {
             if (err) throw err;
