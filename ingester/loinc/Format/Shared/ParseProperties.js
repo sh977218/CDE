@@ -54,7 +54,7 @@ exports.parseProperties = function (loinc) {
             tds = tds + td;
         });
         var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
-        properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
+        properties.push({key: 'HL7 ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['SURVEY QUESTION']) {
         var ths = '';
@@ -67,7 +67,7 @@ exports.parseProperties = function (loinc) {
             tds = tds + td;
         });
         var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
-        properties.push({key: 'BASIC ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
+        properties.push({key: 'SURVEY QUESTION', value: table, source: 'LOINC', valueFormat: 'html'});
     }
     if (loinc['EXAMPLE UNITS']) {
         var trs = '<tr><th>Source Type</th><th>Unit</th></tr>';
