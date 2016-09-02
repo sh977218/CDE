@@ -216,10 +216,22 @@ exports.riverFunction = function (elt) {
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.steward = elt.stewardOrg.name;
     elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
-    if (elt.naming[0].definitionFormat === 'html') {
-        elt.primaryDefinitionCopy = elt.naming[0].definition.replace(/<(?:.|\\n)*?>/gm, '');
+
+    var primDef;
+    for (var i = 0; i < elt.naming.lenght; i++) {
+        if (elt.naming[i].definition) {
+            primDef = elt.naming[i];
+            i = elt.naming.length;
+        }
+    }
+    if (primDef) {
+        if (primDef.definitionFormat === 'html') {
+            elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
+        } else {
+            elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
+        }
     } else {
-        elt.primaryDefinitionCopy = elt.naming ? escapeHTML(elt.naming[0].definition) : '';
+        elt.primaryDefinitionCopy = '';
     }
     var regStatusSortMap = {
         Retired: 6,
