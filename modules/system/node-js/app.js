@@ -723,10 +723,14 @@ exports.init = function (app) {
     });
 
     app.post('/mail/messages/:type', function (req, res) {
-        mongo_data_system.getMessages(req, function (err, messages) {
-            if (err) res.status(404).send(err);
-            else res.send(messages);
-        });
+        if (req.isAuthenticated()) {
+            mongo_data_system.getMessages(req, function (err, messages) {
+                if (err) res.status(404).send(err);
+                else res.send(messages);
+            });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
     });
 
     app.post('/addUserRole', function (req, res) {
