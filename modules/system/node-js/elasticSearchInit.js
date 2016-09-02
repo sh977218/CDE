@@ -218,7 +218,7 @@ exports.riverFunction = function (elt) {
     elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
 
     var primDef;
-    for (var i = 0; i < elt.naming.lenght; i++) {
+    for (var i = 0; i < elt.naming.length; i++) {
         if (elt.naming[i].definition) {
             primDef = elt.naming[i];
             i = elt.naming.length;
