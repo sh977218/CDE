@@ -153,7 +153,7 @@ var specialTasks = [
         function: ParseQuestion.parseQuestion
     },
     {
-        function:CheckLformViewer.checkLformViewer
+        function: CheckLformViewer.checkLformViewer
     }
 ];
 var currentVersion = '2.56';
