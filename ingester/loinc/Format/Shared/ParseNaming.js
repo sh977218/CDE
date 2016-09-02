@@ -1,19 +1,5 @@
 exports.parseNaming = function (loinc) {
     var naming = [];
-    var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
-    if (LOINCNAME) {
-        naming.push({
-            designation: LOINCNAME,
-            definition: '',
-            languageCode: 'EN-US',
-            context: {
-                contextName: '',
-                acceptability: 'preferred'
-            },
-            source: 'LOINC'
-        })
-    }
-
     var NAME = loinc['NAME']['NAME'];
     if (NAME) {
         if (NAME['Long Common Name']) {
@@ -41,6 +27,27 @@ exports.parseNaming = function (loinc) {
             });
         }
     }
+    var LOINCNAME = loinc['LOINC NAME']['LOINC NAME']['LOINC NAME'];
+    if (LOINCNAME) {
+        var nameExist = false;
+        naming.forEach(function (n) {
+            if (n.designation === LOINCNAME) {
+                nameExist = true;
+            }
+        });
+        if (!nameExist) {
+            naming.push({
+                designation: LOINCNAME,
+                definition: '',
+                languageCode: 'EN-US',
+                context: {
+                    contextName: '',
+                    acceptability: 'preferred'
+                },
+                source: 'LOINC'
+            })
+        }
+    }
     if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
         loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (t) {
             naming.push({
@@ -56,4 +63,4 @@ exports.parseNaming = function (loinc) {
         })
     }
     return naming;
-}
+};
