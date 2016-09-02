@@ -34,16 +34,6 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
     }
 
     @Test
-    public void relatedConcepts() {
-        goToCdeByName("Patient Visual Change Chief Complaint Indicator");
-        showAllTabs();
-        clickElement(By.id("concepts_tab"));
-        clickElement(By.linkText("Change"));
-        textPresent("Specimen Inflammation Change Type");
-        textNotPresent("Patient Visual Change Chief Complaint Indicator", By.cssSelector("uib-accordion"));
-    }
-
-    @Test
     public void usedBySummary() {
         goToCdeSearch();
         try {
