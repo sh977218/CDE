@@ -1,3 +1,6 @@
+var async = require('async');
+var By = require('selenium-webdriver').By;
+
 exports.checkLformViewer = function (driver, obj, cb) {
     driver.findElements(By.xpath('html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]//a')).then(function (links) {
         if (links.length === 0) {
