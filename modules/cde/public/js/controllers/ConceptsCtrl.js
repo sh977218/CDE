@@ -34,12 +34,6 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
         $scope[type + 'RemoveConcept']();
     };
 
-    //$scope.conceptConfigurations = [
-    //    {type: "dataElementConcept", display: "Data Element Concept", path: "dataElementConcept.concepts.name"},
-    //    {type: "objectClass", display: "Object Class", path: "objectClass.concepts.name"},
-    //    {type: "property", display: "Property", path: "property.concepts.name"}
-    //];
-
     $scope.conceptConfigurations = {
         "dataElementConcept": {display: "Data Element Concept", path: "dataElementConcept.concepts.name"},
         "objectClass": {display: "Object Class", path: "objectClass.concepts.name"},
@@ -47,15 +41,6 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
     };
 
     $scope.relatedCdes = function (concept, type) {
-        //$http({method: "POST", url: "/desByConcept", data: concept})
-        //    .success(function (data) {
-        //        $scope.cdes = data;
-        //        for (var i=0; i < $scope.cdes.length; i++) {
-        //            if ($scope.cdes[i].tinyId === $scope.elt.tinyId) {
-        //                $scope.cdes.splice(i, 1);
-        //            }
-        //        }
-        //    });
         $location.url('/cde/search?q=' + $scope.conceptConfigurations[type].path + ':"' + concept + '"');
     };
 }
