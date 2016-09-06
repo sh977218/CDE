@@ -1,11 +1,12 @@
 var async = require('async');
-var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewbornScreeningCDEModel;
+var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel;
 var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
 var LoadLoincFormIntoMigration = require('../loinc/Format/form/LoincFormLoader');
 
-var orgName = 'NLM';
+var stewardOrgName = 'NLM';
+var orgName = 'AHRQ';
 var org;
 var loincIdArray = [];
 var formCount = 0;
@@ -13,8 +14,8 @@ var formCount = 0;
 function run() {
     async.series([
         function (cb) {
-            LoadLoincFormIntoMigration.setStewardOrg(orgName);
-            LoadLoincFormIntoMigration.setClassificationOrgName('Newborn screening');
+            LoadLoincFormIntoMigration.setStewardOrg(stewardOrgName);
+            LoadLoincFormIntoMigration.setClassificationOrgName('AHRQ');
             cb(null, 'Finished set parameters');
         },
         function (cb) {
@@ -40,10 +41,10 @@ function run() {
             });
         },
         function (cb) {
-            MigrationNewbornScreeningCDEModel.find({LONG_COMMON_NAME: {$regex: 'panel'}}).exec(function (findNewbornScreeningFormError, newbornScreeningForms) {
-                if (findNewbornScreeningFormError) throw findNewbornScreeningFormError;
-                newbornScreeningForms.forEach(function (n) {
-                    loincIdArray.push(n.get('LOINC_NUM'));
+            MigrationLoincModel.find({orgName:'AHRQ',isForm:true,compoundForm:false}).exec(function (findAhrqFormError, ahrqForms) {
+                if (findAhrqFormError) throw findAhrqFormError;
+                ahrqForms.forEach(function (n) {
+                    loincIdArray.push(n.get('loincId'));
                 });
                 cb(null, 'Finished retrieving all newborn screening form id.');
             })

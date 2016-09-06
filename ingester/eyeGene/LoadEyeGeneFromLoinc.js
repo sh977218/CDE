@@ -10,6 +10,7 @@ MigrationEyeGeneLoincModel.find({}).exec(function (err, dataArray) {
         data = data.toObject();
         newArray.push(data.LOINC_NUM.trim());
     });
+    newArray=['79897-5'];
     LoadFromLoincSite.runArray(newArray,orgName, function (one, next) {
         var obj = new MigrationLoincModel(one);
         obj.save(function (err) {

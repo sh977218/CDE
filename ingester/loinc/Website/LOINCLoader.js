@@ -231,9 +231,10 @@ exports.runArray = function (array, orgName, doneItem, doneArray) {
                 });
             }, function doneAllLoinc() {
                 console.log('Finished all. loincCount: ' + loincCount);
-                driver.quit();
-                if (doneArray) doneArray(results);
-                else process.exit(1);
+                driver.quit(function () {
+                    if (doneArray) doneArray(results);
+                    else process.exit(1);
+                });
             });
         }
     ]);

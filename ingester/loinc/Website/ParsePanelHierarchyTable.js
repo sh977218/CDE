@@ -9,7 +9,8 @@ exports.setOrgName = function (o) {
 };
 
 exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
-    obj.compoundForm = true;
+    obj.isForm = true;
+    obj.compoundForm = false;
     var sectionName = task.sectionName;
     element.findElements(By.xpath('tbody/tr')).then(function (trs) {
         trs.shift();
@@ -44,8 +45,10 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                                     if (e) throw e;
                                     if (existingLoincs.length === 0) {
                                         LoadFromLoincSite.runArray(idArray, orgName, function (one, next) {
-                                            new MigrationLoincModel(one).save(function (er) {
+                                            new MigrationLoincModel(one).save(function (er, o) {
                                                 if (er) throw er;
+                                                if (o.get('isForm'))
+                                                    obj.compoundForm = true;
                                                 next();
                                             })
                                         }, function () {
