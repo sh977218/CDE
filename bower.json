@@ -39,6 +39,12 @@
     "angular-bootstrap": "1.1.0"
   },
   "overrides": {
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    },
     "font-awesome": {
       "main": [
         "./css/font-awesome.css",
