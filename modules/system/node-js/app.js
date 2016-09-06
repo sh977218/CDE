@@ -14,7 +14,6 @@ var passport = require('passport')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
-    , request = require('request')
     , fs = require('fs')
     , multer = require('multer')
     , exportShared = require('../../system/shared/exportShared')
@@ -229,6 +228,8 @@ exports.init = function (app) {
                                 }, function (err, resp, body) {
                                     if (!body.success) {
                                         captchaDone("incorrect recaptcha");
+                                    } else {
+                                        captchaDone();
                                     }
                                 });
                         } else {
