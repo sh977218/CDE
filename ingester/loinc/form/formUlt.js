@@ -76,15 +76,15 @@ exports.saveObj = function(form,count,next){
     });
     MigrationFormModel.find({'ids.id':loincId}).exec(function(er,existingForms){
         if(er) throw er;
-        if(existingForms.length ===0){
+        if(existingForms.length === 0 ){
             var obj  = new MigrationFormModel(form);
             obj.save(function(err,o){
                 if(err) throw err;
                 count++;
-                console.log('count:'+count);
+                console.log('count: ' + count);
                 next(o);
             })
-        }else{
+        } else {
             next();
         }
     });
