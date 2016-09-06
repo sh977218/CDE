@@ -1,19 +1,9 @@
 var async = require('async');
-var CLASSIFICATION_TYPE_MAP = require('../../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
-var MigrationLoincClassMappingModel = require('../../../createMigrationConnection').MigrationLoincClassificationMappingModel;
-var classificationShared = require('../../../../modules/system/shared/classificationShared');
+var CLASSIFICATION_TYPE_MAP = require('../Mapping/LOINC_CLASSIFICATION_TYPE_MAP').map;
+var MigrationLoincClassMappingModel = require('../../createMigrationConnection').MigrationLoincClassificationMappingModel;
+var classificationShared = require('../../../modules/system/shared/classificationShared');
 
-var classificationOrgName = '';
-exports.setClassificationOrgName = function (o) {
-    classificationOrgName = o;
-};
-
-var classificationArray = [];
-exports.setClassification = function (c) {
-    classificationArray = c;
-};
-
-exports.parseClassification = function (loinc, elt, org, cb) {
+exports.parseClassification = function (loinc, elt, org, classificationOrgName, classificationArray, cb) {
     var classTypeString = '';
     var classification = '';
     var classificationType = '';
@@ -33,10 +23,6 @@ exports.parseClassification = function (loinc, elt, org, cb) {
             console.log('Unknown Class/Type found in loinc id: ' + loinc.loincId);
             process.exit(1);
         }
-    }
-    if (classificationOrgName === '') {
-        console.log('classificationOrgName is empty. Please set it first.');
-        process.exit(1);
     }
     var classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
     classificationToAdd.push('Classification');

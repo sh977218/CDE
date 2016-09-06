@@ -3,7 +3,7 @@ var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoi
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
-var LoadLoincCdeIntoMigration = require('../loinc/Format/cde/LoadLoincCdeIntoMigration');
+var LoadLoincCdeIntoMigration = require('./LoadLoincCdeIntoMigration');
 
 var classificationOrgName = 'AHRQ';
 var org;
@@ -39,10 +39,6 @@ function run() {
             });
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.setClassificationOrgName(classificationOrgName);
-            cb(null, 'Finished set parameters');
-        },
-        function (cb) {
             MigrationLoincModel.find({
                 compoundForm: null,
                 orgName: classificationOrgName
@@ -56,7 +52,7 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,classificationOrgName, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {

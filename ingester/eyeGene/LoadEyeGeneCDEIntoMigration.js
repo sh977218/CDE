@@ -3,7 +3,7 @@ var MigrationEyeGENELoincModel = require('./../createMigrationConnection').Migra
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
-var LoadLoincCdeIntoMigration = require('../loinc/Format/cde/LoadLoincCdeIntoMigration');
+var LoadLoincCdeIntoMigration = require('./LoadLoincCdeIntoMigration');
 
 var classificationOrgName = 'eyeGENE';
 var org;
@@ -39,10 +39,6 @@ function run() {
             });
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.setClassificationOrgName(classificationOrgName);
-            cb(null, 'Finished set parameters');
-        },
-        function (cb) {
             MigrationEyeGENELoincModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}).exec(function (findCdeError, Cdes) {
                 if (findCdeError) throw findCdeError;
                 console.log('Total # Cde: ' + Cdes.length);
@@ -53,7 +49,7 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,classificationOrgName, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {

@@ -1,10 +1,10 @@
 var mongo_data = require('../../../../modules/system/node-js/mongo-data');
 
-var ParseNaming = require('./../Shared/ParseNaming');
-var ParseIds = require('./../Shared/ParseIds');
-var ParseProperties = require('./../Shared/ParseProperties');
-var ParseReferenceDocuments = require('./../Shared/ParseReferenceDocuments');
-var ParseStewardOrg = require('./../Shared/ParseStewardOrg');
+var ParseNaming = require('./.././ParseNaming');
+var ParseIds = require('./.././ParseIds');
+var ParseProperties = require('./.././ParseProperties');
+var ParseReferenceDocuments = require('./.././ParseReferenceDocuments');
+var ParseStewardOrg = require('./.././ParseStewardOrg');
 var ParseValueDomain = require('./ParseValueDomain');
 var ParseConcept = require('./ParseConcept');
 

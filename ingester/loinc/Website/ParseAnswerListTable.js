@@ -1,7 +1,7 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
 
-var shared = require('./../Shared/LOINCShared');
+var shared = require('././LOINCShared');
 
 exports.parseAnswerListTable = function (obj, task, table, cb) {
     var sectionName = task.sectionName;

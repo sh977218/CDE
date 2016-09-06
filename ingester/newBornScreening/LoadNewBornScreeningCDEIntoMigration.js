@@ -3,7 +3,7 @@ var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection'
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
-var LoadLoincCdeIntoMigration = require('../loinc/Format/cde/LoadLoincCdeIntoMigration');
+var LoadLoincCdeIntoMigration = require('./LoadLoincCdeIntoMigration');
 
 var classificationOrgName = 'NLM';
 var org;

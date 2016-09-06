@@ -3,7 +3,7 @@ var MigrationNewbornScreeningCDEModel = require('./../createMigrationConnection'
 var MigrationFormModel = require('./../createMigrationConnection').MigrationFormModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
 
-var LoadLoincFormIntoMigration = require('../loinc/Format/form/LoincFormLoader');
+var LoadLoincFormIntoMigration = require('./LoincFormLoader');
 
 var orgName = 'NLM';
 var org;
