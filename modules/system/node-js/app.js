@@ -14,7 +14,6 @@ var passport = require('passport')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
-    , request = require('request')
     , fs = require('fs')
     , multer = require('multer')
     , exportShared = require('../../system/shared/exportShared')
@@ -215,58 +214,64 @@ exports.init = function (app) {
 
     app.post('/login', csrf(), function (req, res, next) {
         var failedIp = findFailedIp(getRealIp(req));
-        var err;
-        if (failedIp && failedIp.nb > 2) {
-            if (req.body.recaptcha) {
-                request.post("https://www.google.com/recaptcha/api/siteverify",
-                    {
-                        form: {
-                            secret: config.captchaCode,
-                            response: req.body['g-recaptcha-response'],
-                            remoteip: getRealIp(req)
+        async.series([
+                function checkCaptcha(captchaDone) {
+                    if (failedIp && failedIp.nb > 2) {
+                        if (req.body.recaptcha) {
+                            request.post("https://www.google.com/recaptcha/api/siteverify",
+                                {
+                                    form: {
+                                        secret: config.captchaCode,
+                                        response: req.body['g-recaptcha-response'],
+                                        remoteip: getRealIp(req)
+                                    }
+                                }, function (err, resp, body) {
+                                    if (!body.success) {
+                                        captchaDone("incorrect recaptcha");
+                                    } else {
+                                        captchaDone();
+                                    }
+                                });
+                        } else {
+                            catchaDone("missing reCaptcha");
                         }
-                    }, function (err, resp, body) {
-                        if (!body.success) {
-                            err = "incorrect recaptcha";
-                        }
-                    });
-            } else {
-                err = "missing reCaptcha";
-            }
-        }
-
-        if (err) {
-            return res.status(412).send(err);
-        }
-
-        // Regenerate is used so appscan won't complain
-        req.session.regenerate(function () {
-            passport.authenticate('local', function (err, user) {
+                    } else {
+                        captchaDone();
+                    }
+                }],
+            function allDone(err) {
                 if (err) {
-                    return res.status(403).end();
+                    return res.status(412).send(err);
                 }
-                if (!user) {
-                    if (failedIp && config.useCaptcha) failedIp.nb++;
-                    else {
-                        failedIps.unshift({ip: getRealIp(req), nb: 1});
-                        failedIps.length = 50; // simon doesn't like because what if more than 50 people do this
-                    }
-                    return res.status(403).send();
-                }
-                req.logIn(user, function (err) {
-                    if (failedIp) {
-                        failedIp.nb = 0;
-                    }
-                    if (err) {
-                        return res.status(403).end();
-                    }
-                    req.session.passport = {user: req.user._id};
-                    return res.send("OK");
+                // Regenerate is used so appscan won't complain
+                req.session.regenerate(function () {
+                    passport.authenticate('local', function (err, user) {
+                        if (err) {
+                            return res.status(403).end();
+                        }
+                        if (!user) {
+                            if (failedIp && config.useCaptcha) failedIp.nb++;
+                            else {
+                                failedIps.unshift({ip: getRealIp(req), nb: 1});
+                                failedIps.length = 50; // simon doesn't like because what if more than 50 people do this
+                            }
+                            return res.status(403).send();
+                        }
+                        req.logIn(user, function (err) {
+                            if (failedIp) {
+                                failedIp.nb = 0;
+                            }
+                            if (err) {
+                                return res.status(403).end();
+                            }
+                            req.session.passport = {user: req.user._id};
+                            return res.send("OK");
+                        });
+                    })(req, res, next);
                 });
-            })(req, res, next);
-        });
+            });
     });
-
+    
     app.post('/logout', function (req, res) {
         if (!req.session) {
             return res.status(403).end();
