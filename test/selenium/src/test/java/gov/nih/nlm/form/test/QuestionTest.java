@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,6 +11,14 @@ import org.testng.Assert;
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
+        try {
+            addQuestionToSectionUnsafe(cdeName, sectionNumber);
+        } catch (TimeoutException e) {
+            addQuestionToSectionUnsafe(cdeName, sectionNumber);
+        }
+    }
+
+    public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
         findElement(By.id("ftsearch-input")).clear();
         textPresent("", By.id("ftsearch-input"));
         findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
