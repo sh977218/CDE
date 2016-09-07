@@ -15,6 +15,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys("canYouSeeThis");
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
         clickElement(By.id("confirmContextEdit_TEST"));
+        textPresent("Org has been updated");
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
