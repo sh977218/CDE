@@ -94,6 +94,9 @@ exports.loadForm=function(element, fe, next) {
             };
             var formElement = {
                 elementType: 'form',
+                instructions: {value:'',valueFormat:''},
+                cardinality:{},
+                label:existingForm.naming[0].designation,
                 inForm:inForm,
                 formElements: []
             };
