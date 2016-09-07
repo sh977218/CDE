@@ -11,6 +11,8 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../cde/node-js/usersvc')
+    , schemas = require('./schemas')
+    , elastic = require('./elastic')
     ;
 
 exports.init = function (app, daoManager) {
@@ -23,6 +25,12 @@ exports.init = function (app, daoManager) {
     app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
+
+    schemas.formSchema.pre('save', function (next) {
+        var self = this;
+        elastic.updateOrInsert(self);
+        next();
+    });
 
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {

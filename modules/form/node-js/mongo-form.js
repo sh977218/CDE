@@ -4,7 +4,6 @@ var config = require('../../system/node-js/parseConfig')
     , connHelper = require('../../system/node-js/connections')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , logging = require('../../system/node-js/logging')
-    , elastic = require('./elastic')
     ;
 
 exports.type = "form";
@@ -14,12 +13,6 @@ var conn = connHelper.establishConnection(config.database.appData);
 var Form = conn.model('Form', schemas.formSchema);
 
 exports.Form = Form;
-
-schemas.formSchema.pre('save', function (next) {
-    var self = this;
-    elastic.updateOrInsert(self);
-    next();
-});
 
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
