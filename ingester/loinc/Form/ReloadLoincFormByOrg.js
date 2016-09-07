@@ -14,6 +14,7 @@ var orgMapping = {
 
 exports.reloadLoincFormsByOrg = function (orgName) {
     var org;
+    var orgInfo = orgMapping[orgName];
     async.series([
         function (cb) {
             MigrationFormModel.remove({}, function (removeMigrationFormModelError) {
@@ -38,13 +39,13 @@ exports.reloadLoincFormsByOrg = function (orgName) {
             });
         },
         function (cb) {
-            var findSimpleFormCond = {orgName: orgName, isForm: true, compoundForm: false};
+            var findSimpleFormCond = {orgName: orgName, isForm: true, compoundForm: false, dependentSection: false};
             MigrationLoincModel.find(findSimpleFormCond).exec(function (findSimpleFormError, simpleForms) {
                 if (findSimpleFormError) throw findSimpleFormError;
                 console.log('Processing ' + simpleForms.length + ' simple forms');
                 async.forEachSeries(simpleForms, function (simpleForm, doneOneSimpleForm) {
                     if (simpleForm.toObject) simpleForm = simpleForm.toObject();
-                    formUlt.createForm(simpleForm, org, orgMapping[orgName], function (newForm) {
+                    formUlt.createForm(simpleForm, org, orgInfo, function (newForm) {
                         async.forEachSeries(simpleForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (element, doneOneElement) {
                             formUlt.loadCde(element, newForm.formElements[0].formElements, doneOneElement);
                         }, function doneAllElements() {
@@ -71,11 +72,11 @@ exports.reloadLoincFormsByOrg = function (orgName) {
                 console.log('Processing ' + compoundForms.length + ' compound forms');
                 async.forEachSeries(compoundForms, function (compoundForm, doneOneCompoundForm) {
                     if (compoundForm.toObject) compoundForm = compoundForm.toObject();
-                    formUlt.createForm(compoundForm, org, orgMapping[orgName], function (newForm) {
+                    formUlt.createForm(compoundForm, org, orgInfo, function (newForm) {
                         async.forEachSeries(compoundForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (element, doneOneElement) {
                             if(element.elements.length===0) {
                                 formUlt.loadCde(element, newForm.formElements[0].formElements, doneOneElement);
-                            }else{
+                            }else if(element.elements.length !== 0 && element){
                                 formUlt.loadForm(element,newForm.formElements[0].formElements,doneOneElement);
                             }
                         }, function doneAllElements() {

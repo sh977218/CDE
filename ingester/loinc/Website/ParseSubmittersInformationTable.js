@@ -1,7 +1,7 @@
 var async = require('async');
 var By = require('selenium-webdriver').By;
 
-var shared = require('././LOINCShared');
+var utility = require('../Utility/utility');
 
 exports.parseSubmittersInformationTable = function (obj, task, element, cb) {
     var sectionName = task.sectionName;
@@ -15,7 +15,7 @@ exports.parseSubmittersInformationTable = function (obj, task, element, cb) {
                 async.series([
                     function (doneKey) {
                         tds[1].getText().then(function (keyText) {
-                            key = shared.sanitizeText(keyText);
+                            key = utility.sanitizeText(keyText);
                             doneKey();
                         });
                     },

@@ -34,7 +34,6 @@ exports.loadCde = function (element, fe, next) {
         if (err) throw err;
         if (existingCdes.length === 0) {
             console.log('cannot find this cde with loincId: ' + element['LOINC#']);
-            console.log('formId: ' + form.ids[0].id);
             process.exit(1);
         } else {
             var existingCde = existingCdes[0];

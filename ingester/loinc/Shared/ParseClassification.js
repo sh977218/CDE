@@ -36,9 +36,10 @@ exports.parseClassification = function (loinc, elt, org, classificationOrgName, 
             process.exit(1);
         } else if (mappings.length === 1) {
             classificationToAdd.push(mappings[0].get('Value'));
-        }
-        else {
-            console.log("More than one classification map found");
+        } else {
+            console.log("More than one classification map found. ");
+            console.log("Type: " + CLASSIFICATION_TYPE_MAP[classificationType]);
+            console.log("Abbreviation: " + classification);
             process.exit(1);
         }
         classificationShared.classifyItem(elt, classificationOrgName, classificationToAdd);
