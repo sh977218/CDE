@@ -6,9 +6,9 @@ var MigrationOrgModel = require('../../createMigrationConnection').MigrationOrgM
 var formUlt = require('./formUlt');
 
 var orgMapping = {
-    'AHRQ': {stwardOrgName: 'NLM', classificationOrgName: 'AHRQ', classification: []},
-    'eyeGENE': {stwardOrgName: 'NLM', classificationOrgName: 'eyeGENE', classification: []},
-    'Newborn Screening': {stwardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['Newborn Screening']}
+    'AHRQ': {stewardOrgName: 'NLM', classificationOrgName: 'AHRQ', classification: []},
+    'eyeGENE': {stewardOrgName: 'NLM', classificationOrgName: 'eyeGENE', classification: []},
+    'Newborn Screening': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['Newborn Screening']}
 };
 
 
@@ -55,6 +55,37 @@ exports.reloadLoincFormsByOrg = function (orgName) {
                     })
                 }, function doneAllSimpleForms() {
                     console.log('Finished creating simple forms');
+                    cb();
+                })
+            })
+        },
+        function (cb) {
+            formUlt.updateFormByOrgName(orgName,org,function(){
+                cb();
+            });
+        },
+        function(cb){
+            var findCompoundFormCond = {orgName: orgName, isForm: true, compoundForm: true};
+            MigrationLoincModel.find(findCompoundFormCond).exec(function (findCompoundFormError, compoundForms) {
+                if (findCompoundFormError) throw findCompoundFormError;
+                console.log('Processing ' + compoundForms.length + ' compound forms');
+                async.forEachSeries(compoundForms, function (compoundForm, doneOneCompoundForm) {
+                    if (compoundForm.toObject) compoundForm = compoundForm.toObject();
+                    formUlt.createForm(compoundForm, org, orgMapping[orgName], function (newForm) {
+                        async.forEachSeries(compoundForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (element, doneOneElement) {
+                            if(element.elements.length===0) {
+                                formUlt.loadCde(element, newForm.formElements[0].formElements, doneOneElement);
+                            }else{
+                                formUlt.loadForm(element,newForm.formElements[0].formElements,doneOneElement);
+                            }
+                        }, function doneAllElements() {
+                            formUlt.saveObj(newForm, function () {
+                                doneOneCompoundForm();
+                            });
+                        })
+                    })
+                }, function doneAllCompoundForms() {
+                    console.log('Finished creating compound forms');
                     cb();
                 })
             })

@@ -24,7 +24,7 @@ exports.parseClassification = function (loinc, elt, org, classificationOrgName, 
             process.exit(1);
         }
     }
-    var classificationToAdd = JSON.parse(JSON.stringify(classificationArray));
+    var classificationToAdd = classificationArray;
     classificationToAdd.push('Classification');
     MigrationLoincClassMappingModel.find({
         Type: CLASSIFICATION_TYPE_MAP[classificationType],
