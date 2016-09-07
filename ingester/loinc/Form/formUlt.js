@@ -2,12 +2,12 @@ var REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 var MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 
 var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
-var FormModel = require('../../createNlmcdeConnection').FormModel;
 var MigrationFormModel = require('../../createMigrationConnection').MigrationFormModel;
 
 var updateShare = require('../../updateShare');
 var classificationShared = require('../../../modules/system/shared/classificationShared');
 var mongo_form = require('../../../modules/form/node-js/mongo-form');
+var FormModel = mongo_form.Form;
 var CreateElt = require('../Shared/CreateElt');
 
 var importDate = new Date().toJSON();
@@ -16,13 +16,17 @@ exports.createForm = function (loinc, org, orgInfo, cb) {
     CreateElt.createElt(loinc, org, orgInfo, function (newForm) {
         newForm.formElements = [{
             elementType: 'section',
+            label: '',
+            instructions: {
+                value: ""
+            },
             formElements: []
         }];
         cb(newForm);
     });
 };
 
-exports.loadCde=function(element, fe, next) {
+exports.loadCde = function (element, fe, next) {
     DataElementModel.find({
         archived: null,
         "registrationState.registrationStatus": {$ne: "Retired"}
@@ -57,7 +61,7 @@ exports.loadCde=function(element, fe, next) {
             var formElement = {
                 elementType: 'question',
                 instructions: {},
-                label: existingCde.naming[0].designation,
+                label: element['LOINC Name'],
                 question: question,
                 formElements: []
             };
