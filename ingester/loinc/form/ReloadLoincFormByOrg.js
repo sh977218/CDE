@@ -38,23 +38,32 @@ exports.reloadLoincFormsByOrg = function (orgName) {
             });
         },
         function (cb) {
-            var count = 0;
             var findSimpleFormCond = {orgName: orgName, isForm: true, compoundForm: false};
             MigrationLoincModel.find(findSimpleFormCond).exec(function (findSimpleFormError, simpleForms) {
                 if (findSimpleFormError) throw findSimpleFormError;
+                console.log('Processing ' + simpleForms.length + ' simple forms');
                 async.forEachSeries(simpleForms, function (simpleForm, doneOneSimpleForm) {
                     if (simpleForm.toObject) simpleForm = simpleForm.toObject();
                     formUlt.createForm(simpleForm, org, orgMapping[orgName], function (newForm) {
                         async.forEachSeries(simpleForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (element, doneOneElement) {
                             formUlt.loadCde(element, newForm.formElements[0].formElements, doneOneElement);
                         }, function doneAllElements() {
-                            formUlt.saveObj(newForm, count, doneOneSimpleForm);
+                            formUlt.saveObj(newForm, function () {
+                                doneOneSimpleForm();
+                            });
                         })
                     })
-                }, cb)
+                }, function doneAllSimpleForms() {
+                    console.log('Finished creating simple forms');
+                    cb();
+                })
             })
+        },
+        function (cb) {
+            formUlt.updateFormByOrgName(orgName,org,function(){
+                cb();
+            });
         }
     ], function (err, results) {
-        process.exit(0);
     });
 };
