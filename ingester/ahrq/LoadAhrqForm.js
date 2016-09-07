@@ -1,1 +1,1 @@
-require('./ReloadLoincFormByOrg').reloadLoincFormsByOrg('AHRQ');
+require('../loinc/Form/ReloadLoincFormByOrg').reloadLoincFormsByOrg('AHRQ');
