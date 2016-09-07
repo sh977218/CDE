@@ -47,8 +47,6 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                                         LoadFromLoincSite.runArray(idArray, orgName, function (one, next) {
                                             new MigrationLoincModel(one).save(function (er, o) {
                                                 if (er) throw er;
-                                                if (o.get('isForm'))
-                                                    obj.compoundForm = true;
                                                 next();
                                             })
                                         }, function () {
@@ -109,6 +107,7 @@ exports.parsePanelHierarchyTable = function (obj, task, element, cb) {
                         currentLevels[depth] = row;
                         currentLevels[depth - 1].elements.push(row);
                         currentDepth = depth;
+                        obj.compoundForm = true;
                     }
                     doneOneTr();
                 });

@@ -37,7 +37,8 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     public void formDescriptionTest() {
         goToFormByName("Loinc Widget Test Form");
         clickElement(By.id("description_tab"));
-        textPresent("Embedded Form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Embedded Form: Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
     }
 
 

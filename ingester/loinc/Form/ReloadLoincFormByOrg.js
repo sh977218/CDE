@@ -12,7 +12,7 @@ var orgMapping = {
 };
 
 
-exports.reloadLoincFormsByOrg = function (orgName) {
+exports.reloadLoincFormsByOrg = function (orgName, next) {
     var org;
     var orgInfo = orgMapping[orgName];
     async.series([
@@ -45,6 +45,9 @@ exports.reloadLoincFormsByOrg = function (orgName) {
                 console.log('Processing ' + simpleForms.length + ' simple forms');
                 async.forEachSeries(simpleForms, function (simpleForm, doneOneSimpleForm) {
                     if (simpleForm.toObject) simpleForm = simpleForm.toObject();
+                    if (simpleForm.loincId === '58092-8') {
+                        console.log('a');
+                    }
                     formUlt.createForm(simpleForm, org, orgInfo, function (newForm) {
                         async.forEachSeries(simpleForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (element, doneOneElement) {
                             formUlt.loadCde(element, newForm.formElements[0].formElements, doneOneElement);
@@ -97,5 +100,6 @@ exports.reloadLoincFormsByOrg = function (orgName) {
             });
         }
     ], function (err, results) {
+        if (next) next();
     });
 };

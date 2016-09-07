@@ -151,6 +151,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         newForm.changeNote = "Bulk update from source";
         newForm.imported = importDate;
         newForm.referenceDocuments = migrationForm.referenceDocuments;
+        newForm.ids = migrationForm.ids;
         newForm.formElements = migrationForm.formElements;
         updateShare.removePropertiesOfSource(newForm.properties, migrationForm.source);
         newForm.properties = newForm.properties.concat(migrationForm.properties);
