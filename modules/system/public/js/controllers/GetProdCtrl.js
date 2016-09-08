@@ -5,35 +5,23 @@ angular.module('systemModule').controller('GetProdCtrl', ['$scope', '$uibModal',
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/getProdModal.html',
-                controller: 'GetProdModalCtrl',
+                controller: [function(){}],
                 resolve: {
                 }
             });
-            modalInstance.result.then(function () {
-                $scope.restoreStatus = {progress: true, success: false, danger: false};
-                $http.post('/api/reloadProd', {url: $scope.sourceUrl}).success(function(){
+            modalInstance.result.then(function (includeAll) {
+                $scope.restoreStatus = "progress";
+                $http.post('/api/reloadProd', {url: $scope.sourceUrl, includeAll: includeAll}).success(function(){
                     $scope.addAlert("success", "Data has been reloaded.");
-                    $scope.restoreStatus = {progress: false, success: true, danger: false};
+                    $scope.restoreStatus = "success";
                 });
                 $scope.addAlert("warning", "Data is being reloaded.");
             }, function() {
-                $scope.restoreStatus = {progress: false, success: false, danger: true};
+                $scope.restoreStatus = "danger";
             });
         };
         $scope.sourceUrl = window.prodDumpUrl;
-        $scope.restoreStatus = {progress: false, success: false, danger: false};
-    }
-]);
-
-angular.module('systemModule').controller('GetProdModalCtrl', ['$scope', '$uibModalInstance',
-    function($scope, $modalInstance)
-    {
-        $scope.yes = function(){
-            $modalInstance.close();
-        };
-        $scope.no = function(){
-            $modalInstance.dismiss('cancel');
-        };
+        $scope.restoreStatus = "";
     }
 ]);
 

@@ -3,8 +3,14 @@
 </div>
 <div class="modal-body" id="newNamePairModalBody">
     Are you sure you want to refresh all data from the provided link?
+    <div>
+        <label>
+            <input type="checkbox" ng-model="includeAll">
+            Include Audit, files and logs
+        </label>
+    </div>
 </div>
 <div class="modal-footer" id="newConceptModalFooter">
-    <button class="btn cancel" ng-click="no()" type="button">No</button>
-    <button class="btn btn-warning" ng-click="yes()" type="submit">Yes</button>
+    <button class="btn cancel" ng-click="$dismiss('cancel')" type="button">No</button>
+    <button class="btn btn-warning" ng-click="$close(includeAll)" type="submit">Yes</button>
 </div>

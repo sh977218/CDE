@@ -12,6 +12,7 @@ public abstract class PropertyTest extends CommonTest {
         showAllTabs();
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey0']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
         findElement(By.name("value")).sendKeys("MyValue0");
         clickElement(By.id("createProperty"));
@@ -20,6 +21,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey1']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
         findElement(By.name("value")).sendKeys("MyValue1");
         clickElement(By.id("createProperty"));
@@ -28,6 +30,7 @@ public abstract class PropertyTest extends CommonTest {
         modalGone();
 
         clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey2']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
         findElement(By.name("value")).sendKeys("MyValue2");
         clickElement(By.id("createProperty"));

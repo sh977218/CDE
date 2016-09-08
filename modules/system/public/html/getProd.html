@@ -9,7 +9,9 @@
         </div>
     </div>
 
-    <div class="alert alert-info" ng-show="restoreStatus.progress"><i class="fa fa-spin fa-hourglass-half"></i> Data restore in progress.</div>
-    <div class="alert alert-success" ng-show="restoreStatus.success">Data restore successfully finished. <i class="fa fa-smile-o"></i></div>
-    <div class="alert alert-danger" ng-show="restoreStatus.danger">Data restore failed. <i class="fa fa-meh-o"></i> </div>
+    <div ng-switch="restoreStatus">
+        <div class="alert alert-info" ng-switch-when="progress"><i class="fa fa-spin fa-hourglass-half"></i> Data restore in progress.</div>
+        <div class="alert alert-success" ng-switch-when="success">Data restore successfully finished. <i class="fa fa-smile-o"></i></div>
+        <div class="alert alert-danger" ng-switch-when="danger">Data restore failed. <i class="fa fa-meh-o"></i> </div>
+    </div>
 </div>
