@@ -20,7 +20,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         clickElement(By.id("confirmDatatype"));
         newCdeVersion();
 
-        Assert.assertTrue(textPresent("java.lang.Date"));
+        textPresent("java.lang.Date");
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);

@@ -60,29 +60,4 @@ angular.module('resourcesCde', ['ngResource'])
             }
         };
     }])
-    .directive('ngVersionAvailable', ['$http', function ($http) {
-        return {
-            require: 'ngModel',
-            link: function (scope, ele, attrs, ctrl) {
-                var url;
-                scope.$watch(attrs.ngModel, function () {
-                    var lastVersion = scope.elt.version;
-                    if (scope.elt.formElements) {
-                        url = '/formByTinyIdAndVersion/' + scope.elt.tinyId + "/" + scope.elt.version;
-                    } else {
-                        url = '/deExists/' + scope.elt.tinyId + "/" + scope.elt.version
-                    }
-                    $http({
-                        method: 'GET',
-                        url: url
-                    }).success(function (data) {
-                        if (lastVersion !== scope.elt.version) return;
-                        ctrl.$setValidity('unique', !data);
-                    }).error(function () {
-                        if (lastVersion !== scope.elt.version) return;
-                        ctrl.$setValidity('unique', false);
-                    });
-                });
-            }
-        };
-    }]);
+;
