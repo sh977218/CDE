@@ -53,14 +53,14 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[contains(@class,'name')]"));
-        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[contains(@class,'originId')]"));
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[@data-title='name']"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[@data-title='originId']"));
 
-        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[contains(@class,'name')]"));
-        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[contains(@class,'originId')]"));
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[@data-title='name']"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[@data-title='originId']"));
 
-        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[contains(@class,'name')]"));
-        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[contains(@class,'originId')]"));
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[@data-title='name']"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[@data-title='originId']"));
 
         clickElement(By.id("concepts_tab"));
         clickElement(By.id("removedataElementConcept-0"));
@@ -74,11 +74,11 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Patient Photograph Malignant Neoplasm Assessment", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_1']//*[contains(@class,'name')]"));
-        textPresent("2640357v1", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_1']//*[contains(@class,'originId')]"));
-        textPresent("Photograph", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[contains(@class,'name')]"));
-        textPresent("C86035", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[contains(@class,'originId')]"));
-        textPresent("Patient", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[contains(@class,'name')]"));
-        textPresent("C16960", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[contains(@class,'originId')]"));
+        textPresent("2640357v1", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_1']//*[@data-title='originId']"));
+        textPresent("Photograph", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[@data-title='name']"));
+        textPresent("C86035", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[@data-title='originId']"));
+        textPresent("Patient", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[@data-title='name']"));
+        textPresent("C16960", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[@data-title='originId']"));
 
         openCdeAudit(cdeName);
         textPresent(newDataElementConceptId);
