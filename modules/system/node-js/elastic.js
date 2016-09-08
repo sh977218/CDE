@@ -297,10 +297,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
         });
 
 
-        var curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
-        curatorOf.forEach(function(o){
-            regStatusOr.push({"term": {"stewardOrg": o}});
-        });
+        if (user ) {
+            var curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+            curatorOf.forEach(function (o) {
+                regStatusOr.push({"term": {"stewardOrg": o}});
+            });
+        }
 
         var filter = {and: []};
         if (regStatusOr.length > 0) {
