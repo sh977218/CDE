@@ -3,7 +3,7 @@ var REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 var MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 
 var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
-var MigrationFormModel = require('../../createMigrationConnection').MigrationFormModel;
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 var updateShare = require('../../updateShare');
 var classificationShared = require('../../../modules/system/shared/classificationShared');
@@ -14,17 +14,56 @@ var CreateElt = require('../Shared/CreateElt');
 var importDate = new Date().toJSON();
 
 exports.createForm = function (loinc, org, orgInfo, cb) {
-    CreateElt.createElt(loinc, org, orgInfo, function (newForm) {
-        newForm.formElements = [{
-            elementType: 'section',
-            label: '',
-            instructions: {
-                value: ""
-            },
-            formElements: []
-        }];
-        cb(newForm);
+    FormModel.find({
+        archived: null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {source: 'LOINC', id: loinc['loincId']}).exec(function (err, existingForms) {
+        if (err) throw err;
+        if (existingForms.length === 0) {
+            console.log('Creating form id: ' + loinc['loincId']);
+            CreateElt.createElt(loinc, org, orgInfo, function (newForm) {
+                newForm.formElements = [{
+                    elementType: 'section',
+                    label: '',
+                    instructions: {
+                        value: ""
+                    },
+                    formElements: []
+                }];
+                var elementCount = 0;
+                var elements = loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'];
+                console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
+                async.forEachSeries(elements, function (element, doneOneElement) {
+                    exports.loadElement(element, newForm.formElements[0].formElements, org, orgInfo, function () {
+                        elementCount++;
+                        console.log('elementCount: ' + elementCount);
+                        doneOneElement();
+                    });
+                }, function doneAllElements() {
+                    cb(newForm, count);
+                })
+            });
+        } else if (existingForms.length === 1) {
+            var existingForm = existingForms[0];
+            exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
+                processForm(newForm, existingForm, orgInfo['orgName'], function (o) {
+                    cb(o);
+                })
+            });
+        } else {
+            console.log('Found more than one this form with loincId: ' + element['LOINC#']);
+            process.exit(1);
+        }
     });
+};
+
+
+exports.loadElement = function (element, fe, org, orgInfo, next) {
+    if (element.elements.length === 0) {
+        exports.loadCde(element, fe, next);
+    } else {
+        exports.loadForm(element, fe, org, orgInfo, next);
+    }
 };
 
 exports.loadCde = function (element, fe, next) {
@@ -65,7 +104,6 @@ exports.loadCde = function (element, fe, next) {
                 question: question,
                 formElements: []
             };
-
             existingCde.naming.forEach(function (n) {
                 if (n.context.contextName === "TERM DEFINITION/DESCRIPTION(S)") {
                     formElement.instructions.value = n.definition;
@@ -77,17 +115,40 @@ exports.loadCde = function (element, fe, next) {
     });
 };
 
-exports.loadForm = function(element, fe, next) {
+exports.loadForm = function (element, fe, org, orgInfo, next) {
     FormModel.find({
         archived: null,
         "registrationState.registrationStatus": {$ne: "Retired"}
     }).elemMatch("ids", {source: 'LOINC', id: element['LOINC#']}).exec(function (err, existingForms) {
         if (err) throw err;
         if (existingForms.length === 0) {
-            console.log('cannot find this form with loincId: ' + element['LOINC#']);
-            console.log('formId: ' + element['LOINC#']);
-            process.exit(1);
-        } else {
+            MigrationLoincModel.find({loincId: element['LOINC#']}).exec(function (findFormError, loincs) {
+                if (findFormError) throw findFormError;
+                if (loincs.length === 1) {
+                    var loinc = loincs[0].toObject();
+                    exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
+                        exports.saveObj(newForm, function (o) {
+                            console.log('Finished process form : ' + o.get('ids')[0].id);
+                            console.log('Form count: ' + formCount);
+                            fe.push({
+                                elementType: 'form',
+                                inForm: {
+                                    form: {
+                                        tinyId: newForm.tinyId,
+                                        version: newForm.version,
+                                        name: element['LOINC Name']
+                                    }
+                                }
+                            });
+                            next();
+                        });
+                    })
+                } else {
+                    console.log('Find ' + loinc.length + ' loinc with loinc id: ' + element['LOINC#']);
+                    process.exit(1);
+                }
+            })
+        } else if (existingForms.length === 1) {
             var existingForm = existingForms[0];
             if (existingForm.dependentSection) {
                 var formElement = {
@@ -125,6 +186,9 @@ exports.loadForm = function(element, fe, next) {
                 fe.push(formElement);
                 next();
             }
+        } else {
+            console.log('Found more than one this form with loincId: ' + element['LOINC#']);
+            process.exit(1);
         }
     });
 };
@@ -134,10 +198,10 @@ exports.saveObj = function (form, next) {
     form.ids.forEach(function(i){
         if(i.source==='LOINC') loincId = i.id;
     });
-    MigrationFormModel.find({'ids.id':loincId}).exec(function(er,existingForms){
+    FormModel.find({'ids.id': loincId}).exec(function (er, existingForms) {
         if(er) throw er;
         if(existingForms.length === 0 ){
-            var obj  = new MigrationFormModel(form);
+            var obj = new FormModel(form);
             obj.save(function(err,o){
                 if(err) throw err;
                 next(o);
@@ -157,12 +221,11 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
     if (!deepDiff || deepDiff.length === 0) {
         // nothing changed, remove from input
         existingForm.imported = importDate;
-        existingForm.save(function (err) {
+        existingForm.save(function (err, o) {
             if (err) throw "Unable to update import date";
             migrationForm.remove(function (err) {
-                same++;
                 if (err) throw "unable to remove";
-                processFormCb();
+                processFormCb(o);
             });
         });
     } else if (deepDiff.length > 0) {
@@ -180,7 +243,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
         newForm._id = existingForm._id;
         try {
-            mongo_form.update(newForm, {username: "BatchLoader"}, function (err) {
+            mongo_form.update(newForm, {username: "BatchLoader"}, function (err, o) {
                 if (err) {
                     console.log("Cannot save Form.");
                     console.log(newForm);
@@ -189,7 +252,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
                 else migrationForm.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     console.log('------------------------------\n');
-                    processFormCb();
+                    processFormCb(o);
                 });
             });
         } catch (e) {
@@ -203,69 +266,3 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         console.log(deepDiff);
     }
 }
-
-exports.updateFormByOrgName = function (orgName,org,cb) {
-    var migStream = MigrationFormModel.find().stream();
-    migStream.on('data', function (migrationForm) {
-        migStream.pause();
-        classificationShared.sortClassification(migrationForm);
-        var loincId;
-        migrationForm.ids.forEach(function(i){
-            if(i.source === 'LOINC')
-                loincId = i.id;
-        });
-        var formCond = {
-            archived: null,
-            "registrationState.registrationStatus": {$not: /Retired/},
-            created: {$ne: importDate}
-        };
-        FormModel.find(formCond).where("ids").elemMatch(function (elem) {
-            elem.where("source").equals('LOINC');
-            elem.where("id").equals(loincId);
-        }).exec(function (err, existingForms) {
-            if (err) throw err;
-            if (existingForms.length === 0) {
-                //delete migrationForm._id;
-                var mForm = migrationForm.toObject();
-                delete mForm._id; //use mForm below!!!
-                var createForm = new FormModel(mForm);
-                createForm.save(function (err) {
-                    if (err) {
-                        console.log("Unable to create Form." + mForm);
-                        process.exit(1);
-                    }
-                    console.log('\n------------------------------');
-                    console.log('created new form with formId ' + loincId);
-                    migrationForm.remove(function (err) {
-                        if (err) throw err;
-                        migStream.resume();
-                        console.log('removed form from migration, formId ' + loincId);
-                        console.log('------------------------------\n');
-                    });
-                });
-            } else if (existingForms.length === 1) {
-                console.log('\n------------------------------');
-                console.log('found 1 form. processing form, tinyId ' + existingForms[0].tinyId);
-                processForm(migrationForm, existingForms[0], orgName, function(){
-                    migStream.resume();
-                });
-            } else {
-                console.log('\n------------------------------');
-                console.log('found ' + existingForms.length + ' forms. processing first form, tinyId ' + existingForms[0].tinyId);
-                console.log('other forms tinyId are:');
-                for (var j = 1; j < existingForms.length; j++)
-                    console.log(existingForms[j].tinyId);
-                process.exit(1);
-            }
-        });
-    });
-
-    migStream.on('error', function () {
-        console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");
-        process.exit(1);
-    });
-
-    migStream.on('close', function () {
-        if(cb) cb();
-    });
-};
