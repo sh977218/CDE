@@ -13,6 +13,9 @@ var CreateElt = require('../Shared/CreateElt');
 
 var importDate = new Date().toJSON();
 
+
+var formCount = 0;
+
 exports.createForm = function (loinc, org, orgInfo, cb) {
     FormModel.find({
         archived: null,
@@ -40,14 +43,33 @@ exports.createForm = function (loinc, org, orgInfo, cb) {
                         doneOneElement();
                     });
                 }, function doneAllElements() {
-                    cb(newForm, count);
+                    cb(newForm, formCount);
                 })
             });
         } else if (existingForms.length === 1) {
             var existingForm = existingForms[0];
-            exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
-                processForm(newForm, existingForm, orgInfo['orgName'], function (o) {
-                    cb(o);
+            CreateElt.createElt(loinc, org, orgInfo, function (newForm) {
+                newForm.formElements = [{
+                    elementType: 'section',
+                    label: '',
+                    instructions: {
+                        value: ""
+                    },
+                    formElements: []
+                }];
+                var elementCount = 0;
+                var elements = loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'];
+                console.log('Form ' + loinc['loincId'] + ' has ' + elements.length + ' elements to process.');
+                async.forEachSeries(elements, function (element, doneOneElement) {
+                    exports.loadElement(element, newForm.formElements[0].formElements, org, orgInfo, function () {
+                        elementCount++;
+                        console.log('elementCount: ' + elementCount);
+                        doneOneElement();
+                    });
+                }, function doneAllElements() {
+                    processForm(newForm, existingForm, orgInfo['orgName'], function (o) {
+                        cb(o, formCount);
+                    })
                 })
             });
         } else {
@@ -126,23 +148,42 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                 if (findFormError) throw findFormError;
                 if (loincs.length === 1) {
                     var loinc = loincs[0].toObject();
-                    exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
-                        exports.saveObj(newForm, function (o) {
-                            console.log('Finished process form : ' + o.get('ids')[0].id);
-                            console.log('Form count: ' + formCount);
-                            fe.push({
-                                elementType: 'form',
-                                inForm: {
-                                    form: {
-                                        tinyId: newForm.tinyId,
-                                        version: newForm.version,
-                                        name: element['LOINC Name']
-                                    }
-                                }
-                            });
+                    if (loinc.dependentSection) {
+                        var formElement = {
+                            elementType: 'section',
+                            instructions: {value: '', valueFormat: ''},
+                            cardinality: {},
+                            label: element['LOINC Name'],
+                            section: {},
+                            formElements: []
+                        };
+                        async.forEachSeries(loinc['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (e, doneOneE) {
+                            exports.loadCde(e, formElement.formElements, function () {
+                                doneOneE();
+                            })
+                        }, function doneAllE() {
+                            fe.push(formElement);
                             next();
                         });
-                    })
+                    } else {
+                        exports.createForm(loinc, org, orgInfo, function (newForm, formCount) {
+                            exports.saveObj(newForm, function (o) {
+                                console.log('Finished process form : ' + o.get('ids')[0].id);
+                                console.log('Form count: ' + formCount);
+                                fe.push({
+                                    elementType: 'form',
+                                    inForm: {
+                                        form: {
+                                            tinyId: newForm.tinyId,
+                                            version: newForm.version,
+                                            name: element['LOINC Name']
+                                        }
+                                    }
+                                });
+                                next();
+                            });
+                        })
+                    }
                 } else {
                     console.log('Find ' + loinc.length + ' loinc with loinc id: ' + element['LOINC#']);
                     process.exit(1);
@@ -203,6 +244,9 @@ exports.saveObj = function (form, next) {
         if(existingForms.length === 0 ){
             var obj = new FormModel(form);
             obj.save(function(err,o){
+                formCount++;
+                console.log('Finished process form : ' + o.get('ids')[0].id);
+                console.log('Form count: ' + formCount);
                 if(err) throw err;
                 next(o);
             })
@@ -249,11 +293,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
                     console.log(newForm);
                     throw err;
                 }
-                else migrationForm.remove(function (err) {
-                    if (err) console.log("unable to remove " + err);
-                    console.log('------------------------------\n');
-                    processFormCb(o);
-                });
+                processFormCb(o);
             });
         } catch (e) {
             console.log("newForm:\n" + newForm);
