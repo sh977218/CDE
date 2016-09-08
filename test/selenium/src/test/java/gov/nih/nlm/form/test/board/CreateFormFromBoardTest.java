@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.board;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.cde.test.boards.BoardTest;
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
@@ -10,6 +11,7 @@ public class CreateFormFromBoardTest extends BoardTest {
     BaseClassificationTest baseClassificationTest = new BaseClassificationTest();
 
     @Test
+    @RecordVideo
     public void createFormFromBoard() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToBoard("Form Board");
