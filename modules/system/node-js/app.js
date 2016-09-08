@@ -843,10 +843,24 @@ exports.init = function (app) {
         if (!config.prodDump.enabled) return res.status(401).send();
         var target = './prodDump';
         var untar = tar.extract(target);
+        var rmTargets = [target + '/system*', target + '/clusterstatuses*'];
+        if (!req.body.includeAll) {
+            rmTargets.push(target + '/cdeAudit*');
+            rmTargets.push(target + '/classificationAudit*');
+            rmTargets.push(target + '/fs.*');
+            rmTargets.push(target + '/sessions.*');
+        }
         request(req.body.url, {rejectUnauthorized: false}).pipe(zlib.createGunzip()).pipe(untar);
         untar.on('finish', function () {
-            spawn('rm', [target + '/system*']).on('exit', function () {
-                var restore = spawn('mongorestore', ['-host', config.database.servers[0].host, '-u', config.database.appData.username, '-p', config.database.appData.password, './prodDump', '--drop', '--db', config.database.appData.db], {stdio: 'inherit'});
+            spawn('rm', rmTargets).on('exit', function () {
+                var restore = spawn('mongorestore',
+                    ['-host', config.database.servers[0].host,
+                        '-u', config.database.appData.username,
+                        '-p', config.database.appData.password,
+                        './prodDump',
+                        '--drop',
+                        '--db', config.database.appData.db
+                    ], {stdio: 'inherit'});
                 restore.on('exit', function () {
                     var rm = spawn('rm', [target + '/*']);
                     rm.on('exit', function () {
