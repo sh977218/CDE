@@ -10,7 +10,10 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     public void nativeFormRenderTest() {
         goToFormByName("Loinc Widget Test Form");
         clickElement(By.id("nativeFormRenderLink"));
-        textPresent("PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
+        textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
     }
 
@@ -21,7 +24,8 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("sdcExport"));
         switchTab(1);
-        textPresent("PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
         switchTabAndClose(0);
     }
@@ -29,7 +33,10 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     @Test
     public void lFormRenderTest() {
         goToFormByName("Loinc Widget Test Form");
-        textPresent("PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
+        textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
     }
 
@@ -37,6 +44,8 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     public void formDescriptionTest() {
         goToFormByName("Loinc Widget Test Form");
         clickElement(By.id("description_tab"));
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
         textPresent("Embedded Form: Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
     }
