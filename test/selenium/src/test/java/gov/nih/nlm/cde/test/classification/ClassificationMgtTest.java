@@ -73,7 +73,7 @@ public class ClassificationMgtTest extends BaseClassificationTest {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        Assert.assertTrue(textPresent("Headache"));
+        textPresent("Headache");
         createClassificationName(org, new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics", "MRI"});
         modalGone();
         createClassificationName(org, new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics", "MRI", "Contrast T1"});
@@ -84,7 +84,6 @@ public class ClassificationMgtTest extends BaseClassificationTest {
     public void link() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        Assert.assertTrue(textPresent("Headache"));
-
+        textPresent("Headache");
     }
 }
