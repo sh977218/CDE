@@ -772,7 +772,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
-        goToSearch("cde");
+//        goToSearch("cde");
     }
 
     protected void setLowStatusesVisible() {

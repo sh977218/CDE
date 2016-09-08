@@ -295,6 +295,13 @@ exports.buildElasticSearchQuery = function (user, settings) {
         selectedStatuses.forEach(function(regStatus) {
             regStatusOr.push({"term": {"registrationState.registrationStatus": regStatus}});
         });
+
+
+        var curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+        curatorOf.forEach(function(o){
+            regStatusOr.push({"term": {"stewardOrg": o}});
+        });
+
         var filter = {and: []};
         if (regStatusOr.length > 0) {
             filter.and.push({"or": regStatusOr});
