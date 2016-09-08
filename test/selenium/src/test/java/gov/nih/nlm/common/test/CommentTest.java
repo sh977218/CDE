@@ -45,7 +45,7 @@ public abstract class CommentTest extends CommonTest {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
-                Assert.assertTrue(textPresent("Comment removed"));
+                textPresent("Comment removed");
                 hangon(1);
                 Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
             }
@@ -67,9 +67,9 @@ public abstract class CommentTest extends CommonTest {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
-                Assert.assertTrue(textPresent("Comment removed"));
+                textPresent("Comment removed");
                 hangon(1);
-                Assert.assertTrue(textNotPresent(commentText));
+                textNotPresent(commentText);
             }
         }
     }

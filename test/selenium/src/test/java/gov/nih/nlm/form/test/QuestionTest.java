@@ -43,11 +43,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
 
     }
-
-    public void addQuestionToSectionSafe(String cdeName) {
-        addQuestionToSection(cdeName, 0);
-    }
-
+    
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
         WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//i[contains(@class,'fa fa-arrows')]"));
         String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//div[contains(@id,'section_title')]")).getText();

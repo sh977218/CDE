@@ -21,7 +21,7 @@ public class PvTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#pv-0 .fa-check"));
         newCdeVersion("Changed PV");
 
-        Assert.assertTrue(textPresent("added to pv"));
+        textPresent("added to pv");
 
         showAllTabs();
         clickElement(By.id("history_tab"));
