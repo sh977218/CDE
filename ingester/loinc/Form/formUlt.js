@@ -1,3 +1,4 @@
+var async = require('async');
 var REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 var MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
 
@@ -76,7 +77,7 @@ exports.loadCde = function (element, fe, next) {
     });
 };
 
-exports.loadForm=function(element, fe, next) {
+exports.loadForm = function(element, fe, next) {
     FormModel.find({
         archived: null,
         "registrationState.registrationStatus": {$ne: "Retired"}
@@ -84,27 +85,46 @@ exports.loadForm=function(element, fe, next) {
         if (err) throw err;
         if (existingForms.length === 0) {
             console.log('cannot find this form with loincId: ' + element['LOINC#']);
-            console.log('formId: ' + form.ids[0].id);
+            console.log('formId: ' + element['LOINC#']);
             process.exit(1);
         } else {
             var existingForm = existingForms[0];
-            var inForm = {
-                form: {
-                    tinyId: existingForm.tinyId,
-                    version: existingForm.version,
-                    name: existingForm.naming[0].designation
-                }
-            };
-            var formElement = {
-                elementType: 'form',
-                instructions: {value:'',valueFormat:''},
-                cardinality:{},
-                label:existingForm.naming[0].designation,
-                inForm:inForm,
-                formElements: []
-            };
-            fe.push(formElement);
-            next();
+            if (existingForm.dependentSection) {
+                var formElement = {
+                    elementType: 'section',
+                    instructions: {value: '', valueFormat: ''},
+                    cardinality: {},
+                    label: element['LOINC Name'],
+                    section: {},
+                    formElements: []
+                };
+                async.forEachSeries(existingForm['PANEL HIERARCHY']['PANEL HIERARCHY']['elements'], function (e, doneOneE) {
+                    exports.loadCde(e, formElement.formElements, function () {
+                        doneOneE();
+                    })
+                }, function doneAllE() {
+                    fe.push(formElement);
+                    next();
+                });
+            } else {
+                var inForm = {
+                    form: {
+                        tinyId: existingForm.tinyId,
+                        version: existingForm.version,
+                        name: existingForm.naming[0].designation
+                    }
+                };
+                var formElement = {
+                    elementType: 'form',
+                    instructions: {value: '', valueFormat: ''},
+                    cardinality: {},
+                    label: element['LOINC Name'],
+                    inForm: inForm,
+                    formElements: []
+                };
+                fe.push(formElement);
+                next();
+            }
         }
     });
 };
