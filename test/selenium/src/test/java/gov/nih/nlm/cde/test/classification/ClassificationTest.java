@@ -88,10 +88,8 @@ public class ClassificationTest extends BaseClassificationTest {
 	@Test
 	public void classificationLink() {
         goToCdeByName("Spectroscopy water signal removal filter text");
-        findElement(By.linkText("Classification")).click();
-		findElement(
-				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
-				.click();
+        clickElement(By.linkText("Classification"));
+		clickElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"));
         showSearchFilters();
 		textPresent("Classification");
         textPresent("NINDS (12");
