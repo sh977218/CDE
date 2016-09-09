@@ -19,16 +19,16 @@ public class FormSideBySideCompare extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_form_compare"));
 
-        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][1]//*[contains(@class, 'rightObj') and @data-title='Label']"));
-        textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][2]//*[contains(@class, 'leftObj') and @data-title='Label']"));
+        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj') and @data-title='Label']"));
+        textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj') and @data-title='Label']//*[contains(@class,'unmatchedIcon')]")).size() > 0);
-        textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][2]//*[contains(@class, 'rightObj') and @data-title='Label']"));
+        textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'rightObj') and @data-title='Label']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj') and @data-title='Label']//*[contains(@class,'unmatchedIcon')]")).size() > 0);
         textPresent("Pain location anatomic site", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj') and @data-title='Answer']//*[contains(@class,'unmatchedIcon')]")).size() > 0);
-        textPresent("Pain location anatomic site", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][3]//*[contains(@class, 'rightObj') and @data-title='Label']"));
+        textPresent("Pain location anatomic site", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][3]//*[contains(@class, 'rightObj') and @data-title='Label']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'rightObj') and @data-title='Answer']//*[contains(@class,'unmatchedIcon')]")).size() > 0);
-        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][4]//*[contains(@class, 'leftObj') and @data-title='Label']"));
+        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][4]//*[contains(@class, 'leftObj') and @data-title='Label']"));
 
         clickElement(By.id("qb_form_empty"));
         textPresent("Form QuickBoard (0)");
