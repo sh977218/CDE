@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.admin;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 public class AdminAddsContextKey extends NlmCdeBaseTest{
@@ -22,8 +23,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        clickElement(By.id("newContext"));
-        textPresent("canYouSeeThis");
+        new Select(driver.findElement(By.name("newContext"))).selectByVisibleText("canYouSeeThis");
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
