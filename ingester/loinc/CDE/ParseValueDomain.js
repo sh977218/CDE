@@ -32,6 +32,8 @@ exports.parseValueDomain = function (loinc) {
             if (descriptionIndex !== -1) {
                 name = a['Answer'].substring(0, descriptionIndex).trim();
                 description = a['Answer'].substring(descriptionIndex + 12).trim();
+            } else {
+                name = a['Answer'];
             }
             return {
                 permissibleValue: a['Code'],

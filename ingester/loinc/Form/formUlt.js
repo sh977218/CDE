@@ -1,6 +1,7 @@
 var async = require('async');
 var REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
 var MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
+var CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
 
 var DataElementModel = require('../../createNlmcdeConnection').DataElementModel;
 var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
@@ -125,7 +126,7 @@ exports.loadCde = function (element, fe, next) {
             var formElement = {
                 elementType: 'question',
                 instructions: {},
-                cardinality: MULTISELECT_MAP[element['Cardinality']],
+                cardinality: CARDINALITY_MAP[element['Cardinality']],
                 label: element['LOINC Name'],
                 question: question,
                 formElements: []
@@ -156,7 +157,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                         var formElement = {
                             elementType: 'section',
                             instructions: {value: '', valueFormat: ''},
-                            cardinality: {},
+                            cardinality: CARDINALITY_MAP[element['Cardinality']],
                             label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                             section: {},
                             formElements: []
@@ -176,11 +177,14 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                                 console.log('Form count: ' + formCount);
                                 fe.push({
                                     elementType: 'form',
+                                    instructions: {value: '', valueFormat: ''},
+                                    cardinality: CARDINALITY_MAP[element['Cardinality']],
+                                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                                     inForm: {
                                         form: {
                                             tinyId: newForm.tinyId,
                                             version: newForm.version,
-                                            name: element['LOINC Name'].replace('[AHRQ]', '').trim()
+                                            name: newForm.naming[0].designation
                                         }
                                     }
                                 });
@@ -199,7 +203,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                 var formElement = {
                     elementType: 'section',
                     instructions: {value: '', valueFormat: ''},
-                    cardinality: {},
+                    cardinality: CARDINALITY_MAP[element['Cardinality']],
                     label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                     section: {},
                     formElements: []
@@ -217,13 +221,13 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                     form: {
                         tinyId: existingForm.tinyId,
                         version: existingForm.version,
-                        name: existingForm.naming[0].designation.replace('[AHRQ]', '').trim()
+                        name: existingForm.naming[0].designation
                     }
                 };
                 var formElement = {
                     elementType: 'form',
                     instructions: {value: '', valueFormat: ''},
-                    cardinality: {},
+                    cardinality: CARDINALITY_MAP[element['Cardinality']],
                     label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                     inForm: inForm,
                     formElements: []
