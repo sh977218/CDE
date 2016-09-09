@@ -10,15 +10,16 @@ var updateShare = require('../updateShare');
 
 var source = 'LOINC';
 var stewardOrgName = 'NLM';
+var classificationOrgName = 'NLM';
 
 var today = new Date().toJSON();
 var lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
 var retired = 0;
 
-function removeClassificationTree(cde, org) {
+function removeClassificationTree(cde) {
     for (var i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === org) {
+        if (cde.classification[i].stewardOrg.name === classificationOrgName) {
             cde.classification.splice(i, 1);
             return;
         }
@@ -92,7 +93,7 @@ function compareCdes(existingCde, newCde) {
     return cdesvc.diff(existingCde, newCde);
 }
 
-function processCde(migrationCde, existingCde, orgName, processCdeCb) {
+function processCde(migrationCde, existingCde, processCdeCb) {
     // deep copy
     var newDe = existingCde.toObject();
     delete newDe._id;
@@ -115,6 +116,8 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.changeNote = "Bulk update from source";
         newDe.imported = today;
         newDe.dataElementConcept = migrationCde.dataElementConcept;
+        newDe.objectClass = migrationCde.objectClass;
+        newDe.property = migrationCde.property;
         newDe.valueDomain = migrationCde.valueDomain;
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
@@ -122,7 +125,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
 
-        removeClassificationTree(newDe, orgName);
+        removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {
@@ -135,7 +138,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
         }
         newDe._id = existingCde._id;
         try {
-            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
+            mongo_cde.update(newDe, {username: "BatchLoader"}, function (err) {
                 if (err) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
@@ -159,7 +162,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
     }
 }
 
-function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
+function findCde(cdeId, migrationCde, idv, findCdeDone) {
     var cdeCond = {
         archived: null,
         source: source,
@@ -204,7 +207,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
                     doneOneAttachment();
                 }, function doneAllAttachments() {
                     existingCdes[0].attachments = migrationCde.attachments;
-                    processCde(migrationCde, existingCdes[0], orgName, findCdeDone);
+                    processCde(migrationCde, existingCdes[0], findCdeDone);
                 })
             }
         } else {
@@ -220,8 +223,6 @@ var migStream;
 function streamOnData(migrationCde) {
     migStream.pause();
     classificationShared.sortClassification(migrationCde);
-    var source = migrationCde.source;
-    var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;
     var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {
@@ -232,7 +233,7 @@ function streamOnData(migrationCde) {
     }
 
     if (cdeId !== 0) {
-        findCde(cdeId, migrationCde, source, orgName, version, function () {
+        findCde(cdeId, migrationCde, version, function () {
             migStream.resume();
         });
     } else {
