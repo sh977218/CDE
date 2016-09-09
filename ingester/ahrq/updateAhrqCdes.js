@@ -9,7 +9,6 @@ var Org = require('../../modules/system/node-js/mongo-data').Org;
 var updateShare = require('../updateShare');
 
 var source = 'LOINC';
-var stewardOrgName = 'NLM';
 var classificationOrgName = 'AHRQ';
 
 var today = new Date().toJSON();

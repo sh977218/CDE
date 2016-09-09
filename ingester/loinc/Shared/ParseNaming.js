@@ -48,6 +48,18 @@ exports.parseNaming = function (loinc) {
             })
         }
     }
+    if (loinc['SURVEY QUESTION']) {
+        naming.push({
+            designation: loinc['SURVEY QUESTION']['SURVEY QUESTION'].Text,
+            definition: '',
+            languageCode: 'EN-US',
+            context: {
+                contextName: 'Question Text',
+                acceptability: 'preferred'
+            },
+            source: 'LOINC'
+        })
+    }
     if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
         loinc['TERM DEFINITION/DESCRIPTION(S)']['TERM DEFINITION/DESCRIPTION(S)'].forEach(function (t) {
             naming.push({

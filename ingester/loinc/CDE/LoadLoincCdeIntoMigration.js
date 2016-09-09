@@ -1,13 +1,13 @@
 var async = require('async');
-var MigrationLoincModel = require('../../../createMigrationConnection').MigrationLoincModel;
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 var CreateCDE = require('./CreateCDE');
-var ParseClassification = require('./.././ParseClassification');
+var ParseClassification = require('../Shared/ParseClassification');
 
 exports.setClassification = function (c) {
     ParseClassification.setClassification(c);
 };
 
-exports.runArray = function (loincIdArray, org, classificationOrgName, doneItem, doneAllArray) {
+exports.runArray = function (loincIdArray, org, orgInfo, doneItem, doneAllArray) {
     var allNewCdes = [];
     async.forEachSeries(loincIdArray, function (loincId, doneOneLoinc) {
         MigrationLoincModel.find({loincId: loincId}).exec(function (err, loincs) {
@@ -18,7 +18,7 @@ exports.runArray = function (loincIdArray, org, classificationOrgName, doneItem,
             } else if (loincs.length === 1) {
                 var loinc = loincs[0].toObject();
                 var newCde = CreateCDE.createCde(loinc);
-                ParseClassification.parseClassification(loinc, newCde, org, classificationOrgName, function () {
+                ParseClassification.parseClassification(loinc, newCde, org, orgInfo['classificationOrgName'], orgInfo['classification'], function () {
                     allNewCdes.push(newCde);
                     doneItem(newCde, doneOneLoinc);
                 })

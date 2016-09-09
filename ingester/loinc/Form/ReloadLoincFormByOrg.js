@@ -5,16 +5,11 @@ var OrgModel = require('../../createNlmcdeConnection').OrgModel;
 var mongo_form = require('../../../modules/form/node-js/mongo-form');
 var FormModel = mongo_form.Form;
 
+var orgMapping = require('../Mapping/ORG_INFO_MAP').map;
 var formUlt = require('./formUlt');
 
 var lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
-
-var orgMapping = {
-    'AHRQ': {stewardOrgName: 'NLM', classificationOrgName: 'AHRQ', classification: []},
-    'eyeGENE': {stewardOrgName: 'NLM', classificationOrgName: 'eyeGENE', classification: []},
-    'Newborn Screening': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['Newborn Screening']}
-};
 
 exports.reloadLoincFormsByOrg = function (orgName, next) {
     var org;

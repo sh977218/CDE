@@ -56,19 +56,6 @@ exports.parseProperties = function (loinc) {
         var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'HL7 ATTRIBUTES', value: table, source: 'LOINC', valueFormat: 'html'});
     }
-    if (loinc['SURVEY QUESTION']) {
-        var ths = '';
-        var tds = '';
-        Object.keys(loinc['SURVEY QUESTION']['SURVEY QUESTION']).forEach(function (key) {
-            var th = '<th>' + key + '</th>';
-            ths = ths + th;
-            var value = loinc['SURVEY QUESTION']['SURVEY QUESTION'][key];
-            var td = '<td>' + value + '</td>';
-            tds = tds + td;
-        });
-        var table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
-        properties.push({key: 'SURVEY QUESTION', value: table, source: 'LOINC', valueFormat: 'html'});
-    }
     if (loinc['EXAMPLE UNITS']) {
         var trs = '<tr><th>Source Type</th><th>Unit</th></tr>';
         loinc['EXAMPLE UNITS']['EXAMPLE UNITS'].forEach(function (eu) {

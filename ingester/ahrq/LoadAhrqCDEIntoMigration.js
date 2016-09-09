@@ -2,16 +2,15 @@ var async = require('async');
 var MigrationLoincModel = require('./../createMigrationConnection').MigrationLoincModel;
 var MigrationDataElementModel = require('./../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgModel;
-
-var LoadLoincCdeIntoMigration = require('./LoadLoincCdeIntoMigration');
-
-var classificationOrgName = 'AHRQ';
-var org;
+var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
+var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
 var cdeCount = 0;
 var loincIdArray = [];
 
 function run() {
+    var org;
+    var orgInfo = orgMapping['AHRQ'];
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (removeMigrationDataelementError) {
@@ -29,11 +28,11 @@ function run() {
         },
         function (cb) {
             new MigrationOrgModel({
-                name: classificationOrgName,
+                name: orgInfo['classificationOrgName'],
                 classifications: []
             }).save(function (createMigrationOrgError, o) {
                 if (createMigrationOrgError) throw createMigrationOrgError;
-                console.log('Created migration org of ' + classificationOrgName);
+                console.log('Created migration org of ' + orgInfo['classificationOrgName']);
                 org = o;
                 cb(null, 'Finished creating migration org');
             });
@@ -41,7 +40,7 @@ function run() {
         function (cb) {
             MigrationLoincModel.find({
                 compoundForm: null,
-                orgName: classificationOrgName
+                orgName: orgInfo['classificationOrgName']
             }).exec(function (findCdeError, Cdes) {
                 if (findCdeError) throw findCdeError;
                 console.log('Total # Cde: ' + Cdes.length);
@@ -52,7 +51,7 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,classificationOrgName, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,orgInfo, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {

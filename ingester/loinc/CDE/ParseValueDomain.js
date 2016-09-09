@@ -1,4 +1,4 @@
-var uom_datatype_map = require('../../Mapping/LOINC_UOM_DATATYPE_MAP').map;
+var uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
 var loinc_num_datatype_map = {
     '62317-3': 'Date',
     '62328-0': 'Number'
@@ -26,9 +26,17 @@ exports.parseValueDomain = function (loinc) {
             return a['SEQ#'] - b['SEQ#'];
         });
         valueDomain.permissibleValues = sortedAnswerList.map(function (a) {
+            var description = '';
+            var name = '';
+            var descriptionIndex = a['Answer'].indexOf('Description:');
+            if (descriptionIndex !== -1) {
+                name = a['Answer'].substring(0, descriptionIndex).trim();
+                description = a['Answer'].substring(descriptionIndex + 12).trim();
+            }
             return {
-                permissibleValue: a['Answer'],
-                valueMeaningName: a['Answer'],
+                permissibleValue: a['Code'],
+                valueMeaningName: name,
+                valueMeaningDefinition: description,
                 valueMeaningCode: a['Answer ID'],
                 codeSystemName: 'LOINC'
             }

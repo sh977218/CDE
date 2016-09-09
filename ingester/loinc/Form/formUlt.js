@@ -116,12 +116,16 @@ exports.loadCde = function (element, fe, next) {
                 answers: existingCde.valueDomain.permissibleValues,
                 uoms: []
             };
+            if (question.datatype === 'Text') {
+                question.multiselect = false;
+            }
             if (element['Ex UCUM Units']) {
                 question.uoms.push(element['Ex UCUM Units']);
             }
             var formElement = {
                 elementType: 'question',
                 instructions: {},
+                cardinality: MULTISELECT_MAP[element['Cardinality']],
                 label: element['LOINC Name'],
                 question: question,
                 formElements: []
@@ -153,7 +157,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                             elementType: 'section',
                             instructions: {value: '', valueFormat: ''},
                             cardinality: {},
-                            label: element['LOINC Name'],
+                            label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                             section: {},
                             formElements: []
                         };
@@ -176,7 +180,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                                         form: {
                                             tinyId: newForm.tinyId,
                                             version: newForm.version,
-                                            name: element['LOINC Name']
+                                            name: element['LOINC Name'].replace('[AHRQ]', '').trim()
                                         }
                                     }
                                 });
@@ -196,7 +200,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                     elementType: 'section',
                     instructions: {value: '', valueFormat: ''},
                     cardinality: {},
-                    label: element['LOINC Name'],
+                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                     section: {},
                     formElements: []
                 };
@@ -220,7 +224,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                     elementType: 'form',
                     instructions: {value: '', valueFormat: ''},
                     cardinality: {},
-                    label: element['LOINC Name'],
+                    label: element['LOINC Name'].replace('[AHRQ]', '').trim(),
                     inForm: inForm,
                     formElements: []
                 };
