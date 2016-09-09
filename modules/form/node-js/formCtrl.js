@@ -151,7 +151,6 @@ function fetchWholeForm(Form, callback) {
                         mongo_data_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
                             result = result.toObject();
                             fe.formElements = result.formElements;
-                            fe.label = result.naming[0].designation;
                             loopFormElements(fe, function () {
                                 depth--;
                                 doneOne();
