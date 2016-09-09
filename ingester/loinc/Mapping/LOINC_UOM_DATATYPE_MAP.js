@@ -33,5 +33,20 @@ exports.map = {
     "{copies}": "Number",
     "{Ratio}": "Text",
     "{ratio}": "Text",
-    "µmol/L": "Number"
+    "µmol/L": "Number",
+    "[ft_us]/[ft_us]": "Number",
+    "um": "Number",
+    "{log}": "Number",
+    "{logMAR}": "Number",
+    "{cells}": "Number",
+    "mm": "Number",
+    "mm[Hg]": "Number",
+    "cm": "Number",
+    "[diop]": "Number",
+    "deg": "Number",
+    "a": "Number",
+    "mv": "Number",
+    "mV": "Number",
+    "ms": "Number",
+    "{mm/dd/yyyy}": "Date"
 };

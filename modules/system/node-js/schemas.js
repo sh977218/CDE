@@ -96,7 +96,7 @@ schemas.statusValidationRuleSchema = new mongoose.Schema({
     , occurence: {type: String, enum: ["exactlyOne", "atLeastOne", "all"]}
 });
 
-schemas.orgSchema = new mongoose.Schema({
+var orgJson = {
     name: String
     , longName: String
     , mailAddress: String
@@ -115,7 +115,10 @@ schemas.orgSchema = new mongoose.Schema({
     }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
-});
+};
+schemas.orgJson = orgJson;
+
+schemas.orgSchema = new mongoose.Schema(orgJson);
 
 
 schemas.userSchema = new mongoose.Schema({
@@ -167,6 +170,7 @@ schemas.namingSchema = new mongoose.Schema({
         contextName: String
         , acceptability: String
     }
+    , source: {type: String}
 }, {_id: false});
 
 var attachmentSchema = {

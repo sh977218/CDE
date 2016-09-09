@@ -1,11 +1,10 @@
-var mongoose = require('mongoose'),
-    config = require('../modules/system/node-js/parseConfig'),
-    cde_schemas = require('../modules/cde/node-js/schemas'),
-    form_schemas = require('../modules/form/node-js/schemas'),
-    sharedSchemas = require('../modules/system/node-js/schemas.js'),
-    Schema = mongoose.Schema
-    ;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
+var config = require('../modules/system/node-js/parseConfig');
+var cde_schemas = require('../modules/cde/node-js/schemas');
+var form_schemas = require('../modules/form/node-js/schemas');
+var sharedSchemas = require('../modules/system/node-js/schemas.js');
 
 var mongoMigrationUri = config.mongoMigrationUri;
 var migrationConn = mongoose.createConnection(mongoMigrationUri);
@@ -14,71 +13,78 @@ migrationConn.once('open', function callback() {
 });
 
 // LOINC
-exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new mongoose.Schema({}, {
+exports.MigrationLoincModel = migrationConn.model('MigrationLoinc', new Schema({}, {
     strict: false,
     collection: 'loinc'
 }));
-exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new mongoose.Schema({}, {
+exports.MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new Schema({}, {
     strict: false,
     collection: 'LoincClassificationMapping'
 }));
-exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new mongoose.Schema({}, {
+exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new Schema({}, {
     strict: false,
     collection: 'LoincScaleMapping'
 }));
 
 
 // NINDS
-exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new mongoose.Schema({}, {
+exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({}, {
     strict: false,
     collection: 'ninds'
 }));
 
 // NCI
-exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new mongoose.Schema({}, {
+exports.MigrationNCIFormXmlModel = migrationConn.model('MigrationNCIFormXml', new Schema({}, {
     strict: false,
     collection: 'nciFormXml'
 }));
-exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new mongoose.Schema({}, {
+exports.MigrationNCICdeXmlModel = migrationConn.model('MigrationNCICdeXml', new Schema({}, {
     strict: false,
     collection: 'nciCdeXml'
 }));
 
 // EYE GENE
-exports.MigrationEyeGeneLoincModel = migrationConn.model('EyeGENE_LOINC', new mongoose.Schema({}, {
+exports.MigrationEyeGENELoincModel = migrationConn.model('EyeGENE_LOINC', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_LOINC'
 }));
-exports.MigrationEyeGeneAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new mongoose.Schema({}, {
+exports.MigrationEyeGENEAnswerListModel = migrationConn.model('EyeGENE_AnswerList', new Schema({}, {
     strict: false,
     collection: 'EyeGENE_AnswerList'
 }));
 
 //NEW BORN SCREENING
-exports.MigrationNewBornScreeningCDEModel = migrationConn.model('NewBornScreening_CDE', new mongoose.Schema({}, {
+exports.MigrationNewbornScreeningCDEModel = migrationConn.model('NewbornScreening_CDE', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_CDE'
+    collection: 'NewbornScreening_CDE'
 }));
-exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewBornScreening_Form', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningFormModel = migrationConn.model('NewbornScreening_Form', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_Form'
+    collection: 'NewbornScreening_Form'
 }));
-exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewBornScreening_AnswerList', new mongoose.Schema({}, {
+exports.MigrationNewBornScreeningAnswerListModel = migrationConn.model('NewbornScreening_AnswerList', new Schema({}, {
     strict: false,
-    collection: 'NewBornScreening_AnswerList'
+    collection: 'NewbornScreening_AnswerList'
 }));
 
 // MIGRATION
-exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', cde_schemas.dataElementSchema);
-exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson));
-exports.MigrationOrgModel = migrationConn.model('MigrationOrg', sharedSchemas.orgSchema);
+exports.MigrationDataElementModel = migrationConn.model('MigrationDataElement', new Schema(cde_schemas.deJson, {
+    collection: 'dataelements'
+}));
+exports.MigrationFormModel = migrationConn.model('MigrationForm', new Schema(form_schemas.formJson, {
+    collection: 'forms'
+}));
+
+exports.MigrationOrgModel = migrationConn.model('MigrationOrg', new Schema(sharedSchemas.orgJson, {
+    collection: 'orgs'
+}));
 
 // MIGRATION REFERENCE COLLECTION
-exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new mongoose.Schema({}, {
+exports.MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
     strict: false,
     collection: 'PhenxToLoincMapping'
 }));
-exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new mongoose.Schema({}, {
+exports.MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new Schema({}, {
     strict: false,
     collection: 'VariableCrossReference'
 }));

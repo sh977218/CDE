@@ -53,4 +53,4 @@ exports.parsePartTable = function (obj, task, element, cb) {
             cb();
         })
     })
-}
+};

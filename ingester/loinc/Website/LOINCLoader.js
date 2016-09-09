@@ -2,13 +2,15 @@ var async = require('async');
 var webdriver = require('selenium-webdriver');
 var By = webdriver.By;
 
-var MigrationLoincModel = require('../createMigrationConnection').MigrationLoincModel;
+var MigrationLoincModel = require('../../createMigrationConnection').MigrationLoincModel;
 
 var ParseLoincNameTable = require('./ParseLoincNameTable');
+var ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
 var ParseNameTable = require('./ParseNameTable');
 var ParseDefinitionDescriptionsTable = require('./ParseDefinitionDescriptionsTable');
 var ParsePartTable = require('./ParsePartTable');
 var ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
+var ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
 var ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
 var ParseMemberOfThesePanelsTable = require('./ParseMemberOfThesePanelsTable');
 var ParsingAnswerListTable = require('./ParseAnswerListTable');
@@ -16,10 +18,13 @@ var ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
 var ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
 var ParseRelatedNamesTable = require('./ParseRelatedNamesTable');
 var ParseExampleUnitsTable = require('./ParseExampleUnitsTable');
+var ParseCopyrightTable = require('./ParseCopyrightTable');
 var ParseWebContentTable = require('./ParseWebContentTable');
 var ParseArticleTable = require('./ParseArticleTable');
-var ParseCopyright = require('./ParseCopyright');
+var ParseCopyrightText = require('./ParseCopyrightText');
 var ParsingVersion = require('./ParseVersion');
+var ParseQuestion = require('./ParseQuestion');
+var CheckLformViewer = require('./checkLformViewer');
 
 var loincCount = 0;
 
@@ -29,6 +34,11 @@ var url_postfix_para = '?sections=Comprehensive';
 
 var tasks = [
     {
+        sectionName: 'PANEL HIERARCHY',
+        function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
+        xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
+    },
+    {
         sectionName: 'LOINC NAME',
         function: ParseLoincNameTable.parseLoincNameTable,
         xpath: '((//table)[1])'
@@ -36,86 +46,100 @@ var tasks = [
     {
         sectionName: 'NAME',
         function: ParseNameTable.parseNameTable,
-        xpath: '//*[@class="Section1000000F00"]/table'
+        xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
-        xpath: '//*[@class="Section0"]/table[.//th[contains(text(),"PART DEFINITION/DESCRIPTION(S)")]]'
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'TERM DEFINITION/DESCRIPTION(S)',
         function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
-        xpath: '//div[@class="Section0"]/table[.//th[contains(text(),"TERM DEFINITION/DESCRIPTION(S)")]]'
+        xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="TERM DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'PARTS',
         function: ParsePartTable.parsePartTable,
         xpath: '//*[@class="Section7000"]/div/table'
+    }, {
+        sectionName: 'FORM CODING INSTRUCTIONS',
+        function: ParseDefinitionDescriptionsTable.parseDefinitionDescriptionsTable,
+        xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
     },
     {
         sectionName: 'BASIC ATTRIBUTES',
         function: ParseBasicAttributesTable.parseBasicAttributesTable,
-        xpath: '//table[.//th[contains(text(),"BASIC ATTRIBUTES")]]'
+        xpath: 'html/body/div/table[.//th[text()="BASIC ATTRIBUTES"]]'
+    },
+    {
+        sectionName: 'HL7 ATTRIBUTES',
+        function: ParseHL7AttributesTable.parseHL7AttributesTable,
+        xpath: 'html/body/div/table[.//th[contains(node(),"HL7 ATTRIBUTES")]]'
     },
     {
         sectionName: 'SUBMITTER\'S INFORMATION',
         function: ParseSubmittersInformationTable.parseSubmittersInformationTable,
-        xpath: '//table[.//th[contains(text(),"SUBMITTER\'S INFORMATION")]]'
+        xpath: 'html/body/div/table[.//th[text()="SUBMITTER\'S INFORMATION"]]'
     },
     {
         sectionName: 'MEMBER OF THESE PANELS',
         function: ParseMemberOfThesePanelsTable.parseMemberOfThesePanelsTable,
-        xpath: '//table[.//th[contains(text(),"MEMBER OF THESE PANELS")]]'
+        xpath: 'html/body/div/table[.//th[text()="MEMBER OF THESE PANELS"]]'
     },
     {
         sectionName: 'LANGUAGE VARIANTS',
         function: ParseLanguageVariantsTable.parseLanguageVariantsTable,
-        xpath: '//table[.//th[contains(text(),"LANGUAGE VARIANTS")]]'
+        xpath: 'html/body/div/table[.//th[text()="LANGUAGE VARIANTS"]]'
     },
     {
         sectionName: 'RELATED NAMES',
         function: ParseRelatedNamesTable.parseRelatedNamesTable,
-        xpath: '//table[.//th[contains(text(),"RELATED NAMES")]]'
+        xpath: 'html/body/div/table[.//th[text()="RELATED NAMES"]]'
     },
     {
         sectionName: 'EXAMPLE UNITS',
         function: ParseExampleUnitsTable.parseExampleUnitsTable,
-        xpath: '//table[.//th[contains(text(),"EXAMPLE UNITS")]]'
+        xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
+    },
+    {
+        sectionName: 'COPYRIGHT',
+        function: ParseCopyrightTable.parseCopyrightTable,
+        xpath: '/html/body/div/table[.//th[text()="COPYRIGHT"]]'
     },
     {
         sectionName: 'EXAMPLE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: '//*[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: '//*[@class="Section80000"]/table[.//th[contains(node(),"NORMATIVE ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"NORMATIVE ANSWER LIST")]]'
     },
     {
         sectionName: 'PREFERRED ANSWER LIST',
         function: ParsingAnswerListTable.parseAnswerListTable,
-        xpath: '//*[@class="Section80000"]/table[.//th[contains(node(),"PREFERRED ANSWER LIST")]]'
+        xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"PREFERRED ANSWER LIST")]]'
     },
     {
         sectionName: 'SURVEY QUESTION',
         function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
-        xpath: '//table[.//th[contains(text(),"SURVEY QUESTION")]]'
+        xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]'
     },
     {
         sectionName: 'WEB CONTENT',
         function: ParseWebContentTable.parseWebContentTable,
-        xpath: '//table[.//th[contains(text(),"WEB CONTENT")]]'
+        xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]'
     },
     {
         sectionName: 'ARTICLE',
         function: ParseArticleTable.parseArticleTable,
-        xpath: '//table[.//th[contains(text(),"ARTICLE")]]'
+        xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
     },
     {
-        sectionName: 'COPYRIGHT',
-        function: ParseCopyright.parseCopyright,
+        sectionName: 'COPYRIGHT TEXT',
+        function: ParseCopyrightText.parseCopyrightText,
         xpath: '//p[@class="copyright"][1]'
     },
     {
@@ -124,6 +148,19 @@ var tasks = [
         xpath: '//p[contains(text(),"Generated from LOINC version")]'
     }
 ];
+var specialTasks = [
+    {
+        function: ParseQuestion.parseQuestion
+    },
+    {
+        function: CheckLformViewer.checkLformViewer
+    }
+];
+var currentVersion = '2.56';
+
+exports.setCurrentVersion = function (v) {
+    currentVersion = v;
+};
 
 function logMessage(obj, messange) {
     obj['info'] = obj['info'] + messange + '\n';
@@ -153,35 +190,48 @@ function doTask(driver, task, obj, cb) {
     });
 }
 
-var results = [];
-
-exports.runArray = function (array, doneItem, doneArray) {
+exports.runArray = function (array, orgName, doneItem, doneArray) {
+    ParsePanelHierarchyTable.setOrgName(orgName);
+    var results = [];
     async.series([
-        function (doneRemoveMigrationLoinc) {
-            MigrationLoincModel.remove({}, function (removeMigrationLoincError) {
-                if (removeMigrationLoincError) throw removeMigrationLoincError;
-                console.log('Removed migration loinc collection.');
-                doneRemoveMigrationLoinc();
-            });
-        },
         function () {
             var driver = new webdriver.Builder().forBrowser('chrome').build();
-            async.forEach(array, function (loincId, doneOneLoinc) {
-                var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-                driver.get(url).then(function () {
-                    var obj = {URL: url, loincId: loincId, info: ''};
-                    async.forEach(tasks, function (task, doneOneTask) {
-                        doTask(driver, task, obj, doneOneTask);
-                    }, function doneAllTasks() {
-                        loincCount++;
-                        console.log('loincCount: ' + loincCount);
-                        results.push(obj);
-                        doneItem(obj);
+            async.forEachSeries(array, function (loincId, doneOneLoinc) {
+                MigrationLoincModel.find({
+                    loincId: loincId,
+                    version: currentVersion
+                }).exec(function (error, existingLoincs) {
+                    if (error) throw error;
+                    if (existingLoincs.length === 0) {
+                        var url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+                        driver.get(url).then(function () {
+                            var obj = {URL: url, orgName: orgName, loincId: loincId, info: ''};
+                            async.forEach(tasks, function (task, doneOneTask) {
+                                doTask(driver, task, obj, doneOneTask);
+                            }, function doneAllTasks() {
+                                async.forEachSeries(specialTasks, function (specialTask, doneOneSpecialTask) {
+                                    if (obj['PANEL HIERARCHY']) {
+                                        specialTask.function(driver, obj, doneOneSpecialTask);
+                                    }
+                                    else {
+                                        doneOneSpecialTask();
+                                    }
+                                }, function doneAllSpecialTasks() {
+                                    loincCount++;
+                                    console.log('loincCount: ' + loincCount);
+                                    results.push(obj);
+                                    doneItem(obj, doneOneLoinc);
+                                });
+                            });
+                        });
+                    } else {
+                        console.log('loinc id: ' + loincId + ' exists');
                         doneOneLoinc();
-                    });
+                    }
                 });
             }, function doneAllLoinc() {
                 console.log('Finished all. loincCount: ' + loincCount);
+                driver.quit();
                 if (doneArray) doneArray(results);
                 else process.exit(1);
             });
