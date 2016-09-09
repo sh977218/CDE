@@ -217,7 +217,7 @@ exports.loadForm = function (element, fe, org, orgInfo, next) {
                     form: {
                         tinyId: existingForm.tinyId,
                         version: existingForm.version,
-                        name: existingForm.naming[0].designation
+                        name: existingForm.naming[0].designation.replace('[AHRQ]', '').trim()
                     }
                 };
                 var formElement = {
