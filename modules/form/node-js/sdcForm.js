@@ -33,7 +33,15 @@ function addQuestion(parent, question) {
                 var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 newQuestion.ListField.List.ListItem.push({
                     "$ID": "NA_" + Math.random(),
-                    "$title": title});
+                    "$title": title
+                    , "CodedValue": {
+                        "Code":{"$val":"1234"}
+                        , "CodeSystem": {
+                            "CodeSystemName": {"$val": "LOINC"}
+                            , "Version": {"$val": "from cde id"}
+                        }
+                    }
+                });
             });
         }
     } else {
