@@ -31,12 +31,14 @@ function run() {
                             async.forEachSeries(json.DataElementsList.DataElement, function (one, doneOne) {
                                 one['xmlFile'] = xmlFile;
                                 one['index'] = index;
+                                one['xmlFileName'] = xml;
                                 index++;
                                 var id = one.PUBLICID[0];
                                 var version = one.VERSION[0];
                                 MigrationNCICdeXmlModel.find({
                                     'PUBLICID': id,
-                                    'VERSION': version
+                                    'VERSION': version,
+                                    'xmlFileName': xml
                                 }).exec(function (err, existingXmls) {
                                     if (err) throw err;
                                     else if (existingXmls.length === 0) {
