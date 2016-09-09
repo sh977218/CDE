@@ -251,6 +251,7 @@ function streamOnClose() {
     // Retire Missing CDEs
 
     DataElement.find({
+        'imported': {$lt: lastEightHours},
         'source': 'AHRQ',
         'archived': null,
         'stewardOrg.name':'AHRQ'

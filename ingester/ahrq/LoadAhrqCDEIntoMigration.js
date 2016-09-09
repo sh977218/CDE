@@ -58,7 +58,8 @@ function run() {
                         one.classification = [{
                                 elements: [{
                                     name: "Common Formats / Form",
-                                    elements: []                                 }],
+                                    elements: []
+                                }],
                                 stewardOrg: {
                                     name: "AHRQ"
                                 }
