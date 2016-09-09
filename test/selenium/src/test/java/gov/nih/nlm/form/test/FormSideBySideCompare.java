@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class FormSideBySideCompare extends NlmCdeBaseTest {
 
-    @Test(priority = 4)
+    @Test
     public void formSideBySideCompare1() {
         mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm1");
@@ -19,7 +19,7 @@ public class FormSideBySideCompare extends NlmCdeBaseTest {
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_form_compare"));
 
-        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj Label')]"));
+        textPresent("DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray')][1]//*[contains(@class, 'rightObj') and @data-title='Label']"));
         textPresent("Tumor Characteristics: T1 Sig", By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'quickBoardContentCompareArray')][2]//*[contains(@class, 'leftObj') and @data-title='Label']"));
         Assert.assertTrue(driver.findElements(By.xpath("//*[@id='qb_compare_questions']//*[contains(@class, 'leftObj') and @data-title='Label']//*[contains(@class,'unmatchedIcon')]")).size() > 0);
         textPresent("Tumor T1 Signal Intensity Category", By.xpath("//*[@id='qb_compare_questions']//*[@data-title='quickBoardContentCompareArray'][2]//*[contains(@class, 'rightObj') and @data-title='Label']"));
