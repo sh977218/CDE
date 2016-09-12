@@ -1,5 +1,5 @@
 angular.module('OrgFactories', ['ngResource'])
-.factory('OrgHelpers', ["$http", "$q", "userResource", function ($http, $q, userResource) {
+.factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
     var orgHelpers = {
         orgsDetailedInfo: {}
         , deferred: $q.defer()
