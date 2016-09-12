@@ -31,17 +31,19 @@ function addQuestion(parent, question) {
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
                 var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                newQuestion.ListField.List.ListItem.push({
+                var q = {
                     "$ID": "NA_" + Math.random(),
                     "$title": title
-                    , "CodedValue": {
-                        "Code":{"$val":"1234"}
+                };
+                if (answer.codeSystemName) {
+                    q["CodedValue"] = {
+                        "Code":{"$val":answer.valueMeaningCode}
                         , "CodeSystem": {
-                            "CodeSystemName": {"$val": "LOINC"}
-                            , "Version": {"$val": "from cde id"}
+                            "CodeSystemName": {"$val": answer.codeSystemName}
                         }
-                    }
-                });
+                    };
+                }
+                newQuestion.ListField.List.ListItem.push(q);
             });
         }
     } else {
