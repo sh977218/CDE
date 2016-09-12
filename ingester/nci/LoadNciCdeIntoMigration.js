@@ -1,13 +1,10 @@
 var fs = require('fs');
 var async = require('async');
-var entities = require("entities");
 
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
 var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel;
-var classificationShared = require('../../modules/system/shared/classificationShared');
 
-var classificationMapping = require('./caDSRClassificationMapping.json');
 var ult = require('./Shared/Ultility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
 
@@ -38,11 +35,11 @@ function run(orgName) {
             });
         },
         function (cb) {
-            var stream = MigrationNCICdeXmlModel.find({}).stream();
+            var stream = MigrationNCICdeXmlModel.find({xml: orgName}).stream();
             stream.on('data', function (xml) {
                 stream.pause();
                 xml = xml.toObject();
-                var newCde = ult.createNewCde(xml);
+                var newCde = ult.createNewCde(xml, orgInfo);
                 if (newCde) {
                     MigrationDataElementModel.find({
                         'registrationState.registrationStatus': newCde.registrationState.registrationStatus,
@@ -60,8 +57,6 @@ function run(orgName) {
                                     throw err;
                                     process.exit(1);
                                 } else if (o) {
-                                    deCount++;
-                                    console.log('deCount: ' + deCount);
                                     stream.resume();
                                 } else {
                                     process.exit(1);
@@ -85,21 +80,17 @@ function run(orgName) {
                 nciOrg.markModified('classifications');
                 nciOrg.save(function (e) {
                     if (e) throw e;
+                    console.log('finished all xml');
                     if (cb) cb();
-                    //noinspection JSUnresolvedVariable
                     else process.exit(0);
                 });
             });
-        },
-        function () {
-            console.log('finished all xml');
-            console.log('deCount: ' + deCount);
-            console.log('retiredDECount: ' + retiredDE.length);
-            console.log('noClassificationDECount: ' + noClassificationDE.length);
-            process.exit(1);
         }
-    ]);
+    ], function (err) {
+        if (err) throw err;
+        process.exit(1);
+    });
 }
 
 
-run();
+run('NCI');

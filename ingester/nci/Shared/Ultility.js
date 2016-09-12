@@ -1,4 +1,8 @@
-var mongo_data = require('../../modules/system/node-js/mongo-data');
+var entities = require("entities");
+var mongo_data = require('../../../modules/system/node-js/mongo-data');
+var classificationShared = require('../../../modules/system/shared/classificationShared');
+var classificationMapping = require('../caDSRClassificationMapping.json');
+
 var $attribute = 'attribute';
 
 var datatypeMapping = {
@@ -15,99 +19,239 @@ var deCount = 0;
 var retiredDE = [];
 var noClassificationDE = [];
 
-function convertCadsrStatusToNlmStatus(status) {
-    switch (status) {
-        case "Preferred Standard":
-        case "Standard":
-            return "Standard";
-        case "Candidate":
-        case "Recorded":
-            return "Recorded";
-        case "Qualified":
-            return "Candidate";
-        case "Proposed":
-        default:
-            return "Incomplete";
+var statusMapping = {
+    "Preferred Standard": "Incomplete",
+    "Standard": "Standard",
+    "Candidate": "Incomplete",
+    "Recorded": "Recorded",
+    "Qualified": "Candidate",
+    "Proposed": "Incomplete"
+};
+
+function parseNaming(de) {
+    var naming = [{
+        designation: entities.decodeXML(de.LONGNAME[0]),
+        definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
+        languageCode: "EN-US",
+        context: {
+            contextName: "Health",
+            acceptability: "preferred"
+        }
+    }];
+    if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
+        de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
+            if (["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > -1) {
+                naming.push({
+                    designation: entities.decodeXML(refDoc.DocumentText[0]),
+                    definition: entities.decodeXML(refDoc.Name[0]),
+                    languageCode: "EN-US",
+                    context: {
+                        contextName: refDoc.DocumentType[0],
+                        acceptability: "preferred"
+                    }
+                });
+            }
+        });
+    }
+    return naming;
+}
+
+function parseIds(de) {
+    var ids = [{
+        source: source,
+        id: de.PUBLICID[0],
+        version: de.VERSION[0]
+    }];
+    return ids;
+}
+
+function parseProperties(de) {
+    var properties = [
+        {
+            key: "caDSR_Context",
+            source: source,
+            value: de.CONTEXTNAME[0]
+        },
+        {
+            key: "caDSR_Datatype",
+            source: source,
+            value: de.VALUEDOMAIN[0].Datatype[0]
+        },
+        {
+            key: "caDSR_Short_Name",
+            source: source,
+            value: de.PREFERREDNAME[0]
+        },
+        {
+            key: "caDSR_Registration_Status",
+            source: source,
+            value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
+        }
+    ];
+    if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
+        de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function (altName) {
+            if (["USED_BY"].indexOf(altName.AlternateNameType[0]) === -1) {
+                properties.push({
+                    key: altName.AlternateNameType[0],
+                    value: entities.decodeXML(altName.AlternateName[0])
+                });
+            }
+        });
+    }
+    return properties;
+}
+
+function parseRegistrationState(de) {
+    var registrationState = {
+        registrationStatus: statusMapping[de.REGISTRATIONSTATUS[0]],
+        administrativeStatus: de.WORKFLOWSTATUS[0]
+    };
+    return registrationState;
+}
+
+function parseReferenceDocuments(de) {
+    var referenceDocuments = [];
+    if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
+        de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
+            if (["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) === -1) {
+                var newRefDoc = {
+                    title: entities.decodeXML(refDoc.Name[0]),
+                    docType: refDoc.DocumentType[0],
+                    languageCode: refDoc.Language[0]
+                };
+                if (refDoc.DocumentText[0].length > 0) {
+                    newRefDoc.text = entities.decodeXML(refDoc.DocumentText[0]);
+                }
+                if (newRefDoc.languageCode === 'ENGLISH') newRefDoc.languageCode = "EN-US";
+                if (refDoc.OrganizationName[0].length > 0) {
+                    newRefDoc.providerOrg = refDoc.OrganizationName[0];
+                }
+                if (refDoc.URL[0].length > 0) {
+                    newRefDoc.url = refDoc.URL[0];
+                }
+                referenceDocuments.push(newRefDoc);
+            }
+        });
+    }
+    return referenceDocuments;
+}
+
+function parseOrigin(de) {
+    var origin = '';
+    if (de.ORIGIN && de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
+        origin = de.ORIGIN[0];
+    }
+    return origin;
+}
+
+function parseObjectClass(de) {
+    var objectClass = {concepts: []};
+    if (de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
+        de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
+            objectClass.concepts.push({
+                name: con.LONG_NAME[0],
+                origin: con.ORIGIN[0],
+                originId: con.PREFERRED_NAME[0]
+            });
+        });
+    }
+    return objectClass;
+}
+function parseProperty(de) {
+    var property = {concepts: []};
+    if (de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM) {
+        de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
+            property.concepts.push({
+                name: con.LONG_NAME[0],
+                origin: con.ORIGIN[0],
+                originId: con.PREFERRED_NAME[0]
+            });
+        });
+    }
+    return property;
+}
+function parseDataElementConcept(de) {
+    var dataElementConcept = {
+        concepts: [{
+            name: de.DATAELEMENTCONCEPT[0].LongName[0],
+            origin: "NCI caDSR",
+            originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
+        }]
+    };
+    return dataElementConcept;
+}
+
+function parseClassification(cde, org, de) {
+    var classification = [];
+    if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
+        de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
+            var getStringVersion = function (shortVersion) {
+                if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
+                else return shortVersion;
+            };
+            var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
+            try {
+                var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
+
+            } catch (e) {
+                console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
+                throw e;
+            }
+            var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
+            if (classificationStatus === 'RELEASED' && classificationName.length > 0 && csi.ClassificationSchemeItemName[0].length > 0) {
+                if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
+                    if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
+                        cde.registrationState.registrationStatus = "Qualified";
+                    }
+                }
+            }
+            classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+        });
+    }
+    else {
+        cde.classification = [];
+        classificationShared.classifyItem(cde, "NCI", ['NCIP']);
+        classificationShared.addCategory({elements: org.classifications}, ['NCIP']);
+        noClassificationDE.push(de);
     }
 }
 
-exports.createNewCde = function (de) {
+exports.createNewCde = function (de, org, orgInfo) {
     if (de.toObject) de = de.toObject();
-    if (de.REGISTRATIONSTATUS[0] === "Retired" || de.REGISTRATIONSTATUS[0] === "Historical") {
-        retiredDE.push(de);
-        return null;
-    }
+    var naming = parseNaming(de);
+    var ids = parseIds(de);
+    var properties = parseProperties(de);
+    var registrationState = parseRegistrationState(de);
+    var referenceDocuments = parseReferenceDocuments(de);
+    var origin = parseOrigin(de);
+    var objectClass = parseObjectClass(de);
+    var property = parseProperty(de);
+    var dataElementConcept = parseDataElementConcept(de);
     var cde = {
-        registrationState: {
-            registrationStatus: convertCadsrStatusToNlmStatus(de.REGISTRATIONSTATUS[0]),
-            administrativeStatus: de.WORKFLOWSTATUS[0]
-        },
         tinyId: mongo_data.generateTinyId(),
         imported: Date.now(),
+        registrationState: registrationState,
         source: source,
+        origin: origin,
         version: de.VERSION[0],
         valueDomain: {
             datatype: de.VALUEDOMAIN[0].Datatype[0],
             name: de.VALUEDOMAIN[0].LongName[0],
             definition: de.VALUEDOMAIN[0].PreferredDefinition[0]
         },
-        stewardOrg: {name: orgName},
-        naming: [
-            {
-                designation: entities.decodeXML(de.LONGNAME[0]),
-                definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
-                languageCode: "EN-US",
-                context: {
-                    contextName: "Health",
-                    acceptability: "preferred"
-                }
-            }
-        ],
-        ids: [{
-            source: source,
-            id: de.PUBLICID[0],
-            version: de.VERSION[0]
-        }],
+        stewardOrg: {name: orgInfo['stewardOrgName']},
+        naming: naming,
+        ids: ids,
         attachments: [],
-        properties: [
-            {
-                key: "caDSR_Context",
-                source: source,
-                value: de.CONTEXTNAME[0]
-            },
-            {
-                key: "caDSR_Datatype",
-                source: source,
-                value: de.VALUEDOMAIN[0].Datatype[0]
-            },
-            {
-                key: "caDSR_Short_Name",
-                source: source,
-                value: de.PREFERREDNAME[0]
-            },
-            {
-                key: "caDSR_Registration_Status",
-                source: source,
-                value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
-            }
-        ]
+        properties: properties,
+        referenceDocuments: referenceDocuments,
+        objectClass: objectClass,
+        property: property,
+        dataElementConcept: dataElementConcept,
+        classification: []
     };
-
-    if (de.ORIGIN && de.ORIGIN[0] && de.ORIGIN[0].length > 0) {
-        cde.origin = de.ORIGIN[0];
-    }
-
-    if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
-        de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(function (altName) {
-            if (["USED_BY"].indexOf(altName.AlternateNameType[0]) > -1) {
-                return null;
-            }
-            cde.properties.push({
-                key: altName.AlternateNameType[0],
-                value: entities.decodeXML(altName.AlternateName[0])
-            });
-        });
-    }
+    parseClassification(cde, org, de);
 
     if (datatypeMapping[cde.valueDomain.datatype]) {
         cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
@@ -132,40 +276,6 @@ exports.createNewCde = function (de) {
         if (de.VALUEDOMAIN[0].MinimumLength[0].length > 0) {
             cde.valueDomain.datatypeText.minLength = de.VALUEDOMAIN[0].MinimumLength[0];
         }
-    }
-
-    cde.referenceDocuments = [];
-    if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
-        de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {
-            if (["Application Standard Question Text", "Preferred Question Text", "Alternate Question Text"].indexOf(refDoc.DocumentType[0]) > -1) {
-                cde.naming.push({
-                    designation: entities.decodeXML(refDoc.DocumentText[0]),
-                    definition: entities.decodeXML(refDoc.Name[0]),
-                    languageCode: "EN-US",
-                    context: {
-                        contextName: refDoc.DocumentType[0],
-                        acceptability: "preferred"
-                    }
-                });
-            } else {
-                var newRefDoc = {
-                    title: entities.decodeXML(refDoc.Name[0]),
-                    docType: refDoc.DocumentType[0],
-                    languageCode: refDoc.Language[0]
-                };
-                if (refDoc.DocumentText[0].length > 0) {
-                    newRefDoc.text = entities.decodeXML(refDoc.DocumentText[0]);
-                }
-                if (newRefDoc.languageCode === 'ENGLISH') newRefDoc.languageCode = "EN-US";
-                if (refDoc.OrganizationName[0].length > 0) {
-                    newRefDoc.providerOrg = refDoc.OrganizationName[0];
-                }
-                if (refDoc.URL[0].length > 0) {
-                    newRefDoc.url = refDoc.URL[0];
-                }
-                cde.referenceDocuments.push(newRefDoc);
-            }
-        });
     }
 
     if (de.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
@@ -196,70 +306,5 @@ exports.createNewCde = function (de) {
         });
     }
 
-
-    cde.objectClass = {concepts: []};
-    if (de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
-        de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            cde.objectClass.concepts.push({
-                name: con.LONG_NAME[0],
-                origin: con.ORIGIN[0],
-                originId: con.PREFERRED_NAME[0]
-            });
-        });
-    }
-
-    cde.property = {concepts: []};
-    if (de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM) {
-        de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            cde.property.concepts.push({
-                name: con.LONG_NAME[0],
-                origin: con.ORIGIN[0],
-                originId: con.PREFERRED_NAME[0]
-            });
-        });
-    }
-
-    cde.dataElementConcept = {
-        concepts: [{
-            name: de.DATAELEMENTCONCEPT[0].LongName[0],
-            origin: "NCI caDSR",
-            originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
-        }]
-    };
-
-    cde.classification = [];
-
-    if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
-        de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
-            var getStringVersion = function (shortVersion) {
-                if (shortVersion.indexOf(".") === -1) return shortVersion + ".0";
-                else return shortVersion;
-            };
-            var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
-            try {
-                var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
-
-            } catch (e) {
-                console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
-                throw e;
-            }
-            var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
-            if (classificationStatus === 'RELEASED' && classificationName.length > 0 && csi.ClassificationSchemeItemName[0].length > 0) {
-                if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
-                    if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
-                        cde.registrationState.registrationStatus = "Qualified";
-                    }
-                }
-            }
-            classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-            classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-        });
-    }
-    else {
-        cde.classification = [];
-        classificationShared.classifyItem(cde, "NCI", ['NCIP']);
-        classificationShared.addCategory({elements: nciOrg.classifications}, ['NCIP']);
-        noClassificationDE.push(de);
-    }
     return cde;
-}
+};
