@@ -23,7 +23,8 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        new Select(driver.findElement(By.name("newContext"))).selectByVisibleText("canYouSeeThis");
+        clickElement(By.id("newContext"));
+        textPresent("canYouSeeThis");
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));

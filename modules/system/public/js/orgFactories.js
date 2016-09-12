@@ -1,5 +1,5 @@
 angular.module('OrgFactories', ['ngResource'])
-.factory('OrgHelpers', ["$http", "$q", function ($http, $q) {
+.factory('OrgHelpers', ["$http", "$q", "userResource", function ($http, $q, userResource) {
     var orgHelpers = {
         orgsDetailedInfo: {}
         , deferred: $q.defer()
@@ -52,7 +52,9 @@ angular.module('OrgFactories', ['ngResource'])
         }
         , showWorkingGroup: function(orgToHide, user) {
             var OrgHelpers = this;
-            var parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
+            if (!user) return false;
+            var parentOrgOfThisClass = OrgHelpers.orgsDetailedInfo[orgToHide] &&
+                OrgHelpers.orgsDetailedInfo[orgToHide].workingGroupOf;
             var isNotWorkingGroup = typeof(parentOrgOfThisClass) === "undefined";
             var userIsWorkingGroupCurator = exports.isCuratorOf(user, orgToHide);
             if (!isNotWorkingGroup) var userIsCuratorOfParentOrg = exports.isCuratorOf(user, parentOrgOfThisClass);
@@ -61,13 +63,13 @@ angular.module('OrgFactories', ['ngResource'])
                 if (!user.orgAdmin) user.orgAdmin = [];
                 if (!user.orgCurator) user.orgCurator = [];
                 var userOrgs = [].concat(user.orgAdmin, user.orgCurator);
-                var userWgsParentOrgs = userOrgs.filter(function(org) {
+                var userWgsParentOrgs = userOrgs.filter(function (org) {
                     return OrgHelpers.orgsDetailedInfo[org] && OrgHelpers.orgsDetailedInfo[org].workingGroupOf;
-                }).map(function(org) {
+                }).map(function (org) {
                     return OrgHelpers.orgsDetailedInfo[org].workingGroupOf;
                 });
-                userWgsParentOrgs.forEach(function(parentOrg){
-                    if (parentOrg===parentOrgOfThisClass) isSisterOfWg = true;
+                userWgsParentOrgs.forEach(function (parentOrg) {
+                    if (parentOrg === parentOrgOfThisClass) isSisterOfWg = true;
                 });
             }
             return isNotWorkingGroup || userIsWorkingGroupCurator || userIsCuratorOfParentOrg || isSisterOfWg;
@@ -79,7 +81,9 @@ angular.module('OrgFactories', ['ngResource'])
                 }).map(function (e) {
                     return e.stewardOrg.name;
                 });
-                return arr.filter(function (item, pos) {return arr.indexOf(item) === pos;});
+                return arr.filter(function (item, pos) {
+                    return arr.indexOf(item) === pos;
+                });
             } else return [];
         }
         , getStatusValidationRules: function(orgName){
