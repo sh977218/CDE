@@ -70,12 +70,16 @@ exports.parseNameTable = function (obj, task, element, cb) {
                 });
             },
             function (cb) {
-                trs[3].findElements(By.xpath('td')).then(function (tds) {
-                    tds[2].getText().then(function (text) {
-                        obj[sectionName][sectionName]['Shortname'] = text.trim();
-                        cb();
+                if (trs[3]) {
+                    trs[3].findElements(By.xpath('td')).then(function (tds) {
+                        tds[2].getText().then(function (text) {
+                            obj[sectionName][sectionName]['Shortname'] = text.trim();
+                            cb();
+                        });
                     });
-                });
+                } else {
+                    cb();
+                }
             }
         ], function () {
             cb();

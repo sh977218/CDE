@@ -20,7 +20,7 @@ var derivationRuleSchema = new mongoose.Schema(
     }, {_id: true}
 );
 
-var deJsonSchema = {
+var deJson = {
     naming: [sharedSchemas.namingSchema]
     , source: String
     , origin: String
@@ -128,8 +128,8 @@ schemas.pinningBoardSchema = new mongoose.Schema({
     },
     pins: [pinSchema]
 });
-
-schemas.dataElementSchema = new mongoose.Schema(deJsonSchema);
+schemas.deJson = deJson;
+schemas.dataElementSchema = new mongoose.Schema(deJson);
 
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();

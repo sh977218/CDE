@@ -59,8 +59,6 @@ dependencies/
 gradle setting.txt
 groovy/out/
 ingester/debug.log
-ingester/loinc/Classes Mapping
-ingester/loinc/LoincScaleTypeMapping.json
 ingester/ninds/ingesters/.gradle/
 ingester/ninds/ingesters/1.17.5_0.crx
 ingester/ninds/ingesters/build/

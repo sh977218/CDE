@@ -9,6 +9,8 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
     @Test
     public void lformsDisplay() {
         goToFormByName("Loinc Widget Test Form");
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
         textPresent("Prior BMSCT Administered Indicator");
 
         // test skip logic
