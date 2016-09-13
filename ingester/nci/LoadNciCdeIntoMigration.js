@@ -9,7 +9,7 @@ var ult = require('./Shared/Ultility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
 
 function run(orgName) {
-    var nciOrg;
+    var org;
     var orgInfo = orgInfoMapping[orgName];
     async.series([
         function (cb) {
@@ -27,10 +27,10 @@ function run(orgName) {
             });
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+            new MigrationOrgModel({name: orgName}).save(function (createOrgError, o) {
                 if (createOrgError) throw createOrgError;
                 console.log('Created new org of ' + orgName + ' in migration db');
-                nciOrg = org;
+                org = o;
                 cb();
             });
         },
@@ -39,7 +39,7 @@ function run(orgName) {
             stream.on('data', function (xml) {
                 stream.pause();
                 xml = xml.toObject();
-                var newCde = ult.createNewCde(xml, orgInfo);
+                var newCde = ult.createNewCde(xml, org, orgInfo);
                 if (newCde) {
                     MigrationDataElementModel.find({
                         'registrationState.registrationStatus': newCde.registrationState.registrationStatus,
@@ -77,8 +77,8 @@ function run(orgName) {
             });
             stream.on('close', function () {
                 console.log("End of NCI stream.");
-                nciOrg.markModified('classifications');
-                nciOrg.save(function (e) {
+                org.markModified('classifications');
+                org.save(function (e) {
                     if (e) throw e;
                     console.log('finished all xml');
                     if (cb) cb();

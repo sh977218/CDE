@@ -181,7 +181,7 @@ function parseDataElementConcept(de) {
     return dataElementConcept;
 }
 
-function parseClassification(cde, org, de) {
+function parseClassification(cde, org, orgInfo, de) {
     var classification = [];
     if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
         de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
@@ -197,16 +197,10 @@ function parseClassification(cde, org, de) {
                 console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
                 throw e;
             }
-            var classificationStatus = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].workflowStatusName;
-            if (classificationStatus === 'RELEASED' && classificationName.length > 0 && csi.ClassificationSchemeItemName[0].length > 0) {
-                if (csi.ClassificationScheme[0].ContextName[0] === "NIDA") {
-                    if (['Standard', 'Preferred Standard'].indexOf(cde.registrationState.registrationStatus) < 0) {
-                        cde.registrationState.registrationStatus = "Qualified";
-                    }
-                }
-            }
-            classificationShared.classifyItem(cde, "NCI", [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-            classificationShared.addCategory({elements: nciOrg.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+
+            var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
+            classificationShared.classifyItem(cde, classificationOrgName, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            classificationShared.addCategory({elements: org.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
         });
     }
     else {
@@ -217,41 +211,7 @@ function parseClassification(cde, org, de) {
     }
 }
 
-exports.createNewCde = function (de, org, orgInfo) {
-    if (de.toObject) de = de.toObject();
-    var naming = parseNaming(de);
-    var ids = parseIds(de);
-    var properties = parseProperties(de);
-    var registrationState = parseRegistrationState(de);
-    var referenceDocuments = parseReferenceDocuments(de);
-    var origin = parseOrigin(de);
-    var objectClass = parseObjectClass(de);
-    var property = parseProperty(de);
-    var dataElementConcept = parseDataElementConcept(de);
-    var cde = {
-        tinyId: mongo_data.generateTinyId(),
-        imported: Date.now(),
-        registrationState: registrationState,
-        source: source,
-        origin: origin,
-        version: de.VERSION[0],
-        valueDomain: {
-            datatype: de.VALUEDOMAIN[0].Datatype[0],
-            name: de.VALUEDOMAIN[0].LongName[0],
-            definition: de.VALUEDOMAIN[0].PreferredDefinition[0]
-        },
-        stewardOrg: {name: orgInfo['stewardOrgName']},
-        naming: naming,
-        ids: ids,
-        attachments: [],
-        properties: properties,
-        referenceDocuments: referenceDocuments,
-        objectClass: objectClass,
-        property: property,
-        dataElementConcept: dataElementConcept,
-        classification: []
-    };
-    parseClassification(cde, org, de);
+function parseValueDomain(cde, de) {
 
     if (datatypeMapping[cde.valueDomain.datatype]) {
         cde.valueDomain.datatype = datatypeMapping[cde.valueDomain.datatype];
@@ -305,6 +265,44 @@ exports.createNewCde = function (de, org, orgInfo) {
             if (pv1.permissibleValue < pv2.permissibleValue) return -1;
         });
     }
+}
+
+exports.createNewCde = function (de, org, orgInfo) {
+    if (de.toObject) de = de.toObject();
+    var naming = parseNaming(de);
+    var ids = parseIds(de);
+    var properties = parseProperties(de);
+    var registrationState = parseRegistrationState(de);
+    var referenceDocuments = parseReferenceDocuments(de);
+    var origin = parseOrigin(de);
+    var objectClass = parseObjectClass(de);
+    var property = parseProperty(de);
+    var dataElementConcept = parseDataElementConcept(de);
+    var cde = {
+        tinyId: mongo_data.generateTinyId(),
+        imported: Date.now(),
+        registrationState: registrationState,
+        source: source,
+        origin: origin,
+        version: de.VERSION[0],
+        valueDomain: {
+            datatype: de.VALUEDOMAIN[0].Datatype[0],
+            name: de.VALUEDOMAIN[0].LongName[0],
+            definition: de.VALUEDOMAIN[0].PreferredDefinition[0]
+        },
+        stewardOrg: {name: orgInfo['stewardOrgName']},
+        naming: naming,
+        ids: ids,
+        attachments: [],
+        properties: properties,
+        referenceDocuments: referenceDocuments,
+        objectClass: objectClass,
+        property: property,
+        dataElementConcept: dataElementConcept,
+        classification: []
+    };
+    parseClassification(cde, org, orgInfo, de);
+    parseValueDomain(cde, de);
 
     return cde;
 };
