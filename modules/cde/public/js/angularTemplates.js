@@ -1,1 +1,1 @@
-angular.module('cdeTemplates', []);
+angular.module("cdeTemplates", []);

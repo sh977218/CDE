@@ -50,16 +50,16 @@ public class ExportTest extends NlmCdeBaseTest {
             Assert.fail("Exception reading SearchExport.csv");
         }
         clickElement(By.id("searchSettings"));
-        findElement(By.id("uom")).click();
-        findElement(By.id("administrativeStatus")).click();
-        findElement(By.id("source")).click();
-        findElement(By.id("updated")).click();
+        clickElement(By.id("uom"));
+        clickElement(By.id("administrativeStatus"));
+        clickElement(By.id("source"));
+        clickElement(By.id("updated"));
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
         closeAlert();
 
         clickElement(By.id("export"));
-        findElement(By.id("csvExport")).click();
+        clickElement(By.id("csvExport"));
         textPresent("export is being generated");
         textPresent("Export downloaded.");
         closeAlert();

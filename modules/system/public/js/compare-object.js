@@ -36,15 +36,17 @@
                 options.matchCount = 0;
                 options.showTitle = false;
                 options.results = [];
-                options.properties.forEach(function (p) {
-                    if (leftObj[p.property] === rightObj[p.property]) {
-                        options.matchCount++;
-                        options.results.push({label: p.label, property: p.property, match: true});
-                    } else {
-                        options.showTitle = true;
-                        options.results.push({label: p.label, property: p.property, match: false});
-                    }
-                });
+                if (options.properties) {
+                    options.properties.forEach(function (p) {
+                        if (leftObj[p.property] === rightObj[p.property]) {
+                            options.matchCount++;
+                            options.results.push({label: p.label, property: p.property, match: true});
+                        } else {
+                            options.showTitle = true;
+                            options.results.push({label: p.label, property: p.property, match: false});
+                        }
+                    });
+                }
             }
         };
     }]);

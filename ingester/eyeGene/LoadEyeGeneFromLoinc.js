@@ -1,16 +1,22 @@
-var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGeneLoincModel,
-    Loinc = require('../loinc/LoadFromLoincSite')
-    ;
+var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').MigrationEyeGENELoincModel;
+var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
-
-MigrationEyeGeneLoincModel.find({LONG_COMMON_NAME: {$regex: '^((?!panel).)*$'}}, function (err, dataArray) {
+var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
+var orgName = 'eyeGENE';
+MigrationEyeGeneLoincModel.find({}).exec(function (err, dataArray) {
     if (err) throw err;
     var newArray = [];
     dataArray.forEach(function (data) {
         data = data.toObject();
         newArray.push(data.LOINC_NUM.trim());
     });
-    Loinc.runArray(newArray, function () {
-        process.exit();
+    LoadFromLoincSite.runArray(newArray,orgName, function (one, next) {
+        var obj = new MigrationLoincModel(one);
+        obj.save(function (err) {
+            if (err) throw err;
+            next();
+        })
+    }, function () {
+        process.exit(0);
     });
 });
