@@ -7,10 +7,63 @@ var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationN
 
 var ult = require('./Shared/Ultility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
+var classificationShared = require('../../modules/system/shared/classificationShared');
 
-function run(orgName) {
-    var org;
-    var orgInfo = orgInfoMapping[orgName];
+function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
+    var orgName = orgInfo['orgName'];
+    var stream = MigrationNCICdeXmlModel.find({xml: orgName}).stream();
+    stream.on('data', function (xml) {
+        stream.pause();
+        xml = xml.toObject();
+        var id = xml.PUBLICID[0];
+        var version = xml.VERSION[0];
+        var newCde = ult.createNewCde(xml, org, orgInfo);
+        if (newCde) {
+            MigrationDataElementModel.find({'ids.id': id}).elemMatch('ids', {
+                "source": 'caDSR',
+                "id": id
+            }).exec(function (err, existingCdes) {
+                if (err) throw err;
+                if (existingCdes.length === 0) {
+                    var obj = new MigrationDataElementModel(newCde);
+                    obj.save(function (err) {
+                        if (err) throw err;
+                        stream.resume();
+                    });
+                } else if (existingCdes.length === 1) {
+                    var existingCde = existingCdes[0];
+                    classificationShared.transferClassifications(newCde, existingCde);
+                    existingCde.markModified('classification');
+                    existingCde.save(function (err) {
+                        if (err) throw err;
+                        stream.resume();
+                    })
+                } else {
+                    console.log('find more than one existing Cde of id:' + id + ' version: ' + version);
+                    process.exit(1);
+                }
+            })
+        } else {
+            stream.resume();
+        }
+    });
+    stream.on('error', function (err) {
+        if (err) throw err;
+        process.exit(1);
+    });
+    stream.on('close', function () {
+        console.log('End of ' + orgName + ' stream.');
+        org.markModified('classifications');
+        org.save(function (e) {
+            if (e) throw e;
+            console.log('finished all xml for org: ' + orgName);
+            next();
+        });
+    });
+}
+
+
+function run() {
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
@@ -27,63 +80,36 @@ function run(orgName) {
             });
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (createOrgError, o) {
+            var orgName = 'NCI';
+            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
                 if (createOrgError) throw createOrgError;
                 console.log('Created new org of ' + orgName + ' in migration db');
-                org = o;
-                cb();
+                var orgInfo = orgInfoMapping[orgName];
+                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
+                    cb();
+                })
             });
         },
         function (cb) {
-            var stream = MigrationNCICdeXmlModel.find({xml: orgName}).stream();
-            stream.on('data', function (xml) {
-                stream.pause();
-                xml = xml.toObject();
-                var newCde = ult.createNewCde(xml, org, orgInfo);
-                if (newCde) {
-                    MigrationDataElementModel.find({
-                        'registrationState.registrationStatus': newCde.registrationState.registrationStatus,
-                        'ids.id': newCde.ids[0].id
-                    }).elemMatch('ids', {
-                        "source": newCde.ids[0].source,
-                        "id": newCde.ids[0].id,
-                        "version": newCde.ids[0].version
-                    }).exec(function (err, existingCdes) {
-                        if (err) throw err;
-                        if (existingCdes.length === 0) {
-                            var obj = new MigrationDataElementModel(newCde);
-                            obj.save(function (err, o) {
-                                if (err) {
-                                    throw err;
-                                    process.exit(1);
-                                } else if (o) {
-                                    stream.resume();
-                                } else {
-                                    process.exit(1);
-                                }
-                            });
-                        } else {
-                            console.log('find 1 existing Cde of id:' + newCde.ids[0].id + ' version: ' + newCde.ids[0].version);
-                            stream.resume();
-                        }
-                    })
-                } else {
-                    stream.resume();
-                }
+            var orgName = 'NCI-GTEx';
+            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+                if (createOrgError) throw createOrgError;
+                console.log('Created new org of ' + orgName + ' in migration db');
+                var orgInfo = orgInfoMapping[orgName];
+                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
+                    cb();
+                })
             });
-            stream.on('error', function (err) {
-                if (err) throw err;
-                process.exit(1);
-            });
-            stream.on('close', function () {
-                console.log("End of NCI stream.");
-                org.markModified('classifications');
-                org.save(function (e) {
-                    if (e) throw e;
-                    console.log('finished all xml');
-                    if (cb) cb();
-                    else process.exit(0);
-                });
+        },
+        function (cb) {
+            var orgName = 'NCI-BPV';
+            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+                if (createOrgError) throw createOrgError;
+                console.log('Created new org of ' + orgName + ' in migration db');
+                var orgInfo = orgInfoMapping[orgName];
+                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
+                    cb();
+                })
             });
         }
     ], function (err) {
@@ -93,4 +119,4 @@ function run(orgName) {
 }
 
 
-run('NCI');
+run();

@@ -182,7 +182,6 @@ function parseDataElementConcept(de) {
 }
 
 function parseClassification(cde, org, orgInfo, de) {
-    var classification = [];
     if (de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
         de.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(function (csi) {
             var getStringVersion = function (shortVersion) {
@@ -202,12 +201,6 @@ function parseClassification(cde, org, orgInfo, de) {
             classificationShared.classifyItem(cde, classificationOrgName, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
             classificationShared.addCategory({elements: org.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
         });
-    }
-    else {
-        cde.classification = [];
-        classificationShared.classifyItem(cde, "NCI", ['NCIP']);
-        classificationShared.addCategory({elements: org.classifications}, ['NCIP']);
-        noClassificationDE.push(de);
     }
 }
 
