@@ -200,8 +200,12 @@ function parseClassification(cde, org, orgInfo, de) {
             }
 
             var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
-            classificationShared.classifyItem(cde, classificationOrgName, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
-            classificationShared.addCategory({elements: org.classifications}, [csi.ClassificationScheme[0].ContextName[0], classificationName, csi.ClassificationSchemeItemName[0]]);
+            var bbrb = csi.ClassificationScheme[0].ContextName[0];
+            var classificationAllowed = csi.ClassificationSchemeItemName[0];
+            if (orgInfo.filter(bbrb, classificationAllowed)) {
+                classificationShared.classifyItem(cde, classificationOrgName, [bbrb, classificationName, classificationAllowed]);
+                classificationShared.addCategory({elements: org.classifications}, [bbrb, classificationName, classificationAllowed]);
+            }
         });
     }
 }
