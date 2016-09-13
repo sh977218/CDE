@@ -69,8 +69,8 @@
                     var objectHtml = '' +
                         '<div class="row" ng-class="{quickBoardContentCompareDiff:showWarningIcon && properties.match===false,quickBoardContentCompareSame:properties.match === true}">' +
                         '   <div class="col-xs-4 {{properties.label}}">{{properties.label}}:</div>' +
-                        '   <div ng-if="properties.link" class="col-xs-7 {{properties.property}}"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
-                        '   <div ng-if="!properties.link" class="col-xs-7 {{properties.property}}" ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="100"></div>';
+                        '   <div ng-if="properties.link" class="col-xs-7" data-title="{{properties.property}}"><a ng-href="{{properties.url}}' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '">' + _this.getValueByNestedProperty($scope.obj, $scope.properties.property) + '</a></div>' +
+                        '   <div ng-if="!properties.link" class="col-xs-7" data-title="{{properties.property}}" ng-bind-html="value" ng-text-truncate="value" ng-tt-threshold="100"></div>';
                     if ($scope.showWarningIcon) {
                         objectHtml = objectHtml +
                             '<i ng-if="properties.match===false" class="fa fa-exclamation-triangle unmatchedIcon"></i>';

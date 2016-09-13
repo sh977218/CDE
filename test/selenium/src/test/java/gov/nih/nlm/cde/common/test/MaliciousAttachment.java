@@ -24,7 +24,6 @@ public class MaliciousAttachment  extends BaseAttachmentTest {
             driver.get(driver.getCurrentUrl());
             tryAgain(ttl - 1);
         }
-        textNotPresent("Filename");
     }
 
     @Test
