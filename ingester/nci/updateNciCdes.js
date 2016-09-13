@@ -242,53 +242,25 @@ function run() {
         if (streamError) throw streamError;
     });
     migStream.on('close', function () {
-        // Retire Missing CDEs
-        DataElement.find({
-            imported: {$lt: lastEightHours},
-            source: cdeSource,
-            classification: {$size: 0},
-            archived: null
-        }).exec(function (retiredCdeError, retireCdes) {
-                if (retiredCdeError) throw retiredCdeError;
-                else {
-                    console.log('retiredCdes: ' + retireCdes.length);
-                    async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
-                            retireCde.registrationState.registrationStatus = 'Retired';
-                            retireCde.registrationState.administrativeNote = "Not present in import from " + today;
-                            retireCde.save(function (error) {
-                                if (error) throw error;
-                                else {
-                                    retired++;
-                                    doneOneRetireCde();
-                                }
-                            })
-                        }, function doneAllRetireCdes() {
-                            console.log("Nothing left to do, saving Org");
-                            MigrationOrg.find().exec(function (findMigOrgError, orgs) {
-                                if (findMigOrgError) throw findMigOrgError;
-                                async.forEachSeries(orgs, function (org, doneOneOrg) {
-                                    Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
-                                        if (findOrgError) throw findOrgError;
-                                        else {
-                                            theOrg.classifications = org.classifications;
-                                            theOrg.save(function (saveOrgError) {
-                                                if (saveOrgError) throw saveOrgError;
-                                                else doneOneOrg();
-                                            });
-                                        }
-                                    });
-                                }, function doneAllOrgs() {
-                                    logger.info('createdCDE: ' + JSON.stringify(createdCDE));
-                                    output();
-                                    process.exit(0);
-                                });
-                            });
-                        }
-                    )
-
-                }
-            }
-        )
+        MigrationOrg.find().exec(function (findMigOrgError, orgs) {
+            if (findMigOrgError) throw findMigOrgError;
+            async.forEachSeries(orgs, function (org, doneOneOrg) {
+                Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
+                    if (findOrgError) throw findOrgError;
+                    else {
+                        theOrg.classifications = org.classifications;
+                        theOrg.save(function (saveOrgError) {
+                            if (saveOrgError) throw saveOrgError;
+                            else doneOneOrg();
+                        });
+                    }
+                });
+            }, function doneAllOrgs() {
+                logger.info('createdCDE: ' + JSON.stringify(createdCDE));
+                output();
+                process.exit(0);
+            });
+        });
     });
 }
 
