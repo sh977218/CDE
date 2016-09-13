@@ -110,6 +110,8 @@ function parseRegistrationState(de) {
 }
 
 function parseReferenceDocuments(de) {
+    de = JSON.parse(JSON.stringify(de));
+    delete de.__v;
     var referenceDocuments = [];
     if (de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM) {
         de.REFERENCEDOCUMENTSLIST[0].REFERENCEDOCUMENTSLIST_ITEM.forEach(function (refDoc) {

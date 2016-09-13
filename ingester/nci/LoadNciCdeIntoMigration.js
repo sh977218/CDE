@@ -63,7 +63,8 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
 }
 
 
-function run() {
+exports.loadNciCdesIntoMigrationByOrgName = function (orgName) {
+    var orgInfo = orgInfoMapping[orgName];
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
@@ -80,33 +81,9 @@ function run() {
             });
         },
         function (cb) {
-            var orgName = 'NCI';
             new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
                 if (createOrgError) throw createOrgError;
                 console.log('Created new org of ' + orgName + ' in migration db');
-                var orgInfo = orgInfoMapping[orgName];
-                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
-                    cb();
-                })
-            });
-        },
-        function (cb) {
-            var orgName = 'NCI-GTEx';
-            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
-                if (createOrgError) throw createOrgError;
-                console.log('Created new org of ' + orgName + ' in migration db');
-                var orgInfo = orgInfoMapping[orgName];
-                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
-                    cb();
-                })
-            });
-        },
-        function (cb) {
-            var orgName = 'NCI-BPV';
-            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
-                if (createOrgError) throw createOrgError;
-                console.log('Created new org of ' + orgName + ' in migration db');
-                var orgInfo = orgInfoMapping[orgName];
                 doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
                     cb();
                 })
@@ -116,7 +93,4 @@ function run() {
         if (err) throw err;
         process.exit(1);
     });
-}
-
-
-run();
+};
