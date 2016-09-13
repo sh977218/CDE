@@ -104,15 +104,19 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                 $scope.leftCopy.flatClassifications = ClassificationUtil.flattenClassification($scope.leftCopy);
                 $scope.rightCopy.flatClassifications = ClassificationUtil.flattenClassification($scope.rightCopy);
 
-                $scope.leftDatatypeObj = {
-                    obj: $scope.leftCopy.valueDomain[datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].obj],
-                    p: datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].options
-                };
-                $scope.rightDatatypeObj = {
-                    obj: $scope.rightCopy.valueDomain[datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].obj],
-                    p: datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].options
-                };
 
+                if (datatypeCompareMap[$scope.leftCopy.valueDomain.datatype]) {
+                    $scope.leftDatatypeObj = {
+                        obj: $scope.leftCopy.valueDomain[datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].obj],
+                        p: datatypeCompareMap[$scope.leftCopy.valueDomain.datatype].options
+                    };
+                }
+                if (datatypeCompareMap[$scope.rightCopy.valueDomain.datatype]) {
+                    $scope.rightDatatypeObj = {
+                        obj: $scope.rightCopy.valueDomain[datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].obj],
+                        p: datatypeCompareMap[$scope.rightCopy.valueDomain.datatype].options
+                    };
+                }
             }
         };
 
