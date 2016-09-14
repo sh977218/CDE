@@ -52,7 +52,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Naming", includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                    //contextsLoaded.resolve();
+                });
             },
             show: true
         },

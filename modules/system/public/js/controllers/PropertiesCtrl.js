@@ -1,11 +1,14 @@
 angular.module('systemModule').controller('PropertiesCtrl',
-    ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert',
-    function($scope, $modal, $location, $timeout, OrgHelpers, Alert)
+    ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert', '$q',
+    function($scope, $modal, $location, $timeout, OrgHelpers, Alert, $q)
 {
+
+    //var contextsLoaded = $q.defer();
 
     $scope.$on('elementReloaded', function() {
         OrgHelpers.deferred.promise.then(function () {
-            $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+            $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+            //contextsLoaded.resolve();
         });
     });
 
@@ -15,19 +18,22 @@ angular.module('systemModule').controller('PropertiesCtrl',
             return;
         }
 
-        var modalInstance = $modal.open({
-            animation: false,
-            templateUrl: 'newPropertyModalContent.html',
-            controller: 'NewPropertyModalCtrl',
-            resolve: {
-                elt: function () {
-                    return $scope.elt;
-                },
-                module: function () {
-                    return $scope.module;
+        var modalInstance;
+        //contextsLoaded.promise.then(function () {
+            modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'newPropertyModalContent.html',
+                controller: 'NewPropertyModalCtrl',
+                resolve: {
+                    elt: function () {
+                        return $scope.elt;
+                    },
+                    module: function () {
+                        return $scope.module;
+                    }
                 }
-            }
-        });
+            });
+        //});
         
         modalInstance.result.then(function (newProperty) {
             for (var i = 0; i < $scope.elt.properties.length; i++) {
