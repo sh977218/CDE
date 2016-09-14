@@ -2,11 +2,19 @@ angular.module('systemModule').controller('PropertiesCtrl',
     ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert', '$q',
     function($scope, $modal, $location, $timeout, OrgHelpers, Alert, $q)
 {
+    var keysLoaded = $q.defer();
+
+    function refreshContexts(){
+        OrgHelpers.deferred.promise.then(function () {
+            $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+            keysLoaded.resolve();
+        });
+    }
+
+    refreshContexts();
 
     $scope.$on('elementReloaded', function() {
-        OrgHelpers.deferred.promise.then(function () {
-            $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
-        });
+        refreshContexts();
     });
 
     $scope.openNewProperty = function () {
@@ -16,6 +24,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
         }
 
         var modalInstance;
+        keysLoaded.promise.then(function () {
             modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
@@ -29,24 +38,26 @@ angular.module('systemModule').controller('PropertiesCtrl',
                     }
                 }
             });
-
-        modalInstance.result.then(function (newProperty) {
-            for (var i = 0; i < $scope.elt.properties.length; i++) {
-                if ($scope.elt.properties[i].key === newProperty.key) {
-                    $scope.addAlert("danger", "This property already exists.");
-                    return;
+            modalInstance.result.then(function (newProperty) {
+                for (var i = 0; i < $scope.elt.properties.length; i++) {
+                    if ($scope.elt.properties[i].key === newProperty.key) {
+                        $scope.addAlert("danger", "This property already exists.");
+                        return;
+                    }
                 }
-            }
-            $scope.elt.properties.push(newProperty);
-            if ($scope.elt.unsaved) {
-                Alert.addAlert("info", "Property added. Save to confirm.");
-            } else {
-                $scope.elt.$save(function (newElt) {
-                    $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
-                    Alert.addAlert("success", "Property Added");
-                });
-            }
+                $scope.elt.properties.push(newProperty);
+                if ($scope.elt.unsaved) {
+                    Alert.addAlert("info", "Property added. Save to confirm.");
+                } else {
+                    $scope.elt.$save(function (newElt) {
+                        $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
+                        Alert.addAlert("success", "Property Added");
+                    });
+                }
+            });
         });
+
+
     };
     
     $scope.removeProperty = function (index) {
