@@ -22,7 +22,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                 return;
             }
 
-            //contextsLoaded.promise.then(function () {
+            contextsLoaded.promise.then(function () {
                 $modal.open({
                     animation: false,
                     templateUrl: 'newNamePairModalContent.html',
@@ -36,7 +36,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                         }
                     }
                 });
-            //});
+            });
         };
 
         $scope.stageNewName = function (namePair) {

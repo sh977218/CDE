@@ -3,12 +3,9 @@ angular.module('systemModule').controller('PropertiesCtrl',
     function($scope, $modal, $location, $timeout, OrgHelpers, Alert, $q)
 {
 
-    //var contextsLoaded = $q.defer();
-
     $scope.$on('elementReloaded', function() {
         OrgHelpers.deferred.promise.then(function () {
             $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
-            //contextsLoaded.resolve();
         });
     });
 
@@ -19,7 +16,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
         }
 
         var modalInstance;
-        //contextsLoaded.promise.then(function () {
             modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
@@ -33,8 +29,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
                     }
                 }
             });
-        //});
-        
+
         modalInstance.result.then(function (newProperty) {
             for (var i = 0; i < $scope.elt.properties.length; i++) {
                 if ($scope.elt.properties[i].key === newProperty.key) {
