@@ -31,7 +31,8 @@ exports.reloadLoincFormsByOrg = function (orgName, next) {
             });
         },
         function (cb) {
-            var findFormCond = {orgName: orgName, isForm: true, dependentSection: false};
+//            var findFormCond = {orgName: orgName, isForm: true, dependentSection: false};
+            var findFormCond = {orgName: orgName, isForm: true, dependentSection: false,loincId:'74078-7'};
             MigrationLoincModel.find(findFormCond).exec(function (findFormError, loincs) {
                 if (findFormError) throw findFormError;
                 console.log('Processing ' + loincs.length + ' forms');

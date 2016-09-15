@@ -154,6 +154,7 @@ exports.loadCde = function (element, fe, next) {
                 existingCde.markModified('naming');
                 existingCde.save(function (err) {
                     console.log('Add question text to cde ' + element['LOINC#']);
+                    fe.push(formElement);
                     next();
                 })
             } else {
