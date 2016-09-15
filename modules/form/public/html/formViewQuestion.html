@@ -82,10 +82,11 @@
                 </div>
                 <div class="row" ng-if="parent">
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-                    <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">
+                    <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}" ng-class="{'has-error':skiplogicError}">
                         <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
                                typeahead-min-length="0" class="form-control skipLogicCondition"/>
+                        <span ng-bind="skiplogicError"></span>
                     </div>
                 </div>
                 <div class="row">

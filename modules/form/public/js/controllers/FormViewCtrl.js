@@ -408,6 +408,7 @@ angular.module('formModule').controller
         if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
             return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
         });
+        $scope.skipLogicError = 'has error';
     };
 
 
