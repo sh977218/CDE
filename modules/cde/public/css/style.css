@@ -684,6 +684,7 @@ button#selectDefault {
 }
 
 .welcomeSearchOrganizationBox {
+    overflow: hidden;
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.16);
     margin: 10px 0 10px 0;
