@@ -118,9 +118,17 @@ angular.module('resourcesSystem', ['ngResource'])
             }
         };
     }])
-    .factory('ViewingHistory', ["$resource", function ($resource) {
-        return $resource('/viewingHistory/:start', {start: '@start'},
-            {'getCdes': {method: 'GET', isArray: true}});
+    .factory('ViewingHistory', ["$http", "$q", function ($http, $q) {
+        var viewHistoryResource = this;
+        this.deferred = $q.defer();
+
+        $http.get('/viewingHistory/:start').then(function (response) {
+            viewHistoryResource.deferred.resolve(response.data);
+        });
+        this.getPromise = function () {
+            return viewHistoryResource.deferred.promise;
+        };
+        return this;
     }])
     .factory("Organization", ["$http", function ($http) {
         return {
