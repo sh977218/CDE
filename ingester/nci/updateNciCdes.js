@@ -17,7 +17,6 @@ var logger = require('../log');
 
 
 var cdeSource = 'caDSR';
-var cdeStewardOrg = 'NCI';
 
 var changed = 0;
 var created = 0;
@@ -82,9 +81,9 @@ function compareCdes(existingCde, migrationCde) {
     updateShare.wipeUseless(existingCdeCopy);
     updateShare.wipeUseless(migrationCdeCopy);
 
-    if (!existingCdeCopy.classification || existingCdeCopy.classification === [])
-        existingCdeCopy.classification = migrationCdeCopy.classification;
-    else {
+    if (!existingCdeCopy.classification) {
+        existingCdeCopy.classification = [];
+    } else {
         for (var i = existingCdeCopy.classification.length - 1; i > 0; i--) {
             if (existingCdeCopy.classification[i].stewardOrg.name !== migrationCdeCopy.source) {
                 existingCdeCopy.classification.splice(i, 1);
@@ -128,8 +127,9 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe.ids = migrationCde.ids;
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
+        newDe.registrationState = migrationCde.registrationState;
 
-        updateShare.removeClassificationTree(newDe, cdeStewardOrg);
+        updateShare.removeClassificationTree(newDe, migrationCde.classification[0].stewardOrg.name);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {
@@ -143,7 +143,7 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe._id = existingCde._id;
         newDe.attachments = [];
         try {
-            mongo_cde.update(newDe, {username: "batchloader"}, function (updateError, thisDe) {
+            mongo_cde.update(newDe, {username: "BatchLoader"}, function (updateError, thisDe) {
                 if (updateError) throw updateError;
                 else {
                     updateShare.addAttachment(thisDe, xml, function () {
@@ -242,54 +242,26 @@ function run() {
         if (streamError) throw streamError;
     });
     migStream.on('close', function () {
-        // Retire Missing CDEs
-        DataElement.find({
-            imported: {$lt: lastEightHours},
-            source: cdeSource,
-            archived: null
-        }).exec(function (retiredCdeError, retireCdes) {
-                if (retiredCdeError) throw retiredCdeError;
-                else {
-                    console.log('retiredCdes: ' + retireCdes.length);
-                    async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
-                            retireCde.registrationState.registrationStatus = 'Retired';
-                            retireCde.registrationState.administrativeNote = "Not present in import from " + today;
-                            retireCde.save(function (error) {
-                                if (error) throw error;
-                                else {
-                                    retired++;
-                                    doneOneRetireCde();
-                                }
-                            })
-                        }, function doneAllRetireCdes() {
-                            console.log("Nothing left to do, saving Org");
-                            MigrationOrg.find().exec(function (findMigOrgError, orgs) {
-                                if (findMigOrgError) throw findMigOrgError;
-                                async.forEachSeries(orgs, function (org, doneOneOrg) {
-                                    Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
-                                        if (findOrgError) throw findOrgError;
-                                        else {
-                                            theOrg.classifications = org.classifications;
-                                            theOrg.save(function (saveOrgError) {
-                                                if (saveOrgError) throw saveOrgError;
-                                                else doneOneOrg();
-                                            });
-                                        }
-                                    });
-                                }, function doneAllOrgs() {
-                                    logger.info('createdCDE: ' + JSON.stringify(createdCDE));
-                                    output();
-                                    process.exit(0);
-                                });
-                            });
-                        }
-                    )
-
-                }
-            }
-        )
-    })
-    ;
+        MigrationOrg.find().exec(function (findMigOrgError, orgs) {
+            if (findMigOrgError) throw findMigOrgError;
+            async.forEachSeries(orgs, function (org, doneOneOrg) {
+                Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
+                    if (findOrgError) throw findOrgError;
+                    else {
+                        theOrg.classifications = org.classifications;
+                        theOrg.save(function (saveOrgError) {
+                            if (saveOrgError) throw saveOrgError;
+                            else doneOneOrg();
+                        });
+                    }
+                });
+            }, function doneAllOrgs() {
+                logger.info('createdCDE: ' + JSON.stringify(createdCDE));
+                output();
+                process.exit(0);
+            });
+        });
+    });
 }
 
 run();
