@@ -356,7 +356,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3 + "'";
         $scope.stageElt();
     };
-        
+
         var tokenSplitter = function (str) {
         var tokens = [];
         if (!str) {
@@ -395,17 +395,43 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     };
 
     $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
-        if (!thisQuestion.skipLogic)thisQuestion.skipLogic = {};
-        if (!currentContent) {
+        var isValidateSkipLogic = function (string, questions) {
+            if (!string) return true;
+            var equationArray = string.split(/OR|AND/);
+            for (var i = 0; i < equationArray.length; i++) {
+                var equation = equationArray[i];
+                var questionOperatorAnswerArray = equation.split(/=|>|</);
+                if (questionOperatorAnswerArray.length === 2) {
+                    var question = questionOperatorAnswerArray[0];
+                    var answer = questionOperatorAnswerArray[1];
+                    var existingQuestionLabel = false;
+                    for (var j = 0; j < questions.length; j++) {
+                        if ('"' + questions[j].label + '"' === question) {
+                            for (var k = 0; k < questions[j].answers.length; k++) {
+                                if ('"' + questions[j].answers[k] + '"' === answer) {
+                                    existingQuestionLabel = true;
+                                }
+                            }
+                        }
+                    }
+                    return existingQuestionLabel;
+                } else {
+                    return false;
+                }
+            }
+        };
+        if (!isValidateSkipLogic(currentContent)) {
+            $scope.formError = 'Skip logic has error.';
             thisQuestion.skipLogic.skipLogicError = '';
             thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
         }
         else {
+            $scope.formError = false;
             var filterFunc = function (e1) {
                 return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
                     (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
             };
-            var tokens = tokenSplitter(currentContent);
+            var tokens = tokenSplitter(currentContent, thisQuestion);
             if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
             if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
                 return currentContent + " " + e1;
