@@ -399,7 +399,7 @@ angular.module('formModule').controller
         if (!thisQuestion.skipLogic)thisQuestion.skipLogic = {};
         if (!currentContent) {
             thisQuestion.skipLogic.skipLogicError = '';
-            thisQuestion.skipLogic.suggestion = '';
+            thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
         }
         else {
 //            $scope.skipLogicError = 'has error';
