@@ -51,7 +51,6 @@ exports.wipeUseless = function (toWipe) {
     delete toWipe.createdBy;
     delete toWipe.updated;
     delete toWipe.comments;
-    delete toWipe.registrationState;
     delete toWipe.tinyId;
     delete toWipe.changeNote;
     delete toWipe.attachments;
