@@ -131,13 +131,36 @@ exports.loadCde = function (element, fe, next) {
                 question: question,
                 formElements: []
             };
+            var existingQuestionText = false;
             existingCde.naming.forEach(function (n) {
                 if (n.context.contextName === "TERM DEFINITION/DESCRIPTION(S)") {
                     formElement.instructions.value = n.definition;
                 }
+                if (n.context.contextName === 'Question Text') {
+                    existingQuestionText = true;
+                }
             });
-            fe.push(formElement);
-            next();
+            if (!existingQuestionText) {
+                existingCde.naming.push({
+                    designation: element['LOINC Name'],
+                    definition: '',
+                    languageCode: 'EN-US',
+                    context: {
+                        contextName: 'Question Text',
+                        acceptability: 'preferred'
+                    },
+                    source: 'LOINC'
+                });
+                existingCde.markModified('naming');
+                existingCde.save(function (err) {
+                    console.log('Add question text to cde ' + element['LOINC#']);
+                    fe.push(formElement);
+                    next();
+                })
+            } else {
+                fe.push(formElement);
+                next();
+            }
         }
     });
 };
