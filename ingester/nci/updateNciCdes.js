@@ -17,7 +17,6 @@ var logger = require('../log');
 
 
 var cdeSource = 'caDSR';
-var cdeStewardOrg = 'NCI';
 
 var changed = 0;
 var created = 0;
@@ -82,9 +81,9 @@ function compareCdes(existingCde, migrationCde) {
     updateShare.wipeUseless(existingCdeCopy);
     updateShare.wipeUseless(migrationCdeCopy);
 
-    if (!existingCdeCopy.classification || existingCdeCopy.classification === [])
-        existingCdeCopy.classification = migrationCdeCopy.classification;
-    else {
+    if (!existingCdeCopy.classification) {
+        existingCdeCopy.classification = [];
+    } else {
         for (var i = existingCdeCopy.classification.length - 1; i > 0; i--) {
             if (existingCdeCopy.classification[i].stewardOrg.name !== migrationCdeCopy.source) {
                 existingCdeCopy.classification.splice(i, 1);
@@ -128,8 +127,9 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe.ids = migrationCde.ids;
         newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
+        newDe.registrationState = migrationCde.registrationState;
 
-        updateShare.removeClassificationTree(newDe, cdeStewardOrg);
+        updateShare.removeClassificationTree(newDe, migrationCde.classification[0].stewardOrg.name);
         if (migrationCde.classification[0]) {
             var indexOfClassZero = null;
             newDe.classification.forEach(function (c, i) {

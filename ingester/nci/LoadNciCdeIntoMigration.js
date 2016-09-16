@@ -5,7 +5,7 @@ var MigrationDataElementModel = require('../createMigrationConnection').Migratio
 var MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
 var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel;
 
-var ult = require('./Shared/Ultility');
+var ult = require('./Shared/utility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
 var classificationShared = require('../../modules/system/shared/classificationShared');
 

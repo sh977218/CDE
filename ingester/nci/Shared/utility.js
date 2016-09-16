@@ -15,18 +15,6 @@ var datatypeMapping = {
 };
 
 var source = 'caDSR';
-var deCount = 0;
-var retiredDE = [];
-var noClassificationDE = [];
-
-var statusMapping = {
-    "Preferred Standard": "Incomplete",
-    "Standard": "Standard",
-    "Candidate": "Incomplete",
-    "Recorded": "Recorded",
-    "Qualified": "Candidate",
-    "Proposed": "Incomplete"
-};
 
 function parseNaming(de) {
     var naming = [{
@@ -57,12 +45,11 @@ function parseNaming(de) {
 }
 
 function parseIds(de) {
-    var ids = [{
+    return [{
         source: source,
         id: de.PUBLICID[0],
         version: de.VERSION[0]
     }];
-    return ids;
 }
 
 function parseProperties(de) {
@@ -101,11 +88,14 @@ function parseProperties(de) {
     return properties;
 }
 
-function parseRegistrationState(de) {
+function parseRegistrationState(de, orgInfo) {
     var registrationState = {
-        registrationStatus: statusMapping[de.REGISTRATIONSTATUS[0]],
+        registrationStatus: orgInfo.statusMapping[de.REGISTRATIONSTATUS[0]],
         administrativeStatus: de.WORKFLOWSTATUS[0]
     };
+    if (!registrationState.registrationStatus) {
+        registrationState.registrationStatus = orgInfo.statusMapping.default;
+    }
     return registrationState;
 }
 
@@ -173,14 +163,13 @@ function parseProperty(de) {
     return property;
 }
 function parseDataElementConcept(de) {
-    var dataElementConcept = {
+    return {
         concepts: [{
             name: de.DATAELEMENTCONCEPT[0].LongName[0],
             origin: "NCI caDSR",
             originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
         }]
     };
-    return dataElementConcept;
 }
 
 function parseClassification(cde, org, orgInfo, de) {
@@ -192,7 +181,8 @@ function parseClassification(cde, org, orgInfo, de) {
             };
             var classificationVersion = getStringVersion(csi.ClassificationScheme[0].Version[0]);
             try {
-                var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion].longName || "";
+                var classificationName = classificationMapping[csi.ClassificationScheme[0].PublicId[0] +
+                    "v" + classificationVersion].longName || "";
 
             } catch (e) {
                 console.log(csi.ClassificationScheme[0].PublicId[0] + "v" + classificationVersion);
@@ -200,11 +190,11 @@ function parseClassification(cde, org, orgInfo, de) {
             }
 
             var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
-            var bbrb = csi.ClassificationScheme[0].ContextName[0];
+            var ctxName = csi.ClassificationScheme[0].ContextName[0];
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
-            if (orgInfo.filter(bbrb, classificationAllowed)) {
-                classificationShared.classifyItem(cde, classificationOrgName, [bbrb, classificationName, classificationAllowed]);
-                classificationShared.addCategory({elements: org.classifications}, [bbrb, classificationName, classificationAllowed]);
+            if (orgInfo.filter(ctxName, classificationAllowed)) {
+                classificationShared.classifyItem(cde, classificationOrgName, [ctxName, classificationName, classificationAllowed]);
+                classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName, classificationAllowed]);
             }
         });
     }
@@ -271,7 +261,7 @@ exports.createNewCde = function (de, org, orgInfo) {
     var naming = parseNaming(de);
     var ids = parseIds(de);
     var properties = parseProperties(de);
-    var registrationState = parseRegistrationState(de);
+    var registrationState = parseRegistrationState(de, orgInfo);
     var referenceDocuments = parseReferenceDocuments(de);
     var origin = parseOrigin(de);
     var objectClass = parseObjectClass(de);

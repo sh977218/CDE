@@ -5,10 +5,9 @@ var cdeCount = 0;
 var stream = DataElement.find({'classification.stewardOrg.name': 'NCI', archived: null}).stream();
 stream.on('data', function (cde) {
     stream.pause();
-    var removedClassification = cde.get('classification').filter(function (c) {
+    cde.classification = cde.get('classification').filter(function (c) {
         return c.stewardOrg.name !== 'NCI';
     });
-    cde.classification = removedClassification;
     cde.markModified('classification');
     cde.save(function (err) {
         if (err) throw err;
