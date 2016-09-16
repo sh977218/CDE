@@ -18,14 +18,14 @@ angular.module('systemModule').controller('PropertiesCtrl',
     });
 
     $scope.openNewProperty = function () {
-        if (!$scope.allKeys || $scope.allKeys.length === 0) {
-            Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
-            return;
-        }
-
-        var modalInstance;
         keysLoaded.promise.then(function () {
-            modalInstance = $modal.open({
+
+            if (!$scope.allKeys || $scope.allKeys.length === 0) {
+                Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
+                return;
+            }
+
+            var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
                 controller: 'NewPropertyModalCtrl',
@@ -37,8 +37,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
                         return $scope.module;
                     }
                 }
-            });
-            modalInstance.result.then(function (newProperty) {
+            }).result.then(function (newProperty) {
                 for (var i = 0; i < $scope.elt.properties.length; i++) {
                     if ($scope.elt.properties[i].key === newProperty.key) {
                         $scope.addAlert("danger", "This property already exists.");
