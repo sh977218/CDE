@@ -24,11 +24,12 @@
                 <div class="row" ng-if="parent">
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
-                         ng-class="{'has-error':skipLogicError.length>0}">
+                         ng-class="{'has-error':section.skipLogic.skipLogicError}">
                         <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
-                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements)"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements,section)"
                                typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                        <span ng-bind="skipLogicError"></span>
+                        <i class="fa fa-question-circle-o" aria-hidden="true"
+                           uib-tooltip="{{section.skipLogic.suggestion}}"></i>
                     </div>
                 </div>
                 <div class="row">
