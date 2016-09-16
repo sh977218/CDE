@@ -276,13 +276,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 $scope.tabs[route.tab].active = true;
             }
             $http.get('/esRecord/' + de.tinyId).success(function (response) {
-                var s = new Set();
+                $scope.elt.flatMeshSimpleTrees = [];
                 if (response._source.flatMeshSimpleTrees) {
                     response._source.flatMeshSimpleTrees.forEach(function (t) {
-                        s.add(t.split(";").pop());
+                        if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
                     });
                 }
-                $scope.elt.flatMeshSimpleTrees = Array.from(s);
             });
         }, function (err) {
             $log.error("Unable to retrieve element.");
