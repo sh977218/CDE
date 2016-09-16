@@ -1,5 +1,4 @@
-angular.module('formModule').controller
-('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -357,8 +356,8 @@ angular.module('formModule').controller
         section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3 + "'";
         $scope.stageElt();
     };
-
-    var tokenSplitter = function (str) {
+        
+        var tokenSplitter = function (str) {
         var tokens = [];
         if (!str) {
             tokens.unmatched = str;
@@ -402,7 +401,6 @@ angular.module('formModule').controller
             thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
         }
         else {
-//            $scope.skipLogicError = 'has error';
             var filterFunc = function (e1) {
                 return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
                     (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
@@ -418,20 +416,23 @@ angular.module('formModule').controller
         }
     };
 
-
     $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode === 'question') return previousLevel.filter(function (q, i) {
-            //Will assemble a list of questions
-            if (i === index) return false; //Exclude myself
-            if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-            return true;
-        }).map(function (q) {
-            return '"' + q.label + '" ';
-        });
-        if (languageMode === 'operator') return ["= ", "< ", "> "];
-        if (languageMode === 'answer') {
+        if (languageMode === 'question') {
+            var questionList = previousLevel.filter(function (q, i) {
+                //Will assemble a list of questions
+                if (i === index) return false; //Exclude myself
+                if (q.elementType !== "question") return false; //This element is not a question, ignore
+                if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
+                return true;
+            });
+            var labelList = questionList.map(function (q) {
+                return '"' + q.label + '" ';
+            });
+            return labelList;
+        }
+        else if (languageMode === 'operator') return ["= ", "< ", "> "];
+        else if (languageMode === 'answer') {
             var questions = previousLevel.filter(function (q) {
                 if (q.label && questionName)
                     return q.label.trim() === questionName.trim();
@@ -448,8 +449,11 @@ angular.module('formModule').controller
                 });
             } else return [];
         }
-        if (languageMode === 'conjuction') return ["AND", "OR"];
-        return [];
+        else if (languageMode === 'conjuction') return ["AND", "OR"];
+        else {
+            $scope.formError = 'has error';
+            return [];
+        }
     };
 
     $scope.missingCdes = [];
