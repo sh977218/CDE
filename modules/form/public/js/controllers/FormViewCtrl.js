@@ -1,4 +1,5 @@
-angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+angular.module('formModule').controller
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -357,10 +358,11 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         $scope.stageElt();
     };
 
-        var tokenSplitter = function (str) {
-        var tokens = [];
+
+    var tokenSplitter = function (str, tokens) {
+        if (!tokens) tokens = [];
         if (!str) {
-            tokens.unmatched = '';
+            tokens.unmatched = "";
             return tokens;
         }
         str = str.trim();
@@ -373,7 +375,8 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         str = str.substring(t.length).trim();
         t = t.substring(1, t.length - 1);
         tokens.push(t);
-        res = str.match(/^=/);
+
+        res = str.match(/^[=|<|>]/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
@@ -381,89 +384,112 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         t = res[0];
         tokens.push(t);
         str = str.substring(t.length).trim();
-        res = str.match(/^".+"/);
+
+        res = str.match(/^"([^"]+)"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
         }
         t = res[0];
-        t = t.substring(1, t.length - 1);
+        var newT = res[0].substring(1, t.length - 1);
+        tokens.push(newT);
+        str = str.substr(t.length).trim();
+
+        res = str.match(/^((\bAND\b)|(\bOR\b))/);
+        if (!res) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        t = res[0];
         tokens.push(t);
+        str = str.substring(t.length).trim();
 
         tokens.unmatched = str;
-        return tokens;
+
+        if (str.length > 0) {
+            return tokenSplitter(str, tokens);
+        } else {
+            return tokens;
+        }
     };
 
-        function validateSkipLogic(string, questions) {
-            if (!string || string === '"') return "incomplete";
-            var equationArray = string.split(/ OR | AND /);
-            for (var i = 0; i < equationArray.length; i++) {
-                var equation = equationArray[i];
-                var questionOperatorAnswerArray = equation.split(/=|>|</);
-                if (questionOperatorAnswerArray.length === 2) {
-                    var question = questionOperatorAnswerArray[0];
-                    var answer = questionOperatorAnswerArray[1];
-                    var existingQuestionLabel = false;
-                    for (var j = 0; j < questions.length; j++) {
-                        if ('"' + questions[j].label + '"' === question) {
-                            for (var k = 0; k < questions[j].answers.length; k++) {
-                                if ('"' + questions[j].answers[k] + '"' === answer) {
-                                    existingQuestionLabel = true;
-                                }
-                            }
-                        }
-                    }
-                    return existingQuestionLabel ? "correct" : "incorrect";
-                } else {
-                    return "incorrect";
-                }
-            }
-            return "correct"
-        };
 
-        $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
-            var re = new RegExp(/".+"\s*[=|>|<]\s*".+"\s*/);
-            var skipLogicResult = validateSkipLogic(currentContent, previousQuestions);
-            if (skipLogicResult === 'incorrect') {
-                $scope.formError = 'Skip logic has error.';
-                thisQuestion.skipLogic.skipLogicError = '';
-                thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
-            } else if (skipLogicResult === 'incomplete') {
-            } else {
-                $scope.formError = false;
-                var tokens = tokenSplitter(currentContent, thisQuestion);
-                var filterFunc = function (e1) {
-                    var m1 = e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1;
-                    var m2 = !thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, "");
-                    return m1 && m2;
-                };
-                if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
-                if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
-                    return currentContent + " " + e1;
-                });
-                if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
-                    return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
-                });
+        function validateSingleExpression(tokens, previousQuestions) {
+            var q = previousQuestions.filter(function (pq) {
+                return pq.label.trim().toLowerCase().replace(/"/g, "") === tokens[0].trim().toLowerCase();
+            });
+            if (q.length !== 1) {
+                return '"' + tokens[0] + '" is not a valid question label';
             }
+            if (q[0].question.answers.map(function (a) {
+                return a.permissibleValue;
+            }).indexOf(tokens[2]) < 0) {
+                return '"' + tokens[2] + '" is not a valid answer for "' + q[0].label + '"';
+            }
+        }
+
+    $scope.validateSkipLogic = function(skipLogic, previousQuestions) {
+        $timeout(function() {
+            var logic = skipLogic.condition;
+
+            var tokens = tokenSplitter(logic);
+            delete skipLogic.validationError;
+
+            console.log(tokens);
+
+            if (tokens.unmatched) {
+                return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
+            }
+
+            if (!logic || logic.length === 0) {
+                return;
+            }
+
+            if ((tokens.length - 3) % 4 !== 0) {
+                return skipLogic.validationError = "Unexpected number of tokens in expression";
+            }
+
+            var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
+            if (err) {
+                return skipLogic.validationError = err;
+            }
+
+            $scope.stageElt($scope.elt);
+
+        }, 0);
+
+    };
+
+
+    $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
+        var filterFunc = function (e1) {
+            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
+                (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
         };
+        var tokens = tokenSplitter(currentContent);
+        if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
+        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
+            return currentContent + " " + e1;
+        });
+        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
+            return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
+        });
+    };
+
 
     $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
-        if (languageMode === 'question') {
-            var questionList = previousLevel.filter(function (q, i) {
-                //Will assemble a list of questions
-                if (i === index) return false; //Exclude myself
-                if (q.elementType !== "question") return false; //This element is not a question, ignore
-                if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-                return true;
-            });
-            var labelList = questionList.map(function (q) {
-                return '"' + q.label + '" ';
-            });
-            return labelList;
-        }
-        else if (languageMode === 'operator') return ["= ", "< ", "> "];
-        else if (languageMode === 'answer') {
+        if (languageMode === 'question') return previousLevel.filter(function (q, i) {
+            //Will assemble a list of questions
+            if (i === index) return false; //Exclude myself
+            if (q.elementType !== "question") return false; //This element is not a question, ignore
+            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
+            return true;
+        }).map(function (q) {
+            return '"' + q.label + '" ';
+        });
+        if (languageMode === 'operator') return ["= ", "< ", "> "];
+        if (languageMode === 'answer') {
             var questions = previousLevel.filter(function (q) {
                 if (q.label && questionName)
                     return q.label.trim() === questionName.trim();
@@ -480,11 +506,8 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 });
             } else return [];
         }
-        else if (languageMode === 'conjuction') return ["AND", "OR"];
-        else {
-            $scope.formError = 'has error';
-            return [];
-        }
+        if (languageMode === 'conjuction') return ["AND", "OR"];
+        return [];
     };
 
     $scope.missingCdes = [];

@@ -10,8 +10,6 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
             });
         }
 
-        refreshContexts();
-
         $scope.$on('elementReloaded', function() {
             refreshContexts();
         });

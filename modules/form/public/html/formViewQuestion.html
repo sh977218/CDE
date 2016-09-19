@@ -83,11 +83,14 @@
                 <div class="row" ng-if="parent">
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}"
-                         ng-class="{'has-error':question.skipLogic.skipLogicError}">
-                        <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
+                         ng-class="{'has-error':question.skipLogic.validationError}">
+                        <input type="text" ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
+                               ng-model="question.skipLogic.condition"
+                               typeahead-on-select="validateSkipLogic(question.skipLogic,section.formElements)"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
-                               typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                        <span ng-bind="question.skipLogic.skipLogicError"></span>
+                               typeahead-min-length="0" class="form-control skipLogicCondition"
+                        />
+                        <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
                 </div>
                 <div class="row">
