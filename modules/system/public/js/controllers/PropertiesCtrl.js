@@ -1,51 +1,62 @@
 angular.module('systemModule').controller('PropertiesCtrl',
-    ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert',
-    function($scope, $modal, $location, $timeout, OrgHelpers, Alert)
+    ['$scope', '$uibModal', '$location', '$timeout', 'OrgHelpers', 'Alert', '$q',
+    function($scope, $modal, $location, $timeout, OrgHelpers, Alert, $q)
 {
+    var keysLoaded = $q.defer();
 
-    $scope.$on('elementReloaded', function() {
+    function refreshContexts(){
         OrgHelpers.deferred.promise.then(function () {
             $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+            keysLoaded.resolve();
         });
+    }
+
+    refreshContexts();
+
+    $scope.$on('elementReloaded', function() {
+        refreshContexts();
     });
 
     $scope.openNewProperty = function () {
-        if (!$scope.allKeys || $scope.allKeys.length === 0) {
-            Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
-            return;
-        }
+        keysLoaded.promise.then(function () {
 
-        var modalInstance = $modal.open({
-            animation: false,
-            templateUrl: 'newPropertyModalContent.html',
-            controller: 'NewPropertyModalCtrl',
-            resolve: {
-                elt: function () {
-                    return $scope.elt;
-                },
-                module: function () {
-                    return $scope.module;
+            if (!$scope.allKeys || $scope.allKeys.length === 0) {
+                Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
+                return;
+            }
+
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'newPropertyModalContent.html',
+                controller: 'NewPropertyModalCtrl',
+                resolve: {
+                    elt: function () {
+                        return $scope.elt;
+                    },
+                    module: function () {
+                        return $scope.module;
+                    }
                 }
-            }
-        });
-        
-        modalInstance.result.then(function (newProperty) {
-            for (var i = 0; i < $scope.elt.properties.length; i++) {
-                if ($scope.elt.properties[i].key === newProperty.key) {
-                    $scope.addAlert("danger", "This property already exists.");
-                    return;
+            }).result.then(function (newProperty) {
+                for (var i = 0; i < $scope.elt.properties.length; i++) {
+                    if ($scope.elt.properties[i].key === newProperty.key) {
+                        $scope.addAlert("danger", "This property already exists.");
+                        return;
+                    }
                 }
-            }
-            $scope.elt.properties.push(newProperty);
-            if ($scope.elt.unsaved) {
-                Alert.addAlert("info", "Property added. Save to confirm.");
-            } else {
-                $scope.elt.$save(function (newElt) {
-                    $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
-                    Alert.addAlert("success", "Property Added");
-                });
-            }
+                $scope.elt.properties.push(newProperty);
+                if ($scope.elt.unsaved) {
+                    Alert.addAlert("info", "Property added. Save to confirm.");
+                } else {
+                    $scope.elt.$save(function (newElt) {
+                        $location.url($scope.baseLink + newElt.tinyId + "&tab=properties");
+                        Alert.addAlert("success", "Property Added");
+                    });
+                }
+            });
         });
+
+
     };
     
     $scope.removeProperty = function (index) {

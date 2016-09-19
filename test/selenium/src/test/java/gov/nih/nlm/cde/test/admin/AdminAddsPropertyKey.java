@@ -19,10 +19,12 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
+
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
+        hangon(1);
         clickElement(By.id("newPropertyKey"));
         textPresent("doYouSeeThis");
         clickElement(By.id("cancelCreate"));

@@ -46,6 +46,7 @@ public class EltIdMaps {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
+        eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
 
 
         // Forms
