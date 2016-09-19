@@ -360,7 +360,7 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         var tokenSplitter = function (str) {
         var tokens = [];
         if (!str) {
-            tokens.unmatched = str;
+            tokens.unmatched = '';
             return tokens;
         }
         str = str.trim();
@@ -394,10 +394,9 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
         return tokens;
     };
 
-    $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
-        var isValidateSkipLogic = function (string, questions) {
-            if (!string) return true;
-            var equationArray = string.split(/OR|AND/);
+        function validateSkipLogic(string, questions) {
+            if (!string || string === '"') return "incomplete";
+            var equationArray = string.split(/ OR | AND /);
             for (var i = 0; i < equationArray.length; i++) {
                 var equation = equationArray[i];
                 var questionOperatorAnswerArray = equation.split(/=|>|</);
@@ -414,33 +413,39 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                             }
                         }
                     }
-                    return existingQuestionLabel;
+                    return existingQuestionLabel ? "correct" : "incorrect";
                 } else {
-                    return false;
+                    return "incorrect";
                 }
             }
+            return "correct"
         };
-        if (!isValidateSkipLogic(currentContent)) {
-            $scope.formError = 'Skip logic has error.';
-            thisQuestion.skipLogic.skipLogicError = '';
-            thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
-        }
-        else {
-            $scope.formError = false;
-            var filterFunc = function (e1) {
-                return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
-                    (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
-            };
-            var tokens = tokenSplitter(currentContent, thisQuestion);
-            if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
-            if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
-                return currentContent + " " + e1;
-            });
-            if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
-                return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
-            });
-        }
-    };
+
+        $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
+            var re = new RegExp(/".+"\s*[=|>|<]\s*".+"\s*/);
+            var skipLogicResult = validateSkipLogic(currentContent, previousQuestions);
+            if (skipLogicResult === 'incorrect') {
+                $scope.formError = 'Skip logic has error.';
+                thisQuestion.skipLogic.skipLogicError = '';
+                thisQuestion.skipLogic.suggestion = '"{{question label}}" {{operator(> = <)}} "{{question answer}}"';
+            } else if (skipLogicResult === 'incomplete') {
+            } else {
+                $scope.formError = false;
+                var tokens = tokenSplitter(currentContent, thisQuestion);
+                var filterFunc = function (e1) {
+                    var m1 = e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1;
+                    var m2 = !thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, "");
+                    return m1 && m2;
+                };
+                if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
+                if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
+                    return currentContent + " " + e1;
+                });
+                if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
+                    return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
+                });
+            }
+        };
 
     $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
         if (!previousLevel) return;
