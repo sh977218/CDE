@@ -52,7 +52,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Naming", includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                });
             },
             show: true
         },
@@ -91,7 +93,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Properties", includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                });
             },
             show: false,
             hideable: true

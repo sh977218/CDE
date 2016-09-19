@@ -4,6 +4,7 @@ import gov.nih.nlm.cde.test.quickboard.CdeQuickBoardTest1;
 import gov.nih.nlm.form.test.BaseFormTest;
 import gov.nih.nlm.form.test.QuestionTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class FormScoreTest extends BaseFormTest {
