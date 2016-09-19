@@ -18,11 +18,10 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         clickElement(By.id("confirmContextEdit_TEST"));
         textPresent("Org has been updated");
         textPresent("canYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
-        // reload to reload Org.
-        goHome();
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
+        hangon(1);
         clickElement(By.id("newContext"));
         textPresent("canYouSeeThis");
         clickElement(By.id("cancelCreate"));
