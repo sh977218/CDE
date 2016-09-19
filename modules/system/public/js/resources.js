@@ -330,5 +330,6 @@ angular.module('resourcesSystem', ['ngResource'])
             , getStatusRules: getStatusRules
             , evalCde: evalCde
         };
+
     }])
 ;
