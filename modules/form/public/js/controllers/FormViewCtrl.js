@@ -420,10 +420,10 @@ angular.module('formModule').controller
             });
             if (q.length !== 1) {
                 return '"' + tokens[0] + '" is not a valid question label';
-            }
+        }
             if (q[0].question.answers.map(function (a) {
-                return a.permissibleValue;
-            }).indexOf(tokens[2]) < 0) {
+                    return a.permissibleValue;
+                }).indexOf(tokens[2]) < 0) {
                 return '"' + tokens[2] + '" is not a valid answer for "' + q[0].label + '"';
             }
         }
@@ -434,9 +434,6 @@ angular.module('formModule').controller
 
             var tokens = tokenSplitter(logic);
             delete skipLogic.validationError;
-
-            console.log(tokens);
-
             if (tokens.unmatched) {
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
@@ -474,6 +471,7 @@ angular.module('formModule').controller
         if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
             return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
         });
+        if (tokens.length === 3) return $scope.languageOptions("conjunction");
     };
 
 
@@ -506,7 +504,7 @@ angular.module('formModule').controller
                 });
             } else return [];
         }
-        if (languageMode === 'conjuction') return ["AND", "OR"];
+        if (languageMode === 'conjunction') return ["AND", "OR"];
         return [];
     };
 
@@ -600,5 +598,24 @@ angular.module('formModule').controller
     $scope.dragSortableOptions = {
         handle: ".fa.fa-arrows"
     };
+
+    $scope.isValidateForm = function () {
+        var validate = true;
+        var loopFormElements = function (form) {
+            form.formElements.forEach(function (fe) {
+                if (fe.elementType === 'section') {
+                    loopFormElements(fe);
+                } else {
+                    if(fe.question.skipLogic.error){
+                        validate = false;
+                        return;
+                    }
+                }
+
+            })
+        };
+
+        loopFormElements($scope.elt);
+    }
 
 }]);

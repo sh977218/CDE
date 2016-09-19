@@ -1,7 +1,10 @@
 <div class="container-fluid" ng-cloak>
-    <div ng-controller="VersionCtrl" class="alert alert-info mt20" ng-show="elt.unsaved && !formError" id="openSaveTop">
+    <div ng-controller="VersionCtrl" class="alert alert-info mt20" ng-show="elt.unsaved" id="openSaveTop">
         <i class="fa fa-exclamation-triangle"></i> This element is not saved.
-        <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSave">Save</button>
+        <button ng-if="isValidateForm()" class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')"
+                id="openSave">
+            Save
+        </button>
     </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.
