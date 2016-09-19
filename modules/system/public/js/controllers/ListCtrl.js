@@ -324,9 +324,9 @@ angular.module('systemModule').controller('ListCtrl',
             filterOutWorkingGroups($scope.aggregations);
             OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
 
-            if ($scope.aggregations.topics.length === 1) {
-                $scope.selectTopic($scope.aggregations.topics[0].name);
-            }
+            //if ($scope.aggregations.topics.length === 1) {
+            //    $scope.selectTopic($scope.aggregations.topics[0].name);
+            //}
 
         });
 

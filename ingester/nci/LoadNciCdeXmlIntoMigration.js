@@ -1,11 +1,16 @@
-var fs = require('fs'),
-    async = require('async'),
-    xml2js = require('xml2js'),
-    parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString,
-    MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel
-    ;
+var fs = require('fs');
+var async = require('async');
+var xml2js = require('xml2js');
+var parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
+var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationNCICdeXmlModel;
 
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
+var xmlFileMapping = {
+    'CDEBrowser_BBRB-BPV-Tumor Biospecimen Acquisition-08-22-2016.xml': 'NCI-BPV',
+    'CDEBrowser_Standard_CDEs-08-08-2016.xml': 'NCI',
+    'CDEBrowser_BBRB-GTEx-Postmortem Biospecimen Acquisition-08-22-2016.xml': 'NCI-GTEx'
+};
+
 
 function run() {
     async.series([
@@ -31,12 +36,14 @@ function run() {
                             async.forEachSeries(json.DataElementsList.DataElement, function (one, doneOne) {
                                 one['xmlFile'] = xmlFile;
                                 one['index'] = index;
+                                one['xml'] = xmlFileMapping[xml];
                                 index++;
                                 var id = one.PUBLICID[0];
                                 var version = one.VERSION[0];
                                 MigrationNCICdeXmlModel.find({
                                     'PUBLICID': id,
-                                    'VERSION': version
+                                    'VERSION': version,
+                                    'xmlFileName': xml
                                 }).exec(function (err, existingXmls) {
                                     if (err) throw err;
                                     else if (existingXmls.length === 0) {
