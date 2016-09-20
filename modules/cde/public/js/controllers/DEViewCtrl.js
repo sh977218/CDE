@@ -281,11 +281,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     }
                     $http.get('/esRecord/' + de.tinyId).success(function (response) {
                         var s = new Set();
-                        $scope.elt.flatMeshSimpleTrees = [];
                         if (response._source.flatMeshSimpleTrees) {
                             response._source.flatMeshSimpleTrees.forEach(function (t) {
                                 s.add(t.split(";").pop());
-                                if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
                             });
                         }
                         $scope.elt.flatMeshSimpleTrees = Array.from(s);
@@ -567,7 +565,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     , placement: "bottom"
                 }
                 , {
-                    element: "#derivationRules_tab"
+                    element: "  #derivationRules_tab"
                     , title: "Derivation Rules"
                     , content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score."
                     , placement: "bottom"
