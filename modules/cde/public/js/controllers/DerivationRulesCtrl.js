@@ -15,7 +15,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
         }
     };
 
-    $scope.cdeLoadedPromise.then(updateRules);
+    $scope.deferredEltLoaded.promise.then(updateRules);
 
     var findDerivationOutputs = function() {
         if (!$scope.elt.derivationOutputs) {
@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
         }
     };
 
-    $scope.cdeLoadedPromise.then(function() {
+    $scope.deferredEltLoaded.promise.then(function() {
         updateRules();
         if ($scope.tabs.derivationRules.active) {
             findDerivationOutputs();

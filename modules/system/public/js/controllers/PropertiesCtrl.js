@@ -11,7 +11,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
         });
     }
 
-    $scope.cdeLoadedPromise.then(refreshKeys);
+    $scope.deferredEltLoaded.promise.then(refreshKeys);
 
     $scope.openNewProperty = function () {
         keysLoaded.promise.then(function () {

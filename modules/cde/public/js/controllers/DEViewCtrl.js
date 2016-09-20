@@ -225,10 +225,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
             class: "gray"
         }
     };
-    $scope.resolveCdeLoaded = null;
-    $scope.cdeLoadedPromise = $q(function(resolve) {
-        $scope.resolveCdeLoaded = resolve;
-    });
+
+    $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
         if ($scope.elt && $scope.elt.unsaved) {
@@ -273,7 +271,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             OrgHelpers.deferred.promise.then(function() {
                 $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             });
-            $scope.resolveCdeLoaded();
+            $scope.deferredEltLoaded.resolve();
             if (route.tab) {
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
