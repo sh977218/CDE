@@ -292,6 +292,7 @@ angular.module('formModule').controller
 
     $scope.stageElt = function () {
         areDerivationRulesSatisfied();
+        $scope.validateForm();
         $scope.elt.unsaved = true;
     };
 
@@ -435,6 +436,7 @@ angular.module('formModule').controller
             var tokens = tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
+                $scope.isValidateForm = false;
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
 
@@ -443,11 +445,13 @@ angular.module('formModule').controller
             }
 
             if ((tokens.length - 3) % 4 !== 0) {
+                $scope.isValidateForm = false;
                 return skipLogic.validationError = "Unexpected number of tokens in expression";
             }
 
             var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
             if (err) {
+                $scope.isValidateForm = false;
                 return skipLogic.validationError = err;
             }
 
@@ -599,22 +603,17 @@ angular.module('formModule').controller
         handle: ".fa.fa-arrows"
     };
 
-    $scope.isValidateForm = function () {
-        var validate = true;
+    $scope.validateForm = function () {
+        $scope.isValidateForm = true;
         var loopFormElements = function (form) {
             form.formElements.forEach(function (fe) {
-                if (fe.elementType === 'section') {
-                    loopFormElements(fe);
-                } else {
-                    if(fe.question.skipLogic.error){
-                        validate = false;
-                        return;
-                    }
+                if (fe.skipLogic && fe.skipLogic.error) {
+                    $scope.isValidateForm = false;
+                    return;
                 }
-
+                loopFormElements(fe);
             })
         };
-
         loopFormElements($scope.elt);
     }
 

@@ -88,8 +88,7 @@
                                ng-model="question.skipLogic.condition"
                                typeahead-on-select="validateSkipLogic(question.skipLogic,section.formElements)"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
-                               typeahead-min-length="0" class="form-control skipLogicCondition"
-                        />
+                               typeahead-min-length="0" class="form-control skipLogicCondition"/>
                         <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
                 </div>
