@@ -565,7 +565,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     , placement: "bottom"
                 }
                 , {
-                    element: "  #derivationRules_tab"
+                    element: "#derivationRules_tab"
                     , title: "Derivation Rules"
                     , content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score."
                     , placement: "bottom"
