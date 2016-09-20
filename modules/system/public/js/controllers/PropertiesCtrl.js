@@ -11,8 +11,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
         });
     }
 
-    refreshContexts();
-
     $scope.$on('elementReloaded', function() {
         refreshContexts();
     });
