@@ -24,6 +24,8 @@ public class SdcExport extends NlmCdeBaseTest {
     public void sdcXmlExportLoinc() {
         String response = get(baseUrl + "/form/Xyo4O4BIM?type=xml&subtype=sdc").asString();
         Assert.assertTrue(response.contains("<CodedValue><Code val=\"LA15255-5\"/><CodeSystem><CodeSystemName val=\"LOINC\"/>"));
+        Assert.assertTrue(response.contains("Code val=\"59052-1\"/><CodeSystem><CodeSystemName val=\"LOINC\"/></CodeSystem></CodedValue"));
+
     }
 
     @Test
