@@ -24,6 +24,19 @@ function addQuestion(parent, question) {
         newQuestion.OtherText = {"$val": question.instructions};
     }
 
+    if (question.question.cde.ids.length>0) {
+        newQuestion.CodedValue = [];
+        question.question.cde.ids.forEach(function(id){
+            newQuestion["CodedValue"].push({
+                "Code":{"$val": id.id}
+                , "CodeSystem": {
+                    "CodeSystemName": {"$val": id.source}
+                }
+            });
+        });
+
+    }
+
     if (question.question.datatype === 'Value List') {
         newQuestion.ListField = {"List": {"ListItem": []}};
         if (question.question.multiselect) newQuestion.ListField["$maxSelections"] = "0";
