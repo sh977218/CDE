@@ -274,7 +274,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             });
             $scope.resolveCdeLoaded();
-            $scope.$broadcast("elementReloaded");
             if (route.tab) {
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
@@ -324,7 +323,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.save = function() {
         $scope.elt.$save({}, function (elt) {
             $scope.elt = elt;
-            $scope.$broadcast("elementReloaded");
             $scope.addAlert("success", "Saved.");
         }, function() {
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");

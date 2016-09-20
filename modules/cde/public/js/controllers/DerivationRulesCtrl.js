@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('DerivationRulesCtrl', ['$scope', '$uibMo
         }
     };
 
-    $scope.$on('elementReloaded', function() {
+    $scope.cdeLoadedPromise.then(function() {
         updateRules();
         if ($scope.tabs.derivationRules.active) {
             findDerivationOutputs();

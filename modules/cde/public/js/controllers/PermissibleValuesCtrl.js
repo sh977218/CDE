@@ -18,7 +18,7 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         });
     });
 
-    $scope.$on('elementReloaded', function(){
+    $scope.cdeLoadedPromise.then(function(){
         Object.keys($scope.srcOptions).forEach(function(k){
             if ($scope.srcOptions[k].selected) lookupAsSource(k);
         });

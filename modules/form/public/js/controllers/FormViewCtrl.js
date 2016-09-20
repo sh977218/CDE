@@ -269,7 +269,6 @@ angular.module('formModule').controller
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
-                $scope.$broadcast("elementReloaded");
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
