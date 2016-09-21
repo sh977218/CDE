@@ -359,7 +359,6 @@ angular.module('formModule').controller
         $scope.stageElt();
     };
 
-
         var tokenSplitter = function (str) {
             var tokens = [];
         if (!str) {
@@ -367,7 +366,7 @@ angular.module('formModule').controller
             return tokens;
         }
         str = str.trim();
-        var res = str.match(/^"([^"]+)"/);
+            var res = str.match(/^"[^"]+"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
@@ -408,24 +407,42 @@ angular.module('formModule').controller
         tokens.unmatched = str;
 
         if (str.length > 0) {
-            return tokenSplitter(str, tokens);
+            var innerTokens = tokenSplitter(str);
+            var outerTokens = tokens.concat(innerTokens);
+            outerTokens.unmatched = innerTokens.unmatched;
+            return outerTokens;
         } else {
             return tokens;
         }
     };
 
-
     function validateSingleExpression(tokens, previousQuestions) {
-        var q = previousQuestions.filter(function (pq) {
-            return pq.label.trim().toLowerCase().replace(/"/g, "") === tokens[0].trim().toLowerCase();
+        var filteredQuestions = previousQuestions.filter(function (pq) {
+            return questionSanitizer(pq.label) === tokens[0];
         });
-        if (q.length !== 1) {
+        if (filteredQuestions.length !== 1) {
             return '"' + tokens[0] + '" is not a valid question label';
-    }
-        if (q[0].question.answers.map(function (a) {
-                return a.permissibleValue;
-            }).indexOf(tokens[2]) < 0) {
-            return '"' + tokens[2] + '" is not a valid answer for "' + q[0].label + '"';
+        } else {
+            var filteredQuestion = filteredQuestions[0];
+            if (filteredQuestion.question.datatype === 'Value List') {
+                if (filteredQuestion.answers.map(function (a) {
+                        return questionSanitizer(a.permissibleValue);
+                    }).indexOf(tokens[2]) < 0) {
+                    return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
+                }
+            } else if (filteredQuestion.question.datatype === 'Number') {
+                if (isNaN(tokens[2]))
+                    return '"' + tokens[2] + '" is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
+                else if (filteredQuestion.question.datatypeNumber) {
+                    var answerNumber = parseInt(tokens[2]);
+                    var max = filteredQuestion.question.datatypeNumber.maxValue;
+                    var min = filteredQuestion.question.datatypeNumber.minValue;
+                    if (min != undefined && answerNumber < min)
+                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    if (max != undefined && answerNumber > min)
+                        return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
+                }
+            }
         }
     }
 

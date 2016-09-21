@@ -84,11 +84,13 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}"
                          ng-class="{'has-error':question.skipLogic.validationError}">
-                        <input type="text" ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
-                               ng-model="question.skipLogic.condition"
-                               typeahead-on-select="validateSkipLogic(question.skipLogic, section.formElements, $item)"
+                        <input type="text" ng-model="question.skipLogic.condition"
+                               class="form-control skipLogicCondition" ng-trim="false"
+                               ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question,$parent.$index) | filter:tokens.unmatched"
-                               typeahead-min-length="0" class="form-control skipLogicCondition" ng-trim="false"/>
+                               typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                               typeahead-on-select="validateSkipLogic(question.skipLogic, section.formElements, $item)"
+                               typeahead-append-to-body="true"/>
                         <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
                 </div>
