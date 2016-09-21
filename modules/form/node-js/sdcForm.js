@@ -21,7 +21,7 @@ function addQuestion(parent, question) {
     }
 
     if (question.instructions) {
-        newQuestion.OtherText = {"$val": question.instructions};
+        newQuestion.OtherText = {"$val": question.instructions.value};
     }
 
     if (question.question.cde.ids.length>0) {
