@@ -86,8 +86,8 @@
                          ng-class="{'has-error':question.skipLogic.validationError}">
                         <input type="text" ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
                                ng-model="question.skipLogic.condition"
-                               typeahead-on-select="validateSkipLogic(question.skipLogic,section.formElements)"
-                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question,$parent.$index)"
+                               typeahead-on-select="validateSkipLogic(question.skipLogic, section.formElements, $item)"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question,$parent.$index) | filter:tokens.unmatched"
                                typeahead-min-length="0" class="form-control skipLogicCondition" ng-trim="false"/>
                         <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
