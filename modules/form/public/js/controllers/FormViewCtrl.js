@@ -360,8 +360,8 @@ angular.module('formModule').controller
     };
 
 
-    var tokenSplitter = function (str, tokens) {
-        if (!tokens) tokens = [];
+        var tokenSplitter = function (str) {
+            var tokens = [];
         if (!str) {
             tokens.unmatched = "";
             return tokens;
@@ -432,85 +432,80 @@ angular.module('formModule').controller
     $scope.validateSkipLogic = function(skipLogic, previousQuestions) {
         $timeout(function() {
             var logic = skipLogic.condition;
-
             var tokens = tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
                 $scope.isValidateForm = false;
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
-
             if (!logic || logic.length === 0) {
                 return;
             }
-
             if ((tokens.length - 3) % 4 !== 0) {
                 $scope.isValidateForm = false;
                 return skipLogic.validationError = "Unexpected number of tokens in expression";
             }
-
             var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
             if (err) {
                 $scope.isValidateForm = false;
                 return skipLogic.validationError = err;
             }
-
             $scope.stageElt($scope.elt);
-
         }, 0);
 
     };
 
-
-    $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
-        var filterFunc = function (e1) {
-            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
-                (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
-        };
-        var tokens = tokenSplitter(currentContent);
-        if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
-        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
-            return currentContent + " " + e1;
-        });
-        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
-            return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
-        });
-        if (tokens.length === 3) return $scope.languageOptions("conjunction");
-    };
-
-
-    $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
-        if (!previousLevel) return;
-        if (languageMode === 'question') return previousLevel.filter(function (q, i) {
-            //Will assemble a list of questions
-            if (i === index) return false; //Exclude myself
-            if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-            return true;
-        }).map(function (q) {
-            return '"' + q.label + '" ';
-        });
-        if (languageMode === 'operator') return ["= ", "< ", "> "];
-        if (languageMode === 'answer') {
-            var questions = previousLevel.filter(function (q) {
-                if (q.label && questionName)
-                    return q.label.trim() === questionName.trim();
-            });
-            if (questions.length <= 0) return [];
-            var question = questions[0];
-            if (question.question.datatype === 'Number') {
-                return [];
+        $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion, index) {
+            if (!currentContent) currentContent = '';
+            var mapFunc = function (o) {
+                return currentContent + o;
+            };
+            var tokens = tokenSplitter(currentContent);
+            var options = [];
+            if (tokens.length % 4 === 0) {
+                options = $scope.languageOptions("question", previousQuestions, index);
+            } else if (tokens.length % 4 === 1) {
+                options = $scope.languageOptions("operator", previousQuestions);
+            } else if (tokens.length % 4 === 2) {
+                options = $scope.languageOptions("answer", previousQuestions, index, tokens[tokens.length - 2]);
+            } else if (tokens.length % 4 === 3) {
+                options = $scope.languageOptions("conjunction", previousQuestions)
             }
-            else if (question.question.datatype === 'Value List') {
-                var answers = question.question.answers;
-                return answers.map(function (a) {
-                    return '"' + a.permissibleValue + '"';
-                });
-            } else return [];
+            return options.map(mapFunc);
+        };
+        function questionSanitizer(label) {
+            return label.replace(/"/g, "'").trim();
         }
-        if (languageMode === 'conjunction') return ["AND", "OR"];
-        return [];
-    };
+
+        $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
+            if (languageMode === 'conjunction') return [" AND ", " OR"];
+            else if (languageMode === 'operator') return [" = ", " < ", " > "];
+            else if (languageMode === 'question') {
+                return previousLevel.filter(function (q, i) {
+                    //Will assemble a list of questions
+                    if (i === index) return false; //Exclude myself
+                    if (q.elementType !== "question") return false; //This element is not a question, ignore
+                    if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
+                    return true;
+                }).map(function (q) {
+                    return '"' + questionSanitizer(q.label) + '" ';
+                });
+            } else if (languageMode === 'answer') {
+                var questions = previousLevel.filter(function (q) {
+                    if (q.label && questionName)
+                        return questionSanitizer(q.label) === questionName;
+                });
+                if (questions.length <= 0) return [];
+                var question = questions[0];
+                if (question.question.datatype === 'Value List') {
+                    var answers = question.question.answers;
+                    return answers.map(function (a) {
+                        return '"' + questionSanitizer(a.permissibleValue) + '"';
+                    });
+                } else return ['"{{' + question.question.datatype + '}}"'];
+            }
+            else return [];
+        };
 
     $scope.missingCdes = [];
     $scope.inScoreCdes = [];
