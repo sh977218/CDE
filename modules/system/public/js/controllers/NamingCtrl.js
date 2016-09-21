@@ -10,7 +10,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
             });
         }
 
-        $scope.deferredCdeLoaded.promise.then(refreshContexts);
+        $scope.deferredEltLoaded.promise.then(refreshContexts);
 
         $scope.openNewNamePair = function () {
             if (!$scope.allContexts || $scope.allContexts.length === 0) {
