@@ -33,6 +33,9 @@ function addQuestion(parent, question) {
                     "CodeSystemName": {"$val": id.source}
                 }
             });
+            if (id.version) {
+                newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"$val":id.version};
+            }
         });
 
     }
