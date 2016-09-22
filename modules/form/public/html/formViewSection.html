@@ -25,11 +25,14 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
                          ng-class="{'has-error':section.skipLogic.skipLogicError}">
-                        <input type="text" ng-change="stageElt(elt)" ng-model="section.skipLogic.condition"
-                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements,section)"
-                               typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                        <i class="fa fa-question-circle-o" aria-hidden="true"
-                           uib-tooltip="{{section.skipLogic.suggestion}}"></i>
+                        <input type="text" ng-model="section.skipLogic.condition"
+                               class="form-control skipLogicCondition" ng-trim="false"
+                               ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section,$parent.$index) | filter:tokens.unmatched"
+                               typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                               typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
+                               typeahead-append-to-body="true"/>
+                        <span ng-bind="section.skipLogic.skipLogicError"></span>
                     </div>
                 </div>
                 <div class="row">
