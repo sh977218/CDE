@@ -11,11 +11,7 @@ import org.testng.Assert;
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
-        try {
-            addQuestionToSectionUnsafe(cdeName, sectionNumber);
-        } catch (TimeoutException e) {
-            addQuestionToSectionUnsafe(cdeName, sectionNumber);
-        }
+        addQuestionToSectionUnsafe(cdeName, sectionNumber);
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
@@ -38,10 +34,15 @@ public class QuestionTest extends BaseFormTest {
 
         scrollTo(targetElt.getLocation().getY());
 
-        (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
-
-        textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
-
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i=0; i < 5; i++) {
+            try {
+                (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+                textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
+                i = 5;
+            } catch (TimeoutException e) {
+            }
+        }
     }
     
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
