@@ -31,11 +31,8 @@ public class QuestionTest extends BaseFormTest {
 
                 Assert.assertTrue(sourceElt.isDisplayed());
 
-                String jsScroll = "var y = $(\"#section_view_" + sectionNumber + "\").position().top;\n" +
-                        "$(window).scrollTop(y);";
-                ((JavascriptExecutor) driver).executeScript(jsScroll, "");
-
                 scrollTo(targetElt.getLocation().getY());
+                hangon(5);
 
                 (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
                 textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));

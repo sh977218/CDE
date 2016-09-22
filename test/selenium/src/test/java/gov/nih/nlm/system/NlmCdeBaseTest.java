@@ -167,8 +167,6 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 
-        resizeWindow(1600, 980);
-
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
@@ -236,14 +234,6 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
-    }
-
-    protected void resizeWindow(int width, int height) {
-        driver.manage().window().setSize(new Dimension(width, height));
-    }
-
-    protected Dimension getWindowSize() {
-        return driver.manage().window().getSize();
     }
 
     private boolean isUsernameMatch(String username) {
