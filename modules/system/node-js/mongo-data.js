@@ -473,8 +473,10 @@ exports.addToClassifAudit = function(msg) {
         classifRecord.save();
     };
     daoManager.getDaoList().forEach(function(dao) {
-        if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
-        if (msg.elements[0].tinyId) dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+        if (msg.elements[0]) {
+            if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
+            if (msg.elements[0].tinyId) dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+        }
     });
 };
 
