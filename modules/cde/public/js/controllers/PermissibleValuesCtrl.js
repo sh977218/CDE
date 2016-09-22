@@ -26,6 +26,7 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
     if ($scope.deferredEltLoaded) {
         $scope.deferredEltLoaded.promise.then(loadSrcOptions);
     }
+    $scope.$on('elementReloaded', loadSrcOptions);
 
     $scope.srcOptions = {};
     $scope.containsKnownSystem = false;
