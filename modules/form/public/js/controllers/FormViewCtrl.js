@@ -429,7 +429,7 @@ angular.module('formModule').controller
         } else {
             var filteredQuestion = filteredQuestions[0];
             if (filteredQuestion.question.datatype === 'Value List') {
-                if (filteredQuestion.answers.map(function (a) {
+                if (filteredQuestion.question.answers.map(function (a) {
                         return questionSanitizer(a.permissibleValue);
                     }).indexOf(tokens[2]) < 0) {
                     return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
@@ -470,7 +470,7 @@ angular.module('formModule').controller
             }
             if ((tokens.length - 3) % 4 !== 0) {
                 $scope.isValidateForm = false;
-                return skipLogic.validationError = "Unexpected number of tokens in expression";
+                return skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
             }
             var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
             if (err) {
@@ -481,8 +481,6 @@ angular.module('formModule').controller
         }, 0);
 
     };
-
-
 
      $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion, index) {
          if (!currentContent) currentContent = '';
@@ -497,7 +495,7 @@ angular.module('formModule').controller
         if (tokens.length % 4 === 0) {
             options = previousQuestions.filter(function (q, i) {
                 //Will assemble a list of questions
-                if (i === index) return false; //Exclude myself
+                if (i >= index) return false; //Exclude myself
                 if (q.elementType !== "question") return false; //This element is not a question, ignore
                 if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
                 return true;

@@ -416,7 +416,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForDownload(String fileName) {
-        for (int i=0; i < 30; i++) {
+        for (int i = 0; i < 30; i++) {
             try {
                 String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
                 if (actual.length() > 0) {

@@ -58,6 +58,7 @@ public class EltIdMaps {
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
