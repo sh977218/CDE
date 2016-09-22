@@ -1,6 +1,8 @@
 angular.module('formModule').controller
-('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
-    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification, $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
+('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+    function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
@@ -11,6 +13,9 @@ angular.module('formModule').controller
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
+
+    $scope.deferredEltLoaded = $q.defer();
+
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
@@ -262,14 +267,13 @@ angular.module('formModule').controller
                 areDerivationRulesSatisfied();
                 //setDefaultValues();
                 if ($scope.formCdeIds.length < 21) $scope.renderPreview();
-
+                $scope.deferredEltLoaded.resolve();
                 if (route.tab) {
                     $scope.tabs.more.select();
                     $timeout(function () {
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
-                $scope.$broadcast("elementReloaded");
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

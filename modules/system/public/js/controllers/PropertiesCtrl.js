@@ -4,18 +4,14 @@ angular.module('systemModule').controller('PropertiesCtrl',
 {
     var keysLoaded = $q.defer();
 
-    function refreshContexts(){
+    function refreshKeys(){
         OrgHelpers.deferred.promise.then(function () {
             $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
             keysLoaded.resolve();
         });
     }
 
-    refreshContexts();
-
-    $scope.$on('elementReloaded', function() {
-        refreshContexts();
-    });
+    $scope.deferredEltLoaded.promise.then(refreshKeys);
 
     $scope.openNewProperty = function () {
         keysLoaded.promise.then(function () {

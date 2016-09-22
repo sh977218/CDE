@@ -18,11 +18,15 @@ angular.module('cdeModule').controller('PermissibleValuesCtrl', ['$scope', '$tim
         });
     });
 
-    $scope.$on('elementReloaded', function(){
+    function loadSrcOptions() {
         Object.keys($scope.srcOptions).forEach(function(k){
             if ($scope.srcOptions[k].selected) lookupAsSource(k);
         });
-    });
+    }
+    if ($scope.deferredEltLoaded) {
+        $scope.deferredEltLoaded.promise.then(loadSrcOptions);
+    }
+    $scope.$on('elementReloaded', loadSrcOptions);
 
     $scope.srcOptions = {};
     $scope.containsKnownSystem = false;
