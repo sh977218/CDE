@@ -452,21 +452,6 @@ angular.module('formModule').controller
 
     var preSkipLogicSelect = "";
 
-        $scope.findPreviousQuestions = function (thisQuestion) {
-            var previousQuestions = [];
-            var loopFormElements = function (form) {
-                form.formElements.forEach(function (fe) {
-                    if (questionSanitizer(fe.label) === thisQuestion) {
-                        return previousQuestions;
-                    } else if (fe.elementType === 'question') {
-                        previousQuestions.push(fe);
-                    }
-                })
-            };
-            loopFormElements($scope.elt);
-        };
-
-
     $scope.validateSkipLogic = function(skipLogic, previousQuestions, $item) {
         if (!skipLogic) skipLogic = {condition: ''};
         if ($item) {
@@ -501,6 +486,7 @@ angular.module('formModule').controller
 
      $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion, index) {
          if (!currentContent) currentContent = '';
+         if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
 
         var tokens = tokenSplitter(currentContent);
         $scope.tokens = tokens;
