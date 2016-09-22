@@ -33,14 +33,16 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.id("question_accordion_3_2"));
         textPresent("Sometimes");
 
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "\"How much were you bothered by your fatigue on average?\"", 3, 1, true, "Unexpected number of tokens in expression 1");
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "=", 3, 1, true, "Unexpected number of tokens in expression 2");
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
+        String inputXpath = "//*[@id='dd_q_skipLogic_3']/div/input[2]";
 
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", " \"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "=", 3, 1, true, "Unexpected number of tokens in expression 6");
-        editSkipLogic("//*[@id='dd_q_skipLogic_3']/div/input[1]", "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 3, 1, true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
+
+        editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
+        editSkipLogic(inputXpath, " \"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
+        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 6");
+        editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         saveForm();
         goToFormByName(formName);
@@ -49,6 +51,7 @@ public class SkipLogicTest extends BaseFormTest {
 
 
     public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth, boolean displayError, String errorMessage) {
+        clickElement(By.xpath(inputXpath));
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
         textPresent(textToBePresent);
         int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
