@@ -167,13 +167,7 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 
-//        if (baseUrl.contains("local-cde-dev-1")) {
-//            downloadFolder = "/usr/nlm/selenium/cde/downloads/ci01";
-//            chromeDownloadFolder = "T:\\CDE\\downloads\\ci01";
-//        } else {
-//            downloadFolder = "/usr/nlm/selenium/cde/downloads/ci02";
-//            chromeDownloadFolder = "T:\\CDE\\downloads\\ci02";
-//        }
+        resizeWindow(1600, 980);
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
@@ -242,6 +236,14 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
+    }
+
+    protected void resizeWindow(int width, int height) {
+        driver.manage().window().setSize(new Dimension(width, height));
+    }
+
+    protected Dimension getWindowSize() {
+        return driver.manage().window().getSize();
     }
 
     private boolean isUsernameMatch(String username) {
