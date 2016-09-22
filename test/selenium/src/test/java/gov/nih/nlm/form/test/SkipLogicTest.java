@@ -60,7 +60,9 @@ public class SkipLogicTest extends BaseFormTest {
 
     public void checkSkipLogicRender() {
         clickElement(By.id("nativeFormRenderLink"));
-        textPresent("How much were you bothered by your fatigue on average?");
-        new Select(findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        new Select(findElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']/select"))).selectByVisibleText("Not at all");
+        new Select(findElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']/select"))).selectByVisibleText("A little bit");
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 }
