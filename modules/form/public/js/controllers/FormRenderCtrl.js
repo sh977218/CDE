@@ -157,7 +157,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
             else return element.label == question;
         });
         var realAnswerObj = realAnswerArr[0];
-        var realAnswer = realAnswerObj.question.answer;
+        var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
         if (realAnswer) {
             if (operator === '=') {
                 if (typeof realAnswer === 'number')
