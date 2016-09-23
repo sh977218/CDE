@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '$http', function($scope, $modal, $http)
+angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '$location', function($scope, $modal, $location)
 {
     $scope.openNewConcept = function () {
         $modal.open({
@@ -34,22 +34,14 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
         $scope[type + 'RemoveConcept']();
     };
 
-    $scope. conceptConfigurations = [
-        {type: "dataElementConcept", display: "Data Element Concept"},
-        {type: "objectClass", display: "Object Class"},
-        {type: "property", display: "Property"}
-    ];
+    $scope.conceptConfigurations = {
+        "dataElementConcept": {display: "Data Element Concept", path: "dataElementConcept.concepts.name"},
+        "objectClass": {display: "Object Class", path: "objectClass.concepts.name"},
+        "property": {display: "Property", path: "property.concepts.name"}
+    };
 
-    $scope.relatedCdes = function (concept) {
-        $http({method: "POST", url: "/desByConcept", data: concept})
-            .success(function (data) {
-                $scope.cdes = data;
-                for (var i=0; i < $scope.cdes.length; i++) {
-                    if ($scope.cdes[i].tinyId === $scope.elt.tinyId) {
-                        $scope.cdes.splice(i, 1);
-                    }
-                }
-            });
+    $scope.relatedCdes = function (concept, type) {
+        $location.url('/cde/search?q=' + $scope.conceptConfigurations[type].path + ':"' + concept + '"');
     };
 }
 ]);

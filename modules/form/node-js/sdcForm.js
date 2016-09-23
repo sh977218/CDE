@@ -21,7 +21,23 @@ function addQuestion(parent, question) {
     }
 
     if (question.instructions) {
-        newQuestion.OtherText = {"$val": question.instructions};
+        newQuestion.OtherText = {"$val": question.instructions.value};
+    }
+
+    if (question.question.cde.ids.length>0) {
+        newQuestion.CodedValue = [];
+        question.question.cde.ids.forEach(function(id){
+            newQuestion["CodedValue"].push({
+                "Code":{"$val": id.id}
+                , "CodeSystem": {
+                    "CodeSystemName": {"$val": id.source}
+                }
+            });
+            if (id.version) {
+                newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"$val":id.version};
+            }
+        });
+
     }
 
     if (question.question.datatype === 'Value List') {
@@ -31,9 +47,19 @@ function addQuestion(parent, question) {
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
                 var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                newQuestion.ListField.List.ListItem.push({
+                var q = {
                     "$ID": "NA_" + Math.random(),
-                    "$title": title});
+                    "$title": title
+                };
+                if (answer.codeSystemName) {
+                    q["CodedValue"] = {
+                        "Code":{"$val":answer.valueMeaningCode}
+                        , "CodeSystem": {
+                            "CodeSystemName": {"$val": answer.codeSystemName}
+                        }
+                    };
+                }
+                newQuestion.ListField.List.ListItem.push(q);
             });
         }
     } else {

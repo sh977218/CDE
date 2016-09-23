@@ -52,7 +52,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Naming", includes: ['/system/public/html/naming.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                });
             },
             show: true
         },
@@ -91,7 +93,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             heading: "Properties", includes: ['/system/public/html/properties.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                });
             },
             show: false,
             hideable: true
@@ -221,10 +225,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
             class: "gray"
         }
     };
-    $scope.resolveCdeLoaded = null;
-    $scope.cdeLoadedPromise = $q(function(resolve) {
-        $scope.resolveCdeLoaded = resolve;
-    });
+
+    $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
         if ($scope.elt && $scope.elt.unsaved) {
@@ -269,20 +271,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
             OrgHelpers.deferred.promise.then(function() {
                 $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
             });
-            $scope.resolveCdeLoaded();
-            $scope.$broadcast("elementReloaded");
+            $scope.deferredEltLoaded.resolve();
             if (route.tab) {
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
             }
             $http.get('/esRecord/' + de.tinyId).success(function (response) {
-                var s = new Set();
+                $scope.elt.flatMeshSimpleTrees = [];
                 if (response._source.flatMeshSimpleTrees) {
                     response._source.flatMeshSimpleTrees.forEach(function (t) {
-                        s.add(t.split(";").pop());
+                        if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
                     });
                 }
-                $scope.elt.flatMeshSimpleTrees = Array.from(s);
             });
         }, function (err) {
             $log.error("Unable to retrieve element.");

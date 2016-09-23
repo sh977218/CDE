@@ -76,6 +76,8 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Ethnicity");
         textPresent("results (");
 
+        hangon(1);
+
         Assert.assertEquals(findElements(By.cssSelector("#gridList tbody tr")).size(), 6);
 
         List<WebElement> ths = findElements(By.cssSelector("#gridList th"));

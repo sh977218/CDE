@@ -1,11 +1,16 @@
-angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert',
-    function ($scope, $modal, OrgHelpers, Alert) {
+angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 'OrgHelpers', 'Alert', '$q',
+    function ($scope, $modal, OrgHelpers, Alert, $q) {
 
-        $scope.$on('elementReloaded', function() {
+        var contextsLoaded = $q.defer();
+
+        function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
                 $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                contextsLoaded.resolve();
             });
-        });
+        }
+
+        $scope.deferredEltLoaded.promise.then(refreshContexts);
 
         $scope.openNewNamePair = function () {
             if (!$scope.allContexts || $scope.allContexts.length === 0) {
@@ -13,18 +18,20 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
                 return;
             }
 
-            $modal.open({
-                animation: false,
-                templateUrl: 'newNamePairModalContent.html',
-                controller: 'NewNamePairModalCtrl',
-                resolve: {
-                    cde: function () {
-                        return $scope.elt;
-                    },
-                    context: function () {
-                        return $scope.allContexts;
+            contextsLoaded.promise.then(function () {
+                $modal.open({
+                    animation: false,
+                    templateUrl: 'newNamePairModalContent.html',
+                    controller: 'NewNamePairModalCtrl',
+                    resolve: {
+                        cde: function () {
+                            return $scope.elt;
+                        },
+                        context: function () {
+                            return $scope.allContexts;
+                        }
                     }
-                }
+                });
             });
         };
 

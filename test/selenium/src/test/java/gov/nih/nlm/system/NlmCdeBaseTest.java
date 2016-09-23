@@ -167,14 +167,6 @@ public class NlmCdeBaseTest {
         shortWait = new WebDriverWait(driver, 5);
         driver.manage().window().maximize();
 
-//        if (baseUrl.contains("local-cde-dev-1")) {
-//            downloadFolder = "/usr/nlm/selenium/cde/downloads/ci01";
-//            chromeDownloadFolder = "T:\\CDE\\downloads\\ci01";
-//        } else {
-//            downloadFolder = "/usr/nlm/selenium/cde/downloads/ci02";
-//            chromeDownloadFolder = "T:\\CDE\\downloads\\ci02";
-//        }
-
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
@@ -511,20 +503,22 @@ public class NlmCdeBaseTest {
         return findElement(by).getAttribute("class").contains(text);
     }
 
-    public void textPresent(String text, By by) {
+    public boolean textPresent(String text, By by) {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(by, text));
+        return true;
     }
 
-    public void textPresent(String text) {
-        textPresent(text, By.cssSelector("BODY"));
+    public boolean textPresent(String text) {
+        return textPresent(text, By.cssSelector("BODY"));
     }
 
-    public void textNotPresent(String text) {
-        textNotPresent(text, By.cssSelector("BODY"));
+    public boolean textNotPresent(String text) {
+        return textNotPresent(text, By.cssSelector("BODY"));
     }
 
-    public void textNotPresent(String text, By by) {
+    public boolean textNotPresent(String text, By by) {
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
+        return true;
     }
 
     private boolean classNotPresent(String text, By by) {
