@@ -48,7 +48,8 @@ angular.module('systemModule').controller('ClassificationCtrl',
     };     
 
     $scope.hideWorkingGroups = function(stewardClassifications) {
-        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || $scope.user.siteAdmin);
+        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) ||
+        ($scope.user && $scope.user.siteAdmin));
     };
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {

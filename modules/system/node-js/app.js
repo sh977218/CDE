@@ -233,7 +233,7 @@ exports.init = function (app) {
                                     }
                                 });
                         } else {
-                            catchaDone("missing reCaptcha");
+                            captchaDone("missing reCaptcha");
                         }
                     } else {
                         captchaDone();
