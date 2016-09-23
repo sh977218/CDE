@@ -15,7 +15,7 @@ angular.module('formModule').controller
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     $scope.deferredEltLoaded = $q.defer();
-
+    $scope.isFormValid = true;
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
