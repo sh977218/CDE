@@ -462,19 +462,19 @@ angular.module('formModule').controller
             var tokens = tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
-                $scope.isValidateForm = false;
+                $scope.isFormValid = false;
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
             if (!logic || logic.length === 0) {
                 return;
             }
             if ((tokens.length - 3) % 4 !== 0) {
-                $scope.isValidateForm = false;
+                $scope.isFormValid = false;
                 return skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
             }
             var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
             if (err) {
-                $scope.isValidateForm = false;
+                $scope.isFormValid = false;
                 return skipLogic.validationError = err;
             }
             $scope.stageElt($scope.elt);
@@ -623,15 +623,17 @@ angular.module('formModule').controller
     };
 
     $scope.validateForm = function () {
-        $scope.isValidateForm = true;
+        $scope.isFormValid = true;
         var loopFormElements = function (form) {
-            form.formElements.forEach(function (fe) {
-                if (fe.skipLogic && fe.skipLogic.error) {
-                    $scope.isValidateForm = false;
-                    return;
-                }
-                loopFormElements(fe);
-            })
+            if (form.formElements) {
+                form.formElements.forEach(function (fe) {
+                    if (fe.skipLogic && fe.skipLogic.error) {
+                        $scope.isFormValid = false;
+                        return;
+                    }
+                    loopFormElements(fe);
+                })
+            }
         };
         loopFormElements($scope.elt);
     }

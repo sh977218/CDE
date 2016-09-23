@@ -16,7 +16,8 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
-        findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score']]/following-sibling::div//input")).sendKeys("200");
+        findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
+                "subscale T score']]/following-sibling::div//input")).sendKeys("200");
         textPresent("Patient Gender Category");
         new Select(findElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//select")))
                 .selectByVisibleText("Female Gender");
@@ -35,24 +36,32 @@ public class SkipLogicTest extends BaseFormTest {
 
         String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
 
-        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1,
+                true, "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
-        editSkipLogic(inputXpath, " \"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
+        editSkipLogic(inputXpath, " \"To what degree did your fatigue interfere with your physical functioning?\"", 2,
+                2, true, "Unexpected number of tokens in expression 5");
         editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         saveForm();
         goToFormByName(formName);
-        checkSkipLogicRender();
-    }
+
+        clickElement(By.id("nativeFormRenderLink"));
+        textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        new Select(findElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']/select")))
+                .selectByVisibleText("Not at all");
+        new Select(findElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical " +
+                "functioning?_1']/select"))).selectByVisibleText("A little bit");
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?");    }
 
 
-    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth, boolean displayError, String errorMessage) {
-        clickElement(By.xpath(inputXpath));
+    private void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
+                               boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
         textPresent(textToBePresent);
         int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
@@ -62,11 +71,4 @@ public class SkipLogicTest extends BaseFormTest {
         else textNotPresent(errorMessage);
     }
 
-    public void checkSkipLogicRender() {
-        clickElement(By.id("nativeFormRenderLink"));
-        textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        new Select(findElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']/select"))).selectByVisibleText("Not at all");
-        new Select(findElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']/select"))).selectByVisibleText("A little bit");
-        textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-    }
 }
