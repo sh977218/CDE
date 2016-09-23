@@ -31,8 +31,8 @@ public class QuestionTest extends BaseFormTest {
 
                 Assert.assertTrue(sourceElt.isDisplayed());
 
-                scrollTo(targetElt.getLocation().getY());
-                hangon(5);
+//                scrollTo(targetElt.getLocation().getY());
+//                hangon(1);
 
                 (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
                 textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
