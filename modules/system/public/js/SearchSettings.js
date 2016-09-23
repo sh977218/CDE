@@ -5,7 +5,8 @@ angular.module('ElasticSearchResource')
         this.deferred = $q.defer();
 
         this.saveConfiguration = function (settings) {
-            searchSettings = settings;
+            searchSettings = JSON.parse(JSON.stringify(settings));
+            delete settings.includeRetired;
             localStorageService.set("SearchSettings", settings);
             userResource.updateSearchSettings(settings);
         };
@@ -44,11 +45,12 @@ angular.module('ElasticSearchResource')
         };
         this.getUserDefaultStatuses = function () {
             var overThreshold = false;
-            return exports.statusList.filter(function (status) {
+            var result = exports.statusList.filter(function (status) {
                 if (overThreshold) return false;
                 overThreshold = searchSettings.lowestRegistrationStatus === status;
                 return true;
             });
+            if (searchSettings.includeRetired) result.push()
         };
         userResource.getPromise().then(function (user) {
             if (user === "Not logged in.") {
