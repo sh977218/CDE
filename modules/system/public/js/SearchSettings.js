@@ -50,7 +50,8 @@ angular.module('ElasticSearchResource')
                 overThreshold = searchSettings.lowestRegistrationStatus === status;
                 return true;
             });
-            if (searchSettings.includeRetired) result.push()
+            if (searchSettings.includeRetired) result.push("Retired");
+            return result;
         };
         userResource.getPromise().then(function (user) {
             if (user === "Not logged in.") {

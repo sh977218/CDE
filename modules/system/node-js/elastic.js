@@ -354,17 +354,25 @@ exports.buildElasticSearchQuery = function (user, settings) {
         settings.visibleStatuses = regStatusShared.statusList.map(function(s) { return s.name; });
     }
 
+    // show statuses that either you selected, or it's your org and it's not retired.
     var regStatusAggFilter = {
-        "and": [
-            {"or": []},
-            {"not": {term: {"registrationState.registrationStatus": "Retired"}}}
-        ]};
+        "or": [
+            {"or": []} // any status you select,
+        ]
+    };
+
     settings.visibleStatuses.forEach(function(regStatus) {
-        regStatusAggFilter.and[0].or.push({"term": {"registrationState.registrationStatus": regStatus}});
+        regStatusAggFilter.or[0].or.push({"term": {"registrationState.registrationStatus": regStatus}});
     });
     if (user) {
+        var and = {"and": [
+            {or: []}, // your org
+            {"not": {term: {"registrationState.registrationStatus": "Retired"}}}
+        ]};
+        regStatusAggFilter.or.push(and);
+
         usersvc.myOrgs(user).forEach(function(myOrg) {
-            regStatusAggFilter.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
+            and.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
         });
     }
 
