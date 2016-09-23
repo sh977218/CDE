@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('OrgOverviewCtrl',
-    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', '$routeParams', '$anchorScroll',
-    function($scope, OrgHelpers, $location, AutoCompleteResource, $routeParams, $anchorScroll)
+    ['$scope', 'OrgHelpers', '$location', 'AutoCompleteResource', '$routeParams', '$anchorScroll', '$uibModal', 'OrgHelpers',
+    function($scope, OrgHelpers, $location, AutoCompleteResource, $routeParams, $anchorScroll, $modal, OrgHelper)
 {
     $scope.orgs = [];
     $scope.autocomplete = AutoCompleteResource;
@@ -21,7 +21,8 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
                                     longName: OrgHelpers.orgsDetailedInfo[org_t.key].longName,
                                     count: org_t.doc_count,
                                     source: OrgHelpers.orgsDetailedInfo[org_t.key].uri,
-                                    extraInfo: OrgHelpers.orgsDetailedInfo[org_t.key].extraInfo
+                                    extraInfo: OrgHelpers.orgsDetailedInfo[org_t.key].extraInfo,
+                                    htmlOverview: OrgHelpers.orgsDetailedInfo[org_t.key].htmlOverview
                                 });
                         }
                     }
@@ -62,5 +63,14 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
         b?$location.search('byTopic', true):$location.search('byTopic', null);
         $scope.byTopic = b;
     };
+
+    $scope.openOrgDetails = function(org) {
+        $modal.open({
+            animation: false,
+            template: '<div style="margin: 10px">' + org.htmlOverview + '</div>',
+            //template: '<div text-angular ng-model="template"></div>',
+            controller: function(){}
+        });
+    }
 
 }]);
