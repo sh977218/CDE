@@ -65,9 +65,9 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
     };
 
     $scope.openOrgDetails = function(org) {
-        $modal.open({
+         $modal.open({
             animation: false,
-            template: '<div style="margin: 10px">' + org.htmlOverview + '</div>',
+            template: '<div style="margin: 25px">' + org.htmlOverview + '</div>',
             //template: '<div text-angular ng-model="template"></div>',
             controller: function(){}
         });
