@@ -23,16 +23,18 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
 
         $scope.loadMyBoards = function (cb) {
             ElasticBoard.loadMyBoards($scope.filter, function (response) {
-                $scope.boards = response.hits.hits.map(function (h) {
-                    h._source._id = h._id;
-                    return h._source;
-                });
-                $scope.filter.tags = response.aggregations.tagAgg.buckets;
-                $scope.filter.shareStatus = response.aggregations.ssAgg.buckets;
-                $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
-                    return t.key;
-                });
-                if (cb) cb();
+                if (response.hits) {
+                    $scope.boards = response.hits.hits.map(function (h) {
+                        h._source._id = h._id;
+                        return h._source;
+                    });
+                    $scope.filter.tags = response.aggregations.tagAgg.buckets;
+                    $scope.filter.shareStatus = response.aggregations.ssAgg.buckets;
+                    $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
+                        return t.key;
+                    });
+                    if (cb) cb();
+                }
             });
         };
 
