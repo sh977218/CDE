@@ -6,6 +6,9 @@
         <i ng-show="reloading" class="fa fa-spinner fa-spin"></i>
     </h3>
     <hr/>
+    <div ng-if="!user.username" ng-include="'/system/public/html/ifYouLogInModal.html'">
+
+    </div>
     <div class="col-md-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
             <div ng-if="filter.tags.length > 0">
