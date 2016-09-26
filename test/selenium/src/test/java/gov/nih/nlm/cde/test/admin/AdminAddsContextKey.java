@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.admin;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
@@ -22,8 +23,14 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         hangon(1);
-        clickElement(By.id("newContext"));
-        textPresent("canYouSeeThis");
+
+        try {
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        } catch (TimeoutException e) {
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        }
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));

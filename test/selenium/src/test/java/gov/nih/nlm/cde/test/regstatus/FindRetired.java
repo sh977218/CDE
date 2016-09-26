@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.regstatus;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class FindRetired extends NlmCdeBaseTest {
@@ -22,8 +23,10 @@ public class FindRetired extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-Retired"));
         textPresent("Height or length alternative measurement");
         driver.get(driver.getCurrentUrl());
-        textNotPresent("Retired (");
+        textPresent("| Retired (");
         textPresent("Height or length alternative measurement");
+        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.id("li-blank-Retired"))));
+        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.id("li-checked-Retired"))));
     }
 
 
