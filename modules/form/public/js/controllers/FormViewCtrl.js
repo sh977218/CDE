@@ -15,7 +15,7 @@ angular.module('formModule').controller
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     $scope.deferredEltLoaded = $q.defer();
-
+    $scope.isFormValid = true;
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
@@ -296,6 +296,7 @@ angular.module('formModule').controller
 
     $scope.stageElt = function () {
         areDerivationRulesSatisfied();
+        $scope.validateForm();
         $scope.elt.unsaved = true;
     };
 
@@ -362,14 +363,14 @@ angular.module('formModule').controller
         $scope.stageElt();
     };
 
-    var tokenSplitter = function (str) {
-        var tokens = [];
+        var tokenSplitter = function (str) {
+            var tokens = [];
         if (!str) {
-            tokens.unmatched = str;
+            tokens.unmatched = "";
             return tokens;
         }
         str = str.trim();
-        var res = str.match(/^"([^"]+)"/);
+            var res = str.match(/^"[^"]+"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
@@ -378,7 +379,8 @@ angular.module('formModule').controller
         str = str.substring(t.length).trim();
         t = t.substring(1, t.length - 1);
         tokens.push(t);
-        res = str.match(/^=/);
+
+        res = str.match(/^[=|<|>]/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
@@ -386,67 +388,148 @@ angular.module('formModule').controller
         t = res[0];
         tokens.push(t);
         str = str.substring(t.length).trim();
-        res = str.match(/^".+"/);
+
+        res = str.match(/^"([^"]+)"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
         }
         t = res[0];
-        t = t.substring(1, t.length - 1);
+        var newT = res[0].substring(1, t.length - 1);
+        tokens.push(newT);
+        str = str.substr(t.length).trim();
+
+        res = str.match(/^((\bAND\b)|(\bOR\b))/);
+        if (!res) {
+            tokens.unmatched = str;
+            return tokens;
+        }
+        t = res[0];
         tokens.push(t);
+        str = str.substring(t.length).trim();
 
         tokens.unmatched = str;
-        return tokens;
-    };
 
-    $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion) {
-        var filterFunc = function (e1) {
-            return e1.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1 &&
-                (!thisQuestion || e1.trim().toLowerCase().replace(/"/g, "") !== thisQuestion.label.trim().toLowerCase().replace(/"/g, ""));
-        };
-        var tokens = tokenSplitter(currentContent);
-        if (tokens.length === 0) return $scope.languageOptions("question", previousQuestions).filter(filterFunc);
-        if (tokens.length === 1) return $scope.languageOptions("operator", previousQuestions).map(function (e1) {
-            return currentContent + " " + e1;
-        });
-        if (tokens.length === 2) return $scope.languageOptions("answer", previousQuestions, null, tokens[0]).filter(filterFunc).map(function (e1) {
-            return "\"" + tokens[0] + "\" " + tokens[1] + " " + e1;
-        });
-    };
-
-
-    $scope.languageOptions = function (languageMode, previousLevel, index, questionName) {
-        if (!previousLevel) return;
-        if (languageMode === 'question') return previousLevel.filter(function (q, i) {
-            //Will assemble a list of questions
-            if (i === index) return false; //Exclude myself
-            if (q.elementType !== "question") return false; //This element is not a question, ignore
-            if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-            return true;
-        }).map(function (q) {
-            return '"' + q.label + '" ';
-        });
-        if (languageMode === 'operator') return ["= ", "< ", "> "];
-        if (languageMode === 'answer') {
-            var questions = previousLevel.filter(function (q) {
-                if (q.label && questionName)
-                    return q.label.trim() === questionName.trim();
-            });
-            if (questions.length <= 0) return [];
-            var question = questions[0];
-            if (question.question.datatype === 'Number') {
-                return [];
-            }
-            else if (question.question.datatype === 'Value List') {
-                var answers = question.question.answers;
-                return answers.map(function (a) {
-                    return '"' + a.permissibleValue + '"';
-                });
-            } else return [];
+        if (str.length > 0) {
+            var innerTokens = tokenSplitter(str);
+            var outerTokens = tokens.concat(innerTokens);
+            outerTokens.unmatched = innerTokens.unmatched;
+            return outerTokens;
+        } else {
+            return tokens;
         }
-        if (languageMode === 'conjuction') return ["AND", "OR"];
-        return [];
     };
+
+    function validateSingleExpression(tokens, previousQuestions) {
+        var filteredQuestions = previousQuestions.filter(function (pq) {
+            return questionSanitizer(pq.label) === tokens[0];
+        });
+        if (filteredQuestions.length !== 1) {
+            return '"' + tokens[0] + '" is not a valid question label';
+        } else {
+            var filteredQuestion = filteredQuestions[0];
+            if (filteredQuestion.question.datatype === 'Value List') {
+                if (filteredQuestion.question.answers.map(function (a) {
+                        return questionSanitizer(a.permissibleValue);
+                    }).indexOf(tokens[2]) < 0) {
+                    return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
+                }
+            } else if (filteredQuestion.question.datatype === 'Number') {
+                if (isNaN(tokens[2]))
+                    return '"' + tokens[2] + '" is not a valid number for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
+                else if (filteredQuestion.question.datatypeNumber) {
+                    var answerNumber = parseInt(tokens[2]);
+                    var max = filteredQuestion.question.datatypeNumber.maxValue;
+                    var min = filteredQuestion.question.datatypeNumber.minValue;
+                    if (min != undefined && answerNumber < min)
+                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    if (max != undefined && answerNumber > min)
+                        return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
+                }
+            }
+        }
+    }
+
+    var preSkipLogicSelect = "";
+
+    $scope.validateSkipLogic = function(skipLogic, previousQuestions, $item) {
+        if (!skipLogic) skipLogic = {condition: ''};
+        if ($item) {
+            skipLogic.condition = preSkipLogicSelect + " " + $item;
+        }
+        $timeout(function() {
+            var logic = skipLogic.condition;
+            var tokens = tokenSplitter(logic);
+            delete skipLogic.validationError;
+            if (tokens.unmatched) {
+                $scope.isFormValid = false;
+                return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
+            }
+            if (!logic || logic.length === 0) {
+                return;
+            }
+            if ((tokens.length - 3) % 4 !== 0) {
+                $scope.isFormValid = false;
+                return skipLogic.validationError = "Unexpected number of tokens in expression " + tokens.length;
+            }
+            var err = validateSingleExpression(tokens.slice(0, 3), previousQuestions);
+            if (err) {
+                $scope.isFormValid = false;
+                return skipLogic.validationError = err;
+            }
+            $scope.stageElt($scope.elt);
+        }, 0);
+
+    };
+
+     $scope.getCurrentOptions = function (currentContent, previousQuestions, thisQuestion, index) {
+         if (!currentContent) currentContent = '';
+         if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
+
+        var tokens = tokenSplitter(currentContent);
+        $scope.tokens = tokens;
+
+         preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
+
+         var options = [];
+        if (tokens.length % 4 === 0) {
+            options = previousQuestions.filter(function (q, i) {
+                //Will assemble a list of questions
+                if (i >= index) return false; //Exclude myself
+                if (q.elementType !== "question") return false; //This element is not a question, ignore
+                if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
+                return true;
+            }).map(function (q) {
+                return '"' + questionSanitizer(q.label) + '" ';
+            });
+        } else if (tokens.length % 4 === 1) {
+            options = [" = ", " < ", " > "];
+        } else if (tokens.length % 4 === 2) {
+            options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
+        } else if (tokens.length % 4 === 3) {
+            options = [" AND ", " OR"];
+        }
+        return options;
+    };
+
+    function questionSanitizer(label) {
+        return label.replace(/"/g, "'").trim();
+    }
+
+    function getAnswer(previousLevel, questionName) {
+        var questions = previousLevel.filter(function (q) {
+            if (q.label && questionName)
+                return questionSanitizer(q.label) === questionName;
+        });
+        if (questions.length <= 0) return [];
+        var question = questions[0];
+        if (question.question.datatype === 'Value List') {
+            var answers = question.question.answers;
+            return answers.map(function (a) {
+                return '"' + questionSanitizer(a.permissibleValue) + '"';
+            });
+        } else return ['"{{' + question.question.datatype + '}}"'];
+    }
 
     $scope.missingCdes = [];
     $scope.inScoreCdes = [];
@@ -538,5 +621,21 @@ angular.module('formModule').controller
     $scope.dragSortableOptions = {
         handle: ".fa.fa-arrows"
     };
+
+    $scope.validateForm = function () {
+        $scope.isFormValid = true;
+        var loopFormElements = function (form) {
+            if (form.formElements) {
+                form.formElements.forEach(function (fe) {
+                    if (fe.skipLogic && fe.skipLogic.error) {
+                        $scope.isFormValid = false;
+                        return;
+                    }
+                    loopFormElements(fe);
+                })
+            }
+        };
+        loopFormElements($scope.elt);
+    }
 
 }]);
