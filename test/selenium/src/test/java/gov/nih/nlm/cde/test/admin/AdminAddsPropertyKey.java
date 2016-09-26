@@ -31,7 +31,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
             textPresent("doYouSeeThis");
         } catch (TimeoutException e) {
             clickElement(By.id("newPropertyKey"));
-            textPresent("doYouSeeThis");\
+            textPresent("doYouSeeThis");
         }
 
         clickElement(By.id("cancelCreate"));
