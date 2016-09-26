@@ -29,6 +29,7 @@
                     <th>Website:</th>
                     <th>Extra Info:</th>
                     <th>Working Group Of:</th>
+                    <th>HTML Overview:</th>
                 </tr>
                 <tr ng-repeat="c in orgs | orderBy:'name'">
                     <td id="orgName-{{c.name}}">
@@ -61,6 +62,11 @@
                     <td>
                         <div inline-edit id="orgWg-{{c.name}}" typeahead-source="orgNames"
                              model="c.workingGroupOf"
+                             is-allowed="true" on-ok="updateOrg(c)"></div>
+                    </td>
+                    <td>
+                        <div inline-edit id="orgHtmlOverview-{{c.name}}" typeahead-source="orgNames"
+                             model="c.htmlOverview"
                              is-allowed="true" on-ok="updateOrg(c)"></div>
                     </td>
                 </tr>
