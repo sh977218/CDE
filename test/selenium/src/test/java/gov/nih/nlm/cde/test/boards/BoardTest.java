@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.boards;
 
+import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -13,31 +14,32 @@ public class BoardTest extends NlmCdeBaseTest {
     protected void makePublic(String boardName, String response) {
         gotoMyBoards();
         textPresent(boardName);
-        int length = driver.findElements(By.linkText("View Board")).size();
+        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
-                findElement(By.id("privateIcon_" + i)).click();
-                findElement(By.id("confirmChangeStatus_" + i)).click();
+                clickElement(By.id("privateIcon_" + i));
+                textPresent("Change Status?");
+                clickElement(By.id("confirmChangeStatus_" + i));
                 textPresent(response);
                 closeAlert();
-                hangon(2);
                 return;
             }
         }
-        Assert.assertTrue(false);
+        Assert.fail();
     }
 
     public void gotoMyBoards() {
-        findElement(By.id("boardsMenu")).click();
+        clickElement(By.id("boardsMenu"));
         textPresent("My Boards");
-        findElement(By.id("myBoardsLink")).click();
+        clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
+        hangon(2);
     }
 
     protected void gotoPublicBoards() {
-        findElement(By.linkText("Boards")).click();
-        findElement(By.linkText("Public Boards")).click();
+        clickElement(By.linkText("Boards"));
+        clickElement(By.linkText("Public Boards"));
     }
 
     public void createBoard(String name, String description) {
@@ -47,25 +49,24 @@ public class BoardTest extends NlmCdeBaseTest {
     public void createBoard(String name, String description, String response) {
         gotoMyBoards();
         textPresent("Add Board");
-        findElement(By.id("addBoard")).click();
+        clickElement(By.id("addBoard"));
         textPresent("Create New Board");
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
-        hangon(1);
-        findElement(By.id("createBoard")).click();
+        hangon(2);
+        clickElement(By.id("createBoard"));
         textPresent(response);
         closeAlert();
-        hangon(1);
     }
 
     public void removeBoard(String boardName) {
         gotoMyBoards();
-        int length = driver.findElements(By.linkText("View Board")).size();
+        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("dd_name_" + i)).getText();
+            String name = findElement(By.id("board_name_" + i)).getText();
             if (boardName.equals(name)) {
                 clickElement(By.id("removeBoard-" + i));
-                findElement(By.id("confirmRemove-" + i)).click();
+                clickElement(By.id("confirmRemove-" + i));
                 textNotPresent(boardName);
                 return;
             }
@@ -73,22 +74,26 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     protected void pinTo(String cdeName, String boardName) {
-        goToCdeSearch();
         openCdeInList(cdeName);
-        findElement(By.id("pinToBoard_0")).click();
-        findElement(By.linkText(boardName)).click();
+        clickElement(By.id("pinToBoard_0"));
+        clickElement(By.linkText(boardName));
         textPresent("Added to Board");
-        modalGone();
         closeAlert();
+        modalGone();
     }
 
     protected void goToBoard(String boardName) {
-        gotoMyBoards();
-        textPresent(boardName);
-        findElement(By.id("viewBoard_" + boardName)).click();
-        // wait for board to show name in title
-        findElement(By.xpath("//h3[text() = '" + boardName + "']"));
+        String boardId = EltIdMaps.eltMap.get(boardName);
+        if (boardId != null) {
+            driver.get(baseUrl + "/board/" + boardId);
+            textPresent(boardName);
+        } else {
+            gotoMyBoards();
+            textPresent(boardName);
+            clickElement(By.id("viewBoard_" + boardName));
+            switchTab(1);
+            textPresent(boardName, By.id("board_name_" + boardName));
+        }
     }
-
 
 }

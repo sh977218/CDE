@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class CdeNamingTest extends NamingTest {
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override
@@ -14,13 +14,4 @@ public class CdeNamingTest extends NamingTest {
         goToCdeSearch();
     }
 
-    @Test
-    public void addRemoveEdit() {
-        addRemoveEditTest();
-    }
-
-    @Test
-    public void cdeReorderNaming() {
-        reorderNamingTest("cde for test cde reorder detail tabs");
-    }
 }

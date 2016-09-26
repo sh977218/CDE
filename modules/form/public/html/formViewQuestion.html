@@ -1,78 +1,130 @@
 <div uib-accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
     <div uib-accordion-group is-open="">
         <div uib-accordion-heading>
-            <i ng-if="canCurate" class="fa fa-arrows question-move-handle"></i>
-            <span ng-if="question.question.isScore" ><strong>Score: </strong> </span>
-            <span ng-bind-html="question.label | placeholdEmpty"
-                  id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
-            <span ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info"><small>(part of score)</small></span>
-            <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
-            <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
-
-            <i class="glyphicon glyphicon-remove hand-cursor pull-right" ng-click="removeQuestion(parent, $index)"
-               title="Remove question" ng-show="canCurate" id="remove_q_{{$index}}"></i>
+            <div class="row">
+                <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
+                    <i class="fa fa-arrows question-move-handle"></i>
+                </div>
+                <div class="col-sm-9">
+                    <span ng-if="question.question.isScore"><strong>Score: </strong></span>
+                    <span ng-if="question.hideLabel">
+                        <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
+                        <s ng-bind="question.question.cde.name"></s>
+                    </span>
+                    <span ng-if="!question.hideLabel" ng-bind-html="question.label | placeHoldEmpty"
+                          id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
+                    <span ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
+                        <small>(part of score)</small>
+                    </span>
+                    <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)</span>
+                    <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+                </div>
+                <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
+                    <i class="glyphicon glyphicon-remove hand-cursor pull-right"
+                       ng-click="removeQuestion(parent, $index)"
+                       title="Remove question" id="remove_q_{{$index}}"></i>
+                </div>
+            </div>
         </div>
         <div class="row questionAccordionContent">
-            <div class="col-md-6">
-                <dl class="dl-horizontal">
-                    <dt tabindex="0">Label:</dt>
-                    <dd tabindex="0" id="dd_question_title_{{$index}}"><i ng-show="canCurate" class="fa fa-pencil"
-                                                                          title="Change question label"
-                                                                          ng-click="openNameSelect(question)"></i>
-                        {{question.label | placeholdEmpty}}
-                    </dd>
-                    <dt tabindex="0">Instructions:</dt>
-                    <dd tabindex="0" id="dd_question_instructions_{{$index}}">
-                        <div inline-edit model="question.instructions" is-allowed="canCurate" on-ok="stageElt()"></div>
-                    </dd>
-                    <dt tabindex="0">Required:</dt>
-                    <dd tabindex="0" id="dd_question_required_{{$index}}">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
+                    <div class="col-sm-7" id="dd_question_title_{{$index}}">
+                        <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
+                           ng-click="openNameSelect(question)"></i>
+                        {{question.label | placeHoldEmpty}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
+                    <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
+                        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
+                             model="question.instructions.value"
+                             def-format="question.instructions.valueFormat"
+                             is-allowed="canCurate" on-ok="stageElt()">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Required:</div>
+                    <div class="col-sm-7" id="dd_question_required_{{$index}}">
                         <input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate"
-                               ng-click="stageElt()"/></dd>
-                    <span ng-if="isScore(question)">
-                        <dt tabindex="0">Score:</dt>
-                        <dd tabindex="0" id="dd_question_score_{{$index}}">
-                            <span ng-bind="question.question.scoreFormula"></span>
-                        </dd>
-                    </span>
-                    <dt tabindex="0">Cardinality:</dt>
-                    <dd id="dd_q_card_{{$index}}">
-                        <span ng-show="editCardMode">
+                               ng-click="stageElt()"/>
+                    </div>
+                </div>
+                <div class="row" ng-if="isScore(question)">
+                    <div class="col-sm-2 questionSectionLabel text-right">Score:</div>
+                    <div class="col-sm-7" id="dd_question_score_{{$index}}">
+                        <span ng-bind="question.question.scoreFormula"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
+                    <div class="col-sm-7" id="dd_q_card_{{$index}}">
+                        <div ng-show="editCardMode">
                             <select ng-model="question.cardinality"
-                                    ng-options="key as value for (key, value) in cardinalityOptions"
-                                    id="question.cardinality"></select>
-                            <br/>
+                                    ng-options="item.value as item.label for item in cardinalityOptions">
+                            </select>
                             <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
                                 Confirm
                             </button>
                             <button class="fa fa-times" ng-click="editCardMode = false; question.cardinality = orig">
                                 Discard
                             </button>
-                        </span>
-                        <span ng-hide="editCardMode">
+                        </div>
+                        <div ng-hide="editCardMode">
                             <i ng-show="canCurate" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = question.cardinality"
-                               id="editQuestion"></i> {{cardinalityOptions[question.cardinality]}}
-                        </span>
-                    </dd>
-                    <span ng-if="parent">
-                        <dt tabindex="0">Show if:</dt>
-                        <dd tabindex="0">
-                            <input type="text" ng-change="stageElt(elt)" ng-model="question.skipLogic.condition"
-                                   uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question)"
-                                   typeahead-min-length="0" class="form-control skipLogicCondition"/>
-                        </dd>
-                    </span>
-                    <dt tabindex="0">Datatype:</dt>
-                    <dd tabindex="0" id="dd_datatype_{{$index}}">{{question.question.datatype | placeholdEmpty }}</dd>
-                    <dt tabindex="0" ng-show="question.question.datatype === 'Value List'">Multiple Selections:</dt>
-                    <dd tabindex="0" ng-show="question.question.datatype === 'Value List'"
-                        id="dd_question_multi_{{$index}}">
+                               id="editQuestion"></i> {{getCardinalityLabel(question.cardinality)}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="parent">
+                    <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+                    <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}"
+                         ng-class="{'has-error':question.skipLogic.validationError}">
+                        <input ng-disabled="!(section.formElements.length > 1)"
+                               type="text" ng-model="question.skipLogic.condition"
+                               class="form-control skipLogicCondition" ng-trim="false"
+                               ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
+                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question,$parent.$index) | filter:tokens.unmatched"
+                               typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                               typeahead-on-select="validateSkipLogic(question.skipLogic, section.formElements, $item)"
+                               typeahead-append-to-body="true"/>
+                        <span ng-bind="question.skipLogic.validationError"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
+                    <div class="col-sm-7" id="dd_datatype_{{$index}}">
+                        {{question.question.datatype | placeHoldEmpty }}
+                    </div>
+                </div>
+                <div ng-if="question.question.datatype ==='Number'">
+                    <div class="row">
+                        <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
+                        <div class="col-sm-7" id="dd_minimal_{{$index}}">
+                            {{question.question.datatypeNumber.minValue | placeHoldEmpty }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
+                        <div class="col-sm-7" id="dd_maximal_{{$index}}">
+                            {{question.question.datatypeNumber.maxValue | placeHoldEmpty }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="question.question.datatype === 'Value List'">
+                    <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
+                    <div class="col-sm-7" id="dd_question_multi_{{$index}}">
                         <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate"
                                ng-click="stageElt()"/>
-                    </dd>
-                    <dt tabindex="0">Units of Measures:</dt>
-                    <dd tabindex="0" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Units of Measures:</div>
+                    <div class="col-sm-7" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
                         <div ng-switch-when="true">
                             <span ng-repeat="uom in question.question.uoms">
                                 <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]"
@@ -83,24 +135,47 @@
                         <button ng-show="canAddUom(question)" class="btn btn-default btn-xs"
                                 ng-click="addUom(question)"><i class="fa fa-plus"></i> Add
                         </button>
-                    </dd>
-                    <dt tabindex="0">CDE:</dt>
-                    <dd tabindex="0" id="dd_d_cde_{{$index}}"><a
-                            href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}"
-                            target="_blank"><i class="fa fa-eye"></i> View</a></dd>
-                </dl>
-            </div>
-            <div class="col-md-6 answerList" ng-if="question.question.datatype === 'Value List'">
-                <div tabindex="0"><strong>Answer List:</strong></div>
-                <div class="panel-body">
-                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="!canCurate"
-                               style="min-width: 125px" on-remove="stageElt()" on-select="stageElt()">
-                        <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}</ui-select-match>
-                        <ui-select-choices
-                                repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
-                            {{pv.valueMeaningName}}
-                        </ui-select-choices>
-                    </ui-select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
+                    <div class="col-sm-7" ng-switch="question.question.datatype === 'Value List'"
+                         id="dd_q_defaultAnswer_{{$index}}">
+                        <div ng-switch-when="true">
+                            <select ng-model="question.question.defaultAnswer" id="q_default_answer_{{$index}}"
+                                    ng-disabled="!canCurate" ng-change="stageElt()"
+                                    ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
+                        </div>
+                        <div ng-switch-default>
+                            <div id="q_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate"
+                                 on-ok="stageElt()"
+                                 model="question.question.defaultAnswer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
+                    <div class="col-sm-7" id="dd_d_cde_{{$index}}">
+                        <a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}"
+                           target="_blank"><i class="fa fa-eye"></i>
+                            <span id="dd_question_cde_name_{{$index}}">{{question.question.cde.name}}</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row answerList" ng-if="question.question.datatype === 'Value List'">
+                    <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
+                    <div class="col-sm-7">
+                        <ui-select multiple ng-model="question.question.answers" theme="select2"
+                                   ng-disabled="!canCurate"
+                                   style="min-width: 125px" on-remove="stageElt()" on-select="stageElt()">
+                            <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
+                                {{pv.valueMeaningName}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
                 </div>
             </div>
         </div>

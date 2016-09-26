@@ -2,8 +2,22 @@ angular.module('cdeModule').controller('CdeCopyModalCtrl',
     ['$scope', 'elt', 'userResource', '$controller', '$uibModalInstance',
         function($scope, elt, userResource, $controller, $modalInstance) {
     elt.classification = [];
+    elt.registrationState.administrativeNote = "Copy of: " + elt.tinyId;
     delete elt.tinyId;
     delete elt._id;
+    delete elt.source;
+    delete elt.origin;
+    delete elt.created;
+    delete elt.updated;
+    delete elt.imported;
+    delete elt.updatedBy;
+    delete elt.createdBy;
+    delete elt.version;
+    delete elt.history;
+    delete elt.changeNote;
+    delete elt.comments;
+    delete elt.forkOf;
+    delete elt.views;
     elt.ids = [];
     elt.registrationState.registrationStatus = "Incomplete";
     delete elt.registrationState.administrativeStatus;

@@ -5,14 +5,14 @@
 
 <div ng-show="vsacMappingExists()">
     <dl class="dl-horizontal" ng-show="vsacMappingExists()" >
-        <dt tabindex="0" >Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeholdEmpty}}</dd>
-        <dt tabindex="0" >Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeholdEmpty}}</dd>
-        <dt tabindex="0" >Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeholdEmpty}}</dd>
+        <dt tabindex="0" >Value Set Name: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.name | placeHoldEmpty}}</dd>
+        <dt tabindex="0" >Value Set ID: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.id | placeHoldEmpty}}</dd>
+        <dt tabindex="0" >Value Set Version: </dt><dd>{{elt.dataElementConcept.conceptualDomain.vsac.version | placeHoldEmpty}}</dd>
     </dl>
 </div>
 
 <div  tabindex="0" ng-hide="vsacMappingExists()">No Value Set specified.</div>
-<div ng-show="user._id" ng-controller="SaveCdeCtrl">
+<div ng-show="user._id" ng-controller="PermissibleValuesCtrl">
     <div tabindex="0" >{{vsacError}}</div>
     <div ng-hide="editMode">
         <a class="btn btn-default" ng-show="canCurate" ng-click="editMode=true" id="updateOID">Update O.I.D</a>

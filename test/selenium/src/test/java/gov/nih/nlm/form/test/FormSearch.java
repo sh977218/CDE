@@ -1,43 +1,35 @@
 package gov.nih.nlm.form.test;
 
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormSearch extends BaseFormTest {
-    
+
     @Test
     public void findFormByCde() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-
+        mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
-        
         String formName = "Find By CDE";
-        String formDef = "Fill out carefully!";
-        String formV = "0.1alpha";
-
-        createForm(formName, formDef, formV, "CTEP");
-
-        findElement(By.linkText("Form Description")).click();
-
-        new CreateEditSectionTest().addSection("Answer List Section", null);
-        
-        startAddingQuestions();
-        new QuestionTest().addQuestionToSection(cdeName, 0);
-        saveForm();
-        
         goToCdeByName(cdeName);
-        findElement(By.linkText("Linked Forms")).click();
-        
+        showAllTabs();
+        clickElement(By.id("forms_tab"));
+        textPresent("There is 1 form that uses this CDE");
         textPresent(formName);
+        clickElement(By.id("seeAllLinkedFormsButton"));
+        switchTab(1);
+        textPresent("1 results for qz-W3XYk7jF");
+        textPresent(formName);
+        switchTabAndClose(0);
     }
 
     @Test
     public void noPinAllNoExport() {
         // this test will be removed when the features are implemented.
         goToFormSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        textPresent("Expand All");
+        clickElement(By.id("browseOrg-NINDS"));
+        Assert.assertTrue(Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim()) > 600);
         textNotPresent("Pin All");
     }
-    
+
 }

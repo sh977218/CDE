@@ -2,9 +2,26 @@
   "port": 3001,
   "logBufferSize": 2,
   "userAlertTime": 6000,
+  "publicUrl": "http://localhost:3001",
   "debugEnabled": true,
-  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.0.2-windows/bin/kibana.bat"],
+  "pmRunOnStartup": ["c:/Users/ludetc/dev/kibana-4.5.4-windows/bin/kibana.bat"],
   "viewsIncrementThreshold": 1,
+  "umls": {
+    "wsHost": "https://localhost:4000"
+  },
+  "mesh": {
+    "mockPort": 10081
+  },
+  "database": {
+    "local": {
+      "db": "local",
+      "username": "siteRootAdmin",
+      "password": "password",
+      "options": {
+        "auth": {"authdb": "admin"}
+      }
+    }
+  },
   "vsac": {
     "username": "user",
     "password": "pass",
@@ -27,17 +44,13 @@
   },
   "oauth": {
     "enabled": "true"
-//    ,"serverBaseURL": "http://localhost:3005"
   },
   "elastic": {
     "index": {"name": "cdetest"},
-    "river": {"name": "cdetest"},
     "formIndex": {"name": "formtest"},
-    "formRiver": {"name": "formtest"},
     "boardIndex": {"name": "boardtest"},
-    "boardRiver": {"name": "boardtest"},
     "storedQueryIndex": {"name": "storedquerytest"},
-    "storedQueryRiver": {"name": "storedquerytest"}
+    "number_of_replicas" : 0
   }
 }
 

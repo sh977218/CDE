@@ -3,8 +3,6 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class MergeTest extends NlmCdeBaseTest {
     
@@ -33,7 +31,7 @@ public class MergeTest extends NlmCdeBaseTest {
         findElement(By.cssSelector(".accordion-toggle")).click();  
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking Cessation Other Method Specify Text")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Smoking History Ind")));
-        Assert.assertTrue(textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned."));
+        textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned.");
         textPresent("3279225");
         findElement(By.cssSelector("[ng-click='showMergeApproveDialog(message)']")).click();
         findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
@@ -58,45 +56,45 @@ public class MergeTest extends NlmCdeBaseTest {
     }
     
     /*@Test*/
-    public void mergeMineMineEverything() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
-        findElement(By.id("retireMerge-0")).click(); 
-        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
-        checkEverything();
-        findElement(By.id("sendMergeRequest")).click();
-        hangon(2);
-        findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
-        clickElement(By.id("confirmNewVersion"));
-        hangon(5);
-        findElement(By.linkText("Naming")).click();
-        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
-        findElement(By.linkText("Classification")).click();
-        textPresent("Common Terminology Criteria for Adverse Events v3.0");
-        findElement(By.linkText("Identifiers")).click();
-        textPresent("2005490");        
-    }    
+//    public void mergeMineMineEverything() {
+//        mustBeLoggedInAs(ctepCurator_username, password);
+//        addToCompare("Common Toxicity Criteria Adverse Event Colitis Grade", "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade");
+//        findElement(By.id("retireMerge-0")).click();
+//        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
+//        checkEverything();
+//        findElement(By.id("sendMergeRequest")).click();
+//        hangon(2);
+//        findElement(By.cssSelector("[ng-model='elt.version']")).sendKeys(".2");
+//        clickElement(By.id("confirmNewVersion"));
+//        hangon(5);
+//        findElement(By.linkText("Naming")).click();
+//        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
+//        findElement(By.linkText("Classification")).click();
+//        textPresent("Common Terminology Criteria for Adverse Events v3.0");
+//        findElement(By.linkText("Identifiers")).click();
+//        textPresent("2005490");
+//    }
     
     /*@Test*/
-    public void mergeMineTheirsClassificationsOnly() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
-        addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
-        hangon(1);
-        findElement(By.linkText("Retire & Merge")).click();  
-        Assert.assertTrue(textPresent("Fields to be Imported"));
-        findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
-        hangon(1);
-        findElement(By.linkText("Classification")).click();
-        Assert.assertTrue(textPresent("caBIG"));
-        Assert.assertTrue(textPresent("caLIMS2"));      
-        Assert.assertTrue(textPresent("gov.nih.nci.calims2.domain.inventory"));
-    }
+//    public void mergeMineTheirsClassificationsOnly() {
+//        mustBeLoggedInAs(cabigAdmin_username, password);
+//        addToCompare("Diagnosis Change Date java.util.Date", "Form Element End Date java.util.Date");
+//        hangon(1);
+//        findElement(By.linkText("Retire & Merge")).click();
+//        textPresent("Fields to be Imported");
+//        findElement(By.cssSelector("[ng-click='sendMergeRequest()']")).click();
+//        hangon(1);
+//        findElement(By.linkText("Classification")).click();
+//        textPresent("caBIG");
+//        textPresent("caLIMS2");
+//        textPresent("gov.nih.nci.calims2.domain.inventory");
+//    }
   
     /*@Test*/
-    public void mergeMineTheirsEverything() {
-        createMergeRequest();
-        acceptMergeRequest();
-        checkResult();        
-    }
+//    public void mergeMineTheirsEverything() {
+//        createMergeRequest();
+//        acceptMergeRequest();
+//        checkResult();
+//    }
 
 }

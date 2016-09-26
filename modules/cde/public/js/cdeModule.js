@@ -1,4 +1,5 @@
-angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute']).config(function($routeProvider)
+angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates']).config(
+    ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
         when('/cde/search', {
@@ -21,5 +22,7 @@ angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute']).config(func
         when('/deview', {controller: 'DEViewCtrl', templateUrl: '/cde/public/html/deView.html', title: "CDE Detail",
             keywords: 'cde, common data element, question, detail, value set, description',
             description: "Detailed view of selected Common Data Element (CDE)."}).
-        when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'});
-    });
+        when('/stats', {controller: 'MainCtrl', templateUrl: '/system/public/html/stats.html'})
+        .when('/cdeStatusReport', {controller: 'ExportCtrl', templateUrl: '/system/public/html/cdeStatusReport.html'})
+        ;
+    }]);

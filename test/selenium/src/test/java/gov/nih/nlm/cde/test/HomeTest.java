@@ -7,18 +7,25 @@ import org.testng.annotations.Test;
 public class HomeTest extends NlmCdeBaseTest {
 
     @Test
-    public void testSearch() {
+    public void goToCdes() {
         goHome();
-        findElement(By.id("searchTerms")).sendKeys("\"Orientation Person\"");
-        findElement(By.id("quickSearchButton")).click();
-        textPresent("Orientation person result");
+        clickElement(By.id("browseCdes"));
+        textPresent("PBTC");
     }
+
+    @Test
+    public void goToForms() {
+        goHome();
+        clickElement(By.id("browseForms"));
+        textPresent("Neuro-QOL");
+    }
+
 
     @Test
     public void loggedInHomeIsSearch() {
         mustBeLoggedInAs(ctepCurator_username, password);
         driver.get(baseUrl);
-        textPresent("Browse by classification");
+        textPresent("Browse by Classification");
     }
 
     @Test

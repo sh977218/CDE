@@ -10,7 +10,7 @@
                         right: '=ngCompareSideBySideRight',
                         options: '=ngCompareSideBySideOptions'
                     },
-                    templateUrl: '/system/public/js/compareTemplate/compareSwitchTemplate.html',
+                    templateUrl: '/system/public/html/ngCompareTemplate/compareSwitchTemplate.html',
                     link: function ($scope) {
                         if (!$scope.left && !$scope.right) {
                             $scope.err = {error: true, errorMessage: "left and right are null"};
@@ -38,11 +38,11 @@
                                 $scope.result = result1.result;
                             }
                             $scope.displayTemplate = {
-                                array: '/system/public/js/compareTemplate/compareArray.html',
-                                stringArray: '/system/public/js/compareTemplate/compareStringArray.html',
-                                object: '/system/public/js/compareTemplate/compareObject.html',
-                                string: '/system/public/js/compareTemplate/compareString.html',
-                                number: '/system/public/js/compareTemplate/compareNumber.html'
+                                array: '/system/public/html/ngCompareTemplate/compareArray.html',
+                                stringArray: '/system/public/html/ngCompareTemplate/compareStringArray.html',
+                                object: '/system/public/html/ngCompareTemplate/compareObject.html',
+                                string: '/system/public/html/ngCompareTemplate/compareString.html',
+                                number: '/system/public/html/ngCompareTemplate/compareNumber.html'
                             }[$scope.options.type];
                         }
                     }

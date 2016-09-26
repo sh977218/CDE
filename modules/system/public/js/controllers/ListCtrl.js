@@ -1,13 +1,20 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log',
+        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log)
+                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
 
 {
 
     $scope.autocomplete = AutoCompleteResource;
     $scope.filterMode = true;
+
+    $scope.customClasses = "navbar-btn";
+
+    $scope.exporters = {
+        json: {id: "jsonExport", display: "JSON Export"}
+        , xml: {id: "xmlExport", display: "XML Export"}
+    };
 
     if ($route.current.subCtrl) {
         $controller($route.current.subCtrl, {$scope: $scope});
@@ -34,8 +41,14 @@ angular.module('systemModule').controller('ListCtrl',
 
      var focusClassification = function(){
         //any good angular way to do this?
-        $('#classif_filter_title').focus();
+        $('#classif_filter_title').focus(); // jshint ignore:line
     };
+
+    var focusTopic = function(){
+        //any good angular way to do this?
+        $('#meshTrees_filter').focus(); // jshint ignore:line
+    };
+
 
     $timeout(function(){
         if($scope.isScreenSizeXsSm) {
@@ -91,18 +104,27 @@ angular.module('systemModule').controller('ListCtrl',
         return $scope.altClassificationFilterMode?$scope.searchSettings.classificationAlt:$scope.searchSettings.classification;
     };
 
+    $scope.getCurrentSelectedTopic = function() {
+        return $scope.searchSettings.meshTree?$scope.searchSettings.meshTree.split(";"):[];
+    };
+
+
     $scope._alterOrgFiler = function(orgName) {
         var orgToAlter = $scope.altClassificationFilterMode?$scope.searchSettings.selectedOrgAlt:$scope.searchSettings.selectedOrg;
         var classifToAlter = $scope.getCurrentSelectedClassification();
 
         if (orgToAlter === undefined) {
-            $scope.altClassificationFilterMode
-                ?$scope.searchSettings.selectedOrgAlt = orgName:
+            if($scope.altClassificationFilterMode) {
+                $scope.searchSettings.selectedOrgAlt = orgName;
+            } else {
                 $scope.searchSettings.selectedOrg = orgName;
+            }
         } else {
-            $scope.altClassificationFilterMode
-                ?$scope.searchSettings.selectedOrgAlt = undefined:
+            if ($scope.altClassificationFilterMode) {
+                $scope.searchSettings.selectedOrgAlt = undefined;
+            } else {
                 $scope.searchSettings.selectedOrg = undefined;
+            }
             classifToAlter.length = 0;
         }
         delete $scope.aggregations.groups;
@@ -112,6 +134,23 @@ angular.module('systemModule').controller('ListCtrl',
         $scope._alterOrgFiler(orgName);
         doSearch();
         focusClassification();
+    };
+
+    $scope._selectTopic = function(topic) {
+        var toSelect = !$scope.searchSettings.meshTree?[]:$scope.searchSettings.meshTree.split(";");
+            var i = toSelect.indexOf(topic);
+            if (i > -1) {
+                toSelect.length = i;
+            } else {
+                toSelect.push(topic);
+            }
+        $scope.searchSettings.meshTree = toSelect.join(";");
+    };
+
+    $scope.selectTopic = function(topic) {
+        $scope._selectTopic(topic);
+        doSearch();
+        focusTopic();
     };
 
     $scope._selectElement = function(e) {
@@ -148,6 +187,15 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
+    $scope.selectedTopicsAsString = function() {
+        if ($scope.searchSettings.meshTree && $scope.searchSettings.meshTree.length > 0) {
+            var res = $scope.searchSettings.meshTree.split(";").join(" > ");
+            return res.length > 50?res.substr(0, 49) + "...":res;
+        } else {
+            return "All Topics";
+        }
+    };
+
     // Create string representation of what classification filters are selected
     $scope.getSelectedClassifications = function() {
         if ($scope.searchSettings.selectedOrg) {
@@ -173,16 +221,16 @@ angular.module('systemModule').controller('ListCtrl',
         }
     };
 
-    $scope.reload = function (type) {
-        $log.debug("reloading search");
-        $log.debug($scope.searchSettings);
+    $scope.reload = function(type) {
+        userResource.getPromise().then(function () {
+            reload(type);
+        });
+    };
+
+    var reload = function (type) {
         if (!type) type = "cde";
 
         var timestamp = new Date().getTime();
-        if (!userResource.user) {
-            $log.debug("no user");
-            return;
-        }
         $scope.lastQueryTimeStamp = timestamp;
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
@@ -190,6 +238,8 @@ angular.module('systemModule').controller('ListCtrl',
         $log.debug("running query");
         $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result) {
+            //
+            $window.scrollTo(0, 0);
             $log.debug("query complete");
             $log.debug(result);
             if (err) {
@@ -203,41 +253,81 @@ angular.module('systemModule').controller('ListCtrl',
             $scope.totalItems = result.totalNumber;
             $scope[type + 's'] = result[type + 's'];
             $scope.elts = result[type + 's'];
+            $scope.took = result.took;
+
+            if ($scope.searchSettings.page === 1 && result.totalNumber > 0) {
+                var maxJump = 0;
+                var maxJumpIndex = 100;
+                $scope.elts.map(function(e, i) {
+                    if (!$scope.elts[i+1]) return;
+                    var jump = e.score - $scope.elts[i+1].score;
+                    if (jump>maxJump) {
+                        maxJump = jump;
+                        maxJumpIndex = i+1;
+                    }
+                });
+
+                if (maxJump > (result.maxScore/4)) $scope.cutoffIndex = maxJumpIndex;
+                else $scope.cutoffIndex = 100;
+            } else {
+                $scope.cutoffIndex = 100;
+            }
+
             $scope[type + 's'].forEach(function (elt) {
                 elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
-                if ($scope.localEltTransform) {
-                    $scope.localEltTransform(elt);
-                }
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope[type + 's'], "list");
-            $scope.aggregations = result.aggregations;
 
-            if (result.aggregations !== undefined && result.aggregations.flatClassification !== undefined) {
-                $scope.aggregations.flatClassification = result.aggregations.flatClassification.flatClassification.buckets.map(function (c) {
-                    return {name: c.key.split(';').pop(), count: c.doc_count};
-                });
-            } else {
-                $scope.aggregations.flatClassification = [];
-            }
-
-            if (result.aggregations !== undefined && result.aggregations.flatClassificationAlt !== undefined) {
-                $scope.aggregations.flatClassificationAlt = result.aggregations.flatClassificationAlt.flatClassificationAlt.buckets.map(function (c) {
-                    return {name: c.key.split(';').pop(), count: c.doc_count};
-                });
-            } else {
-                $scope.aggregations.flatClassificationAlt = [];
-            }
-
-            filterOutWorkingGroups($scope.aggregations);
-            OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
-
-            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg) {
+            if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg || settings.meshTree) {
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;
             } else {
                 $scope.selectedMainAreaMode = mainAreaModes.welcomeSearch;
                 if ($scope.elts.length===1) throw "I have exactly 1 CDE but I see welcome page :(";
             }
+
+            $scope.aggregations = result.aggregations;
+
+            if (result.aggregations !== undefined) {
+                if (result.aggregations.flatClassifications !== undefined) {
+                    $scope.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassifications = [];
+                }
+
+                if (result.aggregations.flatClassificationsAlt !== undefined) {
+                    $scope.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(function (c) {
+                        return {name: c.key.split(';').pop(), count: c.doc_count};
+                    });
+                } else {
+                    $scope.aggregations.flatClassificationsAlt = [];
+                }
+
+                if (result.aggregations.meshTrees !== undefined) {
+                    if ($scope.searchSettings.meshTree) {
+                        $scope.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                            return {name: c.key.split(';').pop(), count: c.doc_count};
+                        });
+                    } else {
+                        $scope.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map(function (c) {
+                            return {name: c.key.split(';')[0], count: c.doc_count};
+                        });
+                    }
+                } else {
+                    $scope.aggregations.topics = [];
+                }
+
+            }
+
+            filterOutWorkingGroups($scope.aggregations);
+            OrgHelpers.addLongNameToOrgs($scope.aggregations.orgs.orgs.buckets, OrgHelpers.orgsDetailedInfo);
+
+            //if ($scope.aggregations.topics.length === 1) {
+            //    $scope.selectTopic($scope.aggregations.topics[0].name);
+            //}
+
         });
 
     };
@@ -262,6 +352,9 @@ angular.module('systemModule').controller('ListCtrl',
         }
         if ($scope.searchSettings.page)
             searchLink += "&page=" + $scope.searchSettings.page;
+        if ($scope.searchSettings.meshTree) {
+            searchLink += "&topic=" + encodeURIComponent($scope.searchSettings.meshTree);
+        }
         return searchLink;
     };
 
@@ -274,6 +367,7 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.searchSettings.classification = $routeParams.classification?$routeParams.classification.split(';'):[];
         $scope.searchSettings.classificationAlt = $routeParams.classificationAlt?$routeParams.classificationAlt.split(';'):[];
         $scope.searchSettings.regStatuses = $routeParams.regStatuses?$routeParams.regStatuses.split(';'):[];
+        $scope.searchSettings.meshTree = $routeParams.topic;
         $scope.reload(type);
     };
 
@@ -289,7 +383,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.$on('$locationChangeSuccess', function(evt, newUrl, oldUrl) {
-        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search();
+        if (getPathFromUrl(newUrl) === getPathFromUrl(oldUrl)) search($scope.module);
     });
 
     $scope.termSearch = function() {
@@ -330,40 +424,61 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.showPinAllModal = function() {
-        var modalInstance = $modal.open({
-            animation: false,
-          templateUrl: '/cde/public/html/selectBoardModal.html',
-          controller: 'SelectBoardModalCtrl',
-          resolve: {
-            boards: function () {
-              return $scope.boards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
-            var data = {
-                query: Elastic.buildElasticQuerySettings($scope.searchSettings)
-                , board: selectedBoard
-                , itemType: $scope.module
-            };
-            data.query.resultPerPage = window.maxPin;
-            $http({method: 'post', url: '/pinEntireSearchToBoard', data: data}).success(function() {
-                $scope.addAlert("success", "All elements pinned.");
-                $scope.loadMyBoards();
-            }).error(function() {
-                $scope.addAlert("danger", "Not all elements were not pinned!");
+        if (userResource.user.username) {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/cde/public/html/selectBoardModal.html',
+                controller: 'SelectBoardModalCtrl',
+                resolve: {
+                    boards: function () {
+                        return $scope.boards;
+                    }
+                }
             });
-        }, function () {
-        });
+
+            modalInstance.result.then(function (selectedBoard) {
+                var filter = {
+                    reset: function () {
+                        this.tags = [];
+                        this.sortBy = 'updatedDate';
+                        this.sortDirection = 'desc';
+                    },
+                    sortBy: '',
+                    sortDirection: '',
+                    tags: []
+                };
+                var data = {
+                    query: Elastic.buildElasticQuerySettings($scope.searchSettings)
+                    , board: selectedBoard
+                    , itemType: $scope.module
+                };
+                data.query.resultPerPage = window.maxPin;
+                $http.post('/pinEntireSearchToBoard', data).success(function() {
+                    $scope.addAlert("success", "All elements pinned.");
+                    ElasticBoard.loadMyBoards(filter);
+                }).error(function() {
+                    $scope.addAlert("danger", "Not all elements were not pinned!");
+                });
+            }, function () {
+            });
+        } else {
+            $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/ifYouLogInModal.html'
+            });
+        }
     };
 
     $scope.getRegStatusHelp = function(key) {
         var result = "";
-        regStatusShared.statusList.forEach(function(s) {
+        regStatusShared.statusList.forEach(function(s) { // jshint ignore:line
             if (s.name === key) result = s.help;
         });
         return result;
+    };
+
+    $scope.getRegStatusIndex = function(rg) {
+        return regStatusShared.orderedList.indexOf(rg.key);
     };
 
 }]);

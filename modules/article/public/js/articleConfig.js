@@ -1,4 +1,4 @@
-angular.module('articleModule', ['ngRoute']).config(
+angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(["$routeProvider",
   function($routeProvider) {
     $routeProvider
       .when('/help/:helpPage', {
@@ -11,7 +11,7 @@ angular.module('articleModule', ['ngRoute']).config(
         controller: 'ArticleCtrl',
         controllerAs: 'article'
       });
-})
+}])
 .controller('HelpCtrl', ['$routeParams', '$http', '$scope', '$location', '$uibModal',
         function ($routeParams, $http, $scope, $location, $modal) {
 

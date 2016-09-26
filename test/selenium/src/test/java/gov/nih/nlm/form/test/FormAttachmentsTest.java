@@ -12,12 +12,13 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        findElement(By.linkText("Attachments")).click();
+        showAllTabs();
+        clickElement(By.id("attachments_tab"));
         textNotPresent("Upload more files");
 
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-
+        showAllTabs();
         addAttachment("melanoma.jpg");
 
         checkAttachmentNotReviewed();
@@ -25,6 +26,7 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
+        showAllTabs();
         setAttachmentDefault();
         mustBeLoggedOut();
 
@@ -33,10 +35,11 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         openFormInList(formName);
 
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        findElement(By.linkText("View Full Detail")).click();
+        clickElement(By.linkText(formName));
 
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
+        showAllTabs();
         removeAttachment("melanoma.jpg");
     }
 

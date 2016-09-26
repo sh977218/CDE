@@ -3,16 +3,18 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.module = "cde";
         $scope.quickBoard = QuickBoard;
 
+        $scope.exporters.csv = {id: "csvExport", display: "CSV Export"};
+
         $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
             "/cde/public/html/accordion/addToQuickBoardActions.html"];
 
-        userResource.getPromise().then(function () {
+        $timeout(function() {
             $scope.search("cde");
-        });
+        }, 0);
+
         $scope.dragSortableOptions = {
             connectWith: ".dragQuestions"
             , handle: ".fa.fa-arrows"
-            , helper: "clone"
             , appendTo: "body"
             , revert: true
             , placeholder: "questionPlaceholder"
@@ -20,11 +22,11 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height("20px");
             }
-            , stop: function (event, ui) {
+            , stop: function () {
                 $('.dragQuestions').css('border', '');
             }
             , helper: function () {
-                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>');
             }
         };
 
@@ -48,7 +50,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 , content: "Enter one or more search terms. For example, search for \"Ethnicity\"."
             }
             , {
-                element: "#accordionList"
+                element: "#resultList"
                 ,
                 title: "Search result"
                 ,
@@ -60,16 +62,6 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 element: "#acc_link_0"
                 , title: "CDE summary"
                 , content: "Click the accordion to view the CDE summary"
-            }
-            , {
-                element: "#openEltInCurrentTab_0"
-                , title: "CDE Detail"
-                , content: "This button will take you to the full detail of this CDE."
-            }
-            , {
-                element: ".fa-eye:first"
-                , title: "View full detail"
-                , content: "Click the eye to see the full detail of this data element"
             }
             , {
                 element: "#addToCompare_0"
@@ -123,6 +115,5 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
         $scope.$on("$destroy", function handler() {
             TourContent.stop();
         });
-
 
     }]);

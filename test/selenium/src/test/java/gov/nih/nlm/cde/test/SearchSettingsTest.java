@@ -1,52 +1,52 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.*;
+import gov.nih.nlm.system.RecordVideo;
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class SearchSettingsTest extends NlmCdeBaseTest {
 
-    void setAndCheckFields(){
-        findElement(By.id("browseOrg-NINDS")).click();
+    void setAndCheckFields() {
+        clickElement(By.id("browseOrg-NINDS"));
         textNotPresent("Other Names");
         textNotPresent("Permissible Values");
-        textNotPresent("Steward");
-        textNotPresent("Used by Organizations");
-        textNotPresent("Registration Status", By.id("gridList"));
         textNotPresent("Admin Status");
         textNotPresent("Identifiers");
 
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by Organizations");
+        textPresent("Used by");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
+        textNotPresent("NLM ID");
 
         findElement(By.id("searchSettings")).click();
         textPresent("Search Results View");
         textPresent("Table View Fields");
         textPresent("Search Results View");
-        findElement(By.id("registrationStatus")).click();
-        findElement(By.id("administrativeStatus")).click();
-        scrollTo(1000);
-        findElement(By.id("saveSettings")).click();
+        clickElement(By.id("tinyId"));
+        clickElement(By.id("registrationStatus"));
+        clickElement(By.id("administrativeStatus"));
+        hangon(1);
+        clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by Organizations");
+        textPresent("Used by");
+        textPresent("NLM ID");
         textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }
 
-
     @Test
-    void unloggedUserSetsFields (){
+    void unloggedUserSetsFields() {
         mustBeLoggedOut();
         goToCdeSearch();
         setAndCheckFields();
@@ -54,12 +54,12 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         //The following just tests that clearStorage() works
         clearStorage();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by Organizations");
+        textPresent("Used by");
         textPresent("Registration Status");
         textPresent("Identifiers");
     }
@@ -71,12 +71,12 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         setAndCheckFields();
         clearStorage();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
-        findElement(By.id("cde_gridView")).click();
+        clickElement(By.id("browseOrg-NINDS"));
+        clickElement(By.id("cde_gridView"));
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by Organizations");
+        textPresent("Used by");
         textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
     }

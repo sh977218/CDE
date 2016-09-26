@@ -9,6 +9,8 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
     @Test
     public void lformsDisplay() {
         goToFormByName("Loinc Widget Test Form");
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
         textPresent("Prior BMSCT Administered Indicator");
 
         // test skip logic
@@ -17,14 +19,14 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         textNotPresent("Imaging dimension type");
 
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("Yes");
-        findElement(By.xpath("//label[@for='/Section_1/1']")).click();
+        clickElement(By.xpath("//label[@for='/Section_1/1']"));
         textPresent("BMSCT Section");
         textPresent("Imaging reference scan date");
         textNotPresent("Imaging dimension type");
 
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).clear();
         findElement(By.id("/Section_1/VmtVCdXBxcs/1/1")).sendKeys("No");
-        findElement(By.xpath("//label[@for='/Section_1/1']")).click();
+        clickElement(By.xpath("//label[@for='/Section_1/1']"));
         textNotPresent("BMSCT Section");
         textNotPresent("Imaging reference scan date");
         textPresent("Imaging dimension type");
@@ -33,6 +35,14 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
         // Test UOM
         findElement(By.id("ac1"));
         // End Test UOM
+
+        // Test instructions
+        clickElement(By.xpath("//label[contains(text(), 'Show Help')]"));
+
+        // @TODO
+        // re-enable after Loinc supports the new format for instructions
+//        textPresent("Instructions for section 1");
+//        textPresent("Instructions for Priod BMSCT");
 
     }
 

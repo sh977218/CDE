@@ -14,13 +14,20 @@
                 <dt tabindex="0">Name:</dt>
                 <dd tabindex="0">{{naming.designation}}</dd>
                 <dt tabindex="0">Definition:</dt>
-                <dd tabindex="0">{{naming.definition | placeholdEmpty}}</dd>
+                <dd tabindex="0">{{naming.definition | placeHoldEmpty}}</dd>
                 <dt tabindex="0">Context:</dt>
                 <dd tabindex="0">{{naming.context.contextName}}</dd>
             </dl>
         </div>
         <hr/>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-default" ng-click="okClear()"><i class="fa fa-stop"></i> No Label</button>
+        </div>
+    </div>
+
 </div>
 
 <div class="modal-footer">

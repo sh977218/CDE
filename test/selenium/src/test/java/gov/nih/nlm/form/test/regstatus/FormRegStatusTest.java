@@ -7,7 +7,7 @@ public class FormRegStatusTest extends RegStatusTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+        goToFormByName(name);
     }
 
     @Override
@@ -25,12 +25,12 @@ public class FormRegStatusTest extends RegStatusTest {
         cancelRegStatus("AED Resistance Log", ninds_username);
     }   
         
-    @Test
+    @Test(priority = 2)
     public void retire() {
         retire("Form Retire Test", ctepCurator_username);
     }
 
-    @Test
+    @Test(priority = 3)
     public void nlmPromotesToStandard() {
         nlmPromotesToStandard("Form Standard Test");
     }

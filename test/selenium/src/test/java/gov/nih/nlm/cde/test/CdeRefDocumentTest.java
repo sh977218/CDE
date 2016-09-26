@@ -7,7 +7,7 @@ public class CdeRefDocumentTest extends ReferenceDocumentTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class CdeRefDocumentTest extends ReferenceDocumentTest {
         goToCdeByName(eltName);
     }
 
-    @Test
+    @Test (priority = 3)
     public void cdeReferenceDocumentTest() {
         referenceDocumentTest("Post traumatic amnesia verify type");
     }

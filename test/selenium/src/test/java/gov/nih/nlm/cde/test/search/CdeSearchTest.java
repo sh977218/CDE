@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CdeSearchTest extends NlmCdeBaseTest {
-    
+
     @Test
     public void cdeFullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
@@ -18,14 +18,15 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Text descriptor to indicate whether "
                 + "genotype directed therapy was based on mutation testing");
         textPresent("Qualified");
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         textPresent("Unknown");
-        findElement(By.linkText("Concepts")).click();
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
         textPresent("Mutation Analysis");
         textPresent("C18302");
-        findElement(By.linkText("History")).click();
+        clickElement(By.id("history_tab"));
         textPresent("This Data Element has no history");
-        findElement(By.linkText("Classification")).click();
+        clickElement(By.id("classification_tab"));
         WebElement csDl = findElement(By.id("repeatCs"));
         List<WebElement> csElements = csDl.findElements(By.cssSelector("#repeatCs ul li"));
         Assert.assertEquals(csElements.size(), 7);
@@ -44,42 +45,41 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         for (String a : assertList) {
             Assert.assertTrue(actualList.contains(a));
         }
-        
-        findElement(By.linkText("Identifiers")).click();
+
+        clickElement(By.linkText("Identifiers"));
         textPresent("3157849");
         Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
 
-        findElement(By.linkText("General Details")).click();
-        findElement(By.linkText("SDC View")).click();
+        clickElement(By.id("general_tab"));
+        clickElement(By.linkText("SDC View"));
         switchTab(1);
-        textPresent("Genotype Directed Therapy Based on Mutation Testing?");
-        textPresent("non-enumerated");
+        textPresent("Genotype Directed Therapy Bas");
+        textPresent("enumerated");
         switchTabAndClose(0);
     }
-    
-    @Test
+
+    @Test(priority = 5)
     public void vdInstruction() {
         setLowStatusesVisible();
         goToCdeByName("Participant Identifier Source");
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.id("pvs_tab"));
         Assert.assertEquals("One of \"GUID\" or \"Source Registry Specific Identifier\"", findElement(By.id("dd_vd_def")).getText());
     }
-    
+
     @Test
     public void searchBySteward() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("steward:CIP");
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         textPresent("1 results for");
         textPresent("Smoking Status");
     }
-    
-    
+
     @Test
     public void unitOfMeasure() {
         goToCdeByName("Laboratory Procedure Blood");
         textPresent("mg/dL");
     }
 
-    
+
 }

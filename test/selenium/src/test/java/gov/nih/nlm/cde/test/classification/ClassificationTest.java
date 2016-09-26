@@ -9,6 +9,8 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import static com.jayway.restassured.RestAssured.get;
+
 public class ClassificationTest extends BaseClassificationTest {
 
 	@Test
@@ -40,8 +42,15 @@ public class ClassificationTest extends BaseClassificationTest {
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
 		textPresent("classMgtUser");
 		textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
-		textPresent("Add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+		textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
 	}
+
+    @Test(dependsOnMethods = {"addClassification"})
+    public void modifiedSinceAPI() {
+        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
+        Assert.assertTrue(response.contains("cGx6UmQnY8G"), "Actual: " + response);
+    }
 
 	private void removeClassificationMethod(String[] categories) {
 		String selector = "";
@@ -73,44 +82,18 @@ public class ClassificationTest extends BaseClassificationTest {
 		textNotPresent("Myasthenia Gravis");
 		openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
 		textPresent("classMgtUser");
-		textPresent("Delete NINDS > Disease > Myasthenia Gravis");
+		textPresent("delete NINDS > Disease > Myasthenia Gravis");
 	}
 
 	@Test
 	public void classificationLink() {
         goToCdeByName("Spectroscopy water signal removal filter text");
-        findElement(By.linkText("Classification")).click();
-		findElement(
-				By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"))
-				.click();
+        clickElement(By.linkText("Classification"));
+		clickElement(By.cssSelector("[id='classification-Domain,Assessments and Examinations,Imaging Diagnostics'] .name"));
         showSearchFilters();
 		textPresent("Classification");
         textPresent("NINDS (12");
 		textPresent("Imaging Diagnostics");
 	}
-
-	// Feature is Temporarily Disabled
-	// @Test
-//	public void classifyEntireSearch() {
-//		mustBeLoggedInAs(ninds_username, password);
-//		goToCdeSearch();
-//		findElement(By.id("li-blank-AECC")).click();
-//		textPresent("NCI Standard Template CDEs (7)");
-//		findElement(By.id("classifyAll")).click();
-//		findElement(By.xpath("//span[text()='Population']")).click();
-//		findElement(By.xpath("//div[@id='addClassification-Adult']//button"))
-//				.click();
-//		textPresent("Search result classified");
-//		goToCdeByName("Noncompliant Reason Text");
-//		findElement(By.linkText("Classification")).click();
-//		textPresent("NINDS");
-//		textPresent("Population");
-//		textPresent("Adult");
-//		goToCdeByName("Adverse Event Ongoing Event Indicator");
-//		findElement(By.linkText("Classification")).click();
-//		textPresent("NINDS");
-//		textPresent("Population");
-//		textPresent("Adult");
-//	}
 
 }

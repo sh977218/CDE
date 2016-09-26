@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope, userResource)
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope)
 {
     $scope.module = "form";
 
@@ -8,5 +8,15 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
         $scope.reload("form");
     });
 
+    $scope.getFormText = function() {
+        if (!$scope.forms || $scope.forms.length === 0) {return "There are no forms that use this CDE.";}
+        else if ($scope.forms.length === 1) {return "There is 1 form that uses this CDE.";}
+        else if ($scope.forms.length >= 20) {return "There are more than 20 forms that use this CDE.";}
+        else {return "There are " + $scope.forms.length + " that use this CDE.";}
+    };
+
+    $scope.formsCtrlLoadedPromise.resolve();
+
+    $scope.cutoffIndex = 20;
 
 }]);

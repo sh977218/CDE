@@ -2,13 +2,14 @@ package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormNamingTest extends BaseFormTest {
 
-    public void goToEltByName(String name, String status) {
-        goToFormByName(name, status);
+    public void goToEltByName(String name) {
+        goToFormByName(name);
     }
 
     public void goToEltSearch() {
@@ -19,55 +20,35 @@ public class FormNamingTest extends BaseFormTest {
     public void formNaming() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
-        findElement(By.id("addNamePair")).click();
+        clickElement(By.id("naming_tab"));
+        clickElement(By.id("addNamePair"));
+        textPresent("Contexts are managed in Org Management > List Management");
         findElement(By.name("designation")).sendKeys("This new form Name");
         findElement(By.name("definition")).sendKeys("A lazy definition");
-        findElement(By.name("context")).clear();
-        findElement(By.name("context")).sendKeys("Great CTX");
-        findElement(By.id("createNamePair")).click();
+        new Select(findElement(By.name("context"))).selectByVisibleText("Great CTX");
+        clickElement(By.id("createNamePair"));
         modalGone();
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         textPresent("This new form Name");
         textPresent("A lazy definition");
         textPresent("Great CTX");
 
-        findElement(By.id("removeNaming-1")).click();
+        clickElement(By.id("removeNaming-1"));
         saveForm();
 
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         textNotPresent("\"A lazy definition\"");
 
         mustBeLoggedOut();
         goToFormByName("Study Drug Compliance");
-        findElement(By.linkText("Naming")).click();
+        clickElement(By.linkText("Naming"));
         for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
             Assert.assertFalse(elt.isDisplayed());
         }
     }
-
-    @Test
-    public void formReorderNamingTest() {
-        setLowStatusesVisible();
-        mustBeLoggedInAs(testAdmin_username, password);
-        goToEltByName("form for test cde reorder detail tabs", null);
-        String tabName = "namingDiv";
-        String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
-        String postfix = "']";
-        findElement(By.linkText("Naming")).click();
-        textPresent("Definition:");
-        reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        textPresent("form for test cde reorder detail tabs 3", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
-        textPresent("form for test cde reorder detail tabs", By.xpath(prefix + "dd_name_0" + postfix));
-    }
-
 
 }

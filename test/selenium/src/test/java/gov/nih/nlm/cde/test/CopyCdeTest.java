@@ -10,16 +10,27 @@ public class CopyCdeTest extends BaseClassificationTest {
     public void copyCde() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Medication affecting cardiovascular function type exam day indicator");
-        findElement(By.linkText("Forks")).click();
+        showAllTabs();
+        textPresent("NINDS-xml-export");
+        clickElement(By.id("ids_tab"));
+        textPresent("thirdVersion");
+        clickElement(By.id("forks_tab"));
         textPresent("This element has no forks");
-        findElement(By.id("openCdeCopyModal")).click();
+        clickElement(By.id("openCdeCopyModal"));
         textPresent("Please select at least one classification");
         Assert.assertFalse(findElement(By.id("saveCopy")).isEnabled());
         addClassificationToNewCdeMethod(new String[]{"NINDS", "Population", "Adult"});
-        findElement(By.id("saveCopy")).click();
+        clickElement(By.id("saveCopy"));
         hangon(1);
+        showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
         textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("nameEdit"));
+        textNotPresent("NINDS-xml-export");
+        clickElement(By.id("ids_tab"));
+        textNotPresent("thirdVersion");
+        clickElement(By.id("status_tab"));
+        textPresent("Copy of: xug6J6R8fkf");
+
     }
 
 }

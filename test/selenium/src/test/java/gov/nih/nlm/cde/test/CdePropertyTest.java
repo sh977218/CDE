@@ -7,7 +7,7 @@ public class CdePropertyTest extends PropertyTest {
 
     @Override
     public void goToEltByName(String name, String status) {
-        goToCdeByName(name, status);
+        goToCdeByName(name);
     }
 
     @Override
@@ -15,10 +15,6 @@ public class CdePropertyTest extends PropertyTest {
         goToCdeSearch();
     }
 
-    @Test
-    public void autocomplete() {
-        autocomplete("Retinoblastoma History Ind-3", "NINDS G", "NINDS Guidelines");
-    }
 
     @Test
     public void richPropText() {
@@ -28,12 +24,12 @@ public class CdePropertyTest extends PropertyTest {
 
     @Test
     public void truncateRichText() {
-        truncateRichText("Skull fracture morphology findings type", null);
+        truncateRichText("Skull fracture morphology findings type");
     }
 
     @Test
     public void truncatePlainText() {
-        truncatePlainText("Skull fracture morphology findings type", null);
+        truncatePlainText("Skull fracture morphology findings type");
     }
 
     @Test

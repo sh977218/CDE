@@ -9,10 +9,10 @@ public class ListTourTest extends TourTest {
     public void listTour() {
         mustBeLoggedOut();
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         hangon(1);
-        findElement(By.linkText("Help")).click();
-        findElement(By.linkText("Take a tour")).click();
+        clickElement(By.linkText("Help"));
+        clickElement(By.linkText("Take a tour"));
         textPresent("Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections.");
         hangon(1);
         getNext("This menu will take you back to the CDE search page");
@@ -23,8 +23,6 @@ public class ListTourTest extends TourTest {
         getNext("Personalize your search results. Include more registration statuses or configure how results are shown.");
         getNext("Enter one or more search terms. For example, search for \"Ethnicity\".");
         getNext("This is your search result. It will show a combination of most relevant and higher status CDEs first.");
-        getNext("Click the accordion to view the CDE summary");
-        getNext("Click the eye to see the full detail of this data element");
         getNext("The plus sign will add a CDE to your Quick Board.");
         getNext("The grid view shows all search results (max 1000) in a single page. From there, results can be downloaded in CSV format.");
         getNext("If your screen is small and the filters on the left end bother you, you can hide them here.");
@@ -32,7 +30,7 @@ public class ListTourTest extends TourTest {
         getNext("You can add a second classification restriction by clicking this plus sign.");
         getNext("See which filter are applied to your query");
         getNext("Restrict search to one or more statuses here.");
-        findElement(By.xpath("//button[@data-role='end']")).click();
+        clickElement(By.xpath("//button[@data-role='end']"));
     }
 
 }

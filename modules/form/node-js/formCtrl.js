@@ -1,10 +1,13 @@
-var mongo_data_form = require('./mongo-form')
-    , mongo_data_cde = require('../../cde/node-js/mongo-cde')
-    , adminSvc = require('../../system/node-js/adminItemSvc.js')
-    , formShared = require('../shared/formShared')
-    , js2xml = require('js2xmlparser')
-    , logging = require('../../system/node-js/logging')
-    , sdc = require('./sdcForm')
+var mongo_data_form = require('./mongo-form'),
+    mongo_data_cde = require('../../cde/node-js/mongo-cde'),
+    adminSvc = require('../../system/node-js/adminItemSvc.js'),
+    formShared = require('../shared/formShared'),
+    JXON = require('jxon'),
+    sdc = require('./sdcForm'),
+    redCap = require('./redCapForm'),
+    archiver = require('archiver'),
+    async = require('async'),
+    authorization = require('../../system/node-js/authorization')
     ;
 
 exports.findForms = function (req, res) {
@@ -30,15 +33,17 @@ exports.findAllCdesInForm = function (node, map, array) {
     }
 };
 
-var getFormJson = function(form, req, res){
+var getFormJson = function (form, req, res) {
     var markCDE = function (form, cb) {
         var cdes = formShared.getFormCdes(form);
-        var ids = cdes.map(function(cde){ return cde.tinyId});
+        var ids = cdes.map(function (cde) {
+            return cde.tinyId;
+        });
         mongo_data_cde.findCurrCdesInFormElement(ids, function (error, currCdes) {
-            cdes.forEach(function(formCde){
-                currCdes.forEach(function(systemCde){
+            cdes.forEach(function (formCde) {
+                currCdes.forEach(function (systemCde) {
                     if (formCde.tinyId === systemCde.tinyId) {
-                        if (formCde.version !== systemCde.version) {
+                        if (formCde.version != systemCde.version) {
                             formCde.outdated = true;
                             form.outdated = true;
                         }
@@ -50,244 +55,224 @@ var getFormJson = function(form, req, res){
         });
     };
     adminSvc.hideUnapprovedComments(form);
+    if (!req.user) adminSvc.hideProprietaryIds(form);
     var resForm = form.toObject();
     markCDE(resForm, function () {
         res.send(resForm);
     });
 };
 
-var getFormPlainXml = function(form, req, res){
+var getFormPlainXml = function (form, req, res) {
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-        if(!form) return res.status(404).end();
+        if (!form) return res.status(404).end();
+        if (!req.user) adminSvc.hideProprietaryIds(form);
         res.setHeader("Content-Type", "application/xml");
         var exportForm = form.toObject();
         delete exportForm._id;
-        exportForm.formElements.forEach(function(s){
-            s.formElements.forEach(function(q){delete q._id;});
+        exportForm.formElements.forEach(function (s) {
+            s.formElements.forEach(function (q) {
+                delete q._id;
+            });
         });
-        res.send(js2xml("Form", exportForm));
+        res.send(JXON.jsToString({element: exportForm}));
     });
 };
+
+function wipeRenderDisallowed (form, req, cb) {
+    if (form && form.noRenderAllowed) {
+        authorization.checkOwnership(mongo_data_form, form._id, req, function(err, isYouAllowed) {
+            if (!isYouAllowed) form.formElements = [];
+            cb();
+        });
+    } else {
+        cb();
+    }
+}
 
 exports.formById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
         if (err || !form) return res.status(404).end();
-        if (req.query.type === 'xml' && req.query.subtype === 'odm') getFormOdm(form, req, res);
-        else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
-        else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
-        else getFormJson(form, req, res);
-    });
-};
-
-var getFormSdc = function(form, req, res){
-    res.setHeader("Content-Type", "application/xml");
-    res.send(sdc.formToSDC(form));
-};
-
-var getFormOdm = function(form, req, res){
-    function cdeToOdmDatatype(cdeType){
-        var cdeOdmMapping = {
-            "Value List": "text",
-            "Character": "text",
-            "Numeric": "float",
-            "Date/Time": "datetime",
-            "Number": "float",
-            "Text": "text",
-            "Date": "date",
-            "Externally Defined": "text",
-            "String\nNumeric": "text",
-            "anyClass": "text",
-            "java.util.Date": "date",
-            "java.lang.String": "text",
-            "java.lang.Long": "float",
-            "java.lang.Integer": "integer",
-            "java.lang.Double": "float",
-            "java.lang.Boolean": "boolean",
-            "java.util.Map": "text",
-            "java.lang.Float": "float",
-            "Time": "time",
-            "xsd:string": "text",
-            "java.lang.Character": "text",
-            "xsd:boolean": "boolean",
-            "java.lang.Short": "integer",
-            "java.sql.Timestamp": "time",
-            "DATE/TIME": "datetime",
-            "java.lang.Byte": "integer"
-        };
-        return cdeOdmMapping[cdeType] || 'text';
-    }
-
-    function escapeHTML(text){
-        return text.replace(/\<.+?\>/gi, "");
-    }
-
-    for (var i = 0; i < form.formElements.length; i++) {
-        var sec = form.formElements[i];
-        for (var j = 0; j < sec.formElements.length; j++) {
-            if (sec.formElements[j].elementType === 'section') return res.status(202).send("Forms with nested sections cannot be exported to ODM.");
-        }
-    }
-
-    var odmJsonForm = {
-        '@': {
-            'CreationDateTime': new Date().toISOString()
-            , 'FileOID': form.tinyId
-            , 'FileType': 'Snapshot'
-            , 'xmlns': 'http://www.cdisc.org/ns/odm/v1.3'
-            , 'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-            , 'xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd'
-            , 'Granularity': 'Metadata'
-            , 'ODMVersion': '1.3'
-        }
-        , Study: {
-            '@': {OID: form.tinyId}
-            , GlobalVariables: {
-                StudyName: escapeHTML(form.naming[0].designation)
-                , StudyDescription: escapeHTML(form.naming[0].definition)
-                , ProtocolName: escapeHTML(form.naming[0].designation)
-            }
-            , BasicDefinitions: {}
-            , MetaDataVersion: {
-                '@': {
-                    'Name': escapeHTML(form.naming[0].designation)
-                    , 'OID': 'MDV_' + form.tinyId
-                }
-                , Protocol: {
-                    StudyEventRef: {
-                        '@': {Mandatory: 'Yes', OrderNumber: '1', StudyEventOID: 'SE_' + form.tinyId}
-                    }
-                }
-                , StudyEventDef: {
-                    '@': {Name: 'SE', OID: 'SE_' + form.tinyId, Repeating: 'No', Type: 'Unscheduled'}
-                    , FormRef: {'@': {FormOID: form.tinyId, Mandatory: 'Yes', OrderNumber: '1'}}
-                }
-                , FormDef: {
-                    '@': {
-                        'Name': escapeHTML(form.naming[0].designation)
-                        , 'OID': form.tinyId
-                        , 'Repeating': 'No'
-                    }
-                    , 'ItemGroupRef': []
-                }
-                , ItemGroupDef: []
-                , ItemDef: []
-                , CodeList: []
-            }
-        }
-    };
-    var sections = [];
-    var questions = [];
-    var codeLists = [];
-    form.formElements.forEach(function (s1,si) {
-        var childrenOids = [];
-        s1.formElements.forEach(function (q1, qi) {
-            var oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
-            childrenOids.push(oid);
-            var odmQuestion = {
-                Question: {
-                    TranslatedText: {
-                        '@': {
-                            'xml:lang': 'en'
-                        }
-                        , '#': escapeHTML(q1.label)
-                    }
-                }
-                , '@': {
-                    'DataType': cdeToOdmDatatype(q1.question.datatype)
-                    , 'Name': escapeHTML(q1.label)
-                    , 'OID': oid
-                }
-            };
-            if (q1.question.answers) {
-                var codeListAlreadyPresent = false;
-                codeLists.forEach(function (cl) {
-                    var codeListInHouse = cl.CodeListItem.map(function (i) {
-                        return i.Decode.TranslatedText['#']
-                    }).sort();
-                    var codeListToAdd = q1.question.answers.map(function (a) {
-                        return a.valueMeaningName;
-                    }).sort();
-                    if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {'@': {CodeListOID: cl['@'].OID}};
-                        questions.push(odmQuestion);
-                        codeListAlreadyPresent = true;
+        if (!req.user) adminSvc.hideProprietaryIds(form);
+        wipeRenderDisallowed(form, req, function() {
+            if (req.query.type === 'xml' && req.query.subtype === 'odm') {
+                formShared.getFormOdm(form, function (err, xmlForm) {
+                    if (err) res.status(err).send(xmlForm);
+                    else {
+                        res.set('Content-Type', 'text/xml');
+                        res.send(JXON.jsToString({element: xmlForm}));
                     }
                 });
-
-                if (!codeListAlreadyPresent){
-                    odmQuestion.CodeListRef = {'@': {CodeListOID: 'CL_' + oid}};
-                    questions.push(odmQuestion);
-                    var codeList = {
-                        '@': {
-                            'DataType': cdeToOdmDatatype(q1.question.datatype)
-                            , OID: 'CL_' + oid
-                            , Name: q1.label
-                        }
-                    };
-                    codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        var cl = {
-                            '@': {
-                                CodedValue: pv.permissibleValue
-                            }
-                            ,
-                            Decode: {
-                                TranslatedText: {
-                                    '@': {
-                                        'xml:lang': 'en'
-                                    }
-                                    ,
-                                    '#': pv.valueMeaningName
-                                }
-                            }
-                        };
-                        if (pv.valueMeaningCode) cl.Alias = {
-                            '@': {
-                                Context: pv.codeSystemName,
-                                Name: pv.valueMeaningCode
-                            }
-                        };
-                        return cl;
-                    });
-                    codeLists.push(codeList);
-                }
             }
-        });
-        var crypto = require('crypto');
-        var oid = crypto.createHash('md5').update(s1.label).digest('hex');
-        odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
-            '@': {
-                'ItemGroupOID': oid
-                , 'Mandatory': 'Yes'
-                , 'OrderNumber': 1
-            }
-        });
-
-        sections.push({
-            '@': {
-                'Name': s1.label
-                , 'OID': oid
-                , 'Repeating': 'No'
-            }
-            , Description: {
-                TranslatedText:{'@':{ 'xml:lang':'en'}, '#': s1.label}
-            }
-            , ItemRef: childrenOids.map(function (oid, i) {
-                return {
-                    '@': {
-                        'ItemOID': oid
-                        , 'Mandatory': 'Yes'
-                        , 'OrderNumber': i
-                    }
-                };
-            })
+            else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
+            else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+            else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form.toObject(), res);
+            else getFormJson(form, req, res);
         });
     });
-    sections.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s)});
-    questions.forEach(function(s){odmJsonForm.Study.MetaDataVersion.ItemDef.push(s)});
-    codeLists.forEach(function(cl){odmJsonForm.Study.MetaDataVersion.CodeList.push(cl)});
-    var xmlForm = js2xml("ODM", odmJsonForm);
-    res.set('Content-Type', 'text/xml');
-    res.send(xmlForm);
 };
+
+exports.formByTinyIdVersion = function (req, res) {
+    if (req.params.version !== 'undefined') {
+        mongo_data_form.byTinyIdAndVersion(req.params.id, req.params.version, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                if (!req.user) adminSvc.hideProprietaryIds(elt);
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    } else {
+        mongo_data_form.eltByTinyId(req.params.id, function (err, elt) {
+            if (err) res.status(500).send(err);
+            else {
+                if (!req.user) adminSvc.hideProprietaryIds(elt);
+                wipeRenderDisallowed(elt, req, function() {
+                    res.send(elt);
+                });
+            }
+        });
+    }
+};
+
+
+function fetchWholeForm(Form, callback) {
+    var maxDepth = 8;
+    var depth = 0;
+    var form = JSON.parse(JSON.stringify(Form));
+    var loopFormElements = function (form, cb) {
+        if (form.formElements) {
+            async.forEach(form.formElements, function (fe, doneOne) {
+                if (fe.elementType === 'form') {
+                    depth++;
+                    if (depth < maxDepth) {
+                        mongo_data_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
+                            result = result.toObject();
+                            fe.formElements = result.formElements;
+                            loopFormElements(fe, function () {
+                                depth--;
+                                doneOne();
+                            });
+                        });
+                    } else {
+                        doneOne();
+                    }
+                } else if (fe.elementType === 'section') {
+                    loopFormElements(fe, function () {
+                        doneOne();
+                    });
+                } else {
+                    doneOne();
+                }
+            }, function doneAll() {
+                cb();
+            });
+        }
+        else {
+            cb();
+        }
+    };
+    loopFormElements(form, function () {
+        callback(form);
+    });
+}
+
+exports.wholeFormById = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
+        fetchWholeForm(form, function (f) {
+            if (!req.user) adminSvc.hideProprietaryIds(f);
+            res.send(f);
+        });
+    });
+};
+
+var getFormSdc = function (form, req, res) {
+    res.setHeader("Content-Type", "application/xml");
+    fetchWholeForm(form, function (wholeForm) {
+        if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
+        res.send(sdc.formToSDC(wholeForm));
+    });
+};
+
+var exportWarnings = {
+    'PhenX': 'You can download PhenX REDCap from <a class="alert-link" href="https://www.phenxtoolkit.org/index.php?pageLink=rd.ziplist">here</a>.',
+    'PROMIS / Neuro-QOL': 'You can download PROMIS / Neuro-QOL REDCap from <a class="alert-link" href="http://project-redcap.org/">here</a>.',
+    'emptySection': 'REDCap cannot support empty section.',
+    'nestedSection': 'REDCap cannot support nested section.',
+    'unknownElementType': 'This form has error.'
+};
+
+function loopForm(form) {
+    function loopFormElements(fe, insideSection) {
+        for (var i = 0; i < fe.formElements.length; i++) {
+            var e = fe.formElements[i];
+            if (e.elementType === 'section') {
+                if (insideSection === true) {
+                    return 'nestedSection';
+                }
+                else if (e.formElements.length === 0) {
+                    return 'emptySection';
+                }
+                else {
+                    return loopFormElements(e, true);
+                }
+            } else if (e.elementType !== 'question') {
+                console.log('unknown element type in form: ' + form);
+                return 'unknownElementType';
+            }
+        }
+        return false;
+    }
+
+    return loopFormElements(form, false);
+}
+
+var getFormRedCap = function (form, response) {
+    if (exportWarnings[form.stewardOrg.name]) {
+        response.status(500).send(exportWarnings[form.stewardOrg.name]);
+        return;
+    }
+    var validationErr = loopForm(form);
+    if (validationErr) {
+        response.status(500).send(exportWarnings[validationErr]);
+    } else {
+        response.writeHead(200, {
+            'Content-Type': 'application/zip',
+            'Content-disposition': 'attachment; filename=' + form.naming[0].designation + '.zip'
+        });
+        var zip = archiver('zip', {});
+        zip.on('error', function (err) {
+            response.status(500).send({error: err.message});
+        });
+
+        //on stream closed we can end the request
+        zip.on('end', function () {
+            console.log('Archive wrote %d bytes', zip.pointer());
+        });
+        zip.pipe(response);
+        zip.append('NLM', {name: 'AuthorID.txt'})
+            .append(form.tinyId, {name: 'InstrumentID.txt'})
+            .append(redCap.formToRedCap(form), {name: 'instrument.csv'})
+            .finalize();
+    }
+};
+
+exports.priorForms = function (req, res) {
+    var formId = req.params.id;
+
+    if (!formId) {
+        res.send("No Form Id");
+    }
+    mongo_data_form.priorForms(formId, function (err, priorForms) {
+        if (err) {
+            res.send("ERROR");
+        } else {
+            res.send(priorForms);
+        }
+    });
+};
+

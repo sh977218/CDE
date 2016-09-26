@@ -1,7 +1,17 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings',
-    function ($scope, OrgHelpers, SearchSettings) {
+angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
+    function ($scope, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
 
-        $scope.listViewType = "accordion";
+        $scope.viewTypes = {
+            accordion: {
+                url: '/' + $scope.module + '/public/html/' + $scope.module + 'AccordionList.html'
+            }, table: {
+                url : '/' + $scope.module + '/public/html/' + $scope.module + 'GridList.html'
+            }, sideBySide: {
+                url: '/system/public/html/eltsCompare.html'
+            }, summary: {
+                url: "/" + $scope.module + "/public/html/" + $scope.module + "SummaryList.html"
+            }
+        };
 
         $scope.maxLines = 5;
         $scope.lineLength = 50;
@@ -11,22 +21,22 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
         else if (SearchSettings.getDefaultSearchView()) $scope.listViewType = SearchSettings.getDefaultSearchView();
 
         $scope.getUsedBy = OrgHelpers.getUsedBy;
-
-        $scope.switchToTableView = function () {
-            switchGridAccordionView("table");
-        };
-
-        $scope.switchToAccordionView = function () {
-            switchGridAccordionView("accordion");
-        };
-
-        var switchGridAccordionView = function (viewType) {
+        
+        $scope.switchToView = function (viewType) {
             $scope.eltsToCompare = [];
             $scope.listViewType = viewType;
             $scope.cache.put(listViewCacheName, $scope.listViewType);
         };
 
         $scope.showSideBySideView = function () {
+            var qbResource;
+            if (localStorageService.get("defaultQuickBoard") === 'cdeQuickBoard') qbResource = QuickBoard;
+            if (localStorageService.get("defaultQuickBoard") === 'formQuickBoard') qbResource = FormQuickBoard;
+            if (qbResource.elts.length === 2 && Object.keys($scope.eltsToCompareMap).length === 0) {
+                qbResource.elts.forEach(function(a){
+                    $scope.eltsToCompareMap[a.tinyId] = a;
+                });
+            }
             $scope.eltsToCompare = [];
             for (var key in $scope.eltsToCompareMap) {
                 $scope.eltsToCompare.push($scope.eltsToCompareMap[key]);
@@ -40,6 +50,5 @@ angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgH
                 $scope.listViewType = "sideBySide";
             }
         };
-
 
     }]);

@@ -5,16 +5,13 @@ angular.module('systemModule').controller('ClassificationCtrl',
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
           templateUrl: '/system/public/html/classifyElt.html',
           controller: 'AddClassificationModalCtrl',
           resolve: {
                 module: function() {
                     return $scope.module;
-                }
-                , myOrgs: function() {
-                    return $scope.myOrgs;
                 }
                 , cde: function() {
                     return $scope.elt;
@@ -51,7 +48,8 @@ angular.module('systemModule').controller('ClassificationCtrl',
     };     
 
     $scope.hideWorkingGroups = function(stewardClassifications) {
-        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) || $scope.user.siteAdmin);
+        return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) ||
+        ($scope.user && $scope.user.siteAdmin));
     };
     
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
@@ -71,3 +69,9 @@ angular.module('systemModule').controller('ClassificationCtrl',
         });
     };
  }]);
+
+angular.module("systemModule").controller('ClassLeafCtrl', ['$scope', function($scope){
+    var j = JSON.parse(JSON.stringify($scope.pathArray));
+    j.push($scope.elt.name);
+    $scope.pathArray = j;
+}]);

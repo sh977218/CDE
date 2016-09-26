@@ -1,7 +1,9 @@
 angular.module('ElasticSearchResource')
-    .factory('SearchSettings', function (localStorageService, $q, userResource) {
+    .factory('SearchSettings', ["localStorageService", "$q", "userResource", function (localStorageService, $q, userResource) {
+        var version = 20160329;
         var searchSettingsFactory = this;
         this.deferred = $q.defer();
+
         this.saveConfiguration = function (settings) {
             searchSettings = settings;
             localStorageService.set("SearchSettings", settings);
@@ -9,53 +11,56 @@ angular.module('ElasticSearchResource')
         };
         this.getDefault = function () {
             return {
-                "defaultSearchView": "accordion"
+                "version": version
+                , "defaultSearchView": "summary"
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
-                    "cde": {
-                        "name": true,
-                        "naming": true,
-                        "permissibleValues": true,
-                        "nbOfPVs": true,
-                        "uom": false,
-                        "stewardOrg": true,
-                        "usedBy": true,
-                        "registrationStatus": true,
-                        "administrativeStatus": false,
-                        "ids": true,
-                        "source": false,
-                        "updated": false
-                    }
+                    "name": true,
+                    "naming": true,
+                    "permissibleValues": true,
+                    "nbOfPVs": true,
+                    "uom": false,
+                    "stewardOrg": true,
+                    "usedBy": true,
+                    "registrationStatus": true,
+                    "administrativeStatus": false,
+                    "ids": true,
+                    "source": false,
+                    "updated": false,
+                    "numQuestions": true,
+                    "tinyId": false
                 }
             };
         };
+
+        var searchSettings = localStorageService.get("SearchSettings");
+        if (!searchSettings) searchSettings = this.getDefault();
+
         this.getDefaultSearchView = function () {
             return searchSettings.defaultSearchView;
         };
         this.getPromise = function () {
             return searchSettingsFactory.deferred.promise;
         };
-        this.getUserDefaultStatuses = function() {
+        this.getUserDefaultStatuses = function () {
             var overThreshold = false;
-            return exports.statusList.filter(function(status) {
+            return exports.statusList.filter(function (status) {
                 if (overThreshold) return false;
                 overThreshold = searchSettings.lowestRegistrationStatus === status;
                 return true;
             });
         };
-        var searchSettings = localStorageService.get("SearchSettings");
-        userResource.getPromise().then(function(user){
+        userResource.getPromise().then(function (user) {
             if (user === "Not logged in.") {
-                if (!searchSettings.lowestRegistrationStatus) searchSettings.lowestRegistrationStatus = "Qualified";
-                searchSettingsFactory.deferred.resolve(searchSettings);
             }
             else {
-                if (!user.searchSettings) user.searchSettings = searchSettingsFactory.getDefault();
+                if (!user.searchSettings) {
+                    user.searchSettings = searchSettingsFactory.getDefault();
+                }
                 searchSettings = user.searchSettings;
-                if (!user.searchSettings.lowestRegistrationStatus) user.searchSettings.lowestRegistrationStatus = "Qualified";
-                searchSettingsFactory.deferred.resolve(user.searchSettings);
             }
+            if (searchSettings.version !== version) searchSettings = searchSettingsFactory.getDefault();
+            searchSettingsFactory.deferred.resolve(searchSettings);
         });
-        if (!searchSettings) searchSettings = this.getDefault();
         return this;
-    });
+    }]);

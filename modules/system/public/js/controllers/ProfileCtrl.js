@@ -1,8 +1,10 @@
-angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', function($scope, ViewingHistory, $timeout, $http, userResource) {               
-    ViewingHistory.getCdes({start: 0}, function(cdes) {
-        $scope.cdes = cdes;
+angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHistory', '$timeout', '$http', 'userResource', function ($scope, ViewingHistory, $timeout, $http, userResource) {
+    ViewingHistory.getPromise().then(function (response) {
+        $scope.cdes = [];
+        if (Array.isArray(response))$scope.cdes = response;
     });
-    
+
+
     $scope.saveProfile = function() {
         $timeout(function() {
             $http.post('/user/me', userResource.user).then(function(res) {
@@ -14,13 +16,12 @@ angular.module('systemModule').controller('ProfileCtrl', ['$scope', 'ViewingHist
             });
         }, 0);
     };
-    
-    $scope.hasQuota = true;
-    if(!userResource.user.quota) {
-        $scope.hasQuota = false;
-    }
-    
-    $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g,', ');
-    
-    $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g,', ');
+    userResource.getPromise().then(function () {
+        if (userResource.user.username) {
+            $scope.hasQuota = userResource.user.quota;
+            $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g, ', ');
+            $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g, ', ');
+        }
+    });
+
 }]);

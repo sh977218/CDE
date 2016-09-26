@@ -1,14 +1,22 @@
-angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibModalInstance', 'boards',
-    function($scope, $modalInstance, boards)
-{
-    $scope.boards = boards;
+angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibModalInstance',
+    function ($scope, $modalInstance) {
+        $scope.filter = {
+            reset: function () {
+                this.tags = [];
+                this.sortBy = 'updatedDate';
+                this.sortDirection = 'desc';
+            },
+            sortBy: 'updatedDate',
+            sortDirection: 'desc',
+            tags: []
+        };
 
-    $scope.ok = function (board) {
-      $modalInstance.close(board);
-    };
+        $scope.ok = function (board) {
+            $modalInstance.close(board);
+        };
 
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
-    };
-}
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }
 ]);

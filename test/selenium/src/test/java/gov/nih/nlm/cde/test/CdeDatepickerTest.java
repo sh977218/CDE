@@ -3,59 +3,39 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CdeDatepickerTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeDatepicker() {
+        String today_string = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
         mustBeLoggedInAs(ninds_username, password);
-        goToSearch("cde");
-        findElement(By.id("browseOrg-NINDS")).click();
-        textPresent("results for All Terms | NINDS |");
-        findElement(By.id("eyeLink_0")).click();
-        textPresent("General Details");
-        findElement(By.id("status_tab")).click();
+        goToCdeByName("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale");
+        showAllTabs();
+        clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
-        findElement(By.id("editStatus")).click();
+        clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
-        findElement(By.id("effectiveDateDatepicker")).click();
+        clickElement(By.id("effectiveDateDatepicker"));
         textPresent("Today");
         textPresent("Clear");
         textPresent("Close");
-        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-info.ng-binding\").click();");
-        Date today = new Date();
-        today.setHours(0);
-        today.setMinutes(0);
-        today.setSeconds(0);
-        hangon(1);
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        String js_code = "function test() {" +
-                "return $('#effectiveDate').first().val();" +
-                "}; return test()";
-        String effectiveDate_string = js.executeScript(js_code).toString();
-        Date effectiveDate = new Date(effectiveDate_string);
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(today);
-        cal2.setTime(effectiveDate);
-        boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-        Assert.assertTrue(sameDay);
-
-        findElement(By.id("effectiveDateDatepicker")).click();
+        clickElement(By.xpath("//button[contains(text(),'Today')]"));
+        clickElement(By.id("untilDateDatepicker"));
         textPresent("Today");
         textPresent("Clear");
         textPresent("Close");
-        ((JavascriptExecutor) driver).executeScript("$(\"#effectiveDateDiv > div > ul > li.ng-scope > span > button.btn.btn-sm.btn-danger.ng-binding\").click();");
-        effectiveDate_string = js.executeScript(js_code).toString();
-        Assert.assertEquals(effectiveDate_string, "");
-        findElement(By.id("cancelRegStatus")).click();
-        modalGone();
+        clickElement(By.xpath("//button[contains(text(),'Clear')]"));
+        clickElement(By.id("saveRegStatus"));
+        closeAlert();
+        String effectiveDate_string = findElement(By.id("effectiveDate")).getText();
+        Assert.assertEquals(today_string, effectiveDate_string);
+        effectiveDate_string = findElement(By.id("untilDate")).getText();
+        Assert.assertEquals(effectiveDate_string, "N/A");
     }
 }

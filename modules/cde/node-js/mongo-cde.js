@@ -1,5 +1,4 @@
-var mongoose = require('mongoose')
-    , config = require('../../system/node-js/parseConfig')
+var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
@@ -7,9 +6,9 @@ var mongoose = require('mongoose')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , cdesvc = require("./cdesvc")
-    , deValidator = require("../shared/deValidator.js").deValidator
     , async = require('async')
     , CronJob = require('cron').CronJob
+    , elastic = require('./elastic')
     ;
 
 exports.type = "cde";
@@ -22,14 +21,37 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
+exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
+exports.PinningBoard = PinningBoard;
+
+schemas.dataElementSchema.pre('save', function (next) {
+    var self = this;
+    elastic.updateOrInsert(self);
+    next();
+});
+
+schemas.pinningBoardSchema.pre('save', function (next) {
+    var self = this;
+    elastic.boardUpdateOrInsert(self);
+    next();
+});
+schemas.pinningBoardSchema.pre('remove', function (next) {
+    var self = this;
+    elastic.boardDelete(self);
+    next();
+});
 
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
         callback(err, result > 0);
-    })
+    });
+};
+
+exports.getStream = function (condition) {
+    return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
 exports.boardsByUserId = function (userId, callback) {
@@ -54,9 +76,9 @@ exports.userTotalSpace = function (name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
 
-exports.deCount = function (callback) {
-    DataElement.find({"archived": null}).count().exec(function (err, count) {
-        callback(count);
+exports.count = function (condition, callback) {
+    DataElement.count(condition).count().exec(function (err, count) {
+        callback(err, count);
     });
 };
 
@@ -81,7 +103,7 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "naming source sourceId registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        "naming source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
         .limit(20)
         .where("archived").equals(null)
         .exec(function (err, cdes) {
@@ -153,12 +175,9 @@ exports.cdesByTinyIdListInOrder = function (idList, callback) {
 exports.priorCdes = function (cdeId, callback) {
     DataElement.findById(cdeId).exec(function (err, dataElement) {
         if (dataElement !== null) {
-            return DataElement.find({}, "updated updatedBy changeNote")
-                .where("_id").in(dataElement.history).exec(function (err, cdes) {
-                    callback(err, cdes);
-                });
-        } else {
-
+            return DataElement.find({}).where("_id").in(dataElement.history).exec(function (err, cdes) {
+                callback(err, cdes);
+            });
         }
     });
 };
@@ -226,12 +245,6 @@ exports.boardById = function (boardId, callback) {
     });
 };
 
-exports.removeBoard = function (boardId, callback) {
-    PinningBoard.remove({'_id': boardId}, function (err) {
-        if (callback) callback(err);
-    });
-};
-//TODO: Consider moving
 exports.addToViewHistory = function (cde, user) {
     if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
         origin: "cde.mongo-cde.addToViewHistory",
@@ -294,6 +307,10 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
+exports.newObject = function (obj) {
+    return new DataElement(obj);
+};
+
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, function (err, dataElement) {
@@ -301,9 +318,10 @@ exports.update = function (elt, user, callback, special) {
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         elt.updated = new Date().toJSON();
-        elt.updatedBy = {};
-        elt.updatedBy.userId = user._id;
-        elt.updatedBy.username = user.username;
+        elt.updatedBy = {
+            userId: user._id,
+            username: user.username
+        };
         elt.comments = dataElement.comments;
         var newDe = new DataElement(elt);
 
@@ -313,7 +331,7 @@ exports.update = function (elt, user, callback, special) {
             special(newDe, dataElement);
         }
 
-        if (newDe.naming.length < 1) {
+        if (!newDe.naming || newDe.naming.length === 0) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
                 origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,
@@ -362,12 +380,6 @@ exports.getDistinct = function (what, callback) {
     });
 };
 
-exports.allPropertiesKeys = function (callback) {
-    DataElement.distinct("properties.key").exec(function (err, keys) {
-        callback(err, keys);
-    });
-};
-
 exports.query = function (query, callback) {
     DataElement.find(query).exec(function (err, result) {
         callback(err, result);
@@ -401,8 +413,7 @@ exports.saveModification = function (oldDe, newDe, user) {
         }
         , diff: diff
     };
-    var auditItem = new CdeAudit(message);
-    auditItem.save();
+    CdeAudit(message).save();
 };
 
 exports.getCdeAuditLog = function (params, callback) {
@@ -424,20 +435,41 @@ exports.setAttachmentApproved = function (id) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {"source": source, "id": id}).exec(function (err, cdes) {
-        if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
+    DataElement.find({archived: null}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+        if (cdes.length > 1)
+            cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
     });
 };
 
-exports.byOtherIdAndVersion = function (source, id, version, cb) {
-    DataElement.find({"archived": null}).elemMatch("ids", {
-        source: source,
-        id: id,
-        version: version
+exports.byOtherIdAndNotRetired = function (source, id, cb) {
+    DataElement.find({
+        archived: null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+        if (cdes.length > 1)
+            cb("Multiple results, returning first. source: " + source + " id: " + id, cdes[0]);
+        else cb(err, cdes[0]);
+    });
+};
+
+exports.bySourceIdVersion = function (source, id, version, cb) {
+    DataElement.find({archived: null}).elemMatch("ids", {
+        source: source, id: id, version: version
     }).exec(function (err, cdes) {
         if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
         else cb(err, cdes[0]);
+    });
+};
+exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
+    //noinspection JSUnresolvedFunction
+    DataElement.find({
+        "archived": null,
+        "registrationState.registrationStatus": {$ne: "Retired"}
+    }).elemMatch("ids", {
+        source: source, id: id, version: version
+    }).exec(function (err, cdes) {
+        cb(err, cdes);
     });
 };
 
@@ -453,8 +485,8 @@ exports.derivationOutputs = function (inputTinyId, cb) {
     DataElement.find({archived: null, "derivationRules.inputs": inputTinyId}).exec(cb);
 };
 
-var correctBoardPinsForCde = function(doc, cb){
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName":doc.naming[0].designation}).exec(function(err){
+var correctBoardPinsForCde = function (doc, cb) {
+    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
         if (err) throw err;
         if (cb) cb();
     });
@@ -465,8 +497,9 @@ schemas.dataElementSchema.post('save', function (doc) {
     correctBoardPinsForCde(doc);
 });
 
-var cj = new CronJob({
+new CronJob({
     cronTime: '00 00 4 * * *',
+    //noinspection JSUnresolvedFunction
     onTick: function () {
         console.log("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
@@ -486,12 +519,8 @@ var cj = new CronJob({
     },
     start: false,
     timeZone: "America/New_York"
-});
-cj.start();
+}).start();
 
-DataElement.remove({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, function(){});
-exports.upsertStatusCde = function(cde, cb){
-    DataElement.update({"naming.designation": "NLM_APP_Status_Report_"+config.hostname.replace(/[^A-z|0-9]/g,"")}, cde, {upsert: true}, function(err, cde){
-        if (cb) cb(err, cde);
-    });
+exports.findModifiedElementsSince = function (date, cb) {
+    DataElement.find({updated: {$gte: date}}, {tinyId: 1, _id: 0}).sort({updated: -1}).limit(5000).exec(cb);
 };

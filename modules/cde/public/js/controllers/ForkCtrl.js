@@ -2,12 +2,9 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModa
     function($scope, $http, $modal, $window, userResource, $route, $log)
 {
 
-    $log.debug("ForkCtrl open");
-        
+
     var getForks = function() {
-        $log.debug('ForkCtrl.getForks - executing');
         $http.get("/forks/" + $scope.elt._id).then(function(result) {
-            $log.debug("forks retrieved " + $scope.elt.tinyId);
            $scope.forks = result.data;
 
         }, function (err) {
@@ -66,4 +63,7 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModa
 
         });
     };
+
+    $scope.forkCtrlLoadedPromise.resolve();
+
 }]);

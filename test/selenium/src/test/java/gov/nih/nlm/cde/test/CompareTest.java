@@ -16,15 +16,8 @@ public class CompareTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void emptyList() {
-        openCdeInList("Sedation status");
-        findElement(By.id("compare_0")).click();
-        textPresent("Quick Board (1)");
-    }
-
-    @Test
     public void compare2Elements() {
-        goToCdeSearch();
+        emptyQuickBoardByModule("cde");
         addToCompare("Person Gender Text Type", "Patient Gender Category");
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-0-valid")));
         shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv-3-warning")));
@@ -33,13 +26,10 @@ public class CompareTest extends NlmCdeBaseTest {
 
     @Test
     public void compare3Then2Elements() {
-        resizeWindow(1524, 1150);
-
         String cde1 = "Assessment of Motor and Process Skills Assessment Complete Indicator";
         String cde2 = "EuroQOL Complete Indicator";
         String cde3 = "Administration Route of Administration java.lang.String";
 
-        goToCdeSearch();
         addCdeToQuickBoard(cde1);
         addCdeToQuickBoard(cde2);
         addCdeToQuickBoard(cde3);

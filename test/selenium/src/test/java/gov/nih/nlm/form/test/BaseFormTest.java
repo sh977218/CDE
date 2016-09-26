@@ -17,62 +17,49 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void saveForm() {
-        scrollToViewById("openSaveBottom");
-        clickElement(By.id("openSaveBottom"));
+        try {
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        } catch (Exception e) {
+            // known error spot. Seems the button does not always get clicked.
+            clickElement(By.id("openSaveBottom"));
+            textPresent("has already been used");
+        }
         findElement(By.name("version")).sendKeys("1");
-        hangon(1);
+        textNotPresent("has already been used");
+        hangon(2);
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
         closeAlert();
-        hangon(1);
-        scrollToTop();
     }
 
     public void searchForm(String query) {
         findElement(By.name("q")).sendKeys("\"" + query + "\"");
         hangon(1);
-        findElement(By.id("search.submit")).click();
+        clickElement(By.id("search.submit"));
         showSearchFilters();
-    }
-
-    protected void gotoFormCreate() {
-        goHome();
-        findElement(By.linkText("Create")).click();
-        findElement(By.linkText("Form")).click();
-        textPresent("Create Form");
-    }
-
-    public void createForm(String name, String definition, String version, String org) {
-        gotoFormCreate();
-        findElement(By.id("formName")).sendKeys(name);
-        findElement(By.id("formDefinition")).sendKeys(definition);
-        if (version != null) {
-            fillInput("Version", version);
-        }
-        new Select(findElement(By.id("newForm.stewardOrg.name"))).selectByVisibleText(org);
-        findElement(By.id("createForm")).click();
-        textPresent("Form created");
-        closeAlert();
     }
 
     public void addSection(String title, String card) {
         int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
         scrollToTop();
-        findElement(By.linkText("Form Description")).click();
-
-        findElement(By.id("addSection")).click();
+        clickElement(By.id("description_tab"));
+        clickElement(By.id("addSection"));
 
         String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
-        findElement(By.xpath(section_title_path + "//i")).click();
+        clickElement(By.xpath(section_title_path + "//i"));
         findElement(By.xpath(section_title_path + "//input")).clear();
         findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        findElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]")).click();
+        clickElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]"));
 
         if (card != null) {
-            findElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']")).click();
+            clickElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']"));
             new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
-            findElement(By.xpath("//dd[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']")).click();
+            clickElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']"));
         }
+
+        //  for some reason, the click to save sometimes does not open save. Maybe the click is being swallowed by the closing select above.
+        hangon(1);
     }
 
 }

@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource',
-        function($scope, $http, $timeout, $location, AccountManagement, userResource)
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert)
 {
     $scope.admin = {};
     $scope.newOrg = {};
@@ -9,12 +9,14 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.curator = {};
     $scope.transferStewardObj = {from:'', to:''};
     $scope.allUsernames = [];
-    
+
+
+
     function resetTransferStewardObj() {
         $scope.transferStewardObj.from = '';
         $scope.transferStewardObj.to = '';
     }
-    
+
     function resetOrgAdminForm() {
         $scope.orgAdmin.username = "";
         $scope.admin = {};
@@ -24,7 +26,11 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $scope.orgCurator.username = "";
         $scope.curator = {};
     }
-    
+
+    $scope.initBatchUpload = function() {
+        $timeout($scope.$broadcast('initBatchUpload'), 0);
+    };
+
     $http.get("/systemAlert").then(function(response) {
        $scope.broadcast = {message: response.data}; 
     });
@@ -36,17 +42,33 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
     $scope.getSiteAdmins();
 
+    var allPropertyKeys = [];
+    var allContexts = [];
     $scope.getOrgs = function() {
-        return $http.get("/managedOrgs").then(function(response) {
+        $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
             $scope.orgNames = $scope.orgs.map(function(o) {return o.name;});
+            $scope.orgs.forEach(function (o) {
+                if (o.propertyKeys) {
+                    allPropertyKeys = allPropertyKeys.concat(o.propertyKeys);
+                }
+                if (o.nameContexts) {
+                    allContexts = allContexts.concat(o.nameContexts);
+                }
+            });
+            allPropertyKeys = allPropertyKeys.filter(function(item, pos, self) {
+                return self.indexOf(item) === pos;
+            });
+            allContexts = allContexts.filter(function(item, pos, self) {
+                return self.indexOf(item) === pos;
+            });
         });
     };
     $scope.getOrgs(); 
     
     // Retrieve all orgs and users who are admins of each org
     $scope.getOrgAdmins = function() {
-        return $http.get("/orgAdmins").then(function(response) {
+        $http.get("/orgAdmins").then(function(response) {
             $scope.orgAdmins = response.data.orgs;
         });
     };
@@ -54,7 +76,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     
     // Retrieve orgs user is admin of
     $scope.getMyOrgAdmins = function() {
-        return $http.get("/myOrgsAdmins").then(function(response) {
+        $http.get("/myOrgsAdmins").then(function(response) {
             $scope.myOrgAdmins = response.data.orgs;
         });
     };
@@ -62,7 +84,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     
     // Retrieve orgs user is curator of
     $scope.getOrgCurators = function() {
-        return $http.get("/orgcurators").then(function(response) {
+        $http.get("/orgCurators").then(function(response) {
             $scope.orgCurators = response.data.orgs;
         });
     };
@@ -98,9 +120,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             },
             function(res) {
                   $scope.addAlert("success", res);
-                  $scope.orgAdmins = $scope.getOrgAdmins();
-                  $scope.myOrgAdmins = $scope.getMyOrgAdmins();
-            }, function (err) {
+                  $scope.getOrgAdmins();
+                  $scope.getMyOrgAdmins();
+            }, function () {
                 $scope.addAlert("danger", "There was an issue adding this administrator.");
             }
         );
@@ -120,8 +142,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             },
             function (res) {
                 $scope.addAlert("success", res);
-                $scope.orgAdmins = $scope.getOrgAdmins();
-                $scope.myOrgAdmins = $scope.getMyOrgAdmins();
+                $scope.getOrgAdmins();
+                $scope.getMyOrgAdmins();
                 
                 if (userResource.user._id === userId) {
                     $location.url("/");
@@ -179,10 +201,27 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             }
         );
     };
-    
-    $scope.updateOrg = function(c) {
+
+    $scope.getExistingKeys = function (search) {
+        var result = allPropertyKeys.slice();
+        if (search && result.indexOf(search) === -1) {
+            result.unshift(search);
+        }
+        return result;
+    };
+
+    $scope.getExistingContexts = function (search) {
+        var result = allContexts.slice();
+        if (search && result.indexOf(search) === -1) {
+            result.unshift(search);
+        }
+        return result;
+    };
+
+
+    $scope.updateOrg = function (org) {
         $timeout(function(){
-            AccountManagement.updateOrg(c,
+            AccountManagement.updateOrg(org,
                 function(res) {
                     $scope.addAlert("success", res);
                     $scope.orgs = $scope.getOrgs();
@@ -228,5 +267,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         );
     };
     $scope.getAllUsernames();
+
 }
 ]);

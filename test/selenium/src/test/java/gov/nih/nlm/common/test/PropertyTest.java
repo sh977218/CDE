@@ -2,102 +2,93 @@ package gov.nih.nlm.common.test;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 
 public abstract class PropertyTest extends CommonTest {
 
-    public void autocomplete(String eltName, String checkString, String expected) {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        goToEltByName(eltName);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.id("addProperty")).click();
-        findElement(By.name("key")).sendKeys(checkString);
-        try {
-            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
-        } catch (Exception e) {
-            System.out.println("Re-typing autocomplete text");
-            findElement(By.name("key")).clear();
-            findElement(By.name("key")).sendKeys(checkString);
-            Assert.assertEquals(findElement(By.xpath("//div[@class='modal-body']/div[1]/ul/li/a")).getText(), expected);
-        }
-        goHome();
-    }
-
     public void addRemoveProperty(String eltName, String status) {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.id("addProperty")).click();
-        findElement(By.name("key")).sendKeys("MyKey1");
-        findElement(By.name("value")).sendKeys("MyValue1");
-        findElement(By.id("createProperty")).click();
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
-        findElement(By.id("addProperty")).click();
-        findElement(By.name("key")).sendKeys("MyKey2");
-        findElement(By.name("value")).sendKeys("MyValue2");
-        findElement(By.id("createProperty")).click();
-        textPresent("Property Added");
-        closeAlert();
-        modalGone();
-        findElement(By.id("addProperty")).click();
-        findElement(By.name("key")).sendKeys("MyKey3");
-        findElement(By.name("value")).sendKeys("MyValue3");
-        findElement(By.id("createProperty")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey0']"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey0");
+        findElement(By.name("value")).sendKeys("MyValue0");
+        clickElement(By.id("createProperty"));
         textPresent("Property Added");
         closeAlert();
         modalGone();
 
-        findElement(By.id("removeProperty-1")).click();
-        findElement(By.id("confirmRemoveProperty-1")).click();
+        clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey1']"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
+        findElement(By.name("value")).sendKeys("MyValue1");
+        clickElement(By.id("createProperty"));
+        textPresent("Property Added");
+        closeAlert();
+        modalGone();
+
+        clickElement(By.id("addProperty"));
+        findElement(By.xpath("//option[.='propKey2']"));
+        new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
+        findElement(By.name("value")).sendKeys("MyValue2");
+        clickElement(By.id("createProperty"));
+        textPresent("Property Added");
+        closeAlert();
+        modalGone();
+
+        clickElement(By.id("removeProperty-1"));
+        clickElement(By.id("confirmRemoveProperty-1"));
         textPresent("Property Removed");
         closeAlert();
 
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
-        textPresent("MyKey1");
-        textPresent("MyKey3");
-        textPresent("MyValue1");
-        textPresent("MyValue3");
-        textNotPresent("MyValue2");
-        textNotPresent("MyValue2");
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        textPresent("propKey0");
+        textPresent("propKey2");
+        textPresent("MyValue0");
+        textPresent("MyValue2");
+        textNotPresent("propKey1");
+        textNotPresent("MyValue1");
     }
 
     public void richText(String eltName, String status) {
         goToEltByName(eltName, status);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_0']//i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
-        findElement(By.xpath("//dd[@id='dd_prop_value_0']//button[@class='fa fa-check']")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]"));
+        findElement(By.xpath("//*[@id='dd_prop_value_0']//div[@contenteditable='true']")).sendKeys(" Hello From Selenium  ");
+        clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(@class,'fa fa-check')]"));
         textPresent("Hello From Selenium");
     }
 
-    public void truncateRichText(String eltName, String status) {
+    public void truncateRichText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
         hangon(1);
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
-        hangon(1);
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
-    public void truncatePlainText(String eltName, String status) {
+    public void truncatePlainText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        findElement(By.linkText("Properties")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::i[@class='fa fa-edit']")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]")).click();
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]")).click();
-        hangon(1);
-        findElement(By.xpath("//dd[@id='dd_prop_value_2']/descendant::span[text()='More']")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
-        hangon(1);
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
     }
 
@@ -108,14 +99,15 @@ public abstract class PropertyTest extends CommonTest {
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Properties")).click();
+        showAllTabs();
+        clickElement(By.id("properties_tab"));
         textPresent("Add Property");
         reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
         textPresent("pk1", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
         textPresent("pk3", By.xpath(prefix + "dd_name_1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveTop-2" + postfix));
         textPresent("pk1", By.xpath(prefix + "dd_name_0" + postfix));
     }
 }

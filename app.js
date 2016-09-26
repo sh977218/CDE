@@ -1,25 +1,25 @@
 var path = require('path');
 
-require(path.join(__dirname, './deploy/configTest.js'));
-
 var express = require('express')
-  , http = require('http')
-  , flash = require('connect-flash')
-  , mongo_data_system = require('./modules/system/node-js/mongo-data')
-  , config = require('config')
-  , session = require('express-session')
-  , favicon = require('serve-favicon')
-  , auth = require( './modules/system/node-js/authentication' )
-  , logging = require('./modules/system/node-js/logging.js')
-  , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
-  , domain = require('domain').create()
-  , ipfilter = require('express-ipfilter')
-  , bodyParser = require('body-parser')
-  , cookieParser = require('cookie-parser')
-  , methodOverride = require('method-override')
-  , morganLogger = require('morgan')
-    , async = require('async')
-;
+    , http = require('http')
+    , flash = require('connect-flash')
+    , mongo_data_system = require('./modules/system/node-js/mongo-data')
+    , config = require('config')
+    , session = require('express-session')
+    , favicon = require('serve-favicon')
+    , auth = require('./modules/system/node-js/authentication')
+    , logging = require('./modules/system/node-js/logging.js')
+    , daoManager = require('./modules/system/node-js/moduleDaoManager.js')
+    , domain = require('domain').create()
+    , ipfilter = require('express-ipfilter')
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
+    , methodOverride = require('method-override')
+    , morganLogger = require('morgan')
+    , compress = require('compression')
+    , helmet = require('helmet')
+    , kibanaProxy = require("./modules/system/node-js/kibanaProxy")
+    ;
 
 require('./modules/system/node-js/elastic').initEs();
 
@@ -27,12 +27,11 @@ require('log-buffer')(config.logBufferSize || 4096);
 
 var app = express();
 
+app.use(helmet());
 app.use(auth.ticketAuth);
+app.use(compress());
 
-var request = require('request');
-app.use('/kibana/', function(req, res) {
-    req.pipe(request('http://localhost:5601' + req.url)).on('error', function() {res.sendStatus(500)}).pipe(res);
-});
+kibanaProxy.setUp(app);
 
 process.on('uncaughtException', function (err) {
     console.log("ERROR1: " + err);
@@ -63,7 +62,6 @@ app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
-
 var expressSettings = {
     secret: "Kfji76R"
     , proxy: config.proxy
@@ -77,21 +75,34 @@ var getRealIp = function(req) {
   if (req.ip) return req.ip;
 };
 
-
 var blackIps = [];
-app.use(ipfilter(blackIps));
+var timedBlackIps = [];
+app.use(ipfilter(blackIps, {errorMessage: "You are not authorized. Please contact support if you believe you should not see this error."}));
 var banEndsWith = config.banEndsWith || [];
 var banStartsWith = config.banStartsWith || [];
 
+var releaseHackersFrequency = 3 * 60 * 1000;
+setInterval(function releaseHackers () {
+    blackIps.length = 0;
+    timedBlackIps = timedBlackIps.filter(function (rec) {
+        if ((Date.now() - rec.date) < releaseHackersFrequency) {
+            blackIps.push(rec.ip);
+            return rec;
+        }
+    });
+}, releaseHackersFrequency);
+
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(function(ban) {
-        if(req.originalUrl.slice(-(ban.length))  === ban) {
+        if(req.originalUrl.slice(-(ban.length)) === ban) {
             blackIps.push(getRealIp(req));
+            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
         }
     });
     banStartsWith.forEach(function(ban) {
         if(req.originalUrl.substr(0, ban.length) === ban) {
             blackIps.push(getRealIp(req));
+            timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
         }
     });
     next();
@@ -114,17 +125,30 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use("/public/components", express.static(path.join(__dirname,'/modules/system/public/components')));
+// this hack for angular-send-feedback
+app.get("/icons.png", function(req, res) {
+    res.sendFile(path.join(__dirname,'/modules/components/angular-send-feedback/dist/icons.png'));
+});
+app.use("/components", express.static(path.join(__dirname,'/modules/components')));
+app.use("/modules/components", express.static(path.join(__dirname,'/modules/components')));
 app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
 app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
 
 app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
 app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
 
+app.use("/embedded/public",
+    function(req, res, next) {
+        res.removeHeader("x-frame-options");
+        next();
+    },
+    express.static(path.join(__dirname,'/modules/embedded/public')));
+
 app.use(flash());
 auth.init(app);
 
-var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status", date: ":date", referrer: ":referrer"};
+var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
+    date: ":date", referrer: ":referrer", responseTime: ":response-time"};
 
 morganLogger.token('real-remote-addr', function(req) {
     return getRealIp(req);
@@ -141,8 +165,7 @@ app.use(function(req, res, next) {
     var maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
     if (connections > maxLogsPerMinute) {        
-        next();
-        return;
+        return next();
     }
     expressLogger(req, res, next);    
 });
@@ -166,7 +189,11 @@ try {
     formModule.init(app, daoManager);
 
     var articleModule = require(path.join(__dirname, './modules/article/node-js/app.js'));
-    articleModule.init(app, daoManager);
+    articleModule.init(app);
+
+    var batchModule = require(path.join(__dirname, './modules/batch/node-js/app.js'));
+    batchModule.init(app);
+
 } catch (e) {
     console.log(e.stack);
     process.exit();

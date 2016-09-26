@@ -20,8 +20,15 @@ exports.init = function (app, daoManager) {
 
     app.post('/form', formCtrl.save);
     app.get('/form/:id', exportShared.nocacheMiddleware, formCtrl.formById);
+    app.get('/wholeForm/:id', exportShared.nocacheMiddleware, formCtrl.wholeFormById);
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
+
+    app.get('/elasticSearch/form/count', function (req, res) {
+        return elastic_system.nbOfForms(function (err, result) {
+            res.send("" + result);
+        });
+    });
 
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
@@ -36,12 +43,12 @@ exports.init = function (app, daoManager) {
             adminItemSvc.removeAttachment(req, res, mongo_data);
         });
     }
-
+    app.get('/priorforms/:id', exportShared.nocacheMiddleware, function (req, res) {
+        formCtrl.priorForms(req, res);
+    });
     app.get('/formById/:id', exportShared.nocacheMiddleware, formCtrl.formById);
 
-    app.get('/formbytinyid/:id/:version', exportShared.nocacheMiddleware, function (req, res) {
-        res.send("");
-    });
+    app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
@@ -87,31 +94,48 @@ exports.init = function (app, daoManager) {
         }, "Comment declined!");
     });
 
-    app.get('/form/properties/keys', exportShared.nocacheMiddleware, function (req, res) {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_data);
-    });
-
     app.post('/elasticSearchExport/form', function (req, res) {
-        var formHeader = "Name, Identifiers, Steward, Registration Status, Administrative Status, Used By\n";
         var query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        return elastic_system.elasticSearchExport(res, query, 'form', exportShared.projectFormForExport, formHeader);
+        var exporters = {
+            json: {
+                export: function (res) {
+                    var firstElt = true;
+                    res.type('application/json');
+                    res.write("[");
+                    elastic_system.elasticSearchExport(function dataCb(err, elt) {
+                        if (err) return res.status(500).send(err);
+                        else if (elt) {
+                            if (!firstElt) res.write(',');
+                            elt = exportShared.stripBsonIds(elt);
+                            elt = elastic_system.removeElasticFields(elt);
+                            res.write(JSON.stringify(elt));
+                            firstElt = false;
+                        } else {
+                            res.write("]");
+                            res.send();
+                        }
+                    }, query, 'form');
+                }
+            }
+        };
+        exporters.json.export(res);
     });
 
-    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/formCompletion/:term', exportShared.nocacheMiddleware, function () {
         return [];
     });
 
-    app.post('/pinFormCdes', function(req, res) {
+    app.post('/pinFormCdes', function (req, res) {
         if (req.isAuthenticated()) {
             mongo_data.eltByTinyId(req.body.formTinyId, function (err, form) {
                 if (form) {
                     var allCdes = {};
                     var allTinyIds = [];
                     formCtrl.findAllCdesInForm(form, allCdes, allTinyIds);
-                    var fakeCdes = allTinyIds.map(function(_tinyId) {
+                    var fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
-                    usersvc.pinAllToBoard(req, fakeCdes, res)
+                    usersvc.pinAllToBoard(req, fakeCdes, res);
                 } else {
                     res.status(404).end();
                 }

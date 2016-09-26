@@ -10,7 +10,7 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
     };   
 
     var loadMlt = function() {
-        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt._id}).
+        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt.tinyId}).
              error(function() {
                 $log.error("Unable to retrieve MLT");
              }).
@@ -23,6 +23,8 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
     $scope.$on('loadMlt', function() {
         loadMlt();
     });
+
+    $scope.mltCtrlLoadedPromise.resolve();
 
 
 }]);

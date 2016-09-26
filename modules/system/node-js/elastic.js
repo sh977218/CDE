@@ -1,62 +1,179 @@
-var config = require('./parseConfig')
-    , logging = require('../../system/node-js/logging')
-    , es = require('event-stream')
-    , trim = require("trim")
-    , regStatusShared = require('../../system/shared/regStatusShared')
+var async = require('async')
+    , config = require('./parseConfig')
+    , logging = require('./logging')
+    , regStatusShared = require('../shared/regStatusShared') //jshint ignore:line
     , usersvc = require("./usersrvc")
     , elasticsearch = require('elasticsearch')
-    , esInit = require('../../../deploy/elasticSearchInit')
-    , request = require('request')
-    , cdesvc = require('../../cde/node-js/cdesvc')
+    , esInit = require('./elasticSearchInit')
+    , dbLogger = require('../../system/node-js/dbLogger.js')
+    , mongo_cde = require("../../cde/node-js/mongo-cde")
+    , mongo_form = require("../../form/node-js/mongo-form")
+    , mongo_board = require("../../cde/node-js/mongo-board")
+    , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     ;
 
 var esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
+
 exports.esClient = esClient;
 
-exports.initEs = function () {
-    var createIndex = function (indexName, indexMapping, river) {
-        esClient.indices.exists({index: indexName}, function (error, doesIt) {
-            if (!doesIt) {
-                console.log("creating index: " + indexName);
-                request.post(config.elastic.hosts[0] + "/" + indexName,
-                    {
-                        json: true,
-                        body: indexMapping
-                    },
-                    function (error) {
-                        if (error) {
-                            console.log("error creating index. " + error);
+exports.removeElasticFields = function(elt) {
+    delete elt.classificationBoost;
+    delete elt.flatClassifications;
+    delete elt.primaryNameCopy;
+    delete elt.stewardOrgCopy;
+    delete elt.flatProperties;
+    if (elt.valueDomain) delete elt.valueDomain.nbOfPVs;
+    delete elt.primaryDefinitionCopy;
+    delete elt.flatMeshSimpleTrees;
+    delete elt.flatMeshTrees;
+    delete elt.flatIds;
+    delete elt.usedByOrgs;
+    delete elt.registrationState.registrationStatusSortOrder;
+    return elt;
+};
+
+exports.nbOfCdes = function (cb) {
+    esClient.count({index: config.elastic.index.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+exports.nbOfForms = function (cb) {
+    esClient.count({index: config.elastic.formIndex.name}, function(err, result){
+        cb(err, result.count);
+    });
+};
+
+function EsInjector(esClient, indexName, documentType) {
+    var _esInjector = this;
+    this.buffer = [];
+    this.injectThreshold = 250;
+    this.documentType = documentType;
+    this.indexName = indexName;
+    this.queueDocument = function (doc, cb) {
+        if (!doc) return;
+        _esInjector.buffer.push(doc);
+        if (_esInjector.buffer.length >= _esInjector.injectThreshold) {
+            _esInjector.inject(cb);
+        } else {
+            cb();
+        }
+    };
+    this.inject = function (cb) {
+        if (!cb) cb = function(){};
+        var request = {
+            body: []
+        };
+        _esInjector.buffer.forEach(function (elt) {
+            request.body.push({
+                index: {
+                    _index: _esInjector.indexName,
+                    _type: _esInjector.documentType,
+                    _id: elt.tinyId ? elt.tinyId : elt._id
+                }
+            });
+            delete elt._id;
+            request.body.push(elt);
+        });
+        _esInjector.buffer = [];
+        esClient.bulk(request, function (err) {
+            if (err) {
+                // a few random fails, pause 2 seconds and try again.
+                setTimeout(function() {
+                    esClient.bulk(request, function (err) {
+                        if (err) {
+                            dbLogger.logError({
+                                message: "Unable to Index in bulk",
+                                origin: "system.elastic.inject",
+                                stack: err,
+                                details: ""
+                            });
+                            cb();
                         } else {
-                            console.log("deleting old river: " + indexName);
-                            river.index.name = indexName;
-                            request.del(config.elastic.hosts[0] + "/_river/" + indexName,
-                                function () {
-                                    console.log("re-creating river: " + indexName);
-                                    request.post(config.elastic.hosts[0] + "/_river/" + indexName + "/_meta",
-                                        {
-                                            json: true,
-                                            body: river
-                                        },
-                                        function (error) {
-                                            if (error) console.log("could not create river. " + error);
-                                            else {
-                                                console.log("created river");
-                                            }
-                                        });
-                                });
+                            cb();
+                            console.log("ingested: " + request.body.length / 2);
                         }
                     });
+                }, 2000);
+            } else {
+                console.log("ingested: " + request.body.length / 2);
+                cb();
             }
         });
     };
+}
 
-    createIndex(config.elastic.index.name, esInit.createIndexJson, esInit.createRiverJson);
-    createIndex(config.elastic.formIndex.name, esInit.createFormIndexJson, esInit.createFormRiverJson);
-    createIndex(config.elastic.boardIndex.name, esInit.createBoardIndexJson, esInit.createBoardRiverJson);
-    createIndex(config.elastic.storedQueryIndex.name, esInit.createStoredQueryIndexJson, esInit.createStoredQueryRiverJson);
+exports.daoMap = {
+    "cde": mongo_cde,
+    "form": mongo_form,
+    "board": mongo_board,
+    "storedQuery": mongo_storedQuery
+};
 
+
+exports.reIndex = function (index, cb) {
+    var riverFunction = index.filter;
+    var startTime = new Date().getTime();
+    var indexType = Object.keys(index.indexJson.mappings)[0];
+    // start re-index all
+    var injector = new EsInjector(esClient, index.indexName, indexType);
+    var condition = {archived: null};
+    index.count = 0;
+    exports.daoMap[index.name].count(condition, function (err, totalCount) {
+        if (err) {
+            console.log("Error getting count: " + err);
+        }
+        console.log("Total count for " + index.name + " is " + totalCount);
+        index.totalCount = totalCount;
+        var stream = exports.daoMap[index.name].getStream(condition);
+        stream.on('data', function (elt) {
+            stream.pause();
+            injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
+                index.count++;
+                stream.resume();
+            });
+        });
+        stream.on('end', function () {
+            injector.inject(function () {
+                console.log("done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs.");
+                if (cb) cb();
+            });
+        });
+        stream.on('error', function(err) {
+           console.log("Error getting stream: " + err);
+        });
+    });
+};
+
+function createIndex(index, cb) {
+    var indexName = index.indexName;
+    var indexMapping = index.indexJson;
+    esClient.indices.exists({index: indexName}, function (error, doesIt) {
+        if (doesIt) {
+            console.log("index already exists.");
+        }
+        if (!doesIt) {
+            console.log("creating index: " + indexName);
+            esClient.indices.create({index: indexName, timeout: "10s", body: indexMapping},
+                function (error) {
+                    if (error) {
+                        console.log("error creating index. " + error);
+                    } else {
+                         console.log("index Created");
+                        exports.reIndex(index, cb);
+                    }
+                });
+        }
+    });
+}
+
+exports.initEs = function (cb) {
+    async.forEach(esInit.indices, function (index, doneOneIndex) {
+        createIndex(index, doneOneIndex);
+    }, function doneAllIndices() {
+        if (cb) cb();
+    });
 };
 
 exports.completionSuggest = function (term, cb) {
@@ -100,20 +217,24 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
     };
 
-    // Increase ranking score for high registration status
-    var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+
+    // last resort, we sort.
+    var sort = true;
 
     queryStuff.query.bool.must = [];
 
-    queryStuff.query.bool.must.push({
-        "dis_max": {
-            "queries": [
-                {"function_score": {"script_score": {"script": script}}}
-            ]
-        }
-    });
-
     if (searchQ !== undefined && searchQ !== "") {
+        sort = false;
+        // Increase ranking score for high registration status
+        var script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": script}}}
+                ]
+            }
+        });
+
         // Search for the query term given by user
         queryStuff.query.bool.must[0].dis_max.queries[0].function_score.query =
         {
@@ -126,7 +247,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must[0].dis_max.queries[1].function_score.query =
         {
             "query_string": {
-                "fields": ["naming.designation^5", "naming.definition^2"]
+                "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                 , "query": searchQ
             }
         };
@@ -137,7 +258,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
             queryStuff.query.bool.must[0].dis_max.queries[2].function_score.query =
             {
                 "query_string": {
-                    "fields": ["naming.designation^5", "naming.definition^2"]
+                    "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"]
                     , "query": "\"" + searchQ + "\"~4"
                 }
             };
@@ -153,12 +274,36 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
 
+    // filter by topic
+    if (settings.meshTree) {
+        sort = false;
+        // boost for those with fewer mesh trees
+        var flatMeshScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatMeshScript}}}
+                ]
+            }
+        });
+        queryStuff.query.bool.must.push({term: {"flatMeshTrees": settings.meshTree}});
+    }
+
     // Filter by selected Statuses
     var buildFilter = function (selectedStatuses) {
         var regStatusOr = [];
         selectedStatuses.forEach(function(regStatus) {
             regStatusOr.push({"term": {"registrationState.registrationStatus": regStatus}});
         });
+
+
+        if (user ) {
+            var curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
+            curatorOf.forEach(function (o) {
+                regStatusOr.push({"term": {"stewardOrg": o}});
+            });
+        }
+
         var filter = {and: []};
         if (regStatusOr.length > 0) {
             filter.and.push({"or": regStatusOr});
@@ -187,26 +332,44 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     var flatSelection = settings.selectedElements?settings.selectedElements.join(";"):[];
     if (flatSelection !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrg + ";" + flatSelection}});
+        sort = false;
+        // boost for those elts classified fewer times
+        var flatClassifScript = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1) ";
+        queryStuff.query.bool.must.push({
+            "dis_max": {
+                "queries": [
+                    {"function_score": {"script_score": {"script": flatClassifScript}}}
+                ]
+            }
+        });
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
     var flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
     if (flatSelectionAlt !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassification: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
     if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
         settings.visibleStatuses = regStatusShared.statusList.map(function(s) { return s.name; });
     }
 
-    var regStatusAggFilter = {"or": []};
+    var regStatusAggFilter = {
+        "and": [
+            {"or": []},
+            {"not": {term: {"registrationState.registrationStatus": "Retired"}}}
+        ]};
     settings.visibleStatuses.forEach(function(regStatus) {
-        regStatusAggFilter.or.push({"term": {"registrationState.registrationStatus": regStatus}});
+        regStatusAggFilter.and[0].or.push({"term": {"registrationState.registrationStatus": regStatus}});
     });
     if (user) {
         usersvc.myOrgs(user).forEach(function(myOrg) {
-            regStatusAggFilter.or.push({"term": {"stewardOrg.name": myOrg}});
+            regStatusAggFilter.and[0].or.push({"term": {"stewardOrg.name": myOrg}});
         });
+    }
+
+    if (sort) {
+        queryStuff.sort = {"views": {order: "desc"}};
     }
 
     // Get aggregations on classifications and statuses
@@ -218,7 +381,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
                     "orgs": {
                         "terms": {
                             "field": "classification.stewardOrg.name",
-                            "size": 40,
+                            "size": 500,
                             "order": {
                                 "_term": "desc"
                             }
@@ -238,32 +401,62 @@ exports.buildElasticSearchQuery = function (user, settings) {
             }
         };
 
-        //queryStuff.aggregations.statuses.aggregations = {};
-
         var flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
-            var flatClassification = {
+            var flatClassifications = {
                 "terms": {
                     "size": 500,
-                    "field": "flatClassification"
+                    "field": "flatClassifications"
                 }
             };
             if (selectionString === "") {
-                flatClassification.terms.include = settings[orgVariableName] + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ";[^;]+";
             } else {
-                flatClassification.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
+                flatClassifications.terms.include = settings[orgVariableName] + ';' + queryBuilder.escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
                 "filter": settings.filter,
                 "aggs": {}
             };
-            queryStuff.aggregations[variableName].aggs[variableName] = flatClassification;
+            queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
         };
         if (settings.selectedOrg !== undefined) {
-            flattenClassificationAggregations('flatClassification', 'selectedOrg', flatSelection);
+            flattenClassificationAggregations('flatClassifications', 'selectedOrg', flatSelection);
         }
         if (settings.selectedOrgAlt !== undefined) {
-            flattenClassificationAggregations('flatClassificationAlt', 'selectedOrgAlt', flatSelectionAlt);
+            flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
+
+        queryStuff.aggregations.meshTrees = {
+            "filter": settings.filter,
+            aggs: {
+                "meshTrees": {
+                    terms: {
+                        size: 50,
+                        field: "flatMeshTrees",
+                        include: "[^;]+"
+                    }
+                }
+            }
+        };
+
+        if (settings.meshTree && settings.meshTree.length > 0) {
+            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = queryBuilder.escapeRegExp(settings.meshTree) + ";[^;]+";
+        }
+
+        queryStuff.aggregations.twoLevelMesh = {
+            "filter": settings.filter,
+            aggs: {
+                twoLevelMesh: {
+                    terms: {
+                        size: 500,
+                        field: "flatMeshTrees",
+                        //include: "[^;]+"
+                        include: "[^;]+;[^;]+"
+                    }
+                }
+            }
+        };
+
     }
 
     if (queryStuff.query.bool.must.length === 0) {
@@ -280,7 +473,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         , "fields": {
             "stewardOrgCopy.name": {}
             , "primaryNameCopy": {}
-            , "primaryDefinitionCopy": {}
+            , "primaryDefinitionCopy": {"number_of_fragments" : 1}
             , "naming.designation": {}
             , "naming.definition": {}
             , "dataElementConcept.concepts.name": {}
@@ -316,6 +509,105 @@ var searchTemplate = {
     }
 };
 
+exports.meshSyncStatus = {
+};
+
+exports.syncWithMesh = function(allMappings) {
+
+    var classifToTrees = {};
+    allMappings.forEach(function(m) {
+        // from a;b;c to a a;b a;b;c
+        classifToTrees[m.flatClassification] = [];
+        m.flatTrees.forEach(function (treeNode) {
+            classifToTrees[m.flatClassification].push(treeNode);
+            while(treeNode.indexOf(";") > -1) {
+                treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
+                classifToTrees[m.flatClassification].push(treeNode);
+            }
+        });
+    });
+
+    var classifToSimpleTrees = {};
+    allMappings.forEach(function(m) {
+        classifToSimpleTrees[m.flatClassification] = m.flatTrees;
+    });
+
+    var search = JSON.parse(JSON.stringify(searchTemplate.cde));
+    search.scroll = '1m';
+    search.search_type = 'scan';
+    search.body = {};
+
+    exports.meshSyncStatus.done = 0;
+
+    var scrollThrough = function (scrollId) {
+        esClient.scroll({scrollId: scrollId, scroll: '1m'},
+            function (err, response) {
+                if (err) {
+                    lock = false;
+                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
+                        {
+                            origin: "system.elastic.syncWithMesh", stack: new Error().stack
+                        });
+                } else {
+                    var newScrollId = response._scroll_id;
+                    exports.meshSyncStatus.total = response.hits.total;
+                    if (response.hits.hits.length > 0) {
+                        response.hits.hits.forEach(function (hit) {
+                            var thisElt = hit._source;
+                            var trees = new Set();
+                            var simpleTrees = new Set();
+                            thisElt.flatClassifications.forEach(function (fc) {
+                                if (classifToTrees[fc]) {
+                                    classifToTrees[fc].forEach(function (node) {
+                                        trees.add(node);
+                                    });
+                                }
+                                if (classifToSimpleTrees[fc]) {
+                                    classifToSimpleTrees[fc].forEach(function (node) {
+                                        simpleTrees.add(node);
+                                    });
+                                }
+                            });
+                            if (trees.size > 0) {
+                                esClient.update({
+                                    index: config.elastic.index.name,
+                                    type: "dataelement",
+                                    id: thisElt.tinyId,
+                                    body: {
+                                        doc: {
+                                            flatMeshTrees: Array.from(trees),
+                                            flatMeshSimpleTrees: Array.from(simpleTrees)
+                                        }
+                                    }
+                                }, function (err) {
+                                    if (err) console.log("ERR: " + err);
+                                });
+                            }
+                            exports.meshSyncStatus.done++;
+                        });
+                        scrollThrough(newScrollId);
+                    } else {
+                        console.log("done syncing with MeSH");
+                    }
+                }
+            });
+    };
+
+    esClient.search(search, function (err, response) {
+        if (err) {
+            lock = false;
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                {
+                    origin: "system.elastic.syncWithMesh", stack: new Error().stack,
+                    details: ""
+                });
+        } else {
+            scrollThrough(response._scroll_id);
+        }
+    });
+
+};
+
 
 exports.elasticsearch = function (query, type, cb) {
     var search = searchTemplate[type];
@@ -343,8 +635,15 @@ exports.elasticsearch = function (query, type, cb) {
                 cb("Server Error");
             }
         } else {
+            if (response.hits.total === 0 && config.name.indexOf("Production") === -1) {
+                console.log("No response. QUERY: " + JSON.stringify(query));
+                console.log("----");
+            }
+
             var result = {
                 totalNumber: response.hits.total
+                , maxScore: response.hits.max_score
+                , took: response.took
             };
             result[type + 's'] = [];
             for (var i = 0; i < response.hits.hits.length; i++) {
@@ -366,12 +665,8 @@ exports.elasticsearch = function (query, type, cb) {
 
 var lock = false;
 
-exports.elasticSearchExport = function (res, query, type, exporter) {
-    if (lock) return res.status(503).send("Servers busy");
-
-    if (!exporter) return res.status(500).send("Unable to process exporter.");
-
-    res.type(exporter.type);
+exports.elasticSearchExport = function (dataCb, query, type) {
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -381,10 +676,7 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
     var search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.search_type = 'scan';
-    if (exporter.header) res.write(exporter.header);
     search.body = query;
-
-    var sentElements = 0;
 
     var scrollThrough = function (scrollId) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
@@ -395,21 +687,17 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
                         {
                             origin: "system.elastic.elasticsearch", stack: new Error().stack
                         });
-                    res.status(500).send("ES Error");
+                    dataCb("ES Error");
                 } else {
                     var newScrollId = response._scroll_id;
                     if (response.hits.hits.length === 0) {
                         lock = false;
-                        if (exporter.footer) res.write(exporter.footer);
-                        res.send();
+                        dataCb();
                     }
                     else {
                         for (var i = 0; i < response.hits.hits.length; i++) {
                             var thisCde = response.hits.hits[i]._source;
-                            res.write(exporter.transformObject(cdesvc.hideProprietaryPvs(thisCde)));
-                            sentElements++;
-                            var isLast = sentElements === response.hits.total;
-                            if (exporter.delimiter && !isLast) res.write(exporter.delimiter);
+                            dataCb(null, thisCde);
                         }
                         scrollThrough(newScrollId);
                     }
@@ -423,12 +711,11 @@ exports.elasticSearchExport = function (res, query, type, exporter) {
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
                     origin: "system.elastic.elasticsearch", stack: new Error().stack,
-                    details: "body " + body + ", query: " + query
+                    details: ", query: " + query
                 });
-            res.status(500).send("ES Error");
+            dataCb("ES Error");
         } else {
             scrollThrough(response._scroll_id);
         }
     });
-
 };

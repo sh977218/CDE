@@ -72,6 +72,23 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
         });
     };
 
+    $scope.openMeshMapping = function(orgName, pathArray) {
+        $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/meshMappingMgt.html',
+            controller: 'MeshMappingMgtCtrl',
+            resolve: {
+                org: function() {
+                    return orgName;
+                } ,
+                pathArray: function() {
+                    return pathArray;
+                }
+            }
+        });
+    };
+
+
     $scope.showRenameDialog = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             animation: false,
@@ -120,12 +137,10 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
                 module: function() {
                     return $scope.module;
                 }
-                , myOrgs: function() {
-                    return userResource.userOrgs;
+                , cde: function () {
+                    return null;
                 }
-                , cde: function() {
-                    return {_id:null};
-                }
+                // @TODO: this is the only place of 5 where this dependency is used.
                 , orgName: function() {
                     return orgName;
                 }
@@ -149,7 +164,7 @@ angular.module('systemModule').controller('ClassificationManagementCtrl',
 
     $scope.classifyEntireSearch = function(oldClassification, newClassification) {
         var settings = {
-            resultPerPage: 1000000
+            resultPerPage: 10000
             , searchTerm: ""
             , selectedOrg: oldClassification.orgName
             , selectedElements: oldClassification.classifications

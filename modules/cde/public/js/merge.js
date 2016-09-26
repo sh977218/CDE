@@ -60,7 +60,7 @@ angular.module('CdeMerge', [])
         }
     };
 })   
-.factory('Mail', function($http) {
+.factory('Mail', ["$http", function($http) {
     return {
         sendMessage: function(dat, success, error) {              
             $http.post('/mail/messages/new', dat).success(success).error(error);
@@ -74,4 +74,4 @@ angular.module('CdeMerge', [])
             $http.post('/mail/messages/update', msg).success(success).error(error);
         }
     };        
-}) ;
+}]);

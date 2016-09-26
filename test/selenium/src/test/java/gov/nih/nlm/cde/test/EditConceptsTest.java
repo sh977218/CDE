@@ -3,7 +3,6 @@ package gov.nih.nlm.cde.test;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class EditConceptsTest extends NlmCdeBaseTest {
@@ -11,62 +10,79 @@ public class EditConceptsTest extends NlmCdeBaseTest {
     @Test
     public void editConcepts() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        String cdeName = "Patient Photograph Malignant";
+        String cdeName = "Patient Photograph Malignant Neoplasm Assessment Date";
+
+        String newDataElementConceptName = "DEC1";
+        String newDataElementConceptId = "DEC_CODE_111";
+
+        String newObjectClassConceptName = "OC1";
+        String newObjectClassConceptId = "OC_CODE_111";
+
+        String newPropertyConceptName = "Prop1";
+        String newPropertyConceptId = "Prop_CODE_111";
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Concepts")).click();
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
 
-        findElement(By.id("addConcept")).click();
-        findElement(By.name("name")).sendKeys("DEC1");
-        findElement(By.name("codeId")).sendKeys("DEC_CODE_111");
-        findElement(By.id("createConcept")).click();
-        hangon(2);
         clickElement(By.id("addConcept"));
-        findElement(By.name("name")).sendKeys("OC1");
-        findElement(By.name("codeId")).sendKeys("OC_CODE_111");
+        findElement(By.name("name")).sendKeys(newDataElementConceptName);
+        findElement(By.name("codeId")).sendKeys(newDataElementConceptId);
+        clickElement(By.id("createConcept"));
+
+        clickElement(By.id("addConcept"));
+        findElement(By.name("name")).sendKeys(newObjectClassConceptName);
+        findElement(By.name("codeId")).sendKeys(newObjectClassConceptId);
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Class");
-        findElement(By.id("createConcept")).click();
-        hangon(2);
+        clickElement(By.id("createConcept"));
 
-        findElement(By.id("addConcept")).click();
-        findElement(By.name("name")).sendKeys("Prop1");
-        findElement(By.name("codeId")).sendKeys("Prop_CODE_111");
+        clickElement(By.id("addConcept"));
+        findElement(By.name("name")).sendKeys(newPropertyConceptName);
+        findElement(By.name("codeId")).sendKeys(newPropertyConceptId);
         new Select(driver.findElement(By.name("conceptType"))).selectByVisibleText("Property");
-        findElement(By.id("createConcept")).click();
-        hangon(2);
+        clickElement(By.id("createConcept"));
 
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        findElement(By.linkText("Concepts")).click();
-        textPresent("DEC_CODE_111");
-        textPresent("OC_CODE_111");
-        textPresent("Prop_CODE_111");
+        showAllTabs();
+        clickElement(By.id("concepts_tab"));
+        textPresent(newDataElementConceptId);
+        textPresent(newObjectClassConceptId);
+        textPresent(newPropertyConceptId);
 
-        checkInHistory("Concepts", "", "DEC_CODE_111");
-        checkInHistory("Concepts", "", "OC_CODE_111");
-        checkInHistory("Concepts", "", "Prop_CODE_111");
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent(newDataElementConceptName, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[@data-title='name']"));
+        textPresent(newDataElementConceptId, By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//*[@data-title='originId']"));
 
-        findElement(By.linkText("Concepts")).click();
+        textPresent(newPropertyConceptName, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[@data-title='name']"));
+        textPresent(newPropertyConceptId, By.xpath("//*[@id='historyCompareLeft_Property Concepts_3']//*[@data-title='originId']"));
 
-        findElement(By.id("removedataElementConcept-0")).click();
-        findElement(By.id("removeobjectClass-1")).click();
-        findElement(By.id("removeproperty-3")).click();
+        textPresent(newObjectClassConceptName, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[@data-title='name']"));
+        textPresent(newObjectClassConceptId, By.xpath("//*[@id='historyCompareLeft_ObjectClass Concepts_0']//*[@data-title='originId']"));
+
+        clickElement(By.id("concepts_tab"));
+        clickElement(By.id("removedataElementConcept-0"));
+        clickElement(By.id("removeobjectClass-1"));
+        clickElement(By.id("removeproperty-3"));
 
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("DEC1"));
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("OC1"));
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("PROP1"));
-
-        checkInHistory("Concepts", "DEC_CODE_111", "");
-        checkInHistory("Concepts", "OC_CODE_111", "");
-        checkInHistory("Concepts", "Prop_CODE_111", "");
+        showAllTabs();
+        clickElement(By.id("history_tab"));
+        selectHistoryAndCompare(1, 2);
+        textPresent("Patient Photograph Malignant Neoplasm Assessment", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_1']//*[@data-title='name']"));
+        textPresent("2640357v1", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_1']//*[@data-title='originId']"));
+        textPresent("Photograph", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[@data-title='name']"));
+        textPresent("C86035", By.xpath("//*[@id='historyCompareRight_Property Concepts_2']//*[@data-title='originId']"));
+        textPresent("Patient", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[@data-title='name']"));
+        textPresent("C16960", By.xpath("//*[@id='historyCompareRight_ObjectClass Concepts_1']//*[@data-title='originId']"));
 
         openCdeAudit(cdeName);
-        textPresent("DEC_CODE_111");
-        textPresent("OC_CODE_111");
-        textPresent("Prop_CODE_111");
+        textPresent(newDataElementConceptId);
+        textPresent(newObjectClassConceptId);
+        textPresent(newPropertyConceptId);
     }
 }

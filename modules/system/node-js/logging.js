@@ -1,7 +1,6 @@
 var winston = require('winston')
     , util = require('util')
     , dbLogger = require('./dbLogger.js')
-    , helper = require('./helper.js')
     , config = require('./parseConfig')
     ;
 
@@ -35,8 +34,8 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
   
 exports.MongoLogger = MongoLogger;
 
-MongoErrorLogger.prototype.log = function (level, msg, meta, cb) {
-    processDetails = function(details){
+MongoErrorLogger.prototype.log = function (level, msg, meta) {
+    var processDetails = function(details){
         if (typeof details === "string") return details;
         if (typeof details !== "object") return "No details provided.";
         Object.keys(details).map(function(name){
@@ -100,7 +99,7 @@ exports.expressLogger = new (winston.Logger)(expressLoggerCnf);
 exports.errorLogger = new (winston.Logger)(expressErrorLoggerCnf);
 
 exports.generateErrorLogRequest = function (req) {
-    var url, method, params, body, username; 
+    var url, method, body, username;
     try {
         url = req.url;
         method = req.method;
@@ -112,7 +111,6 @@ exports.generateErrorLogRequest = function (req) {
     return {
         url: url
         , method: method
-        , params: params
         , body: body
         , username: username
         , userAgent: req.headers['user-agent']

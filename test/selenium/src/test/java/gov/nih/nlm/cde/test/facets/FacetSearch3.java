@@ -36,7 +36,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
             hoverOverElement(findElement(By.linkText("CDEs")));
             hangon(1);
             hoverOverElement(findElement(By.id("classifications-text-AECC")));
-            checkTooltipText(By.id("classifications-text-AECC"), "Albert Einstein Cancer Center");
+            textPresent("Albert Einstein Cancer Center");
         }
         hoverOverElement(findElement(By.linkText("CDEs")));
         textNotPresent("Albert Einstein Cancer Center");
@@ -75,7 +75,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         findElement(By.id("menu_cdes_link")).click();
         findElement(By.id("browseOrg-caCORE"));
         findElement(By.id("browseOrg-NINDS")).click();
-        textPresent( "All Terms | NINDS | All Statuses" );
+        textPresent( "All Terms | NINDS | All Topics | All Statuses" );
     }
     
 }

@@ -7,9 +7,9 @@ import org.testng.annotations.Test;
 
 public class FormSearchShowNumberQuestionsTest extends NlmCdeBaseTest {
 
-    @Test
     public void formSearchShowNumberQuestionsTest() {
-        searchElt("Classification of Seizures", "form", null);
-        Assert.assertEquals(findElement(By.id("nQuestion-0")).getText(), "8 questions");
+        mustBeLoggedOut();
+        searchElt("Classification of Seizures", "form");
+        Assert.assertEquals(findElement(By.id("dd_nQuestion-0")).getText(), "8");
     }
 }

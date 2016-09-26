@@ -1,10 +1,15 @@
 <div class="container-fluid" ng-cloak>
     <div ng-controller="VersionCtrl" class="alert alert-info mt20" ng-show="elt.unsaved" id="openSaveTop">
         <i class="fa fa-exclamation-triangle"></i> This element is not saved.
-        <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSave">Save</button>
+        <span ng-if="!isFormValid"> Some errors need to be be fixed before the form can be saved.</span>
+        <button ng-disabled="!isFormValid" class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')"
+                id="openSave">
+            Save
+        </button>
     </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.
+        <a id="viewCurrentEltLink" href="/#/formView?tinyId={{elt.tinyId}}">View current form</a>
     </div>
 
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
@@ -15,90 +20,64 @@
         <strong>Note: </strong>Some CDEs in this form have newer version.
     </div>
     <div class="alert alert-warning mt20" role="alert" ng-if="missingCdes.length > 0">
-        <i class="fa fa-exclamation-triangle"></i> The following CDEs are part of a score but are missing from this form:
+        <i class="fa fa-exclamation-triangle"></i>
+        The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
-            <li ng-repeat="mc in missingCdes"><a href="/#/deview?tinyId={{mc.tinyId}}" target="_blank">CDE {{$index+1}}, id: {{mc.tinyId}}</a><span ng-if="!$last">,</span> </li>
+            <li ng-repeat="mc in missingCdes">
+                <a href="/#/deview?tinyId={{mc.tinyId}}" target="_blank">CDE {{$index+1}},id: {{mc.tinyId}}</a>
+                <span ng-if="!$last">,</span></li>
         </ul>
     </div>
 
     <h3>{{elt.naming[0].designation}}
-        <div class="btn-group">
-            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="btn-group" ng-if="elt.tinyId">
+            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-download"></i>
                 Export <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a></li>
-                <li><a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a></li>
-                <li><a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">XML File, SDC Schema</a></li>
-                <li><a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a></li>
+                <li ng-if="user._id">
+                    <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
+                        XML File, SDC Schema</a>
+                </li>
+                <li ng-if="user._id">
+                    <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a>
+                </li>
+                <li ng-if="user._id && enableBeta">
+                    <a id='nihRedCap' ng-href="form/{{elt.tinyId}}?type=REDCap" target="_blank">
+                        REDCap <sup class="betaFeature">beta</sup></a>
+                </li>
+                <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
             </ul>
         </div>
 
         <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
-                ng-if="user._id" ng-click="pinAllCdesModal()"><i class="fa fa-cogs"></i> Pin CDEs
+                ng-if="user._id" ng-click="pinAllCdesModal()">
+            <i class="fa fa-cogs"></i> Pin CDEs
         </button>
     </h3>
 
-    <div uib-tabset>
-        <div uib-tab heading="{{tabs['general'].heading}}">
-            <div class="row">
-                <div class="col-md-12 col-lg-5">
-                    <div ng-include="'/form/public/html/formGeneralDetails.html'"></div>
-                </div>
-                <div class="col-md-12 col-lg-7" ng-if="!elt.noRenderAllowed" ng-switch="renderWith">
-                    <div ng-switch-default>
-                        <div>Rendering done via <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.</div>
-                        <lforms lf-data="lfData"></lforms>
-                        <small>You may also preview this form in <a href="" ng-click="setRenderFormat('native')">native</a> format.</small>
-                    </div>
-                    <div ng-switch-when="native">
-                        <div ng-include="'/form/public/html/formRender.html'"></div>
-                        <small>You may also preview this form with <a href="" ng-click="setRenderFormat('lforms')">LForms</a>.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div uib-tab heading="{{tabs['description'].heading}}">
-            <div ng-include="'/form/public/html/formDescription.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['cdeList'].heading}}" select="getFormCdes()">
-            <div ng-controller="FormCdeCtrl" ng-include="'/form/public/html/cdeList.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['naming'].heading}}">
-            <div ng-include="'/system/public/html/naming.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['displayProfiles'].heading}}">
-            <div ng-include="'/form/public/html/displayProfiles.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['classification'].heading}}">
-            <div ng-include="'/form/public/html/formClassification.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['status'].heading}}" id="status_tab">
-            <div ng-include="'/system/public/html/status.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['referenceDocument'].heading}}" active="tabs['referenceDocument'].active">
-            <div ng-include="'/system/public/html/referenceDocument.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['properties'].heading}}" active="tabs['properties'].active">
-            <div ng-include="'/system/public/html/properties.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['ids'].heading}}" active="tabs['ids'].active">
-            <div ng-include="'/system/public/html/identifiers.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['discussions'].heading}}">
-            <div ng-include="'/system/public/html/comments.html'"></div>
-        </div>
-        <div uib-tab heading="{{tabs['attachments'].heading}}">
-            <div ng-include="'/system/public/html/attachments.html'"></div>
-        </div>
-    </div>
+    <uib-tabset>
+        <uib-tab ng-repeat="(tabName, tab) in tabs" active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
+                 id="{{tabName}}_tab" select="tab.select(tabName)">
+            <uib-tab-heading ng-class="tab.class">{{tab.heading}}</uib-tab-heading>
+            <div ng-repeat="incl in tab.includes" ng-include="incl"/>
+        </uib-tab>
+    </uib-tabset>
 
     <div class="row" ng-controller="VersionCtrl">
         <div class="col-md-12" ng-show="elt.unsaved">
             <hr/>
             <button class="btn cancel" ng-click="revert()" id="discardChanges">Discard Changes</button>
-            <button class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')" id="openSaveBottom">Save
+            <button ng-disabled="!isFormValid" class="btn btn-primary" ng-click="openSave(elt, 'formView?tinyId=')"
+                    id="openSaveBottom">Save
             </button>
         </div>
     </div>

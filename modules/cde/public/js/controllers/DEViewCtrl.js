@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log',
+        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
         function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
                  isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                 CdeDiff, $q, QuickBoard, $log)
+                 CdeDiff, $q, QuickBoard, $log, userResource)
 {
 
     $scope.module = 'cde';
@@ -22,44 +22,169 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     $scope.canCurate = false;
 
+    $scope.forkCtrlLoadedPromise =  $q.defer();
+    $scope.formsCtrlLoadedPromise = $q.defer();
+    $scope.derRulesCtrlLoadedPromise = $q.defer();
+    $scope.mltCtrlLoadedPromise = $q.defer();
+    $scope.historyCtrlLoadedPromise = $q.defer();
+
+    function setCurrentTab(thisTab) {
+        $scope.currentTab = thisTab;
+    }
+
     $scope.tabs = {
         general: {
             heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html']
+            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
         },
-        pvs: {heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html']},
-        naming: {heading: "Naming", includes: ['/system/public/html/naming.html']},
-        classification: {heading: "Classification", includes: ['/system/public/html/elementClassification.html']},
-        concepts: {heading: "Concepts", includes: ['/cde/public/html/concepts.html']},
-        status: {heading: "Status", includes: ['/system/public/html/status.html']},
-        referenceDocument: {heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html']},
-        properties: {heading: "Properties", includes: ['/system/public/html/properties.html']},
-        ids: {heading: "Identifiers", includes: ['/system/public/html/identifiers.html']},
+        pvs: {
+            heading: "Permissible Values", includes: ['/cde/public/html/valueDomainView.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        naming: {
+            heading: "Naming", includes: ['/system/public/html/naming.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                });
+            },
+            show: true
+        },
+        classification: {
+            heading: "Classification", includes: ['/system/public/html/elementClassification.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: true
+        },
+        concepts: {
+            heading: "Concepts", includes: ['/cde/public/html/concepts.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        status: {
+            heading: "Status", includes: ['/system/public/html/status.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        referenceDocument: {
+            heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        properties: {
+            heading: "Properties", includes: ['/system/public/html/properties.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+                OrgHelpers.deferred.promise.then(function () {
+                    $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                });
+            },
+            show: false,
+            hideable: true
+        },
+        ids: {
+            heading: "Identifiers", includes: ['/system/public/html/identifiers.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
         forms: {
             heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
             select: function () {
-                $timeout($scope.$broadcast('loadLinkedForms'), 0);
-            }
+                setCurrentTab();
+                $scope.formsCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadLinkedForms');});
+            },
+            show: false,
+            hideable: true
+
         },
-        mappingSpecifications: {heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html']},
-        discussions: {heading: "Discussions", includes: ['/system/public/html/comments.html']},
-        boards: {heading: "Boards", includes: ['/cde/public/html/listOfBoards.html']},
-        attachments: {heading: "Attachments", includes: ['/system/public/html/attachments.html']},
-        derivationRules: {heading: "Score / Derivations",
+        mappingSpecifications: {
+            heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        discussions: {
+            heading: "Discussions", includes: ['/system/public/html/comments.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        boards: {
+            heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        attachments: {
+            heading: "Attachments", includes: ['/system/public/html/attachments.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        derivationRules: {
+            heading: "Score / Derivations",
             includes: ['/cde/public/html/derivationRules.html'],
-            select: function() {
-                $timeout($scope.$broadcast('loadDerivationRules'), 0);
-            }},
-        mlt: {heading: "More Like This",
+            select: function () {
+                setCurrentTab();
+                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
+            },
+            show: false,
+            hideable: true
+        },
+        mlt: {
+            heading: "More Like This",
             includes: ['/cde/public/html/deMlt.html'],
-            select: function() {
-                $timeout($scope.$broadcast('loadMlt'), 0);
-            }},
-        history: {heading: "History",
+            select: function () {
+                setCurrentTab();
+                $scope.mltCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadMlt');});
+            },
+            show: false,
+            hideable: true
+        },
+        history: {
+            heading: "History",
             includes: ['/cde/public/html/cdeHistory.html'],
-            select: function() {
-                $timeout($scope.$broadcast('loadPriorCdes'), 0);
-            }},
+            select: function () {
+                setCurrentTab();
+                if ($scope.elt.history && $scope.elt.history.length > 0) {
+                    $http.get('/priorcdes/' + $scope.elt._id).success(function (result) {
+                        $scope.priorCdes = result.reverse();
+                        $scope.priorCdes.splice(0, 0, $scope.elt);
+                    });
+                }
+            },
+            show: false,
+            hideable: true
+        },
         forks: {
             heading: "Forks",
             includes: ['/cde/public/html/forks.html'],
@@ -67,19 +192,49 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 return !$scope.elt.isForkOf;
             },
             select: function () {
+                setCurrentTab();
                 $log.debug("select on forks");
-                $timeout($scope.$broadcast('loadForks'), 0);
-            }
+                $scope.forkCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadForks');});
+            },
+            show:false,
+            hideable: true
+        },
+        dataSet: {
+            heading: "Dataset",
+            includes: ['/cde/public/html/cdeDataset.html'],
+            select: function () {
+                setCurrentTab();
+            },
+            show: false,
+            hideable: true
+        },
+        more: {
+            heading: "More...",
+            includes: [],
+            select: function () {
+                $timeout(function () {
+                    $scope.tabs.more.show = false;
+                    $scope.tabs.more.active = false;
+                    $scope.tabs[$scope.currentTab].active = true;
+                    Object.keys($scope.tabs).forEach(function(key) {
+                        if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
+                    });
+                }, 0);
+            },
+            show: true,
+            class: "gray"
         }
     };
-    $scope.resolveCdeLoaded = null;
-    $scope.cdeLoadedPromise = $q(function(resolve) {
-        $scope.resolveCdeLoaded = resolve;
-    });
+
+    $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
         if ($scope.elt && $scope.elt.unsaved) {
-            var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+            var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+            if (window.debugEnabled) {
+                txt = txt + window.location.pathname;
+            }
+            var answer = confirm(txt);
             if (!answer) {
                 event.preventDefault();
             }
@@ -110,19 +265,30 @@ angular.module('cdeModule').controller('DEViewCtrl',
                     $scope.rootFork = result.data;
                 });
             }
+            $scope.elt.usedBy = OrgHelpers.getUsedBy($scope.elt, userResource.user);
             isAllowedModel.setCanCurate($scope);
             isAllowedModel.setDisplayStatusWarning($scope);
-            $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
-            $scope.resolveCdeLoaded();
-            $scope.$broadcast("elementReloaded");
+            OrgHelpers.deferred.promise.then(function() {
+                $scope.orgDetailsInfoHtml = OrgHelpers.createOrgDetailedInfoHtml($scope.elt.stewardOrg.name, $rootScope.orgsDetailedInfo);
+            });
+            $scope.deferredEltLoaded.resolve();
+            if (route.tab) {
+                $scope.tabs.more.select();
+                $scope.tabs[route.tab].active = true;
+            }
+            $http.get('/esRecord/' + de.tinyId).success(function (response) {
+                $scope.elt.flatMeshSimpleTrees = [];
+                if (response._source.flatMeshSimpleTrees) {
+                    response._source.flatMeshSimpleTrees.forEach(function (t) {
+                        if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
+                    });
+                }
+            });
         }, function (err) {
             $log.error("Unable to retrieve element.");
             $log.error(err);
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
-        if (route.tab) {
-            $scope.tabs[route.tab].active = true;
-        }
     };
 
     $scope.reload($routeParams);
@@ -228,7 +394,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.validateVsacWithPv = function() {
         $scope.vsacValueSet.forEach(function(vsItem) {
             vsItem.isValid = $scope.isVsInPv(vsItem);
-        })
+        });
     };
 
     $scope.allVsacMatch = function () {
@@ -240,8 +406,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     };
 
     $scope.vsacMappingExists = function() {
-        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined"
-            && typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
+        return typeof($scope.elt.dataElementConcept.conceptualDomain) !== "undefined" &&
+            typeof($scope.elt.dataElementConcept.conceptualDomain.vsac) !== "undefined";
     };
 
     $scope.loadValueSet = function() {
@@ -259,9 +425,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }
              }).
              success(function(data) {
-                if (data.error) {
-                } else if (data === "") {
-                } else {
+                if (!data.error && data["ns0:RetrieveValueSetResponse"]) {
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
                     $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
                     for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
@@ -274,6 +438,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
                         $scope.showValidateButton = true;
                     }
                     $scope.getPVTypeheadVsacNameList();
+                } else {
+                    $scope.addAlert("Error: No data retrieved from VSAC.");
                 }
              })
              ;

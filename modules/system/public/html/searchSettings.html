@@ -5,27 +5,31 @@
     <h3><i class="fa fa-check-square-o"></i> Registration Statuses</h3>
     <div class="form-group">
         <span>I want my search results to include these statuses</span>
-        <div class="radio indent" >
+        <div class="radio indent">
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Qualified" value="Qualified">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Qualified"
+                       value="Qualified">
                 Preferred Standard, Standard, Qualified
             </label>
         </div>
-        <div class="radio indent" >
+        <div class="radio indent">
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Recorded" value="Recorded">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Recorded"
+                       value="Recorded">
                 Preferred Standard, Standard, Qualified, Recorded
             </label>
         </div>
-        <div class="radio indent" >
+        <div class="radio indent">
             <label>
-                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Candidate" value="Candidate">
+                <input type="radio" ng-model="searchSettings.lowestRegistrationStatus" id="minStatus-Candidate"
+                       value="Candidate">
                 Preferred Standard, Standard, Qualified, Recorded, Candidate
             </label>
         </div>
-        <div class="radio indent" >
+        <div class="radio indent">
             <label>
-                <input id="minStatus-Incomplete" type="radio" ng-model="searchSettings.lowestRegistrationStatus" value="Incomplete">
+                <input id="minStatus-Incomplete" type="radio" ng-model="searchSettings.lowestRegistrationStatus"
+                       value="Incomplete">
                 Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
             </label>
         </div>
@@ -34,10 +38,11 @@
     <h3><i class="fa fa-bars"></i> Default Search Results View</h3>
     <div class="form-group">
         <span>By default, I want to see results as </span>
-        <div class="radio indent" >
+        <div class="radio indent">
             <label>
-                <input type="radio" ng-model="searchSettings.defaultSearchView" id="defaultView-accordion" value="accordion">
-                <i class="fa fa-bars"></i> Accordion
+                <input type="radio" ng-model="searchSettings.defaultSearchView" id="defaultView-summary"
+                       value="summary">
+                <i class="fa fa-list"></i> Summary
             </label>
         </div>
         <div class="radio indent">
@@ -54,54 +59,101 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="checkbox indent">
-                <label><input disabled id="name" type="checkbox" ng-model="searchSettings.tableViewFields.cde.name"> Name</label>
+                    <label><input disabled id="name" type="checkbox" ng-model="searchSettings.tableViewFields.name">
+                        Name</label>
                 </div>
                 <div class="checkbox indent">
-                <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.cde.naming"> Other Names</label>
+                    <label><input id="naming" type="checkbox" ng-model="searchSettings.tableViewFields.naming"> Other
+                        Names</label>
                 </div>
                 <div class="checkbox indent">
                     <label>
                         <input id="permissibleValues" type="checkbox"
-                               ng-model="searchSettings.tableViewFields.cde.permissibleValues"> Permissible Values
+                               ng-model="searchSettings.tableViewFields.permissibleValues"> Permissible Values
                     </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
                 </div>
                 <div class="checkbox indent">
                     <label>
-                        <input id="nbOfPVs" type="checkbox" ng-model="searchSettings.tableViewFields.cde.nbOfPVs">
+                        <input id="nbOfPVs" type="checkbox" ng-model="searchSettings.tableViewFields.nbOfPVs">
                         Number of Permissible Values (PVs)
                     </label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
                 </div>
                 <div class="checkbox indent">
-                <label><input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.cde.uom"> Unit of Measure</label>
+                    <label><input id="uom" type="checkbox" ng-model="searchSettings.tableViewFields.uom"> Unit of
+                        Measure</label>
+                    <span class="text-info"><small>(CDE Only)</small></span>
                 </div>
                 <div class="checkbox indent">
-                <label><input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.cde.stewardOrg"> Steward</label>
+                    <label><input id="stewardOrg" type="checkbox" ng-model="searchSettings.tableViewFields.stewardOrg">
+                        Steward</label>
                 </div>
                 <div class="checkbox indent">
-                <label><input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.cde.usedBy"> Used by Organizations</label>
+                    <label><input id="usedBy" type="checkbox" ng-model="searchSettings.tableViewFields.usedBy"> Used by</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="tinyId" type="checkbox" ng-model="searchSettings.tableViewFields.tinyId"> NLM
+                        ID</label>
                 </div>
 
             </div>
             <div class="col-md-6">
                 <div class="checkbox indent">
-                    <label><input id="registrationStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.registrationStatus"> Registration Status</label>
+                    <label><input id="registrationStatus" type="checkbox"
+                                  ng-model="searchSettings.tableViewFields.registrationStatus"> Registration
+                        Status</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="administrativeStatus" type="checkbox" ng-model="searchSettings.tableViewFields.cde.administrativeStatus"> Admin Status</label>
+                    <label><input id="administrativeStatus" type="checkbox"
+                                  ng-model="searchSettings.tableViewFields.administrativeStatus"> Admin Status</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.cde.ids"> Identifiers</label>
+                    <label><input id="ids" type="checkbox" ng-model="searchSettings.tableViewFields.ids">
+                        Identifiers</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.cde.source"> Source</label>
+                    <label><input id="source" type="checkbox" ng-model="searchSettings.tableViewFields.source">
+                        Source</label>
                 </div>
                 <div class="checkbox indent">
-                    <label><input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.cde.updated"> Updated</label>
+                    <label><input id="updated" type="checkbox" ng-model="searchSettings.tableViewFields.updated">
+                        Updated</label>
+                </div>
+                <div class="checkbox indent">
+                    <label><input id="numQuestions" type="checkbox"
+                                  ng-model="searchSettings.tableViewFields.numQuestions"> Nb of Questions <span
+                            class="text-info"><small>(Form Only)</small></span></label>
                 </div>
             </div>
         </div>
     </div>
-    <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i class="fa fa-check"></i> Save</button>
-    <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i> Cancel</button>
-    <button type="button" class="btn btn-info pull-right" ng-click="loadDefault()"><i class="fa fa-undo"></i> Load Default</button>
+
+    <h2><i class="fa fa-flask"></i> Beta Features</h2>
+    <label for="betaEnabled">Enabled </label>
+    <div class="btn-group">
+        <button id="betaEnabled" class="btn btn-sm" ng-class="{'btn-success':$root.enableBeta}"
+                ng-click="enableBeta(true)"> On
+        </button>
+        <button id="betaDisabled" class="btn btn-sm" ng-class="{'btn-danger':!$root.enableBeta}"
+                ng-click="enableBeta(false)"> Off
+        </button>
+    </div>
+
+    <div ng-show="$root.enableBeta" style="margin-top: 20px"> The following features are now enabled.
+        <ul>
+            <li>Export a Form to REDCap format.</li>
+        </ul>
+    </div>
+
+
+    <button id="saveSettings" type="button" class="btn btn-success pull-right" ng-click="saveSettings()"><i
+            class="fa fa-check"></i> Save
+    </button>
+    <button type="button" class="btn btn-warning pull-right" ng-click="cancelSettings()"><i class="fa fa-times"></i>
+        Cancel
+    </button>
+    <button type="button" id="loadDefaultSettings" class="btn btn-info pull-right" ng-click="loadDefault()"><i
+            class="fa fa-undo"></i> Load Default
+    </button>
 </div>

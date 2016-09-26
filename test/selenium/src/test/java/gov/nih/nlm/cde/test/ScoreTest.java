@@ -7,75 +7,88 @@ import org.testng.annotations.Test;
 
 public class ScoreTest extends NlmCdeBaseTest {
 
-    private CdeQuickBoardTest1 qbTest = new CdeQuickBoardTest1();
+    @Test
+    public void cannotScoreAsAnonymous() {
+        mustBeLoggedOut();
+        goToCdeByName("Head and Neck Lymph Node Left Removed Type");
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
+        textNotPresent("Add Score");
+    }
 
     @Test
     public void cannotCreateWithZeroCdes() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        mustBeLoggedInAs(testAdmin_username, password);
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
+        clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
-        findElement(By.id("cancelCreate")).click();
+        clickElement(By.id("cancelCreate"));
     }
 
     @Test
     public void cannotAddSelfToRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
-        findElement(By.id("compareMe")).click();
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        clickElement(By.id("addToQuickBoard"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
+        clickElement(By.id("addNewScore"));
         textPresent("You are trying to add a CDE to itself. Please edit your Quick Board.");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
-        findElement(By.id("cancelCreate")).click();
+        clickElement(By.id("cancelCreate"));
     }
 
     @Test
     public void cannotAddDatatypeText() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         goToCdeByName("Excisional Biopsy Colorectal Pathology Comment java.lang.String");
-        clickElement(By.id("compareMe"));
+        clickElement(By.id("addToQuickBoard"));
         textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        clickElement(By.linkText("Score / Derivations"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("CDE Excisional Biopsy Colorectal Pathology Comment java.lang.String has a datatype other than 'Number' and may not be added to a score");
         wait.until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(By.id("createDerivationRule"))));
-        findElement(By.id("cancelCreate")).click();
+        clickElement(By.id("cancelCreate"));
     }
 
     @Test
     public void validRule() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        qbTest.emptyQuickBoardByModule("cde");
+        emptyQuickBoardByModule("cde");
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Grooming disability scale");
         hangon(1);
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
         hangon(1);
         goToCdeByName("DRS Total Score");
-        findElement(By.linkText("Score / Derivations")).click();
-        findElement(By.id("addNewScore")).click();
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
+        clickElement(By.id("addNewScore"));
         textPresent("All 2 CDEs in your quickboard.");
         findElement(By.id("newDerivationRule.name")).sendKeys("DRS Score");
-        findElement(By.id("createDerivationRule")).click();
+        clickElement(By.id("createDerivationRule"));
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         newCdeVersion();
-        findElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale")).click();
+        clickElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale"));
         textPresent("Level of functioning (Physical, mental, emotional,");
-        findElement(By.linkText("Score / Derivations")).click();
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         textPresent("This Data Element is used to derive to the following Data Elements:");
-        findElement(By.linkText("DRS Total Score")).click();
-        findElement(By.linkText("Score / Derivations")).click();
+        clickElement(By.linkText("DRS Total Score"));
+        showAllTabs();
+        clickElement(By.id("derivationRules_tab"));
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         textNotPresent("Add Score");
-        findElement(By.id("removeDerivationRule-0")).click();
+        clickElement(By.id("removeDerivationRule-0"));
         newCdeVersion();
     }
 

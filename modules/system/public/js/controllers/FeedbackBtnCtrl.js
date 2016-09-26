@@ -1,5 +1,6 @@
-angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function($scope) {
+angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function ($scope) {
 
+    var initButton = '<div id="feedback-button"><button class="feedback-btn feedback-btn-gray hidden-xs">Report a problem!</button></div>';
     var description = '<div id="feedback-welcome"><div class="h3">Report a problem</div>' +
         '<p>What would you like to report?</p>' +
         '<textarea id="feedback-note-tmp"></textarea>' +
@@ -22,36 +23,41 @@ angular.module('systemModule').controller('FeedbackBtnCtrl', ['$scope', function
         '<p>The issue was successfully submitted.</p>' +
         '<button class="feedback-close-btn btn btn-info">OK</button><div class="feedback-wizard-close"></div></div>';
 
-        $scope.feedbackOptions = {
-        html2canvasURL: "/cde/public/assets/js/html2canvas.js",
-        ajaxURL:                '/feedback/report',
-        postBrowserInfo:        true,
-        postHTML:               true,
-        postURL:                true,
-        proxy:                  undefined,
-        letterRendering:        false,
-        initButtonText:         'Report a problem!',
-        strokeStyle:            'black',
-        shadowColor:            'black',
-        shadowOffsetX:          1,
-        shadowOffsetY:          1,
-        shadowBlur:             10,
-        lineJoin:               'bevel',
-        lineWidth:              3,
-        feedbackButton:         '.feedback-btn',
-        showDescriptionModal:   true,
-        isDraggable:            true,
-        onScreenshotTaken:      function(){},
+    var submitError = '<div id="feedback-submit-error"><div class="feedback-logo">Feedback</div><p>Sadly an error occured while sending your feedback. Please try again.</p><button class="feedback-close-btn feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>';
+
+    $scope.feedbackOptions = {
+        html2canvasURL: "/components/html2canvas/build/html2canvas.min.js",
+        ajaxURL: '/feedback/report',
+        postBrowserInfo: true,
+        postHTML: true,
+        postURL: true,
+        proxy: undefined,
+        letterRendering: false,
+        initButtonText: 'Report a problem!',
+        strokeStyle: 'black',
+        shadowColor: 'black',
+        shadowOffsetX: 1,
+        shadowOffsetY: 1,
+        shadowBlur: 10,
+        lineJoin: 'bevel',
+        lineWidth: 3,
+        feedbackButton: '.feedback-btn',
+        showDescriptionModal: true,
+        isDraggable: true,
+        onScreenshotTaken: function () {
+        },
         tpl: {
-            description:    description,
+            initButton: initButton,
+            description: description,
             highlighter: highlighter,
             overview: overview,
             submitSuccess: submitSuccess,
-            submitError:    '<div id="feedback-submit-error"><div class="feedback-logo">Feedback</div><p>Sadly an error occured while sending your feedback. Please try again.</p><button class="feedback-close-btn feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>'
+            submitError: submitError
         },
-        onClose:                function() {},
-        screenshotStroke:       true,
-        highlightElement:       false,
-        initialBox:             true
+        onClose: function () {
+        },
+        screenshotStroke: true,
+        highlightElement: false,
+        initialBox: true
     };
 }]);

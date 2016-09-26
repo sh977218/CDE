@@ -1,7 +1,9 @@
 package gov.nih.nlm.system;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -12,31 +14,41 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.jayway.restassured.RestAssured.get;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
 public class NlmCdeBaseTest {
 
-    protected static WebDriver driver;
+    public static WebDriver driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
-    protected static String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
-
-    protected static int defaultTimeout = Integer.parseInt(System
-            .getProperty("timeout"));
+    private static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
+    protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
+    private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
+    protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
     public static String baseUrl = System.getProperty("testUrl");
@@ -46,8 +58,7 @@ public class NlmCdeBaseTest {
     protected static String cabigAdmin_username = "cabigAdmin";
     protected static String ctepCurator_username = "ctepCurator";
     protected static String test_username = "testuser";
-    protected static String test_password = "Test123";
-    protected static String history_username = "historyuser";
+    static String history_username = "historyuser";
     protected static String ninds_username = "ninds";
     protected static String wguser_username = "wguser";
     protected static String reguser_username = "reguser";
@@ -57,6 +68,7 @@ public class NlmCdeBaseTest {
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
     protected static String pinUser = "pinuser";
+    protected static String unpinUser = "unpinuser";
     protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
@@ -70,25 +82,44 @@ public class NlmCdeBaseTest {
     protected static String ctep_fileCurator_username = "ctep_fileCurator";
     protected static String tableViewUser_username = "tableViewUser";
     protected static String pinAllBoardUser_username = "pinAllBoardUser";
-    protected static String exportBoardUser_username = "exportBoardUser";
     protected static String testAdmin_username = "testAdmin";
-
+    protected static String classifyBoardUser_username = "classifyBoardUser";
+    static String oldUser_username = "oldUser";
+    protected static String boardPublisherTest_username = "boardPublisherTest";
+    protected static String doublepinuser_username = "doublepinuser";
+    protected static String boardBot_username = "boardBot";
 
     protected static String password = "pass";
 
-    @BeforeTest
-    public void countElasticElements() {
-        int nbOfRecords = 0;
-        for (int i = 0; i < 15 && nbOfRecords < 11682; i++) {
-            nbOfRecords = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
-            System.out.println("nb of records: " + nbOfRecords);
-            hangon(10);
+    private HashSet<PosixFilePermission> filePerms;
+
+    private String className = this.getClass().getSimpleName();
+    private ScheduledExecutorService videoExec;
+
+    private int videoRate = 300;
+    private int totalCdes = 11700;
+    private int totalForms = 815;
+
+    private void countElasticElements(Method m) {
+        int nbOfCde = 0, nbOfForms = 0, waitTimeCdes = 0, waitTimeForms = 0;
+        for (int i = 0; i < 15 && nbOfCde < totalCdes; i++) {
+            hangon(waitTimeCdes);
+            nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
+            System.out.println("nb of cdes: " + nbOfCde);
+            waitTimeCdes = 10;
         }
+        for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
+            hangon(waitTimeForms);
+            nbOfForms = Integer.valueOf(get(baseUrl + "/elasticSearch/form/count").asString());
+            System.out.println("nb of forms: " + nbOfForms);
+            waitTimeForms = 10;
+        }
+        System.out.println("Starting " + m.getName() + " in Fork: " + (int) (Math.random() * 1000));
     }
 
-    @BeforeTest
-    public void setBaseUrl() {
+    private void setDriver() {
         hangon(new Random().nextInt(10));
+        String windows_detected_message = "MS Windows Detected\nStarting ./chromedriver.exe";
         if (isWindows()) {
             System.out.println(windows_detected_message);
             System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
@@ -101,7 +132,12 @@ public class NlmCdeBaseTest {
         if ("firefox".equals(browser)) {
             caps = DesiredCapabilities.firefox();
         } else if ("chrome".equals(browser)) {
+            ChromeOptions options = new ChromeOptions();
+            Map<String, Object> prefs = new HashMap<>();
+            prefs.put("download.default_directory", chromeDownloadFolder);
+            options.setExperimentalOption("prefs", prefs);
             caps = DesiredCapabilities.chrome();
+            caps.setCapability(ChromeOptions.CAPABILITY, options);
         } else if ("ie".equals(browser)) {
             caps = DesiredCapabilities.internetExplorer();
         } else {
@@ -116,43 +152,95 @@ public class NlmCdeBaseTest {
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 
+        URL _hubUrl = null;
         try {
-            driver = new RemoteWebDriver(new URL(hubUrl), caps);
+            _hubUrl = new URL(hubUrl);
         } catch (MalformedURLException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE,
                     null, ex);
+        }
+        try {
+            driver = new RemoteWebDriver(_hubUrl, caps);
+        } catch (SessionNotCreatedException e) {
+            hangon(10);
+            driver = new RemoteWebDriver(_hubUrl, caps);
         }
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
-        wait = new WebDriverWait(driver, defaultTimeout, 200);
-        shortWait = new WebDriverWait(driver, 2);
+        wait = new WebDriverWait(driver, defaultTimeout, 600);
+        shortWait = new WebDriverWait(driver, 5);
+        driver.manage().window().maximize();
 
-        resizeWindow(1280, 800);
-    }
+        System.out.println("downloadFolder: " + downloadFolder);
+        System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
-    @AfterMethod
-    public void countTabs(Method method) {
-        if (driver.getWindowHandles().size() > 1)
-            System.out.println(method.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+
     }
 
     @BeforeMethod
-    public void clearStorage() {
+    public void setUp(Method m) {
+        filePerms = new HashSet();
+        countElasticElements(m);
+        setDriver();
+        filePerms.add(PosixFilePermission.OWNER_READ);
+        filePerms.add(PosixFilePermission.OWNER_WRITE);
+        filePerms.add(PosixFilePermission.OTHERS_READ);
+        filePerms.add(PosixFilePermission.OTHERS_WRITE);
+        takeScreenshotsRecordVideo(m);
+    }
+
+    private void takeScreenshotsRecordVideo(Method m) {
+        if (m.getAnnotation(RecordVideo.class) != null) {
+            videoExec = Executors.newSingleThreadScheduledExecutor();
+            final String methodName = m.getName();
+            System.out.println("methodName in setBaseUrl: " + methodName);
+            videoExec.scheduleAtFixedRate(() -> {
+                try {
+                    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                    String dest = "build/tmp/screenshots/" + className + "/" + methodName + "/" + methodName + "_" + new Date().getTime() + ".png";
+                    FileUtils.copyFile(srcFile, new File(dest));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, 0, videoRate, TimeUnit.MICROSECONDS);
+        }
+    }
+
+    @AfterMethod
+    public void generateGif(Method m) {
+        if (m.getAnnotation(RecordVideo.class) != null) {
+            String methodName = m.getName();
+            try {
+                File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
+                File[] inputScreenshotsArray = inputScreenshots.listFiles();
+                File gif = new File("build/gif/" + className + "/" + methodName + ".gif");
+                File srcFile = new File(className + "_" + methodName + ".gif");
+                GifSequenceWriter writer = new GifSequenceWriter(new FileImageOutputStream(srcFile), TYPE_INT_RGB, videoRate, false);
+                assert inputScreenshotsArray != null;
+                for (File screenshotFile : inputScreenshotsArray) {
+                    writer.writeToSequence(ImageIO.read(screenshotFile));
+                }
+                writer.close();
+                FileUtils.copyFile(srcFile, gif);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            videoExec.shutdown();
+            hangon(1);
+        }
+        if (driver.getWindowHandles().size() > 1)
+            System.out.println(m.getName() + " has " + driver.getWindowHandles().size() + " windows after test");
+        driver.quit();
+    }
+
+    protected void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
-    }
-
-    protected void resizeWindow(int width, int height) {
-        driver.manage().window().setSize(new Dimension(width, height));
-    }
-
-    protected Dimension getWindowSize() {
-        return driver.manage().window().getSize();
     }
 
     private boolean isUsernameMatch(String username) {
@@ -189,7 +277,7 @@ public class NlmCdeBaseTest {
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Organizations"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
@@ -214,7 +302,7 @@ public class NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         hangon(.5);
         clickElement(By.linkText("Classifications"));
-        textPresent("Manage Classifications");
+        textPresent("Classifications");
     }
 
     protected void mustBeLoggedOut() {
@@ -225,102 +313,93 @@ public class NlmCdeBaseTest {
         }
     }
 
-    protected void goToCdeByName(String name) {
-        goToCdeByName(name, null);
+    protected int getNumberOfResults() {
+        return Integer.parseInt(findElement(By.id("searchResultNum")).getText());
     }
 
-    protected void goToCdeByName(String name, String status) {
-        goToElementByName(name, "cde", status);
+    protected void goToCdeByName(String name) {
+        goToElementByName(name, "cde");
     }
 
     protected void goToFormByName(String name) {
-        goToFormByName(name, null);
+        goToElementByName(name, "form");
     }
 
-    protected void goToFormByName(String name, String status) {
-        goToElementByName(name, "form", status);
-    }
-
-    protected void goToElementByName(String name, String type, String status) {
-        try {
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
+    private void goToElementByName(String name, String type) {
+        String tinyId = EltIdMaps.eltMap.get(name);
+        if (tinyId != null) {
+            driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
+            textPresent("More...");
             textPresent(name);
-            textNotPresent("is archived");
-        } catch (Exception e) {
-            System.out.println("Element is archived. Will retry...");
-            hangon(1);
-            searchElt(name, type, status);
-            clickElement(By.id("eyeLink_0"));
-            textPresent("Reference Documents");
-            textPresent(name);
-            textNotPresent("is archived");
+        } else {
+            try {
+                searchElt(name, type);
+                clickElement(By.id("linkToElt_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            } catch (Exception e) {
+                System.out.println("Element is archived. Will retry...");
+                hangon(1);
+                searchElt(name, type);
+                clickElement(By.id("linkToElt_0"));
+                textPresent("More...");
+                textPresent(name);
+                textNotPresent("is archived");
+            }
         }
     }
 
     protected void openCdeInList(String name) {
-        openCdeInList(name, null);
-    }
-
-    protected void openCdeInList(String name, String status) {
-        openEltInList(name, "cde", status);
-    }
-
-    public void searchCde(String cdeName) {
-        searchElt(cdeName, "cde", null);
+        openEltInList(name, "cde");
     }
 
     public void searchForm(String formName) {
-        searchElt(formName, "form", null);
+        searchElt(formName, "form");
     }
 
+    protected void assertNoElt(By by) {
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        Assert.assertEquals(driver.findElements(by).size(), 0);
+        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+    }
 
-    public void searchElt(String name, String type, String status) {
+    protected void searchElt(String name, String type) {
         goToSearch(type);
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        hangon(0.5); // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+
+        // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+        hangon(0.5);
         clickElement(By.id("search.submit"));
-        if (status != null) {
-            hangon(2);
-            clickElement(By.id("li-blank-" + status));
-        }
         try {
             textPresent("1 results for");
         } catch (Exception e) {
             System.out.println("Failing to find, trying again: " + name);
-            findElement(By.id("ftsearch-input")).sendKeys(" ");
+            findElement(By.id("ftsearch-input")).clear();
+            findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
             clickElement(By.id("search.submit"));
-            if (status != null) {
-                hangon(2);
-                clickElement(By.id("li-blank-" + status));
-            }
             textPresent("1 results for");
         }
-        textPresent(name, By.id("acc_link_0"));
+        textPresent(name, By.id("searchResult_0"));
     }
 
-    protected void openEltInList(String name, String type, String status) {
-        searchElt(name, type, status);
-        clickElement(By.id("acc_link_0"));
-        textPresent("View Full Detail");
-        wait.until(ExpectedConditions.elementToBeClickable(By
-                .id("openEltInCurrentTab_0")));
+    protected void openEltInList(String name, String type) {
+        searchElt(name, type);
+        textPresent(name, By.id("searchResult_0"));
     }
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        findElement(By.linkText("Forms")).click();
+        clickElement(By.linkText("Forms"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        findElement(By.cssSelector("i.fa-search")).click();
+        clickElement(By.cssSelector("i.fa-search"));
         textPresent("1 results for");
-        textPresent(name, By.id("accordionList"));
-        findElement(By.id("acc_link_0")).click();
+        textPresent(name, By.id("searchResult_0"));
     }
 
-    public void checkTooltipText(By by, String text) {
+    protected void checkTooltipText(By by, String text) {
         try {
             textPresent(text);
         } catch (TimeoutException e) {
@@ -333,6 +412,20 @@ public class NlmCdeBaseTest {
     protected WebElement findElement(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(by);
+    }
+
+    public void waitForDownload(String fileName) {
+        for (int i = 0; i < 30; i++) {
+            try {
+                String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
+                if (actual.length() > 0) {
+                    i = 30;
+                }
+            } catch (IOException e) {
+                hangon(2);
+            }
+        }
+
     }
 
     protected List<WebElement> findElements(By by) {
@@ -364,11 +457,6 @@ public class NlmCdeBaseTest {
         }
     }
 
-    @AfterTest
-    public void endSession() {
-        driver.quit();
-    }
-
     public void waitForESUpdate() {
         hangon(10);
     }
@@ -385,14 +473,13 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            findElement(By.cssSelector("button.close")).click();
-            driver.manage().timeouts()
-                    .implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
+            if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
     }
+
 
     protected void newCdeVersion() {
         newCdeVersion(null);
@@ -401,23 +488,26 @@ public class NlmCdeBaseTest {
     protected void newCdeVersion(String changeNote) {
         scrollToEltByCss("#openSave");
         clickElement(By.id("openSave"));
-        hangon(1);
+        textPresent("has already been used");
         if (changeNote != null) {
             findElement(By.name("changeNote")).clear();
-            findElement(By.name("changeNote")).sendKeys(
-                    "Change note for change number 1");
+            findElement(By.name("changeNote")).sendKeys("Change note for change number 1");
         }
         findElement(By.name("version")).sendKeys(".1");
         textNotPresent("has already been used");
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         closeAlert();
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("openSave"))));
         modalGone();
     }
 
     public void hangon(double i) {
         Sleeper.sleepTight((long) (i * 1000));
+    }
+
+    private boolean classPresent(String text, By by) {
+        return findElement(by).getAttribute("class").contains(text);
     }
 
     public boolean textPresent(String text, By by) {
@@ -434,19 +524,17 @@ public class NlmCdeBaseTest {
     }
 
     public boolean textNotPresent(String text, By by) {
-        wait.until(ExpectedConditions.not(ExpectedConditions
-                .textToBePresentInElementLocated(by, text)));
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElementLocated(by, text)));
         return true;
     }
 
-    protected void goHome() {
-        // gonowhere gets rid of possible alert.
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
+    private boolean classNotPresent(String text, By by) {
+        return !findElement(by).getAttribute("class").contains(text);
+    }
 
-        driver.get(baseUrl + "/#/home");
+    protected void goHome() {
+        driver.get(baseUrl + "/home");
         textPresent("has been designed to provide access");
-        hangon(.5);
     }
 
     protected void goToCdeSearch() {
@@ -458,11 +546,12 @@ public class NlmCdeBaseTest {
     }
 
     protected void goToSearch(String type) {
-        driver.get(baseUrl + "/gonowhere");
-        textPresent("Nothing here");
-        driver.get(baseUrl + "/#/" + type + "/search");
+        driver.get(baseUrl + "/" + type + "/search");
         findElement(By.id("ftsearch-input"));
-        textPresent("Browse by classification");
+        textPresent("Browse by Classification");
+        if ("form".equals(type)) {
+            textPresent("PROMIS / Neuro-QOL");
+        }
         textPresent("Cancer Therapy Evaluation Program");
     }
 
@@ -487,17 +576,16 @@ public class NlmCdeBaseTest {
         return OS.contains("win");
     }
 
-    public void addCdeToQuickBoard(String cdeName) {
-        searchCde(cdeName);
-        findElement(By.id("addToCompare_0")).click();
-        hangon(2);
-        findElement(By.name("q")).clear();
+    protected void addCdeToQuickBoard(String cdeName) {
+        goToCdeByName(cdeName);
+        clickElement(By.id("addToQuickBoard"));
+        closeAlert();
     }
 
-    public void addFormToQuickBoard(String formName) {
+    protected void addFormToQuickBoard(String formName) {
         searchForm(formName);
-        findElement(By.id("addToCompare_0")).click();
-        hangon(.5);
+        clickElement(By.id("addToCompare_0"));
+        closeAlert();
         findElement(By.name("q")).clear();
     }
 
@@ -508,7 +596,7 @@ public class NlmCdeBaseTest {
         textPresent(quickBoardTabText);
     }
 
-    public void emptyQuickBoardByModule(String module) {
+    protected void emptyQuickBoardByModule(String module) {
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
         goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
@@ -517,10 +605,10 @@ public class NlmCdeBaseTest {
         hangon(1);
     }
 
-    public void addToCompare(String cdeName1, String cdeName2) {
-        goToCdeSearch();
+    protected void addToCompare(String cdeName1, String cdeName2) {
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//*[@id='qb_cde_tab']/a"));
@@ -539,31 +627,31 @@ public class NlmCdeBaseTest {
         return !(driver.findElements(By.cssSelector(selector)).size() > 0);
     }
 
-    public void scrollTo(Integer y) {
+    protected void scrollTo(Integer y) {
         String jsScroll = "scroll(0," + Integer.toString(y) + ");";
         String jqueryScroll = "$(window).scrollTop(" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    public void scrollToEltByCss(String css) {
+    private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
     }
 
-    public void scrollToViewById(String id) {
+    protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.id(id));
         je.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
-    public void hoverOverElement(WebElement ele) {
+    protected void hoverOverElement(WebElement ele) {
         Actions action = new Actions(driver);
         action.moveToElement(ele);
         action.perform();
     }
 
-    protected void enterUsernamePasswordSubmit(String username, String password, String checkText) {
+    void enterUsernamePasswordSubmit(String username, String password, String checkText) {
         findElement(By.id("uname")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).clear();
@@ -595,7 +683,7 @@ public class NlmCdeBaseTest {
 
     protected void switchTabAndClose(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(i));
         hangon(3);
@@ -603,14 +691,12 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+        List<String> tabs2 = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(i));
     }
 
     protected void fillInput(String type, String value) {
-        findElement(
-                By.xpath("//label[text()=\"" + type
-                        + "\"]/following-sibling::input")).sendKeys(value);
+        findElement(By.xpath("//label[text()='" + type + "']/following-sibling::input")).sendKeys(value);
     }
 
     protected void showSearchFilters() {
@@ -619,7 +705,7 @@ public class NlmCdeBaseTest {
         if ("Show Filters".equals(showHideFilterButton.getText())) {
             wait.until(ExpectedConditions.elementToBeClickable(By
                     .id("gridView")));
-            findElement(By.id("showHideFilters")).click();
+            clickElement(By.id("showHideFilters"));
         }
     }
 
@@ -645,40 +731,17 @@ public class NlmCdeBaseTest {
         hangon(0.5);
     }
 
-    protected void showHistoryDiff(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[4]/a"));
-    }
-
-    protected void showHistoryFull(Integer prev) {
-        clickElement(By.xpath("//table[@id = 'historyTable']//tr[" + (prev + 1) + "]//td[5]/a"));
-    }
-
-    protected void confirmCdeModification(String field, String oldValue,
-                                          String newValue) {
-        confirmFieldName(field);
-        confirmPreviousValue(oldValue);
-        confirmNewValue(newValue);
-    }
-
-    protected void confirmFieldName(String fieldName) {
-        textPresent(fieldName, By.cssSelector("#modificationsList"));
-    }
-
-    protected void confirmPreviousValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
-
-    }
-
-    protected void confirmNewValue(String value) {
-        textPresent(value, By.cssSelector("#modificationsList"));
+    protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]//i[contains(@class,'fa fa-square')]"));
+        clickElement(By.id("historyCompareBtn"));
+        textPresent("Differences");
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {
-        scrollToTop();
-        clickElement(By.linkText("History"));
-        hangon(1);
-        showHistoryDiff(0);
-        confirmCdeModification(field, oldValue, newValue);
+        textPresent(field, By.cssSelector("#modificationsList"));
+        textPresent(oldValue, By.cssSelector("#modificationsList"));
+        textPresent(newValue, By.cssSelector("#modificationsList"));
     }
 
     protected void openCdeAudit(String cdeName) {
@@ -704,7 +767,7 @@ public class NlmCdeBaseTest {
         goHome();
         clickElement(By.id("searchSettings"));
         clickElement(By.id(id));
-        scrollTo(1000);
+        hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");
         closeAlert();
@@ -715,19 +778,45 @@ public class NlmCdeBaseTest {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void enableBetaFeature() {
+        clickElement(By.id("searchSettings"));
+        classNotPresent("btn-success", By.id("betaEnabled"));
+        classPresent("btn-danger", By.id("betaDisabled"));
+        clickElement(By.id("betaEnabled"));
+        classPresent("btn-success", By.id("betaEnabled"));
+        classNotPresent("btn-danger", By.id("betaDisabled"));
+        driver.navigate().back();
+    }
+
     protected void reorderIconTest(String tabName) {
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
         findElement(By.xpath(prefix + "moveDown-0" + postfix));
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveUp-0" + postfix)).size(), 0);
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveTop-0" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveUp-0" + postfix));
+        assertNoElt(By.xpath(prefix + "moveTop-0" + postfix));
 
         findElement(By.xpath(prefix + "moveDown-1" + postfix));
         findElement(By.xpath(prefix + "moveUp-1" + postfix));
         findElement(By.xpath(prefix + "moveTop-1" + postfix));
 
-        Assert.assertEquals(driver.findElements(By.xpath(prefix + "moveDown-2" + postfix)).size(), 0);
+        assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
+    }
+
+    protected void showAllTabs() {
+        textPresent("More...");
+        clickElement(By.id("more_tab"));
+        textNotPresent("More...");
+    }
+
+    protected void loadDefaultSettings() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.id("loadDefaultSettings"));
+        textPresent("Default settings loaded");
+        closeAlert();
+        clickElement(By.id("saveSettings"));
+        textPresent("Settings saved!");
+        closeAlert();
     }
 }

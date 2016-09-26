@@ -1,0 +1,52 @@
+<div ng-repeat="elt in forms track by elt.tinyId">
+
+    <div ng-if="$index === cutoffIndex" style="margin-top:40px">
+        <h3>More results</h3>
+    </div>
+
+    <div class="singleSearchResult" id="searchResult_{{$index}}">
+        <h4>
+            <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
+            <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"
+               id="linkToElt_{{$index}}"></a>
+            <small>{{elt.registrationState.registrationStatus}}</small>
+            <a href tabindex="0" class="nonLinkAnchor" ng-if="formQuickBoard.canAddElt(elt)"
+               ng-click="formQuickBoard.add(elt)">
+                <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
+                   role="link"></i></a>
+            <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
+            <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
+                <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
+        </h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <span ng-bind-html="elt.primaryDefinitionCopy"></span>
+                <br><br>
+
+                <dl class="dl-horizontal">
+                    <dt tabindex="0">Steward:</dt>
+                    <dd tabindex="0" ng-bind-html="elt.stewardOrg.name"></dd>
+                    <dt tabindex="0" ng-show="elt.classification.length > 0">Used By:</dt>
+                    <dd tabindex="0" ng-show="elt.classification.length > 0" id="dd_usedBy">
+                        <span ng-switch="elt.classification.length > 0">
+                            <span ng-switch-when="false">None</span>
+                            <span ng-switch-default>
+                                <span ng-repeat="cl in elt.classification">{{cl.stewardOrg.name}} </span>
+                            </span>
+                        </span>
+                    </dd>
+                    <dt tabindex="0" id="dt_status">Status:</dt>
+                    <dd tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
+                    <!--<dt tabindex="0" id="dt_nQuestion-{{$index}}">Questions:</dt>-->
+                    <!--<dd tabindex="0" id="dd_nQuestion-{{$index}}">{{elt.numQuestions}}</dd>-->
+                </dl>
+            </div>
+            <div class="col-md-2">
+                <img ng-repeat="attachment in elt.attachments | filter:{isDefault:true}"
+                     alt="Image attached to the elt"
+                     ng-src="/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>
+            </div>
+        </div>
+    </div>
+</div>

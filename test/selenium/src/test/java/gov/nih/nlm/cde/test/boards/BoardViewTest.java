@@ -13,7 +13,7 @@ public class BoardViewTest extends BoardTest {
         clickElement(By.id("cde_gridView"));
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");
-        clickElement(By.id("cde_accordionView"));
+        clickElement(By.id("cde_summaryView"));
         textPresent("Rome III Constipation Module (RCM3) - abdomen discomfort relieve bowel movement frequency");
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");
@@ -29,7 +29,6 @@ public class BoardViewTest extends BoardTest {
     public void showGridView() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Test Board";
-        createBoard(boardName, "Test");
 
         attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
         attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
@@ -39,7 +38,10 @@ public class BoardViewTest extends BoardTest {
         closeAlert();
         hangon(1);
         goToBoard(boardName);
+        textPresent("CODE_FOR...");
+
         clickElement(By.id("cde_gridView"));
+
         textPresent("Fluorescence in situ");
         textPresent("Anaplastic Lymp");
         textPresent("ALK Standard Deviation");
@@ -54,7 +56,7 @@ public class BoardViewTest extends BoardTest {
     }
 
     public void attachToBoard(String cdeName, String boardName) {
-        searchElt(cdeName, "cde", null);
+        searchElt(cdeName, "cde");
         findElement(By.id("pinToBoard_0")).click();
         findElement(By.linkText(boardName)).click();
         textPresent("Added to Board");

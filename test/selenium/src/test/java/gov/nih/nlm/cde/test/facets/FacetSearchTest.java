@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.facets;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,7 +16,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         clickElement(By.id("li-blank-All Candidates"));
 
-        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Statuses");
+        textPresent(numOfElts + " results for All Terms | caBIG > All Candidates | All Topics | All Statuses");
     }
 
     @Test
@@ -39,8 +38,12 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-Traumatic Brain Injury"));
         clickElement(By.id("li-blank-Acute Hospitalized"));
         clickElement(By.id("li-blank-Classification"));
+        int numRes = getNumberOfResults();
         clickElement(By.id("li-blank-Basic"));
-        textPresent("251 results for");
+        textNotPresent(numRes + " results for");
+        numRes = getNumberOfResults();
+        Assert.assertTrue(numRes > 248);
+        Assert.assertTrue(numRes < 254);
         clickElement(By.id("li-checked-Acute Hospitalized"));
         textPresent("Domain (19");
         clickElement(By.id("li-blank-Domain"));
@@ -117,24 +120,5 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(0, driver.findElements(By.linkText("" + (expectedNumberOfPages + 1))).size());
     }
 
-
-    @Test
-    public void preferredStandardFacet() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Noncompliant Reason Text");
-        clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
-        textPresent("Standard elements cannot be edited by their stewards");
-        clickElement(By.id("saveRegStatus"));
-        waitForESUpdate();
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-DCP"));
-        textNotPresent("Noncompliant Reason Text");
-        textPresent("Preferred Standard (");
-        clickElement(By.id("li-blank-Standard"));
-        textNotPresent("Noncompliant Reason Text");
-    }
 
 }

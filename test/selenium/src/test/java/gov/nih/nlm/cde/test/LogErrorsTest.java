@@ -29,7 +29,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
     
     @Test
     public void logClientErrors() {        
-        driver.get(baseUrl + "#/triggerClientException");
+        driver.get(baseUrl + "#/triggerClientException?fullPath=true");
         textPresent("An exception in your browser has been triggered");
         hangon(1);
 
@@ -38,7 +38,8 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         findElement(By.linkText("Audit")).click();
         
         findElement(By.linkText("Client Errors")).click();       
-        
+
+        textPresent("/triggerClientException?fullPath=true");
         textPresent("ReferenceError: trigger is not defined at");
         textPresent("trigger is not defined");
     }    

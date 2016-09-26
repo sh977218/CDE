@@ -15,7 +15,11 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
 
             $scope.$on('$locationChangeStart', function( event ) {
                 if (!$scope.saving) {
-                    var answer = confirm("You have unsaved changes, are you sure you want to leave this page?");
+                    var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+                    if (window.debugEnabled) {
+                        txt = txt + window.location.pathname;
+                    }
+                    var answer = confirm(txt);
                     if (!answer) {
                         event.preventDefault();
                     }
@@ -71,9 +75,6 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                     resolve: {
                         module: function() {
                             return $scope.module;
-                        }
-                        , myOrgs: function() {
-                            return userResource.userOrgs;
                         }
                         , cde: function() {
                             return $scope.elt;

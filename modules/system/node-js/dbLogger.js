@@ -3,105 +3,45 @@ var mongoose = require('mongoose')
     , connHelper = require('./connections')
     , logging = require('./logging')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_storedQuery = require('../../cde/node-js/mongo-storedQuery')
     , email = require('../../system/node-js/email')
-    , mongoosastic = require('mongoosastic')
+    , schemas_system = require('../../system/node-js/schemas')
     , elasticsearch = require('elasticsearch')
+    , esInit = require('./elasticSearchInit')
     ;
-    
-var mongoLogUri = config.database.log.uri || 'mongodb://localhost/cde-logs';
 
 var esClient = new elasticsearch.Client({
-    host: config.elastic.uri
+    hosts: config.elastic.hosts
 });
-
-
-// w = 0 means write very fast. It's ok if it fails.   
-// capped means no more than 5 gb for that collection.
-var logSchema = new mongoose.Schema(
-{
-    level: String
-    , remoteAddr: {type: String, index: true}
-    , url: String
-    , method: String
-    , httpStatus: String
-    , date: {type: Date, index: true}
-    , referrer: String
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var logErrorSchema = new mongoose.Schema(
-{
-    message: String
-    , date: {type: Date, index: true}
-    , origin: String
-    , stack: String
-    , details: String
-    , request: {
-        url: String
-        , method: String
-        , params: String
-        , body: String
-        , username: String
-        , userAgent: String
-        , ip: String
-    }
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var clientErrorSchema= new mongoose.Schema(
-{
-    message: String
-    , date: {type: Date, index: true}
-    , origin: String
-    , name: String
-    , stack: String
-    , userAgent: String
-}, { safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024*1024*250});
-
-var storedQuerySchema= new mongoose.Schema(
-    {
-        searchTerm: String
-        , date: {type: Date, default: Date.now}
-        , searchToken: String
-        , username: String
-        , remoteAddr: String
-        , isSiteAdmin: Boolean
-        , regStatuses: [String]
-        , selectedOrg1: String
-        , selectedOrg2: String
-        , selectedElements1: [String]
-        , selectedElements2: [String]
-    }, { safe: {w: 0}});
-
-storedQuerySchema.plugin(mongoosastic, {
-    esClient: esClient
-    , index: config.elastic.storedQueryIndex.name
-    , type: "storedquery"
-});
-
-var feedbackIssueSchema = new mongoose.Schema({
-    date: { type: Date, default: Date.now, index: true }
-    , user: {
-        username: String
-        , ip: String
-    }
-    , screenshot: {
-        id: String
-        , content: String
-    }
-    , rawHtml: String
-    , userMessage: String
-    , browser: String
-    , reportedUrl: String
-});
-
 var conn = connHelper.establishConnection(config.database.log);
 
-var LogModel = conn.model('DbLogger', logSchema);
-var LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-var ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
-var StoredQueryModel = conn.model('StoredQuery', storedQuerySchema);
-var FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
+var LogModel = conn.model('DbLogger', schemas_system.logSchema);
+var LogErrorModel = conn.model('DbErrorLogger', schemas_system.logErrorSchema);
+var ClientErrorModel = conn.model('DbClientErrorLogger', schemas_system.clientErrorSchema);
+var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
+var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 
-exports.StoredQueryModel = StoredQueryModel;
+function sqEsUpdate(elt) {
+    var doc = esInit.storedQueryRiverFunction(elt.toObject());
+    if (doc) {
+        delete doc._id;
+        esClient.index({
+            index: config.elastic.storedQueryIndex.name,
+            type: "storedquery",
+            id: elt._id.toString(),
+            body: doc
+        }, function (err) {
+            if (err) {
+                exports.logError({
+                    message: "Unable to Index document: " + doc.tinyId,
+                    origin: "storedQuery.elastic.updateOrInsert",
+                    stack: err,
+                    details: ""
+                });
+            }
+        });
+    }
+}
 
 exports.storeQuery = function(settings, callback) {
     var storedQuery = {
@@ -118,21 +58,33 @@ exports.storeQuery = function(settings, callback) {
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    if (!storedQuery.selectedOrg1 && storedQuery.searchTerm == "") {
-    } else {
-        StoredQueryModel.findOneAndUpdate(
-            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            storedQuery,
-            {upsert: true},
-            function (err) {
-                if (err) console.log(err);
-                if (callback) callback(err);
-            }
-        );
+    if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === "")) {
+        StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+            function(err, theOne) {
+                if (theOne) {
+                    StoredQueryModel.findOneAndUpdate(
+                            {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
+                            storedQuery,
+                            function (err, newObject) {
+                                sqEsUpdate(newObject);
+                                if (err) console.log(err);
+                                if (callback) callback(err);
+                            }
+                        );
+                } else {
+                    new StoredQueryModel(storedQuery).save(callback);
+                }
+            });
+
+
+        //
     }
 };
 
-exports.log = function(message, callback) {    
+exports.log = function(message, callback) {
+    if (isNaN(message.responseTime)) {
+        delete message.responseTime;
+    }
     if (message.httpStatus !== "304") {
         var logEvent = new LogModel(message);
         logEvent.save(function(err) {
@@ -147,7 +99,7 @@ exports.logError = function(message, callback) {
     var logEvent = new LogErrorModel(message);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: ");
-        callback(err); 
+        if (callback) callback(err);
     });
 };
 
@@ -158,7 +110,7 @@ exports.logClientError = function(req, callback) {
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
-        callback(err); 
+        callback(err);
     });
 };
 
@@ -185,8 +137,14 @@ exports.getLogs = function(inQuery, callback) {
 };
 
 exports.getServerErrors = function(params, callback) {
+    if (!params.limit) params.limit = 20;
+    if (!params.skip) params.skip = 0;
+    var filter = {};
+    if (params.excludeOrigin && params.excludeOrigin.length > 0) {
+        filter.origin = {$nin: params.excludeOrigin};
+    }
     LogErrorModel
-            .find()
+            .find(filter)
             .sort('-date')
             .skip(params.skip)
             .limit(params.limit)
@@ -220,8 +178,9 @@ exports.getFeedbackIssues = function(params, callback) {
 exports.usageByDay = function(callback) {
     var d = new Date();
     d.setDate(d.getDate() - 3);
+    //noinspection JSDuplicatedDeclaration
     LogModel.aggregate(
-        {$match: {date: {$exists: true}, date: {$gte: d}}}
+        {$match: {date: {$exists: true}, date: {$gte: d}}} // jshint ignore:line
         , {$group : {_id: {ip: "$remoteAddr", year: {$year: "$date"}, month: {$month: "$date"}, dayOfMonth: {$dayOfMonth: "$date"}}, number: {$sum: 1}, latest: {$max: "$date"}}}
         , function (err, result) {
             if (err || !result) logging.errorLogger.error("Error: Cannot retrieve logs", {origin: "system.dblogger.usageByDay", stack: new Error().stack, details: "err "+err});
@@ -248,7 +207,7 @@ exports.saveFeedback = function(req, cb) {
         , body: report.note
     };
     mongo_data_system.siteadmins(function(err, users) {
-        email.emailUsers(emailContent, users, function(err) {
+        email.emailUsers(emailContent, users, function() {
         });
     });
 };

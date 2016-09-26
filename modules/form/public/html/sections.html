@@ -1,20 +1,54 @@
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
-<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0" ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
+<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+    <i class="fa fa-plus"></i> Add Section
+</button>
+<button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0"
+        ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
     <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
     <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
 </button>
-<div ng-show="canCurate"><br/></div>
-<div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
-    <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a larger device.</div>
-</div>
-<div ng-show="elt.formElements.length === 0">
-    <i class="fa fa-exclamation-triangle"></i> There is no content yet.
-</div>
-<div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions" id="sectionsDiv">
-    <div ng-repeat="(sectionIndex, formElement) in elt.formElements">
-        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'" ng-init="question = formElement; parent = elt;"></div>
-        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'" ng-init="parent = elt; section = formElement; "></div>
+<div ng-show="canCurate"><br/>
+    <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
+        <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a
+            larger device.
+        </div>
     </div>
 </div>
-<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate"><i class="fa fa-plus"></i> Add Section</button>
+<div ng-show="elt.formElements.length === 0">
+    <i class="fa fa-exclamation-triangle"></i>
+    <span ng-switch="elt.noRenderAllowed">
+        <span ng-switch-when="true">
+            Rendering is disabled for this form.
+        </span>
+        <span ng-switch-default>
+            There is no content yet.
+        </span>
+    </span>
+</div>
+<div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions" id="sectionsDiv">
+    <div ng-repeat="(sectionIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
+        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'"
+             ng-init="question = formElement; parent = elt;"></div>
+        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
+             ng-init="parent = elt; section = formElement; "></div>
+        <div ng-if="formElement.elementType === 'form'" class="panel panel-default">
+            <div class="panel-heading questionSectionTitle">
+                Embedded Form: {{formElement.label}}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Form: </div>
+                    <div class="col-sm-10">
+                        <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
+                           target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+    <i class="fa fa-plus"></i> Add Section
+</button>
 

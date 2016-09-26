@@ -1,10 +1,28 @@
-angular.module('cdeModule').controller('BoardListCtrl', ['$scope', 'ElasticBoard', '$http', function($scope, ElasticBoard, $http) {
-    $scope.search = {name: ""};
+angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'ElasticBoard', 'Alert',
+    function ($scope, $http, ElasticBoard, Alert) {
+
     $scope.boards = [];
-    $scope.reload = function() {
-        ElasticBoard.basicSearch({q: $scope.search.name}, function(response){
-            $scope.boards = response.hits.hits.map(function(b){return b._source;});
+    $scope.filter = {
+        search: "",
+        selectedTags: [],
+        selectedShareStatus: ['Public'],
+        sortBy: 'name',
+        sortDirection: 'asc',
+        tags: []
+    };
+    $scope.loadPublicBoards = function () {
+        ElasticBoard.basicSearch($scope.filter, function (err, response) {
+            if (err) Alert.addAlert("danger", "An error occured");
+            $scope.boards = response.hits.hits.map(function (h) {
+                h._source._id = h._id;
+                return h._source;
+            });
+            $scope.filter.tags = response.aggregations.aggregationsName.buckets;
         });
+    };
+
+    $scope.canEditBoard = function () {
+        return false;
     };
 }
 ]);
