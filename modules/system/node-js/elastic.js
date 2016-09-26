@@ -364,7 +364,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     settings.visibleStatuses.forEach(function(regStatus) {
         regStatusAggFilter.or[0].or.push({"term": {"registrationState.registrationStatus": regStatus}});
     });
-    if (user) {
+    if (usersvc.myOrgs(user).length > 0) {
         var and = {"and": [
             {or: []}, // your org
             {"not": {term: {"registrationState.registrationStatus": "Retired"}}}
