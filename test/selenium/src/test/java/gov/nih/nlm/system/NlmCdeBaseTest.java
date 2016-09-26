@@ -152,11 +152,18 @@ public class NlmCdeBaseTest {
         baseUrl = System.getProperty("testUrl");
         String hubUrl = System.getProperty("hubUrl");
 
+        URL _hubUrl = null;
         try {
-            driver = new RemoteWebDriver(new URL(hubUrl), caps);
+            _hubUrl = new URL(hubUrl);
         } catch (MalformedURLException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE,
                     null, ex);
+        }
+        try {
+            driver = new RemoteWebDriver(_hubUrl, caps);
+        } catch (SessionNotCreatedException e) {
+            hangon(10);
+            driver = new RemoteWebDriver(_hubUrl, caps);
         }
 
         System.out.println("baseUrl: " + baseUrl);
@@ -408,7 +415,7 @@ public class NlmCdeBaseTest {
     }
 
     public void waitForDownload(String fileName) {
-        for (int i=0; i < 30; i++) {
+        for (int i = 0; i < 30; i++) {
             try {
                 String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
                 if (actual.length() > 0) {
