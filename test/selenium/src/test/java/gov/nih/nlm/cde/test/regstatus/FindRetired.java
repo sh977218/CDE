@@ -18,12 +18,12 @@ public class FindRetired extends NlmCdeBaseTest {
         clickElement(By.id("li-blank-Retired"));
         textPresent("All Topics | Retired");
         findElement(By.id("ftsearch-input")).sendKeys("Height");
+        clickElement(By.id("search.submit"));
         clickElement(By.id("li-blank-Retired"));
         textPresent("Height or length alternative measurement");
         driver.get(driver.getCurrentUrl());
         textNotPresent("Retired (");
         textPresent("Height or length alternative measurement");
-
     }
 
 
