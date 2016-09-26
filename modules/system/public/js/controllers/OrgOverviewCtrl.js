@@ -67,9 +67,15 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
     $scope.openOrgDetails = function(org) {
          $modal.open({
             animation: false,
-            template: '<div style="margin: 25px">' + org.htmlOverview + '</div>',
-            //template: '<div text-angular ng-model="template"></div>',
-            controller: function(){}
+             template: '<div style="margin: 25px" ng-bind-html="htmlContent"></div>',
+             resolve: {
+                 htmlContent: function () {
+                     return org.htmlOverview;
+                 }
+             },
+             controller: ['$scope', 'htmlContent', function ($scope, htmlContent) {
+                 $scope.htmlContent = htmlContent;
+             }]
         });
     }
 
