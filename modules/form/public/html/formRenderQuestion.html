@@ -17,7 +17,7 @@
                 Score: <span ng-disabled="true" ng-bind="score(question)"></span>
             </div>
             <div ng-switch-default>
-                <div ng-switch="question.question.datatype" class="col-md-9">
+                <div ng-switch="question.question.datatype" class="col-md-9" id="{{question.label}}_{{$index}}">
                     <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
                             ng-required="question.question.required"
                             ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
