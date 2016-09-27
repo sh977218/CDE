@@ -20,6 +20,8 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.id("confirmContextEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
+        driver.get(driver.getCurrentUrl());
+        clickElement(By.linkText("List Management"));
         textPresent("canYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));

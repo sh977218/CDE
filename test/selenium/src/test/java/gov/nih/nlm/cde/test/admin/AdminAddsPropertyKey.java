@@ -22,6 +22,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
+        driver.get(driver.getCurrentUrl());
+        clickElement(By.linkText("List Management"));
         textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
 
         goToCdeByName("Distance from Closest Margin Value");
