@@ -10,16 +10,16 @@ public class ForkTest extends NlmCdeBaseTest {
         clickElement(By.id("openCreateFork"));
         findElement(By.name("selection.changeNote")).sendKeys(changeNote);
         new Select(driver.findElement(By.id("selection.org"))).selectByVisibleText(org);
-        findElement(By.id("submit")).click();
+        clickElement(By.id("submit"));
         modalGone();
         textNotPresent("This Element has no forks");
     }
-    
+
     void addToCdeName(String toAdd) {
         clickElement(By.xpath("//div[@id='nameEdit']//i"));
         findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(toAdd);
-        findElement(By.xpath("//div[@id='nameEdit']//button[contains(text(),'Confirm')]")).click();
+        clickElement(By.xpath("//div[@id='nameEdit']//button[contains(text(),'Confirm')]"));
         newCdeVersion();
     }
-    
+
 }
