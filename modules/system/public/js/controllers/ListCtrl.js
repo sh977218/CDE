@@ -58,12 +58,12 @@ angular.module('systemModule').controller('ListCtrl',
 
     var mainAreaModes = {
         "searchResult": {
-            "url": "/system/public/html/searchResult.html"
-            , "showSearchResult": true
-        }
-        , "welcomeSearch": {
-            "url": "/system/public/html/welcomeSearch.html"
-            , "ngClass": "container"
+            "url": "/system/public/html/searchResult.html",
+            "showSearchResult": true
+        },
+        "welcomeSearch": {
+            "url": "/system/public/html/welcomeSearch.html",
+            "ngClass": "container"
         }
     };
     if (!$scope.searchSettings.q) {

@@ -290,6 +290,7 @@ angular.module('formModule').controller
 
     $scope.switchEditQuestionsMode = function () {
         $scope.addCdeMode = !$scope.addCdeMode;
+        $scope.addFormMode = false;
 
         if ($scope.addCdeMode) {
             $scope.setToAddCdeMode();
@@ -300,6 +301,7 @@ angular.module('formModule').controller
 
     $scope.switchEditFormsMode = function () {
         $scope.addFormMode = !$scope.addFormMode;
+        $scope.addCdeMode = false;
 
         if ($scope.addFormMode) {
             $scope.setToAddFormMode();
