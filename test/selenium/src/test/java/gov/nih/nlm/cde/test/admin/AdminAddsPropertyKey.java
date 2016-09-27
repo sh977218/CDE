@@ -30,6 +30,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
             clickElement(By.id("newPropertyKey"));
             textPresent("doYouSeeThis");
         } catch (TimeoutException e) {
+            System.out.println(driver.getPageSource());
             clickElement(By.id("newPropertyKey"));
             textPresent("doYouSeeThis");
         }

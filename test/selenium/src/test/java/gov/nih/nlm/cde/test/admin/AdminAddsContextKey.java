@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.admin;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
@@ -22,8 +23,15 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");
-        clickElement(By.id("newContext"));
-        textPresent("canYouSeeThis");
+
+        try {
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        } catch (TimeoutException e) {
+            System.out.println(driver.getPageSource());
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        }
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
