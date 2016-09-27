@@ -683,7 +683,60 @@ button#selectDefault {
     text-align: center;
 }
 
+.welcomeIconCircle {
+    position: relative;
+    right: -217px;
+    top: 62px;
+}
+
+.welcomeDetailIcon {
+    position: absolute !important;
+    right: 21px;
+    top: 30px;
+    color: lightslategrey;
+    font-size: 1.5em !important;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    border-radius: 28px;
+    width: 25px;
+    display: block;
+    text-align: center;
+}
+
+.welcomeDetailIcon:hover {
+    background-color: #337ab7;
+    color: white;
+}
+
+.welcomeSearchFieldset {
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    margin: 10px 0 10px 0;
+    padding: 0 10px;
+    height: 140px;
+}
+
+.welcomeSearchFieldset:hover {
+    background-color: #f2f2f2;
+}
+
+.welcomeSearchFieldset > legend{
+    width:auto;
+    border-bottom: none;
+    padding: 0 5px 0 5px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+.welcomeCount {
+    bottom: 1px;
+    right: 40px;
+    position: absolute;
+    background-color: white;
+    padding: 0 5px 0 5px;
+}
+
 .welcomeSearchOrganizationBox {
+    overflow: hidden;
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.16);
     margin: 10px 0 10px 0;

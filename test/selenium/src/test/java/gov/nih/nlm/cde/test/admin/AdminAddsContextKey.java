@@ -1,11 +1,11 @@
 package gov.nih.nlm.cde.test.admin;
 
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
-import gov.nih.nlm.system.NlmCdeBaseTest;
-public class AdminAddsContextKey extends NlmCdeBaseTest{
+
+public class AdminAddsContextKey extends NlmCdeBaseTest {
     @Test
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -21,7 +21,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest{
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
-        hangon(1);
+        textPresent("Contexts are managed in Org Management > List Management");
         clickElement(By.id("newContext"));
         textPresent("canYouSeeThis");
         clickElement(By.id("cancelCreate"));

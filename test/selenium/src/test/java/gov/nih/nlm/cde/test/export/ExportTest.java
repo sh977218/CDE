@@ -19,12 +19,12 @@ public class ExportTest extends NlmCdeBaseTest {
         loadDefaultSettings();
 
         goToCdeSearch();
-        findElement(By.id("browseOrg-NINDS")).click();
+        clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Statuses");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         clickElement(By.id("search.submit"));
-        findElement(By.id("export")).click();
-        findElement(By.id("csvExport")).click();
+        clickElement(By.id("export"));
+        clickElement(By.id("csvExport"));
         textPresent("export is being generated");
         textPresent("Export downloaded.");
         closeAlert();
