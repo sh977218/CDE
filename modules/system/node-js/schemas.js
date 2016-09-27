@@ -115,6 +115,7 @@ var orgJson = {
     }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
+    , htmlOverview: String
 };
 schemas.orgJson = orgJson;
 
