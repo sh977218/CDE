@@ -25,8 +25,8 @@ public class FindRetired extends NlmCdeBaseTest {
         driver.get(driver.getCurrentUrl());
         textPresent("| Retired (");
         textPresent("Height or length alternative measurement");
-        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.id("li-blank-Retired"))));
-        wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.id("li-checked-Retired"))));
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("li-blank-Retired"))));
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("li-checked-Retired"))));
     }
 
 
