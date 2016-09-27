@@ -94,7 +94,6 @@ angular.module('systemModule').controller('NewPropertyModalCtrl',
 
         OrgHelpers.deferred.promise.then(function () {
             $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-            $scope.$apply();
             console.log("$scope.orgPropertyKeys");
             console.log($scope.orgPropertyKeys);
         });

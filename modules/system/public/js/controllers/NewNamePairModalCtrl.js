@@ -1,9 +1,7 @@
 angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$uibModalInstance', 'cde', 'context',
     function ($scope, $modalInstance, cde, context) {
 
-
     $scope.orgContexts = context;
-    $scope.$apply();
 
     $scope.newNamePair = {
         "languageCode": "EN-US",
@@ -17,8 +15,6 @@ angular.module('systemModule').controller('NewNamePairModalCtrl', ['$scope', '$u
     $scope.cancelCreate = function() {
         $modalInstance.dismiss('cancel');
     };
-
-
 
     $scope.okCreate = function() {
         cde.naming.push($scope.newNamePair);
