@@ -180,15 +180,15 @@ angular.module('formModule').controller
         $scope.addCdeMode = true;
     };
 
-        $scope.setToAddFormMode = function () {
-            $scope.addFormMode = true;
-        };
+    $scope.setToAddFormMode = function () {
+        $scope.addFormMode = true;
+    };
 
     $scope.setToNoneAddCdeMode = function () {
         $scope.addCdeMode = false;
     };
-        $scope.setToNoneAddFormMode = function () {
-            $scope.addFormMode = false;
+    $scope.setToNoneAddFormMode = function () {
+        $scope.addFormMode = false;
     };
 
     var route = $routeParams;
