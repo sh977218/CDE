@@ -16,7 +16,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.id("edit_org_propsContext_TEST"));
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys("canYouSeeThis");
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
-        hangon(1);
+        hangon(3);
         clickElement(By.id("confirmContextEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
