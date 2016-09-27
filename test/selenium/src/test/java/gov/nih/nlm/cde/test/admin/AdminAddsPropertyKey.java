@@ -18,8 +18,11 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("edit_org_props_TEST"));
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys("doYouSeeThis");
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
+        hangon(1);
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
+        closeAlert();
+        textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
 
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
