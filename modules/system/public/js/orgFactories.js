@@ -48,6 +48,7 @@ angular.module('OrgFactories', ['ngResource'])
                 OrgHelpers.deferred.resolve();
                 if (cb)cb();
             }).error(function() {
+                console.log("Cannot get org detailed info.");
             });
         }
         , showWorkingGroup: function(orgToHide, user) {
