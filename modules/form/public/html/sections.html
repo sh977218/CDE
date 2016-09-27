@@ -6,6 +6,11 @@
     <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
     <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
 </button>
+<button id="startAddingForms" ng-show="canCurate && elt.formElements.length > 0"
+        ng-click="switchEditFormsMode()" class="btn btn-default hidden-xs hidden-sm">
+    <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+    <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+</button>
 <div ng-show="canCurate"><br/>
     <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
         <div class="alert alert-danger" role="alert">To add questions to this form, enlarge your browser window or use a

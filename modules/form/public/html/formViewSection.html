@@ -104,6 +104,13 @@
                 <span ng-show="addCdeMode"><i
                         class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
             </button>
+            <button id="startAddingQuestions_form_{{sectionIndex}}" ng-show="elt.formElements.length > 0"
+                    ng-click="switchEditFormMode()" class="btn btn-default hidden-sm">
+                <span ng-hide="addCdeMode"><i
+                        class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+                <span ng-show="addCdeMode"><i
+                        class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
+            </button>
         </div>
     </div>
 </div>

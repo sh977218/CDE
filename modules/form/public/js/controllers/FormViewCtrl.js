@@ -6,6 +6,7 @@ angular.module('formModule').controller
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
+        $scope.addFormMode = false;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
@@ -179,8 +180,15 @@ angular.module('formModule').controller
         $scope.addCdeMode = true;
     };
 
+        $scope.setToAddFormMode = function () {
+            $scope.addFormMode = true;
+        };
+
     $scope.setToNoneAddCdeMode = function () {
         $scope.addCdeMode = false;
+    };
+        $scope.setToNoneAddFormMode = function () {
+            $scope.addFormMode = false;
     };
 
     var route = $routeParams;
@@ -287,6 +295,16 @@ angular.module('formModule').controller
             $scope.setToAddCdeMode();
         } else {
             $scope.setToNoneAddCdeMode();
+        }
+    };
+
+    $scope.switchEditFormsMode = function () {
+        $scope.addFormMode = !$scope.addFormMode;
+
+        if ($scope.addFormMode) {
+            $scope.setToAddFormMode();
+        } else {
+            $scope.setToNoneAddFormMode();
         }
     };
 
