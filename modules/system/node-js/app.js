@@ -216,6 +216,8 @@ exports.init = function (app) {
         var failedIp = findFailedIp(getRealIp(req));
         async.series([
                 function checkCaptcha(captchaDone) {
+                    // disabled for now.
+                    return captchaDone();
                     if (failedIp && failedIp.nb > 2) {
                         if (req.body.recaptcha) {
                             request.post("https://www.google.com/recaptcha/api/siteverify",
