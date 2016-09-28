@@ -16,9 +16,10 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
         clickElement(By.id("edit_org_props_TEST"));
+        hangon(2);
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys("doYouSeeThis");
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
-        hangon(3);
+        hangon(2);
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
@@ -31,14 +32,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         hangon(1);
-        try {
-            clickElement(By.id("newPropertyKey"));
-            textPresent("doYouSeeThis");
-        } catch (TimeoutException e) {
-            System.out.println(driver.getPageSource());
-            clickElement(By.id("newPropertyKey"));
-            textPresent("doYouSeeThis");
-        }
+        clickElement(By.id("newPropertyKey"));
+        textPresent("doYouSeeThis");
 
         clickElement(By.id("cancelCreate"));
 
