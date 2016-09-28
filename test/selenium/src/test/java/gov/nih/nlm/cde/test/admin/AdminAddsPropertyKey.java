@@ -25,6 +25,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         closeAlert();
         driver.get(driver.getCurrentUrl());
         clickElement(By.linkText("List Management"));
+        scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
         textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
 
         goToCdeByName("Distance from Closest Margin Value");

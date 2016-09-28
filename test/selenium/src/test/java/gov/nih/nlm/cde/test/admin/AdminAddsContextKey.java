@@ -23,6 +23,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         closeAlert();
         driver.get(driver.getCurrentUrl());
         clickElement(By.linkText("List Management"));
+        scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
         textPresent("canYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
