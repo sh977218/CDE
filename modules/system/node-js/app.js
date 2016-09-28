@@ -224,10 +224,11 @@ exports.init = function (app) {
                                         secret: config.captchaCode,
                                         response: req.body.recaptcha,
                                         remoteip: getRealIp(req)
-                                    }
+                                    },
+                                    json: true
                                 }, function (err, resp, body) {
                                     if (err) captchaDone(err);
-                                    else if (body && !JSON.parse(body).success) {
+                                    else if (!body.success) {
                                         captchaDone("incorrect recaptcha");
                                     } else {
                                         captchaDone();
@@ -241,8 +242,6 @@ exports.init = function (app) {
                     }
                 }],
             function allDone(err) {
-                console.log("All Done");
-                console.log("Error: " + err);
                 if (err) {
                     return res.status(412).send(err);
                 }
