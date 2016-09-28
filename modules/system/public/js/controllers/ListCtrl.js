@@ -481,4 +481,21 @@ angular.module('systemModule').controller('ListCtrl',
         return regStatusShared.orderedList.indexOf(rg.key);
     };
 
+    $scope.dragSortableOptions = {
+        connectWith: ".dragQuestions",
+        handle: ".fa.fa-arrows",
+        appendTo: "body",
+        revert: true,
+        placeholder: "questionPlaceholder",
+        start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        },
+        stop: function () {
+            $('.dragQuestions').css('border', '');
+        },
+        helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>');
+        }
+    };
 }]);
