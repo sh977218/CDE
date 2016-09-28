@@ -6,7 +6,7 @@ angular.module('formModule').controller
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addCdeMode = false;
-        $scope.addFormMode = false;
+    $scope.addFormMode = false;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
