@@ -222,11 +222,12 @@ exports.init = function (app) {
                                 {
                                     form: {
                                         secret: config.captchaCode,
-                                        response: req.body['g-recaptcha-response'],
+                                        response: req.body.recaptcha,
                                         remoteip: getRealIp(req)
                                     }
                                 }, function (err, resp, body) {
-                                    if (!body.success) {
+                                    if (err) captchaDone(err);
+                                    else if (body && !JSON.parse(body).success) {
                                         captchaDone("incorrect recaptcha");
                                     } else {
                                         captchaDone();
@@ -240,6 +241,8 @@ exports.init = function (app) {
                     }
                 }],
             function allDone(err) {
+                console.log("All Done");
+                console.log("Error: " + err);
                 if (err) {
                     return res.status(412).send(err);
                 }
