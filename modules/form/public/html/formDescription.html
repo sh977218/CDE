@@ -14,7 +14,7 @@
     <div ng-class="addFormMode ? 'col-md-7 hidden-sm noLeftPadding' : 'col-md-0'"
          ng-if="addFormMode && elt.formElements.length > 0">
         <div ui-scrollfix="+35" offset-bottom="70" class="question-search-area" ng-controller="ListCtrl">
-            <div class="panel-group" id="accordion_form" ng-controller="DEListCtrl">
+            <div class="panel-group" id="accordion_form" ng-controller="FormListCtrl">
                 <div id="formSearchArea" ng-include="selectedMainAreaMode.url" ng-controller="FormDEListCtrl"></div>
             </div>
         </div>
