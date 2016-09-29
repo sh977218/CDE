@@ -2,13 +2,13 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope', function($s
 {
     $scope.embedded = true;
 
-    $scope.reset = function() {
+    $scope.reset = function (type) {
         $scope.initSearch();
-        $scope.reload();
+        $scope.reload(type);
     };
 
-    $scope.termSearch = function() {
-        $scope.reload();
+    $scope.termSearch = function (type) {
+        $scope.reload(type);
     };
 
     $scope.pageChange = function() {
