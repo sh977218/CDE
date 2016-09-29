@@ -68,6 +68,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     elementType: "question",
                     label: cde.naming[0].designation,
                     cardinality: {min: 1, max: 1},
+                    skipLogic: {
+                        condition: ''
+                    },
                     question: {
                         cde: {
                             tinyId: cde.tinyId,
@@ -84,8 +87,13 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         answers: []
                     }
                 };
+                cde.naming.forEach(function (n) {
+                    if (n.context === 'Question Text')
+                        question.label = n.designation;
+                });
                 if (cde.valueDomain.permissibleValues.length > 0) {
-                    if (cde.valueDomain.permissibleValues.length > 9) {
+                    // elastic only store 20 pv, retrieve pv when have more than 19 pv.
+                    if (cde.valueDomain.permissibleValues.length > 19) {
                         $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
@@ -99,6 +107,26 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         });
                     }
                 }
+            }
+            else {
+                return {};
+            }
+        }
+
+        function convertFormToSection(form) {
+            if (form.formElement) {
+                var inForm = {
+                    elementType: "form",
+                    label: form.naming[0] ? form.naming[0].designation : '',
+                    skipLogic: {
+                        condition: ''
+                    },
+                    form: {
+                        tinyId: form.tinyId,
+                        version: form.version,
+                        name: form.naming[0] ? form.naming[0].designation : ''
+                    }
+                };
             }
             else {
                 return {};
@@ -121,8 +149,11 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
             },
             receive: function (e, ui) {
-                var cde = ui.item.sortable.moved;
-                ui.item.sortable.moved = convertCdeToQuestion(cde);
+                var elt = ui.item.sortable.moved;
+                if (elt.valueDomain)
+                    ui.item.sortable.moved = convertCdeToQuestion(elt);
+                else
+                    ui.item.sortable.moved = convertFormToSection(elt);
                 $scope.stageElt();
             },
             update: function () {
