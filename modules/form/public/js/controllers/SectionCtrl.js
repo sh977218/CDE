@@ -107,6 +107,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         });
                     }
                 }
+                return question;
             }
             else {
                 return {};
@@ -114,17 +115,19 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
         }
 
         function convertFormToSection(form) {
-            if (form.formElement) {
+            if (form.formElements) {
                 var inForm = {
                     elementType: "form",
                     label: form.naming[0] ? form.naming[0].designation : '',
                     skipLogic: {
                         condition: ''
                     },
-                    form: {
-                        tinyId: form.tinyId,
-                        version: form.version,
-                        name: form.naming[0] ? form.naming[0].designation : ''
+                    inForm: {
+                        form: {
+                            tinyId: form.tinyId,
+                            version: form.version,
+                            name: form.naming[0] ? form.naming[0].designation : ''
+                        }
                     }
                 };
                 return inForm;
@@ -151,10 +154,13 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             },
             receive: function (e, ui) {
                 var elt = ui.item.sortable.moved;
-                if (elt.valueDomain)
-                    ui.item.sortable.moved = convertCdeToQuestion(elt);
-                else
-                    ui.item.sortable.moved = convertFormToSection(elt);
+                if (elt.valueDomain) {
+                    var question = convertCdeToQuestion(elt);
+                    ui.item.sortable.moved = question;
+                } else {
+                    var inForm = convertFormToSection(elt);
+                    ui.item.sortable.moved = inForm;
+                }
                 $scope.stageElt();
             },
             update: function () {
