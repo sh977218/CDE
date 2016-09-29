@@ -13,6 +13,7 @@ public class WelcomePageTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_username);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
+        clickElement(By.linkText("Organizations"));
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//i"));
         findElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//textarea")).sendKeys(htmlString);
         clickElement(By.xpath("//*[@id='orgHtmlOverview-caBIG']//button[contains(text(),'Confirm')]"));
