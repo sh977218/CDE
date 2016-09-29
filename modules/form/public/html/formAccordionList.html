@@ -1,5 +1,5 @@
 <div uib-accordion close-others="false">
-    <div ui-sortable="dragSortableOptions">
+    <div ui-sortable="dragSortableOptions" ng-model="forms">
         <div uib-accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen">
             <div uib-accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addFormMode"></a>

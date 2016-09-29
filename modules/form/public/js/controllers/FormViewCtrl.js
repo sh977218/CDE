@@ -638,10 +638,6 @@ angular.module('formModule').controller
         });
     };
 
-    $scope.dragSortableOptions = {
-        handle: ".fa.fa-arrows"
-    };
-
     $scope.validateForm = function () {
         $scope.isFormValid = true;
         var loopFormElements = function (form) {

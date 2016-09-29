@@ -12,12 +12,12 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 return "";
             return {
                 "0": {
-                    "1": "0 or 1"
-                    , "-1": "0 or more"
+                    "1": "0 or 1",
+                    "-1": "0 or more"
                 },
                 "1": {
-                    "1": "Exactly 1"
-                    , "-1": "1 or more"
+                    "1": "Exactly 1",
+                    "-1": "1 or more"
                 }
             }[cardinality.min][cardinality.max];
         };
@@ -30,6 +30,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 label: "New Section",
                 cardinality: {min: 1, max: 1},
                 section: {},
+                skipLogic: {condition: ''},
                 formElements: [],
                 elementType: "section"
             });
@@ -37,97 +38,94 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
         };
 
         $scope.sortableOptionsSections = {
-            connectWith: ".dragQuestions"
-            , handle: ".fa.fa-arrows"
-            , revert: true
-            , placeholder: "questionPlaceholder"
-            , start: function (event, ui) {
+            connectWith: ".dragQuestions",
+            handle: ".fa.fa-arrows",
+            revert: true,
+            placeholder: "questionPlaceholder",
+            start: function (event, ui) {
                 $('.dragQuestions').css('border', '2px dashed grey');
                 ui.placeholder.height("20px");
-            }
-            , stop: function () {
+            },
+            stop: function () {
                 $('.dragQuestions').css('border', '');
-            }
-            , receive: function (e, ui) {
+            },
+            receive: function (e, ui) {
                 if (!ui.item.sortable.moved) {
                     ui.item.sortable.cancel();
                     return;
                 }
                 if (ui.item.sortable.moved.tinyId || ui.item.sortable.moved.elementType === "question")
                     ui.item.sortable.cancel();
-            }
-            , helper: function () {
+            },
+            helper: function () {
                 return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
             }
         };
 
-        $scope.sortableOptions = {
-            connectWith: ".dragQuestions"
-            , handle: ".fa.fa-arrows"
-            , revert: true
-            , placeholder: "questionPlaceholder"
-            , start: function (event, ui) {
-                $('.dragQuestions').css('border', '2px dashed grey');
-                ui.placeholder.height("20px");
-            }
-            , stop: function () {
-                $('.dragQuestions').css('border', '');
-            }
-            , helper: function () {
-                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
-            }
-            , receive: function (e, ui) {
-                var cde = ui.item.sortable.moved;
-                if (cde.valueDomain !== undefined) {
-                    var question = {
-                        elementType: "question"
-                        , label: cde.naming[0].designation
-                        , cardinality: {min: 1, max: 1}
-                        , question: {
-                            cde: {
-                                tinyId: cde.tinyId
-                                , version: cde.version
-                                , derivationRules: cde.derivationRules
-                            }
-                            , datatype: cde.valueDomain.datatype
-                            , required: false
-                            , uoms: []
-                        }
-                    };
-                    if (cde.valueDomain.datatype === 'Number') {
-                        question.question.datatypeNumber = cde.valueDomain.datatypeNumber;
+        function convertCdeToQuestion(cde) {
+            if (cde.valueDomain !== undefined) {
+                var question = {
+                    elementType: "question",
+                    label: cde.naming[0].designation,
+                    cardinality: {min: 1, max: 1},
+                    question: {
+                        cde: {
+                            tinyId: cde.tinyId,
+                            version: cde.version,
+                            derivationRules: cde.derivationRules,
+                            name: cde.naming[0] ? cde.naming[0].designation : '',
+                            ids: cde.ids ? cde.ids : [],
+                            permissibleValues: []
+                        },
+                        datatype: cde.valueDomain.datatype,
+                        datatypeNumber: cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {},
+                        required: false,
+                        uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
+                        answers: []
                     }
-                    if (cde.valueDomain.uom) {
-                        question.question.uoms.push(cde.valueDomain.uom);
-                    }
-                    if (cde.naming && cde.naming.length > 0) {
-                        question.question.cde.name = cde.naming[0].designation;
-                    }
-                    if (cde.ids && cde.ids.length > 0) {
-                        question.question.cde.ids = cde.ids;
-                    }
-                    question.question.answers = [];
-                    question.question.cde.permissibleValues = [];
-                    if (cde.valueDomain.permissibleValues.length > 0) {
-                        if (cde.valueDomain.permissibleValues.length > 9) {
-                            $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
-                                result.data.valueDomain.permissibleValues.forEach(function (pv) {
-                                    question.question.answers.push(pv);
-                                    question.question.cde.permissibleValues.push(pv);
-                                });
-                            });
-                        } else {
-                            cde.valueDomain.permissibleValues.forEach(function (pv) {
+                };
+                if (cde.valueDomain.permissibleValues.length > 0) {
+                    if (cde.valueDomain.permissibleValues.length > 9) {
+                        $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
+                            result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
                             });
-                        }
+                        });
+                    } else {
+                        cde.valueDomain.permissibleValues.forEach(function (pv) {
+                            question.question.answers.push(pv);
+                            question.question.cde.permissibleValues.push(pv);
+                        });
                     }
-                    ui.item.sortable.moved = question;
                 }
-                $scope.stageElt();
             }
-            , update: function () {
+            else {
+                return {};
+            }
+        }
+
+        $scope.sortableOptions = {
+            connectWith: ".dragQuestions",
+            handle: ".fa.fa-arrows",
+            revert: true,
+            placeholder: "questionPlaceholder",
+            start: function (event, ui) {
+                $('.dragQuestions').css('border', '2px dashed grey');
+                ui.placeholder.height("20px");
+            },
+            stop: function () {
+                $('.dragQuestions').css('border', '');
+            },
+            helper: function () {
+                return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>')
+            },
+            receive: function (e, ui) {
+                var cde = ui.item.sortable.moved;
+                ui.item.sortable.moved = convertCdeToQuestion(cde);
+                $scope.stageElt();
+            },
+            update: function () {
                 $scope.stageElt();
             }
         };
