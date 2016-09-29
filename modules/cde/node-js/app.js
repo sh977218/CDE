@@ -274,19 +274,40 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.post('/board/pin/move/up', function(req, res) {
+    function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function(board) {
             var index = 0;
             board.get('pins').forEach(function (p, i) {
                 if (p.get('deTinyId') === req.body.tinyId) index = i;
             });
-            if(index > 0) board.pins.splice(index - 1, 0, boards.pins.splice(index, 1)[0]);
-            board.save(function (err) {
-                if (err) res.status(500).send();
-               res.send();
-            });
+            if(index > 0) {
+                moveFunc(board, index);
+                board.save(function (err) {
+                    if (err) res.status(500).send();
+                    res.send();
+                });
+            } else {
+                res.send();
+            }
+        });
+    }
+
+    app.post('/board/pin/move/up', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
         });
     });
+    app.post('/board/pin/move/down', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
+        });
+    });
+    app.post('/board/pin/move/top', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
+        });
+    });
+
 
     app.delete('/board/:boardId', function (req, res) {
         authorization.boardOwnership(req, res, req.params.boardId, function(board) {
