@@ -71,7 +71,21 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         });
                     });
             };
-            
+
+            function movePin(endPoint, pinId) {
+                $http.post(endPoint, {boardId: $scope.board._id, pinId: pinId}).success(function () {
+                    Alert.addAlert("success", "Saved");
+                    $scope.reload();
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            }
+
+            $scope.moveUp = function (id) {
+                movePin("/board/pin/move/up", id);
+            };
+
             $scope.save = function () {
                 $http.post("/board", $scope.board).success(function () {
                     Alert.addAlert("success", "Saved");

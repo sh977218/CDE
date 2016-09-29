@@ -273,13 +273,18 @@ exports.init = function (app, daoManager) {
         }
     });
 
+
+
+    app.post('/board/pin/move/up', function(req, res) {
+
+    });
+
     app.delete('/board/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             mongo_cde.boardById(req.params.boardId, function (err, board) {
                 if (!board) {
                     res.status(500).send("Can not find board with id:" + req.params.boardId);
                     return;
-                    
                 }
                 if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                     res.send("You must own the board that you wish to delete.");
