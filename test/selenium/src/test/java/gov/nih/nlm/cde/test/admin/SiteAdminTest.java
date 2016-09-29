@@ -56,6 +56,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
+        clickElement(By.linkText("Organizations"));
         textPresent("Albert Einstein Cancer Center");
     }
 

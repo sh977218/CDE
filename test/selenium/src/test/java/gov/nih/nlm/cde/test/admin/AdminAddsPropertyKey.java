@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.admin;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 
@@ -15,10 +16,17 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
         clickElement(By.id("edit_org_props_TEST"));
+        hangon(2);
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys("doYouSeeThis");
         findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
+        hangon(2);
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
+        closeAlert();
+        driver.get(driver.getCurrentUrl());
+        clickElement(By.linkText("List Management"));
+        scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
+        textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
 
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
@@ -27,6 +35,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("newPropertyKey"));
         textPresent("doYouSeeThis");
+
         clickElement(By.id("cancelCreate"));
 
         ///////////
