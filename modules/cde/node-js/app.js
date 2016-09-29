@@ -276,29 +276,23 @@ exports.init = function (app, daoManager) {
 
 
     app.post('/board/pin/move/up', function(req, res) {
-
+        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+            var index = 0;
+            board.pins.forEach(function (p, i) {
+                if (p.deTinyId === req.body.tinyId) index = i;
+            });
+            if(index > 0) board.pins.splice(index - 1, 0, boards.pins.splice(index, 1)[0]);
+        });
     });
 
     app.delete('/board/:boardId', function (req, res) {
-        if (req.isAuthenticated()) {
-            mongo_cde.boardById(req.params.boardId, function (err, board) {
-                if (!board) {
-                    res.status(500).send("Can not find board with id:" + req.params.boardId);
-                    return;
-                }
-                if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-                    res.send("You must own the board that you wish to delete.");
-                } else {
-                    board.remove(function () {
-                        elastic.boardRefresh(function () {
-                            res.send("Board Removed.");
-                        });
-                    });
-                }
+        authorization.boardOwnership(req, res, req.params.boardId, function(board) {
+            board.remove(function () {
+                elastic.boardRefresh(function () {
+                    res.send("Board Removed.");
+                });
             });
-        } else {
-            res.send("You must be logged in to do this.");
-        }
+        });
     });
 
     app.post('/classifyBoard', function (req, res) {

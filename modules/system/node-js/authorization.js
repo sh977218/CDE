@@ -35,15 +35,15 @@ exports.checkSiteAdmin = function(req, res, next) {
     }
 };
 
-exports.boardOwnership = function (req, res, next) {
+exports.boardOwnership = function (req, res, boardId, next) {
     if (req.isAuthenticated()) {
-        mongo_cde.boardById(req.params.boardId, function (err, board) {
+        mongo_cde.boardById(boardId, function (err, board) {
             if (!board) {
-                res.status(500).send("Can not find board with id:" + req.params.boardId);
+                res.status(500).send("Cannot find board with id:" + boardId);
             } else if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-                res.status(401).send("You must own the board that you wish to delete.");
+                res.status(401).send("You must own the board that you wish to modify.");
             } else {
-                next();
+                next(board);
             }
         });
     } else {
