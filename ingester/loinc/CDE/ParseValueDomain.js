@@ -36,7 +36,7 @@ exports.parseValueDomain = function (loinc) {
                 name = a['Answer'];
             }
             return {
-                permissibleValue: a['Code'],
+                permissibleValue: a['Code'] ? a['Code'] : name,
                 valueMeaningName: name,
                 valueMeaningDefinition: description,
                 valueMeaningCode: a['Answer ID'],
