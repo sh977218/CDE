@@ -7,8 +7,8 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope', function($s
         $scope.reload(type);
     };
 
-    $scope.termSearch = function (type) {
-        $scope.reload(type);
+    $scope.termSearch = function () {
+        $scope.reload();
     };
 
     $scope.pageChange = function() {
@@ -30,6 +30,17 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope', function($s
     $scope.alterOrgFilter = function(orgName) {
         $scope._alterOrgFiler(orgName);
         $scope.reload();
+    };
+
+}]);
+
+angular.module('formModule').controller('FormFormListCtrl', ['$scope', '$controller', function($scope, $controller)
+{
+
+    $controller('FormDEListCtrl', {$scope: $scope});
+
+    $scope.termSearch = function () {
+        $scope.reload("form");
     };
 
 }]);
