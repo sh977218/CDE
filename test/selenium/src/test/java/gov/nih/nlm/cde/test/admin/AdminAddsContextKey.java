@@ -7,6 +7,7 @@ import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
+    
     @Test
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -28,8 +29,16 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");
-        clickElement(By.id("newContext"));
-        textPresent("canYouSeeThis");
+
+        try {
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        } catch (TimeoutException e) {
+            System.out.println(driver.getPageSource());
+            clickElement(By.id("newContext"));
+            textPresent("canYouSeeThis");
+        }
+
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
