@@ -1,4 +1,6 @@
-var authorizationShared = require('../shared/authorizationShared');
+var authorizationShared = require('../shared/authorizationShared'),
+    mongo_cde = require('../../cde/node-js/mongo-cde')
+;
 
 exports.checkOwnership = function(dao, id, req, cb) {
     if (req.isAuthenticated()) {

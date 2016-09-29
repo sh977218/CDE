@@ -14,6 +14,7 @@ var cdesvc = require('./cdesvc')
     , sdc = require("./sdc.js")
     , appStatus = require('./../../system/node-js/status')
     , authorizationShared = require("../../system/shared/authorizationShared")
+    , authorization = require("../../system/node-js/authorization")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
@@ -273,15 +274,17 @@ exports.init = function (app, daoManager) {
         }
     });
 
-
-
     app.post('/board/pin/move/up', function(req, res) {
         authorization.boardOwnership(req, res, req.body.boardId, function(board) {
             var index = 0;
-            board.pins.forEach(function (p, i) {
-                if (p.deTinyId === req.body.tinyId) index = i;
+            board.get('pins').forEach(function (p, i) {
+                if (p.get('deTinyId') === req.body.tinyId) index = i;
             });
             if(index > 0) board.pins.splice(index - 1, 0, boards.pins.splice(index, 1)[0]);
+            board.save(function (err) {
+                if (err) res.status(500).send();
+               res.send();
+            });
         });
     });
 
