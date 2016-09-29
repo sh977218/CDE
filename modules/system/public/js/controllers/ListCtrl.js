@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'SearchSettings', 'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
+        'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  SearchSettings, AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
+                  AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
 
 {
 
