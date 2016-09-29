@@ -1,6 +1,16 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <span class="questionSectionTitle">Embedded Form: {{formElement.label}}</span>
+        <div class="row">
+            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
+                <i class="fa fa-arrows question-move-handle"></i>
+            </div>
+            <div class="col-sm-9 questionSectionTitle">Embedded Form: {{formElement.label}}</div>
+            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
+                <i class="glyphicon glyphicon-remove hand-cursor pull-right"
+                   ng-click="removeQuestion(parent, $index)"
+                   title="Remove question" id="remove_q_{{$index}}"></i>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
             <div class="col-sm-7" id="dd_form_instructions_{{$index}}">
@@ -43,17 +53,6 @@
                     <i ng-show="canCurate" class="fa fa-edit"
                        ng-click="editCardMode = true; orig = formElement.cardinality"
                        id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(formElement.cardinality)}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Move:</div>
-            <div class="col-sm-7" ng-hide="$first && $last">
-                <div ng-show="canCurate">
-                    <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}"
-                       ng-hide="$first"></i>
-                    <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}"
-                       ng-hide="$last"></i>
                 </div>
             </div>
         </div>
