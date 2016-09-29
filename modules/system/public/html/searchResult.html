@@ -20,7 +20,7 @@
                        typeahead-wait-ms="500" typeahead-min-length="3" typeahead-focus-first="false"
                        uib-typeahead="searchQuery for searchQuery in autocomplete.suggest($viewValue) | limitTo:8">
                 <div>
-                    <button id="search.submit" ng-click="termSearch(module)" type="submit" class="btn btn-danger noLeftMargin"
+                    <button id="search.submit" ng-click="termSearch()" type="submit" class="btn btn-danger noLeftMargin"
                             ng-class="{'btn-sm':embedded,'btn':!embedded}">
                         <i class="fa fa-search"></i> Search
                     </button>

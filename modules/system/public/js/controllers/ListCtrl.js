@@ -222,6 +222,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.reload = function(type) {
+        $scope.currentSearchTerm = $scope.searchSettings.q;
         userResource.getPromise().then(function () {
             reload(type);
         });
