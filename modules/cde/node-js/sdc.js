@@ -59,12 +59,7 @@ var sdcExport = function(req, res, cde) {
         sdcRecord.valueDomain.type = 'enumerated';
     }
     sdcRecord.valueDomain.unitOfMeasure = cde.valueDomain.uom;
-    if (req.query.pretty !== null && req.query.pretty === "true") {      
-        // TODO - don't know how to do this ...
-        return res.send(sdcRecord);            
-    } else {
-        return res.send(sdcRecord);
-    }
+    return res.send(sdcRecord);
 };
 
 exports.byId = function (req, res) {
