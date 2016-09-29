@@ -127,6 +127,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         name: form.naming[0] ? form.naming[0].designation : ''
                     }
                 };
+                return inForm;
             }
             else {
                 return {};
