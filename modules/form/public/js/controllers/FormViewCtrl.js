@@ -184,7 +184,7 @@ angular.module('formModule').controller
     };
 
     $scope.setToNoneAddMode = function () {
-        $scope.addCdeMode = undefined;
+        $scope.addMode = undefined;
     };
 
     var route = $routeParams;
