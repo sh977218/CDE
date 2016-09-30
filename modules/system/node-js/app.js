@@ -216,17 +216,21 @@ exports.init = function (app) {
         var failedIp = findFailedIp(getRealIp(req));
         async.series([
                 function checkCaptcha(captchaDone) {
+                    // disabled for now.
+                    return captchaDone();
                     if (failedIp && failedIp.nb > 2) {
                         if (req.body.recaptcha) {
                             request.post("https://www.google.com/recaptcha/api/siteverify",
                                 {
                                     form: {
                                         secret: config.captchaCode,
-                                        response: req.body['g-recaptcha-response'],
+                                        response: req.body.recaptcha,
                                         remoteip: getRealIp(req)
-                                    }
+                                    },
+                                    json: true
                                 }, function (err, resp, body) {
-                                    if (!body.success) {
+                                    if (err) captchaDone(err);
+                                    else if (!body.success) {
                                         captchaDone("incorrect recaptcha");
                                     } else {
                                         captchaDone();
