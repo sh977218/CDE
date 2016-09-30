@@ -136,7 +136,7 @@
                             <ui-select-match placeholder="type or select a Property" allow-clear="true">
                                 {{$item}}
                             </ui-select-match>
-                            <ui-select-choices repeat="p in getExistingKeys($select.search) | filter: $select.search  track by $index">
+                            <ui-select-choices repeat="p in getExistingKeys($select.search) | filter: $select.search track by $index">
                                 <div ng-bind-html="p | highlight: $select.search"></div>
                             </ui-select-choices>
                         </ui-select>

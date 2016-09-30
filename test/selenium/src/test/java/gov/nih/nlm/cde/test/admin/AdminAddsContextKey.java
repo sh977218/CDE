@@ -18,10 +18,14 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys("canYouSeeThis");
         hangon(2);
         findElement(By.xpath("//div[@id='text_context_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
+        hangon(2);
         clickElement(By.id("confirmContextEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
-        driver.get(driver.getCurrentUrl());
+        textPresent("canYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
+        String currentUrl = driver.getCurrentUrl();
+        goHome();
+        driver.get(currentUrl);
         clickElement(By.linkText("List Management"));
         scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
         textPresent("canYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));

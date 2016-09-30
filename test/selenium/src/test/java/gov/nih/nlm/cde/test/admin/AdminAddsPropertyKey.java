@@ -6,7 +6,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
-
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
 
     @Test
@@ -22,7 +21,10 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("confirmEdit_TEST"));
         textPresent("Org has been updated");
         closeAlert();
-        driver.get(driver.getCurrentUrl());
+        textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
+        String currentUrl = driver.getCurrentUrl();
+        goHome();
+        driver.get(currentUrl);
         clickElement(By.linkText("List Management"));
         scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
         textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
