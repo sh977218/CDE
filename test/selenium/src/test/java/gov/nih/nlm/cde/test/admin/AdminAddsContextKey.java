@@ -14,7 +14,6 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.id("edit_org_propsContext_TEST"));
         clickElement(By.cssSelector("#add_org_context_TEST"));
         findElement(By.id("newValue")).sendKeys("canYouSeeThis");
         clickElement(By.id("okValue"));
