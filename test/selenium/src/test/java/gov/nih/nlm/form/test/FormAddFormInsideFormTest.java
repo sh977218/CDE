@@ -14,7 +14,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         textPresent("Show Question Search Area");
         startAddingForms();
-        questionTest.addQuestionToSection("Traumatic Brain Injury - Adverse Events ", 0);
+        questionTest.addFormToSection("Traumatic Brain Injury - Adverse Events", 0);
         textPresent("Embedded Form: Traumatic Brain Injury - Adverse Events");
         saveForm();
         goToFormByName(formName);

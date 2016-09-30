@@ -1,4 +1,4 @@
-<div uib-accordion close-others="false">
+<div uib-accordion close-others="false" id="accordionList">
     <div ui-sortable="dragSortableOptions" ng-model="forms">
         <div uib-accordion-group ng-repeat="elt in forms track by $index" is-open="elt.isOpen">
             <div uib-accordion-heading ng-controller="AccordionCtrl">
