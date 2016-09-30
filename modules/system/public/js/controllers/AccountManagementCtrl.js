@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert',
-        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert)
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert', '$uibModal',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert, $modal)
 {
     $scope.admin = {};
     $scope.newOrg = {};
@@ -96,7 +96,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             username: $scope.admin.username
             },
             function(res) {
-                  $scope.addAlert("success", res);
+                  Alert.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
@@ -108,7 +108,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             id: byId
             },
             function(res) {
-                  $scope.addAlert("success", res);
+                  Alert.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
             }
         );
@@ -120,11 +120,11 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             , org: $scope.admin.orgName
             },
             function(res) {
-                  $scope.addAlert("success", res);
+                  Alert.addAlert("success", res);
                   $scope.getOrgAdmins();
                   $scope.getMyOrgAdmins();
             }, function () {
-                $scope.addAlert("danger", "There was an issue adding this administrator.");
+                Alert.addAlert("danger", "There was an issue adding this administrator.");
             }
         );
         resetOrgAdminForm();
@@ -142,7 +142,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             , userId: userId
             },
             function (res) {
-                $scope.addAlert("success", res);
+                Alert.addAlert("success", res);
                 $scope.getOrgAdmins();
                 $scope.getMyOrgAdmins();
                 
@@ -159,7 +159,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             , org: $scope.curator.orgName
             },
             function(res) {
-                  $scope.addAlert("success", res);
+                  Alert.addAlert("success", res);
                   $scope.orgCurators = $scope.getOrgCurators(); 
             }
         );
@@ -172,7 +172,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             , userId: userId
             },
             function (res) {
-                $scope.addAlert("success", res);
+                Alert.addAlert("success", res);
                 $scope.orgCurators = $scope.getOrgCurators(); 
             }
         
@@ -183,11 +183,11 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         AccountManagement.addOrg(
             {name: $scope.newOrg.name, longName: $scope.newOrg.longName, workingGroupOf: $scope.newOrg.workingGroupOf}
             , function(res) {
-                $scope.addAlert("success", res);
+                Alert.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
                 $scope.newOrg = {};
             }, function() {
-                $scope.alert("An error occured.");
+                Alert.alert("An error occured.");
             }
         );
     };
@@ -197,7 +197,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             id: byId
             },
             function(res) {
-                $scope.addAlert("success", res);
+                Alert.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
             }
         );
@@ -219,17 +219,50 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         return result;
     };
 
+    $scope.removePropertyFromOrg = function(p, org) {
+        org.propertyKeys = org.propertyKeys.filter(function (k) {
+            return k !== p;
+        });
+        $scope.updateOrg(org);
+    };
+    $scope.removeContextFromOrg = function(c, org) {
+        org.nameContexts = org.nameContexts.filter(function (k) {
+            return k !== c;
+        });
+        $scope.updateOrg(org);
+    };
+
+    $scope.addOrgProperty = function(org) {
+        modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/addValueModal.html',
+            controller: function () {}
+        }).result.then(function (newValue) {
+            org.propertyKeys.push(newValue);
+            $scope.updateOrg(org);
+        });
+    };
+    $scope.addOrgContext = function(org) {
+        modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/addValueModal.html',
+            controller: function () {}
+        }).result.then(function (newValue) {
+            org.nameContexts.push(newValue);
+            $scope.updateOrg(org);
+        });
+    };
 
     $scope.updateOrg = function (org) {
         $timeout(function(){
             AccountManagement.updateOrg(org,
                 function(res) {
                     $scope.orgs = $scope.getOrgs(function () {
-                        $scope.addAlert("success", res);
+                        Alert.addAlert("success", res);
                     });
                 },
                 function(res) {
-                    $scope.addAlert("danger", res);
+                    Alert.addAlert("danger", res);
                 }
             );
         },0);
@@ -242,11 +275,11 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.transferStewardFunc = function() {
         AccountManagement.transferSteward($scope.transferStewardObj,
             function(successMsg) {
-                $scope.addAlert("success", successMsg);
+                Alert.addAlert("success", successMsg);
                 resetTransferStewardObj();
             },
             function(errorMsg) {
-                $scope.addAlert("danger", errorMsg);
+                Alert.addAlert("danger", errorMsg);
                 resetTransferStewardObj();
             }
         );

@@ -14,45 +14,26 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.id("edit_org_props_TEST"));
-        findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys("doYouSeeThis");
-        hangon(2);
-        findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.RETURN);
-        clickElement(By.id("confirmEdit_TEST"));
+        clickElement(By.id("add_org_props_TEST"));
+        findElement(By.id("newValue")).sendKeys("doYouSeeThis");
+        clickElement(By.id("okValue"));
         textPresent("Org has been updated");
         closeAlert();
-        textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
-        String currentUrl = driver.getCurrentUrl();
-        goHome();
-        driver.get(currentUrl);
-        clickElement(By.linkText("List Management"));
-        scrollTo(findElement(By.xpath("//tr[td[@id='orgListName-TEST']]")).getLocation().getY());
-        textPresent("doYouSeeThis", By.xpath("//tr[td[@id='orgListName-TEST']]"));
 
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
-        hangon(1);
-        try {
-            clickElement(By.id("newPropertyKey"));
-            textPresent("doYouSeeThis");
-        } catch (TimeoutException e) {
-            System.out.println(driver.getPageSource());
-            clickElement(By.id("newPropertyKey"));
-            textPresent("doYouSeeThis");
-        }
-
+        clickElement(By.id("newPropertyKey"));
+        textPresent("doYouSeeThis");
         clickElement(By.id("cancelCreate"));
 
-        ///////////
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
-        clickElement(By.id("edit_org_props_TEST"));
-        findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.xpath("//div[@id='text_entry_box_TEST']//input")).sendKeys(Keys.BACK_SPACE);
-        clickElement(By.id("confirmEdit_TEST"));
+        clickElement(By.xpath("//span/span[contains(.,'doYouSeeThis')]/i"));
+        textPresent("Org has been updated");
+
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
         clickElement(By.linkText("Properties"));
