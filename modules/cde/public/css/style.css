@@ -762,11 +762,7 @@ button#selectDefault {
     float: left;
 }
 
-#questionSearchArea {
-    padding: 20px;
-}
-
-#formSearchArea {
+#embedSearchArea  {
     padding: 20px;
 }
 

@@ -215,7 +215,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             $scope.stageElt();
 
             if (form.formElements.length === 0) {
-                $scope.setToNoneAddCdeMode();
+                $scope.setToNoneAddMode();
             }
         };
 

@@ -5,8 +5,7 @@ angular.module('formModule').controller
               $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
-    $scope.addCdeMode = false;
-    $scope.addFormMode = false;
+    $scope.addMode = undefined;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
@@ -177,18 +176,15 @@ angular.module('formModule').controller
     };
 
     $scope.setToAddCdeMode = function () {
-        $scope.addCdeMode = true;
+        $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';
     };
 
     $scope.setToAddFormMode = function () {
-        $scope.addFormMode = true;
+        $scope.addMode = $scope.addMode === 'form' ? undefined : 'form';
     };
 
-    $scope.setToNoneAddCdeMode = function () {
-        $scope.addCdeMode = false;
-    };
-    $scope.setToNoneAddFormMode = function () {
-        $scope.addFormMode = false;
+    $scope.setToNoneAddMode = function () {
+        $scope.addCdeMode = undefined;
     };
 
     var route = $routeParams;
@@ -286,28 +282,6 @@ angular.module('formModule').controller
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
-    };
-
-    $scope.switchEditQuestionsMode = function () {
-        $scope.addCdeMode = !$scope.addCdeMode;
-        $scope.addFormMode = false;
-
-        if ($scope.addCdeMode) {
-            $scope.setToAddCdeMode();
-        } else {
-            $scope.setToNoneAddCdeMode();
-        }
-    };
-
-    $scope.switchEditFormsMode = function () {
-        $scope.addFormMode = !$scope.addFormMode;
-        $scope.addCdeMode = false;
-
-        if ($scope.addFormMode) {
-            $scope.setToAddFormMode();
-        } else {
-            $scope.setToNoneAddFormMode();
-        }
     };
 
     $scope.revert = function () {

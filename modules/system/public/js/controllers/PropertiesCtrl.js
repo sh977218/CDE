@@ -88,11 +88,6 @@ angular.module('systemModule').controller('NewPropertyModalCtrl',
     function ($scope, $modalInstance, module, elt, OrgHelpers) {
 
         OrgHelpers.deferred.promise.then(function () {
-            console.log("Inside New Property Modal Ctrl OrgHelpers.deferred.promise then.");
-            console.log("OrgHelpers: " + OrgHelpers);
-            console.log("OrgHelpers.orgsDetailedInfo: " + OrgHelpers.orgsDetailedInfo);
-            console.log("$scope.elt.stewardOrg.name: " + $scope.elt.stewardOrg.name);
-            console.log("OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys: " + OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys);
             $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
         });
 

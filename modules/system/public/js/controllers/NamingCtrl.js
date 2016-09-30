@@ -5,7 +5,6 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
-                console.log("OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts: " + OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts);
                 $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
                 contextsLoaded.resolve();
             });
