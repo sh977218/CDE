@@ -42,5 +42,4 @@ angular.module('formModule').controller('FormFormListCtrl', ['$scope', '$control
         $scope.termSearch = function () {
             $scope.reload("form");
         };
-
     }]);

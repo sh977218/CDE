@@ -52,7 +52,7 @@ angular.module('systemModule').controller('OrgOverviewCtrl',
     $scope.browseOrg = function(orgName) {
         if ($scope.embedded) {
             $scope.searchSettings.selectedOrg = orgName;
-            $scope.reload();
+            $scope.reload($scope.module);
         } else {
             $location.url($scope.module + "/search?selectedOrg=" + encodeURIComponent(orgName));
             $anchorScroll('top');
