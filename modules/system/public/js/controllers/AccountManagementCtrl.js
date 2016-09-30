@@ -44,7 +44,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
 
     var allPropertyKeys = [];
     var allContexts = [];
-    $scope.getOrgs = function() {
+    $scope.getOrgs = function(cb) {
         $http.get("/managedOrgs").then(function(response) {
             $scope.orgs = response.data.orgs;
             $scope.orgNames = $scope.orgs.map(function(o) {return o.name;});
@@ -62,6 +62,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             allContexts = allContexts.filter(function(item, pos, self) {
                 return self.indexOf(item) === pos;
             });
+            if (cb) cb();
         });
     };
     $scope.getOrgs(); 
@@ -223,8 +224,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $timeout(function(){
             AccountManagement.updateOrg(org,
                 function(res) {
-                    $scope.addAlert("success", res);
-                    $scope.orgs = $scope.getOrgs();
+                    $scope.orgs = $scope.getOrgs(function () {
+                        $scope.addAlert("success", res);
+                    });
                 },
                 function(res) {
                     $scope.addAlert("danger", res);
