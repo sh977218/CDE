@@ -377,6 +377,8 @@ schemas.clientErrorSchema = new mongoose.Schema(
         , stack: String
         , userAgent: String
         , url: String
+        , username: String
+        , ip: String
     }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.storedQuerySchema = new mongoose.Schema(
