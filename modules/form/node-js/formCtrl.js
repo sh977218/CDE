@@ -190,6 +190,17 @@ exports.wholeFormById = function (req, res) {
     });
 };
 
+exports.wholeFormByIdAndVersion = function (req, res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    mongo_data_form.eltByTinyIdAndVersion(req.params.id, req.params.version, function (err, form) {
+        fetchWholeForm(form, function (f) {
+            if (!req.user) adminSvc.hideProprietaryIds(f);
+            res.send(f);
+        });
+    });
+};
+
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     fetchWholeForm(form, function (wholeForm) {
