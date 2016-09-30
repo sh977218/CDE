@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h4 tabindex="0">Add Value</h4>
+</div>
+<form name="form" role="form">
+    <div class="modal-body">
+        <div class="form-group">
+            <label tabindex="0" for="newValue">New Value:</label>
+            <input tabindex="0" class="form-control" ng-model="newValue" id="newValue"
+                   Placeholder="New Value" required/>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn cancel" ng-click="$dismiss()" id="cancelNewValue" type="button">Cancel</button>
+        <button class="btn btn-warning" ng-click="$close(newValue)" ng-disabled="isClean() || form.$invalid"
+                id="okValue" type="submit">Save
+        </button>
+    </div>
+</form>
