@@ -33,19 +33,3 @@
     </dl>
 </div>
 
-<div class="col-md-8">
-    <h4 id="regStatusValidationRules">Validation Rules</h4>
-    <info>Stewards have defined organizational validation rules for each registration status. </info>
-    <div ng-controller="RegStatusValidationCtrl">
-        <div ng-repeat="(statusName, status) in cdeStatusRules" ng-show="showStatus(status)">
-            <h3>{{statusName}}</h3>
-            <div ng-repeat="(orgName, org) in status">
-                <h4>Steward: {{orgName}}</h4>
-                <div ng-repeat="rule in org" id="rule_{{statusName}}_{{$index}}">
-                    <i class="fa  btn-xs" ng-class="{'fa-check btn-success':cdePassingRule(elt, rule), 'fa-times btn-danger': !cdePassingRule(elt, rule)}"></i> {{rule.ruleName}}
-                </div>
-            </div>
-            <hr>
-        </div>
-    </div>
-</div>
