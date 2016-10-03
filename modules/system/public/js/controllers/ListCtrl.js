@@ -332,6 +332,11 @@ angular.module('systemModule').controller('ListCtrl',
 
     };
 
+    $scope.fakeNextPageLink = function() {
+        var p = ($scope.totalItems / $scope.resultPerPage > 1)?Number($scope.searchSettings.page?$scope.searchSettings.page:1) + 1:1;
+        return $scope.generateSearchForTerm($scope.module, p);
+    };
+
     $scope.generateSearchForTerm = function (type, pageNumber) {
         if (!type) type = $scope.module;
 
@@ -398,10 +403,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.pageChange = function() {
       doSearch();
-    };
-
-    $scope.getPaginationHref = function(pageNumber) {
-        return $scope.generateSearchForTerm($scope.module, pageNumber);
     };
 
     var doSearch = function() {
