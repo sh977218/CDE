@@ -16,6 +16,9 @@ angular.module('systemModule').controller('PropertiesCtrl',
     $scope.openNewProperty = function () {
         keysLoaded.promise.then(function () {
 
+            console.log("allKeys:");
+            console.log($scope.allKeys);
+
             if (!$scope.allKeys || $scope.allKeys.length === 0) {
                 Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
                 return;
@@ -87,11 +90,15 @@ angular.module('systemModule').controller('NewPropertyModalCtrl',
     ['$scope', '$uibModalInstance', 'module', 'elt', 'OrgHelpers',
     function ($scope, $modalInstance, module, elt, OrgHelpers) {
 
+        $scope.elt = elt;
+
         OrgHelpers.deferred.promise.then(function () {
             $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+            console.log("$scope.orgPropertyKeys");
+            console.log($scope.orgPropertyKeys);
         });
 
-        $scope.elt = elt;
+
         $scope.newProperty = {};
 
         $scope.okCreate = function () {
