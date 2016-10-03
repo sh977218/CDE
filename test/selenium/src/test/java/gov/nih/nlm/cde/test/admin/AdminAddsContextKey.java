@@ -2,8 +2,6 @@ package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {

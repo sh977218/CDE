@@ -14,6 +14,7 @@ var cdesvc = require('./cdesvc')
     , sdc = require("./sdc.js")
     , appStatus = require('./../../system/node-js/status')
     , authorizationShared = require("../../system/shared/authorizationShared")
+    , authorization = require("../../system/node-js/authorization")
     , multer = require('multer')
     , elastic_system = require('../../system/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
@@ -273,27 +274,49 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.delete('/board/:boardId', function (req, res) {
-        if (req.isAuthenticated()) {
-            mongo_cde.boardById(req.params.boardId, function (err, board) {
-                if (!board) {
-                    res.status(500).send("Can not find board with id:" + req.params.boardId);
-                    return;
-                    
-                }
-                if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-                    res.send("You must own the board that you wish to delete.");
-                } else {
-                    board.remove(function () {
-                        elastic.boardRefresh(function () {
-                            res.send("Board Removed.");
-                        });
-                    });
-                }
+    function boardMove(req, res, moveFunc) {
+        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+            var index = 0;
+            board.get('pins').forEach(function (p, i) {
+                if (p.get('deTinyId') === req.body.tinyId) index = i;
             });
-        } else {
-            res.send("You must be logged in to do this.");
-        }
+            if(index > 0) {
+                moveFunc(board, index);
+                board.save(function (err) {
+                    if (err) res.status(500).send();
+                    res.send();
+                });
+            } else {
+                res.send();
+            }
+        });
+    }
+
+    app.post('/board/pin/move/up', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
+        });
+    });
+    app.post('/board/pin/move/down', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
+        });
+    });
+    app.post('/board/pin/move/top', function(req, res) {
+        boardMove(req, res, function(board, index) {
+            board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
+        });
+    });
+
+
+    app.delete('/board/:boardId', function (req, res) {
+        authorization.boardOwnership(req, res, req.params.boardId, function(board) {
+            board.remove(function () {
+                elastic.boardRefresh(function () {
+                    res.send("Board Removed.");
+                });
+            });
+        });
     });
 
     app.post('/classifyBoard', function (req, res) {
