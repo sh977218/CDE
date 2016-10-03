@@ -104,9 +104,15 @@ exports.logError = function(message, callback) {
 };
 
 exports.logClientError = function(req, callback) {
+    var getRealIp = function(req) {
+        if (req._remoteAddress) return req._remoteAddress;
+        if (req.ip) return req.ip;
+    };
     var exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
+    exc.ip = getRealIp(req);
+    if (req.user) exc.username = req.user.username;
     var logEvent = new ClientErrorModel(exc);
     logEvent.save(function(err) {
         if (err) console.log ("ERROR: " + err);
