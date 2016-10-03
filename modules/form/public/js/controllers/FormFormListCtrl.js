@@ -6,4 +6,9 @@ angular.module('formModule').controller('FormFormListCtrl', ['$scope', '$control
         $scope.termSearch = function () {
             $scope.reload("form");
         };
+
+        $scope.reset = function () {
+            $scope.initSearch();
+            $scope.reload('form');
+        };
     }]);

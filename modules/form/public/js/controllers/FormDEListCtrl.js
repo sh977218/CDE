@@ -2,9 +2,9 @@ angular.module('formModule').controller('FormDEListCtrl', ['$scope',
     function ($scope) {
         $scope.embedded = true;
 
-        $scope.reset = function (type) {
+        $scope.reset = function () {
             $scope.initSearch();
-            $scope.reload(type);
+            $scope.reload('cde');
         };
 
         $scope.termSearch = function () {
