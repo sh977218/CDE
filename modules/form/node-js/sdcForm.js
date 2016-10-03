@@ -200,16 +200,38 @@ exports.formToSDC = function (form) {
     var opts = {explicitChildren: true, preserveChildrenOrder: true};
 
 
-    var jsonResult;
-    new xml2js.Parser(opts).parseString(sampleXml, function(err, result) {
-        console.log(JSON.stringify(result));
-        jsonResult = result;
-        var builder = new xml2js.Builder(opts)
-        var xmlResult = builder.buildObject(jsonResult);
-        console.log(xmlResult);
-    });
+    //var jsonResult;
+    //new xml2js.Parser(opts).parseString(sampleXml, function(err, result) {
+    //    console.log(JSON.stringify(result));
+    //    jsonResult = result;
+    //    var builder = new xml2js.Builder(opts)
+    //    var xmlResult = builder.buildObject(jsonResult);
+    //    console.log(xmlResult);
+    //});
 
 
+    var testJson = {
+        body: {
+            ChildItems: {
+
+            }
+            //'$$childItems':
+            //    [
+            //        {"#name": "Question", _: "1"},
+            //        {"#name": "Section", _: "2"},
+            //        {"#name": "Question", _: "3"}
+            //    ]
+            //
+        }
+    };
+    var testXml = new xml2js.Builder(opts).buildObject(testJson);
+    //console.log(testXml);
+
+    testJson.body.ChildItems[0] = {Question: "a"};
+    testJson.body.ChildItems[1] = {Section: "b"};
+    testJson.body.ChildItems[2] = {Question: "c"};
+
+    console.log(JXON.jsToString(testJson));
 
 
     return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
