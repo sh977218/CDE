@@ -1,7 +1,10 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static com.jayway.restassured.RestAssured.get;
 
 public class FormAddFormInsideFormTest extends BaseFormTest {
     QuestionTest questionTest = new QuestionTest();
@@ -21,23 +24,16 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         goToFormByName(formName);
         textPresent("This form is large and is not automatically displayed.");
         clickElement(By.id("renderPreviewButton"));
+        textPresent("Embedded Form: Vessel Imaging Angiography");
+
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Embedded Form: Vessel Imaging Angiography");
 
-        clickElement(By.id("export"));
-        textPresent("XML File, ODM Schema");
-        clickElement(By.id("odmExport"));
-        switchTab(1);
-        textPresent("<ItemDef DataType=\"text\" Name=\"Vessel Imaging Angiography\" OID=\"undefined_s0_q1\">");
-        switchTabAndClose(0);
+        String odmResponse = get(baseUrl + "/form/m1j_L1HHte?type=xml&subtype=odm").asString();
+        Assert.assertEquals(odmResponse.contains("Vessel Imaging Angiography"), true);
 
-        clickElement(By.id("export"));
-        textPresent("XML File, SDC Schema");
-        clickElement(By.id("sdcExport"));
-        switchTab(1);
-        textPresent("Vessel Imaging Angiography");
-        switchTabAndClose(0);
-
+        String sdcResponse = get(baseUrl + "/form/m1j_L1HHte?type=xml&subtype=sdc").asString();
+        Assert.assertEquals(sdcResponse.contains("Vessel Imaging Angiography"), true);
     }
 
 }
