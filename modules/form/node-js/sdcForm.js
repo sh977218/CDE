@@ -127,16 +127,15 @@ var doSection = function (parent, section) {
         "$ID": "NA_" + Math.random(),
         "$title": section.label,
         "ChildItems": {
-            "Question": [],
-            "Section": []
+            "_": []
         }
     };
 
     section.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'question') {
-            doQuestion(newSection.ChildItems.Question, formElement);
+            doQuestion(newSection.ChildItems._, formElement);
         } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(newSection.ChildItems.Section, formElement);
+            doSection(newSection.ChildItems._, formElement);
         }
     });
 
@@ -164,7 +163,7 @@ exports.formToSDC = function (form) {
             "Body": {
                 "$ID": "NA_" + Math.random(),
                 "ChildItems": {
-                    Section: []
+                    "_": []
                 }
             }
         }
@@ -172,7 +171,7 @@ exports.formToSDC = function (form) {
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(root['FormDesign'].Body.ChildItems.Section, formElement);
+            doSection(root['FormDesign'].Body.ChildItems._, formElement);
         }
     });
 
