@@ -127,14 +127,13 @@ gulp.task('prepareVersion', ['copyCode'], function() {
 gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/system/views/", filename: "includeFrontEndJS.ejs"},
-        {folder: "./modules/cde/views/", filename: "includeCdeFrontEndJS.ejs"},
-        {folder: "./modules/form/views/", filename: "includeFormFrontEndJS.ejs"},
         {folder: "./modules/embedded/public/html/", filename: "index.html"}
     ].forEach(function (item) {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
-                    assetsDir: "./modules/",
+                    jsAttributes: {
+                        defer: true
+                    },                    assetsDir: "./modules/",
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
                     js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
