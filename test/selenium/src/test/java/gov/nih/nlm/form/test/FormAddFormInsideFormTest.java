@@ -19,6 +19,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
+        textPresent("This form is large");
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Embedded Form: Vessel Imaging Angiography");
 
@@ -30,7 +31,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         switchTabAndClose(0);
 
         clickElement(By.id("export"));
-        textPresent("XML File, ODM Schema");
+        textPresent("XML File, SDC Schema");
         clickElement(By.id("sdcExport"));
         switchTab(1);
         textPresent("Vessel Imaging Angiography");
