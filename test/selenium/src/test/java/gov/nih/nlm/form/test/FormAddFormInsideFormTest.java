@@ -19,7 +19,8 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        textPresent("This form is large");
+        textPresent("This form is large and is not automatically displayed.");
+        clickElement(By.id("renderPreviewButton"));
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Embedded Form: Vessel Imaging Angiography");
 
