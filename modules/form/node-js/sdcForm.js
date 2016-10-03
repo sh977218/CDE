@@ -204,7 +204,8 @@ exports.formToSDC = function (form) {
     new xml2js.Parser(opts).parseString(sampleXml, function(err, result) {
         console.log(JSON.stringify(result));
         jsonResult = result;
-        var xmlResult = new xml2js.Builder(opts).buildObject(jsonResult);
+        var builder = new xml2js.Builder(opts)
+        var xmlResult = builder.buildObject(jsonResult);
         console.log(xmlResult);
     });
 
