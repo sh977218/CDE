@@ -11,7 +11,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName("Reg Status Lift");
         showAllTabs();
-        findElement(By.id("status_tab")).click();
+        findElement(By.linkText("Validation Rules")).click();
         findElement(By.cssSelector("#rule_Candidate_0 .fa-check"));
 
         findElement(By.cssSelector("#rule_Recorded_0 .fa-times"));

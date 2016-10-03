@@ -61,11 +61,11 @@
                     </button>
                 </li>
                 <li ng-if="!embedded" class="dropdown" ng-controller="ExportCtrl">
-                    <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn"
+                    <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn "
                             data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i> Export<span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-right">
                         <li ng-repeat="(key, value) in exporters">
                             <a id="{{value.id}}" ng-click="exportSearchResults(key)" ng-bind="value.display"></a>
                         </li>

@@ -1,4 +1,6 @@
-var authorizationShared = require('../shared/authorizationShared');
+var authorizationShared = require('../shared/authorizationShared'),
+    mongo_cde = require('../../cde/node-js/mongo-cde')
+;
 
 exports.checkOwnership = function(dao, id, req, cb) {
     if (req.isAuthenticated()) {
@@ -32,5 +34,21 @@ exports.checkSiteAdmin = function(req, res, next) {
         next();
     } else {
         res.status(401).send();
+    }
+};
+
+exports.boardOwnership = function (req, res, boardId, next) {
+    if (req.isAuthenticated()) {
+        mongo_cde.boardById(boardId, function (err, board) {
+            if (!board) {
+                res.status(500).send("Cannot find board with id:" + boardId);
+            } else if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
+                res.status(401).send("You must own the board that you wish to modify.");
+            } else {
+                next(board);
+            }
+        });
+    } else {
+        res.status(401).send("You must be logged in to do this.");
     }
 };
