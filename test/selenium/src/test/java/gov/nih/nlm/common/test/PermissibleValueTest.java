@@ -1,7 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 
 public abstract class PermissibleValueTest extends CommonTest {
 
@@ -15,10 +14,10 @@ public abstract class PermissibleValueTest extends CommonTest {
         textPresent("cs3");
         reorderIconTest(tabName);
         findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv1"));
+        textPresent("pv1", By.xpath(prefix + "pv-1" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-1" + postfix)).getText().contains("pv3"));
+        textPresent("pv3", By.xpath(prefix + "pv-1" + postfix));
         findElement(By.xpath(prefix + "moveTop-1" + postfix)).click();
-        Assert.assertTrue(findElement(By.xpath(prefix + "pv-0" + postfix)).getText().contains("pv3"));
+        textPresent("pv3", By.xpath(prefix + "pv-0" + postfix));
     }
 }
