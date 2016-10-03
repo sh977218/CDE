@@ -4,6 +4,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
 
             $scope.module = 'cde';
             $scope.cdes = [];
+            $scope.currentPage = 1;
 
             $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
                 "/cde/public/html/accordion/addToQuickBoardActions.html"
@@ -71,7 +72,27 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         });
                     });
             };
-            
+
+            function movePin(endPoint, pinId) {
+                $http.post(endPoint, {boardId: $scope.board._id, tinyId: pinId}).success(function () {
+                    Alert.addAlert("success", "Saved");
+                    $scope.reload();
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            }
+
+            $scope.moveUp = function (id) {
+                movePin("/board/pin/move/up", id);
+            };
+            $scope.moveDown = function (id) {
+                movePin("/board/pin/move/down", id);
+            };
+            $scope.moveTop = function (id) {
+                movePin("/board/pin/move/top", id);
+            };
+
             $scope.save = function () {
                 $http.post("/board", $scope.board).success(function () {
                     Alert.addAlert("success", "Saved");

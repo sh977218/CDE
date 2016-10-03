@@ -2,8 +2,8 @@ package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
@@ -25,7 +25,13 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
-        textPresent("doYouSeeThis");
+
+        try {
+            textPresent("doYouSeeThis");
+        } catch (TimeoutException e) {
+            System.out.println(driver.getPageSource());
+            Assert.fail();
+        }
         clickElement(By.id("cancelCreate"));
 
         clickElement(By.id("username_link"));
