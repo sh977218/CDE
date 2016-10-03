@@ -151,6 +151,7 @@ function fetchWholeForm(Form, callback) {
                         mongo_data_form.byTinyIdAndVersion(fe.inForm.form.tinyId, fe.inForm.form.version, function (err, result) {
                             result = result.toObject();
                             fe.formElements = result.formElements;
+                            fe.markModified('formElements');
                             loopFormElements(fe, function () {
                                 depth--;
                                 doneOne();
@@ -183,17 +184,6 @@ exports.wholeFormById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-        fetchWholeForm(form, function (f) {
-            if (!req.user) adminSvc.hideProprietaryIds(f);
-            res.send(f);
-        });
-    });
-};
-
-exports.wholeFormByIdAndVersion = function (req, res) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    mongo_data_form.eltByTinyIdAndVersion(req.params.id, req.params.version, function (err, form) {
         fetchWholeForm(form, function (f) {
             if (!req.user) adminSvc.hideProprietaryIds(f);
             res.send(f);
