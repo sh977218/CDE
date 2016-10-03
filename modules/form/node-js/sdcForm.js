@@ -1,6 +1,7 @@
 var JXON = require('jxon'),
-    validator = require('xsd-schema-validator')
-    ;
+    validator = require('xsd-schema-validator'),
+    xml2js = require('xml2js');
+;
 
 
 //var addCardinality = function(parent, formElement) {
@@ -179,12 +180,36 @@ exports.formToSDC = function (form) {
 
     var xmlStr = JXON.jsToString(root, "http://healthIT.gov/sdc" );
 
-    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-        if (err) console.log('Validate SDC error: ' + err);
-        if (result && !result.valid) {
-            console.log(JSON.stringify(result));
-        }
+    //validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
+    //    if (err) console.log('Validate SDC error: ' + err);
+    //    if (result && !result.valid) {
+    //        console.log(JSON.stringify(result));
+    //    }
+    //});
+
+    var sampleXml = "<Body>" +
+        "<ChildItems>" +
+        "<Question>1</Question>" +
+        "<Section>2</Section>" +
+        "<Question>3</Question>" +
+        "</ChildItems>" +
+        "</Body>";
+    //var jsonStr = JXON.stringToJs()
+    //console.log(JSON.stringify(jsonStr));
+
+    var opts = {explicitChildren: true, preserveChildrenOrder: true};
+
+
+    var jsonResult;
+    new xml2js.Parser(opts).parseString(sampleXml, function(err, result) {
+        console.log(JSON.stringify(result));
+        jsonResult = result;
+        var xmlResult = new xml2js.Builder(opts).buildObject(jsonResult);
+        console.log(xmlResult);
     });
+
+
+
 
     return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
 
