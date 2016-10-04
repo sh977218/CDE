@@ -28,7 +28,7 @@
     "jxon": "https://github.com/ludetc/jxon.git#ff0fe536ce798a7dc5174d0c42978f15db766dd5",
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
     "lforms": "7.1.0",
-    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#20fb32b5288c4d058abffb8f27580489af79c082",
+    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#78341720fcfb6fd3f7c13b8c26931ab6ead86929",
     "ngInfiniteScroll": "1.2.2",
     "checklist-model": "0.9.0",
     "angular-ui-sortable": "0.14.0",
