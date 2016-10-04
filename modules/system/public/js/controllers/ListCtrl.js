@@ -333,7 +333,12 @@ angular.module('systemModule').controller('ListCtrl',
 
     };
 
-    $scope.generateSearchForTerm = function (type) {
+    $scope.fakeNextPageLink = function() {
+        var p = ($scope.totalItems / $scope.resultPerPage > 1)?Number($scope.searchSettings.page?$scope.searchSettings.page:1) + 1:1;
+        return $scope.generateSearchForTerm($scope.module, p);
+    };
+
+    $scope.generateSearchForTerm = function (type, pageNumber) {
         if (!type) type = $scope.module;
 
         var searchLink = "/" + type + "/search?";
@@ -351,7 +356,9 @@ angular.module('systemModule').controller('ListCtrl',
                 searchLink += "&classificationAlt=" + encodeURIComponent($scope.searchSettings.classificationAlt.join(';'));
             }
         }
-        if ($scope.searchSettings.page)
+        if (pageNumber) {
+            searchLink += "&page=" + pageNumber;
+        } else if ($scope.searchSettings.page)
             searchLink += "&page=" + $scope.searchSettings.page;
         if ($scope.searchSettings.meshTree) {
             searchLink += "&topic=" + encodeURIComponent($scope.searchSettings.meshTree);
