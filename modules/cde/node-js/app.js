@@ -280,7 +280,7 @@ exports.init = function (app, daoManager) {
             board.get('pins').forEach(function (p, i) {
                 if (p.get('deTinyId') === req.body.tinyId) index = i;
             });
-            if(index > 0) {
+            if(index > -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
