@@ -19,7 +19,9 @@ angular.module('formModule').controller
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
-    $scope.lfOptions = {showCodingInstruction: true};
+    $scope.lfOptions = {
+        showCodingInstruction: true
+    };
 
     $scope.setRenderFormat = function (format) {
         $scope.renderWith = format;
