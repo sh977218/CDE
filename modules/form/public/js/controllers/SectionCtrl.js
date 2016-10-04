@@ -157,7 +157,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 if (elt.valueDomain) {
                     var question = convertCdeToQuestion(elt);
                     ui.item.sortable.moved = question;
-                } else {
+                } else if (elt.naming) {
                     var inForm = convertFormToSection(elt);
                     ui.item.sortable.moved = inForm;
                 }
