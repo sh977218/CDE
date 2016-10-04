@@ -42,7 +42,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Form: </div>
-                    <div class="col-sm-10">
+                    <div ng-class="{'col-sm-6':addMode,'col-sm-10':!addMode}">
                         <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
                            target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
                     </div>
