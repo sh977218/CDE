@@ -25,6 +25,7 @@ public class PinReorderingTest extends BoardTest {
         textPresent("Ethnic Group Category Text", By.id("linkToElt_0"));
         clickElement(By.id("moveDown-0"));
         closeAlert();
+        textPresent("Ethnic Group Category Text", By.id("linkToElt_1"));
         clickElement(By.id("moveDown-1"));
         closeAlert();
         textPresent("Ethnic Group Category Text", By.id("linkToElt_2"));
