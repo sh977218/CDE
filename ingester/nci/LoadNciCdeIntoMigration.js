@@ -38,19 +38,19 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
                 var recordCounterArray = json['xlink:httpQuery']['queryResponse']['recordCounter'];
                 if (recordCounterArray) {
                     recordCounterArray.forEach(function (recordCounter) {
-                        if (recordCounter !== "1")
-                            throw new Error("recordCounter is not '1'");
-                    })
-                } else {
+                        if (recordCounter !== "1") {
+                            process.exit(1);
+                        }
+                    });
                     var fields = json['xlink:httpQuery']['queryResponse']['class']['field'];
-                    var source = {};
-                    var fieldsArray = ['dateCreated','dateModified','registrationStatus','',''];
+                    var source = {source: 'caDSR'};
+                    var fieldsArray = ['dateCreated', 'dateModified'];
                     fields.forEach(function (field) {
                         if (fieldsArray.indexOf(field.attribute.name) !== -1) {
                             source[field.attribute.name] = field._;
                         }
                     });
-                    var newCde = ult.createNewCde(xml, org, orgInfo);
+                    var newCde = ult.createNewCde(xml, org, orgInfo, source);
                     if (newCde) {
                         MigrationDataElementModel.find({'ids.id': id}).elemMatch('ids', {
                             "source": 'caDSR',

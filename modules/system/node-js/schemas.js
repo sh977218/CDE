@@ -26,6 +26,14 @@ schemas.permissibleValueSchema = new mongoose.Schema({
     , codeSystemVersion: String
 }, {_id: false});
 
+schemas.sourceSchema = new mongoose.Schema({
+    sourceName: String,
+    dateCreated: Date,
+    dateModified: Date,
+    registrationStatus: String,
+    datatype: String
+}, {_id: false});
+
 var commonEmbedSchema = {
     nameLabel: String,
     pageSize: Number,

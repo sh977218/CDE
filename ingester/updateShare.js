@@ -95,8 +95,8 @@ exports.removeClassificationTree = function (element, org) {
     }
 };
 
-exports.removePropertiesOfSource = function (properties, source) {
-    return properties.filter(function (p) {
+exports.removeArrayOfSource = function (Array, source) {
+    return Array.filter(function (p) {
         return !p.source || p.source !== source;
     });
 };

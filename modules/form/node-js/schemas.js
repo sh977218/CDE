@@ -97,6 +97,7 @@ exports.formJson = {
         name: String
     }
     , source: String
+    , sources: [sharedSchemas.sourceSchema]
     , version: String
     , registrationState: sharedSchemas.registrationStateSchema
     , properties: [sharedSchemas.propertySchema]
