@@ -16,19 +16,6 @@ var datatypeMapping = {
 
 var source = 'caDSR';
 
-
-function getConceptOrigin(concept) {
-    if (concept.originId.match(/^C\d{5}/)) {
-        concept.origin = "NCI Thesaurus";
-    }
-    if (concept.originId.match(/^CL\d{5}/)) {
-        concept.origin = "NCI Metathesaurus";
-    }
-    if (concept.originId.match(/^L\d{5}/)) {
-        concept.origin = "LOINC";
-    }
-}
-
 function parseNaming(de) {
     var naming = [{
         designation: entities.decodeXML(de.LONGNAME[0]),
@@ -73,9 +60,19 @@ function parseProperties(de) {
             value: de.CONTEXTNAME[0]
         },
         {
+            key: "caDSR_Datatype",
+            source: source,
+            value: de.VALUEDOMAIN[0].Datatype[0]
+        },
+        {
             key: "caDSR_Short_Name",
             source: source,
             value: de.PREFERREDNAME[0]
+        },
+        {
+            key: "caDSR_Registration_Status",
+            source: source,
+            value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
         }
     ];
     if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
@@ -143,15 +140,11 @@ function parseObjectClass(de) {
     var objectClass = {concepts: []};
     if (de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
         de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            con.ORIGIN[0].split(":").forEach(function (c) {
-                var concept = {
-                    name: con.LONG_NAME[0],
-                    origin: c,
-                    originId: con.PREFERRED_NAME[0]
-                };
-                getConceptOrigin(concept);
-                objectClass.concepts.push(concept);
-            })
+            objectClass.concepts.push({
+                name: con.LONG_NAME[0],
+                origin: con.ORIGIN[0],
+                originId: con.PREFERRED_NAME[0]
+            });
         });
     }
     return objectClass;
@@ -160,29 +153,23 @@ function parseProperty(de) {
     var property = {concepts: []};
     if (de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM) {
         de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            con.ORIGIN[0].split(":").forEach(function (c) {
-                var concept = {
-                    name: con.LONG_NAME[0],
-                    origin: c,
-                    originId: con.PREFERRED_NAME[0]
-                };
-                getConceptOrigin(concept);
-                property.concepts.push(concept);
-            })
+            property.concepts.push({
+                name: con.LONG_NAME[0],
+                origin: con.ORIGIN[0],
+                originId: con.PREFERRED_NAME[0]
+            });
         });
     }
     return property;
 }
 function parseDataElementConcept(de) {
-    var dataElementConcept = {concepts: []};
-    var concept = {
-        name: de.DATAELEMENTCONCEPT[0].LongName[0],
-        origin: "NCI caDSR",
-        originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
+    return {
+        concepts: [{
+            name: de.DATAELEMENTCONCEPT[0].LongName[0],
+            origin: "NCI caDSR",
+            originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
+        }]
     };
-    getConceptOrigin(concept);
-    dataElementConcept.concepts.push(concept);
-    return dataElementConcept;
 }
 
 function parseClassification(cde, org, orgInfo, de) {
@@ -269,10 +256,8 @@ function parseValueDomain(cde, de) {
     }
 }
 
-exports.createNewCde = function (de, org, orgInfo, sourceObj) {
+exports.createNewCde = function (de, org, orgInfo) {
     if (de.toObject) de = de.toObject();
-    sourceObj['datatype'] = de.VALUEDOMAIN[0].Datatype[0];
-    sourceObj['status'] = (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty";
     var naming = parseNaming(de);
     var ids = parseIds(de);
     var properties = parseProperties(de);
@@ -286,7 +271,7 @@ exports.createNewCde = function (de, org, orgInfo, sourceObj) {
         tinyId: mongo_data.generateTinyId(),
         imported: Date.now(),
         registrationState: registrationState,
-        sources: [sourceObj],
+        source: source,
         origin: origin,
         version: de.VERSION[0],
         valueDomain: {
