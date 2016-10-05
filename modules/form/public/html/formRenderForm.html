@@ -4,7 +4,12 @@
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
                 <i class="fa fa-arrows question-move-handle"></i>
             </div>
-            <div class="col-sm-9 questionSectionTitle">Embedded Form: {{formElement.label}}</div>
+            <div class="col-sm-9 questionSectionTitle">Embedded Form:
+                <span inline-edit model="formElement.label" is-allowed="canCurate"
+                      on-ok="stageElt()">{{formElement.label}}</span>
+            </div>
+
+
             <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
                 <i class="glyphicon glyphicon-remove hand-cursor pull-right"
                    ng-click="removeQuestion(parent, $index)"
