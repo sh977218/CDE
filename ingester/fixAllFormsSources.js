@@ -7,7 +7,10 @@ var stream = FormModel.find({}).stream();
 
 stream.on('data', function (form) {
     stream.pause();
-    form.sources = [{sourceName: form.source}];
+    form.sources = [];
+    if (form.source !== undefined)
+        form.sources.push({sourceName: form.source});
+    form.markModified("sources");
     form.save(function (err) {
         if (err) throw err;
         formCount++;

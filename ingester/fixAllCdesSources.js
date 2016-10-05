@@ -7,7 +7,10 @@ var stream = DataElement.find({}).stream();
 
 stream.on('data', function (cde) {
     stream.pause();
-    cde.sources = [{sourceName: cde.source}];
+    cde.sources = [];
+    if (cde.source != undefined)
+        cde.sources.push({sourceName: cde.source});
+    cde.markModified("sources");
     cde.save(function (err) {
         if (err) throw err;
         cdeCount++;
