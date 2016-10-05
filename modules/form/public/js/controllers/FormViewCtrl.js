@@ -5,7 +5,7 @@ angular.module('formModule').controller
               $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
-    $scope.addCdeMode = false;
+    $scope.addMode = undefined;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.formLocalRender = window.formLocalRender;
@@ -19,7 +19,9 @@ angular.module('formModule').controller
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
-    $scope.lfOptions = {showCodingInstruction: true};
+    $scope.lfOptions = {
+        showCodingInstruction: true
+    };
 
     $scope.setRenderFormat = function (format) {
         $scope.renderWith = format;
@@ -176,11 +178,15 @@ angular.module('formModule').controller
     };
 
     $scope.setToAddCdeMode = function () {
-        $scope.addCdeMode = true;
+        $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';
     };
 
-    $scope.setToNoneAddCdeMode = function () {
-        $scope.addCdeMode = false;
+    $scope.setToAddFormMode = function () {
+        $scope.addMode = $scope.addMode === 'form' ? undefined : 'form';
+    };
+
+    $scope.setToNoneAddMode = function () {
+        $scope.addMode = undefined;
     };
 
     var route = $routeParams;
@@ -278,16 +284,6 @@ angular.module('formModule').controller
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
         });
-    };
-
-    $scope.switchEditQuestionsMode = function () {
-        $scope.addCdeMode = !$scope.addCdeMode;
-
-        if ($scope.addCdeMode) {
-            $scope.setToAddCdeMode();
-        } else {
-            $scope.setToNoneAddCdeMode();
-        }
     };
 
     $scope.revert = function () {
@@ -616,10 +612,6 @@ angular.module('formModule').controller
             $log.error(JSON.stringify(err));
             $scope.addAlert("danger", "Unable to save element. This issue has been reported.");
         });
-    };
-
-    $scope.dragSortableOptions = {
-        handle: ".fa.fa-arrows"
     };
 
     $scope.validateForm = function () {
