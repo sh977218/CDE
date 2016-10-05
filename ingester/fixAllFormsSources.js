@@ -22,4 +22,5 @@ stream.on('error', function (err) {
 
 stream.on('end', function () {
     console.log('end of stream.');
+    process.exit(1);
 });
