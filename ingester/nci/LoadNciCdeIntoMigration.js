@@ -32,7 +32,7 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
             }
         };
         request(options, function (error, response, body) {
-            if (error) throw new Error(error);
+            if (error) throw error;
             parseString(body, function (e, json) {
                 if (e) throw e;
                 var recordCounterArray = json['xlink:httpQuery']['queryResponse']['recordCounter'];
@@ -43,7 +43,7 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
                         }
                     });
                     var fields = json['xlink:httpQuery']['queryResponse']['class']['field'];
-                    var source = {source: 'caDSR'};
+                    var source = {sourceName: 'caDSR'};
                     var fieldsArray = ['dateCreated', 'dateModified'];
                     fields.forEach(function (field) {
                         if (fieldsArray.indexOf(field.attribute.name) !== -1) {

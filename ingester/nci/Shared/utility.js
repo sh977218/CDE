@@ -286,7 +286,7 @@ exports.createNewCde = function (de, org, orgInfo, sourceObj) {
         tinyId: mongo_data.generateTinyId(),
         imported: Date.now(),
         registrationState: registrationState,
-        source: [sourceObj],
+        sources: [sourceObj],
         origin: origin,
         version: de.VERSION[0],
         valueDomain: {

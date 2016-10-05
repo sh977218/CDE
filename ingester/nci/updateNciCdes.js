@@ -125,8 +125,7 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        newDe.sources = updateShare.removeArrayOfSource(newDe.sources, migrationCde.sources);
-        newDe.sources = newDe.sources.concat(migrationCde.sources);
+        newDe.sources = updateShare.mergeSources(newDe.sources, migrationCde.sources);
         newDe.properties = migrationCde.properties;
         /*
          newDe.properties = updateShare.removeArrayOfSource(newDe.properties, migrationCde.source);

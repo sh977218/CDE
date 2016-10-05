@@ -100,3 +100,15 @@ exports.removeArrayOfSource = function (Array, source) {
         return !p.source || p.source !== source;
     });
 };
+
+exports.mergeSource = function (sources, migrationSources) {
+    for (var i = 0; i < migrationSources.length; i++) {
+        var migrationSource = migrationSources[i];
+        for (var j = 0; j < sources.length; j++) {
+            var source = sources[j];
+            if (source.sourceName === migrationSource) {
+                sources[j] = migrationSource;
+            }
+        }
+    }
+};
