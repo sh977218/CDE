@@ -1,5 +1,8 @@
 var fs = require('fs');
 var async = require('async');
+var request = require('request');
+var xml2js = require('xml2js');
+var parseString = new xml2js.Parser({attrkey: 'attribute', explicitArray: false}).parseString;
 
 var MigrationDataElementModel = require('../createMigrationConnection').MigrationDataElementModel;
 var MigrationOrgModel = require('../createMigrationConnection').MigrationOrgModel;
@@ -17,35 +20,68 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
         xml = xml.toObject();
         var id = xml.PUBLICID[0];
         var version = xml.VERSION[0];
-        var newCde = ult.createNewCde(xml, org, orgInfo);
-        if (newCde) {
-            MigrationDataElementModel.find({'ids.id': id}).elemMatch('ids', {
-                "source": 'caDSR',
-                "id": id
-            }).exec(function (err, existingCdes) {
-                if (err) throw err;
-                if (existingCdes.length === 0) {
-                    var obj = new MigrationDataElementModel(newCde);
-                    obj.save(function (err) {
-                        if (err) throw err;
-                        stream.resume();
+        var options = {
+            method: 'GET',
+            url: 'http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML',
+            qs: {query: 'DataElement[@publicId=' + id + '][@version=' + version + ']'},
+            headers: {
+                'postman-token': '9a604217-1ebc-c0f9-9fd3-cee7fa8d6b01',
+                'cache-control': 'no-cache',
+                authorization: 'Basic bHVkZXRjOmxvdmVsb2luYw==',
+                cookie: '__utma=126996496.619030126.1470687670.1470763153.1471621886.2; __utmc=126996496; __utmz=126996496.1470763153.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gat=1; _ga=GA1.2.619030126.1470687670'
+            }
+        };
+        request(options, function (error, response, body) {
+            if (error) throw error;
+            parseString(body, function (e, json) {
+                if (e) throw e;
+                var recordCounterArray = json['xlink:httpQuery']['queryResponse']['recordCounter'];
+                if (recordCounterArray) {
+                    recordCounterArray.forEach(function (recordCounter) {
+                        if (recordCounter !== "1") {
+                            process.exit(1);
+                        }
                     });
-                } else if (existingCdes.length === 1) {
-                    var existingCde = existingCdes[0];
-                    classificationShared.transferClassifications(newCde, existingCde);
-                    existingCde.markModified('classification');
-                    existingCde.save(function (err) {
-                        if (err) throw err;
+                    var fields = json['xlink:httpQuery']['queryResponse']['class']['field'];
+                    var source = {sourceName: 'caDSR'};
+                    var fieldsArray = ['dateCreated', 'dateModified'];
+                    fields.forEach(function (field) {
+                        if (fieldsArray.indexOf(field.attribute.name) !== -1) {
+                            source[field.attribute.name] = field._;
+                        }
+                    });
+                    var newCde = ult.createNewCde(xml, org, orgInfo, source);
+                    if (newCde) {
+                        MigrationDataElementModel.find({'ids.id': id}).elemMatch('ids', {
+                            "source": 'caDSR',
+                            "id": id
+                        }).exec(function (err, existingCdes) {
+                            if (err) throw err;
+                            if (existingCdes.length === 0) {
+                                var obj = new MigrationDataElementModel(newCde);
+                                obj.save(function (err) {
+                                    if (err) throw err;
+                                    stream.resume();
+                                });
+                            } else if (existingCdes.length === 1) {
+                                var existingCde = existingCdes[0];
+                                classificationShared.transferClassifications(newCde, existingCde);
+                                existingCde.markModified('classification');
+                                existingCde.save(function (err) {
+                                    if (err) throw err;
+                                    stream.resume();
+                                })
+                            } else {
+                                console.log('find more than one existing Cde of id:' + id + ' version: ' + version);
+                                process.exit(1);
+                            }
+                        })
+                    } else {
                         stream.resume();
-                    })
-                } else {
-                    console.log('find more than one existing Cde of id:' + id + ' version: ' + version);
-                    process.exit(1);
+                    }
                 }
-            })
-        } else {
-            stream.resume();
-        }
+            });
+        });
     });
     stream.on('error', function (err) {
         if (err) throw err;

@@ -95,8 +95,20 @@ exports.removeClassificationTree = function (element, org) {
     }
 };
 
-exports.removePropertiesOfSource = function (properties, source) {
-    return properties.filter(function (p) {
+exports.removeArrayOfSource = function (Array, source) {
+    return Array.filter(function (p) {
         return !p.source || p.source !== source;
     });
+};
+
+exports.mergeSources = function (sources, migrationSources) {
+    for (var i = 0; i < migrationSources.length; i++) {
+        var migrationSource = migrationSources[i];
+        for (var j = 0; j < sources.length; j++) {
+            var source = sources[j];
+            if (source.sourceName === migrationSource) {
+                sources[j] = migrationSource;
+            }
+        }
+    }
 };
