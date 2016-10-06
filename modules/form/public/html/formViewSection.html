@@ -80,7 +80,7 @@
         </div>
     </div>
     <div class="panel-body">
-        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions"
+        <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions dragSections"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit"
                  id="question_{{$index}}">
