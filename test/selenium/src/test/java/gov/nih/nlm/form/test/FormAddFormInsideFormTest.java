@@ -21,6 +21,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         textPresent("Embedded Form: Vessel Imaging Angiography");
         String newFormLabel = "new inner form label";
         clickElement(By.id("innerForm_labek_edit_icon_Vessel Imaging Angiography"));
+        findElement(By.xpath("//*[@id='innerForm_labek_edit_icon_Vessel Imaging Angiography']//form/input")).clear();
         findElement(By.xpath("//*[@id='innerForm_labek_edit_icon_Vessel Imaging Angiography']//form/input")).sendKeys(newFormLabel);
         clickElement(By.xpath("//*[@id='innerForm_labek_edit_icon_Vessel Imaging Angiography']//form//button[contains(text(),'Confirm')]"));
         saveForm();
@@ -33,7 +34,6 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
 
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Embedded Form: new inner form label");
-        textPresent("Symptomology");
 
         String odmResponse = get(baseUrl + "/form/m1j_L1HHte?type=xml&subtype=odm").asString();
         Assert.assertEquals(odmResponse.contains("new inner form label"), true);
