@@ -222,7 +222,10 @@ schemas.commentSchema = new mongoose.Schema({
     , username: String
     , created: Date
     , pendingApproval: Boolean
+    , status: {type: String, enum: ["active", "resolved"]}
 }, {_id: false});
+
+schemas.commentSchema.replies = schemas.commentSchema;
 
 schemas.helpItemSchema = new mongoose.Schema({
     permalink: String
