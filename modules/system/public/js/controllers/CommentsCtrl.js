@@ -32,9 +32,10 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         });
     };
 
-    $scope.replyTo = function(comment) {
+    $scope.replyTo = function(commentId, reply) {
         $http.post("/comments/" + $scope.module + "/reply", {
-            commentId: commentId
+            commentId: commentId,
+            reply: content
             , element: {tinyId: $scope.elt.tinyId}
         }).then(function (res) {
             $scope.addAlert("success", res.data.message);

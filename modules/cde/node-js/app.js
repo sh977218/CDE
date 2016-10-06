@@ -403,6 +403,10 @@ exports.init = function (app, daoManager) {
             adminItemSvc.addComment(req, res, mongo_cde);
         });
 
+        app.post('/comments/cde/reply', function (req, res) {
+            adminItemSvc.replyToComment(req, res, mongo_cde);
+        });
+
         app.post('/comments/cde/remove', function (req, res) {
             adminItemSvc.removeComment(req, res, mongo_cde);
         });

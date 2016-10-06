@@ -237,6 +237,10 @@ exports.addComment = function (req, res, dao) {
     }
 };
 
+exports.replyToComment = function (req, res, dao) {
+
+};
+
 exports.removeComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {

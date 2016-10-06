@@ -1,7 +1,7 @@
 var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
-    , mongo_data = require('./mongo-form')
+    , mongo_form = require('./mongo-form')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
     , multer = require('multer')
@@ -14,7 +14,7 @@ var express = require('express')
     ;
 
 exports.init = function (app, daoManager) {
-    daoManager.registerDao(mongo_data);
+    daoManager.registerDao(mongo_form);
 
     app.post('/findForms', formCtrl.findForms);
 
@@ -32,15 +32,15 @@ exports.init = function (app, daoManager) {
 
     if (config.modules.forms.attachments) {
         app.post('/attachments/form/setDefault', function (req, res) {
-            adminItemSvc.setAttachmentDefault(req, res, mongo_data);
+            adminItemSvc.setAttachmentDefault(req, res, mongo_form);
         });
 
         app.post('/attachments/form/add', multer(config.multer), function (req, res) {
-            adminItemSvc.addAttachment(req, res, mongo_data);
+            adminItemSvc.addAttachment(req, res, mongo_form);
         });
 
         app.post('/attachments/form/remove', function (req, res) {
-            adminItemSvc.removeAttachment(req, res, mongo_data);
+            adminItemSvc.removeAttachment(req, res, mongo_form);
         });
     }
     app.get('/priorforms/:id', exportShared.nocacheMiddleware, function (req, res) {
@@ -51,7 +51,7 @@ exports.init = function (app, daoManager) {
     app.get('/formByTinyIdAndVersion/:id/:version', exportShared.nocacheMiddleware, formCtrl.formByTinyIdVersion);
 
     app.get('/sdcExportByTinyId/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_data.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
+        mongo_form.byTinyIdAndVersion(req.params.tinyId, req.params.version, function (err, form) {
             if (err) {
                 logging.errorLogger.error("Error: Cannot find element by tiny id.", {
                     origin: "system.adminItemSvc.approveComment",
@@ -74,22 +74,26 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/comments/form/add', function (req, res) {
-        adminItemSvc.addComment(req, res, mongo_data);
+        adminItemSvc.addComment(req, res, mongo_form);
+    });
+
+    app.post('/comments/form/reply', function (req, res) {
+        adminItemSvc.replyToComment(req, res, mongo_form);
     });
 
     app.post('/comments/form/remove', function (req, res) {
-        adminItemSvc.removeComment(req, res, mongo_data);
+        adminItemSvc.removeComment(req, res, mongo_form);
     });
 
     app.post('/comments/form/approve', function (req, res) {
-        adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+        adminItemSvc.declineApproveComment(req, res, mongo_form, function (elt) {
             elt.comments[req.body.comment.index].pendingApproval = false;
             delete elt.comments[req.body.comment.index].pendingApproval;
         }, "Comment approved!");
     });
 
     app.post('/comments/form/decline', function (req, res) {
-        adminItemSvc.declineApproveComment(req, res, mongo_data, function (elt) {
+        adminItemSvc.declineApproveComment(req, res, mongo_form, function (elt) {
             elt.comments.splice(req.body.comment.index, 1);
         }, "Comment declined!");
     });
@@ -127,7 +131,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/pinFormCdes', function (req, res) {
         if (req.isAuthenticated()) {
-            mongo_data.eltByTinyId(req.body.formTinyId, function (err, form) {
+            mongo_form.eltByTinyId(req.body.formTinyId, function (err, form) {
                 if (form) {
                     var allCdes = {};
                     var allTinyIds = [];
