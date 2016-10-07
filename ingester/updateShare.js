@@ -106,7 +106,7 @@ exports.mergeSources = function (sources, migrationSources) {
         var migrationSource = migrationSources[i];
         for (var j = 0; j < sources.length; j++) {
             var source = sources[j];
-            if (source.sourceName === migrationSource) {
+            if (source.sourceName === migrationSource.sourceName) {
                 sources[j] = migrationSource;
             }
         }

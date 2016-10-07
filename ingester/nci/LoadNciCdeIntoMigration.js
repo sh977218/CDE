@@ -12,6 +12,8 @@ var ult = require('./Shared/utility');
 var orgInfoMapping = require('./Shared/ORG_INFO_MAP').map;
 var classificationShared = require('../../modules/system/shared/classificationShared');
 
+var cdeCount = 0;
+
 function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
     var orgName = orgInfo['orgName'];
     var stream = MigrationNCICdeXmlModel.find({xml: orgName}).stream();
@@ -61,6 +63,8 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
                                 var obj = new MigrationDataElementModel(newCde);
                                 obj.save(function (err) {
                                     if (err) throw err;
+                                    cdeCount++;
+                                    console.log("cdeCount:" + cdeCount);
                                     stream.resume();
                                 });
                             } else if (existingCdes.length === 1) {
