@@ -6,8 +6,8 @@ public class FormSourcesTest extends BaseFormTest {
 
     @Test
     public void formSourceTest() {
-        String cdeName = "Traumatic Brain Injury - Adverse Events";
-        goToCdeByName(cdeName);
+        String formName = "Traumatic Brain Injury - Adverse Events";
+        goToFormByName(formName);
         textPresent("Source Name:");
         textPresent("caBIG");
         textPresent("Source Created Date:");
