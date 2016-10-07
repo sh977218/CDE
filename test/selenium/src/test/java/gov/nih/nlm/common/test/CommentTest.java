@@ -23,6 +23,23 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
+
+        clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
+        findElement(By.name("replyTextArea")).sendKeys("Reply to First comment");
+        clickElement(By.cssSelector("replyForm .btn-primary"));
+        textPresent("Comment added");
+
+        clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
+        findElement(By.name("replyTextArea")).sendKeys("Second reply to First comment");
+        clickElement(By.cssSelector("replyForm .btn-primary"));
+        textPresent("Comment added");
+
+        clickElement(By.xpath("(//*[@data-type='topComment'])[2]//*[@data-type='reply']/a"));
+        findElement(By.name("replyTextArea")).sendKeys("Reply to another comment");
+        clickElement(By.cssSelector("replyForm .btn-primary"));
+        textPresent("Comment added");
+
+
         findElement(By.id("removeComment-1"));
         clickElement(By.id("removeComment-0"));
         textPresent("Comment removed");

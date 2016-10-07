@@ -16,7 +16,7 @@
     <br/>
 
     <div ng-repeat="comment in elt.comments">
-        <div class="row">
+        <div class="row" data-type="topComment">
             <div class="col-xs-1">
                 <img class="pull-right" src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
             </div>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div><a href ng-click="comment.openReply = true"><i class="fa fa-reply"> Reply</i></a></div>
+                <div data-type="reply"><a href ng-click="comment.openReply = true"><i class="fa fa-reply"> Reply</i></a></div>
                 <div ng-if="comment.openReply">
                     <form role="form" name="replyForm" id="replyForm" novalidate>
                         <textarea ng-model="comment.tempReply" name="replyTextArea" class="form-control" rows="3"
