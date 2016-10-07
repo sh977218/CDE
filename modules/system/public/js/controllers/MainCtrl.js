@@ -4,9 +4,14 @@ angular.module('systemModule').controller('MainCtrl',
         function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
                   $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, Alert) {
 
+            $scope.commentMode = false;
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
             $scope.prodDumpEnabled = window.prodDumpEnabled;
+
+            $scope.switchCommentMode = function(){
+                $scope.commentMode = !$scope.commentMode;
+            };
 
             // Global variables
             var GLOBALS = {

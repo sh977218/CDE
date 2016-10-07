@@ -8,8 +8,6 @@ angular.module('systemModule').controller('ListCtrl',
 
     $scope.autocomplete = AutoCompleteResource;
     $scope.filterMode = true;
-
-    $scope.commentMode = false;
     
     $scope.customClasses = "navbar-btn";
 

@@ -62,8 +62,12 @@
 	<%- include navigation.html %>
 
 	<!-- Main content area -->
+	<div class="container-fluid">
 	<div ng-class="{'col-sm-10':commentMode,'col-sm-12':!commentMode}" ng-view></div>
-
+		<div ng-if="commentMode" ng-class="{'col-sm-2':commentMode,'':!commentMode}" style="background-color: #f5f5f5;">
+			Comments
+		</div>
+	</div>
 	<!-- Alerts area -->
 	<%- include alert.html %>
 
