@@ -44,8 +44,8 @@ public class FormDragQuestionDropTest extends BaseFormTest {
         String qIndex = id.substring(id.lastIndexOf("_"));
 
         clickElement(By.id(id));
-        textPresent("25", By.id("dd_minimal_" + qIndex));
-        textPresent("239", By.id("dd_maximal_0" + qIndex));
+        textPresent("25", By.id("dd_minimal" + qIndex));
+        textPresent("239", By.id("dd_maximal" + qIndex));
 
         questionTest.addSectionToSection(2, 1);
         questionTest.addQuestionToRootSection("Smoking History Ind", 2);
