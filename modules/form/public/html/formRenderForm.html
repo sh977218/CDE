@@ -1,73 +1,13 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
-                <i class="fa fa-arrows question-move-handle"></i>
-            </div>
-            <div class="col-sm-9 questionSectionTitle">Embedded Form: {{formElement.label}}</div>
-            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
-                <i class="glyphicon glyphicon-remove hand-cursor pull-right"
-                   ng-click="removeQuestion(parent, $index)"
-                   title="Remove question" id="remove_q_{{$index}}"></i>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-            <div class="col-sm-7" id="dd_form_instructions_{{$index}}">
-                <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-                     model="formElement.instructions.value" def-format="formElement.instructions.valueFormat"
-                     is-allowed="canCurate" on-ok="stageElt()"></div>
-            </div>
-        </div>
-        <div class="row" ng-if="parent">
-            <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-            <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
-                 ng-class="{'has-error':formElement.skipLogic.skipLogicError}">
-                <input ng-disabled="!(parent.formElements.length > 1)"
-                       type="text" ng-model="formElement.skipLogic.condition"
-                       class="form-control skipLogicCondition" ng-trim="false"
-                       ng-change="validateSkipLogic(formElement.skipLogic,parent.formElements)"
-                       uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, formElement, $parent.$index) | filter:tokens.unmatched"
-                       typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
-                       typeahead-on-select="validateSkipLogic(formElement.skipLogic, parent.formElements, $item)"
-                       typeahead-append-to-body="true"/>
-                <span ng-bind="formElement.skipLogic.skipLogicError"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-            <div class="col-sm-7" id="dd_card_{{$index}}">
-                <div ng-show="editCardMode">
-                    <select ng-model="formElement.cardinality" id="select_section_card_{{$index}}"
-                            ng-options="item.value as item.label for item in cardinalityOptions">
-                    </select>
-                    <br/>
-                    <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
-                        Confirm
-                    </button>
-                    <button class="fa fa-times" ng-click="editCardMode = false; formElement.cardinality = orig">
-                        Discard
-                    </button>
-                </div>
-                <div ng-hide="editCardMode">
-                    <i ng-show="canCurate" class="fa fa-edit"
-                       ng-click="editCardMode = true; orig = formElement.cardinality"
-                       id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(formElement.cardinality)}}
-                </div>
-            </div>
-        </div>
-        <div class="row" ng-show="canCurate">
-            <div class="col-sm-2 questionSectionLabel text-right">Delete:</div>
-            <div class="col-sm-7">
-                <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
-                   id="removeElt-{{$index}}"></i>
-            </div>
+            <div class="col-sm-12 questionSectionTitle">Embedded Form: {{formElement.label}}</div>
         </div>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Form: </div>
-            <div ng-class="{'col-sm-6':addMode,'col-sm-10':!addMode}">
+            <div class="col-sm-6">
                 <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
                    target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
             </div>

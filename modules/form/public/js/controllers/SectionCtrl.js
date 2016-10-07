@@ -38,7 +38,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
         };
 
         $scope.sortableOptionsSections = {
-            connectWith: ".dragQuestions",
+            connectWith: ".dragSections",
             handle: ".fa.fa-arrows",
             revert: true,
             placeholder: "questionPlaceholder",
