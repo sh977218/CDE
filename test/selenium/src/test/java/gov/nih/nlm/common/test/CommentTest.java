@@ -12,6 +12,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(2);
         clickElement(By.id("postComment"));
         textPresent("Comment added");
+        closeAlert();
     }
 
     public void comments(String eltName) {
@@ -22,28 +23,50 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.name("commentTextArea")).sendKeys("another comment");
         clickElement(By.name("postComment"));
         textPresent("Comment added");
+        closeAlert();
         // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
 
         clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
         findElement(By.name("replyTextArea")).sendKeys("Reply to First comment");
         clickElement(By.cssSelector("replyForm .btn-primary"));
         textPresent("Comment added");
+        closeAlert();
 
         clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
         findElement(By.name("replyTextArea")).sendKeys("Second reply to First comment");
         clickElement(By.cssSelector("replyForm .btn-primary"));
         textPresent("Comment added");
+        closeAlert();
 
         clickElement(By.xpath("(//*[@data-type='topComment'])[2]//*[@data-type='reply']/a"));
         findElement(By.name("replyTextArea")).sendKeys("Reply to another comment");
         clickElement(By.cssSelector("replyForm .btn-primary"));
         textPresent("Comment added");
+        closeAlert();
 
+        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        textPresent("Saved");
+        closeAlert();
+        textPresent("Reply to First comment", By.cssSelector(".strike"));
 
-        findElement(By.id("removeComment-1"));
-        clickElement(By.id("removeComment-0"));
+        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='reopen']"));
+        textPresent("Saved");
+        closeAlert();
+
+        clickElement(By.xpath("((//*[@data-type='topComment'])[2]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        textPresent("Saved");
+        closeAlert();
+        textPresent("Reply to another comment", By.cssSelector(".strike"));
+
+        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[2]//a[@data-type='remove']"));
         textPresent("Comment removed");
-        Assert.assertFalse(driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
+        closeAlert();
+
+        textPresent("My First Comment!");
+        textPresent("Reply to First comment");
+        textNotPresent("Second reply to First comment");
+        textPresent("another comment");
+        textPresent("Reply to another comment");
     }
 
     public void orgAdminCanRemoveComment(String eltName, String status) {
