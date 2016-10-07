@@ -22,11 +22,11 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.name("commentTextArea")).sendKeys("another comment");
         clickElement(By.name("postComment"));
         textPresent("Comment added");
-        // this effectively waits for the angular repeat to get reload and avoids stale elt reference.
+        // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
         findElement(By.id("removeComment-1"));
         clickElement(By.id("removeComment-0"));
         textPresent("Comment removed");
-        Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
+        Assert.assertFalse(driver.findElement(By.cssSelector("BODY")).getText().contains("My First Comment!"));
     }
 
     public void orgAdminCanRemoveComment(String eltName, String status) {
