@@ -11,4 +11,8 @@ angular.module('formModule').controller('FormFormListCtrl', ['$scope', '$control
             $scope.initSearch();
             $scope.reload('form');
         };
+        
+        $scope.pageChange = function () {
+            $scope.reload('form');
+        };
     }]);
