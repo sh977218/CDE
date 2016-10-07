@@ -62,7 +62,7 @@
 	<%- include navigation.html %>
 
 	<!-- Main content area -->
-	<div ng-view></div>
+	<div ng-class="{'col-sm-10':commentMode,'col-sm-12':!commentMode}" ng-view></div>
 
 	<!-- Alerts area -->
 	<%- include alert.html %>
