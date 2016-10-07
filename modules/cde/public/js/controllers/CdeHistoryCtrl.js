@@ -299,7 +299,7 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                 {label: 'Source Name', property: 'sourceName'},
                 {label: 'Source Created Date', property: 'dateCreated'},
                 {label: 'Source Modified Date', property: 'dateModified'},
-                {label: 'Source Registration Status', property: 'registrationStatus'},
+                {label: 'Source Status', property: 'registrationStatus'},
                 {label: 'Source Data Type', property: 'datatype'}
             ]
         };
