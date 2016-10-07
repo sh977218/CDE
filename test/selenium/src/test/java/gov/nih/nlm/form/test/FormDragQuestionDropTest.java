@@ -28,7 +28,7 @@ public class FormDragQuestionDropTest extends BaseFormTest {
 
         questionTest.addQuestionToSection(cdeName, 0);
 
-        textPresent(cdeName, By.id("section_title_0"));
+        textPresent(cdeName, By.id("section_view_0"));
 
         List<WebElement> questionsInSection0 = findElements(By.xpath("//*[starts-with(@id, \"question_accordion_0_\")]"));
 
