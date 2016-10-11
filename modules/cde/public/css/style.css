@@ -1179,4 +1179,7 @@ div + .questionPlaceholder {
     max-height: inherit;
     overflow-y: auto;
     overflow-x: hidden;
+
+.strike {
+    text-decoration: line-through;
 }
