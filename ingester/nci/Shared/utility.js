@@ -265,6 +265,7 @@ function parseValueDomain(cde, de) {
             };
             if (!pv.MEANINGCONCEPTS[0][$attribute]) {
                 var valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
+/*
                 var valueMeaningCodeArray = valueMeaningCodeString.split(':');
                 for (var i = 0; i < valueMeaningCodeArray.length; i++) {
                     var valueMeaningCode = valueMeaningCodeArray[i];
@@ -277,6 +278,7 @@ function parseValueDomain(cde, de) {
                         newPv.codeSystemName = codeSystem;
                     }
                 }
+*/
                 newPv.valueMeaningCode = valueMeaningCodeString;
 
             }
