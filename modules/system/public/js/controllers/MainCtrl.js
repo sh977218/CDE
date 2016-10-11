@@ -5,6 +5,14 @@ angular.module('systemModule').controller('MainCtrl',
                   $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, Alert) {
 
             $scope.commentMode = false;
+            $scope.elt = {
+                comments: [{
+                    username: 'user',
+                    text: 'test',
+                    date: '10/11/2016',
+                    comments: [{username: 'replied user', text: 'message'}]
+                }]
+            };
             $scope.quickBoard = QuickBoard;
             $scope.formQuickBoard = FormQuickBoard;
             $scope.prodDumpEnabled = window.prodDumpEnabled;
