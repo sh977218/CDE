@@ -28,7 +28,7 @@ public abstract class CommentTest extends CommonTest {
 
         clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
         findElement(By.name("replyTextArea")).sendKeys("Reply to First comment");
-        clickElement(By.cssSelector("replyForm .btn-primary"));
+        clickElement(By.cssSelector("#replyForm .btn-primary"));
         textPresent("Comment added");
         closeAlert();
 
