@@ -28,8 +28,8 @@ schemas.permissibleValueSchema = new mongoose.Schema({
 
 schemas.sourceSchema = new mongoose.Schema({
     sourceName: String,
-    dateCreated: Date,
-    dateModified: Date,
+    created: Date,
+    updated: Date,
     registrationStatus: String,
     datatype: String
 }, {_id: false});
