@@ -32,6 +32,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.currentTab = thisTab;
     }
 
+    $scope.switchCommentMode = function(){
+        $scope.commentMode = !$scope.commentMode;
+    };
+
     $scope.tabs = {
         general: {
             heading: "General Details",

@@ -17,10 +17,6 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.formQuickBoard = FormQuickBoard;
             $scope.prodDumpEnabled = window.prodDumpEnabled;
 
-            $scope.switchCommentMode = function(){
-                $scope.commentMode = !$scope.commentMode;
-            };
-
             // Global variables
             var GLOBALS = {
                 getOrgsInterval: 1000 * 60 * 10 // 10 min
