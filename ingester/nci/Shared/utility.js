@@ -16,15 +16,15 @@ var datatypeMapping = {
 
 var source = 'caDSR';
 
-function getConceptOrigin(concept) {
-    if (concept.originId.match(/^C\d{5}/)) {
-        concept.origin = "NCI Thesaurus";
+function getCodeSystem(string) {
+    if (string.match(/^C\d{5}/)) {
+        return "NCI Thesaurus";
     }
-    if (concept.originId.match(/^CL\d{5}/)) {
-        concept.origin = "NCI Metathesaurus";
+    if (string.match(/^CL\d{5}/)) {
+        return "NCI Metathesaurus";
     }
-    if (concept.originId.match(/^L\d{5}/)) {
-        concept.origin = "LOINC";
+    if (string.match(/^L\d{5}/)) {
+        return "LOINC";
     }
 }
 
@@ -158,7 +158,6 @@ function parseObjectClass(de) {
                     origin: c,
                     originId: con.PREFERRED_NAME[0]
                 };
-                getConceptOrigin(concept);
                 objectClass.concepts.push(concept);
             })
         });
@@ -175,7 +174,6 @@ function parseProperty(de) {
                     origin: c,
                     originId: con.PREFERRED_NAME[0]
                 };
-                getConceptOrigin(concept);
                 property.concepts.push(concept);
             })
         });
@@ -189,7 +187,6 @@ function parseDataElementConcept(de) {
         origin: "NCI caDSR",
         originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
     };
-    getConceptOrigin(concept);
     dataElementConcept.concepts.push(concept);
     return dataElementConcept;
 }
@@ -263,11 +260,25 @@ function parseValueDomain(cde, de) {
             var newPv = {
                 permissibleValue: entities.decodeXML(pv.VALIDVALUE[0]),
                 valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0]),
-                valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0])
+                valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0]),
+                codeSystemName: ''
             };
             if (!pv.MEANINGCONCEPTS[0][$attribute]) {
-                var valueMeaningCodeTemp = pv.MEANINGCONCEPTS[0];
-                newPv.valueMeaningCode = valueMeaningCodeTemp.replace(/,/g, ':');
+                var valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
+                var valueMeaningCodeArray = valueMeaningCodeString.split(':');
+                for (var i = 0; i < valueMeaningCodeArray.length; i++) {
+                    var valueMeaningCode = valueMeaningCodeArray[i];
+                    var codeSystem = getCodeSystem(valueMeaningCode);
+                    if (newPv.codeSystemName === '') {
+                        newPv.codeSystemName = codeSystem;
+                    } else if (newPv.codeSystemName !== codeSystem) {
+                        newPv.codeSystemName = '';
+                    } else {
+                        newPv.codeSystemName = codeSystem;
+                    }
+                }
+                newPv.valueMeaningCode = valueMeaningCodeString;
+
             }
             cde.valueDomain.permissibleValues.push(newPv);
         });
