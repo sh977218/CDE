@@ -35,7 +35,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.tabs = {
         general: {
             heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html', '/system/public/html/sources.html'],
+            includes: ['/cde/public/html/cdeGeneralDetails.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },

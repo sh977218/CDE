@@ -46,10 +46,12 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
                     });
                     var fields = json['xlink:httpQuery']['queryResponse']['class']['field'];
                     var source = {sourceName: 'caDSR'};
-                    var fieldsArray = ['dateCreated', 'dateModified'];
                     fields.forEach(function (field) {
-                        if (fieldsArray.indexOf(field.attribute.name) !== -1) {
-                            source[field.attribute.name] = field._;
+                        if (field.attribute.name == 'dateCreated') {
+                            source['created'] = field._;
+                        }
+                        if (field.attribute.name == 'dateModified') {
+                            source['updated'] = field._;
                         }
                     });
                     var newCde = ult.createNewCde(xml, org, orgInfo, source);

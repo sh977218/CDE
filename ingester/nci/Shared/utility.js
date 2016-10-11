@@ -266,7 +266,8 @@ function parseValueDomain(cde, de) {
                 valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0])
             };
             if (!pv.MEANINGCONCEPTS[0][$attribute]) {
-                newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
+                var valueMeaningCodeTemp = pv.MEANINGCONCEPTS[0];
+                newPv.valueMeaningCode = valueMeaningCodeTemp.replace(/,/g, ':');
             }
             cde.valueDomain.permissibleValues.push(newPv);
         });

@@ -1,14 +1,15 @@
-<div ng-repeat="eltSource in elt.sources">
+<fieldset ng-repeat="eltSource in elt.sources" class="welcomeSearchFieldset">
+    <legend>Source: {{eltSource.sourceName}}</legend>
     <dl class="dl-horizontal">
-        <dt tabindex="0">Source Name:</dt>
+        <dt tabindex="0">Name:</dt>
         <dd tabindex="0">{{eltSource.sourceName}}</dd>
-        <dt tabindex="0">Source Created Date:</dt>
-        <dd tabindex="0">{{eltSource.dateCreated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        <dt tabindex="0">Source Modified Date:</dt>
-        <dd tabindex="0">{{eltSource.dateModified | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        <dt tabindex="0">Source Status:</dt>
+        <dt tabindex="0">Created:</dt>
+        <dd tabindex="0">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        <dt tabindex="0">Modified Date:</dt>
+        <dd tabindex="0">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        <dt tabindex="0">Registration Status:</dt>
         <dd tabindex="0" id="dd_createdBy">{{eltSource.registrationStatus}}</dd>
-        <dt tabindex="0">Source Datatype:</dt>
+        <dt tabindex="0">Datatype:</dt>
         <dd tabindex="0">{{eltSource.datatype}}</dd>
     </dl>
-</div>
+</fieldset>

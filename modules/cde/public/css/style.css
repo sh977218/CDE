@@ -702,7 +702,7 @@ button#selectDefault {
     text-align: center;
 }
 
-.welcomeDetailIcon:hover {
+.welcomeDetailIcon.hand-cursor:hover {
     background-color: #337ab7;
     color: white;
 }
