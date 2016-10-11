@@ -62,7 +62,11 @@
 	<%- include navigation.html %>
 
 	<!-- Main content area -->
-	<div ng-view></div>
+	<div ng-view>
+		<br><br><br><br><br><br>
+		<h2 class="text-center">Loading...</h2>
+		<br><br><br><br><br><br>
+	</div>
 
 	<!-- Alerts area -->
 	<%- include alert.html %>
@@ -320,10 +324,6 @@
           "url": "https://cde.nlm.nih.gov",
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
-
-
-
-
 </script>
 
 <script type="application/ld+json">
@@ -334,10 +334,6 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
-
-
-
-
 </script>
 
 </body>
