@@ -16,7 +16,7 @@ public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {
         // drag and drop selenium is buggy, try 5 times.
-        for (int i=0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             try {
                 findElement(By.id("ftsearch-input")).clear();
                 textPresent("", By.id("ftsearch-input"));
@@ -45,7 +45,7 @@ public class QuestionTest extends BaseFormTest {
 
         }
     }
-    
+
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
         WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//i[contains(@class,'fa fa-arrows')]"));
         String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//div[contains(@id,'section_title')]")).getText();
@@ -85,6 +85,35 @@ public class QuestionTest extends BaseFormTest {
         (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
 
         textNotPresent(cdeName, By.id("sectionsDiv"));
+    }
+
+    public void addFormToSection(String formName, int sectionNumber) {
+        // drag and drop selenium is buggy, try 5 times.
+        for (int i = 0; i < 5; i++) {
+            try {
+                findElement(By.id("ftsearch-input")).clear();
+                textPresent("", By.id("ftsearch-input"));
+                findElement(By.id("ftsearch-input")).sendKeys("\"" + formName + "\"");
+                hangon(1);
+                clickElement(By.id("search.submit"));
+                textPresent("1 results");
+                textPresent(formName, By.id("acc_link_0"));
+
+                WebElement sourceElt = findElement(By.xpath("//*[@id='accordionList']//*[contains(@class,'question-move-handle')]"));
+                WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
+
+                Assert.assertTrue(sourceElt.isDisplayed());
+
+                (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
+                textPresent(formName, By.id("section_drop_area_" + sectionNumber));
+                i = 10;
+            } catch (TimeoutException e) {
+                if (i == 4) {
+                    throw e;
+                }
+            }
+
+        }
     }
 
 }

@@ -10,7 +10,17 @@ public class BaseFormTest extends NlmCdeBaseTest {
         scrollToTop();
         try {
             textPresent("Show Question Search", By.id("startAddingQuestions"));
-            findElement(By.id("startAddingQuestions")).click();
+            clickElement(By.id("startAddingQuestions"));
+        } catch (Exception e) {
+            // if button does not say show, then don't click it.
+        }
+    }
+
+    protected void startAddingForms() {
+        scrollToTop();
+        try {
+            textPresent("Show Form Search", By.id("startAddingForms"));
+            clickElement(By.id("startAddingForms"));
         } catch (Exception e) {
             // if button does not say show, then don't click it.
         }

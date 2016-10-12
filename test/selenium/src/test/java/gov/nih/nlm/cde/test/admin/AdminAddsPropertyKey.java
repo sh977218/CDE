@@ -20,6 +20,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org has been updated");
         closeAlert();
 
+        goHome();
         goToCdeByName("Distance from Closest Margin Value");
         showAllTabs();
         clickElement(By.linkText("Properties"));

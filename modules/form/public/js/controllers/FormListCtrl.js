@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormListCtrl', ['$scope', '$controller', 'userResource', 'FormQuickBoard', '$timeout'
-        , function($scope, $controller, userResource, QuickBoard, $timeout)
+angular.module('formModule').controller('FormListCtrl', ['$scope', 'FormQuickBoard', '$timeout'
+        , function($scope, QuickBoard, $timeout)
 {
 
     $scope.quickBoard = QuickBoard;

@@ -762,7 +762,7 @@ button#selectDefault {
     float: left;
 }
 
-#questionSearchArea {
+#embedSearchArea  {
     padding: 20px;
 }
 
@@ -1155,3 +1155,7 @@ div + .questionPlaceholder {
 }
 
 #searchBoardsForm {margin-right: 10px;}
+
+.strike {
+    text-decoration: line-through;
+}

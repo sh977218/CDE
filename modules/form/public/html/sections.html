@@ -2,9 +2,14 @@
     <i class="fa fa-plus"></i> Add Section
 </button>
 <button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0"
-        ng-click="switchEditQuestionsMode()" class="btn btn-default hidden-xs hidden-sm">
-    <span ng-hide="addCdeMode"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
-    <span ng-show="addCdeMode"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+        ng-click="setToAddCdeMode()" class="btn btn-default hidden-xs hidden-sm">
+    <span ng-hide="addMode==='cde'"><i class="glyphicon glyphicon-indent-right"></i> Show Question Search Area</span>
+    <span ng-show="addMode==='cde'"><i class="glyphicon glyphicon-indent-left"></i> Hide Question Search Area</span>
+</button>
+<button id="startAddingForms" ng-show="canCurate && elt.formElements.length > 0"
+        ng-click="setToAddFormMode()" class="btn btn-default hidden-xs hidden-sm">
+    <span ng-hide="addMode==='form'"><i class="glyphicon glyphicon-indent-right"></i> Show Form Search Area</span>
+    <span ng-show="addMode==='form'"><i class="glyphicon glyphicon-indent-left"></i> Hide Form Search Area</span>
 </button>
 <div ng-show="canCurate"><br/>
     <div ng-if="elt.formElements.length > 0" class="visible-xs visible-sm">
@@ -24,25 +29,15 @@
         </span>
     </span>
 </div>
-<div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragQuestions" id="sectionsDiv">
+<div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragSections" id="sectionsDiv">
     <div ng-repeat="(sectionIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
         <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'"
              ng-init="question = formElement; parent = elt;"></div>
         <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
              ng-init="parent = elt; section = formElement; "></div>
-        <div ng-if="formElement.elementType === 'form'" class="panel panel-default">
-            <div class="panel-heading questionSectionTitle">
-                Embedded Form: {{formElement.label}}
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Form: </div>
-                    <div class="col-sm-10">
-                        <a href="formView?tinyId={{formElement.inForm.form.tinyId}}"
-                           target="_blank"><i class="fa fa-eye"></i> {{formElement.inForm.form.name}}</a>
-                    </div>
-                </div>
-            </div>
+        <div ng-if="formElement.elementType === 'form'"
+             ng-include="'/form/public/html/formViewForm.html'"
+             ng-init="parent = elt; section = formElement; ">
         </div>
     </div>
 </div>
