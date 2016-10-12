@@ -9,15 +9,15 @@ public class CdeSourcesTest extends NlmCdeBaseTest {
     public void cdeSourceTest() {
         String cdeName = "Patient Gender Code";
         goToCdeByName(cdeName);
-        textPresent("Source Name:");
+        textPresent("Name:");
         textPresent("caDSR");
-        textPresent("Source Created Date:");
+        textPresent("Created:");
         textPresent("12/10/1994 @ 3:59PM");
-        textPresent("Source Modified Date:");
+        textPresent("Updated:");
         textPresent("10/17/2016 @ 4:59PM");
-        textPresent("Source Status:");
+        textPresent("Registration Status:");
         textPresent("standard");
-        textPresent("Source Datatype:");
+        textPresent("Datatype:");
         textPresent("Number");
     }
 }

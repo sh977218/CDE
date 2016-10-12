@@ -8,15 +8,15 @@ public class FormSourcesTest extends BaseFormTest {
     public void formSourceTest() {
         String formName = "Traumatic Brain Injury - Adverse Events";
         goToFormByName(formName);
-        textPresent("Source Name:");
+        textPresent("Name:");
         textPresent("caBIG");
-        textPresent("Source Created Date:");
+        textPresent("Created:");
         textPresent("12/10/2004 @ 3:59PM");
-        textPresent("Source Modified Date:");
+        textPresent("Updated:");
         textPresent("10/17/2006 @ 4:59PM");
-        textPresent("Source Status:");
+        textPresent("Registration Status:");
         textPresent("standard");
-        textPresent("Source Datatype:");
+        textPresent("Datatype:");
         textPresent("Number");
     }
 }
