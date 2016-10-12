@@ -403,8 +403,19 @@ exports.init = function (app, daoManager) {
             adminItemSvc.addComment(req, res, mongo_cde);
         });
 
+        app.post('/comments/cde/reply', function (req, res) {
+            adminItemSvc.replyToComment(req, res, mongo_cde);
+        });
+
         app.post('/comments/cde/remove', function (req, res) {
             adminItemSvc.removeComment(req, res, mongo_cde);
+        });
+
+        app.post('/comments/cde/status/resolved', function (req, res) {
+            adminItemSvc.updateCommentStatus(req, res, "resolved", mongo_cde);
+        });
+        app.post('/comments/cde/status/active', function (req, res) {
+            adminItemSvc.updateCommentStatus(req, res, "active", mongo_cde);
         });
 
         app.post('/comments/cde/approve', function (req, res) {

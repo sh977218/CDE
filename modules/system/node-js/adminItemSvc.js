@@ -217,7 +217,6 @@ exports.addComment = function (req, res, dao) {
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
                 elt.comments.push(comment);
-                elt.updated = new Date();
                 elt.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
@@ -237,7 +236,7 @@ exports.addComment = function (req, res, dao) {
     }
 };
 
-exports.removeComment = function (req, res, dao) {
+exports.replyToComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
             if (err) {
@@ -245,27 +244,144 @@ exports.removeComment = function (req, res, dao) {
             }
             elt.comments.forEach(function (comment, i) {
                 if (comment._id == req.body.commentId) {
-                    if (req.user.username === comment.username ||
-                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
-                        req.user.siteAdmin
-                    ) {
-                        elt.comments.splice(i, 1);
-                        elt.save(function (err) {
-                            if (err) {
-                                logging.errorLogger.error("Error: Cannot remove comment.", {
-                                    origin: "system.adminItemSvc.removeComment",
-                                    stack: new Error().stack
-                                });
-                                res.status(500).send(err);
-                            } else {
-                                res.send({message: "Comment removed", elt: elt});
-                            }
-                        });
-                    } else {
-                        res.send({message: "You can only remove comments you own."});
+                    var reply = {
+                        user: req.user._id
+                        , username: req.user.username
+                        , created: new Date().toJSON()
+                        , text: req.body.reply
+                    };
+                    if (!authorizationShared.canComment(req.user)) {
+                        reply.pendingApproval = true;
+                        var details = {
+                            element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
+                            , comment: {index: i, text: req.body.reply}
+                        };
+                        exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                     }
+                    if (!comment.replies) comment.replies = [];
+                    comment.replies.push(reply);
+                    elt.markModified("comments");
+                    elt.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Error: Cannot add comment.", {
+                                origin: "system.adminItemSvc.addComment",
+                                stack: new Error().stack
+                            });
+                            res.status(500).send(err);
+                        } else {
+                            exports.hideUnapprovedComments(elt);
+                            res.send({message: "Comment added", elt: elt});
+                        }
+                    });
+
                 }
             });
+        });
+    } else {
+        res.status(403).send("You are not authorized.");
+    }
+};
+
+exports.removeComment = function (req, res, dao) {
+    if (req.isAuthenticated()) {
+        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+            if (err) {
+                res.status(404).send("Element does not exist.");
+            }
+            function removeComment(elt, id) {
+                var result;
+                elt.comments.forEach(function (c, ci) {
+                    if (c._id.toString() === id) {
+                        result = c;
+                        elt.comments.splice(ci, 1);
+                    } else if (c.replies) {
+                        c.replies.forEach(function (r, ri) {
+                            if (r._id.toString() === id) {
+                                result = r;
+                                c.replies.splice(ri, 1);
+                            }
+                        });
+                    }
+                });
+                return result;
+            }
+            var removedComment = removeComment(elt, req.body.commentId);
+            if (removedComment) {
+                if (req.user.username === removedComment.username ||
+                    (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                    req.user.siteAdmin
+                ) {
+                    elt.markModified("comments");
+                    elt.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Error: Cannot remove comment.", {
+                                origin: "system.adminItemSvc.removeComment",
+                                stack: new Error().stack
+                            });
+                            res.status(500).send(err);
+                        } else {
+                            res.send({message: "Comment removed", elt: elt});
+                        }
+                    });
+                } else {
+                    res.send({message: "You can only remove comments you own."});
+                }
+            } else {
+                res.status(404).send("Comment not found")
+            }
+        });
+    } else {
+        res.status(403).send("You are not authorized.");
+    }
+};
+
+exports.updateCommentStatus = function (req, res, status, dao) {
+    if (req.isAuthenticated()) {
+        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+            if (err) {
+                res.status(404).send("Element does not exist.");
+            }
+            function updateComment(elt, id) {
+                var result;
+                elt.comments.forEach(function (c, ci) {
+                    if (c._id.toString() === id) {
+                        result = c;
+                        c.status = status;
+                    } else if (c.replies) {
+                        c.replies.forEach(function (r, ri) {
+                            if (r._id.toString() === id) {
+                                result = r;
+                                r.status = status;
+                            }
+                        });
+                    }
+                });
+                return result;
+            }
+            var updatedComment = updateComment(elt, req.body.commentId);
+            if (updatedComment) {
+                if (req.user.username === updatedComment.username ||
+                    (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                    req.user.siteAdmin
+                ) {
+                    elt.markModified("comments");
+                    elt.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Error: Cannot Update comment.", {
+                                origin: "system.adminItemSvc.removeComment",
+                                stack: new Error().stack
+                            });
+                            res.status(500).send(err);
+                        } else {
+                            res.send({message: "Saved.", elt: elt});
+                        }
+                    });
+                } else {
+                    res.send({message: "You can only remove comments you own."});
+                }
+            } else {
+                res.status(404).send("Comment not found")
+            }
         });
     } else {
         res.status(403).send("You are not authorized.");

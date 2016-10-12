@@ -18,6 +18,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         textPresent("Org has been updated");
         closeAlert();
 
+        goHome();
         goToCdeByName("Distance from Closest Margin Value");
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
