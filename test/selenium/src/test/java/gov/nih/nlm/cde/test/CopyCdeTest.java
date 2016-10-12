@@ -25,7 +25,6 @@ public class CopyCdeTest extends BaseClassificationTest {
         showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
         textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("nameEdit"));
-        textNotPresent("NINDS-xml-export");
         clickElement(By.id("ids_tab"));
         textNotPresent("thirdVersion");
         clickElement(By.id("status_tab"));
