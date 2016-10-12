@@ -48,6 +48,7 @@ public class EltIdMaps {
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
 
 
         // Forms
