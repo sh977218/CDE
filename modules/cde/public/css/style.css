@@ -716,7 +716,7 @@ button#selectDefault {
     height: 140px;
 }
 
-.welcomeSearchFieldset:hover {
+.welcomeSearchFieldset.hand-cursor:hover {
     background-color: #f2f2f2;
 }
 

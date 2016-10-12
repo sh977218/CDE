@@ -282,6 +282,27 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
                 {label: 'Version', property: 'version'}
             ]
         };
+        $scope.sourcesOptions = {
+            equal: function (a, b) {
+                return a.sourceName === b.sourceName &&
+                    a.dateCreated === b.dateCreated &&
+                    a.dateModified === b.dateModified &&
+                    a.registrationStatus === b.registrationStatus &&
+                    a.datatype === b.datatype;
+            },
+            sort: function (a, b) {
+                return a.sourceName.localeCompare(b.sourceName);
+            },
+            title: 'Sources',
+            hideSame: true,
+            properties: [
+                {label: 'Source Name', property: 'sourceName'},
+                {label: 'Source Created Date', property: 'dateCreated'},
+                {label: 'Source Modified Date', property: 'dateModified'},
+                {label: 'Source Status', property: 'registrationStatus'},
+                {label: 'Source Data Type', property: 'datatype'}
+            ]
+        };
         $scope.classificationsOptions = {
             title: 'Classifications',
             hideSame: true
