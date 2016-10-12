@@ -6,9 +6,9 @@ var MigrationNCICdeXmlModel = require('../createMigrationConnection').MigrationN
 
 var xmlFolder = 'S:/CDE/NCI/CDE XML/';
 var xmlFileMapping = {
-    'CDEBrowser_BBRB-BPV-Tumor Biospecimen Acquisition-08-22-2016.xml': 'NCI-BPV',
-    'CDEBrowser_Standard_CDEs-08-08-2016.xml': 'NCI',
-    'CDEBrowser_BBRB-GTEx-Postmortem Biospecimen Acquisition-08-22-2016.xml': 'NCI-GTEx'
+    'bpv.xml': 'NCI-BPV',
+    'standard.xml': 'NCI',
+    'gtex.xml': 'NCI-GTEx'
 };
 
 

@@ -16,6 +16,18 @@ var datatypeMapping = {
 
 var source = 'caDSR';
 
+function getCodeSystem(string) {
+    if (string.match(/^C\d{5}/)) {
+        return "NCI Thesaurus";
+    }
+    if (string.match(/^CL\d{5}/)) {
+        return "NCI Metathesaurus";
+    }
+    if (string.match(/^L\d{5}/)) {
+        return "LOINC";
+    }
+}
+
 function parseNaming(de) {
     var naming = [{
         designation: entities.decodeXML(de.LONGNAME[0]),
@@ -140,11 +152,14 @@ function parseObjectClass(de) {
     var objectClass = {concepts: []};
     if (de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM) {
         de.DATAELEMENTCONCEPT[0].ObjectClass[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            objectClass.concepts.push({
-                name: con.LONG_NAME[0],
-                origin: con.ORIGIN[0],
-                originId: con.PREFERRED_NAME[0]
-            });
+            con.ORIGIN[0].split(":").forEach(function (c) {
+                var concept = {
+                    name: con.LONG_NAME[0],
+                    origin: c,
+                    originId: con.PREFERRED_NAME[0]
+                };
+                objectClass.concepts.push(concept);
+            })
         });
     }
     return objectClass;
@@ -153,23 +168,27 @@ function parseProperty(de) {
     var property = {concepts: []};
     if (de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM) {
         de.DATAELEMENTCONCEPT[0].Property[0].ConceptDetails[0].ConceptDetails_ITEM.forEach(function (con) {
-            property.concepts.push({
-                name: con.LONG_NAME[0],
-                origin: con.ORIGIN[0],
-                originId: con.PREFERRED_NAME[0]
-            });
+            con.ORIGIN[0].split(":").forEach(function (c) {
+                var concept = {
+                    name: con.LONG_NAME[0],
+                    origin: c,
+                    originId: con.PREFERRED_NAME[0]
+                };
+                property.concepts.push(concept);
+            })
         });
     }
     return property;
 }
 function parseDataElementConcept(de) {
-    return {
-        concepts: [{
-            name: de.DATAELEMENTCONCEPT[0].LongName[0],
-            origin: "NCI caDSR",
-            originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
-        }]
+    var dataElementConcept = {concepts: []};
+    var concept = {
+        name: de.DATAELEMENTCONCEPT[0].LongName[0],
+        origin: "NCI caDSR",
+        originId: de.DATAELEMENTCONCEPT[0].PublicId[0] + "v" + de.DATAELEMENTCONCEPT[0].Version[0]
     };
+    dataElementConcept.concepts.push(concept);
+    return dataElementConcept;
 }
 
 function parseClassification(cde, org, orgInfo, de) {
@@ -241,10 +260,27 @@ function parseValueDomain(cde, de) {
             var newPv = {
                 permissibleValue: entities.decodeXML(pv.VALIDVALUE[0]),
                 valueMeaningName: entities.decodeXML(pv.VALUEMEANING[0]),
-                valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0])
+                valueMeaningDefinition: entities.decodeXML(pv.MEANINGDESCRIPTION[0]),
+                codeSystemName: ''
             };
             if (!pv.MEANINGCONCEPTS[0][$attribute]) {
-                newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0];
+                var valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
+/*
+                var valueMeaningCodeArray = valueMeaningCodeString.split(':');
+                for (var i = 0; i < valueMeaningCodeArray.length; i++) {
+                    var valueMeaningCode = valueMeaningCodeArray[i];
+                    var codeSystem = getCodeSystem(valueMeaningCode);
+                    if (newPv.codeSystemName === '') {
+                        newPv.codeSystemName = codeSystem;
+                    } else if (newPv.codeSystemName !== codeSystem) {
+                        newPv.codeSystemName = '';
+                    } else {
+                        newPv.codeSystemName = codeSystem;
+                    }
+                }
+*/
+                newPv.valueMeaningCode = valueMeaningCodeString;
+
             }
             cde.valueDomain.permissibleValues.push(newPv);
         });
@@ -256,8 +292,10 @@ function parseValueDomain(cde, de) {
     }
 }
 
-exports.createNewCde = function (de, org, orgInfo) {
+exports.createNewCde = function (de, org, orgInfo, sourceObj) {
     if (de.toObject) de = de.toObject();
+    sourceObj['datatype'] = de.VALUEDOMAIN[0].Datatype[0];
+    sourceObj['registrationStatus'] = (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty";
     var naming = parseNaming(de);
     var ids = parseIds(de);
     var properties = parseProperties(de);
@@ -271,6 +309,7 @@ exports.createNewCde = function (de, org, orgInfo) {
         tinyId: mongo_data.generateTinyId(),
         imported: Date.now(),
         registrationState: registrationState,
+        sources: [sourceObj],
         source: source,
         origin: origin,
         version: de.VERSION[0],
