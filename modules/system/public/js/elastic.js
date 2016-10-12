@@ -34,12 +34,12 @@ angular.module('ElasticSearchResource', ['ngResource'])
             }
             search(function (response) {
                     elastic.highlightResults(response[type + 's']);
-                    cb(null, response);
+                    cb(null, response, false);
                 },function() {
                     if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
                     search(function(response){
                         elastic.highlightResults(response[type + 's']);
-                        cb(null, response);
+                        cb(null, response, true);
                     }, function(){
                         cb("Error");
                     });

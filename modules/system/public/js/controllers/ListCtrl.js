@@ -238,7 +238,8 @@ angular.module('systemModule').controller('ListCtrl',
 
         $log.debug("running query");
         $log.debug(settings);
-        Elastic.generalSearchQuery(settings, type, function (err, result) {
+        Elastic.generalSearchQuery(settings, type, function (err, result, corrected) {
+            if (corrected && $scope.searchSettings.q) $scope.currentSearchTerm = $scope.searchSettings.q.replace(/[^\w\s]/gi, '');
             //
             $window.scrollTo(0, 0);
             $log.debug("query complete");
