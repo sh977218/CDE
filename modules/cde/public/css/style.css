@@ -1179,7 +1179,41 @@ div + .questionPlaceholder {
     max-height: inherit;
     overflow-y: auto;
     overflow-x: hidden;
+}
 
 .strike {
     text-decoration: line-through;
+}
+
+.commentResolveBtn {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    cursor: default;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    margin-right: 16px;
+    height: 27px;
+    line-height: 27px;
+    min-width: 54px;
+    outline: 0px;
+    padding: 0 8px;
+    display: table-cell;
+    opacity: 0.2;
+    padding-left: 2px;
+    position: relative;
+    padding: 0 4px 0 4px;
+    min-width: 50px;
+    height: 28px;
+    vertical-align: top;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #dcdcdc;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.comment-input-buttons {
+
 }
