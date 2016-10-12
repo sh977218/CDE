@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams', 'OrgHelpers',
-    function ($scope, $routeParams, OrgHelpers) {
+angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', '$routeParams', 'OrgHelpers', 'userResource',
+    function ($scope, $routeParams, OrgHelpers, userResource) {
         $routeParams.searchSettings  = JSON.parse($routeParams.searchSettings);
         $scope.gridOptionsReport = {
             columnDefs: [{field: "cdeName", displayName: "CDE Name"}, {field: 'tinyId', displayName: "NLM ID"}]
@@ -23,7 +23,9 @@ angular.module('systemModule').controller('ShowValidRuleReportCtrl', ['$scope', 
         };
         $scope.module = 'cde';
         OrgHelpers.deferred.promise.then(function() {
-            $scope.exportSearchResults('validationRules', $routeParams);
+            userResource.getPromise().then(function () {
+                $scope.exportSearchResults('validationRules', $routeParams);
+            });
         });
 
     }]);
@@ -38,13 +40,3 @@ angular.module('systemModule').controller('ValidRuleExpCtrl', ['$scope', '$uibMo
             $modalInstance.dismiss();
         };
     }]);
-
-
-angular.module('systemModule').controller('RemoveRuleCtrl', ['$scope', '$uibModalInstance', function($scope, $modalInstance){
-    $scope.cancel = function(){
-        $modalInstance.dismiss();
-    };
-    $scope.deleteRule = function(){
-        $modalInstance.close();
-    };
-}]);

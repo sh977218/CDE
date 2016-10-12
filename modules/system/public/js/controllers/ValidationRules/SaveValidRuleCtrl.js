@@ -22,7 +22,7 @@ angular.module('systemModule').controller('SaveValidRuleCtrl', ['$scope', 'OrgHe
         $scope.disableRule = function(orgName, rule){
             $modal.open({
                 templateUrl: '/system/public/html/statusRules/removeRule.html',
-                controller: 'RemoveRuleCtrl'
+                controller: function () {}
             }).result.then(function () {
                 $http.post("/disableRule", {orgName: orgName, rule: rule}).then(function(response){
                     $scope.userOrgs[orgName] = response.data.cdeStatusValidationRules;
