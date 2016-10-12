@@ -16,18 +16,54 @@
     <br/>
 
     <div ng-repeat="comment in elt.comments">
-        <div class="row">
+        <div class="row" data-type="topComment">
             <div class="col-xs-1">
                 <img class="pull-right" src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
             </div>
             <div class="col-xs-11">
                 <strong tabindex="0">{{comment.username}}</strong> -
-                <small tabindex="0" class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small>
-                <span tabindex="0" ng-show="canRemoveComment(comment)"> -
-                    <i class="fa fa-trash-o hand-cursor" ng-click="removeComment(comment._id)"
-                       id="removeComment-{{$index}}"></i></span>
+                <small tabindex="0" class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small> -
+                <a tabindex="0" ng-show="canRemoveComment(comment)" ng-click="removeComment(comment._id)" data-type="remove">
+                    <i class="fa fa-trash-o" id="removeComment-{{$index}}"></i> Remove</a>
+                <a tabindex="0" ng-show="canResolveComment(comment)" ng-click="updateCommentStatus(comment._id, 'resolved')">
+                    <i class="fa fa-check-circle-o" id="resolveComment-{{$index}}"></i> Resolve</a>
+                <a tabindex="0" ng-show="canReopenComment(comment)" ng-click="updateCommentStatus(comment._id, 'active')">
+                    <i class="fa fa-undo" id="reopenComment-{{$index}}"></i> Reopen</a>
 
-                <div id="commentText-{{$index}}">{{comment.text}}</div>
+                <div id="commentText-{{$index}}" ng-class="{strike: comment.status === 'resolved'}">{{comment.text}}</div>
+
+                <div class="row" ng-repeat="reply in comment.replies" data-type="replyComment">
+                    <div class="col-xs-1">
+                        <img src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
+                    </div>
+                    <div class="col-xs-11">
+                        <strong tabindex="0">{{reply.username}}</strong> -
+                        <small tabindex="0" class="gray">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</small>
+                        <a tabindex="0" ng-show="canRemoveComment(reply)" ng-click="removeComment(reply._id)" data-type="remove"> -
+                            <i class="fa fa-trash-o" id="removeReply-{{$index}}"></i> Remove</a>
+                        <a tabindex="0" ng-show="canResolveComment(reply)" ng-click="updateCommentStatus(reply._id, 'resolved')"
+                           data-type="resolve">
+                            <i class="fa fa-check-circle-o"></i> Resolve</a>
+                        <a tabindex="0" ng-show="canReopenComment(reply)" ng-click="updateCommentStatus(reply._id, 'active')"
+                           data-type="reopen">
+                            <i class="fa fa-undo" id="reopenReply-{{$index}}"></i> Reopen</a>
+
+                        <div id="replyText-{{$index}}" ng-class="{strike: reply.status === 'resolved'}">{{reply.text}}</div>
+                    </div>
+                </div>
+
+                <div data-type="reply"><a href ng-click="comment.openReply = true"><i class="fa fa-reply"> Reply</i></a></div>
+                <div ng-if="comment.openReply">
+                    <form role="form" name="replyForm" id="replyForm" novalidate>
+                        <textarea ng-model="comment.tempReply" name="replyTextArea" class="form-control" rows="3"
+                                  placeholder="Reply to this comment" required></textarea>
+                        <div>
+                            <button class="btn btn-primary" ng-click="replyTo(comment._id, comment.tempReply)"
+                                    ng-disabled="replyForm.replyTextArea.$invalid">Reply</button>
+                            <button class="btn btn-default" ng-click="comment.openReply = false">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <br/>
