@@ -20,8 +20,8 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org has been updated");
         closeAlert();
 
-        goHome();
         goToCdeByName("Distance from Closest Margin Value");
+        driver.navigate().refresh();
         showAllTabs();
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
