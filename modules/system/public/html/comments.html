@@ -1,5 +1,7 @@
 <div ng-controller="CommentsCtrl" id="commentDiv">
-    <div ng-repeat="comment in elt.comments" class="commentBody" data-type="topComment">
+    <div><input type="checkbox" ng-model="showResolvedComment"/></div>
+    <div ng-hide="showResolvedComment && comment.status ==='resolved'" ng-repeat="comment in elt.comments"
+         class="commentBody" data-type="topComment">
         <div class="commentBox">
             <table style="width: 100%;">
                 <tbody>

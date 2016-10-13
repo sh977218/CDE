@@ -1,6 +1,8 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource',
     function ($scope, $http, userResource) {
 
+        $scope.showResolvedComment = true;
+
         $scope.canRemoveComment = function (com) {
             return ((userResource.user._id) &&
             (userResource.user._id === com.user ||
@@ -38,9 +40,12 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         };
 
         $scope.updateCommentStatus = function (commentId, status) {
-            $http.post("/comments/" + $scope.module + "/status/" + status, {
-                commentId: commentId
-                , element: {tinyId: $scope.elt.tinyId}
+            $http.post("/comments/" + $scope.module + "/status/", {
+                commentId: commentId,
+                status: status,
+                element: {
+                    tinyId: $scope.elt.tinyId
+                }
             }).then(function (res) {
                 var message = status.trim() === "active" ? "opened. " : "resolved.";
                 $scope.addAlert("success", "comment " + message);
