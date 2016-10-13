@@ -16,15 +16,12 @@ angular.module('systemModule').controller('PropertiesCtrl',
     $scope.openNewProperty = function () {
         keysLoaded.promise.then(function () {
 
-            console.log("allKeys:");
-            console.log($scope.allKeys);
-
             if (!$scope.allKeys || $scope.allKeys.length === 0) {
                 Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
                 return;
             }
 
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
                 controller: 'NewPropertyModalCtrl',

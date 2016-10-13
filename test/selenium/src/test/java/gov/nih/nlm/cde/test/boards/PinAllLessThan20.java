@@ -9,7 +9,6 @@ public class PinAllLessThan20 extends BoardTest {
     @Test
     public void pinAllLessThan20() {
         String board_name = "Pin All Less Than 20 Test Board";
-        String board_description = "This board is only for pin all less than 20 test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
 
@@ -24,6 +23,7 @@ public class PinAllLessThan20 extends BoardTest {
         textPresent("Choose a Board to pin");
         clickElement(By.id("viewBoard_" + board_name));
         textPresent("All elements pinned.");
+        closeAlert();
         gotoMyBoards();
 
         // find nb of cdes for the board.
