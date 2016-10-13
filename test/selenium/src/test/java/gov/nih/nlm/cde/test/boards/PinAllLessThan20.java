@@ -9,7 +9,6 @@ public class PinAllLessThan20 extends BoardTest {
     @Test
     public void pinAllLessThan20() {
         String board_name = "Pin All Less Than 20 Test Board";
-        String board_description = "This board is only for pin all less than 20 test.";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToCdeSearch();
 
@@ -21,6 +20,8 @@ public class PinAllLessThan20 extends BoardTest {
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
+        textPresent("All elements pinned");
+        closeAlert();
         textPresent("Choose a Board to pin");
         clickElement(By.id("viewBoard_" + board_name));
         textPresent("All elements pinned.");
