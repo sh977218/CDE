@@ -47,6 +47,7 @@ public class EltIdMaps {
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
+        eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
 
 
         // Forms
@@ -60,6 +61,7 @@ public class EltIdMaps {
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
+        eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
