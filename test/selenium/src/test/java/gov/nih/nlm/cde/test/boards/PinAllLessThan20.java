@@ -20,11 +20,10 @@ public class PinAllLessThan20 extends BoardTest {
         textPresent("9 results for All Terms");
         int searchResultNum_int = Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
         clickElement(By.id("pinAll"));
-        textPresent("All elements pinned");
-        closeAlert();
         textPresent("Choose a Board to pin");
         clickElement(By.id("viewBoard_" + board_name));
         textPresent("All elements pinned.");
+        closeAlert();
         gotoMyBoards();
 
         // find nb of cdes for the board.
