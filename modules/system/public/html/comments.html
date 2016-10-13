@@ -22,19 +22,21 @@
                            ng-click="removeComment(comment._id)"
                            data-type="remove"></i>
                         <i class="fa fa-edit" id="editComment-{{$index}}" ng-show="canRemoveComment(comment)"
-                           ng-click="comment.editMode = true"
+                           ng-click="enableEditComment(comment);"
                            data-type="edit"></i>
                         <div></div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <div ng-show="!comment.editMode">{{comment.text}}</div>
-            <div ng-show="comment.editMode">
-                <textarea style="height:25px;width: 100%;" ng-focus="comment.openEdit = true"
-                          ng-Blur="comment.openEdit = false" ng-model="comment.text"></textarea>
-                <button ng-show="comment.openEdit" ng-click="comment.editMode = false">Save</button>
-                <button ng-show="comment.openEdit" ng-click="comment.editMode = false">Cancel</button>
+
+            <div ng-show="comment.editMode !== true">{{comment.text}}</div>
+            <div ng-show="comment.editMode === true">
+                <textarea style="height:25px;width: 100%;" ng-focus="showEditBtn(comment);"
+                          ng-Blur="hideEditBtn(comment);" ng-model="comment.text"></textarea>
+                <button ng-if="comment.editMode" ng-click="saveComment(comment)">Save</button>
+                <button ng-if="comment.editMode" ng-click="cancelEditComment(comment)">Cancel
+                </button>
             </div>
         </div>
         <div ng-repeat="reply in comment.replies" class="commentBox">
