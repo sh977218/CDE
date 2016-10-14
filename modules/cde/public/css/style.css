@@ -1238,9 +1238,7 @@ div + .questionPlaceholder {
 }
 
 .eltCommentView {
-    /*-webkit-box-shadow: 10px 0 5px -2px #888;*/
-    /*box-shadow: 10px 0 5px -2px #888;*/
-    /*box-shadow: 0 10px 40px -5px #969696;*/
+    -webkit-box-shadow: 10px 0 5px -2px #888;
 }
 
 .is-table-row {

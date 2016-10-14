@@ -18,6 +18,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             comment.replies.forEach(function (r) {addAvatar(r.username);})
         }
     });
+    //userResource.
 
     $scope.canRemoveComment = function(com) {
         return ((userResource.user._id) && 
