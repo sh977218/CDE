@@ -233,7 +233,7 @@ function loopForm(form) {
 
 var getFormRedCap = function (form, response) {
     if (exportWarnings[form.stewardOrg.name]) {
-        response.status(500).send(exportWarnings[form.stewardOrg.name]);
+        response.status(202).send(exportWarnings[form.stewardOrg.name]);
         return;
     }
     var validationErr = loopForm(form);

@@ -27,14 +27,25 @@ angular.module('ElasticSearchResource', ['ngResource'])
         }
         , generalSearchQuery: function(settings, type, cb) {
             var elastic = this;
-            $http.post("/elasticSearch/" + type, settings)
-                    .success(function (response) {
+            function search(good, bad){
+                $http.post("/elasticSearch/" + type, settings)
+                    .success(good)
+                    .error(bad);
+            }
+            search(function (response) {
+                    elastic.highlightResults(response[type + 's']);
+                    cb(null, response, false);
+                },function() {
+                    if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
+                    search(function(response){
                         elastic.highlightResults(response[type + 's']);
-                        cb(null, response);
-                    })
-                    .error(function() {
+                        cb(null, response, true);
+                    }, function(){
                         cb("Error");
                     });
+
+                });
+
         } 
         , highlightResults: function(elts) {
             var elastic = this;

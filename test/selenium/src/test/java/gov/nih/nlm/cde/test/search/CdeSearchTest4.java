@@ -51,13 +51,4 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
         Assert.assertTrue(usedBy.contains("CIP"));
     }
 
-    @Test
-    public void badESQuery() {
-        goToCdeSearch();
-        findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("+-aaa");
-        clickElement(By.cssSelector("i.fa-search"));
-        textPresent("There was a problem with your query");
-        closeAlert();
-    }
 }
