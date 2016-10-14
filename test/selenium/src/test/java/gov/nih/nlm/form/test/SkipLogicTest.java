@@ -71,4 +71,11 @@ public class SkipLogicTest extends BaseFormTest {
         else textNotPresent(errorMessage);
     }
 
+    @Test
+    public void skipLogicDateTest() {
+        mustBeLoggedInAs(ninds_username, password);
+        String formName = "Imaging OCT Analysis - Spectralis Report Analysis";
+        goToFormByName(formName);
+    }
+
 }

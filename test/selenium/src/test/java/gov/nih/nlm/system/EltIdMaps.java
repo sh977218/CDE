@@ -62,6 +62,7 @@ public class EltIdMaps {
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
+        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
 
         //Boards
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");

@@ -442,6 +442,20 @@ angular.module('formModule').controller
                     if (max != undefined && answerNumber > min)
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
+            } else if (filteredQuestion.question.datatype === 'Date') {
+                var date = Date.parse(tokens[2]);
+                if (!date)
+                    return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
+                else {
+                    var operator = tokens[1];
+                    if (operator.trim() === "=") {
+                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    } else if (operator.trim() === ">") {
+                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    } else if (operator.trim() === "<") {
+                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    }
+                }
             }
         }
     }
