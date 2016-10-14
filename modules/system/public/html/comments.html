@@ -20,8 +20,11 @@
                     <table style="width: 100%;">
                         <tbody>
                         <tr>
-                            <td><div><img src="/cde/public/assets/img/portrait.png" width="32" height="32"
-                                          alt="portrait"/></div></td>
+                            <td>
+                                <img src="/cde/public/assets/img/portrait.png" width="32" height="32"
+                                     alt="portrait"/>
+                                <div ng-class="{'user-online':user.isOnline,'user-offline':!user.isOnline}"></div>
+                            </td>
                             <td>
                                 <div>
                                     <div>
@@ -34,13 +37,16 @@
                                 </div>
                             </td>
                             <td>
-                                <i class="fa fa-trash-o" title="Remove" id="removeComment-{{$index}}"
+                                <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                   id="removeComment-{{$index}}"
                                    ng-show="canRemoveComment(comment)"
                                    ng-click="removeComment(comment._id)" data-type="remove"></i>
-                                <i class="fa fa-check-circle-o" title="Resolve" id="resolveComment-{{$index}}"
+                                <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                   id="resolveComment-{{$index}}"
                                    ng-show="canResolveComment(comment)"
                                    ng-click="updateCommentStatus(comment._id, 'resolved')"></i>
-                                <i class="fa fa-undo" title="Reopen" id="reopenComment-{{$index}}"
+                                <i class="fa fa-undo hand-cursor" title="Reopen"
+                                   id="reopenComment-{{$index}}"
                                    ng-show="canReopenComment(comment)"
                                    ng-click="updateCommentStatus(comment._id, 'active')"></i>
                             </td>
@@ -58,8 +64,10 @@
                 <table style="width: 100%;">
                     <tbody>
                     <tr>
-                        <td><div><img src="/cde/public/assets/img/portrait.png"  width="32" height="32"
-                                      alt="portrait"/></div></td>
+                        <td>
+                            <img src="/cde/public/assets/img/portrait.png" width="32" height="32"
+                                 alt="portrait"/>
+                        </td>
                         <td>
                             <div>
                                 <div>
@@ -72,14 +80,14 @@
                             </div>
                         </td>
                         <td>
-                            <i class="fa fa-trash-o" title="Remove" id="removeReply-{{$index}}"
+                            <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{$index}}"
                                ng-show="canRemoveComment(reply)"
                                ng-click="removeComment(reply._id)" data-type="remove"></i>
-                            <i class="fa fa-check-circle-o" title="Resolve" id="resolveReply-{{$index}}"
+                            <i class="fa fa-check-circle-o hand-cursor" title="Resolve" id="resolveReply-{{$index}}"
                                ng-show="canResolveComment(reply)"
                                ng-click="updateCommentStatus(reply._id, 'resolved')"
                                data-type="resolve"></i>
-                            <i class="fa fa-undo" title="Reopen" id="reopenReply-{{$index}}"
+                            <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{$index}}"
                                ng-show="canReopenComment(reply)"
                                ng-click="updateCommentStatus(reply._id, 'active')"
                                data-type="reopen"></i>
