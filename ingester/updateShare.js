@@ -38,7 +38,7 @@ exports.addAttachment = function (elt, xml, cb) {
             size: origXml.length,
             stream: readable
         },
-        {username: "batchloader", roles: ["AttachmentReviewed"]},
+        {username: "batchloader", roles: ["AttachmentReviewer"]},
         "Original XML File", elt, function (attachment, newFileCreated, e) {
             if (e) throw e;
             cb();
