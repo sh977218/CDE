@@ -3,9 +3,16 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.showResolvedComment = true;
 
-        $scope.canRemoveComment = function (com) {
+        $scope.canRemoveComment = function (comment) {
             return ((userResource.user._id) &&
-            (userResource.user._id === com.user ||
+            (userResource.user._id === comment.user ||
+            (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
+            userResource.user.siteAdmin ) );
+        };
+        $scope.canRemoveReply = function (comment, reply) {
+            return ((userResource.user._id) &&
+            (userResource.user._id === reply.user ||
+            userResource.user._id === comment.user ||
             (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
             userResource.user.siteAdmin ) );
         };
@@ -29,10 +36,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
-        $scope.removeComment = function (commentId) {
+        $scope.removeCommentOrReply = function (commentId, replyId) {
             $http.post("/comments/" + $scope.module + "/remove", {
-                commentId: commentId
-                , element: {tinyId: $scope.elt.tinyId}
+                commentId: commentId,
+                replyId: replyId,
+                element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 $scope.elt = res.data.elt;

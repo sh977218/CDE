@@ -1,5 +1,5 @@
 <div ng-controller="CommentsCtrl" id="commentDiv">
-    <div><input type="checkbox" ng-model="showResolvedComment"/></div>
+    <div><input type="checkbox" ng-model="showResolvedComment"/>show resolved comments</div>
     <div ng-hide="showResolvedComment && comment.status ==='resolved'" ng-repeat="comment in elt.comments"
          class="commentBody" data-type="topComment">
         <div class="commentBox">
@@ -21,9 +21,9 @@
                            ng-click="updateCommentStatus(comment._id, 'active')">
                             <i class="fa fa-undo" id="reopenComment-{{$index}}"></i> Reopen</a>
                         <i class="fa fa-trash-o" id="removeComment-{{$index}}" ng-show="canRemoveComment(comment)"
-                           ng-click="removeComment(comment._id)"
+                           ng-click="removeCommentOrReply(comment._id)"
                            data-type="remove"></i>
-                        <i class="fa fa-edit" id="editComment-{{$index}}" ng-show="canRemoveComment(comment)"
+                        <i class="fa fa-edit" id="editComment-{{$index}}" ng-show="canremoveCommentOrReply(comment)"
                            ng-click="enableEditComment(comment);"
                            data-type="edit"></i>
                         <div></div>
@@ -31,7 +31,6 @@
                 </tr>
                 </tbody>
             </table>
-
             <div ng-show="comment.editMode !== true">{{comment.text}}</div>
             <div ng-show="comment.editMode === true">
                 <textarea style="height:25px;width: 100%;" ng-focus="showEditBtn(comment);"
@@ -51,6 +50,15 @@
                             <div class="commentDate" style="font-size:11px;">
                                 {{reply.created | date: 'MM/dd/yyyy@h:mma'}}
                             </div>
+                        </td>
+                        <td>
+                            <i class="fa fa-trash-o" id="removeReply-{{$index}}" ng-show="canRemoveReply(comment,reply)"
+                               ng-click="removeReply(comment._id,reply._id)"
+                               data-type="remove"></i>
+                            <i class="fa fa-edit" id="editReply-{{$index}}" ng-show="canRemoveReply(comment,reply)"
+                               ng-click="enableEditReply(comment);"
+                               data-type="edit"></i>
+                            <div></div>
                         </td>
                     </tr>
                     </tbody>
