@@ -335,56 +335,57 @@ exports.removeComment = function (req, res, dao) {
     }
 };
 
-function updateComment(elt, id, status) {
-    var result;
-    elt.comments.forEach(function (c) {
-        var cId = c._id.toString();
-        if ( cId=== id) {
-            result = c;
-            c.status = status;
-        } else if (c.replies) {
-            c.replies.forEach(function (r) {
-                if (r._id.toString() === id) {
-                    result = r;
-                    r.status = status;
-                }
-            });
-        }
-    });
-    return result;
-}
-
-exports.updateCommentStatus = function (req, res, dao) {
+exports.updateCommentStatus = function (req, res, status, dao) {
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
-            if (err) res.status(404).send("Element does not exist.");
-            else {
-                var updatedComment = updateComment(elt, req.body.commentId, req.body.status);
-                if (updatedComment) {
-                    if (req.user.username === updatedComment.username ||
-                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
-                        req.user.siteAdmin) {
-                        elt.markModified("comments");
-                        elt.save(function (err) {
-                            if (err) {
-                                logging.errorLogger.error("Error: Cannot Update comment.", {
-                                    origin: "system.adminItemSvc.removeComment",
-                                    stack: new Error().stack
-                                });
-                                res.status(500).send(err);
-                            } else {
-                                res.send({message: "Saved.", elt: elt});
+            if (err) {
+                res.status(404).send("Element does not exist.");
+            }
+            function updateComment(elt, id) {
+                var result;
+                elt.comments.forEach(function (c, ci) {
+                    if (c._id.toString() === id) {
+                        result = c;
+                        c.status = status;
+                    } else if (c.replies) {
+                        c.replies.forEach(function (r, ri) {
+                            if (r._id.toString() === id) {
+                                result = r;
+                                r.status = status;
                             }
                         });
-                    } else {
-                        res.send({message: "You can only remove comments you own."});
                     }
+                });
+                return result;
+            }
+            var updatedComment = updateComment(elt, req.body.commentId);
+            if (updatedComment) {
+                if (req.user.username === updatedComment.username ||
+                    (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                    req.user.siteAdmin
+                ) {
+                    elt.markModified("comments");
+                    elt.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Error: Cannot Update comment.", {
+                                origin: "system.adminItemSvc.removeComment",
+                                stack: new Error().stack
+                            });
+                            res.status(500).send(err);
+                        } else {
+                            res.send({message: "Saved.", elt: elt});
+                        }
+                    });
                 } else {
-                    res.status(404).send("Comment not found")
+                    res.send({message: "You can only remove comments you own."});
                 }
+            } else {
+                res.status(404).send("Comment not found")
             }
         });
-    } else res.status(403).send("You are not authorized.");
+    } else {
+        res.status(403).send("You are not authorized.");
+    }
 };
 
 exports.declineApproveComment = function (req, res, dao, action, msg) {
