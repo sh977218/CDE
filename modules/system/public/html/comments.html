@@ -91,7 +91,7 @@
             </div>
             <div id="replyText-{{$index}}" ng-class="{strike: reply.status === 'resolved'}">{{reply.text}}</div>
         </div>
-        <div data-type="reply" class="replyInputDiv">
+        <div data-type="reply" class="replyInputDiv" ng-if="user._id">
             <textarea ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea" rows="3"
                       placeholder="Reply to this comment" required ng-focus="comment.openReply = true">
                       </textarea>
