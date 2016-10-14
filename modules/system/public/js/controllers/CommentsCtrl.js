@@ -12,13 +12,17 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         }
     }
-    $scope.elt.comments.forEach(function (comment) {
-        addAvatar(comment.userName);
-        if (comment.replies) {
-            comment.replies.forEach(function (r) {addAvatar(r.username);})
-        }
+    $scope.deferredEltLoaded.promise.then(function () {
+        $scope.elt.comments.forEach(function (comment) {
+            addAvatar(comment.userName);
+            if (comment.replies) {
+                comment.replies.forEach(function (r) {addAvatar(r.username);})
+            }
+        });
     });
-    //userResource.
+    userResource.getPromise().then(function() {
+        addAvatar(userResource.user.username);
+    });
 
     $scope.canRemoveComment = function(com) {
         return ((userResource.user._id) && 

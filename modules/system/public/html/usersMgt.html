@@ -18,6 +18,7 @@
 
         <div class="row">
             <div class="col-md-2"><strong>Avatar:</strong></div>
+            <img ng-if="u.avatarUrl" ng-src="{{u.avatarUrl}}" width="32" height="32"/>
             <div inline-edit model="u.avatarUrl" is-allowed="true" on-ok="updateAvatar(u)" class="col-md-10" ></div>
         </div>
 
