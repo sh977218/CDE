@@ -411,8 +411,11 @@ exports.init = function (app, daoManager) {
             adminItemSvc.removeComment(req, res, mongo_cde);
         });
 
-        app.post('/comments/cde/status', function (req, res) {
-            adminItemSvc.updateCommentStatus(req, res, mongo_cde);
+        app.post('/comments/cde/status/resolved', function (req, res) {
+            adminItemSvc.updateCommentStatus(req, res, "resolved", mongo_cde);
+        });
+        app.post('/comments/cde/status/active', function (req, res) {
+            adminItemSvc.updateCommentStatus(req, res, "active", mongo_cde);
         });
 
         app.post('/comments/cde/approve', function (req, res) {
