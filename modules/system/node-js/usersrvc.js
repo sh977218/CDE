@@ -70,14 +70,14 @@ exports.myOrgsAdmins = function(req, res) {
                 var myOrgs = foundUser.orgAdmin;
                 for (var i = 0; i < myOrgs.length; i++) {
                     var usersList = [];
-                    for (var j in users) {
-                        if (users[j].orgAdmin.indexOf(myOrgs[i]) > -1) {
+                    users.forEach(function (u) {
+                        if (u.orgAdmin.indexOf(myOrgs[i]) > -1) {
                             usersList.push({
-                                "username": users[j].username
-                                , "_id": users[j]._id
+                                "username": u.username
+                                , "_id": u._id
                             });
                         }
-                    }
+                    });
                     if (usersList.length > 0) {
                         result.orgs.push({
                             "name": myOrgs[i]

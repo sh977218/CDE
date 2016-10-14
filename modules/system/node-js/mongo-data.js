@@ -86,15 +86,11 @@ exports.org_autocomplete = function(name, callback) {
 };
 
 exports.orgNames = function(callback) {
-    Org.find({}, {name: true, _id: false}).exec(function(err, result) {
-        callback(err, result);
-    });
+    Org.find({}, {name: true, _id: false}).exec(callback);
 };
 
 exports.userByName = function(name, callback) {
-    User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(function (err, u) {
-       callback(err, u);
-    });
+    User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(callback);
 };
 
 exports.usersByPartialName = function(name, callback) {
@@ -113,9 +109,7 @@ exports.usernamesByIp = function(ip, callback) {
 };
 
 exports.userById = function(id, callback) {
-    User.findOne({'_id': id}).exec(function (err, u) {
-       callback("", u);
-    });
+    User.findOne({'_id': id}).exec(callback);
 };
 
 exports.addUser = function(user, callback) {
@@ -127,21 +121,15 @@ exports.addUser = function(user, callback) {
 };
 
 exports.siteadmins = function(callback) {
-    User.find({'siteAdmin': true}).select('username email').exec(function (err, users) {
-        callback(err, users);
-    });
+    User.find({'siteAdmin': true}).select('username email').exec(callback);
 };
 
 exports.orgAdmins = function(callback) {
-    User.find({orgAdmin: {$not: {$size: 0}}}).exec(function (err, users) {
-        callback("", users);
-    });
+    User.find({orgAdmin: {$not: {$size: 0}}}).exec(callback);
 };
 
 exports.orgCurators = function(orgs, callback) {
-    User.find().where("orgCurator").in(orgs).exec(function (err, users) {
-        callback("", users);
-    });
+    User.find().where("orgCurator").in(orgs).exec(callback);
 };
 
 
@@ -153,15 +141,11 @@ exports.orgByName = function(orgName,callback) {
 
 
 exports.listOrgs = function(callback) {
-    Org.distinct('name', function(error, orgs) {
-        callback("", orgs.sort());
-    });
+    Org.distinct('name', callback);
 };
 
 exports.listOrgsLongName = function(callback) {
-    Org.find({}, {'_id': 0, 'name':1, 'longName':1}).exec(function(err, result) {
-        callback("", result);
-    });
+    Org.find({}, {'_id': 0, 'name':1, 'longName':1}).exec(callback);
 };
 
 exports.listOrgsDetailedInfo = function (callback) {
