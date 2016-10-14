@@ -1167,7 +1167,7 @@ div + .questionPlaceholder {
     position: relative;
     width: 240px;
     border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     border-radius: 2px;
     margin-bottom: 10px;
 }
@@ -1222,7 +1222,6 @@ div + .questionPlaceholder {
     height: 26px;
     line-height: 1.4;
     -webkit-box-sizing: border-box;
-    color: #999;
     font-family: Arial, sans-serif;
     font-size: 13px;
     margin: 0;
@@ -1236,5 +1235,7 @@ div + .questionPlaceholder {
 }
 
 .eltCommentView {
-    box-shadow: 0 10px 40px -5px #969696;
+    -webkit-box-shadow: 10px 0 5px -2px #888;
+    box-shadow: 10px 0 5px -2px #888;
+    /*box-shadow: 0 10px 40px -5px #969696;*/
 }
