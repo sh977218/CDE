@@ -17,6 +17,11 @@
         </div>
 
         <div class="row">
+            <div class="col-md-2"><strong>Avatar:</strong></div>
+            <div inline-edit model="u.avatarUrl" is-allowed="true" on-ok="saveAvatar(u)" class="col-md-10" ></div>
+        </div>
+
+        <div class="row">
             <div class="col-md-2"><strong>Last Login:</strong></div>
             <div class="col-md-10">{{u.lastLogin}}</div>
         </div>
@@ -41,8 +46,7 @@
             <div class="col-md-10" id="user_roles_{{$index}}">
                 <ui-select multiple ng-model="u.roles" sortable="true" close-on-select="false"
                            theme="select2" style="min-width: 300px"
-                           on-remove="updateRoles(u)" on-select="updateRoles(u)"
-                >
+                           on-remove="updateRoles(u)" on-select="updateRoles(u)">
                     <ui-select-match placeholder="Select answers...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="role in rolesEnum | filter:$select.search">
                         {{role}}

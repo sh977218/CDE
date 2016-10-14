@@ -19,14 +19,20 @@ exports.myOrgs = function(user) {
 
 exports.updateUserRoles = function(user, cb) {
     mongo_data.userByName(user.username, function(err, found) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) return cb(err);
         found.roles = user.roles;
-        found.save(function() {cb();});
+        found.save(cb);
     });
 };
+
+exports.updateUserAvatar = function(user, cb) {
+    mongo_data.userByName(user.username, function(err, found) {
+        if (err) return cb(err);
+        found.avatarUrl = user.avatarUrl;
+        found.save(cb);
+    });
+};
+
 
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {

@@ -483,6 +483,16 @@ exports.init = function (app) {
         }
     });
 
+    app.post('/updateUserAvatar', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            usersrvc.updateUserAvatar(req.body, function (err) {
+                if (err) res.status(500).end();
+                else res.status(200).end();
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
