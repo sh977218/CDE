@@ -87,23 +87,16 @@
             </div>
             <div id="replyText-{{$index}}" ng-class="{strike: reply.status === 'resolved'}">{{reply.text}}</div>
         </div>
-        <div data-type="reply">
-            <i class="fa fa-reply" ng-click="comment.openReply = true"></i></div>
-                <div ng-if="comment.openReply">
-                    <form role="form" name="replyForm" id="replyForm" novalidate>
-                        <textarea ng-model="comment.tempReply" name="replyTextArea" class="form-control" rows="3"
-                                  placeholder="Reply to this comment" required></textarea>
-                        <div>
-                            <button class="btn btn-primary" ng-click="replyTo(comment._id, comment.tempReply)"
-                                    ng-disabled="replyForm.replyTextArea.$invalid">Reply
-                            </button>
-                            <button class="btn btn-default" ng-click="comment.openReply = false">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+        <div data-type="reply" class="replyInputDiv">
+            <textarea ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea" rows="3"
+                      placeholder="Reply to this comment" required ng-focus="comment.openReply = true"
+                      ng-blur="comment.openReply = false"></textarea>
+            <div class="replyInputBtn" ng-show="comment.openReply">
+                <button ng-click="replyTo(comment._id, comment.tempReply)"
+                        ng-disabled="replyForm.replyTextArea.$invalid">Reply
+                </button>
+                <button ng-click="comment.openReply = false">Cancel</button>
             </div>
         </div>
-        <br/>
     </div>
-    <br/>
 </div>
