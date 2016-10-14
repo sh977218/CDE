@@ -20,6 +20,8 @@
                     <table style="width: 100%;">
                         <tbody>
                         <tr>
+                            <td><div><img src="/cde/public/assets/img/portrait.png" width="32" height="32"
+                                          alt="portrait"/></div></td>
                             <td>
                                 <div>
                                     <div>
@@ -56,6 +58,8 @@
                 <table style="width: 100%;">
                     <tbody>
                     <tr>
+                        <td><div><img src="/cde/public/assets/img/portrait.png"  width="32" height="32"
+                                      alt="portrait"/></div></td>
                         <td>
                             <div>
                                 <div>
@@ -89,12 +93,13 @@
         </div>
         <div data-type="reply" class="replyInputDiv">
             <textarea ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea" rows="3"
-                      placeholder="Reply to this comment" required ng-focus="comment.openReply = true"></textarea>
-            <div class="replyInputBtn" ng-show="comment.openReply">
-                <button ng-click="replyTo(comment._id, comment.tempReply)"
-                        ng-disabled="replyForm.replyTextArea.$invalid">Reply
+                      placeholder="Reply to this comment" required ng-focus="comment.openReply = true">
+                      </textarea>
+            <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
+                <button ng-click="replyTo(comment._id, comment.tempReply)" style="margin-left: 0"
+                        ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary">Reply
                 </button>
-                <button ng-click="comment.openReply = false">Cancel</button>
+                <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>
