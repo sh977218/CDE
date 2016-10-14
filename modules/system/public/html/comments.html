@@ -91,11 +91,11 @@
             <textarea ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea" rows="3"
                       placeholder="Reply to this comment" required ng-focus="comment.openReply = true"
                       ng-blur="comment.openReply = false"></textarea>
-            <div class="replyInputBtn" ng-show="comment.openReply">
-                <button ng-click="replyTo(comment._id, comment.tempReply)"
-                        ng-disabled="replyForm.replyTextArea.$invalid">Reply
+            <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
+                <button ng-click="replyTo(comment._id, comment.tempReply)" style="margin-left: 0"
+                        ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary">Reply
                 </button>
-                <button ng-click="comment.openReply = false">Cancel</button>
+                <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>

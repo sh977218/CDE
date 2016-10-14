@@ -24,7 +24,7 @@
     <div ng-if="!elt"><h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
 
     <div ng-if="elt">
-        <div ng-class="{'col-sm-9':commentMode,'col-sm-12':!commentMode}">
+        <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <h1 class="page-header">
                 {{elt.naming[0].designation}}
                 <a class="btn btn-small btn-default" ng-show="quickBoard.canAddElt(elt)" role="button" tabindex="0"
@@ -63,7 +63,7 @@
         </div>
 
 
-        <div ng-show="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
+        <div ng-show="commentMode" ng-class="{'col-sm-2':commentMode,'':!commentMode}"
              style="padding:30px;background-color: #f5f5f5">
             <div ng-include="'/system/public/html/comments.html'"></div>
         </div>

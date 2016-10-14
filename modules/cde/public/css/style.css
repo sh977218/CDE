@@ -1234,3 +1234,7 @@ div + .questionPlaceholder {
     width: 100%;
     border: 1px solid #c8c8c8;
 }
+
+.eltCommentView {
+    box-shadow: 0 10px 40px -5px #969696;
+}
