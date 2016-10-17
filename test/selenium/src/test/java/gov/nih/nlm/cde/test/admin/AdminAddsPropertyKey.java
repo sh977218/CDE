@@ -19,6 +19,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("okValue"));
         textPresent("Org has been updated");
         closeAlert();
+        hangon(10);
 
         goToCdeByName("Distance from Closest Margin Value");
         driver.navigate().refresh();
