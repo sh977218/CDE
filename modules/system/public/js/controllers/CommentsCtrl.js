@@ -3,7 +3,27 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 {
 
     $scope.comment = {};
-        
+
+    $scope.avatarUrls = {};
+    function addAvatar(username) {
+        if (username && !$scope.avatarUrls[username]) {
+            $http.get('/user/avatar/' + username).then(function (res) {
+                $scope.avatarUrls[username] = res.data.length > 0 ? res.data : "/cde/public/assets/img/portrait.png";
+            });
+        }
+    }
+    $scope.deferredEltLoaded.promise.then(function () {
+        $scope.elt.comments.forEach(function (comment) {
+            addAvatar(comment.userName);
+            if (comment.replies) {
+                comment.replies.forEach(function (r) {addAvatar(r.username);})
+            }
+        });
+    });
+    userResource.getPromise().then(function() {
+        addAvatar(userResource.user.username);
+    });
+
     $scope.canRemoveComment = function(com) {
         return ((userResource.user._id) && 
                 (userResource.user._id === com.user ||

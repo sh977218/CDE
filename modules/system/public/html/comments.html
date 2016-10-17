@@ -21,7 +21,7 @@
                         <tbody>
                         <tr>
                             <td>
-                                <img src="/cde/public/assets/img/portrait.png" width="32" height="32"
+                                <img ng-src="{{avatarUrls[comment.username]}}" width="32" height="32"
                                      alt="portrait"/>
                                 <div ng-class="{'user-online':user.isOnline,'user-offline':!user.isOnline}"></div>
                             </td>
@@ -65,7 +65,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            <img src="/cde/public/assets/img/portrait.png" width="32" height="32"
+                            <img ng-src="{{avatarUrls[reply.username]}}" width="32" height="32"
                                  alt="portrait"/>
                         </td>
                         <td>
