@@ -8,8 +8,9 @@ public abstract class CommentTest extends CommonTest {
     private void addComment(String text) {
         clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
-        textPresent(text);
+        hangon(2);
         clickElement(By.id("postComment"));
+        textPresent(text);
         textPresent("Comment added");
         closeAlert();
     }
