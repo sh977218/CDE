@@ -3,14 +3,6 @@ var validator = require('xsd-schema-validator'),
     builder = require('xmlbuilder')
 ;
 
-
-//var addCardinality = function(parent, formElement) {
-//    var card = parent.ele("mfi13:cardinality");
-//    card.ele("mfi13:minimum", {}, "0");
-//    card.ele("mfi13:maximum", {}, "1");
-//};
-
-
 function addQuestion(parent, question) {
 
     var newQuestion = {
@@ -38,11 +30,10 @@ function addQuestion(parent, question) {
                 newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"@val":id.version};
             }
         });
-
     }
 
     if (question.question.datatype === 'Value List') {
-        newQuestion.ListField = {"List": {"ListItem": []}};
+        newQuestion.ListField = {"List": []};
         if (question.question.multiselect) newQuestion.ListField["@maxSelections"] = "0";
 
         if (question.question.answers) {
@@ -60,7 +51,7 @@ function addQuestion(parent, question) {
                         }
                     };
                 }
-                newQuestion.ListField.List.ListItem.push(q);
+                newQuestion.ListField.List.push({ListItem: q});
             });
         }
     } else {
@@ -78,8 +69,6 @@ function addQuestion(parent, question) {
 }
 
 function doQuestion(parent, question) {
-
-    //addCardinality(newQuestion, question);
 
     var embed = false;
 
@@ -157,8 +146,7 @@ exports.formToSDC = function (form) {
                 "@ID": "S1",
                 "@title": form.naming[0].designation,
                 "@styleClass": "left"
-            },
-            "BOGUS": "FFF"
+            }
         }
     }, {separateArrayItems: true, headless: true});
 
@@ -178,7 +166,7 @@ exports.formToSDC = function (form) {
 
     idToName = {};
 
-    var xmlStr = formDesign.end({pretty: false});
+    var xmlStr = formDesign.end({pretty: true});
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
         if (err) console.log('Validate SDC error: ' + err);
