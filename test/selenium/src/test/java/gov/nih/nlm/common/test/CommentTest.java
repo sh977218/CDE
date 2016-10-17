@@ -26,17 +26,17 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
         // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
 
-        findElement(By.name("replyTextArea")).sendKeys("Reply to First comment");
+        findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
         clickElement(By.cssSelector("#replyForm .btn-primary"));
         textPresent("Comment added");
         closeAlert();
 
-        findElement(By.name("replyTextArea")).sendKeys("Second reply to First comment");
+        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
         clickElement(By.cssSelector("#replyForm .btn-primary"));
         textPresent("Comment added");
         closeAlert();
 
-        findElement(By.name("replyTextArea")).sendKeys("Reply to another comment");
+        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
         clickElement(By.cssSelector("#replyForm .btn-primary"));
         textPresent("Comment added");
         closeAlert();

@@ -1262,3 +1262,18 @@ div + .questionPlaceholder {
     height: 6px;
     background-color: #333333;
 }
+
+.showRepliesButton {
+    text-decoration: underline;
+    word-wrap: break-word;
+    color: #15c;
+}
+
+.showRepliesButtonDiv {
+    border: none;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 3px 8px 5px 8px;
+    zoom: 1;
+    background: #f5f5f5;
+    position: static;
+}
