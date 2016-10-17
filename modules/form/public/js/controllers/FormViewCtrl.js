@@ -19,6 +19,10 @@ angular.module('formModule').controller
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
+    $scope.switchCommentMode = function(){
+        $scope.commentMode = !$scope.commentMode;
+    };
+
     $scope.lfOptions = {
         showCodingInstruction: true
     };

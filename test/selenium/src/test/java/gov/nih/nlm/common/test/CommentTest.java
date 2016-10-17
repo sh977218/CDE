@@ -7,9 +7,9 @@ public abstract class CommentTest extends CommonTest {
 
     private void addComment(String text) {
         showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
-        hangon(2);
+        textPresent(text);
         clickElement(By.id("postComment"));
         textPresent("Comment added");
         closeAlert();
