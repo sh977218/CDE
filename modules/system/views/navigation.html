@@ -70,7 +70,7 @@
                     <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in"
                        ng-bind="'Log In'"></a>
                 </li>
-                <li uib-dropdown class="login" ng-show="user._id">
+                <li uib-dropdown class="login" ng-if="user._id">
                     <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="username_link"
                        title="{{user.username}}" aria-label="{{user.username}}">
                         <span ng-bind="user.username | truncateLongUserName"></span><span class="caret"></span></a>

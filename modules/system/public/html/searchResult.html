@@ -231,6 +231,9 @@
             <uib-pagination ng-show="totalItems > 0" max-size="10" total-items="totalItems"
                             items-per-page="resultPerPage"
                             ng-model="searchSettings.page" next-text="Next" ng-change="pageChange()"></uib-pagination>
+
+            <!-- link for google indexer only -->
+            <a ng-show="false" ng-href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
         </div>
     </div>
 </div>

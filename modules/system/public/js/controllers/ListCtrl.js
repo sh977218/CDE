@@ -58,12 +58,12 @@ angular.module('systemModule').controller('ListCtrl',
 
     var mainAreaModes = {
         "searchResult": {
-            "url": "/system/public/html/searchResult.html"
-            , "showSearchResult": true
-        }
-        , "welcomeSearch": {
-            "url": "/system/public/html/welcomeSearch.html"
-            , "ngClass": "container"
+            "url": "/system/public/html/searchResult.html",
+            "showSearchResult": true
+        },
+        "welcomeSearch": {
+            "url": "/system/public/html/welcomeSearch.html",
+            "ngClass": "container"
         }
     };
     if (!$scope.searchSettings.q) {
@@ -222,6 +222,7 @@ angular.module('systemModule').controller('ListCtrl',
     };
 
     $scope.reload = function(type) {
+        $scope.currentSearchTerm = $scope.searchSettings.q;
         userResource.getPromise().then(function () {
             reload(type);
         });
@@ -237,7 +238,8 @@ angular.module('systemModule').controller('ListCtrl',
 
         $log.debug("running query");
         $log.debug(settings);
-        Elastic.generalSearchQuery(settings, type, function (err, result) {
+        Elastic.generalSearchQuery(settings, type, function (err, result, corrected) {
+            if (corrected && $scope.searchSettings.q) $scope.currentSearchTerm = $scope.searchSettings.q.replace(/[^\w\s]/gi, '');
             //
             $window.scrollTo(0, 0);
             $log.debug("query complete");
@@ -332,7 +334,12 @@ angular.module('systemModule').controller('ListCtrl',
 
     };
 
-    $scope.generateSearchForTerm = function (type) {
+    $scope.fakeNextPageLink = function() {
+        var p = ($scope.totalItems / $scope.resultPerPage > 1)?Number($scope.searchSettings.page?$scope.searchSettings.page:1) + 1:1;
+        return $scope.generateSearchForTerm($scope.module, p);
+    };
+
+    $scope.generateSearchForTerm = function (type, pageNumber) {
         if (!type) type = $scope.module;
 
         var searchLink = "/" + type + "/search?";
@@ -350,7 +357,9 @@ angular.module('systemModule').controller('ListCtrl',
                 searchLink += "&classificationAlt=" + encodeURIComponent($scope.searchSettings.classificationAlt.join(';'));
             }
         }
-        if ($scope.searchSettings.page)
+        if (pageNumber) {
+            searchLink += "&page=" + pageNumber;
+        } else if ($scope.searchSettings.page)
             searchLink += "&page=" + $scope.searchSettings.page;
         if ($scope.searchSettings.meshTree) {
             searchLink += "&topic=" + encodeURIComponent($scope.searchSettings.meshTree);
@@ -481,4 +490,21 @@ angular.module('systemModule').controller('ListCtrl',
         return regStatusShared.orderedList.indexOf(rg.key);
     };
 
+    $scope.dragSortableOptions = {
+        connectWith: ".dragQuestions",
+        handle: ".fa.fa-arrows",
+        appendTo: "body",
+        revert: true,
+        placeholder: "questionPlaceholder",
+        start: function (event, ui) {
+            $('.dragQuestions').css('border', '2px dashed grey');
+            ui.placeholder.height("20px");
+        },
+        stop: function () {
+            $('.dragQuestions').css('border', '');
+        },
+        helper: function () {
+            return $('<div class="placeholderForDrop"><i class="fa fa-arrows"></i> Drop Me</div>');
+        }
+    };
 }]);

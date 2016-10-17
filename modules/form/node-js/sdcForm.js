@@ -84,18 +84,18 @@ function doQuestion(parent, question) {
     var embed = false;
 
     try {
-        if (question.skipLogic.condition.length > 0) {
+        if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
                 var terms = question.skipLogic.condition.match(/"[^"]+"/g).map(function (t) {
                     return t.substr(1, t.length - 2);
                 });
                 if (terms.length === 2) {
-                    var qToAddTo = questionsInSection[terms[0]].Question;
+                    var qToAddTo = questionsInSection[terms[0]];
                     qToAddTo.ListField.List.ListItem.forEach(function (li) {
                         if (li["$title"] === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                if (li.ChildItems === undefined) li.ChildItems = [];
+                                if (li.ChildItems === undefined) li.ChildItems = {Question: []};
                                 addQuestion(li.ChildItems.Question, question);
                             } else {
                                 if (question.label === "" || question.hideLabel) {
@@ -103,7 +103,7 @@ function doQuestion(parent, question) {
                                         //Response: {string: ""}
                                     };
                                 } else {
-                                    if (li.ChildItems === undefined) li.ChildItems = [];
+                                    if (li.ChildItems === undefined) li.ChildItems = {Question: []};
                                     addQuestion(li.ChildItems.Question, question);
                                 }
                             }
@@ -113,7 +113,6 @@ function doQuestion(parent, question) {
             }
         }
     } catch (e) {
-
     }
 
     if (!embed) {

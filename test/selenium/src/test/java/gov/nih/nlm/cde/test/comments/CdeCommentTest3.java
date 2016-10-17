@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 public class CdeCommentTest3 extends CdeCommentTest {
         
-    @Test(priority = 3)
+    @Test
     public void cdeComments() {
         comments("Hospital Confidential Institution Referred From");
     }

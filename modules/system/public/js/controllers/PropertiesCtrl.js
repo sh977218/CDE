@@ -21,7 +21,7 @@ angular.module('systemModule').controller('PropertiesCtrl',
                 return;
             }
 
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
                 controller: 'NewPropertyModalCtrl',
@@ -87,11 +87,15 @@ angular.module('systemModule').controller('NewPropertyModalCtrl',
     ['$scope', '$uibModalInstance', 'module', 'elt', 'OrgHelpers',
     function ($scope, $modalInstance, module, elt, OrgHelpers) {
 
+        $scope.elt = elt;
+
         OrgHelpers.deferred.promise.then(function () {
             $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+            console.log("$scope.orgPropertyKeys");
+            console.log($scope.orgPropertyKeys);
         });
 
-        $scope.elt = elt;
+
         $scope.newProperty = {};
 
         $scope.okCreate = function () {

@@ -41,11 +41,11 @@
                     <fieldset class="welcomeSearchFieldset hand-cursor" ng-click="browseOrg(org.name)">
                         <legend>
                             <span ng-if="!embedded">
-                            <a ng-href="search?selectedOrg={{org.name}}" ng-bind="org.name" id="browseOrg-{{org.name}}"
-                               ></a></span>
+                                <a ng-href="search?selectedOrg={{org.name}}" ng-bind="org.name" id="browseOrg-{{org.name}}">
+                                </a></span>
                             <span ng-if="embedded">
-                                <a href ng-bind="org.name" id="browseOrg-{{org.name}}"
-                                   ng-click="browseOrg(org.name)"></a></span>
+                                <a href ng-bind="org.name" id="browseOrg-{{org.name}}"></a>
+                            </span>
                         </legend>
                         <div ng-if="org.longName" ng-bind="org.longName"></div>
                         <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span> elements</div>

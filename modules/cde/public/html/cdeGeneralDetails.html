@@ -1,10 +1,10 @@
-<!!-- TODO odd controller -->
+<!-- TODO odd controller -->
 <div ng-controller="PermissibleValuesCtrl" class="row">
     <div class="col-md-6">
         <h4 tabindex="0">General Details</h4>
         <dl class="dl-horizontal">
             <dt tabindex="0">Name:</dt>
-            <dd tabindex="0" id="dd_general_name">
+            <dd tabindex="0" id="dd_general_name" itemprop="name">
                 <div inline-edit id="nameEdit" model="elt.naming[0].designation" is-allowed="canCurate"
                      on-ok="stageElt(elt)"></div>
             </dd>
@@ -25,7 +25,7 @@
                 </span>
             </dd>
             <dt tabindex="0">Definition:</dt>
-            <dd tabindex="0" id="dd_def">
+            <dd tabindex="0" id="dd_def" itemprop="description">
                 <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition"
                      is-allowed="canCurate" def-format="elt.naming[0].definitionFormat" on-ok="stageElt(elt)"></div>
             </dd>
@@ -59,6 +59,9 @@
                     <i class="fa fa-share-square-o"></i> SDC View</a>
             </dd>
         </dl>
+
+        <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
+        <div ng-include="'/system/public/html/sources.html'"></div>
     </div>
 
     <div class="col-md-6">

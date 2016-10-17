@@ -35,7 +35,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.tabs = {
         general: {
             heading: "General Details",
-            includes: ['/cde/public/html/cdeGeneralDetails.html', '/cde/public/html/cdeSpecificDetails.html'],
+            includes: ['/cde/public/html/cdeGeneralDetails.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
@@ -150,16 +150,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             show: false,
             hideable: true
         },
-        derivationRules: {
-            heading: "Score / Derivations",
-            includes: ['/cde/public/html/derivationRules.html'],
-            select: function () {
-                setCurrentTab();
-                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
-            },
-            show: false,
-            hideable: true
-        },
         mlt: {
             heading: "More Like This",
             includes: ['/cde/public/html/deMlt.html'],
@@ -204,6 +194,24 @@ angular.module('cdeModule').controller('DEViewCtrl',
             includes: ['/cde/public/html/cdeDataset.html'],
             select: function () {
                 setCurrentTab();
+            },
+            show: false,
+            hideable: true
+        },
+        derivationRules: {
+            heading: "Score / Derivations",
+            includes: ['/cde/public/html/derivationRules.html'],
+            select: function () {
+                setCurrentTab();
+                $scope.derRulesCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadDerivationRules');});
+            },
+            show: false,
+            hideable: true
+        },
+        validRules: {
+            heading: "Validation Rules", includes: ['/system/public/html/validRules.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
             },
             show: false,
             hideable: true

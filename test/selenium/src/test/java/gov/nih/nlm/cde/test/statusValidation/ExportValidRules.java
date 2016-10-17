@@ -17,6 +17,8 @@ public class ExportValidRules extends BaseClassificationTest {
         findElement(By.id("selectStatus")).click();
         findElement(By.id("recorded")).click();
         findElement(By.id("exportVR")).click();
+        
+        // if it fails here, it looks like the ES query is done without user.
         textPresent("Distance from Closest Margin");
         textPresent("Neoadjuvant Therapy Specify");
     }

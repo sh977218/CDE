@@ -19,6 +19,8 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
+        driver.navigate().refresh();
+
         clickElement(By.linkText("Naming"));
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");

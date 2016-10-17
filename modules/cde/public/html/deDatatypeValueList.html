@@ -46,19 +46,21 @@
             </tr>
             </thead>
             <tbody>
-            <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit">
+            <tr id="pvtr-{{$index}}" ng-repeat="pv in elt.valueDomain.permissibleValues | limitTo:pvLimit"
+                itemscope itemtype="http://schema.org/MedicalCode">
                 <td tabindex="0" headers="value" id="pv-{{$index}}" class="codeNameCell">
                     <div inline-edit model="pv.permissibleValue" is-allowed="canCurate"
                          on-ok="stageElt(elt);checkPvUnicity();"></div>
                 </td>
-                <td tabindex="0" headers="codeName" class="codeNameCell" id="pvName-{{$index}}">
+                <td tabindex="0" headers="codeName" class="codeNameCell" id="pvName-{{$index}}" itemprop="name">
                     {{pv.valueMeaningName}}
                 </td>
-                <td tabindex="0" headers="code" id="pvCode-{{$index}}"
+                <td tabindex="0" headers="code" id="pvCode-{{$index}}" itemprop="codeValue"
                     class="codeCell">
                     {{pv.valueMeaningCode}}
                 </td>
-                <td tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}" class="codeSystemCell">
+                <td tabindex="0" headers="codeSystem" id="pvCodeSystem-{{$index}}" class="codeSystemCell"
+                    itemprop="codingSystem">
                     {{pv.codeSystemName}}
                 </td>
                 <td tabindex="0" headers="UMLSCode" id="nameAsUMLS-{{$index}}" ng-if="srcOptions.UMLS.selected"
@@ -93,7 +95,7 @@
                     class="codeCell">
                     {{pv.SNOMEDCT_US.valueMeaningCode}}
                 </td>
-                <td tabindex="0" headers="code" id="pvCodeDesc-{{$index}}" style="width: 20%">
+                <td tabindex="0" headers="code" id="pvCodeDesc-{{$index}}" style="width: 20%" itemprop="description">
                     <div inline-area-edit model="pv.valueMeaningDefinition" is-allowed="canCurate"
                          on-ok="stageElt(elt); runDelayedManualValidation();"></div>
                 </td>

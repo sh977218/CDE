@@ -9,6 +9,7 @@
 	<meta name="keywords"
 	      content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine"/>
 	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk" />
 
 	<!--[if lt IE 9]>
 	<script type="text/javascript">
@@ -61,7 +62,11 @@
 	<%- include navigation.html %>
 
 	<!-- Main content area -->
-	<div ng-view></div>
+	<div ng-view>
+		<br><br><br><br><br><br>
+		<h2 class="text-center">Loading...</h2>
+		<br><br><br><br><br><br>
+	</div>
 
 	<!-- Alerts area -->
 	<%- include alert.html %>
@@ -138,6 +143,7 @@
 <script src="/components/lforms/app/scripts/lib/js-class.js"></script>
 <script src="/components/lforms/app/scripts/lib/cross_browser.js"></script>
 <script src="/components/lforms/app/scripts/lib/lforms-util.js"></script>
+<script src="/components/lforms/app/scripts/lib/polyfill.js"></script>
 <script src="/components/lforms/app/scripts/lib/lforms-hl7.js"></script>
 <script src="/components/lforms/app/scripts/lib/lforms-validate.js"></script>
 <script src="/components/lforms/app/scripts/lib/lforms-data.js"></script>
@@ -282,6 +288,7 @@
 <script src="/form/public/js/controllers/FormCdeCtrl.js"></script>
 <script src="/form/public/js/controllers/FormListCtrl.js"></script>
 <script src="/form/public/js/controllers/FormDEListCtrl.js"></script>
+<script src="/form/public/js/controllers/FormFormListCtrl.js"></script>
 <script src="/form/public/js/controllers/CreateFormCtrl.js"></script>
 <script src="/form/public/js/controllers/FormViewCtrl.js"></script>
 <script src="/form/public/js/controllers/FormRenderCtrl.js"></script>
@@ -317,10 +324,6 @@
           "url": "https://cde.nlm.nih.gov",
           "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/NIH-CDE.png"
           }
-
-
-
-
 </script>
 
 <script type="application/ld+json">
@@ -331,10 +334,6 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
-
-
-
-
 </script>
 
 </body>

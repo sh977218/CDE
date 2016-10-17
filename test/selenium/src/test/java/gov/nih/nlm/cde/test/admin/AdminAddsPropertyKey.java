@@ -21,6 +21,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
+        driver.navigate().refresh();
         showAllTabs();
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
