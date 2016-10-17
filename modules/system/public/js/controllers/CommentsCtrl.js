@@ -1,7 +1,7 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource',
     function ($scope, $http, userResource) {
 
-        $scope.comment = {};
+        $scope.newComment = {};
 
         $scope.avatarUrls = {};
         function addAvatar(username) {
@@ -41,12 +41,12 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.addComment = function () {
             $http.post("/comments/" + $scope.module + "/add", {
-                comment: $scope.comment.content
+                comment: $scope.newComment.content
                 , element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 $scope.elt = res.data.elt;
-                $scope.comment.content = "";
+                $scope.newComment.content = "";
             });
         };
 

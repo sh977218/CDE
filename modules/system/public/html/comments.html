@@ -5,8 +5,8 @@
         <form role="form" name="commentForm" id="commentForm" novalidate>
             <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>
             <textarea tabindex="0" name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
-                      ng-model="comment.content" placeholder="Join the discussion..."></textarea>
-            <input msd-elastic tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
+                      ng-model="newComment.content" placeholder="Join the discussion..."></textarea>
+            <input tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
                    value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
         </form>
     </div>
@@ -101,8 +101,7 @@
             </div>
         </div>
         <div data-type="reply" class="replyInputDiv" ng-if="user._id">
-            <textarea rows="1" ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea msd-elastic"
-                      rows="1"
+            <textarea rows="1" msd-elastic ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea"
                       placeholder="Reply to this comment" ng-focus="comment.openReply = true">
                       </textarea>
             <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
