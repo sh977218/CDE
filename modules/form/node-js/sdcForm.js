@@ -1,6 +1,6 @@
-var JXON = require('jxon'),
-    validator = require('xsd-schema-validator'),
-    xml2js = require('xml2js');
+var validator = require('xsd-schema-validator'),
+    xml2js = require('xml2js'),
+    builder = require('xmlbuilder')
 ;
 
 
@@ -14,28 +14,28 @@ var JXON = require('jxon'),
 function addQuestion(parent, question) {
 
     var newQuestion = {
-        "$ID": question.question.cde.tinyId
+        "@ID": question.question.cde.tinyId
     };
 
     if (question.label !== undefined && !question.hideLabel) {
-        newQuestion["$title"] = question.label;
+        newQuestion["@title"] = question.label;
     }
 
     if (question.instructions) {
-        newQuestion.OtherText = {"$val": question.instructions.value};
+        newQuestion.OtherText = {"@val": question.instructions.value};
     }
 
     if (question.question.cde.ids.length>0) {
         newQuestion.CodedValue = [];
         question.question.cde.ids.forEach(function(id){
             newQuestion["CodedValue"].push({
-                "Code":{"$val": id.id}
+                "Code":{"@val": id.id}
                 , "CodeSystem": {
-                    "CodeSystemName": {"$val": id.source}
+                    "CodeSystemName": {"@val": id.source}
                 }
             });
             if (id.version) {
-                newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"$val":id.version};
+                newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"@val":id.version};
             }
         });
 
@@ -43,20 +43,20 @@ function addQuestion(parent, question) {
 
     if (question.question.datatype === 'Value List') {
         newQuestion.ListField = {"List": {"ListItem": []}};
-        if (question.question.multiselect) newQuestion.ListField["$maxSelections"] = "0";
+        if (question.question.multiselect) newQuestion.ListField["@maxSelections"] = "0";
 
         if (question.question.answers) {
             question.question.answers.forEach(function (answer) {
                 var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 var q = {
-                    "$ID": "NA_" + Math.random(),
-                    "$title": title
+                    "@ID": "NA_" + Math.random(),
+                    "@title": title
                 };
                 if (answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code":{"$val":answer.valueMeaningCode}
+                        "Code":{"@val":answer.valueMeaningCode}
                         , "CodeSystem": {
-                            "CodeSystemName": {"$val": answer.codeSystemName}
+                            "CodeSystemName": {"@val": answer.codeSystemName}
                         }
                     };
                 }
@@ -66,7 +66,7 @@ function addQuestion(parent, question) {
     } else {
         newQuestion.ResponseField = {
             "Response": {
-                "string": {"$name": "NA_" + Math.random(), "$maxLength": "4000"}
+                "string": {"@name": "NA_" + Math.random(), "@maxLength": "4000"}
             }
         };
     }
@@ -74,7 +74,7 @@ function addQuestion(parent, question) {
     idToName[question.question.cde.tinyId] = question.label;
 
     questionsInSection[question.label] = newQuestion;
-    parent.push(newQuestion);
+    parent.ele({Question: newQuestion});
 }
 
 function doQuestion(parent, question) {
@@ -92,7 +92,7 @@ function doQuestion(parent, question) {
                 if (terms.length === 2) {
                     var qToAddTo = questionsInSection[terms[0]];
                     qToAddTo.ListField.List.ListItem.forEach(function (li) {
-                        if (li["$title"] === terms[1]) {
+                        if (li["@title"] === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
                                 if (li.ChildItems === undefined) li.ChildItems = {Question: []};
@@ -124,114 +124,68 @@ var questionsInSection = {};
 
 var doSection = function (parent, section) {
     var newSection = {
-        "$ID": "NA_" + Math.random(),
-        "$title": section.label,
-        "ChildItems": {
-            "_": []
-        }
+        "@ID": "NA_" + Math.random(),
+        "@title": section.label
     };
+    var subSection = parent.ele({Section: newSection});
 
-    section.formElements.forEach(function (formElement) {
-        if (formElement.elementType === 'question') {
-            doQuestion(newSection.ChildItems._, formElement);
-        } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(newSection.ChildItems._, formElement);
-        }
-    });
+    if (section.formElements && section.formElements.length > 0) {
+        var childItems = subSection.ele({ChildItems: {}});
 
-    questionsInSection = {};
-    parent.push(newSection);
-
-    //addCardinality(newSection, section);
+        section.formElements.forEach(function (formElement) {
+            if (formElement.elementType === 'question') {
+                doQuestion(childItems, formElement);
+            } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
+                doSection(childItems, formElement);
+            }
+        });
+    }
 
 };
 
 var idToName = {};
 
 exports.formToSDC = function (form) {
-    var root = {
+
+    var formDesign = builder.create({
         "FormDesign": {
-            "$xmlns": "http://healthIT.gov/sdc",
-            "$xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "$xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
-            "$ID": form.tinyId + "v" + form.version,
+            "@xmlns": "http://healthIT.gov/sdc",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
+            "@ID": form.tinyId + "v" + form.version,
             "Header": {
-                "$ID": "S1",
-                "$title": form.naming[0].designation,
-                "$styleClass": "left"
+                "@ID": "S1",
+                "@title": form.naming[0].designation,
+                "@styleClass": "left"
             },
-            "Body": {
-                "$ID": "NA_" + Math.random(),
-                "ChildItems": {
-                    "_": []
-                }
-            }
+            "BOGUS": "FFF"
         }
-    };
+    }, {separateArrayItems: true, headless: true});
+
+    var body = formDesign.ele({
+        "Body": {
+            "@ID": "NA_" + Math.random()
+        }
+    });
+
+    var childItems = body.ele({ChildItems: {}});
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-            doSection(root['FormDesign'].Body.ChildItems._, formElement);
+            doSection(childItems, formElement);
         }
     });
 
     idToName = {};
 
-    var xmlStr = JXON.jsToString(root, "http://healthIT.gov/sdc" );
+    var xmlStr = formDesign.end({pretty: false});
 
-    //validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-    //    if (err) console.log('Validate SDC error: ' + err);
-    //    if (result && !result.valid) {
-    //        console.log(JSON.stringify(result));
-    //    }
-    //});
-
-    var sampleXml = "<Body>" +
-        "<ChildItems>" +
-        "<Question>1</Question>" +
-        "<Section>2</Section>" +
-        "<Question>3</Question>" +
-        "</ChildItems>" +
-        "</Body>";
-    //var jsonStr = JXON.stringToJs()
-    //console.log(JSON.stringify(jsonStr));
-
-    var opts = {explicitChildren: true, preserveChildrenOrder: true};
-
-
-    //var jsonResult;
-    //new xml2js.Parser(opts).parseString(sampleXml, function(err, result) {
-    //    console.log(JSON.stringify(result));
-    //    jsonResult = result;
-    //    var builder = new xml2js.Builder(opts)
-    //    var xmlResult = builder.buildObject(jsonResult);
-    //    console.log(xmlResult);
-    //});
-
-
-    var testJson = {
-        body: {
-            ChildItems: {
-
-            }
-            //'$$childItems':
-            //    [
-            //        {"#name": "Question", _: "1"},
-            //        {"#name": "Section", _: "2"},
-            //        {"#name": "Question", _: "3"}
-            //    ]
-            //
+    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
+        if (err) console.log('Validate SDC error: ' + err);
+        if (result && !result.valid) {
+            console.log(JSON.stringify(result));
         }
-    };
-    var testXml = new xml2js.Builder(opts).buildObject(testJson);
-    //console.log(testXml);
-
-    testJson.body.ChildItems[0] = {Question: "a"};
-    testJson.body.ChildItems[1] = {Section: "b"};
-    testJson.body.ChildItems[2] = {Question: "c"};
-
-    console.log(JXON.jsToString(testJson));
-
+    });
 
     return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
 
