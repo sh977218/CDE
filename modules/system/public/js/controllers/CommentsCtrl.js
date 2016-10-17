@@ -71,13 +71,17 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         };
 
 
-        $scope.replyTo = function (commentId, reply) {
+        $scope.replyTo = function (commentId, reply, showReplies) {
             $http.post("/comments/" + $scope.module + "/reply", {
                 commentId: commentId,
-                reply: reply
-                , element: {tinyId: $scope.elt.tinyId}
+                reply: reply,
+                element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
+                res.data.elt.comments.forEach(function (c) {
+                    if (c._id === commentId)
+                        c.showReplies = showReplies;
+                });
                 $scope.elt = res.data.elt;
             });
 

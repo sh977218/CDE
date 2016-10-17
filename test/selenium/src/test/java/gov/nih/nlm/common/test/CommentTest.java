@@ -27,35 +27,35 @@ public abstract class CommentTest extends CommonTest {
         // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
 
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
+        clickElement(By.id("replyBtn_0"));
         textPresent("Comment added");
         closeAlert();
 
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
+        clickElement(By.id("replyBtn_0"));
         textPresent("Comment added");
         closeAlert();
 
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
+        clickElement(By.id("replyBtn_1"));
         textPresent("Comment added");
         closeAlert();
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        clickElement(By.id("resolveComment-0"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to First comment", By.cssSelector(".strike"));
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='reopen']"));
+        clickElement(By.id("resolveReply-0"));
         textPresent("Saved");
         closeAlert();
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[2]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        clickElement(By.id("resolveComment-1"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[2]//a[@data-type='remove']"));
+        clickElement(By.id("removeComment-1"));
         textPresent("Comment removed");
         closeAlert();
 
