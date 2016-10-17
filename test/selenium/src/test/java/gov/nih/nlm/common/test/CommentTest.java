@@ -6,7 +6,6 @@ import org.testng.Assert;
 public abstract class CommentTest extends CommonTest {
 
     private void addComment(String text) {
-        showAllTabs();
         clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
         textPresent(text);
@@ -100,8 +99,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(nlm_username, nlm_password);
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -124,8 +122,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent(censoredText);
         logout();
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(commentText);
         textPresent(censoredText);
 
