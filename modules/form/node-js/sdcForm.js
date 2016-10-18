@@ -169,7 +169,7 @@ exports.formToSDC = function (form) {
 
     idToName = {};
 
-    var xmlStr = formDesign.end({pretty: true});
+    var xmlStr = formDesign.end({pretty: false});
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
         if (err) console.log('Validate SDC error: ' + err);
