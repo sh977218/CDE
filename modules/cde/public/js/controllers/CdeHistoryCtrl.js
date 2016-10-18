@@ -22,6 +22,11 @@ angular.module('cdeModule').controller('CdeHistoryCtrl', ['$scope', 'Classificat
         $scope.isSelected = function (id) {
             return $scope.selectedIds.indexOf(id) > -1;
         };
+
+        $scope.clickView = function(e, url, url1){
+            e.stopPropagation();
+            window.open(url+url1);
+        };
         
         var datatypeCompareMap = {
             'Value List': {
