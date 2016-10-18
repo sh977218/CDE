@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('AccountManagementCtrl',
-    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert', '$uibModal',
-        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert, $modal)
+    ['$scope', '$http', '$timeout', '$location', 'AccountManagement', 'userResource', 'Alert', '$uibModal', 'OrgHelpers',
+        function($scope, $http, $timeout, $location, AccountManagement, userResource, Alert, $modal, OrgHelpers)
 {
     $scope.admin = {};
     $scope.newOrg = {};
@@ -258,7 +258,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             AccountManagement.updateOrg(org,
                 function(res) {
                     $scope.orgs = $scope.getOrgs(function () {
-                        Alert.addAlert("success", res);
+                        OrgHelpers.getOrgsDetailedInfoAPI(function () {
+                            Alert.addAlert("success", res);
+                        });
                     });
                 },
                 function(res) {
