@@ -446,7 +446,15 @@ public class NlmCdeBaseTest {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            Integer value = ((Long) ((JavascriptExecutor) driver).executeScript("return window.scrollY;")).intValue();
+            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
+            Integer value;
+            if (yCoordinate instanceof Double) {
+                value = ((Double) yCoordinate).intValue();
+            } else {
+                Long yCoordinateLong = (Long) yCoordinate;
+                value = yCoordinateLong.intValue();
+            }
             scrollTo(value + 100);
             try {
                 findElement(by).click();

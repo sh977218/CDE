@@ -107,8 +107,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -189,7 +188,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         goToEltByName(eltName, status);
         showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textPresent(commentText);
 
