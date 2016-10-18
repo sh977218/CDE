@@ -1,10 +1,12 @@
-package gov.nih.nlm.form.test;
+package gov.nih.nlm.form.test.classification;
 
 import gov.nih.nlm.cde.test.classification.ClassificationTest;
+import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormClassificationTest extends BaseFormTest {            
+public class FormClassificationTest extends BaseFormTest {
+
     @Test
     public void formClassificationLink() {
         goToFormByName("Skin Cancer Patient");

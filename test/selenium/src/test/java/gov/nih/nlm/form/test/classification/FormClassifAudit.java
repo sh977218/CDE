@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test.classification;
+package gov.nih.nlm.form.test.classification;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
@@ -11,7 +11,7 @@ public class FormClassifAudit extends BaseClassificationTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Functional Imaging");
         clickElement(By.id("classification_tab"));
-        addClassificationMethod(new String[] {"TEST", " Eligibility Criteria"});
+        addClassificationMethod(new String[] {"TEST", "Eligibility Criteria"});
         openClassificationAudit("TEST > Eligibility Criteria");
         clickElement(By.linkText("Functional Imaging"));
         switchTab(1);
