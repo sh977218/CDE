@@ -212,8 +212,14 @@ exports.addComment = function (req, res, dao) {
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var details = {
-                        element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
-                        , comment: {index: elt.comments.length, text: req.body.comment}
+                        element: {
+                            tinyId: req.body.element.tinyId,
+                            name: elt.naming[0].designation, eltType: dao.type
+                        },
+                        comment: {
+                            index: elt.comments.length,
+                            text: req.body.comment
+                        }
                     };
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
@@ -227,7 +233,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send(err);
                     } else {
                         exports.hideUnapprovedComments(elt);
-                        res.send({message: "Comment added", elt: elt});
+                        res.send({message: "Comment added. Need approval.", elt: elt});
                     }
                 });
             }

@@ -12,6 +12,16 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textPresent(text);
         textPresent("Comment added");
+    }
+
+    private void addCommentNeedApproval(String text) {
+        clickElement(By.id("discussBtn"));
+        findElement(By.name("commentTextArea")).sendKeys(text);
+        hangon(2);
+        clickElement(By.id("postComment"));
+        textNotPresent(text);
+        textPresent("This comment is pending approval.");
+        textPresent("Comment added. Need approval.");
         closeAlert();
     }
 
@@ -25,18 +35,28 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Comment added");
         closeAlert();
 
-
         findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 5; i++) {
             findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + i);
             clickElement(By.id("replyBtn_2"));
             textPresent("Reply added");
             closeAlert();
+            textPresent("Reply to very long comment " + i);
         }
+        for (int j = 6; j <= 10; j++) {
+            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + j);
+            clickElement(By.id("replyBtn_2"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Show all " + j + " replies");
+        }
+        clickElement(By.id("showAllRepliesButton-2-3"));
+        for (int k = 3; k <= 10; k++)
+            textPresent("Reply to very long comment " + k);
 
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
         clickElement(By.id("replyBtn_0"));
@@ -127,7 +147,7 @@ public abstract class CommentTest extends CommonTest {
         String censoredText = "pending approval";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        addComment(commentText);
+        addCommentNeedApproval(commentText);
         textNotPresent(commentText);
         textPresent(censoredText);
         logout();

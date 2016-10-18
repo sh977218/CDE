@@ -59,7 +59,7 @@
             </div>
         </div>
         <div ng-repeat="(replyIndex, reply) in comment.replies" data-type="replyComment">
-            <div ng-if="comment.showReplies || comment.replies.length < 5">
+            <div ng-if="comment.showReplies || comment.replies.length <= 5">
                 <div class="reply">
                     <div class="commentHeader">
                         <table style="width: 100%;">
@@ -107,8 +107,8 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="!(comment.showReplies || comment.replies.length < 5)">
-                <div ng-if="commentIndex < 2">
+            <div ng-if="!(comment.showReplies || comment.replies.length <= 5)">
+                <div ng-if="replyIndex < 2">
                     <div class="reply">
                         <div class="commentHeader">
                             <table style="width: 100%;">
@@ -157,12 +157,13 @@
                     </div>
                 </div>
                 <div class="showRepliesButtonDiv"
-                     ng-if="!comment.showReplies && commentIndex === 3 && commentIndex >= 2 && commentIndex < comment.replies.length - 2">
-                    <div class="showRepliesButton" ng-click="comment.showReplies = true">
+                     ng-if="!comment.showReplies && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
+                    <div class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
+                         ng-click="comment.showReplies = true">
                         Show all {{comment.replies.length}} replies
                     </div>
                 </div>
-                <div ng-if="commentIndex >= comment.replies.length - 2">
+                <div ng-if="replyIndex >= comment.replies.length - 2">
                     <div class="reply">
                         <div class="commentHeader">
                             <table style="width: 100%;">

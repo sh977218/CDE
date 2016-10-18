@@ -41,8 +41,8 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.addComment = function () {
             $http.post("/comments/" + $scope.module + "/add", {
-                comment: $scope.newComment.content
-                , element: {tinyId: $scope.elt.tinyId}
+                comment: $scope.newComment.content,
+                element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 $scope.elt = res.data.elt;
