@@ -89,12 +89,14 @@ This will install all the various packages needed for the app to function.
 Before you start the app, run
  
  ```sh
-$/cde/> sh start-test-instance.sh 
+$/cde/> sh restore-test-instance.sh 
  ```
  
- This will populate the mongo database with a test dataset. From there, the app (once it starts running) will ingest the data in the mongo database into the elastic database (this should take a few minutes. Go get a cup of coffee)
+ This will populate the mongo database with a test dataset. From there, the app (once it starts running) will ingest the data in the mongo database
 
-Next, you need to set up the various angular files used in the project. 
+Next, you need to set up the various front end files used in the project. 
+
+(Note: if you are having trouble with gulp not installing all the bower components, delete your bower_components file, and try again)
 
 ```sh
 $/cde/> gulp bower wiredep

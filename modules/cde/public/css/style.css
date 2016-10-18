@@ -1159,3 +1159,7 @@ div + .questionPlaceholder {
 .strike {
     text-decoration: line-through;
 }
+
+.historyView:hover {
+    background-color: #c1d7ea !important;
+}

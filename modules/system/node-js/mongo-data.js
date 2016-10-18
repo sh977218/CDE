@@ -249,32 +249,6 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         });
     };
 
-    var addNewFile = function(stream, attachment, elt, user, cb) {
-        var streamDescription = {
-            filename: attachment.filename
-            , mode: 'w'
-            , content_type: attachment.filetype
-            , metadata: {
-                status: null
-            }
-        };
-
-        if (file.scanned) streamDescription.metadata.status = "scanned";
-        else streamDescription.metadata.status = "uploaded";
-        if (file.ingested) streamDescription.metadata.status = "approved";
-
-        var writestream = gfs.createWriteStream(streamDescription);
-
-        writestream.on('close', function (newfile) {
-            attachment.fileid = newfile._id;
-            if (!file.ingested) attachment.pendingApproval = true;
-            attachment.scanned = file.scanned;
-            linkAttachmentToAdminItem(attachment, elt, true, cb);
-        });
-
-        stream.pipe(writestream);
-    };
-
     var attachment = {
         fileid: null
         , filename: file.originalname
@@ -282,18 +256,39 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
         , uploadDate: Date.now()
         , comment: comment
         , filesize: file.size
-    };
-
-    if (user) {
-        attachment.uploadedBy = {
+        , uploadedBy: {
             userId: user._id
             , username: user.username
-        };
-    }
+        }
+    };
 
     gfs.findOne({md5: file.md5}, function (err, f) {
-        if (!f) addNewFile(file.stream, attachment, elt, user, cb);
-        else {
+        if (!f) {
+            var streamDescription = {
+                filename: attachment.filename
+                , mode: 'w'
+                , content_type: attachment.filetype
+                , metadata: {
+                    status: null
+                }
+            };
+
+            if (file.scanned) streamDescription.metadata.status = "scanned";
+            else streamDescription.metadata.status = "uploaded";
+
+            var writestream = gfs.createWriteStream(streamDescription);
+
+            writestream.on('close', function (newfile) {
+                attachment.fileid = newfile._id;
+                if (!authorizationShared.hasRole(user, "AttachmentReviewer")) {
+                    attachment.pendingApproval = true;
+                }
+                attachment.scanned = file.scanned;
+                linkAttachmentToAdminItem(attachment, elt, true, cb);
+            });
+
+            file.stream.pipe(writestream);
+        } else {
             attachment.fileid = f._id;
             linkAttachmentToAdminItem(attachment, elt, false, cb);
         }
