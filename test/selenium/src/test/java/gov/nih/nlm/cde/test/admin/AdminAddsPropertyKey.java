@@ -19,21 +19,13 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("okValue"));
         textPresent("Org has been updated");
         closeAlert();
-        hangon(10);
 
         goToCdeByName("Distance from Closest Margin Value");
-        driver.navigate().refresh();
         showAllTabs();
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
-
-        try {
-            textPresent("doYouSeeThis");
-        } catch (TimeoutException e) {
-            System.out.println(driver.getPageSource());
-            Assert.fail();
-        }
+        textPresent("doYouSeeThis");
         clickElement(By.id("cancelCreate"));
 
         clickElement(By.id("username_link"));
