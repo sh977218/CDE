@@ -147,8 +147,6 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         addCommentNeedApproval(commentText);
-        textNotPresent(commentText);
-        textPresent(censoredText);
         logout();
         goToEltByName(eltName, status);
         clickElement(By.id("discussBtn"));
@@ -209,12 +207,10 @@ public abstract class CommentTest extends CommonTest {
 
     public void declineComment(String eltName, String status, String user) {
         String commentText = "Bad Comment";
-        String censoredText = "pending approval";
+        String censoredText = "This comment is pending approval.";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        addComment(commentText);
-        textNotPresent(commentText);
-        textPresent(censoredText);
+        addCommentNeedApproval(commentText);
         logout();
 
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
