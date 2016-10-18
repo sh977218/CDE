@@ -6,11 +6,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BrowseUsers extends NlmCdeBaseTest {
-    @Test(priority = 5)
+
+    @Test
     public void browseUsers() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs("theOrgAuth", password);
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("Users"));
         findElement(By.name("searchUsers")).sendKeys("cabig");
         clickElement(By.id("searchUsersSubmit"));
@@ -27,5 +28,12 @@ public class BrowseUsers extends NlmCdeBaseTest {
         Assert.assertEquals("nlm", findElement(By.id("user_username")).getText());
         Assert.assertEquals("[\"caBIG\",\"CTEP\",\"NINDS\",\"ACRIN\",\"PS&CC\",\"org / or Org\",\"TEST\",\"PhenX\"]", findElement(By.id("user_orgadmin")).getText());
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "Yes");
+
+        // make sure same tab is in 2 places.
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Site Management"));
+        clickElement(By.linkText("Users"));
+
     }
 }

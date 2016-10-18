@@ -29,8 +29,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.linkText("Site Management"));
         clickElement(By.linkText("Server Statuses"));
         clickElement(By.id("syncWithMeshButton"));
-
-
+        hangon(5);
         // try multiple times to give it time to re-index
         for (int i = 0; i < 2; i++) {
             try {
