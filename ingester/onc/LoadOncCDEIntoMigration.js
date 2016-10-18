@@ -5,7 +5,7 @@ var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgMo
 var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
 var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
-var orgName = 'AHRQ';
+var orgName = 'Office of the National Coordinator';
 var cdeCount = 0;
 var loincIdArray = [];
 
@@ -40,8 +40,7 @@ function run() {
         },
         function (cb) {
             MigrationLoincModel.find({
-                compoundForm: null,
-                orgName: orgInfo['classificationOrgName']
+                compoundForm: null
             }).exec(function (findCdeError, Cdes) {
                 if (findCdeError) throw findCdeError;
                 console.log('Total # Cde: ' + Cdes.length);
@@ -52,20 +51,10 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,orgInfo, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {
-                        one.classification = [{
-                                elements: [{
-                                    name: "Common Formats / Form",
-                                    elements: []
-                                }],
-                                stewardOrg: {
-                                    name: "AHRQ"
-                                }
-                            }
-                        ];
                         var obj = new MigrationDataElementModel(one);
                         obj.save(function (e) {
                             if (e) throw e;
