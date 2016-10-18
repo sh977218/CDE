@@ -463,7 +463,7 @@ exports.init = function (app) {
     };
 
     app.get('/searchUsers/:username?', function (req, res) {
-        if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             mongo_data_system.usersByPartialName(req.params.username, function (err, users) {
                 res.send({users: users});
             });
@@ -473,7 +473,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserRoles', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             usersrvc.updateUserRoles(req.body, function (err) {
                 if (err) res.status(500).end();
                 else res.status(200).end();
@@ -482,7 +482,6 @@ exports.init = function (app) {
             res.status(401).send();
         }
     });
-
 
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
