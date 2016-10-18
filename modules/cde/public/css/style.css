@@ -1277,3 +1277,7 @@ div + .questionPlaceholder {
     background: #f5f5f5;
     position: static;
 }
+
+.historyView:hover {
+    background-color: #c1d7ea !important;
+}
