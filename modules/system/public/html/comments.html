@@ -12,7 +12,7 @@
     </div>
     <br/>
 
-    <div class="comment" ng-repeat="comment in elt.comments">
+    <div class="comment" ng-repeat="(commentIndex, comment) in elt.comments">
         <div class="rootComment">
             <div class="commentBody">
                 <div class="commentHeader">
@@ -37,15 +37,15 @@
                             </td>
                             <td>
                                 <i class="fa fa-trash-o hand-cursor" title="Remove"
-                                   id="removeComment-{{$index}}"
+                                   id="removeComment-{{commentIndex}}"
                                    ng-show="canRemoveComment(comment)"
                                    ng-click="removeComment(comment._id)" data-type="remove"></i>
                                 <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
-                                   id="resolveComment-{{$index}}"
+                                   id="resolveComment-{{commentIndex}}"
                                    ng-show="canResolveComment(comment)"
                                    ng-click="updateCommentStatus(comment._id, 'resolved')"></i>
                                 <i class="fa fa-undo hand-cursor" title="Reopen"
-                                   id="reopenComment-{{$index}}"
+                                   id="reopenComment-{{commentIndex}}"
                                    ng-show="canReopenComment(comment)"
                                    ng-click="updateCommentStatus(comment._id, 'active')"></i>
                             </td>
@@ -53,12 +53,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="commentText-{{$index}}" class="commentMessage"
+                <div id="commentText-{{commentIndex}}" class="commentMessage"
                      ng-class="{strike: comment.status === 'resolved'}">{{comment.text}}
                 </div>
             </div>
         </div>
-        <div ng-repeat="reply in comment.replies track by $index" data-type="replyComment">
+        <div ng-repeat="(replyIndex, reply) in comment.replies" data-type="replyComment">
             <div ng-if="comment.showReplies || comment.replies.length < 5">
                 <div class="reply">
                     <div class="commentHeader">
@@ -81,15 +81,17 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{$index}}"
+                                    <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                       id="removeReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canRemoveComment(reply)"
                                        ng-click="removeComment(reply._id)" data-type="remove"></i>
                                     <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
-                                       id="resolveReply-{{$index}}"
+                                       id="resolveReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canResolveComment(reply)"
                                        ng-click="updateCommentStatus(reply._id, 'resolved')"
                                        data-type="resolve"></i>
-                                    <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{$index}}"
+                                    <i class="fa fa-undo hand-cursor" title="Reopen"
+                                       id="reopenReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canReopenComment(reply)"
                                        ng-click="updateCommentStatus(reply._id, 'active')"
                                        data-type="reopen"></i>
@@ -99,14 +101,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <div id="replyText-{{$index}}" class="commentMessage"
+                    <div id="replyText-{{commentIndex}}" class="commentMessage"
                          ng-class="{strike: reply.status === 'resolved'}">
                         {{reply.text}}
                     </div>
                 </div>
             </div>
             <div ng-if="!(comment.showReplies || comment.replies.length < 5)">
-                <div ng-if="$index < 2">
+                <div ng-if="commentIndex < 2">
                     <div class="reply">
                         <div class="commentHeader">
                             <table style="width: 100%;">
@@ -128,15 +130,17 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{$index}}"
+                                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                           id="removeReply-{{commentIndex}}-{{replyIndex}}"
                                            ng-show="canRemoveComment(reply)"
                                            ng-click="removeComment(reply._id)" data-type="remove"></i>
                                         <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
-                                           id="resolveReply-{{$index}}"
+                                           id="resolveReply-{{commentIndex}}-{{replyIndex}}"
                                            ng-show="canResolveComment(reply)"
                                            ng-click="updateCommentStatus(reply._id, 'resolved')"
                                            data-type="resolve"></i>
-                                        <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{$index}}"
+                                        <i class="fa fa-undo hand-cursor" title="Reopen"
+                                           id="reopenReply-{{commentIndex}}-{{replyIndex}}"
                                            ng-show="canReopenComment(reply)"
                                            ng-click="updateCommentStatus(reply._id, 'active')"
                                            data-type="reopen"></i>
@@ -146,19 +150,19 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div id="replyText-{{$index}}" class="commentMessage"
+                        <div id="replyText-{{commentIndex}}" class="commentMessage"
                              ng-class="{strike: reply.status === 'resolved'}">
                             {{reply.text}}
                         </div>
                     </div>
                 </div>
                 <div class="showRepliesButtonDiv"
-                     ng-if="!comment.showReplies && $index === 3 && $index >= 2 && $index < comment.replies.length - 2">
+                     ng-if="!comment.showReplies && commentIndex === 3 && commentIndex >= 2 && commentIndex < comment.replies.length - 2">
                     <div class="showRepliesButton" ng-click="comment.showReplies = true">
                         Show all {{comment.replies.length}} replies
                     </div>
                 </div>
-                <div ng-if="$index >= comment.replies.length - 2">
+                <div ng-if="commentIndex >= comment.replies.length - 2">
                     <div class="reply">
                         <div class="commentHeader">
                             <table style="width: 100%;">
@@ -180,15 +184,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{$index}}"
+                                        <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{commentIndex}}"
                                            ng-show="canRemoveComment(reply)"
                                            ng-click="removeComment(reply._id)" data-type="remove"></i>
                                         <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
-                                           id="resolveReply-{{$index}}"
+                                           id="resolveReply-{{commentIndex}}"
                                            ng-show="canResolveComment(reply)"
                                            ng-click="updateCommentStatus(reply._id, 'resolved')"
                                            data-type="resolve"></i>
-                                        <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{$index}}"
+                                        <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{commentIndex}}"
                                            ng-show="canReopenComment(reply)"
                                            ng-click="updateCommentStatus(reply._id, 'active')"
                                            data-type="reopen"></i>
@@ -198,7 +202,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div id="replyText-{{$index}}" class="commentMessage"
+                        <div id="replyText-{{commentIndex}}" class="commentMessage"
                              ng-class="{strike: reply.status === 'resolved'}">
                             {{reply.text}}
                         </div>
@@ -209,12 +213,12 @@
         <div data-type="reply" class="replyInputDiv" ng-if="user._id">
             <textarea rows="1" msd-elastic ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea"
                       placeholder="Reply to this comment" ng-focus="comment.openReply = true"
-                      id="replyTextarea_{{$index}}">
+                      id="replyTextarea_{{commentIndex}}">
                       </textarea>
             <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
                 <button ng-click="replyTo(comment._id, comment.tempReply,comment.showReplies)" style="margin-left: 0"
                         ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary"
-                        id="replyBtn_{{$index}}">Reply
+                        id="replyBtn_{{commentIndex}}">Reply
                 </button>
                 <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
             </div>

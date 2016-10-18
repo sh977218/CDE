@@ -245,16 +245,20 @@ exports.replyToComment = function (req, res, dao) {
             elt.comments.forEach(function (comment, i) {
                 if (comment._id == req.body.commentId) {
                     var reply = {
-                        user: req.user._id
-                        , username: req.user.username
-                        , created: new Date().toJSON()
-                        , text: req.body.reply
+                        user: req.user._id,
+                        username: req.user.username,
+                        created: new Date().toJSON(),
+                        text: req.body.reply
                     };
                     if (!authorizationShared.canComment(req.user)) {
                         reply.pendingApproval = true;
                         var details = {
-                            element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
-                            , comment: {index: i, text: req.body.reply}
+                            element: {
+                                tinyId: req.body.element.tinyId,
+                                name: elt.naming[0].designation,
+                                eltType: dao.type
+                            },
+                            comment: {index: i, text: req.body.reply}
                         };
                         exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                     }
@@ -270,10 +274,9 @@ exports.replyToComment = function (req, res, dao) {
                             res.status(500).send(err);
                         } else {
                             exports.hideUnapprovedComments(elt);
-                            res.send({message: "Comment added", elt: elt});
+                            res.send({message: "Reply added", elt: elt});
                         }
                     });
-
                 }
             });
         });
@@ -293,11 +296,13 @@ exports.removeComment = function (req, res, dao) {
                 elt.comments.forEach(function (c, ci) {
                     if (c._id.toString() === id) {
                         result = c;
+                        result.type = 'Comment';
                         elt.comments.splice(ci, 1);
                     } else if (c.replies) {
                         c.replies.forEach(function (r, ri) {
                             if (r._id.toString() === id) {
                                 result = r;
+                                result.type = 'Reply';
                                 c.replies.splice(ri, 1);
                             }
                         });
@@ -314,20 +319,20 @@ exports.removeComment = function (req, res, dao) {
                     elt.markModified("comments");
                     elt.save(function (err) {
                         if (err) {
-                            logging.errorLogger.error("Error: Cannot remove comment.", {
+                            logging.errorLogger.error("Error: Cannot remove " + removedComment.type + ".", {
                                 origin: "system.adminItemSvc.removeComment",
                                 stack: new Error().stack
                             });
                             res.status(500).send(err);
                         } else {
-                            res.send({message: "Comment removed", elt: elt});
+                            res.send({message: removedComment.type + " removed", elt: elt});
                         }
                     });
                 } else {
-                    res.send({message: "You can only remove comments you own."});
+                    res.send({message: "You can only remove " + removedComment.type + " you own."});
                 }
             } else {
-                res.status(404).send("Comment not found")
+                res.status(404).send(removedComment.type + " not found")
             }
         });
     } else {

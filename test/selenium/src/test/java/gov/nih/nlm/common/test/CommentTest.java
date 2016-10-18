@@ -24,39 +24,51 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
-        // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
+
+
+        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
+        clickElement(By.name("postComment"));
+        textPresent("Comment added");
+        closeAlert();
+
+        for (int i = 0; i < 10; i++) {
+            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + i);
+            clickElement(By.id("replyBtn_2"));
+            textPresent("Reply added");
+            closeAlert();
+        }
 
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
         clickElement(By.id("replyBtn_0"));
-        textPresent("Comment added");
+        textPresent("Reply added");
         closeAlert();
 
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
         clickElement(By.id("replyBtn_0"));
-        textPresent("Comment added");
+        textPresent("Reply added");
         closeAlert();
 
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
         clickElement(By.id("replyBtn_1"));
-        textPresent("Comment added");
+        textPresent("Reply added");
         closeAlert();
 
-        clickElement(By.id("resolveComment-0"));
+        clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to First comment", By.cssSelector(".strike"));
 
-        clickElement(By.id("resolveReply-0"));
+        clickElement(By.id("reopenReply-0-0"));
         textPresent("Saved");
         closeAlert();
 
-        clickElement(By.id("resolveComment-1"));
+        clickElement(By.id("resolveReply-1-0"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
-        clickElement(By.id("removeComment-1"));
-        textPresent("Comment removed");
+        clickElement(By.id("removeReply-0-1"));
+        textPresent("Reply removed");
         closeAlert();
 
         textPresent("My First Comment!");

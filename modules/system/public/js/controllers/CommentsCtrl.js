@@ -52,8 +52,8 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.removeComment = function (commentId) {
             $http.post("/comments/" + $scope.module + "/remove", {
-                commentId: commentId
-                , element: {tinyId: $scope.elt.tinyId}
+                commentId: commentId,
+                element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 $scope.elt = res.data.elt;
