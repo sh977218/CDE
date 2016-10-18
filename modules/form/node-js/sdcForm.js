@@ -64,8 +64,8 @@ function addQuestion(parent, question) {
 
     idToName[question.question.cde.tinyId] = question.label;
 
-    questionsInSection[question.label] = newQuestion;
-    parent.ele({Question: newQuestion});
+    var questionEle = parent.ele({Question: newQuestion});
+    questionsInSection[question.label] = questionEle;
 }
 
 function doQuestion(parent, question) {
@@ -80,20 +80,23 @@ function doQuestion(parent, question) {
                 });
                 if (terms.length === 2) {
                     var qToAddTo = questionsInSection[terms[0]];
-                    qToAddTo.ListField.List.ListItem.forEach(function (li) {
-                        if (li["@title"] === terms[1]) {
+                    // below is xmlBuilder ele. This seems to be the way to find child inside element
+                    qToAddTo.children.filter(c => c.name === 'ListField')[0]
+                        .children.filter(c => c.name === 'List')[0]
+                        .children.filter(c => c.name === 'ListItem').forEach(function (li) {
+                        if (li.attributes["title"] && li.attributes['title'].value === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                if (li.ChildItems === undefined) li.ChildItems = {Question: []};
-                                addQuestion(li.ChildItems.Question, question);
+                                var liChildItems = li.children.filter( c => c.name === 'ChildItems')[0];
+                                if (!liChildItems) liChildItems = li.ele({ChildItems: {}});
+                                addQuestion(liChildItems, question);
                             } else {
                                 if (question.label === "" || question.hideLabel) {
-                                    li.ListItemResponseField = {
-                                        //Response: {string: ""}
-                                    };
+                                    li.ele({ListItemResponseField: {Response: {string: ""}}});
                                 } else {
-                                    if (li.ChildItems === undefined) li.ChildItems = {Question: []};
-                                    addQuestion(li.ChildItems.Question, question);
+                                    var liChildItems2 = li.children.filter( c => c.name === 'ChildItems')[0];
+                                    if (!liChildItems2) liChildItems2 = li.ele({ChildItems: {}});
+                                    addQuestion(liChildItems2, question);
                                 }
                             }
                         }
