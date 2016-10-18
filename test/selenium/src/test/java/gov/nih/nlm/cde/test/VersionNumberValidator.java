@@ -13,8 +13,9 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         String cdeName = "Operating room total time";
         String validationError = "Version number cannot";
         goToCdeByName(cdeName);
-        findElement(By.cssSelector("i.fa-edit")).click();
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 2]");
+        clickElement(By.id("naming_tab"));
+        findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 2]");
         findElement(By.cssSelector(".fa-check")).click();
         findElement(By.id("openSave")).click();
         hangon(1);

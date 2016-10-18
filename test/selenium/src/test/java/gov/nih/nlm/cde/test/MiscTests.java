@@ -86,14 +86,14 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("ninds"), "Does not contain ninds. Actual Response: " + response);
     }
 
-
     @Test
     public void leavePageWarning() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Intra-arterial Catheter Patient Not Administered Reason");
-        clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//div/div[2]/textarea")).sendKeys("[def change number 1]");
-        clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.cssSelector("#dd_def_0 i.fa-edit"));
+        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change number 1]");
+        clickElement(By.xpath("#dd_def_0 .fa-check"));
 
         clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());

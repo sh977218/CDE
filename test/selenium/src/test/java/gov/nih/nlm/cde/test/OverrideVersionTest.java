@@ -11,8 +11,9 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         goToCdeByName(cdeName);
-        findElement(By.cssSelector("#nameEdit i.fa-edit")).click();
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
+        clickElement(By.id("naming_tab"));
+        findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 1]");
         findElement(By.cssSelector(".fa-check")).click();
 
         clickElement(By.id("openSave"));
