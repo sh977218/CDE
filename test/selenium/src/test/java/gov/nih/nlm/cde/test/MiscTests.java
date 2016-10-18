@@ -93,7 +93,7 @@ public class MiscTests extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
         clickElement(By.cssSelector("#dd_def_0 i.fa-edit"));
         findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys("[def change number 1]");
-        clickElement(By.xpath("#dd_def_0 .fa-check"));
+        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
 
         clickElement(By.linkText("CDEs"));
         shortWait.until(ExpectedConditions.alertIsPresent());

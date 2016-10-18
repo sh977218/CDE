@@ -14,7 +14,7 @@ public class OverrideVersionTest extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
         findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
         findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 1]");
-        findElement(By.cssSelector(".fa-check")).click();
+        findElement(By.cssSelector("#dd_name_0 .fa-check")).click();
 
         clickElement(By.id("openSave"));
         textPresent("has already been used");

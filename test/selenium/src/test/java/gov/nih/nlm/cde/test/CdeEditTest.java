@@ -20,8 +20,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         findElement(By.cssSelector("#dd_name_0 input")).sendKeys(cdeNameChange);
         clickElement(By.cssSelector("#dd_name_0 .fa-check"));
         clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        findElement(By.cssSelector("#dd_name_0 textarea")).sendKeys(cdeDefinitionChange);
-        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
+        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys(cdeDefinitionChange);
+        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));

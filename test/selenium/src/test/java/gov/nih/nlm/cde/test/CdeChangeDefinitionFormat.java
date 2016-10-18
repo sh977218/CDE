@@ -21,9 +21,9 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
         textPresent("<b>bold</b>");
         clickElement(By.id("naming_tab"));
         clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
-        clickElement(By.xpath("//dd[@id='dd_def_0']//button[contains(text(),'Rich Text')]"));
+        clickElement(By.xpath("//div[@id='dd_def_0']//button[contains(text(),'Rich Text')]"));
         hangon(2);
-        clickElement(By.xpath("//dd[@id='dd_def_0']//button[@class='fa fa-check']"));
+        clickElement(By.xpath("//div[@id='dd_def_0']//button[@class='fa fa-check']"));
         newCdeVersion();
         textNotPresent("<b>bold</b>");
     }

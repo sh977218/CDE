@@ -16,7 +16,7 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         clickElement(By.id("naming_tab"));
         findElement(By.cssSelector("#dd_name_0 i.fa-edit")).click();
         findElement(By.cssSelector("#dd_name_0 input")).sendKeys("[name change number 2]");
-        findElement(By.cssSelector(".fa-check")).click();
+        findElement(By.cssSelector("#dd_name_0 .fa-check")).click();
         findElement(By.id("openSave")).click();
         hangon(1);
         textNotPresent(validationError);
