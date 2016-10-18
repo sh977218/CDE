@@ -143,7 +143,7 @@ public abstract class CommentTest extends CommonTest {
 
     public void approvingComments(String eltName, String status, String user) {
         String commentText = "Very Innocent Comment";
-        String censoredText = "pending approval";
+        String censoredText = "This comment is pending approval.";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
         addCommentNeedApproval(commentText);
@@ -239,8 +239,7 @@ public abstract class CommentTest extends CommonTest {
 
         logout();
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textNotPresent(commentText);
 
