@@ -31,16 +31,18 @@ exports.addAttachment = function (elt, xml, cb) {
     var origXml = builder.buildObject(xmlObj).toString();
     readable.push(origXml);
     readable.push(null);
-    mongo_data.addAttachment({
-        originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
-        type: "application/xml",
-        size: origXml.length,
-        stream: readable,
-        ingested: true
-    }, user, "Original XML File", elt, function (attachment, newFileCreated, e) {
-        if (e) throw e;
-        cb();
-    });
+    mongo_data.addAttachment(
+        {
+            originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
+            type: "application/xml",
+            size: origXml.length,
+            stream: readable
+        },
+        {username: "batchloader", roles: ["AttachmentReviewer"]},
+        "Original XML File", elt, function (attachment, newFileCreated, e) {
+            if (e) throw e;
+            cb();
+        });
 };
 
 exports.wipeUseless = function (toWipe) {
