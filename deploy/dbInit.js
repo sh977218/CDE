@@ -94,8 +94,6 @@ var users = [
     , {username: 'exportBoardUser', password: 'pass', orgAdmin: ["NINDS"], orgCurator: ["NINDS"], quota: 1073741824, viewHistory: []
         , roles: ["BoardPublisher"]}
     , {username: 'testAdmin', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["FormEditor"]}
-    , {username: 'theOrgAuth', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: []
-        , roles: ["OrgAuthority"]}
     , {username: 'theOrgAuth', password: 'pass', orgAdmin: ["CTEP"], orgCurator: ["CTEP"], quota: 1073741824, viewHistory: [], roles: ["OrgAuthority"]}
     , {username: 'classifyBoardUser', password: 'pass', orgAdmin: ["TEST"], orgCurator: [], quota: 1073741824, viewHistory: [], roles: []}
     , {username: 'tagBoardUser', password: 'pass', orgAdmin: [], orgCurator: [], quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}

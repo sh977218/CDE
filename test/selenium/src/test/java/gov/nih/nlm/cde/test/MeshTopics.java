@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.Test;
@@ -9,7 +8,6 @@ import org.testng.annotations.Test;
 public class MeshTopics extends NlmCdeBaseTest {
 
     @Test
-    @RecordVideo
     public void meshTopics() {
 
         // add NINDS Mesh term
@@ -31,8 +29,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.linkText("Site Management"));
         clickElement(By.linkText("Server Statuses"));
         clickElement(By.id("syncWithMeshButton"));
-
-
+        hangon(5);
         // try multiple times to give it time to re-index
         for (int i = 0; i < 2; i++) {
             try {

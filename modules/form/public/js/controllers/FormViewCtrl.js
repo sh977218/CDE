@@ -443,19 +443,10 @@ angular.module('formModule').controller
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
-                var date = Date.parse(tokens[2]);
-                if (!date)
-                    return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid number.";
-                else {
-                    var operator = tokens[1];
-                    if (operator.trim() === "=") {
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    } else if (operator.trim() === ">") {
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    } else if (operator.trim() === "<") {
-                        return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    }
-                }
+                var regEx = /^\d{2}\/\d{2}\/\d{4}$/;
+                var match = tokens[2].match(regEx) != null;
+                if (!match) return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid date.";
+                else return;
             }
         }
     }
@@ -496,30 +487,31 @@ angular.module('formModule').controller
          if (!currentContent) currentContent = '';
          if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
 
-        var tokens = tokenSplitter(currentContent);
-        $scope.tokens = tokens;
+         var tokens = tokenSplitter(currentContent);
+         $scope.tokens = tokens;
 
          preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
          var options = [];
-        if (tokens.length % 4 === 0) {
-            options = previousQuestions.filter(function (q, i) {
-                //Will assemble a list of questions
-                if (i >= index) return false; //Exclude myself
-                if (q.elementType !== "question") return false; //This element is not a question, ignore
-                if (q.question.datatype !== 'Number' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
-                return true;
-            }).map(function (q) {
-                return '"' + questionSanitizer(q.label) + '" ';
-            });
-        } else if (tokens.length % 4 === 1) {
-            options = [" = ", " < ", " > "];
-        } else if (tokens.length % 4 === 2) {
-            options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
-        } else if (tokens.length % 4 === 3) {
-            options = [" AND ", " OR"];
-        }
-        return options;
+         if (tokens.length % 4 === 0) {
+             options = previousQuestions.filter(function (q, i) {
+                 //Will assemble a list of questions
+                 if (i >= index) return false; //Exclude myself
+                 else if (q.elementType !== "question") return false; //This element is not a question, ignore
+                 else if (q.question.datatype === 'Value List' && (!q.question.answers || q.question.answers.length === 0)) return false; //This question has no permissible answers, ignore
+                 else if (q.question.datatype === 'Date' || q.question.datatype === 'Number') return true;
+                 else return true;
+             }).map(function (q) {
+                 return '"' + questionSanitizer(q.label) + '" ';
+             });
+         } else if (tokens.length % 4 === 1) {
+             options = [" = ", " < ", " > "];
+         } else if (tokens.length % 4 === 2) {
+             options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
+         } else if (tokens.length % 4 === 3) {
+             options = [" AND ", " OR"];
+         }
+         return options;
     };
 
     function questionSanitizer(label) {
@@ -538,7 +530,11 @@ angular.module('formModule').controller
             return answers.map(function (a) {
                 return '"' + questionSanitizer(a.permissibleValue) + '"';
             });
-        } else return ['"{{' + question.question.datatype + '}}"'];
+        } else if (question.question.datatype === 'Number') {
+            return ['"{{' + question.question.datatype + '}}"'];
+        } else if (question.question.datatype === 'Date') {
+            return ['"{{MM/DD/YYYY}}"'];
+        }
     }
 
     $scope.missingCdes = [];

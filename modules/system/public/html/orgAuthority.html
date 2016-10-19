@@ -2,7 +2,6 @@
     <uib-tabset class="pt40 pb40">
 
         <div uib-tab heading="Org Admins">
-
             <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
                 Make
                 <div class="form-group">
@@ -177,5 +176,10 @@
                 </div>
             </div>
         </uib-tab>
+
+        <div uib-tab heading="Users">
+            <div ng-include="'/system/public/html/usersMgt.html'"></div>
+        </div>
+
     </uib-tabset>
 </div>
