@@ -42,8 +42,7 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                             next();
                         });
                     });
-                }
-                else {
+                } else {
                     next();
                 }
             });
@@ -77,114 +76,42 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                         if (externalDefinedExist) {
                             trs.shift();
                             done();
-                        }
-                        else {
+                        } else {
                             done();
                         }
                     },
                     function (done) {
-                        trs.shift();
-                        async.forEach(trs, function (tr, doneOneTr) {
-                            var answerListItem = {};
-                            tr.findElements(By.xpath('td')).then(function (tds) {
-                                if (tds.length === 11) {
-                                    async.parallel([
-                                        function (doneParsingTd) {
-                                            tds[1].getText().then(function (text) {
-                                                answerListItem['SEQ#'] = text.trim();
-                                                doneParsingTd();
+                        var thMapping = {};
+                        trs[0].findElements(By.css('th')).then(function (ths) {
+                            var thIndex = 0;
+                            async.forEach(ths, function (th, doneOneTh) {
+                                th.getText().then(function (text) {
+                                    if (text.trim().length > 0) {
+                                        thMapping[text.trim()] = thIndex;
+                                    }
+                                    thIndex++;
+                                    doneOneTh();
+                                })
+                            }, function doneAllThs() {
+                                trs.shift();
+                                async.forEach(trs, function (tr, doneOneTr) {
+                                    var answerListItem = {};
+                                    tr.findElements(By.xpath('td')).then(function (tds) {
+                                        async.forEach(Object.keys(thMapping), function (key, doneOneKey) {
+                                            var index = thMapping[key];
+                                            tds[index].getText().then(function (text) {
+                                                answerListItem[key] = text.trim();
+                                                doneOneKey();
                                             });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[3].getText().then(function (text) {
-                                                answerListItem['Answer'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[5].getText().then(function (text) {
-                                                answerListItem['Global ID'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[7].getText().then(function (text) {
-                                                answerListItem['Global ID Code System'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[9].getText().then(function (text) {
-                                                answerListItem['Answer ID'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        }
-                                    ], function () {
-                                        answerListArray.push(answerListItem);
-                                        doneOneTr();
+                                        }, function doneAllKeys() {
+                                            answerListArray.push(answerListItem);
+                                            doneOneTr();
+                                        });
                                     });
-                                } else if (tds.length === 9) {
-                                    async.parallel([
-                                        function (doneParsingTd) {
-                                            tds[1].getText().then(function (text) {
-                                                answerListItem['SEQ#'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[3].getText().then(function (text) {
-                                                answerListItem['Answer'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[5].getText().then(function (text) {
-                                                answerListItem['Code'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[7].getText().then(function (text) {
-                                                answerListItem['Answer ID'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        }
-                                    ], function () {
-                                        answerListArray.push(answerListItem);
-                                        doneOneTr();
-                                    });
-                                } else if (tds.length === 7) {
-                                    async.parallel([
-                                        function (doneParsingTd) {
-                                            tds[1].getText().then(function (text) {
-                                                answerListItem['SEQ#'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[3].getText().then(function (text) {
-                                                answerListItem['Answer'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        },
-                                        function (doneParsingTd) {
-                                            tds[5].getText().then(function (text) {
-                                                answerListItem['Answer ID'] = text.trim();
-                                                doneParsingTd();
-                                            });
-                                        }
-                                    ], function () {
-                                        answerListArray.push(answerListItem);
-                                        doneOneTr();
-                                    });
-                                } else {
-                                    doneOneTr();
-                                }
-
-
-                            });
-                        }, function doneAllTrs() {
-                            done();
+                                }, function doneAllTrs() {
+                                    done();
+                                });
+                            })
                         });
                     }
                 ], function () {
