@@ -98,9 +98,10 @@ exports.removeClassificationTree = function (element, org) {
 };
 
 exports.removeArrayOfSource = function (Array, source) {
-    return Array.filter(function (p) {
+    var newArray = Array.filter(function (p) {
         return !p.source || p.source !== source;
     });
+    return newArray;
 };
 
 exports.mergeSources = function (sources, migrationSources) {

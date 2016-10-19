@@ -22,7 +22,7 @@ exports.createElt = function (loinc, org, orgInfo, cb) {
     var ids = ParseIds.parseIds(loinc);
     var properties = ParseProperties.parseProperties(loinc);
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
-    var stewardOrg = ParseStewardOrg.parseStewardOrg(orgInfo['stewardOrgName']);
+    var stewardOrg = ParseStewardOrg.parseStewardOrg(orgInfo);
 
     var newElt = {
         tinyId: mongo_data.generateTinyId(),

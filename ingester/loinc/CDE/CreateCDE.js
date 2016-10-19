@@ -7,15 +7,12 @@ var ParseReferenceDocuments = require('../Shared/ParseReferenceDocuments');
 var ParseStewardOrg = require('../Shared/ParseStewardOrg');
 var ParseValueDomain = require('./ParseValueDomain');
 var ParseConcept = require('./ParseConcept');
+var ParseSources = require('../Shared/ParseSources');
 
 var today = new Date().toJSON();
 var stewardOrgName = 'NLM';
 
-exports.setStewardOrg = function (o) {
-    var stewardOrgName = o;
-};
-
-exports.createCde = function (loinc) {
+exports.createCde = function (loinc, orgInfo) {
     if (stewardOrgName === '') {
         console.log('StewardOrgName is empty. Please set it first.');
         process.exit(1);
@@ -26,7 +23,8 @@ exports.createCde = function (loinc) {
     var referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(loinc);
     var valueDomain = ParseValueDomain.parseValueDomain(loinc);
     var concepts = ParseConcept.parseConcepts(loinc);
-    var stewardOrg = ParseStewardOrg.parseStewardOrg();
+    var stewardOrg = ParseStewardOrg.parseStewardOrg(orgInfo);
+    var sources = ParseSources.parseSources(loinc);
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'BatchLoader'},
@@ -34,6 +32,7 @@ exports.createCde = function (loinc) {
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
         source: 'LOINC',
+        sources: sources,
         naming: naming,
         ids: ids,
         properties: properties,
