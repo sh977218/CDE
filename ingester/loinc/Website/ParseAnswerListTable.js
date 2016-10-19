@@ -42,8 +42,7 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                             next();
                         });
                     });
-                }
-                else {
+                } else {
                     next();
                 }
             });
@@ -77,12 +76,17 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                         if (externalDefinedExist) {
                             trs.shift();
                             done();
-                        }
-                        else {
+                        } else {
                             done();
                         }
                     },
                     function (done) {
+                        trs[0].findElements(By.css('th')).then(function (ths) {
+
+                        });
+
+
+                        
                         trs.shift();
                         async.forEach(trs, function (tr, doneOneTr) {
                             var answerListItem = {};

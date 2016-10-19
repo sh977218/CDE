@@ -5,7 +5,7 @@ var MigrationOrgModel = require('./../createMigrationConnection').MigrationOrgMo
 var orgMapping = require('../loinc/Mapping/ORG_INFO_MAP').map;
 var LoadLoincCdeIntoMigration = require('../loinc/CDE/LoadLoincCdeIntoMigration');
 
-var orgName = 'Office of the National Coordinator';
+var orgName = 'ONC';
 var cdeCount = 0;
 var loincIdArray = [];
 
