@@ -48,5 +48,12 @@ exports.map = {
     "mv": "Number",
     "mV": "Number",
     "ms": "Number",
-    "{mm/dd/yyyy}": "Date"
+    "{mm/dd/yyyy}": "Date",
+    "{score}": "Number",
+    "d/(7.d)": "Number",
+    "min/d": "Number",
+    "{#}/d": "Number",
+    "{#}/wk": "Number",
+    "/wk": "Number",
+    "/a": "Number"
 };
