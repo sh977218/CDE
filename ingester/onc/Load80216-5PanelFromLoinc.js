@@ -2,7 +2,7 @@ var MigrationEyeGeneLoincModel = require('./../createMigrationConnection').Migra
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
 var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
-var orgName = 'Office of the National Coordinator';
+var orgName = 'ONC';
 MigrationEyeGeneLoincModel.find({}).exec(function (err, dataArray) {
     if (err) throw err;
     var newArray = ['80216-5'];

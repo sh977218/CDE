@@ -87,7 +87,7 @@ exports.parseAnswerListTable = function (obj, task, table, cb) {
                             async.forEach(ths, function (th, doneOneTh) {
                                 th.getText().then(function (text) {
                                     if (text.trim().length > 0) {
-                                        thMapping[text] = thIndex;
+                                        thMapping[text.trim()] = thIndex;
                                     }
                                     thIndex++;
                                     doneOneTh();

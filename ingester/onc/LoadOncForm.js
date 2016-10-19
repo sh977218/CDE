@@ -1,4 +1,4 @@
-require('../loinc/Form/ReloadLoincFormByOrg').reloadLoincFormsByOrg('Office of the National Coordinator',function(){
+require('../loinc/Form/ReloadLoincFormByOrg').reloadLoincFormsByOrg('ONC',function(){
     console.log("Done everything.");
     process.exit(1);
 });
