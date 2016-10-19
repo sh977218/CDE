@@ -122,10 +122,9 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        updateShare.removeArrayOfSource(newDe.properties, migrationCde.source);
+        newDe.properties = updateShare.removeArrayOfSource(newDe.properties, migrationCde.source);
         newDe.properties = newDe.properties.concat(migrationCde.properties);
-        updateShare.removeArrayOfSource(newDe.sources, migrationCde.source);
-        newDe.source = newDe.sources.concat(migrationCde.source);
+        updateShare.mergeSources(newDe.sources, migrationCde.sources);
 
         removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
