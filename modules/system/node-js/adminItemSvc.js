@@ -233,7 +233,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send(err);
                     } else {
                         exports.hideUnapprovedComments(elt);
-                        res.send({message: "Comment added. Need approval.", elt: elt});
+                        res.send({message: "Comment added. Approval required.", elt: elt});
                     }
                 });
             }

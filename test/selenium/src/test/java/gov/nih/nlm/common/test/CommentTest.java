@@ -21,7 +21,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textNotPresent(text);
         textPresent("This comment is pending approval.");
-        textPresent("Comment added. Need approval.");
+        textPresent("Comment added. Approval required.");
         closeAlert();
     }
 
