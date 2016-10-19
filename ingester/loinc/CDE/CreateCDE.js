@@ -7,7 +7,7 @@ var ParseReferenceDocuments = require('../Shared/ParseReferenceDocuments');
 var ParseStewardOrg = require('../Shared/ParseStewardOrg');
 var ParseValueDomain = require('./ParseValueDomain');
 var ParseConcept = require('./ParseConcept');
-var ParseSources = require('./ParseSources');
+var ParseSources = require('../Shared/ParseSources');
 
 var today = new Date().toJSON();
 var stewardOrgName = 'NLM';
