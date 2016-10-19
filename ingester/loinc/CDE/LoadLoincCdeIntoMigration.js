@@ -3,10 +3,6 @@ var MigrationLoincModel = require('../../createMigrationConnection').MigrationLo
 var CreateCDE = require('./CreateCDE');
 var ParseClassification = require('../Shared/ParseClassification');
 
-exports.setClassification = function (c) {
-    ParseClassification.setClassification(c);
-};
-
 exports.runArray = function (loincIdArray, org, orgInfo, doneItem, doneAllArray) {
     var allNewCdes = [];
     async.forEachSeries(loincIdArray, function (loincId, doneOneLoinc) {
@@ -17,7 +13,7 @@ exports.runArray = function (loincIdArray, org, orgInfo, doneItem, doneAllArray)
                 process.exit(1);
             } else if (loincs.length === 1) {
                 var loinc = loincs[0].toObject();
-                var newCde = CreateCDE.createCde(loinc);
+                var newCde = CreateCDE.createCde(loinc, orgInfo);
                 ParseClassification.parseClassification(loinc, newCde, org, orgInfo['classificationOrgName'], orgInfo['classification'], function () {
                     allNewCdes.push(newCde);
                     doneItem(newCde, doneOneLoinc);

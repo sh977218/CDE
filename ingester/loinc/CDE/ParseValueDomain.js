@@ -35,13 +35,14 @@ exports.parseValueDomain = function (loinc) {
             } else {
                 name = a['Answer'];
             }
-            return {
+            var pv = {
                 permissibleValue: a['Code'] ? a['Code'] : name,
                 valueMeaningName: name,
                 valueMeaningDefinition: description,
                 valueMeaningCode: a['Answer ID'],
                 codeSystemName: 'LOINC'
-            }
+            };
+            return pv;
         });
     } else {
         if (loinc['EXAMPLE UNITS'] && loinc['EXAMPLE UNITS']['EXAMPLE UNITS']) {
