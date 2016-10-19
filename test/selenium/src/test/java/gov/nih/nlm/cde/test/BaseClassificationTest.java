@@ -7,7 +7,7 @@ import org.testng.Assert;
 
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
-        clickElement(By.id("addClassification"));
+        clickElement(By.cssSelector("[id^=addClassification]"));
         addClassificationMethodDo(categories);
     }
 
