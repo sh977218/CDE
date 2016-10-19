@@ -10,8 +10,6 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.transferStewardObj = {from:'', to:''};
     $scope.allUsernames = [];
 
-
-
     function resetTransferStewardObj() {
         $scope.transferStewardObj.from = '';
         $scope.transferStewardObj.to = '';
