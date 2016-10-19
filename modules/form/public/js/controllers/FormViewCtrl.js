@@ -443,9 +443,9 @@ angular.module('formModule').controller
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
-                var regEx = /^\d{2}\/\d{2}\/\d{4}$/;
-                var match = tokens[2].match(regEx) != null;
-                if (!match) return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid date.";
+                var isValidateDate = new Date(tokens[2]);
+                if (isValidateDate.toString() === 'Invalid Date')
+                    return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '". Replace ' + tokens[2] + " with a valid date.";
                 else return;
             }
         }
