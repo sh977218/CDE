@@ -89,19 +89,22 @@ public class SkipLogicTest extends BaseFormTest {
         editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
-        String incorrectSkipLogicString = findElement(By.xpath(inputXpath)).getText();
-        String correctSkipLogicString = incorrectSkipLogicString.replace("{{MM/DD/YYYY}}", "10/11/2016");
+        String correctSkipLogicString = "\"Indicate date of reference scan\"=\"10/11/2016\"";
 
         findElement(By.xpath(inputXpath)).clear();
         hangon(1);
         findElement(By.xpath(inputXpath)).sendKeys(correctSkipLogicString);
+        clickElement(By.id("dd_datatype_2"));
         textNotPresent("Unexpected number of tokens");
         textNotPresent("is not a valid date for");
         saveForm();
 
         goToFormByName(formName);
+        clickElement(By.id("nativeFormRenderLink"));
+        textPresent("Display Instruction");
         textNotPresent("Macula volume (OD)");
-
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
+        textPresent("Macula volume (OD)");
     }
 
 }
