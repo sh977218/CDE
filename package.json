@@ -14,7 +14,7 @@
     "express-session": "1.10.2",
     "ejs": "1.0.0",
     "mongoose": "4.1.9",
-    "xml2js": "0.4.8",
+    "xml2js": "0.4.17",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
     "passport-oauth": "1.0.0",

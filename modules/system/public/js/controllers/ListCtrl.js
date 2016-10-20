@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('ListCtrl',
     ['$scope', '$routeParams', '$window', '$uibModal', 'Elastic', 'OrgHelpers', '$http', '$timeout', 'userResource',
-        'AutoCompleteResource', '$location', '$route', '$controller', '$log', 'ElasticBoard',
+        'AutoCompleteResource', '$location', '$route', '$controller', 'ElasticBoard',
         function ($scope, $routeParams, $window, $modal, Elastic, OrgHelpers, $http, $timeout, userResource,
-                  AutoCompleteResource, $location, $route, $controller, $log, ElasticBoard)
+                  AutoCompleteResource, $location, $route, $controller, ElasticBoard)
 
 {
 
@@ -236,14 +236,10 @@ angular.module('systemModule').controller('ListCtrl',
         $scope.accordionListStyle = "semi-transparent";
         var settings = Elastic.buildElasticQuerySettings($scope.searchSettings);
 
-        $log.debug("running query");
-        $log.debug(settings);
         Elastic.generalSearchQuery(settings, type, function (err, result, corrected) {
             if (corrected && $scope.searchSettings.q) $scope.currentSearchTerm = $scope.searchSettings.q.replace(/[^\w\s]/gi, '');
             //
             $window.scrollTo(0, 0);
-            $log.debug("query complete");
-            $log.debug(result);
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
