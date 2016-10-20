@@ -32,6 +32,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
 
+        scrollToViewById("orgListName-Training");
         clickElement(By.xpath("//span/span[contains(.,'canYouSeeThis')]/i"));
         textPresent("Org has been updated");
         closeAlert();
