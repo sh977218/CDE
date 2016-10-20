@@ -72,6 +72,14 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
 
         $scope.replyTo = function (commentId, reply, showReplies) {
+
+            var socket = io.connect('http://localhost:3001');
+
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', {my: 'data'});
+            });
+
             $http.post("/comments/" + $scope.module + "/reply", {
                 commentId: commentId,
                 reply: reply,
