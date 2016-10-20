@@ -4,12 +4,12 @@ import org.testng.annotations.Test;
 
 public class CdeRegStatusTest3 extends CdeRegStatusTest {
 
-    @Test(priority = 4)
+    @Test
     public void cancelRegStatus() {
         cancelRegStatus("Form Form Element Administered Item Modified By java.lang.String", cabigAdmin_username);
     }   
     
-    @Test(priority = 4)
+    @Test
     public void cantEditStatusIfPendingChanges() {
         cantEditStatusIfPendingChanges("Form Form Element Administered Item Modified By java.lang.String", cabigAdmin_username);        
     }
