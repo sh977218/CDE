@@ -311,7 +311,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         newForm.referenceDocuments = migrationForm.referenceDocuments;
         newForm.ids = migrationForm.ids;
         newForm.formElements = migrationForm.formElements;
-        updateShare.removePropertiesOfSource(newForm.properties, migrationForm.source);
+        updateShare.removeArrayOfSource(newForm.properties, migrationForm.source);
         newForm.properties = newForm.properties.concat(migrationForm.properties);
 
         updateShare.removeClassificationTree(newForm, orgName);

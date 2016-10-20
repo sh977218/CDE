@@ -15,12 +15,13 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeNameChange = "[name change number 1]";
         String cdeDefinitionChange = "[def change number 1]";
         goToCdeByName(cdeName);
-        clickElement(By.cssSelector("i.fa-edit"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(cdeNameChange);
-        clickElement(By.cssSelector(".fa-check"));
-        clickElement(By.xpath("//*[@id = 'dd_def']//i[contains(@class,'fa fa-edit')]"));
-        findElement(By.xpath("//div/div[2]/textarea")).sendKeys(cdeDefinitionChange);
-        clickElement(By.xpath("//*[@id='dd_def']//button[contains(@class,'fa fa-check')]"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.cssSelector("#dd_name_0 i.fa-edit"));
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys(cdeNameChange);
+        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
+        clickElement(By.cssSelector("#dd_def_0 .fa-edit"));
+        findElement(By.cssSelector("#dd_def_0 textarea")).sendKeys(cdeDefinitionChange);
+        clickElement(By.cssSelector("#dd_def_0 .fa-check"));
 
         clickElement(By.id("pvs_tab"));
         clickElement(By.xpath("//*[@id = 'dd_uom']//i[contains(@class,'fa fa-edit')]"));
@@ -66,7 +67,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent(cdeName + cdeNameChange);
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 
-
     }
 
     @Test(dependsOnMethods = {"editCde"})
@@ -75,43 +75,5 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
         Assert.assertTrue(response.contains("64YoxVrtASF"), "Actual: " + response);
     }
-
-    @Test
-    public void doNotSaveIfPendingChanges() {
-        mustBeLoggedInAs(ctepCurator_username, password);
-        String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
-        goToCdeByName(cdeName);
-        clickElement(By.cssSelector("i.fa-edit"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys("[name change number 1]");
-        clickElement(By.cssSelector(".fa-check"));
-        clickElement(By.linkText("Classification"));
-        Assert.assertFalse(findElement(By.id("addClassification")).isEnabled());
-        showAllTabs();
-        clickElement(By.id("properties_tab"));
-        clickElement(By.id("addProperty"));
-        findElement(By.name("key")).sendKeys("MyKey2");
-        findElement(By.name("value")).sendKeys("MyValue2");
-        clickElement(By.id("createProperty"));
-        textPresent("Property added. Save to confirm.");
-        closeAlert();
-        modalGone();
-        clickElement(By.id("removeProperty-0"));
-        clickElement(By.id("confirmRemoveProperty-0"));
-        textPresent("Property removed. Save to confirm.");
-        closeAlert();
-        clickElement(By.linkText("Identifiers"));
-        clickElement(By.id("addId"));
-        findElement(By.name("source")).sendKeys("MyOrigin1");
-        findElement(By.name("id")).sendKeys("MyId1");
-        findElement(By.name("version")).sendKeys("MyVersion1");
-        clickElement(By.id("createId"));
-        textPresent("Identifier added. Save to confirm.");
-        modalGone();
-        closeAlert();
-        clickElement(By.id("removeId-1"));
-        clickElement(By.id("confirmRemoveId-1"));
-        textPresent("Identifier removed. Save to confirm.");
-    }
-
 
 }
