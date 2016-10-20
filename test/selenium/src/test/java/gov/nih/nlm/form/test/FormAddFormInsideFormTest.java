@@ -36,11 +36,11 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         textPresent("Embedded Form: new inner form label");
 
         String odmResponse = get(baseUrl + "/form/m1j_L1HHte?type=xml&subtype=odm").asString();
-        Assert.assertEquals(odmResponse.contains("new inner form label"), true);
+        Assert.assertEquals(odmResponse.contains(newFormLabel), true, "Actual: " + odmResponse);
 
         String sdcResponse = get(baseUrl + "/form/m1j_L1HHte?type=xml&subtype=sdc").asString();
-        Assert.assertEquals(sdcResponse.contains(newFormLabel), true);
-        Assert.assertEquals(sdcResponse.contains("Symptomology"), true);
+        Assert.assertEquals(sdcResponse.contains(newFormLabel), true, "Actual: " + sdcResponse);
+        Assert.assertEquals(sdcResponse.contains("Symptomology"), true, "Actual: " + sdcResponse);
     }
 
 }
