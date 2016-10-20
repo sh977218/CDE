@@ -16,9 +16,10 @@ public class ForkTest extends NlmCdeBaseTest {
     }
 
     void addToCdeName(String toAdd) {
-        clickElement(By.xpath("//div[@id='nameEdit']//i"));
-        findElement(By.xpath("//div[@id='nameEdit']//input")).sendKeys(toAdd);
-        clickElement(By.xpath("//div[@id='nameEdit']//button[contains(text(),'Confirm')]"));
+        clickElement(By.id("naming_tab"));
+        clickElement(By.cssSelector("#dd_name_0 i"));
+        findElement(By.cssSelector("#dd_name_0 input")).sendKeys(toAdd);
+        clickElement(By.cssSelector("#dd_name_0 .fa-check"));
         newCdeVersion();
     }
 
