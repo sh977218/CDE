@@ -15,7 +15,6 @@ angular.module('cdeModule').controller('ForkCtrl', ['$scope', '$http', '$uibModa
     };
     
     $scope.$on('loadForks', function() {
-        $log.debug("load fork event " + $scope.elt.tinyId);
         if (!$scope.forks) {
             getForks();
         }

@@ -33,6 +33,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
+        scrollToViewById("orgListName-Training");
         clickElement(By.xpath("//span/span[contains(.,'doYouSeeThis')]/i"));
         textPresent("Org has been updated");
 
