@@ -6,6 +6,6 @@
     <input id="submit" type="submit" ng-click="save()" class="btn btn-success"
            value="Save" ng-disabled="isClean() || createCde.$invalid || validationErrors() !== null">
     </input>
-    <button class="btn btn-default done" ng-click="close()" id="closeModal">Cancel</button>
+    <button class="btn btn-default done" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
 
 </div>
