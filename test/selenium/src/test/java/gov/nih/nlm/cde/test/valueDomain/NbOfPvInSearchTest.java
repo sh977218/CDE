@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.valueDomain;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,8 +18,9 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest {
         Assert.assertEquals(findElement(By.cssSelector("td.nbOfPVs")).getText(), "249");
         findElement(By.id("searchSettings")).click();
         textPresent("Number of Permissible Values (PVs)");
+        wait.until(ExpectedConditions.elementSelectionStateToBe(By.id("nbOfPVs"), true));
         findElement(By.id("nbOfPVs")).click();
-        Assert.assertFalse(findElement(By.id("nbOfPVs")).isSelected());
+        wait.until(ExpectedConditions.elementSelectionStateToBe(By.id("nbOfPVs"), false));
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
         textNotPresent("249");
