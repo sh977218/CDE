@@ -76,6 +76,32 @@ public class SkipLogicTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Imaging OCT Analysis - Spectralis Report Analysis";
         goToFormByName(formName);
+        clickElement(By.id("description_tab"));
+        textPresent("Macula volume (OD)");
+        clickElement(By.id("question_accordion_0_2"));
+        scrollToViewById("question_accordion_0_2");
+        textPresent("Optical coherence tomography (OCT) oculus dexter (OD) macula volume measurement");
+
+        String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
+
+        editSkipLogic(inputXpath, "\"Indicate date of reference scan\"", 2, 2,
+                true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
+
+        String incorrectSkipLogicString = findElement(By.xpath(inputXpath)).getText();
+        String correctSkipLogicString = incorrectSkipLogicString.replace("{{MM/DD/YYYY}}", "10/11/2016");
+
+        findElement(By.xpath(inputXpath)).clear();
+        hangon(1);
+        findElement(By.xpath(inputXpath)).sendKeys(correctSkipLogicString);
+        textNotPresent("Unexpected number of tokens");
+        textNotPresent("is not a valid date for");
+        saveForm();
+
+        goToFormByName(formName);
+        textNotPresent("Macula volume (OD)");
+
     }
 
 }
