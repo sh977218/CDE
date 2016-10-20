@@ -179,7 +179,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             },
             select: function () {
                 setCurrentTab();
-                $log.debug("select on forks");
                 $scope.forkCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadForks');});
             },
             show:false,
@@ -256,9 +255,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             service = DataElement;
             query = {deId: route.cdeId};
         }
-        $log.debug("loading CDE " + query.tinyId);
         service.get(query, function(de) {
-            $log.debug(de);
             $scope.elt = de;
             $scope.loadValueSet();
             $scope.canLinkPvFunc();
