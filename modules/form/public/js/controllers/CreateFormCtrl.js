@@ -12,5 +12,25 @@ angular.module('formModule').controller('CreateFormCtrl', ['$scope', '$window', 
 
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
         $scope.openFormInNewTab = true;
+
+        $scope.$on('$locationChangeStart', function (event) {
+            if (!$scope.saving) {
+                var txt = "You have unsaved changes, are you sure you want to leave this page? ";
+                if (window.debugEnabled) {
+                    txt = txt + window.location.pathname;
+                }
+                var answer = confirm(txt);
+                if (!answer) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        $scope.save = function () {
+            $scope.saving = true;
+            Form.save($scope.elt, function (form) {
+                $location.url("formView?tinyId=" + form.tinyId);
+            });
+        };
         
     }]);

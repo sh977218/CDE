@@ -483,6 +483,23 @@ exports.init = function (app) {
         }
     });
 
+    app.get('/user/avatar/:username', function(req, res) {
+       mongo_data_system.userByName(req.params.username, function(err, u) {
+            res.send(u && u.avatarUrl?u.avatarUrl:"");
+       });
+    });
+
+    app.post('/updateUserAvatar', function (req, res) {
+        if (req.isAuthenticated() && req.user.siteAdmin) {
+            usersrvc.updateUserAvatar(req.body, function (err) {
+                if (err) res.status(500).end();
+                else res.status(200).end();
+            });
+        } else {
+            res.status(401).send();
+        }
+    });
+
     app.get('/siteaccountmanagement', exportShared.nocacheMiddleware, function (req, res) {
         if (app.isLocalIp(getRealIp(req)) && req.user && req.user.siteAdmin) {
             res.render('siteaccountmanagement', "system");

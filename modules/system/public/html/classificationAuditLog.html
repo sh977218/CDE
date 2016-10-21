@@ -19,9 +19,15 @@
                 <span ng-if="edit.elements.length > 1">Elements</span></dt>
             <dd>
                 <span ng-if="edit.elements.length>1">{{edit.elements.length}} elements: </span>
-                <span ng-repeat="e in edit.elements track by $index">
-                    <a ng-if="e._id" target="_blank" href="/#/deview?cdeId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
-                    <a ng-if="e.tinyId" target="_blank" href="/#/deview?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                <span ng-repeat="e in edit.elements track by $index" ng-switch="e.eltType">
+                    <span ng-switch-when="cde">
+                        <a ng-if="e._id" target="_blank" href="/deview?cdeId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                        <a ng-if="e.tinyId" target="_blank" href="/deview?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                    </span>
+                    <span ng-switch-when="form">
+                        <a ng-if="e._id" target="_blank" href="/formView?formId={{e._id}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                        <a ng-if="e.tinyId" target="_blank" href="/formView?tinyId={{e.tinyId}}">{{e.name || "Element " +  ($index + 1)}}</a>
+                    </span>
                     <span ng-if="$index < edit.elements.length-1">, </span>
                 </span>
             </dd>
