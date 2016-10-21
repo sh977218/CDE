@@ -1,6 +1,6 @@
 angular.module('formModule').controller('CreateFormAbstractCtrl',
-    ['$scope', '$location', '$uibModal', 'Form', 'userResource',
-        function ($scope, $location, $modal, Form, userResource) {
+    ['$scope', '$location', '$uibModal', 'userResource',
+        function ($scope, $location, $modal, userResource) {
             $scope.openCdeInNewTab = true;
             $scope.module = "form";
             $scope.searchForm = {};
@@ -9,19 +9,6 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
             if (userResource.userOrgs.length === 1) {
                 $scope.elt.stewardOrg.name = userResource.userOrgs[0];
             }
-
-            $scope.$on('$locationChangeStart', function (event) {
-                if (!$scope.saving) {
-                    var txt = "You have unsaved changes, are you sure you want to leave this page? ";
-                    if (window.debugEnabled) {
-                        txt = txt + window.location.pathname;
-                    }
-                    var answer = confirm(txt);
-                    if (!answer) {
-                        event.preventDefault();
-                    }
-                }
-            });
 
             $scope.validationErrors = function () {
                 if (!$scope.elt.naming[0].designation) {
@@ -62,7 +49,6 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                     }
                 }
             };
-
 
             $scope.openSelectDefaultClassificationModal = function () {
                 var modalInstance = $modal.open({
@@ -116,13 +102,6 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
 
                 modalInstance.result.then(function () {
                     $scope.removeClassification(orgName, pathArray);
-                });
-            };
-
-            $scope.save = function () {
-                $scope.saving = true;
-                Form.save($scope.elt, function (form) {
-                    $location.url("formView?tinyId=" + form.tinyId);
                 });
             };
 

@@ -13,6 +13,7 @@ import java.util.List;
 import static com.jayway.restassured.RestAssured.get;
 
 public class ClassificationMgt2Test extends BaseClassificationTest {
+
     @Test
     public void reclassify() {
         String oldClassification = "OldClassification";
