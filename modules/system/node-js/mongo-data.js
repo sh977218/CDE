@@ -447,10 +447,10 @@ exports.mailStatus = function(user, cb){
 exports.addToClassifAudit = function(msg) {
     var persistClassifRecord = function(err, elt) {
         if (!elt) return;
+        msg.elements[0].eltType = elt.formElements?'form':'cde';
         msg.elements[0].name = elt.naming[0].designation;
         msg.elements[0].status = elt.registrationState.registrationStatus;
-        var classifRecord = new classificationAudit(msg);
-        classifRecord.save();
+        new classificationAudit(msg).save();
     };
     daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]) {
