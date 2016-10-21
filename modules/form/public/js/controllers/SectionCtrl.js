@@ -250,12 +250,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     }
                 }).result.then(function(){
                         question.question = newQuestion.question;
-                        if (newQuestion.label.length > 0) {
-                            question.label = newQuestion.label;
-                            question.hideLabel = false;
-                        } else {
-                            question.hideLabel = true;
-                        }
+                        question.label = newQuestion.label;
                         $scope.stageElt();
                 });
             });

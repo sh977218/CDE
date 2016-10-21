@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('UpdateCdeRefVersionCtrl', ['$scope', '$uibModalInstance', '$http',
     'currentQuestion', 'newQuestion',
-    function ($scope, $modalInstance, $http, currentQuestion, newQuestion) {
+    function ($scope, $http, currentQuestion, newQuestion) {
         $scope.emptyStringToNull = function (convert) {
             if (convert === '')
                 return null;
