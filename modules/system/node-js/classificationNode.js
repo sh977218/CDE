@@ -99,7 +99,7 @@ exports.modifyOrgClassification = function(request, action, callback) {
                                 , user: {
                                     username: "unknown"
                                 }
-                                , elements: result.map(function(e){return {tinyId: e.tinyId, eltType: e.formElements?"form":"cde"};})
+                                , elements: result.map(function(e){return {tinyId: e.tinyId, eltType: dao.type};})
                                 , action: action
                                 , path: [request.orgName].concat(request.categories)
                                 , newname: request.newname
