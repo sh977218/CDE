@@ -6,7 +6,7 @@ public class CdeCommentTest3 extends CdeCommentTest {
         
     @Test
     public void cdeComments() {
-        comments("Hospital Confidential Institution Referred From");
+        comments("Hospital Confidential Institution Referred From Facility Number Code");
     }
 
     @Test

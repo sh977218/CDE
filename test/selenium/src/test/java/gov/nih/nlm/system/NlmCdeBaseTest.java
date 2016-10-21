@@ -446,7 +446,15 @@ public class NlmCdeBaseTest {
             hangon(2);
             findElement(by).click();
         } catch (WebDriverException e) {
-            Integer value = ((Long) ((JavascriptExecutor) driver).executeScript("return window.scrollY;")).intValue();
+            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
+            Integer value;
+            if (yCoordinate instanceof Double) {
+                value = ((Double) yCoordinate).intValue();
+            } else {
+                Long yCoordinateLong = (Long) yCoordinate;
+                value = yCoordinateLong.intValue();
+            }
             scrollTo(value + 100);
             try {
                 findElement(by).click();
@@ -474,7 +482,10 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
-            if (elts.size() > 0) elts.get(0).click();
+            for (WebElement elt : elts) {
+                elt.click();
+            }
+            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button.close"))));
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
