@@ -10,11 +10,9 @@ angular.module('formModule').controller('CreateFormFromBoardModalCtrl',
             label: "",
             formElements: []
         }];
+
         $scope.myOrgs = userResource.userOrgs;
         $controller('CreateFormAbstractCtrl', {$scope: $scope});
-        $scope.close = function () {
-            $modalInstance.dismiss('cancel');
-        };
 
         $scope.save = function () {
             $http.get('/board/' + board._id + "/0/500").success(function(data) {
