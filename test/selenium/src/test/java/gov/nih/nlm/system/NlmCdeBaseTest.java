@@ -481,11 +481,11 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
+            List<WebElement> elts = driver.findElements(By.xpath("//*[@id='alertBar']//*[contains(@class,'cdeAlert')]"));
             for (WebElement elt : elts) {
                 elt.click();
             }
-            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button.close"))));
+            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='alertBar']//*[contains(@class,'cdeAlert')]"))));
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
