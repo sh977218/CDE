@@ -4,7 +4,7 @@
     <div tabindex="0" ng-if="elt.referenceDocuments.length === 0">There are no reference documents.</div>
     <div ng-repeat="rd in elt.referenceDocuments">
         <div class="row">
-            <div class="col-md-1 text-right" ng-if="canCurate">
+            <div class="col-xs-1 text-right" ng-if="canCurate">
                 <div class="row">
                     <span ng-show="showDelete">Confirm Delete
                         <span class="btn-default fa fa-check"
@@ -19,34 +19,34 @@
                     <div sortable-array="elt.referenceDocuments" index="$index" cb="stageElt(elt)"></div>
                 </div>
             </div>
-            <div class="col-md-11">
+            <div class="col-xs-11">
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">ID:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_id_{{$index}}">{{rd.referenceDocumentId}}</div>
+                    <div tabindex="0" class="col-xs-2 text-right text_label">ID:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_id_{{$index}}">{{rd.referenceDocumentId}}</div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">Title:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_title_{{$index}}">{{rd.title}}</div>
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Title:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_title_{{$index}}">{{rd.title}}</div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">URI:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_uri_{{$index}}">
+                    <div tabindex="0" class="col-xs-2 text-right text_label">URI:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_uri_{{$index}}">
                         <a href="{{rd.uri}}">{{rd.uri}}</a>
                     </div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">Provider Org:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_providerOrg_{{$index}}">{{rd.providerOrg}}
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Provider Org:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_providerOrg_{{$index}}">{{rd.providerOrg}}
                     </div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">Language Code:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_languageCode_{{$index}}">{{rd.languageCode}}
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Language Code:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_languageCode_{{$index}}">{{rd.languageCode}}
                     </div>
                 </div>
                 <div class="row">
-                    <div tabindex="0" class="col-md-2 text-right text_label">Document:</div>
-                    <div tabindex="0" class="col-md-10" id="rd_document_{{$index}}">{{rd.document}}
+                    <div tabindex="0" class="col-xs-2 text-right text_label">Document:</div>
+                    <div tabindex="0" class="col-xs-10" id="rd_document_{{$index}}">{{rd.document}}
                     </div>
                 </div>
             </div>
