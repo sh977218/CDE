@@ -7,7 +7,7 @@ var mongo_form = require('../modules/form/node-js/mongo-form'),
 
 function doStream(dao) {
     var i = 0;
-    var stream = mongo_cde.getStream({"comments.1": {$exists: true}});
+    var stream = mongo_cde.getStream({"comments.0": {$exists: true}});
     stream.on('data', function (elt) {
         console.log(i++);
         stream.pause();
