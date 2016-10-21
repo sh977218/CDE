@@ -2,6 +2,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
     function ($scope, $http, userResource) {
 
         $scope.newComment = {};
+        var socket = io.connect('http://localhost:3001');
+        socket.emit('openedDiscussion', {
+            user: userResource.user,
+            tinyId: $scope.elt.tinyId
+        });
 
         $scope.avatarUrls = {};
         function addAvatar(username) {
@@ -70,11 +75,6 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
-        var socket = io.connect('http://localhost:3001');
-        socket.emit('openedDEDiscussion', {
-            user: userResource.user,
-            tinyId: $scope.elt.tinyId
-        });
         socket.on("deCommentAdded", function (data) {
             Alert.addAlert("success", "someone added a comment: " + data.comment.text);
         });
@@ -85,7 +85,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 reply: reply,
                 element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
-                socket.emit("addDEComment", {
+                socket.emit("addComment", {
                     user: userResource.user,
                     tinyId: $scope.elt.tinyId,
                     text: reply
@@ -97,7 +97,13 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 });
                 $scope.elt = res.data.elt;
             });
-
         };
+
+        $scope.$on("$destroy", function () {
+            socket.emit('closedDiscussion', {
+                user: userResource.user,
+                tinyId: $scope.elt.tinyId
+            });
+        });
     }
 ]);

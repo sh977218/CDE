@@ -225,21 +225,26 @@ domain.run(function(){
     server.listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
-    var currentOpenDEConnections = {};
+    var currentOpenConnections = {};
     require('socket.io')(server).on('connection', function (socket) {
-        socket.on("openedDEDiscussion", function (deDiscussion) {
-            console.log(deDiscussion.user.username + ' connected to socket IO');
-            var conns = currentOpenDEConnections[deDiscussion.tinyId];
-            if (!conns)
-                conns = currentOpenDEConnections[deDiscussion.tinyId] = [];
-            conns.push(socket);
+        socket.on("openedDiscussion", function (discussion) {
+            console.log(discussion.user.username + ' connected to socket IO on '
+                + discussion.tinyId);
+            var connection = currentOpenConnections[discussion.tinyId];
+            if (!connection) connection = currentOpenConnections[discussion.tinyId] = [];
+            else connection.push(socket);
         });
-        socket.on('addDEComment', function (deComment) {
-            console.log(deComment.user.username + " added comment to : " + deComment.tinyId);
-            console.log(deComment.user.username + " added comment : " + deComment.text);
-            currentOpenDEConnections[deComment.tinyId].forEach(function (conn) {
-                conn.socket.emit("deCommentAdded",
-                    {tinyId: deComment.tinyId, comment: deComment.comment});
+        socket.on("closedDiscussion", function (discussion) {
+            console.log(discussion.user.username + ' disconnected to socket IO on '
+                + discussion.tinyId);
+            var connection = currentOpenConnections[discussion.tinyId];
+            if (connection) delete currentOpenConnections[discussion.tinyId];
+        });
+        socket.on('addComment', function (comment) {
+            console.log(comment.user.username + " added comment to : "
+                + comment.tinyId + " , comment: " + comment.text);
+            currentOpenConnections[comment.tinyId].forEach(function (conn) {
+                conn.socket.emit("deCommentAdded", comment);
             })
         });
     })
