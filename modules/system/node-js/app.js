@@ -1045,4 +1045,13 @@ exports.init = function (app) {
         timeZone: "America/New_York"
     }).start();
 
+
+    app.get('/comments/tinyId/:tinyId', function (req, res) {
+        mongo_system.Comments.find({"element.eltId": req.params.tinyId}, function(err, comments) {
+            res.send(comments);
+        })
+    });
+
+
+
 };

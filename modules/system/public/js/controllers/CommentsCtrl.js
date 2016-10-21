@@ -1,6 +1,14 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource',
     function ($scope, $http, userResource) {
 
+        function loadComments() {
+            $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
+                 $scope.eltComments = result.data;
+            });
+        }
+
+        loadComments();
+
         $scope.newComment = {};
 
         $scope.avatarUrls = {};
