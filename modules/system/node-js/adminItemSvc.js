@@ -203,22 +203,25 @@ exports.addComment = function (req, res, dao) {
             if (!elt || err) {
                 res.status(404).send("Element does not exist.");
             } else {
-                var comment = {
+                var comment = new mongo_data_system.Comment({
                     user: req.user._id
                     , username: req.user.username
                     , created: new Date().toJSON()
                     , text: req.body.comment
-                };
+                    , element: {
+                        eltType: dao.type,
+                        eltId: req.body.element.tinyId
+                    }
+                });
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var details = {
                         element: {tinyId: req.body.element.tinyId, name: elt.naming[0].designation, eltType: dao.type}
-                        , comment: {index: elt.comments.length, text: req.body.comment}
+                        , comment: {commentId: comment._id, text: comment.text}
                     };
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
-                elt.comments.push(comment);
-                elt.save(function (err) {
+               comment.save(function (err, newComment) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
                             origin: "system.adminItemSvc.addComment",
@@ -226,8 +229,8 @@ exports.addComment = function (req, res, dao) {
                         });
                         res.status(500).send(err);
                     } else {
-                        exports.hideUnapprovedComments(elt);
-                        res.send({message: "Comment added", elt: elt});
+                        //exports.hideUnapprovedComments(elt);
+                        res.send({message: "Comment added"});
                     }
                 });
             }

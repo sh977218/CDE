@@ -2,6 +2,8 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
     function($scope, $http, userResource)
 {
 
+
+
     $scope.comment = {};
         
     $scope.canRemoveComment = function(com) {

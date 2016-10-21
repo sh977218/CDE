@@ -232,7 +232,11 @@ schemas.commentSchema = new mongoose.Schema({
             , pendingApproval: Boolean
             , status: {type: String, enum: ["active", "resolved"]}
         }
-    ]
+    ],
+    element: {
+        eltType: {type: String, enum: ["cde", "form"]},
+        eltId: String
+    }
 });
 
 schemas.helpItemSchema = new mongoose.Schema({
