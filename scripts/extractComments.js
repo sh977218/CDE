@@ -16,16 +16,12 @@ function doStream(dao) {
                 eltType: "cde",
                 eltId: elt.tinyId
             };
-            mongo_data.Comments.find({_id: c._id}, function (err, res) {
-                if (res.length === 0) {
-                    new mongo_data.Comments(c).save(function (err) {
-                        if (err) {
-                            console.log(err);
-                            process.exit(1);
-                        }
-                        oneDone();
-                    });
+            mongo_data.Comments.update({_id: c._id}, c, {upsert: true}, function (err) {
+                if (err) {
+                    console.log(err);
+                    process.exit(1);
                 }
+                oneDone();
             });
         }, function allDone() {
             stream.resume();

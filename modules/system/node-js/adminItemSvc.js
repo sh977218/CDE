@@ -221,7 +221,7 @@ exports.addComment = function (req, res, dao) {
                             name: elt.naming[0].designation, eltType: dao.type
                         },
                         comment: {
-                            index: elt.comments.length,
+                            commentId: comment._id,
                             text: req.body.comment
                         }
                     };
@@ -248,45 +248,39 @@ exports.addComment = function (req, res, dao) {
 
 exports.replyToComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
-        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+        mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
-                res.status(404).send("Element does not exist.");
+                return res.status(404).send("Comment not found");
             }
-            elt.comments.forEach(function (comment, i) {
-                if (comment._id == req.body.commentId) {
-                    var reply = {
-                        user: req.user._id,
-                        username: req.user.username,
-                        created: new Date().toJSON(),
-                        text: req.body.reply
-                    };
-                    if (!authorizationShared.canComment(req.user)) {
-                        reply.pendingApproval = true;
-                        var details = {
-                            element: {
-                                tinyId: req.body.element.tinyId,
-                                name: elt.naming[0].designation,
-                                eltType: dao.type
-                            },
-                            comment: {index: i, text: req.body.reply}
-                        };
-                        exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
-                    }
-                    if (!comment.replies) comment.replies = [];
-                    comment.replies.push(reply);
-                    elt.markModified("comments");
-                    elt.save(function (err) {
-                        if (err) {
-                            logging.errorLogger.error("Error: Cannot add comment.", {
-                                origin: "system.adminItemSvc.addComment",
-                                stack: new Error().stack
-                            });
-                            res.status(500).send(err);
-                        } else {
-                            exports.hideUnapprovedComments(elt);
-                            res.send({message: "Reply added", elt: elt});
-                        }
+            var reply = {
+                user: req.user._id,
+                username: req.user.username,
+                created: new Date().toJSON(),
+                text: req.body.reply
+            };
+            if (!authorizationShared.canComment(req.user)) {
+                reply.pendingApproval = true;
+                var details = {
+                    element: {
+                        tinyId: req.body.element.tinyId,
+                        name: elt.naming[0].designation,
+                        eltType: dao.type
+                    },
+                    comment: {index: i, text: req.body.reply}
+                };
+                exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
+            }
+            if (!comment.replies) comment.replies = [];
+            comment.replies.push(reply);
+            comment.save(function (err) {
+                if (err) {
+                    logging.errorLogger.error("Error: Cannot add comment.", {
+                        origin: "system.adminItemSvc.addComment",
+                        stack: new Error().stack
                     });
+                    res.status(500).send(err);
+                } else {
+                    res.send({message: "Reply added"});
                 }
             });
         });
@@ -295,39 +289,32 @@ exports.replyToComment = function (req, res, dao) {
     }
 };
 
-exports.removeComment = function (req, res, dao) {
+exports.removeComment = function (req, res) {
     if (req.isAuthenticated()) {
-        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+        mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
-                res.status(404).send("Element does not exist.");
+                return res.status(404).send("Comment not found");
             }
-            function removeComment(elt, id) {
-                var result;
-                elt.comments.forEach(function (c, ci) {
-                    if (c._id.toString() === id) {
-                        result = c;
-                        result.type = 'Comment';
-                        elt.comments.splice(ci, 1);
-                    } else if (c.replies) {
-                        c.replies.forEach(function (r, ri) {
-                            if (r._id.toString() === id) {
-                                result = r;
-                                result.type = 'Reply';
-                                c.replies.splice(ri, 1);
-                            }
-                        });
-                    }
-                });
-                return result;
+
+            var removedComment;
+            if (req.body.replyId) {
+                if (comment.replies) {
+                    comment.replies.forEach(function (r, ri) {
+                        if (r._id.toString() === req.body.replyId) {
+                            removedComment = r.status;
+                        }
+                    });
+                }
+            } else {
+                removedComment = comment;
             }
-            var removedComment = removeComment(elt, req.body.commentId);
+            removedCommment.status = "deleted";
             if (removedComment) {
                 if (req.user.username === removedComment.username ||
                     (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
                     req.user.siteAdmin
                 ) {
-                    elt.markModified("comments");
-                    elt.save(function (err) {
+                    comment.save(function (err) {
                         if (err) {
                             logging.errorLogger.error("Error: Cannot remove " + removedComment.type + ".", {
                                 origin: "system.adminItemSvc.removeComment",
@@ -335,7 +322,7 @@ exports.removeComment = function (req, res, dao) {
                             });
                             res.status(500).send(err);
                         } else {
-                            res.send({message: removedComment.type + " removed", elt: elt});
+                            res.send({message: removedComment.type + " removed"});
                         }
                     });
                 } else {
@@ -350,37 +337,31 @@ exports.removeComment = function (req, res, dao) {
     }
 };
 
-exports.updateCommentStatus = function (req, res, status, dao) {
+exports.updateCommentStatus = function (req, res, status) {
     if (req.isAuthenticated()) {
-        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
-            if (err) {
-                res.status(404).send("Element does not exist.");
+        mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
+            if (err) return res.status(404).send("Comment not found");
+
+            var updatedComment;
+            if (req.body.replyId) {
+                if (comment.replies) {
+                    comment.replies.forEach(function (r) {
+                        if (r._id.toString() === req.body.replyId) {
+                            updatedComment = r.status;
+                        }
+                    });
+                }
+            } else {
+                updatedComment = comment;
             }
-            function updateComment(elt, id) {
-                var result;
-                elt.comments.forEach(function (c, ci) {
-                    if (c._id.toString() === id) {
-                        result = c;
-                        c.status = status;
-                    } else if (c.replies) {
-                        c.replies.forEach(function (r, ri) {
-                            if (r._id.toString() === id) {
-                                result = r;
-                                r.status = status;
-                            }
-                        });
-                    }
-                });
-                return result;
-            }
+            updatedComment.status = status;
             var updatedComment = updateComment(elt, req.body.commentId);
             if (updatedComment) {
                 if (req.user.username === updatedComment.username ||
                     (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
                     req.user.siteAdmin
                 ) {
-                    elt.markModified("comments");
-                    elt.save(function (err) {
+                    comment.save(function (err) {
                         if (err) {
                             logging.errorLogger.error("Error: Cannot Update comment.", {
                                 origin: "system.adminItemSvc.removeComment",
@@ -403,31 +384,60 @@ exports.updateCommentStatus = function (req, res, status, dao) {
     }
 };
 
-exports.declineApproveComment = function (req, res, dao, action, msg) {
+exports.declineComment = function (req, res) {
     if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
         res.status(403).send("You are not authorized to approve a comment.");
     }
-    dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
-        if (err || !elt) {
-            res.status(404).send("Cannot find element by tiny id.");
-            logging.errorLogger.error("Error: Cannot find element by tiny id.", {
-                origin: "system.adminItemSvc.approveComment",
-                stack: new Error().stack
-            }, req);
-        }
-        action(elt);
-        elt.save(function (err) {
-            if (err || !elt) {
-                res.status(404).send("Cannot save element.");
-                logging.errorLogger.error("Error: Cannot save element.", {
-                    origin: "system.adminItemSvc.approveComment",
-                    stack: new Error().stack
-                }, req);
+    mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
+        if (err) return res.status(404).send("Comment not found");
+
+        if (req.body.replyId) {
+            if (comment.replies) {
+                comment.replies.forEach(function (r, ri) {
+                    if (r._id.toString() === req.body.replyId) {
+                        comment.splice(ri, 1);
+                        comment.save(function (err) {
+                            if (err) res.status(500).send();
+                            res.send("Reply declined");
+                        });
+                    }
+                });
             }
-            res.send(msg);
-        });
+        } else {
+            comment.remove(function(err) {
+                if (err) res.status(500).send();
+                return res.send("Comment declined");
+            })
+        }
     });
 };
+
+exports.approveComment = function (req, res) {
+    if (!req.isAuthenticated() || !authorizationShared.hasRole(req.user, "CommentReviewer")) {
+        res.status(403).send("You are not authorized to approve a comment.");
+    }
+    mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
+        if (err) return res.status(404).send("Comment not found");
+
+        if (req.body.replyId) {
+            if (comment.replies) {
+                comment.replies.forEach(function (r) {
+                    if (r._id.toString() === req.body.replyId) {
+                        delete r.pendingApproval;
+                    }
+                });
+            }
+        } else {
+            delete comment.pendingApproval;
+        }
+        comment.save(function (err) {
+            if (err) res.status(500).send();
+            res.send("Approved");
+        });
+
+    });
+};
+
 
 exports.acceptFork = function (req, res, dao) {
     if (req.isAuthenticated()) {

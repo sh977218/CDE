@@ -418,18 +418,9 @@ exports.init = function (app, daoManager) {
             adminItemSvc.updateCommentStatus(req, res, "active", mongo_cde);
         });
 
-        app.post('/comments/cde/approve', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
-                elt.comments[req.body.comment.index].pendingApproval = false;
-                delete elt.comments[req.body.comment.index].pendingApproval;
-            }, "Comment approved!");
-        });
+        app.post('/comments/cde/approve', adminItemSvc.declineApproveComment);
 
-        app.post('/comments/cde/decline', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
-                elt.comments.splice(req.body.comment.index, 1);
-            }, "Comment declined!");
-        });
+        app.post('/comments/cde/decline', adminItemSvc.declineComment);
     }
 
 

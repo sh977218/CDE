@@ -20,7 +20,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema),
     ClusterStatus = conn.model('ClusterStatus', schemas.clusterStatus),
     Embeds = conn.model('Embed', schemas.embedSchema),
-    Comments = conn.model('Comment', schemas.commentSchema),
+    Comment = conn.model('Comment', schemas.commentSchema),
     gfs = Grid(conn.db, mongoose.mongo),
     sessionStore = new MongoStore({
         mongooseConnection: conn
@@ -32,7 +32,7 @@ exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
 exports.MeshClassification = MeshClassification;
-exports.Comments = Comments;
+exports.Comment = Comment;
 
 var fs_files = conn.model('fs_files', schemas.fs_files);
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);

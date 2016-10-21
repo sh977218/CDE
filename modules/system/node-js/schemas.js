@@ -223,7 +223,7 @@ schemas.commentSchema = new mongoose.Schema({
     , username: String
     , created: Date
     , pendingApproval: Boolean
-    , status: {type: String, enum: ["active", "resolved"]}
+    , status: {type: String, enum: ["active", "resolved", "deleted"]}
     , replies: [
         {
             text: String
@@ -231,7 +231,7 @@ schemas.commentSchema = new mongoose.Schema({
             , username: String
             , created: Date
             , pendingApproval: Boolean
-            , status: {type: String, enum: ["active", "resolved"]}
+            , status: {type: String, enum: ["active", "resolved", "deleted"]}
         }
     ],
     element: {
