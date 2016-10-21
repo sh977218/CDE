@@ -221,9 +221,29 @@ app.use(function(err, req, res, next){
 
 domain.run(function(){
     var server = http.createServer(app);
+    exports.server = server;
     server.listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
+    var currentOpenDEConnections = {};
+    require('socket.io')(server).on('connection', function (socket) {
+        socket.on("openedDEDiscussion", function (deDiscussion) {
+            console.log(deDiscussion.user.username + ' connected to socket IO');
+            var conns = currentOpenDEConnections[deDiscussion.tinyId];
+            if (!conns)
+                conns = currentOpenDEConnections[deDiscussion.tinyId] = [];
+            conns.push(socket);
+        });
+        socket.on('addDEComment', function (deComment) {
+            console.log(deComment.user.username + " added comment to : " + deComment.tinyId);
+            console.log(deComment.user.username + " added comment : " + deComment.text);
+            currentOpenDEConnections[deComment.tinyId].forEach(function (conn) {
+                conn.socket.emit("deCommentAdded",
+                    {tinyId: deComment.tinyId, comment: deComment.comment});
+            })
+        });
+    })
+
 });
 
 

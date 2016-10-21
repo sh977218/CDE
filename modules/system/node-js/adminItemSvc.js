@@ -9,6 +9,8 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
+    , socketIo = require('socket.io')
+    , io = require('../../../app').io;
     ;
 
 var commentPendingApprovalText = "This comment is pending approval.";
@@ -244,6 +246,7 @@ exports.addComment = function (req, res, dao) {
 };
 
 exports.replyToComment = function (req, res, dao) {
+
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
             if (err) {

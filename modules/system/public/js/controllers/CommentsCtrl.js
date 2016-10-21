@@ -70,21 +70,26 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
-
+        var socket = io.connect('http://localhost:3001');
+        socket.emit('openedDEDiscussion', {
+            user: userResource.user,
+            tinyId: $scope.elt.tinyId
+        });
+        socket.on("deCommentAdded", function (data) {
+            Alert.addAlert("success", "someone added a comment: " + data.comment.text);
+        });
+        
         $scope.replyTo = function (commentId, reply, showReplies) {
-
-            var socket = io.connect('http://localhost:3001');
-
-            socket.on('news', function (data) {
-                console.log(data);
-                socket.emit('my other event', {my: 'data'});
-            });
-
             $http.post("/comments/" + $scope.module + "/reply", {
                 commentId: commentId,
                 reply: reply,
                 element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
+                socket.emit("addDEComment", {
+                    user: userResource.user,
+                    tinyId: $scope.elt.tinyId,
+                    text: reply
+                });
                 $scope.addAlert("success", res.data.message);
                 res.data.elt.comments.forEach(function (c) {
                     if (c._id === commentId)

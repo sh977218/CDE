@@ -30,7 +30,6 @@ var passport = require('passport')
     ;
 
 exports.init = function (app) {
-
     var getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
@@ -1044,5 +1043,5 @@ exports.init = function (app) {
         start: false,
         timeZone: "America/New_York"
     }).start();
-
+    
 };
