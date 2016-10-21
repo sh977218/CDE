@@ -40,6 +40,7 @@ angular.module('cdeModule').controller('UpdateCdeRefVersionCtrl', ['$scope', '$u
                 $scope.bMulti = currentQuestion.question.multiselect != newQuestion.question.multiselect;
                 $scope.bValuelist = !angular.equals(currentQuestion.question.cde.permissibleValues,
                     newQuestion.question.cde.permissibleValues);
+                if (!$scope.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
             } else {
                 $scope.bMulti = $scope.bValuelist = true;
             }

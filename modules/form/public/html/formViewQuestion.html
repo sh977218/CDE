@@ -17,7 +17,8 @@
                         <small>(part of score)</small>
                     </span>
                     <span ng-if="question.question.cde.outdated" class="error-block"> (Outdated)
-                        <button ng-click="updateCdeVersion(question);$event.preventDefault();$event.stopPropagation();">
+                        <button id="question_update_{{sectionIndex}}_{{questionIndex}}"
+                                ng-click="updateCdeVersion(question);$event.preventDefault();$event.stopPropagation();">
                             Update
                         </button>
                     </span>

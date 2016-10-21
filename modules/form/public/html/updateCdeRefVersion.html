@@ -7,14 +7,14 @@
     <div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
-            <div class="col-sm-8" id="mdd_question_title_{{$index}}">
+            <div class="col-sm-8" id="mdd_question_title">
                 <span ng-class="{mark: bLabel}">{{newQuestion.label | placeHoldEmpty}}</span>
                 <span ng-if="bLabel" class="red">( was {{ currentQuestion.label }} )</span>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
-            <div class="col-sm-8" id="mdd_datatype_{{$index}}">
+            <div class="col-sm-8" id="mdd_datatype">
                 <span ng-class="{mark: bDatatype}">{{newQuestion.question.datatype | placeHoldEmpty }}</span>
                 <span ng-if="bDatatype" class="red">( was {{currentQuestion.question.datatype}} )</span>
             </div>
@@ -22,7 +22,7 @@
         <div ng-if="newQuestion.question.datatype ==='Number'">
             <div class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
-                <div class="col-sm-8" id="mdd_minimal_{{$index}}">
+                <div class="col-sm-8" id="mdd_minimal">
                     <span ng-class="{mark: bNumberMin}">
                         {{newQuestion.question.datatypeNumber.minValue | placeHoldEmpty }}</span>
                     <span ng-if="bNumberMin" class="red">
@@ -31,7 +31,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
-                <div class="col-sm-8" id="mdd_maximal_{{$index}}">
+                <div class="col-sm-8" id="mdd_maximal">
                     <span ng-class="{mark: bNumberMax}">
                         {{newQuestion.question.datatypeNumber.maxValue | placeHoldEmpty }}</span>
                     <span ng-if="bNumberMax" class="red">
@@ -41,7 +41,7 @@
         </div>
         <div class="row" ng-show="newQuestion.question.datatype === 'Value List'">
             <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
-            <div class="col-sm-8" id="mdd_question_multi_{{$index}}">
+            <div class="col-sm-8" id="mdd_question_multi">
                 <input type="checkbox" ng-model="newQuestion.question.multiselect" ng-disabled="!canCurate"
                        ng-class="{mark: bMulti}" ng-click="stageElt()"/>
                 <span ng-if="bMulti" class="red">
@@ -52,7 +52,7 @@
         </div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Units of Measures:</div>
-            <div class="col-sm-8" ng-switch="newQuestion.question.uoms.length > 0" id="mdd_q_uoms_{{$index}}">
+            <div class="col-sm-8" ng-switch="newQuestion.question.uoms.length > 0" id="mdd_q_uoms">
                 <span ng-class="{mark: bUom}" ng-switch-when="true">
                     <span ng-repeat="uom in newQuestion.question.uoms">
                           <span id="mq_uom_list_{{$index}}" inline-edit model="newQuestion.question.uoms[$index]"
@@ -65,7 +65,7 @@
                     <span ng-switch="currentQuestion.question.uoms.length > 0">
                         <span ng-switch-when="true">
                             <span ng-repeat="uom in currentQuestion.question.uoms">
-                                <span id="mq_uom_list_{{$index}}" inline-edit model="currentQuestion.question.uoms[$index]"
+                                <span id="mq_old_uom_list_{{$index}}" inline-edit model="currentQuestion.question.uoms[$index]"
                                       is-allowed="canCurate" on-ok="checkUom(question, $index)">
                                 </span>
                             </span>
@@ -78,27 +78,27 @@
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
             <div class="col-sm-8" ng-switch="newQuestion.question.datatype === 'Value List'"
-                 id="mdd_q_defaultAnswer_{{$index}}">
+                 id="mdd_q_defaultAnswer">
                 <span ng-class="{mark: bDefault}" ng-switch-when="true">
-                    <select ng-model="newQuestion.question.defaultAnswer" id="mq_default_answer_{{$index}}"
+                    <select ng-model="newQuestion.question.defaultAnswer" id="mq_default_answer"
                             ng-disabled="!canCurate" ng-change="stageElt()"
                             ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in newQuestion.question.answers"></select>
                 </span>
                 <span ng-class="{mark: bDefault}" ng-switch-default>
-                    <span id="mq_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate"
+                    <span id="mq_defaultAnswer_text" inline-edit is-allowed="canCurate"
                          on-ok="stageElt()"
                          model="newQuestion.question.defaultAnswer"></span>
                 </span>
                 <span ng-if="bDefault" class="red">( was
                     <span ng-switch="currentQuestion.question.datatype === 'Value List'">
                         <span ng-switch-when="true">
-                            <select ng-model="currentQuestion.question.defaultAnswer" id="mq_default_answer_{{$index}}"
+                            <select ng-model="currentQuestion.question.defaultAnswer" id="mq_old_default_answer"
                                     ng-disabled="!canCurate" ng-change="stageElt()"
                                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in currentQuestion.question.answers">
                             </select>
                         </span>
                         <span ng-switch-default>
-                            <span id="mq_defaultAnswer_text_{{$index}}" inline-edit is-allowed="canCurate"
+                            <span id="mq_old_defaultAnswer_text" inline-edit is-allowed="canCurate"
                                   on-ok="stageElt()" model="currentQuestion.question.defaultAnswer">
                             </span>
                         </span>
@@ -108,22 +108,22 @@
         </div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
-            <div class="col-sm-8" id="mdd_d_cde_{{$index}}">
+            <div class="col-sm-8" id="mdd_d_cde">
                 <a ng-class="{mark: bCde}" href="/#/deview?tinyId={{newQuestion.question.cde.tinyId}}&version={{newQuestion.question.cde.version}}"
                    target="_blank"><i class="fa fa-eye"></i>
-                    <span id="mdd_question_cde_name_{{$index}}">{{newQuestion.question.cde.name}}</span>
+                    <span id="mdd_question_cde_name">{{newQuestion.question.cde.name}}</span>
                 </a>
                 <span ng-if="bCde" class="red">( was
                     <a style="color: red" href="/#/deview?tinyId={{currentQuestion.question.cde.tinyId}}&version={{currentQuestion.question.cde.version}}"
                        target="_blank"><i class="fa fa-eye"></i>
-                        <span>{{currentQuestion.question.cde.name}}</span>
+                        <span id="mdd_old_question_cde_name">{{currentQuestion.question.cde.name}}</span>
                     </a> )
                 </span>
             </div>
         </div>
         <div class="row answerList" ng-if="newQuestion.question.datatype === 'Value List'">
             <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
-            <div class="col-sm-8">
+            <div class="col-sm-8" id="mdd_d_answers">
                 <ui-select ng-class="{mark: bValuelist}" multiple ng-model="newQuestion.question.answers" theme="select2"
                            ng-disabled="!canCurate" on-remove="stageElt()"
                            on-select="stageElt()">
