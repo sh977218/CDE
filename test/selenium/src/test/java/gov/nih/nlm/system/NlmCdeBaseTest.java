@@ -481,10 +481,8 @@ public class NlmCdeBaseTest {
 
     public void closeAlert() {
         try {
-            List<WebElement> elts = driver.findElements(By.xpath("//*[@id='alertBar']//*[contains(@class,'cdeAlert')]"));
-            for (WebElement elt : elts) {
-                elt.click();
-            }
+            List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
+            if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
