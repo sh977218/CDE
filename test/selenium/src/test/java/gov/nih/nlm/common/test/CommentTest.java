@@ -45,7 +45,6 @@ public abstract class CommentTest extends CommonTest {
             clickElement(By.id("replyBtn_2"));
             textPresent("Reply added");
             closeAlert();
-            textNotPresent("Reply added");
             textPresent("Reply to very long comment " + i);
         }
         for (int j = 6; j <= 10; j++) {
