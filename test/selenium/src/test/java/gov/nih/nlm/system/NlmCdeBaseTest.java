@@ -485,7 +485,6 @@ public class NlmCdeBaseTest {
             for (WebElement elt : elts) {
                 elt.click();
             }
-            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='alertBar']//*[contains(@class,'cdeAlert')]"))));
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }
