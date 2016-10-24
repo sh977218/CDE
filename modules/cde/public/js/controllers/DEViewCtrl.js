@@ -175,19 +175,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             show: false,
             hideable: true
         },
-        forks: {
-            heading: "Forks",
-            includes: ['/cde/public/html/forks.html'],
-            if: function () {
-                return !$scope.elt.isForkOf;
-            },
-            select: function () {
-                setCurrentTab();
-                $scope.forkCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadForks');});
-            },
-            show:false,
-            hideable: true
-        },
         dataSet: {
             heading: "Dataset",
             includes: ['/cde/public/html/cdeDataset.html'],
