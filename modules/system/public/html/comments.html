@@ -5,7 +5,7 @@
         <form role="form" name="commentForm" id="commentForm" novalidate>
             <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>
             <textarea tabindex="0" name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
-                      ng-model="newComment.content" placeholder="Join the discussion..."></textarea>
+                      ng-model="newComment.content" placeholder="Join the discussion..." required></textarea>
             <input tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
                    value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
         </form>

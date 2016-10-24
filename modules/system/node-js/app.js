@@ -1052,6 +1052,12 @@ exports.init = function (app) {
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');
             });
+            result.forEach(function (c) {
+                if (c.pendingApproval) c.text = "This comment is pending approval";
+                c.replies.forEach(function (r) {
+                    if (r.pendingApproval) r.text = "This comment is pending approval";
+                });
+            });
             res.send(result);
         })
     });

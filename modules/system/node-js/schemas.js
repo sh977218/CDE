@@ -265,7 +265,11 @@ var commentApprovalSchema = {
         , name: String
         , eltType: {type: String, enum: ["cde", "form"]}
     }
-    , comment: {index: Number, text: String}
+    , comment: {
+        commentId: String,
+        replyIndex: Number,
+        text: String
+    }
 };
 
 schemas.message = new mongoose.Schema({

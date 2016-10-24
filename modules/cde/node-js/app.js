@@ -48,7 +48,6 @@ exports.init = function (app, daoManager) {
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_cde.cdesByTinyIdList(req.body, function (err, cdes) {
-            cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
     });
@@ -83,7 +82,6 @@ exports.init = function (app, daoManager) {
         cdesvc.show(req, res, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryCodes(result, req.user);
-            adminItemSvc.hideUnapprovedComments(cde);
             res.send(cde);
         });
     });
@@ -108,7 +106,6 @@ exports.init = function (app, daoManager) {
 
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
-            adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryCodes(cde, req.user);
             if (!req.query.type) sendNativeJson(cde, res);
             else if (req.query.type === 'json') sendNativeJson(cde, res);
@@ -429,7 +426,6 @@ exports.init = function (app, daoManager) {
 
     app.post('/desByConcept', function (req, res) {
         mongo_cde.desByConcept(req.body, function (result) {
-            result.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdesvc.hideProprietaryCodes(result, req.user));
         });
     });

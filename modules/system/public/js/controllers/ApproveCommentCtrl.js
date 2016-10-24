@@ -1,8 +1,9 @@
 angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal',
     function($scope, $http, Mail, $modal) {
-        $scope.approveComment = function(msg) {
 
-        $http.post('/comments/approve', msg.typeCommentApproval).
+    $scope.approveComment = function(msg) {
+
+        $http.post('/comments/approve', {commentId: msg.typeCommentApproval.comment.commentId}).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);

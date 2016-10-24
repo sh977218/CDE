@@ -11,8 +11,6 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , streamifier = require('streamifier')
     ;
 
-var commentPendingApprovalText = "This comment is pending approval.";
-
 exports.save = function (req, res, dao, cb) {
     var elt = req.body;
     if (req.isAuthenticated()) {
@@ -227,7 +225,7 @@ exports.addComment = function (req, res, dao) {
                     };
                     exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
                 }
-               comment.save(function (err, newComment) {
+               comment.save(function (err) {
                     if (err) {
                         logging.errorLogger.error("Error: Cannot add comment.", {
                             origin: "system.adminItemSvc.addComment",
@@ -235,7 +233,6 @@ exports.addComment = function (req, res, dao) {
                         });
                         res.status(500).send(err);
                     } else {
-                        //exports.hideUnapprovedComments(elt);
                         res.send({message: "Comment added."});
                     }
                 });
@@ -258,6 +255,7 @@ exports.replyToComment = function (req, res) {
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
+            if (!comment.replies) comment.replies = [];
             if (!authorizationShared.canComment(req.user)) {
                 reply.pendingApproval = true;
                 var details = {
@@ -265,11 +263,14 @@ exports.replyToComment = function (req, res) {
                         tinyId: req.body.element.tinyId,
                         name: elt.naming[0].designation
                     },
-                    comment: {index: i, text: req.body.reply}
+                    comment: {
+                        commentId: commentId,
+                        replyIndex: comment.replies.length,
+                        text: req.body.reply
+                    }
                 };
                 exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
             }
-            if (!comment.replies) comment.replies = [];
             comment.replies.push(reply);
             comment.save(function (err) {
                 if (err) {
@@ -298,7 +299,7 @@ exports.removeComment = function (req, res) {
             var removedComment;
             if (req.body.replyId) {
                 if (comment.replies) {
-                    comment.replies.forEach(function (r, ri) {
+                    comment.replies.forEach(r => {
                         if (r._id.toString() === req.body.replyId) {
                             removedComment = r;
                         }
@@ -415,18 +416,18 @@ exports.approveComment = function (req, res) {
         res.status(403).send("You are not authorized to approve a comment.");
     }
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-        if (err) return res.status(404).send("Comment not found");
+        if (err || !comment) return res.status(404).send("Comment not found");
 
         if (req.body.replyId) {
             if (comment.replies) {
-                comment.replies.forEach(function (r) {
+                comment.replies.forEach(r => {
                     if (r._id.toString() === req.body.replyId) {
                         delete r.pendingApproval;
                     }
                 });
             }
         } else {
-            delete comment.pendingApproval;
+            comment.pendingApproval = false;
         }
         comment.save(function (err) {
             if (err) res.status(500).send();
@@ -550,13 +551,6 @@ exports.hideProprietaryIds = function(elt) {
             }
         });
     }
-};
-
-exports.hideUnapprovedComments = function (adminItem) {
-    if (!adminItem || !adminItem.comments) return;
-    adminItem.comments.forEach(function (c) {
-        if (c.pendingApproval) c.text = commentPendingApprovalText;
-    });
 };
 
 exports.removeAttachmentLinks = function (id, collection) {
