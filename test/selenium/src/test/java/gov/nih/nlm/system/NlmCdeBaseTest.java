@@ -482,10 +482,7 @@ public class NlmCdeBaseTest {
     public void closeAlert() {
         try {
             List<WebElement> elts = driver.findElements(By.cssSelector("button.close"));
-            for (WebElement elt : elts) {
-                elt.click();
-            }
-            wait.until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button.close"))));
+            if (elts.size() > 0) elts.get(0).click();
         } catch (Exception e) {
             System.out.println("Could not close alert");
         }

@@ -13,9 +13,9 @@ public class FindRetiredById extends NlmCdeBaseTest {
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
+        textPresent("Retired elements are not returned in searches");
         clickElement(By.id("saveRegStatus"));
         closeAlert();
-
         driver.get(url);
     }
 
