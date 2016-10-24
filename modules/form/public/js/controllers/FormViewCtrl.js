@@ -638,6 +638,21 @@ angular.module('formModule').controller
             }
         };
         loopFormElements($scope.elt);
-    }
+    };
+
+    $scope.copyElt = function() {
+        var modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/cdeCopyModal.html',
+            controller: 'FormCopyModalCtrl',
+            resolve: {
+                elt: function() {return $scope.elt;}
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+
+        });
+    };
 
 }]);
