@@ -80,6 +80,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         $scope.replyTo = function (commentId, reply, showReplies) {
             $http.post("/comments/reply", {
                 commentId: commentId,
+                eltName: $scope.elt.naming[0].designation,
                 reply: reply
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);

@@ -262,11 +262,11 @@ exports.replyToComment = function (req, res) {
                 reply.pendingApproval = true;
                 var details = {
                     element: {
-                        tinyId: req.body.element.tinyId,
-                        name: elt.naming[0].designation
+                        tinyId: comment.element.eltId,
+                        name: req.body.eltName
                     },
                     comment: {
-                        commentId: commentId,
+                        commentId: comment._id,
                         replyIndex: comment.replies.length,
                         text: req.body.reply
                     }
@@ -392,17 +392,15 @@ exports.declineComment = function (req, res) {
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
         if (err) return res.status(404).send("Comment not found");
 
-        if (req.body.replyId) {
-            if (comment.replies) {
-                comment.replies.forEach(function (r, ri) {
-                    if (r._id.toString() === req.body.replyId) {
-                        comment.splice(ri, 1);
-                        comment.save(function (err) {
-                            if (err) res.status(500).send();
-                            res.send("Reply declined");
-                        });
-                    }
+        if (req.body.replyIndex) {
+            if (comment.replies && comment.replies.length > replyIndex) {
+                comment.replies.splice(req.body.replyIndex, 1);
+                comment.save(function (err) {
+                    if (err) res.status(500).send();
+                    res.send("Reply declined");
                 });
+            } else {
+                res.status(401).send();
             }
         } else {
             comment.remove(function(err) {
@@ -420,13 +418,9 @@ exports.approveComment = function (req, res) {
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
         if (err || !comment) return res.status(404).send("Comment not found");
 
-        if (req.body.replyId) {
-            if (comment.replies) {
-                comment.replies.forEach(r => {
-                    if (r._id.toString() === req.body.replyId) {
-                        delete r.pendingApproval;
-                    }
-                });
+        if (req.body.replyIndex) {
+            if (comment.replies && comment.replies.length > req.body.replyIndex) {
+                comment.replies[req.body.replyIndex].pendingApproval = false;
             }
         } else {
             comment.pendingApproval = false;

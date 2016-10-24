@@ -1,7 +1,10 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+
+import java.util.List;
 
 public abstract class CommentTest extends CommonTest {
 
@@ -242,6 +245,40 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textNotPresent(commentText);
+    }
+
+    public void approveReply(String eltName) {
+        String commentText = "Top Level Comment";
+        String replyText = "Very Innocent Reply";
+        String censoredText = "This comment is pending approval.";
+        mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
+        goToEltByName(eltName);
+        clickElement(By.id("discussBtn"));
+        addCommentNeedApproval(commentText);
+
+        findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        hangon(2);
+        clickElement(By.id("replyBtn_0"));
+        textPresent("Reply added");
+        closeAlert();
+        textNotPresent(replyText);
+
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        clickElement(By.id("incomingMessage"));
+
+
+        List<WebElement> elts = findElements(By.linkText("comment approval | reguser"));
+        Assert.assertTrue(elts.size() > 1);
+
+
+        String preClass = "";
+        try {
+            textPresent(eltName);
+        } catch (Exception e) {
+            preClass = "uib-accordion:nth-child(2) ";
+            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
+            textPresent(commentText);
+        }
 
     }
 
