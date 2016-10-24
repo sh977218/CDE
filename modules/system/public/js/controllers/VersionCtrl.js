@@ -38,7 +38,7 @@ angular.module('systemModule').controller('SaveModalCtrl', ['$scope', 'elt', '$h
                 if (lastVersion !== $scope.elt.version) return;
                 $scope.saveForm.version.$setValidity('unique', !data);
             }).error(function () {
-                if (lastVersion !== scope.elt.version) return;
+                if (lastVersion !== $scope.elt.version) return;
                 $scope.saveForm.version.$setValidity('unique', false);
             });
         });

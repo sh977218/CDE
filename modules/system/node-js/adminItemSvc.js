@@ -233,7 +233,9 @@ exports.addComment = function (req, res, dao) {
                         });
                         res.status(500).send(err);
                     } else {
-                        res.send({message: "Comment added."});
+                        var message = "Comment added.";
+                        if (comment.pendingApproval) message += " Approval required."
+                        res.send({message: message});
                     }
                 });
             }
