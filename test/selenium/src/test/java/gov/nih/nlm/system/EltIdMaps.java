@@ -67,6 +67,7 @@ public class EltIdMaps {
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
+        eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
