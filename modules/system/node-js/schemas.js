@@ -165,6 +165,7 @@ schemas.userSchema = new mongoose.Schema({
     }
     , accessToken: String
     , refreshToken: String
+    , avatarUrl: String
 });
 
 schemas.orgSchema.set('collection', 'orgs');

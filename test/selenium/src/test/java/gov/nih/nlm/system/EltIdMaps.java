@@ -48,6 +48,12 @@ public class EltIdMaps {
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
+        eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
+        eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
+        eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
 
         // Forms
         eltMap.put("Empty Section Form", "Q1CSvNQhW");

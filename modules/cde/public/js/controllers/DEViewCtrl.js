@@ -32,6 +32,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
         $scope.currentTab = thisTab;
     }
 
+    $scope.switchCommentMode = function(){
+        $scope.commentMode = !$scope.commentMode;
+    };
+
     $scope.tabs = {
         general: {
             heading: "General Details",
@@ -120,14 +124,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },
         mappingSpecifications: {
             heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
-        },
-        discussions: {
-            heading: "Discussions", includes: ['/system/public/html/comments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },
