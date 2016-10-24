@@ -10,7 +10,9 @@ public class FormCdeUpdateTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Form Cde Update Test";
         goToFormByName(formName);
+        textPresent("Some CDEs in this form have newer version.");
         clickElement(By.id("description_tab"));
+        textPresent("(Outdated)", By.id("question_0"));
         clickElement(By.id("question_accordion_0_0"));
         clickElement(By.id("question_update_0_0"));
         textPresent("FormCdeUpdateTest", By.id("mdd_question_title"));
@@ -25,7 +27,7 @@ public class FormCdeUpdateTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         clickElement(By.id("question_accordion_0_0"));
-        textNotPresent("Update");
+        textNotPresent("(Outdated)", By.id("question_0"));
         textPresent("letters");
     }
 }
