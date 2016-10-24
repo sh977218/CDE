@@ -1016,6 +1016,9 @@ div + .questionPlaceholder {
     border-left: 5px solid black;
 }
 
+.floatLeft {
+    float: left;
+}
 .codeCell {
     word-wrap: break-word;
     /*min-width: 8%;*/

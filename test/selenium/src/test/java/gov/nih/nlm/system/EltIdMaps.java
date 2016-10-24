@@ -58,8 +58,10 @@ public class EltIdMaps {
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
+        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
 
