@@ -52,7 +52,6 @@ public abstract class CommentTest extends CommonTest {
             clickElement(By.id("replyBtn_2"));
             textPresent("Reply added");
             closeAlert();
-            textNotPresent("Reply added");
             textPresent("Show all " + j + " replies");
         }
         clickElement(By.id("showAllRepliesButton-2-3"));
