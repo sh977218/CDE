@@ -246,7 +246,7 @@ exports.addComment = function (req, res, dao) {
     }
 };
 
-exports.replyToComment = function (req, res, dao) {
+exports.replyToComment = function (req, res) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
@@ -263,8 +263,7 @@ exports.replyToComment = function (req, res, dao) {
                 var details = {
                     element: {
                         tinyId: req.body.element.tinyId,
-                        name: elt.naming[0].designation,
-                        eltType: dao.type
+                        name: elt.naming[0].designation
                     },
                     comment: {index: i, text: req.body.reply}
                 };
@@ -301,15 +300,15 @@ exports.removeComment = function (req, res) {
                 if (comment.replies) {
                     comment.replies.forEach(function (r, ri) {
                         if (r._id.toString() === req.body.replyId) {
-                            removedComment = r.status;
+                            removedComment = r;
                         }
                     });
                 }
             } else {
                 removedComment = comment;
             }
-            removedCommment.status = "deleted";
             if (removedComment) {
+                removedComment.status = "deleted";
                 if (req.user.username === removedComment.username ||
                     (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
                     req.user.siteAdmin
@@ -322,14 +321,14 @@ exports.removeComment = function (req, res) {
                             });
                             res.status(500).send(err);
                         } else {
-                            res.send({message: removedComment.type + " removed"});
+                            res.send({message: "Comment removed"});
                         }
                     });
                 } else {
                     res.send({message: "You can only remove " + removedComment.type + " you own."});
                 }
             } else {
-                res.status(404).send(removedComment.type + " not found")
+                res.status(404).send("Comment not found")
             }
         });
     } else {
@@ -347,16 +346,15 @@ exports.updateCommentStatus = function (req, res, status) {
                 if (comment.replies) {
                     comment.replies.forEach(function (r) {
                         if (r._id.toString() === req.body.replyId) {
-                            updatedComment = r.status;
+                            updatedComment = r;
                         }
                     });
                 }
             } else {
                 updatedComment = comment;
             }
-            updatedComment.status = status;
-            var updatedComment = updateComment(elt, req.body.commentId);
             if (updatedComment) {
+                updatedComment.status = status;
                 if (req.user.username === updatedComment.username ||
                     (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
                     req.user.siteAdmin
@@ -369,7 +367,7 @@ exports.updateCommentStatus = function (req, res, status) {
                             });
                             res.status(500).send(err);
                         } else {
-                            res.send({message: "Saved.", elt: elt});
+                            res.send({message: "Saved."});
                         }
                     });
                 } else {

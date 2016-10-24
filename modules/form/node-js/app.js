@@ -77,35 +77,6 @@ exports.init = function (app, daoManager) {
         app.post('/comments/form/add', function (req, res) {
             adminItemSvc.addComment(req, res, mongo_form);
         });
-
-        app.post('/comments/form/reply', function (req, res) {
-            adminItemSvc.replyToComment(req, res, mongo_form);
-        });
-
-        app.post('/comments/form/remove', function (req, res) {
-            adminItemSvc.removeComment(req, res, mongo_form);
-        });
-
-        app.post('/comments/form/status/resolved', function (req, res) {
-            adminItemSvc.updateCommentStatus(req, res, "resolved", mongo_form);
-        });
-
-        app.post('/comments/form/status/active', function (req, res) {
-            adminItemSvc.updateCommentStatus(req, res, "active", mongo_form);
-        });
-
-        app.post('/comments/form/approve', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_form, function (elt) {
-                elt.comments[req.body.comment.index].pendingApproval = false;
-                delete elt.comments[req.body.comment.index].pendingApproval;
-            }, "Comment approved!");
-        });
-
-        app.post('/comments/form/decline', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_form, function (elt) {
-                elt.comments.splice(req.body.comment.index, 1);
-            }, "Comment declined!");
-        });
     }
 
     app.post('/elasticSearchExport/form', function (req, res) {

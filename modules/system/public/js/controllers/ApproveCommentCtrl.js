@@ -1,6 +1,8 @@
-angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal', function($scope, $http, Mail, $modal) {
-    $scope.approveComment = function(msg) {
-        $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/approve', msg.typeCommentApproval).
+angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal',
+    function($scope, $http, Mail, $modal) {
+        $scope.approveComment = function(msg) {
+
+        $http.post('/comments/approve', msg.typeCommentApproval).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);
@@ -36,7 +38,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     };
 
     $scope.declineComment = function(msg) {
-        $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/decline', msg.typeCommentApproval).
+        $http.post('/comments/decline', msg.typeCommentApproval).
             success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);

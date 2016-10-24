@@ -53,44 +53,41 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
                 $scope.newComment.content = "";
             });
         };
 
-        $scope.removeComment = function (commentId) {
-            $http.post("/comments/" + $scope.module + "/remove", {
-                commentId: commentId,
-                element: {tinyId: $scope.elt.tinyId}
-            }).then(function (res) {
+        $scope.removeComment = function (commentId, replyId) {
+            $http.post("/comments/remove", {commentId: commentId, replyId: replyId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
             });
         };
 
         $scope.updateCommentStatus = function (commentId, status) {
-            $http.post("/comments/" + $scope.module + "/status/" + status, {
-                commentId: commentId
-                , element: {tinyId: $scope.elt.tinyId}
-            }).then(function (res) {
+            $http.post("/comments/status/" + status, {commentId: commentId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
             });
         };
-
-
+        $scope.updateReplyStatus = function (commentId, replyId, status) {
+            $http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).then(function (res) {
+                $scope.addAlert("success", res.data.message);
+                loadComments();
+            });
+        };
         $scope.replyTo = function (commentId, reply, showReplies) {
-            $http.post("/comments/" + $scope.module + "/reply", {
+            $http.post("/comments/reply", {
                 commentId: commentId,
-                reply: reply,
-                element: {tinyId: $scope.elt.tinyId}
+                reply: reply
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                res.data.elt.comments.forEach(function (c) {
+                loadComments();
+                $scope.eltComments.forEach(function (c) {
                     if (c._id === commentId)
                         c.showReplies = showReplies;
                 });
-                $scope.elt = res.data.elt;
             });
 
         };

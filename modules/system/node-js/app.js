@@ -1048,10 +1048,28 @@ exports.init = function (app) {
 
     app.get('/comments/tinyId/:tinyId', function (req, res) {
         mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}, function(err, comments) {
-            res.send(comments);
+            var result = comments.filter(c => c.status !== 'deleted');
+            result.forEach(function (c) {
+                c.replies = c.replies.filter(r => r.status !== 'deleted');
+            });
+            res.send(result);
         })
     });
 
+    app.post('/comments/approve', adminItemSvc.approveComment);
+
+    app.post('/comments/decline', adminItemSvc.declineComment);
+
+    app.post('/comments/remove', function (req, res) {
+        adminItemSvc.removeComment(req, res);
+    });
+    app.post('/comments/status/resolved', function (req, res) {
+        adminItemSvc.updateCommentStatus(req, res, "resolved");
+    });
+    app.post('/comments/status/active', function (req, res) {
+        adminItemSvc.updateCommentStatus(req, res, "active");
+    });
+    app.post('/comments/reply', adminItemSvc.replyToComment);
 
 
 };
