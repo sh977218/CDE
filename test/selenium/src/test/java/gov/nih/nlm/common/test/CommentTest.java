@@ -6,12 +6,22 @@ import org.testng.Assert;
 public abstract class CommentTest extends CommonTest {
 
     private void addComment(String text) {
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
         hangon(2);
         clickElement(By.id("postComment"));
+        textPresent(text);
         textPresent("Comment added");
+    }
+
+    private void addCommentNeedApproval(String text) {
+        clickElement(By.id("discussBtn"));
+        findElement(By.name("commentTextArea")).sendKeys(text);
+        hangon(2);
+        clickElement(By.id("postComment"));
+        textNotPresent(text);
+        textPresent("This comment is pending approval.");
+        textPresent("Comment added. Approval required.");
         closeAlert();
     }
 
@@ -24,42 +34,61 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
-        // this effectively waits for the angular repeat to get reloaded and avoids stale elt reference.
 
-        clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
-        findElement(By.name("replyTextArea")).sendKeys("Reply to First comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
+        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
+        clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
 
-        clickElement(By.xpath("(//*[@data-type='topComment'])[1]//*[@data-type='reply']/a"));
-        findElement(By.name("replyTextArea")).sendKeys("Second reply to First comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
-        textPresent("Comment added");
+        for (int i = 1; i <= 5; i++) {
+            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + i);
+            clickElement(By.id("replyBtn_2"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Reply to very long comment " + i);
+        }
+        for (int j = 6; j <= 10; j++) {
+            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + j);
+            clickElement(By.id("replyBtn_2"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Show all " + j + " replies");
+        }
+        clickElement(By.id("showAllRepliesButton-2-3"));
+        for (int k = 3; k <= 10; k++)
+            textPresent("Reply to very long comment " + k);
+
+        findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
+        clickElement(By.id("replyBtn_0"));
+        textPresent("Reply added");
         closeAlert();
 
-        clickElement(By.xpath("(//*[@data-type='topComment'])[2]//*[@data-type='reply']/a"));
-        findElement(By.name("replyTextArea")).sendKeys("Reply to another comment");
-        clickElement(By.cssSelector("#replyForm .btn-primary"));
-        textPresent("Comment added");
+        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
+        clickElement(By.id("replyBtn_0"));
+        textPresent("Reply added");
         closeAlert();
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
+        clickElement(By.id("replyBtn_1"));
+        textPresent("Reply added");
+        closeAlert();
+
+        clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to First comment", By.cssSelector(".strike"));
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[1]//a[@data-type='reopen']"));
+        clickElement(By.id("reopenReply-0-0"));
         textPresent("Saved");
         closeAlert();
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[2]//*[@data-type='replyComment'])[1]//a[@data-type='resolve']"));
+        clickElement(By.id("resolveReply-1-0"));
         textPresent("Saved");
         closeAlert();
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
-        clickElement(By.xpath("((//*[@data-type='topComment'])[1]//*[@data-type='replyComment'])[2]//a[@data-type='remove']"));
-        textPresent("Comment removed");
+        clickElement(By.id("removeReply-0-1"));
+        textPresent("Reply removed");
         closeAlert();
 
         textPresent("My First Comment!");
@@ -78,8 +107,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -100,8 +128,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         loginAs(nlm_username, nlm_password);
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
         for (int i = 0; i < length; i++) {
             if (commentText.equals(findElement(By.id("commentText-" + i)).getText())) {
@@ -116,16 +143,13 @@ public abstract class CommentTest extends CommonTest {
 
     public void approvingComments(String eltName, String status, String user) {
         String commentText = "Very Innocent Comment";
-        String censoredText = "pending approval";
+        String censoredText = "This comment is pending approval.";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        addComment(commentText);
-        textNotPresent(commentText);
-        textPresent(censoredText);
+        addCommentNeedApproval(commentText);
         logout();
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(commentText);
         textPresent(censoredText);
 
@@ -162,7 +186,7 @@ public abstract class CommentTest extends CommonTest {
         logout();
         goToEltByName(eltName, status);
         showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textPresent(commentText);
 
@@ -183,12 +207,10 @@ public abstract class CommentTest extends CommonTest {
 
     public void declineComment(String eltName, String status, String user) {
         String commentText = "Bad Comment";
-        String censoredText = "pending approval";
+        String censoredText = "This comment is pending approval.";
         mustBeLoggedInAs(user, anonymousCommentUser_password);
         goToEltByName(eltName, status);
-        addComment(commentText);
-        textNotPresent(commentText);
-        textPresent(censoredText);
+        addCommentNeedApproval(commentText);
         logout();
 
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
@@ -217,8 +239,7 @@ public abstract class CommentTest extends CommonTest {
 
         logout();
         goToEltByName(eltName, status);
-        showAllTabs();
-        clickElement(By.id("discussions_tab"));
+        clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textNotPresent(commentText);
 

@@ -48,6 +48,12 @@ public class EltIdMaps {
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
+        eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
+        eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
+        eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
+        eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
+        eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
 
         // Forms
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
@@ -58,8 +64,10 @@ public class EltIdMaps {
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
+        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
 

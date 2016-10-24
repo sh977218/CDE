@@ -28,50 +28,61 @@
                 <span ng-if="!$last">,</span></li>
         </ul>
     </div>
+    <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <h3>{{elt.naming[0].designation}}
+            <div class="btn-group" ng-if="elt.tinyId">
+                <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-download"></i>
+                    Export <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-if="user._id">
+                        <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
+                    </li>
+                    <li ng-if="user._id">
+                        <a id='odmExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File,
+                            ODM Schema</a>
+                    </li>
+                    <li ng-if="user._id">
+                        <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
+                            XML File, SDC Schema</a>
+                    </li>
+                    <li ng-if="user._id">
+                        <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE
+                            Schema</a>
+                    </li>
+                    <li ng-if="user._id && enableBeta">
+                        <a id='nihRedCap' ng-href="form/{{elt.tinyId}}?type=REDCap" target="_blank">
+                            REDCap <sup class="betaFeature">beta</sup></a>
+                    </li>
+                    <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
+                </ul>
+            </div>
 
-    <h3>{{elt.naming[0].designation}}
-        <div class="btn-group" ng-if="elt.tinyId">
-            <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-download"></i>
-                Export <span class="caret"></span>
+            <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
+                    ng-if="user._id" ng-click="pinAllCdesModal()">
+                <i class="fa fa-cogs"></i> Pin CDEs
             </button>
-            <ul class="dropdown-menu">
-                <li ng-if="user._id">
-                    <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
-                </li>
-                <li ng-if="user._id">
-                    <a id='odmExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File, ODM Schema</a>
-                </li>
-                <li ng-if="user._id">
-                    <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
-                        XML File, SDC Schema</a>
-                </li>
-                <li ng-if="user._id">
-                    <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE Schema</a>
-                </li>
-                <li ng-if="user._id && enableBeta">
-                    <a id='nihRedCap' ng-href="form/{{elt.tinyId}}?type=REDCap" target="_blank">
-                        REDCap <sup class="betaFeature">beta</sup></a>
-                </li>
-                <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
-            </ul>
-        </div>
 
-        <button class="btn btn-small btn-default" target="_blank" title="Pin CDEs" id="pinAllCdes"
-                ng-if="user._id" ng-click="pinAllCdesModal()">
-            <i class="fa fa-cogs"></i> Pin CDEs
-        </button>
-    </h3>
+            <button class="btn btn-small btn-default" role="button" tabindex="0"
+                    ng-click="switchCommentMode()" title="Discuss Form" id="discussBtn">
+                <i class="fa fa-comment"></i> Discuss
+            </button>
+        </h3>
 
-    <uib-tabset>
-        <uib-tab ng-repeat="(tabName, tab) in tabs" active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
-                 id="{{tabName}}_tab" select="tab.select(tabName)">
-            <uib-tab-heading ng-class="tab.class">{{tab.heading}}</uib-tab-heading>
-            <div ng-repeat="incl in tab.includes" ng-include="incl"/>
-        </uib-tab>
-    </uib-tabset>
-
+        <uib-tabset>
+            <uib-tab ng-repeat="(tabName, tab) in tabs" active="tab.active" ng-if="(tab.if?tab.if():true)&&tab.show"
+                     id="{{tabName}}_tab" select="tab.select(tabName)">
+                <uib-tab-heading ng-class="tab.class">{{tab.heading}}</uib-tab-heading>
+                <div ng-repeat="incl in tab.includes" ng-include="incl"/>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+    <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
+         style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+        <div ng-include="'/system/public/html/comments.html'" style="padding:30px;"></div>
+    </div>
     <div class="row" ng-controller="VersionCtrl">
         <div class="col-md-12" ng-show="elt.unsaved">
             <hr/>

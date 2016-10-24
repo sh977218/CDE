@@ -1,72 +1,228 @@
 <div ng-controller="CommentsCtrl">
     <br/>
-
     <div tabindex="0" ng-if="!user._id">Please <a tabindex="0" href="/#/login">log in</a> to comment.</div>
     <div ng-if="user._id">
         <form role="form" name="commentForm" id="commentForm" novalidate>
             <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>
             <textarea tabindex="0" name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
-                      ng-model="comment.content" placeholder="Join the discussion..." required></textarea>
-            <br/>
+                      ng-model="newComment.content" placeholder="Join the discussion..."></textarea>
             <input tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
-                   value="Post Comment"
-                   ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
+                   value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
         </form>
     </div>
     <br/>
 
-    <div ng-repeat="comment in elt.comments">
-        <div class="row" data-type="topComment">
-            <div class="col-xs-1">
-                <img class="pull-right" src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
-            </div>
-            <div class="col-xs-11">
-                <strong tabindex="0">{{comment.username}}</strong> -
-                <small tabindex="0" class="gray">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</small> -
-                <a tabindex="0" ng-show="canRemoveComment(comment)" ng-click="removeComment(comment._id)" data-type="remove">
-                    <i class="fa fa-trash-o" id="removeComment-{{$index}}"></i> Remove</a>
-                <a tabindex="0" ng-show="canResolveComment(comment)" ng-click="updateCommentStatus(comment._id, 'resolved')">
-                    <i class="fa fa-check-circle-o" id="resolveComment-{{$index}}"></i> Resolve</a>
-                <a tabindex="0" ng-show="canReopenComment(comment)" ng-click="updateCommentStatus(comment._id, 'active')">
-                    <i class="fa fa-undo" id="reopenComment-{{$index}}"></i> Reopen</a>
+    <div class="comment" ng-repeat="(commentIndex, comment) in elt.comments">
+        <div class="rootComment">
+            <div class="commentBody">
+                <div class="commentHeader">
+                    <table style="width: 100%;">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <img ng-src="{{avatarUrls[comment.username]}}" width="32" height="32"
+                                     alt="portrait"/>
+                                <div ng-class="{'user-online':user.isOnline,'user-offline':!user.isOnline}"></div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div>
+                                        <div>{{comment.username}}</div>
+                                        <div>
+                                            {{comment.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                        </div>
 
-                <div id="commentText-{{$index}}" ng-class="{strike: comment.status === 'resolved'}">{{comment.text}}</div>
-
-                <div class="row" ng-repeat="reply in comment.replies" data-type="replyComment">
-                    <div class="col-xs-1">
-                        <img src="/cde/public/assets/img/portrait.png" width="50" alt="portrait"/>
-                    </div>
-                    <div class="col-xs-11">
-                        <strong tabindex="0">{{reply.username}}</strong> -
-                        <small tabindex="0" class="gray">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</small>
-                        <a tabindex="0" ng-show="canRemoveComment(reply)" ng-click="removeComment(reply._id)" data-type="remove"> -
-                            <i class="fa fa-trash-o" id="removeReply-{{$index}}"></i> Remove</a>
-                        <a tabindex="0" ng-show="canResolveComment(reply)" ng-click="updateCommentStatus(reply._id, 'resolved')"
-                           data-type="resolve">
-                            <i class="fa fa-check-circle-o"></i> Resolve</a>
-                        <a tabindex="0" ng-show="canReopenComment(reply)" ng-click="updateCommentStatus(reply._id, 'active')"
-                           data-type="reopen">
-                            <i class="fa fa-undo" id="reopenReply-{{$index}}"></i> Reopen</a>
-
-                        <div id="replyText-{{$index}}" ng-class="{strike: reply.status === 'resolved'}">{{reply.text}}</div>
-                    </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                   id="removeComment-{{commentIndex}}"
+                                   ng-show="canRemoveComment(comment)"
+                                   ng-click="removeComment(comment._id)" data-type="remove"></i>
+                                <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                   id="resolveComment-{{commentIndex}}"
+                                   ng-show="canResolveComment(comment)"
+                                   ng-click="updateCommentStatus(comment._id, 'resolved')"></i>
+                                <i class="fa fa-undo hand-cursor" title="Reopen"
+                                   id="reopenComment-{{commentIndex}}"
+                                   ng-show="canReopenComment(comment)"
+                                   ng-click="updateCommentStatus(comment._id, 'active')"></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <div data-type="reply"><a href ng-click="comment.openReply = true"><i class="fa fa-reply"> Reply</i></a></div>
-                <div ng-if="comment.openReply">
-                    <form role="form" name="replyForm" id="replyForm" novalidate>
-                        <textarea ng-model="comment.tempReply" name="replyTextArea" class="form-control" rows="3"
-                                  placeholder="Reply to this comment" required></textarea>
-                        <div>
-                            <button class="btn btn-primary" ng-click="replyTo(comment._id, comment.tempReply)"
-                                    ng-disabled="replyForm.replyTextArea.$invalid">Reply</button>
-                            <button class="btn btn-default" ng-click="comment.openReply = false">Cancel</button>
-                        </div>
-                    </form>
+                <div id="commentText-{{commentIndex}}" class="commentMessage"
+                     ng-class="{strike: comment.status === 'resolved'}">{{comment.text}}
                 </div>
             </div>
         </div>
-        <br/>
+        <div ng-repeat="(replyIndex, reply) in comment.replies" data-type="replyComment">
+            <div ng-if="comment.showReplies || comment.replies.length <= 5">
+                <div class="reply">
+                    <div class="commentHeader">
+                        <table style="width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <img ng-src="{{avatarUrls[reply.username]}}" width="32" height="32"
+                                         alt="portrait"/>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div>
+                                            <div>{{reply.username}}</div>
+                                            <div>
+                                                {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                       id="removeReply-{{commentIndex}}-{{replyIndex}}"
+                                       ng-show="canRemoveComment(reply)"
+                                       ng-click="removeComment(reply._id)" data-type="remove"></i>
+                                    <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                       id="resolveReply-{{commentIndex}}-{{replyIndex}}"
+                                       ng-show="canResolveComment(reply)"
+                                       ng-click="updateCommentStatus(reply._id, 'resolved')"
+                                       data-type="resolve"></i>
+                                    <i class="fa fa-undo hand-cursor" title="Reopen"
+                                       id="reopenReply-{{commentIndex}}-{{replyIndex}}"
+                                       ng-show="canReopenComment(reply)"
+                                       ng-click="updateCommentStatus(reply._id, 'active')"
+                                       data-type="reopen"></i>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="replyText-{{commentIndex}}" class="commentMessage"
+                         ng-class="{strike: reply.status === 'resolved'}">
+                        {{reply.text}}
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(comment.showReplies || comment.replies.length <= 5)">
+                <div ng-if="replyIndex < 2">
+                    <div class="reply">
+                        <div class="commentHeader">
+                            <table style="width: 100%;">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <img ng-src="{{avatarUrls[reply.username]}}" width="32" height="32"
+                                             alt="portrait"/>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div>
+                                                <div>{{reply.username}}</div>
+                                                <div>
+                                                    {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-trash-o hand-cursor" title="Remove"
+                                           id="removeReply-{{commentIndex}}-{{replyIndex}}"
+                                           ng-show="canRemoveComment(reply)"
+                                           ng-click="removeComment(reply._id)" data-type="remove"></i>
+                                        <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                           id="resolveReply-{{commentIndex}}-{{replyIndex}}"
+                                           ng-show="canResolveComment(reply)"
+                                           ng-click="updateCommentStatus(reply._id, 'resolved')"
+                                           data-type="resolve"></i>
+                                        <i class="fa fa-undo hand-cursor" title="Reopen"
+                                           id="reopenReply-{{commentIndex}}-{{replyIndex}}"
+                                           ng-show="canReopenComment(reply)"
+                                           ng-click="updateCommentStatus(reply._id, 'active')"
+                                           data-type="reopen"></i>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="replyText-{{commentIndex}}" class="commentMessage"
+                             ng-class="{strike: reply.status === 'resolved'}">
+                            {{reply.text}}
+                        </div>
+                    </div>
+                </div>
+                <div class="showRepliesButtonDiv"
+                     ng-if="!comment.showReplies && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
+                    <div class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
+                         ng-click="comment.showReplies = true">
+                        Show all {{comment.replies.length}} replies
+                    </div>
+                </div>
+                <div ng-if="replyIndex >= comment.replies.length - 2">
+                    <div class="reply">
+                        <div class="commentHeader">
+                            <table style="width: 100%;">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <img ng-src="{{avatarUrls[reply.username]}}" width="32" height="32"
+                                             alt="portrait"/>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div>
+                                                <div>{{reply.username}}</div>
+                                                <div>
+                                                    {{reply.created | date: 'MM/dd/yyyy @ h:mma'}}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-trash-o hand-cursor" title="Remove" id="removeReply-{{commentIndex}}"
+                                           ng-show="canRemoveComment(reply)"
+                                           ng-click="removeComment(reply._id)" data-type="remove"></i>
+                                        <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
+                                           id="resolveReply-{{commentIndex}}"
+                                           ng-show="canResolveComment(reply)"
+                                           ng-click="updateCommentStatus(reply._id, 'resolved')"
+                                           data-type="resolve"></i>
+                                        <i class="fa fa-undo hand-cursor" title="Reopen" id="reopenReply-{{commentIndex}}"
+                                           ng-show="canReopenComment(reply)"
+                                           ng-click="updateCommentStatus(reply._id, 'active')"
+                                           data-type="reopen"></i>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="replyText-{{commentIndex}}" class="commentMessage"
+                             ng-class="{strike: reply.status === 'resolved'}">
+                            {{reply.text}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-type="reply" class="replyInputDiv" ng-if="user._id">
+            <textarea rows="1" msd-elastic ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea"
+                      placeholder="Reply to this comment" ng-focus="comment.openReply = true"
+                      id="replyTextarea_{{commentIndex}}">
+                      </textarea>
+            <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
+                <button ng-click="replyTo(comment._id, comment.tempReply,comment.showReplies)" style="margin-left: 0"
+                        ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary"
+                        id="replyBtn_{{commentIndex}}">Reply
+                </button>
+                <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
     </div>
-    <br/>
 </div>

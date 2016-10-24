@@ -30,7 +30,6 @@ public class TourDeViewTest extends TourTest {
         getNext("may be identified multiple times across CDE users");
         getNext("If a the CDE is used in a Form, it will ");
         getNext("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
-        getNext("registered users are able to post");
         getNext("is used in a public board, the");
         getNext("If a file is attached to a CDE, it can");
         getNext("Derivation Rules are used to connect CDEs together");

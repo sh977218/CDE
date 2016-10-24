@@ -19,14 +19,20 @@ exports.myOrgs = function(user) {
 
 exports.updateUserRoles = function(user, cb) {
     mongo_data.userByName(user.username, function(err, found) {
-        if (err) {
-            cb(err);
-            return;
-        }
+        if (err) return cb(err);
         found.roles = user.roles;
-        found.save(function() {cb();});
+        found.save(cb);
     });
 };
+
+exports.updateUserAvatar = function(user, cb) {
+    mongo_data.userByName(user.username, function(err, found) {
+        if (err) return cb(err);
+        found.avatarUrl = user.avatarUrl;
+        found.save(cb);
+    });
+};
+
 
 exports.addSiteAdmin = function(req, res) {
     mongo_data.userByName(req.body.username, function(err, found) {
@@ -64,14 +70,14 @@ exports.myOrgsAdmins = function(req, res) {
                 var myOrgs = foundUser.orgAdmin;
                 for (var i = 0; i < myOrgs.length; i++) {
                     var usersList = [];
-                    for (var j in users) {
-                        if (users[j].orgAdmin.indexOf(myOrgs[i]) > -1) {
+                    users.forEach(function (u) {
+                        if (u.orgAdmin.indexOf(myOrgs[i]) > -1) {
                             usersList.push({
-                                "username": users[j].username
-                                , "_id": users[j]._id
+                                "username": u.username
+                                , "_id": u._id
                             });
                         }
-                    }
+                    });
                     if (usersList.length > 0) {
                         result.orgs.push({
                             "name": myOrgs[i]

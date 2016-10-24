@@ -132,7 +132,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         }
     };
 
-    $scope.evaluateSkipLogic = function (rule, formElements) {
+    $scope.evaluateSkipLogic = function (rule, formElements, question) {
         if (!rule) return true;
         rule = rule.trim();
         if (rule.indexOf("AND") > -1) {
@@ -144,7 +144,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3, 100), formElements))
         }
         var ruleArr = rule.split(/[>|<|=|<=|>=]/);
-        var question = ruleArr[0].replace(/"/g, "").trim();
+        var questionLabel = ruleArr[0].replace(/"/g, "").trim();
         var operatorArr = /=|<|>|>=|<=/.exec(rule);
         if (!operatorArr) {
             $scope.skipLogicError = "SkipLogic is incorrect. " + rule;
@@ -154,20 +154,46 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
         var realAnswerArr = formElements.filter(function (element) {
             if (element.elementType != 'question') return false;
-            else return element.label == question;
+            else return element.label == questionLabel;
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
         if (realAnswer) {
-            if (operator === '=') {
-                if (typeof realAnswer === 'number')
-                    return realAnswer === parseInt(expectedAnswer);
-                else return realAnswer === expectedAnswer;
+            if (realAnswerObj.question.datatype === 'Date') {
+                realAnswerObj.question.dateOptions = {};
+                if (operator === '=') {
+                    return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
+                }
+                if (operator === '<') {
+                    question.question.dateOptions.maxDate = new Date(expectedAnswer);
+                    return new Date(realAnswer).getTime() < new Date(expectedAnswer).getTime();
+                }
+                if (operator === '>') {
+                    question.question.dateOptions.minDate = new Date(expectedAnswer);
+                    return new Date(realAnswer).getTime() > new Date(expectedAnswer).getTime();
+                }
+                if (operator === '<=') {
+                    question.question.dateOptions.maxDate = new Date(expectedAnswer);
+                    return new Date(realAnswer).getTime() <= new Date(expectedAnswer).getTime();
+                }
+                if (operator === '>=') {
+                    question.question.dateOptions.minDate = new Date(expectedAnswer);
+                    return new Date(realAnswer).getTime() >= new Date(expectedAnswer).getTime();
+                }
+
+            } else if (realAnswerObj.question.datatype === 'Number') {
+                if (operator === '=') return realAnswer === parseInt(expectedAnswer);
+                if (operator === '<') return realAnswer < parseInt(expectedAnswer);
+                if (operator === '>') return realAnswer > parseInt(expectedAnswer);
+                if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
+                if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
+
+            } else if (realAnswerObj.question.datatype === 'Text') {
+                if (operator === '=') return realAnswer === expectedAnswer;
+                else return false;
+            } else {
+                return true;
             }
-            if (operator === '<') return realAnswer < parseInt(expectedAnswer);
-            if (operator === '>') return realAnswer > parseInt(expectedAnswer);
-            if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
-            if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
         } else return false;
     };
 
