@@ -61,6 +61,7 @@ public class EltIdMaps {
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
+        eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
 
