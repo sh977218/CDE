@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
-    ['$scope', '$routeParams', '$window', '$http', '$timeout', 'DataElement',
+    ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
         'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
-        function($scope, $routeParams, $window, $http, $timeout, DataElement, DataElementTinyId,
-                 isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                 CdeDiff, $q, QuickBoard, $log, userResource)
+        function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
+                  isAllowedModel, OrgHelpers, $rootScope, TourContent,
+                  CdeDiff, $q, QuickBoard, $log, userResource)
 {
 
     $scope.module = 'cde';
@@ -579,5 +579,34 @@ angular.module('cdeModule').controller('DEViewCtrl',
         TourContent.stop();
     });
 
+
+
+
+    var getForks = function() {
+        $http.get("/forks/" + $scope.elt._id).then(function(result) {
+            $scope.forks = result.data;
+
+        }, function (err) {
+            $log.error("unable to retrieve forks. " + $scope.elt.tinyId);
+            $scope.addAlert("There was an issue retrieving forks for this element. ");
+            $log.error(err);
+        });
+    };
+
+
+    $scope.copyElt = function() {
+        var modalInstance = $modal.open({
+            animation: false,
+            templateUrl: '/system/public/html/cdeCopyModal.html',
+            controller: 'CdeCopyModalCtrl',
+            resolve: {
+                elt: function() {return $scope.elt;}
+            }
+        });
+
+        modalInstance.result.then(function (result) {
+
+        });
+    };
 
 }]);
