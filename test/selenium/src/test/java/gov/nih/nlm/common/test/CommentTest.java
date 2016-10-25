@@ -108,8 +108,7 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName, status);
         addComment(commentText);
 
-        logout();
-        loginAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
         clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
@@ -275,6 +274,17 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         clickElement(By.id("discussBtn"));
         textPresent(replyText);
+    }
+
+    public void reviewerCanComment(String eltName) {
+        String commentText = "Comment made by reviewer";
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        goToEltByName(eltName);
+        addComment(commentText);
+        mustBeLoggedOut();
+        goToEltByName(eltName);
+        clickElement(By.id("discussBtn"));
+        textPresent(commentText);
     }
 
 }
