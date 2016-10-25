@@ -291,7 +291,7 @@ exports.replyToComment = function (req, res) {
     }
 };
 
-exports.removeComment = function (req, res) {
+exports.removeComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
@@ -312,24 +312,28 @@ exports.removeComment = function (req, res) {
             }
             if (removedComment) {
                 removedComment.status = "deleted";
-                if (req.user.username === removedComment.username ||
-                    (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
-                    req.user.siteAdmin
-                ) {
-                    comment.save(function (err) {
-                        if (err) {
-                            logging.errorLogger.error("Error: Cannot remove " + removedComment.type + ".", {
-                                origin: "system.adminItemSvc.removeComment",
-                                stack: new Error().stack
-                            });
-                            res.status(500).send(err);
-                        } else {
-                            res.send({message: "Comment removed"});
-                        }
-                    });
-                } else {
-                    res.send({message: "You can only remove " + removedComment.type + " you own."});
-                }
+                dao.eltByTinyId(removedComment.element.eltId, function (err, elt) {
+                    if (err || !elt) return res.status(404).send("elt not found");
+                    if (req.user.username === removedComment.username ||
+                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                        req.user.siteAdmin
+                    ) {
+                        comment.save(function (err) {
+                            if (err) {
+                                logging.errorLogger.error("Error: Cannot remove " + removedComment.type + ".", {
+                                    origin: "system.adminItemSvc.removeComment",
+                                    stack: new Error().stack
+                                });
+                                res.status(500).send(err);
+                            } else {
+                                res.send({message: "Comment removed"});
+                            }
+                        });
+                    } else {
+                        res.send({message: "You can only remove " + removedComment.type + " you own."});
+                    }
+                });
+
             } else {
                 res.status(404).send("Comment not found")
             }

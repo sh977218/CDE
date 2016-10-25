@@ -59,7 +59,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         };
 
         $scope.removeComment = function (commentId, replyId) {
-            $http.post("/comments/remove", {commentId: commentId, replyId: replyId}).then(function (res) {
+            $http.post("/comments/" + $scope.module + "/remove", {commentId: commentId, replyId: replyId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 loadComments();
             });

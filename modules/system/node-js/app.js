@@ -1066,9 +1066,6 @@ exports.init = function (app) {
 
     app.post('/comments/decline', adminItemSvc.declineComment);
 
-    app.post('/comments/remove', function (req, res) {
-        adminItemSvc.removeComment(req, res);
-    });
     app.post('/comments/status/resolved', function (req, res) {
         adminItemSvc.updateCommentStatus(req, res, "resolved");
     });
