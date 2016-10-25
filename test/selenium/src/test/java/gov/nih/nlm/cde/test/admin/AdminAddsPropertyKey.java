@@ -43,8 +43,6 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
         textNotPresent("doYouSeeThis");
-
-
     }
 
 }
