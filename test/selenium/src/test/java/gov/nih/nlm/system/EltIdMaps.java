@@ -19,6 +19,7 @@ public class EltIdMaps {
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");
         eltMap.put("Genotype Therapy Basis Mutation", "PwdyV7rn1Pp");
+        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
         eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
@@ -53,13 +54,16 @@ public class EltIdMaps {
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
+        eltMap.put("Form Cde Update Test", "X1ghWjntf");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
+        eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
         eltMap.put("Vital Signs", "m1j_L1HHte");
 
