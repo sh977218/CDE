@@ -233,5 +233,28 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
         };
 
+        $scope.updateCdeVersion = function (question) {
+            $http.get('/deByTinyId/' + question.question.cde.tinyId).success(function (result) {
+                var newQuestion = convertCdeToQuestion(result);
+                $modal.open({
+                    animation: false,
+                    templateUrl: '/form/public/html/updateCdeRefVersion.html',
+                    controller: 'UpdateCdeRefVersionCtrl',
+                    resolve: {
+                        newQuestion: function () {
+                            return newQuestion;
+                        },
+                        currentQuestion: function () {
+                            return question;
+                        }
+                    }
+                }).result.then(function(){
+                        question.question = newQuestion.question;
+                        question.label = newQuestion.label;
+                        $scope.stageElt();
+                });
+            });
+        };
+
 
     }]);
