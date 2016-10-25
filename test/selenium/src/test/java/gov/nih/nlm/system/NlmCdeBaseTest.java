@@ -649,6 +649,7 @@ public class NlmCdeBaseTest {
 
     protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
+        findElement(By.id(id));
         je.executeScript("document.getElementById('" + id + "').scrollIntoView(true);");
     }
 
