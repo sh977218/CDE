@@ -641,17 +641,13 @@ angular.module('formModule').controller
     };
 
     $scope.copyElt = function() {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
-            templateUrl: '/system/public/html/cdeCopyModal.html',
+            templateUrl: '/system/public/html/copyModal.html',
             controller: 'FormCopyModalCtrl',
             resolve: {
                 elt: function() {return $scope.elt;}
             }
-        });
-
-        modalInstance.result.then(function (result) {
-
         });
     };
 
