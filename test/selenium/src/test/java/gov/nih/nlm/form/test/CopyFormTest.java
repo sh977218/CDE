@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class CopyFormTest extends BaseClassificationTest {
 
     @Test
-    public void copyCde() {
+    public void copyForm() {
         mustBeLoggedInAs(ninds_username, password);
         String formName = "Type, Place, Cause and Mechanism of Injury";
         goToFormByName(formName);
@@ -21,7 +21,7 @@ public class CopyFormTest extends BaseClassificationTest {
         textPresent("Disease/Injury Related Events");
         clickElement(By.id("saveCopy"));
         textPresent("Incomplete", By.id("dd_status"));
-        textPresent("Copy of: " + formName, By.id("dd_general_name"));
+        textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.id("dd_general_name"));
         textNotPresent("LOINC");
         textNotPresent("CHAR");
         showAllTabs();
