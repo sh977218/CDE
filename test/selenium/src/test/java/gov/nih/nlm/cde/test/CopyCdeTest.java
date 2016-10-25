@@ -17,7 +17,7 @@ public class CopyCdeTest extends BaseClassificationTest {
         hangon(1);
         showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
-        textPresent("Copy of: " + cdeName, By.id("dd_general_name"));
+        textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.id("dd_general_name"));
         clickElement(By.id("status_tab"));
         textPresent("Copy of: xug6J6R8fkf");
     }
