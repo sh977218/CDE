@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 public class AdminAddsContextKey extends NlmCdeBaseTest {
     
     @Test
-    @RecordVideo
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
