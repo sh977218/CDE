@@ -12,7 +12,6 @@ var mongo_data_form = require('./mongo-form'),
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
-        forms.forEach(exports.hideUnapprovedComments);
         res.send(forms);
     });
 };
@@ -54,7 +53,6 @@ var getFormJson = function (form, req, res) {
             if (cb) cb();
         });
     };
-    adminSvc.hideUnapprovedComments(form);
     if (!req.user) adminSvc.hideProprietaryIds(form);
     var resForm = form.toObject();
     markCDE(resForm, function () {

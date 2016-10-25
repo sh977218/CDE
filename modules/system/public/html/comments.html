@@ -5,14 +5,14 @@
         <form role="form" name="commentForm" id="commentForm" novalidate>
             <label tabindex="0" class="sr-only" for="commentTextArea">Comments</label>
             <textarea tabindex="0" name="commentTextArea" id="commentTextArea" class="form-control" rows="3"
-                      ng-model="newComment.content" placeholder="Join the discussion..."></textarea>
+                      ng-model="newComment.content" placeholder="Join the discussion..." required></textarea>
             <input tabindex="0" name="postComment" id="postComment" class="btn btn-primary" type="button"
                    value="Post Comment" ng-click="addComment()" ng-disabled="commentForm.commentTextArea.$invalid"/>
         </form>
     </div>
     <br/>
 
-    <div class="comment" ng-repeat="(commentIndex, comment) in elt.comments">
+    <div class="comment" ng-repeat="(commentIndex, comment) in eltComments">
         <div class="rootComment">
             <div class="commentBody">
                 <div class="commentHeader">
@@ -84,16 +84,16 @@
                                     <i class="fa fa-trash-o hand-cursor" title="Remove"
                                        id="removeReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canRemoveComment(reply)"
-                                       ng-click="removeComment(reply._id)" data-type="remove"></i>
+                                       ng-click="removeComment(comment._id, reply._id)" data-type="remove"></i>
                                     <i class="fa fa-check-circle-o hand-cursor" title="Resolve"
                                        id="resolveReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canResolveComment(reply)"
-                                       ng-click="updateCommentStatus(reply._id, 'resolved')"
+                                       ng-click="updateReplyStatus(comment._id, reply._id, 'resolved')"
                                        data-type="resolve"></i>
                                     <i class="fa fa-undo hand-cursor" title="Reopen"
                                        id="reopenReply-{{commentIndex}}-{{replyIndex}}"
                                        ng-show="canReopenComment(reply)"
-                                       ng-click="updateCommentStatus(reply._id, 'active')"
+                                       ng-click="updateReplyStatus(comment._id, reply._id, 'active')"
                                        data-type="reopen"></i>
 
                                 </td>

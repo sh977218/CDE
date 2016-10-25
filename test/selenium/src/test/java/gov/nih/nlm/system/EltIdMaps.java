@@ -24,6 +24,7 @@ public class EltIdMaps {
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
+        eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
@@ -38,6 +39,7 @@ public class EltIdMaps {
         eltMap.put("Person Mother Onset Menopause Age Value", "qKGWuJZ1zxz");
         eltMap.put("Principal Investigator State java.lang.String", "71Tn0ywTKNO");
         eltMap.put("Psychiatric history clinical depression past year indicator", "ryD6agS7yuQ");
+        eltMap.put("Pulmonary function lung function measurement", "CC09PXVh8dF");
         eltMap.put("PvValidatorCde", "7Jn4ByTd_");
         eltMap.put("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale", "7k_flGOZ_3de");
         eltMap.put("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator", "NuQwuCAZrz5");

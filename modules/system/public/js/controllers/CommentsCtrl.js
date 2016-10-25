@@ -1,6 +1,14 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource',
     function ($scope, $http, userResource) {
 
+        function loadComments() {
+            $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
+                 $scope.eltComments = result.data;
+            });
+        }
+
+        loadComments();
+
         $scope.newComment = {};
         var socket = io.connect('http://localhost:3001');
         socket.emit('openedDiscussion', {
@@ -50,28 +58,28 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 element: {tinyId: $scope.elt.tinyId}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
                 $scope.newComment.content = "";
             });
         };
 
-        $scope.removeComment = function (commentId) {
-            $http.post("/comments/" + $scope.module + "/remove", {
-                commentId: commentId,
-                element: {tinyId: $scope.elt.tinyId}
-            }).then(function (res) {
+        $scope.removeComment = function (commentId, replyId) {
+            $http.post("/comments/" + $scope.module + "/remove", {commentId: commentId, replyId: replyId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
             });
         };
 
         $scope.updateCommentStatus = function (commentId, status) {
-            $http.post("/comments/" + $scope.module + "/status/" + status, {
-                commentId: commentId
-                , element: {tinyId: $scope.elt.tinyId}
-            }).then(function (res) {
+            $http.post("/comments/status/" + status, {commentId: commentId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
-                $scope.elt = res.data.elt;
+                loadComments();
+            });
+        };
+        $scope.updateReplyStatus = function (commentId, replyId, status) {
+            $http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).then(function (res) {
+                $scope.addAlert("success", res.data.message);
+                loadComments();
             });
         };
 
@@ -80,10 +88,10 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         });
         
         $scope.replyTo = function (commentId, reply, showReplies) {
-            $http.post("/comments/" + $scope.module + "/reply", {
+            $http.post("/comments/reply", {
                 commentId: commentId,
-                reply: reply,
-                element: {tinyId: $scope.elt.tinyId}
+                eltName: $scope.elt.naming[0].designation,
+                reply: reply
             }).then(function (res) {
                 socket.emit("addComment", {
                     user: userResource.user,
@@ -91,11 +99,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                     text: reply
                 });
                 $scope.addAlert("success", res.data.message);
-                res.data.elt.comments.forEach(function (c) {
+                loadComments();
+                $scope.eltComments.forEach(function (c) {
                     if (c._id === commentId)
                         c.showReplies = showReplies;
                 });
-                $scope.elt = res.data.elt;
             });
         };
 
