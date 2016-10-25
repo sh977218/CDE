@@ -117,8 +117,7 @@ public abstract class CommentTest extends CommonTest {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
                 textPresent("Comment removed");
-                hangon(1);
-                Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
+                textNotPresent(commentText);
             }
         }
     }
@@ -147,7 +146,7 @@ public abstract class CommentTest extends CommonTest {
     public void approvingComments(String eltName, String status, String user) {
         String commentText = "Very Innocent Comment";
         String censoredText = "This comment is pending approval";
-        mustBeLoggedInAs(user, anonymousCommentUser_password);
+        mustBeLoggedInAs(user, password);
         goToEltByName(eltName, status);
         addCommentNeedApproval(commentText);
         logout();

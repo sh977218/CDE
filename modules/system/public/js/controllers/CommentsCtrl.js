@@ -33,7 +33,6 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         userResource.getPromise().then(function () {
             addAvatar(userResource.user.username);
         });
-
         $scope.canRemoveComment = function (com) {
             return ((userResource.user._id) &&
             (userResource.user._id === com.user ||

@@ -72,7 +72,6 @@ public class NlmCdeBaseTest {
     protected static String docEditor = "docEditor";
     protected static String classificationMgtUser_username = "classMgtUser";
     protected static String transferStewardUser_username = "transferStewardUser";
-    protected static String anonymousCommentUser_username = "CommentUser";
     protected static String anonymousCommentUser2_username = "CommentUser2";
     protected static String anonymousFormCommentUser_username = "FormCommentUser";
     protected static String anonymousCommentUser_password = "pass";
@@ -443,7 +442,7 @@ public class NlmCdeBaseTest {
             wait.until(ExpectedConditions.elementToBeClickable(by));
             findElement(by).click();
         } catch (StaleElementReferenceException e) {
-            hangon(2);
+            closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
