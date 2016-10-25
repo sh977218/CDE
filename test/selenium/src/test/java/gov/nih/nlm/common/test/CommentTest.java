@@ -251,7 +251,6 @@ public abstract class CommentTest extends CommonTest {
     public void approveReply(String eltName) {
         String commentText = "Top Level Comment";
         String replyText = "Very Innocent Reply";
-        String censoredText = "This comment is pending approval.";
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToEltByName(eltName);
         clickElement(By.id("discussBtn"));
@@ -267,20 +266,16 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
+        clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
+        clickElement(By.cssSelector("button.approveComment"));
 
-        List<WebElement> elts = findElements(By.linkText("comment approval | reguser"));
-        Assert.assertTrue(elts.size() > 1);
+        textPresent("Message moved");
+        textPresent("Approved");
 
-
-        String preClass = "";
-        try {
-            textPresent(eltName);
-        } catch (Exception e) {
-            preClass = "uib-accordion:nth-child(2) ";
-            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
-            textPresent(commentText);
-        }
-
+        mustBeLoggedOut();
+        goToEltByName(eltName);
+        clickElement(By.id("discussBtn"));
+        textPresent(replyText);
     }
 
 }

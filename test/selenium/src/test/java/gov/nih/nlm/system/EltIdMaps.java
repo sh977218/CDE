@@ -23,6 +23,7 @@ public class EltIdMaps {
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
+        eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");

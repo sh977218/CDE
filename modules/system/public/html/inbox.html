@@ -4,14 +4,16 @@
 
         <uib-accordion-group ng-if="message.type === 'MergeRequest'">
             <uib-accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} |
+                {{message.typeRequest.destination.object.naming[0].designation}} | {{message.author.name}}
             </uib-accordion-heading>
             <div ng-include="'/cde/public/html/mergeRequestMessage.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
         </uib-accordion-group>
 
         <uib-accordion-group ng-if="message.type === 'CommentApproval'">
             <uib-accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}} |
+                {{message.typeCommentApproval.comment.text | limitTo : 30}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/messages/commentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
         </uib-accordion-group>
