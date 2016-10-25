@@ -362,24 +362,17 @@ exports.updateCommentStatus = function (req, res, status) {
             }
             if (updatedComment) {
                 updatedComment.status = status;
-                if (req.user.username === updatedComment.username ||
-                    (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
-                    req.user.siteAdmin
-                ) {
-                    comment.save(function (err) {
-                        if (err) {
-                            logging.errorLogger.error("Error: Cannot Update comment.", {
-                                origin: "system.adminItemSvc.removeComment",
-                                stack: new Error().stack
-                            });
-                            res.status(500).send(err);
-                        } else {
-                            res.send({message: "Saved."});
-                        }
-                    });
-                } else {
-                    res.send({message: "You can only remove comments you own."});
-                }
+                comment.save(function (err) {
+                    if (err) {
+                        logging.errorLogger.error("Error: Cannot Update comment.", {
+                            origin: "system.adminItemSvc.removeComment",
+                            stack: new Error().stack
+                        });
+                        res.status(500).send(err);
+                    } else {
+                        res.send({message: "Saved."});
+                    }
+                });
             } else {
                 res.status(404).send("Comment not found")
             }

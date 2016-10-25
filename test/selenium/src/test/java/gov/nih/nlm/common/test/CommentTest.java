@@ -23,7 +23,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(2);
         clickElement(By.id("postComment"));
         textNotPresent(text);
-        textPresent("This comment is pending approval.");
+        textPresent("This comment is pending approval");
         textPresent("Comment added. Approval required.");
         closeAlert();
     }
@@ -253,7 +253,6 @@ public abstract class CommentTest extends CommonTest {
         String replyText = "Very Innocent Reply";
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToEltByName(eltName);
-        clickElement(By.id("discussBtn"));
         addCommentNeedApproval(commentText);
 
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
