@@ -18,7 +18,7 @@ public class CopyFormTest extends BaseClassificationTest {
         hangon(1);
         showAllTabs();
         textPresent("Incomplete", By.id("dd_status"));
-        textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.id("dd_general_name"));
+        textPresent("Copy of: " + formName, By.id("dd_general_name"));
         clickElement(By.id("status_tab"));
         textPresent("Copy of: XyqIIyrBtx");
     }

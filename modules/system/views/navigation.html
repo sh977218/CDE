@@ -23,7 +23,7 @@
                 <% } %>
 
                 <li uib-dropdown ng-class="{ active: isPageActive('/boardList') ||  isPageActive('/myboards')}"
-                    ng-show='user._id'>
+                    ng-if='user._id'>
                     <a uib-dropdown-toggle class="dropdown-toggle" href="#" id="boardsMenu" title="Boards"
                        aria-label="Boards">Boards<span class="caret"></span></a>
                     <ul role="menu" class="dropdown-menu" aria-labelledby="boardsMenu" aria-expanded="true">
@@ -32,7 +32,7 @@
                     </ul>
                 </li>
 
-                <li id="boardsLink" ng-class="{ active: isPageActive('/boardList')}" ng-show='!user._id'>
+                <li id="boardsMenu" ng-class="{ active: isPageActive('/boardList')}" ng-if='!user._id'>
                     <a href="/#/boardList">Boards</a>
                 </li>
                 <li uib-dropdown ng-class="{ active: isPageActive('/createCde') || isPageActive('/createForm')}"
