@@ -64,12 +64,14 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
+        clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
 
+        clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
         hangon(1);
         scrollToViewById("replyBtn_0");
@@ -77,6 +79,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Reply added");
         closeAlert();
 
+        clickElement(By.id("replyTextarea_1"));
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
         hangon(1);
         scrollToViewById("replyBtn_1");
