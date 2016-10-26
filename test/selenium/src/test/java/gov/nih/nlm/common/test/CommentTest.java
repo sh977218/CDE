@@ -68,14 +68,14 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
 
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
-        textPresent("Second reply to First comment");
+        hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
 
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
-        textPresent("Reply to another comment");
+        hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_1"));
         textPresent("Reply added");
