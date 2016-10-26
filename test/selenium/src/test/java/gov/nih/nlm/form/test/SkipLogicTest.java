@@ -123,6 +123,15 @@ public class SkipLogicTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
         textPresent("Laterality Type");
+
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("2017");
+        textPresent("Macula volume (OS)");
+
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
+        textPresent("Laterality Type");
+
     }
 
 }

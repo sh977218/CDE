@@ -162,22 +162,18 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
             if (realAnswerObj.question.datatype === 'Date') {
                 question.question.dateOptions = {};
                 if (operator === '=') {
-                    return new Date(realAnswer) === new Date(expectedAnswer);
+                    return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
                 }
                 if (operator === '<') {
-                    question.question.dateOptions.maxDate = new Date(expectedAnswer);
                     return new Date(realAnswer) < new Date(expectedAnswer);
                 }
                 if (operator === '>') {
-                    question.question.dateOptions.minDate = new Date(expectedAnswer);
                     return new Date(realAnswer) > new Date(expectedAnswer);
                 }
                 if (operator === '<=') {
-                    question.question.dateOptions.maxDate = new Date(expectedAnswer);
                     return new Date(realAnswer) <= new Date(expectedAnswer);
                 }
                 if (operator === '>=') {
-                    question.question.dateOptions.minDate = new Date(expectedAnswer);
                     return new Date(realAnswer) >= new Date(expectedAnswer);
                 }
 
