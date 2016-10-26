@@ -106,6 +106,7 @@ public class NlmCdeBaseTest {
             nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of cdes: " + nbOfCde);
             waitTimeCdes = 10;
+            waitTimeCdes = 10;
         }
         for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
             hangon(waitTimeForms);

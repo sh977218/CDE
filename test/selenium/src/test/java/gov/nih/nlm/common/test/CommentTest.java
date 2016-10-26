@@ -11,6 +11,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textPresent(text);
         textPresent("Comment added");
+        closeAlert();
     }
 
     private void addCommentNeedApproval(String text) {
