@@ -1047,7 +1047,7 @@ exports.init = function (app) {
 
 
     app.get('/comments/tinyId/:tinyId', function (req, res) {
-        mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}, function(err, comments) {
+        mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}).sort({created: 1}).exec(function(err, comments) {
             var result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');

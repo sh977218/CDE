@@ -264,7 +264,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("incomingMessage"));
 
         clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
-        clickElement(By.cssSelector("button.approveComment"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
 
         textPresent("Message moved");
         textPresent("Approved");
