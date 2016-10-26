@@ -27,8 +27,6 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        textPresent("This form is large and is not automatically displayed.");
-        clickElement(By.id("renderPreviewButton"));
         textPresent(newFormLabel);
         textPresent("Symptomology");
 

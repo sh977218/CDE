@@ -312,7 +312,7 @@ exports.removeComment = function (req, res, dao) {
             }
             if (removedComment) {
                 removedComment.status = "deleted";
-                dao.eltByTinyId(removedComment.element.eltId, function (err, elt) {
+                dao.eltByTinyId(comment.element.eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
                         (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||

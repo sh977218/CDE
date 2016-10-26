@@ -183,7 +183,7 @@ public abstract class CommentTest extends CommonTest {
         modalGone();
 
         clickElement(By.cssSelector(preClass + ".approveComment"));
-        textPresent("Comment approved");
+        textPresent("Approved");
 
         logout();
         goToEltByName(eltName, status);
@@ -247,8 +247,9 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approveReply(String eltName) {
-        String commentText = "Top Level Comment";
-        String replyText = "Very Innocent Reply";
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Top Level Comment " + randomNumber;
+        String replyText = "Very Innocent Reply " + randomNumber;
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToEltByName(eltName);
         addCommentNeedApproval(commentText);
