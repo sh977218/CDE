@@ -25,7 +25,7 @@
                     <div ng-switch-when="Date">
                         <input class="form-control floatLeft" uib-datepicker-popup="MM/dd/yyyy"
                                datepicker-options="question.question.dateOptions" is-open="question.question.opened"
-                               type="text" ng-required="question.question.required"
+                               type="text" ng-required="question.question.required" alt-input-formats="['yyyy']"
                                ng-model="question.question.answer"/>
                         <button type="button" class="btn btn-default floatLeft"
                                 ng-click="question.question.opened = true">
