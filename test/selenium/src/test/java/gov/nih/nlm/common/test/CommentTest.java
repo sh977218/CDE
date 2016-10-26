@@ -79,7 +79,7 @@ public abstract class CommentTest extends CommonTest {
 
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
         hangon(1);
-        scrollToViewById("replyBtn_0");
+        scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
         textPresent("Reply added");
         closeAlert();
