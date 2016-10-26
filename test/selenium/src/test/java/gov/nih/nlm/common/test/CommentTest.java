@@ -25,12 +25,11 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
     }
 
-    public void showLongComments(String eltName){
+    public void showLongComments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
-        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
-        clickElement(By.name("postComment"));
-        textPresent("Comment added");
+        addComment("very long replies comment");
+        textPresent("very long replies comment");
         closeAlert();
 
         for (int i = 1; i <= 5; i++) {
@@ -49,8 +48,8 @@ public abstract class CommentTest extends CommonTest {
             closeAlert();
             textPresent("Show all " + j + " replies");
         }
-        scrollToViewById("showAllRepliesButton-0-0");
-        clickElement(By.id("showAllRepliesButton-0-0"));
+        scrollToViewById("showAllRepliesButton-0-3");
+        clickElement(By.id("showAllRepliesButton-0-3"));
         for (int k = 3; k <= 10; k++)
             textPresent("Reply to very long comment " + k);
 

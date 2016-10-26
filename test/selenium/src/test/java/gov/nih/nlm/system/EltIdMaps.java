@@ -28,6 +28,7 @@ public class EltIdMaps {
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
         eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
+        eltMap.put("Number of Pregnancies", "oW10-UFbA2c");
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
@@ -66,6 +67,7 @@ public class EltIdMaps {
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
