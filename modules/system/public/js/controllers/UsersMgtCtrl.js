@@ -29,12 +29,12 @@
      $scope.openCreateUser = function() {
          $modal.open({
              animation: false,
-             templateUrl: 'newUserModal.html',
+             templateUrl: '/system/public/html/newUserModal.html',
              controller: function() {}
-         }).result.then(function (newUser) {
-             $http.put("/user", newUser).success(function(res) {
+         }).result.then(function (username) {
+             $http.put("/user", {username: username}).success(function(res) {
                  Alert.addAlert("success", "User created");
-             })
+             });
          });
      }
     

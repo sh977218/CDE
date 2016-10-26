@@ -203,7 +203,6 @@ oauthStrategy.userProfile = function (accessToken, done) {
     });
 };
 
-
 passport.use(new LocalStrategy({passReqToCallback: true}, this.authBeforeVsac));
 passport.use(oauthStrategy);
 

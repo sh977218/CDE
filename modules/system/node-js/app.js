@@ -397,6 +397,22 @@ exports.init = function (app) {
         }
     });
 
+    app.put('/user', function (req, res) {
+        if (authorizationShared.hasRole("OrgAuthority")) {
+            mongo_data_system.addUser(
+                {
+                    username: req.body.username,
+                    password: "umls",
+                    quota: 1024 * 1024 * 1024
+                },
+                function () {
+                    res.send();
+                });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
+    });
+
     app.post('/addSiteAdmin', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
