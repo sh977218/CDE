@@ -160,25 +160,25 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
         if (realAnswer) {
             if (realAnswerObj.question.datatype === 'Date') {
-                realAnswerObj.question.dateOptions = {};
+                question.question.dateOptions = {};
                 if (operator === '=') {
-                    return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
+                    return new Date(realAnswer) === new Date(expectedAnswer);
                 }
                 if (operator === '<') {
                     question.question.dateOptions.maxDate = new Date(expectedAnswer);
-                    return new Date(realAnswer).getTime() < new Date(expectedAnswer).getTime();
+                    return new Date(realAnswer) < new Date(expectedAnswer);
                 }
                 if (operator === '>') {
                     question.question.dateOptions.minDate = new Date(expectedAnswer);
-                    return new Date(realAnswer).getTime() > new Date(expectedAnswer).getTime();
+                    return new Date(realAnswer) > new Date(expectedAnswer);
                 }
                 if (operator === '<=') {
                     question.question.dateOptions.maxDate = new Date(expectedAnswer);
-                    return new Date(realAnswer).getTime() <= new Date(expectedAnswer).getTime();
+                    return new Date(realAnswer) <= new Date(expectedAnswer);
                 }
                 if (operator === '>=') {
                     question.question.dateOptions.minDate = new Date(expectedAnswer);
-                    return new Date(realAnswer).getTime() >= new Date(expectedAnswer).getTime();
+                    return new Date(realAnswer) >= new Date(expectedAnswer);
                 }
 
             } else if (realAnswerObj.question.datatype === 'Number') {

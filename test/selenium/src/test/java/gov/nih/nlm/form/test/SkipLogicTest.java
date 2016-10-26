@@ -82,29 +82,47 @@ public class SkipLogicTest extends BaseFormTest {
         scrollToViewById("question_accordion_0_2");
         textPresent("Optical coherence tomography (OCT) oculus dexter (OD) macula volume measurement");
 
-        String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
+        String inputXpath1 = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
 
-        editSkipLogic(inputXpath, "\"Indicate date of reference scan\"", 2, 2,
+        editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2,
                 true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
-        editSkipLogic(inputXpath, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
+        editSkipLogic(inputXpath1, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath1, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
         String correctSkipLogicString = "\"Indicate date of reference scan\"=\"10/11/2016\"";
 
-        findElement(By.xpath(inputXpath)).clear();
+        findElement(By.xpath(inputXpath1)).clear();
         hangon(1);
-        findElement(By.xpath(inputXpath)).sendKeys(correctSkipLogicString);
+        findElement(By.xpath(inputXpath1)).sendKeys(correctSkipLogicString);
         clickElement(By.id("dd_datatype_2"));
         textNotPresent("Unexpected number of tokens");
         textNotPresent("is not a valid date for");
+
+        clickElement(By.id("question_accordion_0_3"));
+        textPresent("Optical coherence tomography (OCT) oculus sinister (OS) macula volume measurement");
+        findElement(By.xpath("//*[@id='dd_q_skipLogic_3']/div/input[2]")).sendKeys("\"Indicate date of reference scan\">\"10/11/2016\"");
+
+        clickElement(By.id("question_accordion_0_4"));
+        textPresent("Optical coherence tomography retinal nerve fiber layer thickness laterality type");
+        findElement(By.xpath("//*[@id='dd_q_skipLogic_4']/div/input[2]")).sendKeys("\"Indicate date of reference scan\"<\"10/11/2016\"");
         saveForm();
 
         goToFormByName(formName);
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Display Instruction");
         textNotPresent("Macula volume (OD)");
+        textNotPresent("Macula volume (OS)");
+        textNotPresent("Laterality Type");
         findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
         textPresent("Macula volume (OD)");
+
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/12/2016");
+        textPresent("Macula volume (OS)");
+
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).clear();
+        findElement(By.xpath("//*[@id='Indicate date of reference scan_1']//input")).sendKeys("10/11/2016");
+        textPresent("Laterality Type");
     }
 
 }
