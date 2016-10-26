@@ -311,6 +311,7 @@ exports.myBoards = function (user, filter, cb) {
         filter = {
             sortDirection: '',
             selectedTags: ['All'],
+            selectedTypes: ['All'],
             selectedShareStatus: ['All']
         };
     }
@@ -330,6 +331,12 @@ exports.myBoards = function (user, filter, cb) {
             }
         },
         "aggs": {
+            "typeAgg": {
+                "terms": {
+                    "field": "type",
+                    "size": 2
+                }
+            },
             "tagAgg": {
                 "terms": {
                     "field": "tags",
@@ -366,6 +373,20 @@ exports.myBoards = function (user, filter, cb) {
         });
     }
     query.sort.push(sort);
+    if (filter.selectedTypes) {
+        filter.selectedTypes.forEach(function (t) {
+            if (t !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "types": {
+                                value: t
+                            }
+                        }
+                    });
+            }
+        });
+    }
     if (filter.selectedTags) {
         filter.selectedTags.forEach(function (t) {
             if (t !== 'All') {

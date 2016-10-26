@@ -113,12 +113,15 @@ var pinSchema = new mongoose.Schema({
     , pinnedDate: Date
     , deTinyId: String
     , deName: String
+    , formTinyId: String
+    , formName: String
 }, {_id: false});
 
 
 schemas.pinningBoardSchema = new mongoose.Schema({
     name: String,
     description: String,
+    type: {type: String, default: 'cde', enum: ['cde', 'form']},
     tags: [String],
     shareStatus: String,
     createdDate: Date,
