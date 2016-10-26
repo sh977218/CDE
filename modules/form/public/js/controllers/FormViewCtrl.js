@@ -578,7 +578,7 @@ angular.module('formModule').controller
         var modalInstance = $modal.open({
             animation: false,
             templateUrl: '/cde/public/html/selectBoardModal.html',
-            controller: 'SelectBoardModalCtrl',
+            controller: 'SelectFormBoardModalCtrl',
             resolve: {
                 boards: function () {
                     return $scope.boards;

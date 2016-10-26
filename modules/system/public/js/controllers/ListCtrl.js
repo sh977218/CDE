@@ -433,7 +433,7 @@ angular.module('systemModule').controller('ListCtrl',
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: '/cde/public/html/selectBoardModal.html',
-                controller: 'SelectBoardModalCtrl',
+                controller: 'SelectCdeBoardModalCtrl',
                 resolve: {
                     boards: function () {
                         return $scope.boards;

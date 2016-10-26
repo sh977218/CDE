@@ -1,5 +1,5 @@
-angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', 'TourContent', 'userResource', '$timeout', 'QuickBoard',
-    function ($scope, $controller, TourContent, userResource, $timeout, QuickBoard) {
+angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '$uibModal', 'TourContent', 'userResource', '$timeout', 'QuickBoard',
+    function ($scope, $controller, $modal, TourContent, userResource, $timeout, QuickBoard) {
         $scope.module = "cde";
         $scope.quickBoard = QuickBoard;
 
@@ -86,4 +86,30 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
             TourContent.stop();
         });
 
+        $scope.openPinModal = function (cde) {
+            if (userResource.user.username) {
+                var modalInstance = $modal.open({
+                    animation: false,
+                    templateUrl: '/cde/public/html/selectBoardModal.html',
+                    controller: 'SelectCdeBoardModalCtrl'
+                });
+
+                modalInstance.result.then(function (selectedBoard) {
+                    $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
+                        if (response.status === 200) {
+                            $scope.addAlert("success", response.data);
+                        } else
+                            $scope.addAlert("warning", response.data);
+                    }, function (response) {
+                        $scope.addAlert("danger", response.data);
+                    });
+                }, function () {
+                });
+            } else {
+                $modal.open({
+                    animation: false,
+                    templateUrl: '/system/public/html/ifYouLogInModal.html'
+                });
+            }
+        };
     }]);

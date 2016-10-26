@@ -272,6 +272,20 @@ exports.boardSearch = function (filter, cb) {
             }
         }
     };
+    if (filter.selectedTypes) {
+        filter.selectedTypes.forEach(function (t) {
+            if (t !== 'All') {
+                query.query.bool.must.push(
+                    {
+                        "term": {
+                            "type": {
+                                value: t
+                            }
+                        }
+                    });
+            }
+        });
+    }
     if (filter.selectedTags) {
         filter.selectedTags.forEach(function (t) {
             if (t !== 'All') {
@@ -379,7 +393,7 @@ exports.myBoards = function (user, filter, cb) {
                 query.query.bool.must.push(
                     {
                         "term": {
-                            "types": {
+                            "type": {
                                 value: t
                             }
                         }

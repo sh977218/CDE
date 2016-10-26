@@ -1,4 +1,4 @@
-angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibModalInstance',
+angular.module('formModule').controller('SelectFormBoardModalCtrl', ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
         $scope.filter = {
             reset: function () {
@@ -8,7 +8,8 @@ angular.module('cdeModule').controller('SelectBoardModalCtrl', ['$scope', '$uibM
             },
             sortBy: 'updatedDate',
             sortDirection: 'desc',
-            tags: []
+            tags: [],
+            selectedTypes: ['form']
         };
 
         $scope.ok = function (board) {
