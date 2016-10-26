@@ -25,6 +25,37 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
     }
 
+    public void showLongComments(String eltName){
+        mustBeLoggedInAs(test_username, password);
+        goToEltByName(eltName);
+        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
+        clickElement(By.name("postComment"));
+        textPresent("Comment added");
+        closeAlert();
+
+        for (int i = 1; i <= 5; i++) {
+            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + i);
+            scrollToViewById("replyBtn_0");
+            clickElement(By.id("replyBtn_0"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Reply to very long comment " + i);
+        }
+        for (int j = 6; j <= 10; j++) {
+            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + j);
+            scrollToViewById("replyBtn_0");
+            clickElement(By.id("replyBtn_0"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Show all " + j + " replies");
+        }
+        scrollToViewById("showAllRepliesButton-0-0");
+        clickElement(By.id("showAllRepliesButton-0-0"));
+        for (int k = 3; k <= 10; k++)
+            textPresent("Reply to very long comment " + k);
+
+    }
+
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
@@ -34,33 +65,6 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
-
-        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
-        clickElement(By.name("postComment"));
-        textPresent("Comment added");
-        closeAlert();
-
-        for (int i = 1; i <= 5; i++) {
-            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + i);
-            scrollToViewById("replyBtn_2");
-            clickElement(By.id("replyBtn_2"));
-            textPresent("Reply added");
-            closeAlert();
-            textPresent("Reply to very long comment " + i);
-        }
-        for (int j = 6; j <= 10; j++) {
-            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + j);
-            scrollToViewById("replyBtn_2");
-            clickElement(By.id("replyBtn_2"));
-            textPresent("Reply added");
-            closeAlert();
-            textPresent("Show all " + j + " replies");
-        }
-        scrollToViewById("showAllRepliesButton-2-3");
-        clickElement(By.id("showAllRepliesButton-2-3"));
-        for (int k = 3; k <= 10; k++)
-            textPresent("Reply to very long comment " + k);
-
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));

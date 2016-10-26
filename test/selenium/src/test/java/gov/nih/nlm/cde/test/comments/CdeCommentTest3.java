@@ -3,7 +3,7 @@ package gov.nih.nlm.cde.test.comments;
 import org.testng.annotations.Test;
 
 public class CdeCommentTest3 extends CdeCommentTest {
-        
+
     @Test
     public void cdeComments() {
         comments("Hospital Confidential Institution Referred From Facility Number Code");
@@ -14,4 +14,8 @@ public class CdeCommentTest3 extends CdeCommentTest {
         orgAdminCanRemoveComment("Local Excision Colorectal Lateral Surgical Margin Identifier java.lang.Long", null);
     }
 
+    @Test
+    public void cdeLongComments() {
+        showLongComments("Number of Pregnancies");
+    }
 }
