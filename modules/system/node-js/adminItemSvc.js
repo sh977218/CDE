@@ -419,6 +419,7 @@ exports.approveComment = function (req, res) {
             if (comment.replies && comment.replies.length > req.body.replyIndex) {
                 comment.replies[req.body.replyIndex].pendingApproval = false;
             }
+            comment.markModified("replies");
         } else {
             comment.pendingApproval = false;
         }

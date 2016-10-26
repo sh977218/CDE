@@ -1,10 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
-
-import java.util.List;
 
 public abstract class CommentTest extends CommonTest {
 
@@ -92,7 +88,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
         clickElement(By.id("removeReply-0-1"));
-        textPresent("Reply removed");
+        textPresent("Comment removed");
         closeAlert();
 
         textPresent("My First Comment!");
@@ -144,7 +140,8 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approvingComments(String eltName, String status, String user) {
-        String commentText = "Very Innocent Comment";
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName, status);
@@ -155,34 +152,26 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(commentText);
         textPresent(censoredText);
 
-        doLogin(commentEditor_username, commentEditor_password);
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
         textPresent("comment approval");
-        clickElement(By.cssSelector(".accordion-toggle"));
 
-        String preClass = "";
-        try {
-            textPresent(eltName);
-        } catch (Exception e) {
-            preClass = "uib-accordion:nth-child(2) ";
-            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
-            textPresent(commentText);
-        }
+        clickElement(By.partialLinkText("comment approval | " +  user + " | " + commentText));
+        clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
 
-        clickElement(By.cssSelector(preClass + ".linkToElt"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.cssSelector(preClass + ".authorizeUser"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));;
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.cssSelector(preClass + ".approveComment"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));;
         textPresent("Approved");
 
         logout();
