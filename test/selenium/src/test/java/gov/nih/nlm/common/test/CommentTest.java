@@ -1,7 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 
 public abstract class CommentTest extends CommonTest {
 
@@ -12,6 +11,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textPresent(text);
         textPresent("Comment added");
+        closeAlert();
     }
 
     private void addCommentNeedApproval(String text) {
@@ -20,7 +20,7 @@ public abstract class CommentTest extends CommonTest {
         hangon(2);
         clickElement(By.id("postComment"));
         textNotPresent(text);
-        textPresent("This comment is pending approval.");
+        textPresent("This comment is pending approval");
         textPresent("Comment added. Approval required.");
         closeAlert();
     }
@@ -89,7 +89,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
         clickElement(By.id("removeReply-0-1"));
-        textPresent("Reply removed");
+        textPresent("Comment removed");
         closeAlert();
 
         textPresent("My First Comment!");
@@ -105,8 +105,7 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName, status);
         addComment(commentText);
 
-        logout();
-        loginAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigAdmin_username, password);
         goToEltByName(eltName, status);
         clickElement(By.id("discussBtn"));
         int length = driver.findElements(By.xpath("//div[starts-with(@id, 'commentText')]")).size();
@@ -115,8 +114,7 @@ public abstract class CommentTest extends CommonTest {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
                 textPresent("Comment removed");
-                hangon(1);
-                Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
+                textNotPresent(commentText);
             }
         }
     }
@@ -143,9 +141,10 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approvingComments(String eltName, String status, String user) {
-        String commentText = "Very Innocent Comment";
-        String censoredText = "This comment is pending approval.";
-        mustBeLoggedInAs(user, anonymousCommentUser_password);
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Very Innocent Comment " + randomNumber;
+        String censoredText = "This comment is pending approval";
+        mustBeLoggedInAs(user, password);
         goToEltByName(eltName, status);
         addCommentNeedApproval(commentText);
         logout();
@@ -154,35 +153,27 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(commentText);
         textPresent(censoredText);
 
-        doLogin(commentEditor_username, commentEditor_password);
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
         textPresent("comment approval");
-        clickElement(By.cssSelector(".accordion-toggle"));
 
-        String preClass = "";
-        try {
-            textPresent(eltName);
-        } catch (Exception e) {
-            preClass = "uib-accordion:nth-child(2) ";
-            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
-            textPresent(commentText);
-        }
+        clickElement(By.partialLinkText("comment approval | " +  user + " | " + commentText));
+        clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
 
-        clickElement(By.cssSelector(preClass + ".linkToElt"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.cssSelector(preClass + ".authorizeUser"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));;
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.cssSelector(preClass + ".approveComment"));
-        textPresent("Comment approved");
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));;
+        textPresent("Approved");
 
         logout();
         goToEltByName(eltName, status);
@@ -243,7 +234,47 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textNotPresent(commentText);
+    }
 
+    public void approveReply(String eltName) {
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Top Level Comment " + randomNumber;
+        String replyText = "Very Innocent Reply " + randomNumber;
+        mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
+        goToEltByName(eltName);
+        addCommentNeedApproval(commentText);
+
+        findElement(By.id("replyTextarea_0")).sendKeys(replyText);
+        hangon(2);
+        clickElement(By.id("replyBtn_0"));
+        textPresent("Reply added");
+        closeAlert();
+        textNotPresent(replyText);
+
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        clickElement(By.id("incomingMessage"));
+
+        clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
+        clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
+
+        textPresent("Message moved");
+        textPresent("Approved");
+
+        mustBeLoggedOut();
+        goToEltByName(eltName);
+        clickElement(By.id("discussBtn"));
+        textPresent(replyText);
+    }
+
+    public void reviewerCanComment(String eltName) {
+        String commentText = "Comment made by reviewer";
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
+        goToEltByName(eltName);
+        addComment(commentText);
+        mustBeLoggedOut();
+        goToEltByName(eltName);
+        clickElement(By.id("discussBtn"));
+        textPresent(commentText);
     }
 
 }

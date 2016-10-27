@@ -223,7 +223,7 @@ schemas.commentSchema = new mongoose.Schema({
     , username: String
     , created: Date
     , pendingApproval: Boolean
-    , status: {type: String, enum: ["active", "resolved"]}
+    , status: {type: String, enum: ["active", "resolved", "deleted"]}
     , replies: [
         {
             text: String
@@ -231,9 +231,13 @@ schemas.commentSchema = new mongoose.Schema({
             , username: String
             , created: Date
             , pendingApproval: Boolean
-            , status: {type: String, enum: ["active", "resolved"]}
+            , status: {type: String, enum: ["active", "resolved", "deleted"]}
         }
-    ]
+    ],
+    element: {
+        eltType: {type: String, enum: ["cde", "form"]},
+        eltId: String
+    }
 });
 
 schemas.helpItemSchema = new mongoose.Schema({
@@ -261,7 +265,11 @@ var commentApprovalSchema = {
         , name: String
         , eltType: {type: String, enum: ["cde", "form"]}
     }
-    , comment: {index: Number, text: String}
+    , comment: {
+        commentId: String,
+        replyIndex: Number,
+        text: String
+    }
 };
 
 schemas.message = new mongoose.Schema({
