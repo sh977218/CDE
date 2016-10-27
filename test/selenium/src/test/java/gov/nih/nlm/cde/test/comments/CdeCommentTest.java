@@ -16,9 +16,4 @@ public class CdeCommentTest extends CommentTest {
         goToCdeSearch();
     }
 
-    @Test
-    public void cdeLongComments() {
-        showLongComments("Number of Pregnancies");
-    }
-
 }
