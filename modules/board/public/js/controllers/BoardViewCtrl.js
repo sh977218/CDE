@@ -2,13 +2,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
     ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert',
         function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert) {
 
-            $scope.module = 'cde';
-            $scope.cdes = [];
+            $scope.elts = [];
             $scope.currentPage = 1;
 
-            $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
-                "/cde/public/html/accordion/addToQuickBoardActions.html"
-            ];
+            // @TODO what is this?
+            $scope.ejsPage = 'board';
+
             $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
 
             $scope.setPage = function (p) {
@@ -20,22 +19,31 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.accordionListStyle = "semi-transparent";
                 $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {
                     $scope.accordionListStyle = "";
-                    $scope.cdes = [];
+                    //$scope.cdes = [];
+                    //$scope.forms = [];
                     if (response.board) {
                         $scope.board = response.board;
+                        var elts = $scope[$scope.board.type + 's'] = [];
+                        $scope.module = $scope.board.type;
+                        $scope.setViewTypes($scope.module);
+                        $scope.includeInAccordion =
+                            [
+                                $scope.board.type + "/public/html/accordion/boardAccordionActions.html",
+                                $scope.board.type + "/public/html/accordion/addToQuickBoardActions.html"
+                        ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;
-                        var respCdes = response.cdes;
-                        for (var i = 0; i < pins.length; i++) {
-                            for (var j = 0; j < respCdes.length; j++) {
-                                if (pins[i].deTinyId === respCdes[j].tinyId) {
-                                    pins[i].cde = respCdes[j];
-                                    $scope.cdes.push(respCdes[j]);
-                                }
-                            }
-                        }
-                        $scope.cdes.forEach(function (elt) {
+                        var respElts = response.elts;
+                        pins.forEach(function (pin) {
+                            var pinId = $scope.board.type==='cde'?pin.deTinyId:pin.formTinyId;
+                            respElts.forEach(function (elt) {
+                                pinId === respElt.tinyId
+                                pins.elt = respElt;
+                                elts.push(respElts);
+                            });
+                        });
+                        elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
                     }

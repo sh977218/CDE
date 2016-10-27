@@ -10,7 +10,6 @@ var passport = require('passport')
     , classificationShared = require('../shared/classificationShared.js')
     , classificationNode = require('./classificationNode')
     , adminItemSvc = require("./adminItemSvc")
-    , auth = require('./authorization')
     , csrf = require('csurf')
     , authorizationShared = require("../../system/shared/authorizationShared")
     , daoManager = require('./moduleDaoManager')
@@ -20,7 +19,7 @@ var passport = require('passport')
     , tar = require('tar-fs')
     , zlib = require('zlib')
     , spawn = require('child_process').spawn
-    , authorization = require('../../system/node-js/authorization')
+    , authorization = require('./authorization')
     , esInit = require('./elasticSearchInit')
     , elastic = require('./elastic.js')
     , app_status = require("./status.js")
@@ -218,30 +217,30 @@ exports.init = function (app) {
                 function checkCaptcha(captchaDone) {
                     // disabled for now.
                     return captchaDone();
-                    if (failedIp && failedIp.nb > 2) {
-                        if (req.body.recaptcha) {
-                            request.post("https://www.google.com/recaptcha/api/siteverify",
-                                {
-                                    form: {
-                                        secret: config.captchaCode,
-                                        response: req.body.recaptcha,
-                                        remoteip: getRealIp(req)
-                                    },
-                                    json: true
-                                }, function (err, resp, body) {
-                                    if (err) captchaDone(err);
-                                    else if (!body.success) {
-                                        captchaDone("incorrect recaptcha");
-                                    } else {
-                                        captchaDone();
-                                    }
-                                });
-                        } else {
-                            captchaDone("missing reCaptcha");
-                        }
-                    } else {
-                        captchaDone();
-                    }
+                    //if (failedIp && failedIp.nb > 2) {
+                    //    if (req.body.recaptcha) {
+                    //        request.post("https://www.google.com/recaptcha/api/siteverify",
+                    //            {
+                    //                form: {
+                    //                    secret: config.captchaCode,
+                    //                    response: req.body.recaptcha,
+                    //                    remoteip: getRealIp(req)
+                    //                },
+                    //                json: true
+                    //            }, function (err, resp, body) {
+                    //                if (err) captchaDone(err);
+                    //                else if (!body.success) {
+                    //                    captchaDone("incorrect recaptcha");
+                    //                } else {
+                    //                    captchaDone();
+                    //                }
+                    //            });
+                    //    } else {
+                    //        captchaDone("missing reCaptcha");
+                    //    }
+                    //} else {
+                    //    captchaDone();
+                    //}
                 }],
             function allDone(err) {
                 if (err) {
@@ -661,7 +660,7 @@ exports.init = function (app) {
     });
 
     app.get('/getAllUsernames', function (req, res) {
-        if (auth.isSiteOrgAdmin(req)) {
+        if (authorization.isSiteOrgAdmin(req)) {
             usersrvc.getAllUsernames(req, res);
         } else {
             res.status(401).send();
