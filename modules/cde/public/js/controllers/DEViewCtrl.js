@@ -33,7 +33,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
     }
 
     $scope.switchCommentMode = function(){
-        $scope.commentMode = !$scope.commentMode;
+        $scope.deferredEltLoaded.promise.then(function() {
+            $scope.commentMode = !$scope.commentMode;
+        });
     };
 
     $scope.tabs = {

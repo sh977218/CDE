@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.comments;
 
 
 import gov.nih.nlm.common.test.CommentTest;
+import org.testng.annotations.Test;
 
 public class CdeCommentTest extends CommentTest {
 
@@ -13,6 +14,11 @@ public class CdeCommentTest extends CommentTest {
     @Override
     public void goToEltSearch() {
         goToCdeSearch();
+    }
+
+    @Test
+    public void cdeLongComments() {
+        showLongComments("Number of Pregnancies");
     }
 
 }

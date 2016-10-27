@@ -1,7 +1,11 @@
-angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal', function($scope, $http, Mail, $modal) {
+angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$http', 'Mail', '$uibModal',
+    function($scope, $http, Mail, $modal) {
+
     $scope.approveComment = function(msg) {
-        $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/approve', msg.typeCommentApproval).
-            success(function(data, status, headers, config) {
+        $http.post('/comments/approve', {
+            commentId: msg.typeCommentApproval.comment.commentId,
+            replyIndex: msg.typeCommentApproval.comment.replyIndex
+        }).success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
                 $scope.closeMessage(msg);
             }).
@@ -36,14 +40,16 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     };
 
     $scope.declineComment = function(msg) {
-        $http.post('/comments/'+msg.typeCommentApproval.element.eltType+'/decline', msg.typeCommentApproval).
-            success(function(data, status, headers, config) {
-                $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
-            }).
-            error(function(data, status, headers, config) {
-                $scope.addAlert("danger", data);
-            });
+        $http.post('/comments/decline', {
+            commentId: msg.typeCommentApproval.comment.commentId,
+            replyIndex: msg.typeCommentApproval.comment.replyIndex
+        }).success(function(data, status, headers, config) {
+            $scope.addAlert("success", data);
+            $scope.closeMessage(msg);
+        }).
+        error(function(data, status, headers, config) {
+            $scope.addAlert("danger", data);
+        });
     };
 
 }]);

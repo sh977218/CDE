@@ -48,7 +48,6 @@ exports.init = function (app, daoManager) {
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_cde.cdesByTinyIdList(req.body, function (err, cdes) {
-            cdes.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdes);
         });
     });
@@ -83,7 +82,6 @@ exports.init = function (app, daoManager) {
         cdesvc.show(req, res, function (result) {
             if (!result) res.status(404).send();
             var cde = cdesvc.hideProprietaryCodes(result, req.user);
-            adminItemSvc.hideUnapprovedComments(cde);
             res.send(cde);
         });
     });
@@ -108,7 +106,6 @@ exports.init = function (app, daoManager) {
 
         var serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
-            adminItemSvc.hideUnapprovedComments(cde);
             cde = cdesvc.hideProprietaryCodes(cde, req.user);
             if (!req.query.type) sendNativeJson(cde, res);
             else if (req.query.type === 'json') sendNativeJson(cde, res);
@@ -402,33 +399,8 @@ exports.init = function (app, daoManager) {
         app.post('/comments/cde/add', function (req, res) {
             adminItemSvc.addComment(req, res, mongo_cde);
         });
-
-        app.post('/comments/cde/reply', function (req, res) {
-            adminItemSvc.replyToComment(req, res, mongo_cde);
-        });
-
         app.post('/comments/cde/remove', function (req, res) {
             adminItemSvc.removeComment(req, res, mongo_cde);
-        });
-
-        app.post('/comments/cde/status/resolved', function (req, res) {
-            adminItemSvc.updateCommentStatus(req, res, "resolved", mongo_cde);
-        });
-        app.post('/comments/cde/status/active', function (req, res) {
-            adminItemSvc.updateCommentStatus(req, res, "active", mongo_cde);
-        });
-
-        app.post('/comments/cde/approve', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
-                elt.comments[req.body.comment.index].pendingApproval = false;
-                delete elt.comments[req.body.comment.index].pendingApproval;
-            }, "Comment approved!");
-        });
-
-        app.post('/comments/cde/decline', function (req, res) {
-            adminItemSvc.declineApproveComment(req, res, mongo_cde, function (elt) {
-                elt.comments.splice(req.body.comment.index, 1);
-            }, "Comment declined!");
         });
     }
 
@@ -457,7 +429,6 @@ exports.init = function (app, daoManager) {
 
     app.post('/desByConcept', function (req, res) {
         mongo_cde.desByConcept(req.body, function (result) {
-            result.forEach(adminItemSvc.hideUnapprovedComments);
             res.send(cdesvc.hideProprietaryCodes(result, req.user));
         });
     });
