@@ -95,7 +95,7 @@ angular.module('cdeModule').controller('DEListCtrl', ['$scope', '$controller', '
                 });
 
                 modalInstance.result.then(function (selectedBoard) {
-                    $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
+                    $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
                         if (response.status === 200) {
                             $scope.addAlert("success", response.data);
                         } else

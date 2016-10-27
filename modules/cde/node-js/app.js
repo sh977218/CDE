@@ -335,9 +335,16 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.put('/pincde/:tinyId/:boardId', function (req, res) {
+    app.put('/pin/cde/:tinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
-            usersvc.pinToBoard(req, res);
+            usersvc.pinCdeToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }
+    });
+    app.put('/pin/form/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinFormToBoard(req, res);
         } else {
             res.send("Please login first.");
         }

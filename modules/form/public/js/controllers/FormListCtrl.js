@@ -10,7 +10,7 @@ angular.module('formModule').controller('FormListCtrl',
             }, 0);
 
             $scope.exporters.odm = {id: "odmExport", display: "ODM Export"};
-            $scope.openPinModal = function (cde) {
+            $scope.openPinModal = function (form) {
                 if (userResource.user.username) {
                     var modalInstance = $modal.open({
                         animation: false,
@@ -19,7 +19,7 @@ angular.module('formModule').controller('FormListCtrl',
                     });
 
                     modalInstance.result.then(function (selectedBoard) {
-                        $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
+                        $http.put("/pin/form/" + form.tinyId + "/" + selectedBoard._id).then(function (response) {
                             if (response.status === 200) {
                                 $scope.addAlert("success", response.data);
                             } else
