@@ -27,5 +27,5 @@ exports.isOrgAdmin = function(user) {
 };
 
 exports.canComment = function(user) {
-    return exports.hasRole(user, "CommentAuthor") || exports.isOrgCurator(user);
+    return exports.hasRole(user, "CommentAuthor") || exports.hasRole(user, "CommentReviewer") || exports.isOrgCurator(user);
 };

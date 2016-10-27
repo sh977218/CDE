@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class ApproveCommentsCdeTest extends CdeCommentTest {
     @Test
     public void approvingCommentsCde() {
-        approvingComments("Imaging phase encode direction text", null, anonymousCommentUser_username);
+        approvingComments("Imaging phase encode direction text", null, "CommentUser");
     }
 
     @Test(dependsOnMethods = {"approvingCommentsCde"})
