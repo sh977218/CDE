@@ -16,6 +16,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.reload();
             };
 
+            $scope.switchCommentMode = function(){
+                $scope.commentMode = !$scope.commentMode;
+            };
+
             $scope.reload = function () {
                 $scope.accordionListStyle = "semi-transparent";
                 $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {

@@ -1283,6 +1283,7 @@ div + .questionPlaceholder {
 .historyView:hover {
     background-color: #c1d7ea !important;
 }
-.ng-invalid {
+
+input.ng-invalid {
     border: 1px solid red !important;
 }
