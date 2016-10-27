@@ -28,8 +28,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         $scope.setViewTypes($scope.module);
                         $scope.includeInAccordion =
                             [
-                                $scope.board.type + "/public/html/accordion/boardAccordionActions.html",
-                                $scope.board.type + "/public/html/accordion/addToQuickBoardActions.html"
+                                "/" + $scope.board.type + "/public/html/accordion/boardAccordionActions.html",
+                                "/" + $scope.board.type + "/public/html/accordion/addToQuickBoardActions.html"
                         ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
@@ -38,9 +38,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         pins.forEach(function (pin) {
                             var pinId = $scope.board.type==='cde'?pin.deTinyId:pin.formTinyId;
                             respElts.forEach(function (elt) {
-                                pinId === respElt.tinyId
-                                pins.elt = respElt;
-                                elts.push(respElts);
+                                if (pinId === elt.tinyId) {
+                                    pins.elt = elt;
+                                    elts.push(elt);
+                                }
                             });
                         });
                         elts.forEach(function (elt) {

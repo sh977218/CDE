@@ -39,7 +39,6 @@
             </div>
         </div>
 
-        <h4>{{board.type}}</h4>
         <div ng-if="board.type" ng-include="viewTypes[listViewType].url"></div>
 
         <uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
