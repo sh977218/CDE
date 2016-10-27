@@ -1061,4 +1061,34 @@ exports.init = function (app) {
         timeZone: "America/New_York"
     }).start();
 
+
+    app.get('/comments/tinyId/:tinyId', function (req, res) {
+        mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}).sort({created: 1}).exec(function(err, comments) {
+            var result = comments.filter(c => c.status !== 'deleted');
+            result.forEach(function (c) {
+                c.replies = c.replies.filter(r => r.status !== 'deleted');
+            });
+            result.forEach(function (c) {
+                if (c.pendingApproval) c.text = "This comment is pending approval";
+                c.replies.forEach(function (r) {
+                    if (r.pendingApproval) r.text = "This comment is pending approval";
+                });
+            });
+            res.send(result);
+        })
+    });
+
+    app.post('/comments/approve', adminItemSvc.approveComment);
+
+    app.post('/comments/decline', adminItemSvc.declineComment);
+
+    app.post('/comments/status/resolved', function (req, res) {
+        adminItemSvc.updateCommentStatus(req, res, "resolved");
+    });
+    app.post('/comments/status/active', function (req, res) {
+        adminItemSvc.updateCommentStatus(req, res, "active");
+    });
+    app.post('/comments/reply', adminItemSvc.replyToComment);
+
+
 };

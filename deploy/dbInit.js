@@ -8,6 +8,7 @@ db.sessions.remove({});
 db.articles.remove({});
 db.fs.files.remove({});
 db.fs.chunks.remove({});
+db.comments.remove({});
 
 var defaultBoard = {
     name: "default"
