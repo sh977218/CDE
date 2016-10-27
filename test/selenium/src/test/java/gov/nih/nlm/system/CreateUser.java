@@ -19,7 +19,7 @@ public class CreateUser extends NlmCdeBaseTest {
         closeAlert();
         findElement(By.name("searchUsers")).sendKeys("Coco Ch");
         clickElement(By.id("searchUsersSubmit"));
-        textPresent("Coco Channel");
+        textPresent("coco channel");
     }
 
 }
