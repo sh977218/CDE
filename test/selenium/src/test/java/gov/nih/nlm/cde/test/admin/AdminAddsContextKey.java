@@ -3,12 +3,12 @@ package gov.nih.nlm.cde.test.admin;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
     
     @Test
-    @RecordVideo
     public void addRemoveContext() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
@@ -32,7 +32,7 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.linkText("List Management"));
 
-        scrollToViewById("orgListName-Training");
+        new Actions(driver).moveToElement(findElement(By.id("orgListName-Training")));
         clickElement(By.xpath("//span/span[contains(.,'canYouSeeThis')]/i"));
         textPresent("Org has been updated");
         closeAlert();
