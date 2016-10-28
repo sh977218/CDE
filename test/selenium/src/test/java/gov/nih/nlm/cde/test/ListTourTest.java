@@ -10,11 +10,10 @@ public class ListTourTest extends TourTest {
         mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        hangon(1);
+        textPresent("Registration Status");
         clickElement(By.linkText("Help"));
         clickElement(By.linkText("Take a tour"));
         textPresent("Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections.");
-        hangon(1);
         getNext("This menu will take you back to the CDE search page");
         getNext("This menu will take you to the Form search page");
         getNext("Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them.");

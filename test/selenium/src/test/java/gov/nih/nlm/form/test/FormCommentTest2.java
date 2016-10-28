@@ -15,4 +15,8 @@ public class FormCommentTest2 extends FormCommentTest {
         orgAdminCanRemoveComment("Form Comment Test", "Qualified");
     }
 
+    @Test
+    public void formLongComments() {
+        showLongComments("PROMIS Bank v1.2 - Physical Function");
+    }
 }

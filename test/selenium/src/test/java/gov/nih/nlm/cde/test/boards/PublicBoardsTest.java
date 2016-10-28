@@ -8,7 +8,7 @@ public class PublicBoardsTest extends BoardTest {
     @Test
     public void searchPublicBoard() {
         mustBeLoggedOut();
-        clickElement(By.id("boardsLink"));
+        clickElement(By.id("boardsMenu"));
         findElement(By.name("search")).sendKeys("board");
         clickElement(By.id("search.submit"));
         textPresent("Leukemia Board");
@@ -22,7 +22,7 @@ public class PublicBoardsTest extends BoardTest {
     @Test
     public void searchPublicBoardNoResult() {
         mustBeLoggedOut();
-        clickElement(By.id("boardsLink"));
+        clickElement(By.id("boardsMenu"));
         findElement(By.name("search")).sendKeys("noResultSearch");
         clickElement(By.id("search.submit"));
         textPresent("No results were found. Try other criteria.");
