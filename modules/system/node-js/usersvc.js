@@ -1,5 +1,6 @@
 var mongo_data = require('./../../cde/node-js/mongo-cde'),
-    mongo_form = require('../../form/node-js/mongo-form')
+    mongo_form = require('../../form/node-js/mongo-form'),
+    mongo_board = require('../../board/node-js/mongo-board')
     ;
 
 exports.pinCdeToBoard = function(req, res) {
@@ -7,7 +8,7 @@ exports.pinCdeToBoard = function(req, res) {
     var boardId = req.params.boardId;
 
     mongo_data.eltByTinyId(tinyId, function(err, de){
-        mongo_data.boardById(boardId, function(err, board) {
+        mongo_board.boardById(boardId, function(err, board) {
             if (err) return res.send("Board cannot be found.");
             if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                 return res.send("You must own a board to edit it.");

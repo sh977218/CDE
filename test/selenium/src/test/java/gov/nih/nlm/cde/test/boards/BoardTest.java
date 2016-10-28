@@ -76,6 +76,7 @@ public class BoardTest extends NlmCdeBaseTest {
     protected void pinTo(String cdeName, String boardName) {
         openCdeInList(cdeName);
         clickElement(By.id("pinToBoard_0"));
+        textPresent(boardName);
         clickElement(By.linkText(boardName));
         textPresent("Added to Board");
         closeAlert();

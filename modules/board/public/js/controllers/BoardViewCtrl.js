@@ -77,7 +77,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     .success(function (response) {
                         SearchSettings.getPromise().then(function (settings) {
                             var csv = exports.getCdeCsvHeader(settings.tableViewFields);
-                            response.cdes.forEach(function (ele) {
+                            response.elts.forEach(function (ele) {
                                 csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             if (csv) {
