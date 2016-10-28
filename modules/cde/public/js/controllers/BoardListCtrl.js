@@ -6,7 +6,6 @@ angular.module('cdeModule').controller('BoardListCtrl', ['$scope', '$http', 'Ela
         search: "",
         selectedTags: [],
         selectedShareStatus: ['Public'],
-        selectedTypes: ['cde', 'form'],
         sortBy: 'name',
         sortDirection: 'asc',
         tags: []

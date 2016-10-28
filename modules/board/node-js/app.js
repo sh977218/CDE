@@ -1,4 +1,4 @@
-var elastic = require('../../system/node-js/elastic')
+var elastic = require('../../cde/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
     , mongo_board = require('./mongo-board')
     , cdesvc = require('../../cde/node-js/cdesvc')

@@ -17,7 +17,8 @@ function doStream(dao) {
         })
     });
     stream.on('end', function () {
-        console.log(dao.type + " Done")
+        console.log(dao.type + " Done");
+        process.exit(1);
     })
 }
 
