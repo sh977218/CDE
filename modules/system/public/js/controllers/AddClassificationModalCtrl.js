@@ -58,8 +58,8 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
             , categories: $scope.newClassification.categories.map(function(cat){return cat;})
             , cdeId: cde._id
         };
-        deepCopy.categories.push(lastLeafName);        
-        addClassification.addClassification(deepCopy);        
+        deepCopy.categories.push(lastLeafName);
+        addClassification.addClassification(deepCopy, $scope.module);
         $scope.insertToClassificationHistory(deepCopy); 
     };     
     

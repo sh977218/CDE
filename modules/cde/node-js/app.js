@@ -1,5 +1,5 @@
 var cdesvc = require('./cdesvc')
-    , usersvc = require('./usersvc')
+    , usersvc = require('./../../system/node-js/usersvc')
     , mongo_cde = require('./mongo-cde')
     , mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('../../system/node-js/mongo-data')
@@ -607,7 +607,7 @@ exports.init = function (app, daoManager) {
             res.status(401).send();
             return;
         }
-        classificationNode.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});
                 mongo_data_system.addToClassifAudit({

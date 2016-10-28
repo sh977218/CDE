@@ -23,11 +23,14 @@ angular.module('systemModule').controller('ClassificationCtrl',
                 }
                 , addClassification: function() {
                     return {
-                        addClassification: function(newClassification) {
-                            CdeClassification.save(newClassification, function(res) {
+                        addClassification: function (newClassification, module) {
+                            var classificationService = CdeClassification;
+                            if (module === 'form') classificationService = FormClassification;
+                            classificationService.save(newClassification, function (res) {
                                 $scope.reload($routeParams);
                                 $scope.addAlert("success", res.msg);
                             });
+
                         }
                     };
                 }
@@ -35,11 +38,13 @@ angular.module('systemModule').controller('ClassificationCtrl',
         });
     };
 
-    $scope.removeClassification = function(orgName, elts) {
-        CdeClassification.remove({
-            cdeId: $scope.elt._id
-            , orgName: orgName
-            , categories: elts
+    $scope.removeClassification = function (orgName, module, elts) {
+        var classificationService = CdeClassification;
+        if (module === 'form') classificationService = FormClassification;
+        classificationService.remove({
+            cdeId: $scope.elt._id,
+            orgName: orgName,
+            categories: elts
         }, function (res) {
             $scope.reload($routeParams);
             $scope.addAlert("success", "Classification Deleted");
