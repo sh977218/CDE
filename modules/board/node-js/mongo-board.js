@@ -1,6 +1,7 @@
 var config = require('../../system/node-js/parseConfig');
 var schemas = require('./schemas');
 var connHelper = require('../../system/node-js/connections');
+var elastic = require('../../cde/node-js/elastic');
 
 exports.type = "board";
 exports.name = "boards";

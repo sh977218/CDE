@@ -1,6 +1,7 @@
 var cdesvc = require('./cdesvc')
     , usersvc = require('./usersvc')
     , mongo_cde = require('./mongo-cde')
+    , mongo_board = require('../../board/node-js/mongo-board')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
     , xml2js = require('xml2js')
@@ -164,9 +165,9 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                mongo_cde.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                mongo_board.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_cde.newBoard(board, function (err) {
+                        mongo_board.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             elastic.boardRefresh(function () {
                                 res.send();
@@ -177,7 +178,7 @@ exports.init = function (app, daoManager) {
                     }
                 });
             } else {
-                mongo_cde.boardById(board._id, function (err, b) {
+                mongo_board.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
                             origin: "cde.app.board",
