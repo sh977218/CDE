@@ -159,6 +159,15 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     });
 };
 
+exports.byTinyIdList = function (idList, callback) {
+    Form.find({'archived': null}).where('tinyId')
+        .in(idList)
+        .exec(function (err, forms) {
+            forms.forEach(mongo_data_system.formatElt);
+            callback(err, forms);
+        });
+};
+
 exports.eltByTinyId = function (tinyId, callback) {
     if (!tinyId) callback("tinyId is undefined!", null);
     if (tinyId.length > 20) Form.findOne({'_id': tinyId}).exec(callback);

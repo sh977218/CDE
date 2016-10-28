@@ -1,11 +1,15 @@
 angular.module('cdeModule').controller('CdeCopyModalCtrl',
     ['$scope', 'elt', 'userResource', '$controller', '$uibModalInstance',
         function($scope, elt, userResource, $controller, $modalInstance) {
-    elt.classification = [];
+
+    elt.classification = elt.classification.filter(function (c) {
+        return userResource.userOrgs.indexOf(c.stewardOrg.name) !== -1;
+    });
     elt.registrationState.administrativeNote = "Copy of: " + elt.tinyId;
     delete elt.tinyId;
     delete elt._id;
     delete elt.source;
+    elt.sources = [];
     delete elt.origin;
     delete elt.created;
     delete elt.updated;

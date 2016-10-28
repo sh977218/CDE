@@ -1,6 +1,7 @@
 var authorizationShared = require('../shared/authorizationShared'),
-    mongo_cde = require('../../cde/node-js/mongo-cde')
-;
+    mongo_cde = require('../../cde/node-js/mongo-cde'),
+    mongo_board = require('../../board/node-js/mongo-board')
+    ;
 
 exports.checkOwnership = function(dao, id, req, cb) {
     if (req.isAuthenticated()) {
@@ -39,7 +40,7 @@ exports.checkSiteAdmin = function(req, res, next) {
 
 exports.boardOwnership = function (req, res, boardId, next) {
     if (req.isAuthenticated()) {
-        mongo_cde.boardById(boardId, function (err, board) {
+        mongo_board.boardById(boardId, function (err, board) {
             if (!board) {
                 res.status(500).send("Cannot find board with id:" + boardId);
             } else if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {

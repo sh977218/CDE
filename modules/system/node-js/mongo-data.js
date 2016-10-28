@@ -211,6 +211,16 @@ exports.removeOrg = function (id, callback) {
   Org.findOne({"_id": id}).remove().exec(callback);
 };
 
+exports.formatElt = function (elt) {
+    function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    elt._doc.stewardOrgCopy = elt.stewardOrg;
+    elt._doc.primaryNameCopy = escapeHTML(elt.naming[0].designation);
+    elt._doc.primaryDefinitionCopy = escapeHTML(elt.naming[0].definition);
+};
+
 exports.userTotalSpace = function(Model, name, callback) {
     Model.aggregate(
             {$match: {"attachments.uploadedBy.username": name}},

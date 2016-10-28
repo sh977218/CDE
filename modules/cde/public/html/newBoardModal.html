@@ -4,12 +4,19 @@
 <form name="form" role="form">
     <div class="modal-body" id="newBoardModalBody">
         <div class="form-group">
-            <label for="name">Name</label>
-            <input id="new-board-name" class="form-control" ng-model="newBoard.name" name="name"
+            <label for="new-board-type">Type</label>
+            <select id="new-board-type" class="form-control" name="type" ng-model="newBoard.type" required>
+                <option value="cde">CDE</option>
+                <option value="form">Form</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="new-board-name">Name</label>
+            <input id="new-board-name" class="form-control" name="name" ng-model="newBoard.name"
                    Placeholder="Board Name / Title" required/>
         </div>
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="new-board-description">Description</label>
             <textArea id="new-board-description" class="form-control" name="description" ng-model="newBoard.description"
                       placeholder="Optional Board Description"></textarea>
         </div>

@@ -1,8 +1,11 @@
 var cdesvc = require('./cdesvc')
     , usersvc = require('./usersvc')
     , mongo_cde = require('./mongo-cde')
+    , mongo_board = require('../../board/node-js/mongo-board')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
+    , classificationShared = require('../../system/shared/classificationShared')
     , xml2js = require('xml2js')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
@@ -27,13 +30,6 @@ exports.init = function (app, daoManager) {
     app.use("/cde/shared", express.static(path.join(__dirname, '../shared')));
 
     daoManager.registerDao(mongo_cde);
-
-    app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send(err);
-            return res.send(result);
-        });
-    });
 
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
@@ -154,54 +150,6 @@ exports.init = function (app, daoManager) {
             res.send(result);
         });
     });
-    app.get('/board/:boardId/:start/:size?/', exportShared.nocacheMiddleware, function (req, res) {
-        var size = 20;
-        if (req.params.size) {
-            size = req.params.size;
-        }
-        if (size > 500) {
-            return res.status(403).send("Request too large");
-        }
-
-        mongo_cde.boardById(req.params.boardId, function (err, board) {
-            if (board) {
-                if (board.shareStatus !== "Public") {
-                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
-                        return res.status(403).end();
-                    }
-                }
-                var totalItems = board.pins.length;
-                board.pins = board.pins.splice(req.params.start, size).map(function(a) {
-                    return a.toObject();
-                });
-                delete board._doc.owner.userId;
-                var idList = board.pins.map(function(p) {
-                    return p.deTinyId;
-                });
-                mongo_cde.cdesByTinyIdList(idList, function (err, cdes) {
-                    if (req.query.type === "xml"){
-                        res.setHeader("Content-Type", "application/xml");
-                        var exportBoard ={
-                            board: exportShared.stripBsonIds(board.toObject()),
-                            cdes: cdesvc.hideProprietaryCodes(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
-                            totalItems: totalItems
-                        };
-                        exportBoard = exportShared.stripBsonIds(exportBoard);
-
-                        res.send(js2xml("export", exportBoard));
-
-                    }
-                    else {
-                        res.send({board: board, cdes: cdesvc.hideProprietaryCodes(cdes, req.user), totalItems: totalItems});
-                    }
-                });
-            } else {
-                res.status(404).end();
-            }
-
-
-        });
-    });
 
     app.post('/board', function (req, res) {
         var boardQuota = config.boardQuota || 50;
@@ -219,9 +167,9 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                mongo_cde.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                mongo_board.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_cde.newBoard(board, function (err) {
+                        mongo_board.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             elastic.boardRefresh(function () {
                                 res.send();
@@ -232,7 +180,7 @@ exports.init = function (app, daoManager) {
                     }
                 });
             } else {
-                mongo_cde.boardById(board._id, function (err, b) {
+                mongo_board.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
                             origin: "cde.app.board",
@@ -335,9 +283,16 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.put('/pincde/:tinyId/:boardId', function (req, res) {
+    app.put('/pin/cde/:tinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
-            usersvc.pinToBoard(req, res);
+            usersvc.pinCdeToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }
+    });
+    app.put('/pin/form/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinFormToBoard(req, res);
         } else {
             res.send("Please login first.");
         }
@@ -644,6 +599,32 @@ exports.init = function (app, daoManager) {
         elastic.get(req.params.id, function (err, result) {
             if (err) throw err;
             else res.send(result);
+        });
+    });
+
+    app.post('/classification/cde', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.body.cdeId
+                    }],
+                    action: "add",
+                    path: [req.body.orgName].concat(req.body.categories)
+                });
+            } else {
+                res.send({code: 403, msg: "Classification Already Exists"});
+            }
+
         });
     });
 

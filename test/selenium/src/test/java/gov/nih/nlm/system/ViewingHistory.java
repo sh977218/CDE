@@ -22,8 +22,8 @@ public class ViewingHistory extends NlmCdeBaseTest {
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
 
         hangon(4);
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Profile")).click();
+        clickElement(By.id("username_link"));
+        clickElement(By.linkText("Profile"));
         textPresent("User Profile");
 
         textPresent("Specimen Inflammation Change Type");
