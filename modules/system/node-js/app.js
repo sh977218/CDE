@@ -522,38 +522,12 @@ exports.init = function (app) {
         });
     });
 
-    app.post('/classification/elt', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode.cdeClassification(req.body, classificationShared.actions.create, function (err) {
-            if (!err) {
-                res.send({code: 200, msg: "Classification Added"});
-                mongo_data_system.addToClassifAudit({
-                    date: new Date()
-                    , user: {
-                        username: req.user.username
-                    }
-                    , elements: [{
-                        _id: req.body.cdeId
-                    }]
-                    , action: "add"
-                    , path: [req.body.orgName].concat(req.body.categories)
-                });
-            } else {
-                res.send({code: 403, msg: "Classification Already Exists"});
-            }
-
-        });
-    });
-
     app.delete('/classification/elt', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             res.status(401).send();
             return;
         }
-        classificationNode.cdeClassification(req.query, classificationShared.actions.delete, function (err) {
+        classificationNode.eltClassification(req.query, classificationShared.actions.delete, function (err) {
             if (!err) {
                 res.end();
                 mongo_data_system.addToClassifAudit({
@@ -633,7 +607,7 @@ exports.init = function (app) {
                 , tinyId: elt.id || elt
                 , version: elt.version || null
             };
-            classificationNode.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+            classificationNode.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
         };
         adminItemSvc.bulkAction(req.body.elements, action, function () {
             var elts = req.body.elements.map(function (e) {

@@ -114,7 +114,7 @@ exports.byTinyIdList = function (idList, callback) {
 };
 
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
-    exports.cdesByTinyIdList(idList, function (err, cdes) {
+    exports.byTinyIdList(idList, function (err, cdes) {
         var reorderedCdes = idList.map(function (id) {
             for (var i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];

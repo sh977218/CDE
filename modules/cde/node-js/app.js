@@ -2,8 +2,10 @@ var cdesvc = require('./cdesvc')
     , usersvc = require('./usersvc')
     , mongo_cde = require('./mongo-cde')
     , mongo_board = require('../../board/node-js/mongo-board')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
+    , classificationShared = require('../../system/shared/classificationShared')
     , xml2js = require('xml2js')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
@@ -597,6 +599,32 @@ exports.init = function (app, daoManager) {
         elastic.get(req.params.id, function (err, result) {
             if (err) throw err;
             else res.send(result);
+        });
+    });
+
+    app.post('/classification/cde', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.body.cdeId
+                    }],
+                    action: "add",
+                    path: [req.body.orgName].concat(req.body.categories)
+                });
+            } else {
+                res.send({code: 403, msg: "Classification Already Exists"});
+            }
+
         });
     });
 

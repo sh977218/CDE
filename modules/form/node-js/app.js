@@ -2,6 +2,8 @@ var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
     , mongo_form = require('./mongo-form')
+    , classificationNode = require('../../system/node-js/classificationNode')
+    , classificationShared = require('../../system/shared/classificationShared')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
     , multer = require('multer')
@@ -131,5 +133,31 @@ exports.init = function (app, daoManager) {
         } else {
             res.send("Please login first.");
         }
+    });
+
+    app.post('/classification/form', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode.eltClassification(req.body, classificationShared.actions.create, mongo_form, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.body.cdeId
+                    }],
+                    action: "add",
+                    path: [req.body.orgName].concat(req.body.categories)
+                });
+            } else {
+                res.send({code: 403, msg: "Classification Already Exists"});
+            }
+
+        });
     });
 };

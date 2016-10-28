@@ -25,7 +25,7 @@ classification.saveCdeClassif = function(err, cde, cb) {
     });
 };
 
-exports.cdeClassification = function(body, action, cb) {
+exports.eltClassification = function (body, action, dao, cb) {
     var classify = function (steward, cde) {
         if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
@@ -41,31 +41,30 @@ exports.cdeClassification = function(body, action, cb) {
         }
 
     };
-    daoManager.getDaoList().forEach(function(dao) {
-        var  findElements = function(err, cde) {
-            if (!cde) return;
-            var steward = classificationShared.findSteward(cde, body.orgName);
-            if (!steward) {
-                mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
-                    var classifOrg = {
-                        stewardOrg: {
-                            name: body.orgName
-                        }
-                        , elements: []
-                    };
 
-                    if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
-                    if (!cde.classification) cde.classification = [];
-                    cde.classification.push(classifOrg);
-                    steward = classificationShared.findSteward(cde, body.orgName);
-                    classify(steward, cde);
-                });
-            } else classify(steward, cde);
-        };
-        if (body.cdeId) dao.byId(body.cdeId, findElements);
-        if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);
-        if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
-    });
+    var  findElements = function(err, cde) {
+        if (!cde) return;
+        var steward = classificationShared.findSteward(cde, body.orgName);
+        if (!steward) {
+            mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
+                var classifOrg = {
+                    stewardOrg: {
+                        name: body.orgName
+                    },
+                    elements: []
+                };
+
+                if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
+                if (!cde.classification) cde.classification = [];
+                cde.classification.push(classifOrg);
+                steward = classificationShared.findSteward(cde, body.orgName);
+                classify(steward, cde);
+            });
+        } else classify(steward, cde);
+    };
+    if (body.cdeId) dao.byId(body.cdeId, findElements);
+    if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);
+    if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
 };
 
 exports.modifyOrgClassification = function(request, action, callback) {
@@ -136,7 +135,7 @@ exports.classifyCdesInBoard = function(req, cb) {
             , categories: newClassification.categories
             , cdeId: id
         };
-        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+        classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
     mongo_data_cde.boardById(boardId, function(err, board) {
         if (err) return cb(err);
@@ -165,7 +164,7 @@ exports.classifyEntireSearch = function(req, cb) {
             , categories: req.body.newClassification.categories
             , tinyId: id
         };
-        classification.cdeClassification(classifReq, classificationShared.actions.create, actionCallback);
+        classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
     var query = elastic.buildElasticSearchQuery(req.body.user, req.body.query);
     elastic.elasticsearch(query, req.body.itemType, function(err, result) {
