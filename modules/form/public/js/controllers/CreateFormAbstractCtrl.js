@@ -1,6 +1,6 @@
 angular.module('formModule').controller('CreateFormAbstractCtrl',
-    ['$scope', '$location', '$uibModal', 'userResource',
-        function ($scope, $location, $modal, userResource) {
+    ['$scope', '$location', '$uibModal', 'userResource', 'Form',
+        function ($scope, $location, $modal, userResource, Form) {
             $scope.openCdeInNewTab = true;
             $scope.module = "form";
             $scope.searchForm = {};
@@ -104,6 +104,14 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                     $scope.removeClassification(orgName, pathArray);
                 });
             };
+
+            $scope.save = function() {
+                $scope.saving = true;
+                Form.save($scope.elt, function(form) {
+                    $location.url("formView?tinyId=" + form.tinyId);
+                });
+            };
+
 
         }
     ]);
