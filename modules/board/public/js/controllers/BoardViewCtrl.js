@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('BoardViewCtrl',
-    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert',
-        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert) {
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert', '$q',
+        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert, $q) {
 
             $scope.elts = [];
             $scope.currentPage = 1;
@@ -18,6 +18,13 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.switchCommentMode = function(){
                 $scope.commentMode = !$scope.commentMode;
             };
+
+            $scope.getEltId = function () {
+                return $scope.board._id;
+            };
+            $scope.getCtrlType = function () {return "board";};
+
+            $scope.deferredEltLoaded = $q.defer();
 
             $scope.reload = function () {
                 $scope.accordionListStyle = "semi-transparent";
@@ -51,6 +58,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
+                        $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
                     $scope.addAlert("danger", "Board not found");

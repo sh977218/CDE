@@ -235,7 +235,7 @@ schemas.commentSchema = new mongoose.Schema({
         }
     ],
     element: {
-        eltType: {type: String, enum: ["cde", "form"]},
+        eltType: {type: String, enum: ["cde", "form", "board"]},
         eltId: String
     }
 });

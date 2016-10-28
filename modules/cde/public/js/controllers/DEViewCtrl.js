@@ -38,6 +38,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
         });
     };
 
+    $scope.getEltId = function () {
+        return $scope.elt.tinyId;
+    };
+    $scope.getCtrlType = function () {return "cde";};
+
     $scope.tabs = {
         general: {
             heading: "General Details",

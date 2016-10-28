@@ -50,6 +50,8 @@ exports.boardById = function (boardId, callback) {
     });
 };
 
+exports.byId = exports.boardById;
+
 exports.boardList = function (from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
         // TODO Next line throws "undefined is not a function.why?
@@ -70,4 +72,5 @@ exports.newBoard = function (board, callback) {
         callback(err, newBoard);
     });
 };
+
 

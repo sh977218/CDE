@@ -19,6 +19,12 @@ angular.module('formModule').controller
 
     var converter = new LFormsConverter(); // jshint ignore:line
 
+    $scope.getEltId = function () {
+        return $scope.elt.tinyId;
+    };
+    $scope.getCtrlType = function () {return "form";};
+
+
     $scope.switchCommentMode = function(){
         $scope.commentMode = !$scope.commentMode;
     };

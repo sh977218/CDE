@@ -2,6 +2,7 @@ var elastic = require('../../cde/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
     , mongo_board = require('./mongo-board')
     , cdesvc = require('../../cde/node-js/cdesvc')
+    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
 ;
 
 
@@ -68,4 +69,12 @@ exports.init = function (app, daoManager) {
             }
         });
     });
+
+    app.post('/comments/board/add', function (req, res) {
+        adminItemSvc.addComment(req, res, mongo_board);
+    });
+    app.post('/comments/board/remove', function (req, res) {
+        adminItemSvc.removeComment(req, res, mongo_board);
+    });
+
 };
