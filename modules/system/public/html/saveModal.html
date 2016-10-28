@@ -12,12 +12,13 @@
     <div class="control-group" ng-class="{error: saveForm.version.$invalid}">
        <label for="version">Choose a new version</label>
        <input class="form-control" name="version" type="text" id="version"
-              ng-model="elt.version" ng-pattern="/^[A-z0-9-=.]+$/"/>
+              ng-model="elt.version" ng-pattern="/^[A-z0-9-=.]+$/" ng-change="verifyUnicity()"/>
        <span ng-show="saveForm.version.$error.unique">
            <label for="overrideVersion">This version number has already been used. Override rule? </label>
            <input id="overrideVersion" name="overrideVersion" type="checkbox" ng-model="overrideVersion"/>
        </span>
-       <span ng-show="saveForm.version.$error.pattern" class="help-inline">Version number cannot include characters other than letters, numbers, -, = and .</span>
+       <span ng-show="saveForm.version.$error.pattern" class="help-inline">
+           Version number cannot include characters other than letters, numbers, -, = and .</span>
     </div>
 </div>
 <div class="modal-footer">
