@@ -2,7 +2,8 @@ var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
     , mongo_form = require('./mongo-form')
-    , classificationNode = require('../../system/node-js/classificationNode')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
+    , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationShared = require('../../system/shared/classificationShared')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
@@ -12,7 +13,7 @@ var express = require('express')
     , elastic_system = require('../../system/node-js/elastic')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
-    , usersvc = require('../../cde/node-js/usersvc')
+    , usersrvc = require('./../../system/node-js/usersrvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -140,7 +141,7 @@ exports.init = function (app, daoManager) {
             res.status(401).send();
             return;
         }
-        classificationNode.eltClassification(req.body, classificationShared.actions.create, mongo_form, function (err) {
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_form, function (err) {
             if (!err) {
                 res.send({code: 200, msg: "Classification Added"});
                 mongo_data_system.addToClassifAudit({

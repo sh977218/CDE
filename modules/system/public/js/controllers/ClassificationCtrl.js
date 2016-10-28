@@ -1,15 +1,14 @@
 angular.module('systemModule').controller('ClassificationCtrl',
-    ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'OrgHelpers', 'userResource',
-        function($scope, $modal, $routeParams, CdeClassification, OrgHelpers, userResource)
-{
+    ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'FormClassification', 'OrgHelpers', 'userResource',
+        function ($scope, $modal, $routeParams, CdeClassification, FormClassification, OrgHelpers, userResource) {
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
         $modal.open({
             animation: false,
-          templateUrl: '/system/public/html/classifyElt.html',
-          controller: 'AddClassificationModalCtrl',
-          resolve: {
+            templateUrl: '/system/public/html/classifyElt.html',
+            controller: 'AddClassificationModalCtrl',
+            resolve: {
                 module: function() {
                     return $scope.module;
                 }
@@ -18,40 +17,45 @@ angular.module('systemModule').controller('ClassificationCtrl',
                 }
                 , orgName: function() {
                     return undefined;
-                } 
+                }
                 , pathArray: function() {
                     return undefined;
                 }
                 , addClassification: function() {
                     return {
-                        addClassification: function(newClassification) {
-                            CdeClassification.save(newClassification, function(res) {
+                        addClassification: function (newClassification, module) {
+                            var classificationService = CdeClassification;
+                            if (module === 'form') classificationService = FormClassification;
+                            classificationService.save(newClassification, function (res) {
                                 $scope.reload($routeParams);
                                 $scope.addAlert("success", res.msg);
-                            });                   
+                            });
+
                         }
                     };
                 }
-            }          
+            }
         });
     };
-     
-    $scope.removeClassification = function(orgName, elts) {
-        CdeClassification.remove({
-            cdeId: $scope.elt._id
-            , orgName: orgName
-            , categories: elts
+
+    $scope.removeClassification = function (orgName, module, elts) {
+        var classificationService = CdeClassification;
+        if (module === 'form') classificationService = FormClassification;
+        classificationService.remove({
+            cdeId: $scope.elt._id,
+            orgName: orgName,
+            categories: elts
         }, function (res) {
             $scope.reload($routeParams);
             $scope.addAlert("success", "Classification Deleted");
         });
-    };     
+    };
 
     $scope.hideWorkingGroups = function(stewardClassifications) {
         return !(OrgHelpers.showWorkingGroup(stewardClassifications.stewardOrg.name, userResource.user) ||
         ($scope.user && $scope.user.siteAdmin));
     };
-    
+
     $scope.showRemoveClassificationModal = function(orgName, pathArray) {
         var modalInstance = $modal.open({
             templateUrl: '/system/public/html/removeClassificationModal.html',

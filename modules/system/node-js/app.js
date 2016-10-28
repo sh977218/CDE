@@ -396,6 +396,22 @@ exports.init = function (app) {
         }
     });
 
+    app.put('/user', function (req, res) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+            mongo_data_system.addUser(
+                {
+                    username: req.body.username,
+                    password: "umls",
+                    quota: 1024 * 1024 * 1024
+                },
+                function () {
+                    res.send();
+                });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
+    });
+
     app.post('/addSiteAdmin', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
@@ -489,7 +505,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserAvatar', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             usersrvc.updateUserAvatar(req.body, function (err) {
                 if (err) res.status(500).end();
                 else res.status(200).end();
@@ -531,15 +547,15 @@ exports.init = function (app) {
             if (!err) {
                 res.end();
                 mongo_data_system.addToClassifAudit({
-                    date: new Date()
-                    , user: {
+                    date: new Date(),
+                    user: {
                         username: req.user.username
-                    }
-                    , elements: [{
+                    },
+                    elements: [{
                         _id: req.query.cdeId
-                    }]
-                    , action: "delete"
-                    , path: [req.query.orgName].concat(req.query.categories)
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
                 });
             } else {
                 res.status(202).send({error: {message: "Classification does not exists."}});

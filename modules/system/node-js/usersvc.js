@@ -1,4 +1,4 @@
-var mongo_data = require('./mongo-cde'),
+var mongo_data = require('./../../cde/node-js/mongo-cde'),
     mongo_form = require('../../form/node-js/mongo-form')
     ;
 
