@@ -55,7 +55,7 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     $scope.addClassification = function (lastLeafName) {        
         var deepCopy = {
             orgName: $scope.newClassification.orgName
-            , categories: $scope.newClassification.categories.map(function(cat){return cat;})     
+            , categories: $scope.newClassification.categories.map(function(cat){return cat;})
             , cdeId: cde._id
         };
         deepCopy.categories.push(lastLeafName);        

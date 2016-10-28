@@ -531,15 +531,15 @@ exports.init = function (app) {
             if (!err) {
                 res.end();
                 mongo_data_system.addToClassifAudit({
-                    date: new Date()
-                    , user: {
+                    date: new Date(),
+                    user: {
                         username: req.user.username
-                    }
-                    , elements: [{
+                    },
+                    elements: [{
                         _id: req.query.cdeId
-                    }]
-                    , action: "delete"
-                    , path: [req.query.orgName].concat(req.query.categories)
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
                 });
             } else {
                 res.status(202).send({error: {message: "Classification does not exists."}});
