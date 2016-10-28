@@ -1,5 +1,5 @@
  angular.module('systemModule').controller('UsersMgtCtrl',
-     ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+     ['$scope', '$http', '$timeout', '$uibModal', 'Alert', function($scope, $http, $timeout, $modal, Alert) {
 
     $scope.search = {username: ""};
 
@@ -25,6 +25,18 @@
             });}
         , 0);
     };
+
+     $scope.openCreateUser = function() {
+         $modal.open({
+             animation: false,
+             templateUrl: '/system/public/html/newUserModal.html',
+             controller: function() {}
+         }).result.then(function (username) {
+             $http.put("/user", {username: username}).success(function(res) {
+                 Alert.addAlert("success", "User created");
+             });
+         });
+     }
     
 }]);
 
