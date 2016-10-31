@@ -11,7 +11,6 @@ public class CreateFormFromBoardTest extends BoardTest {
     BaseClassificationTest baseClassificationTest = new BaseClassificationTest();
 
     @Test
-    @RecordVideo
     public void createFormFromBoard() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToBoard("Form Board");
