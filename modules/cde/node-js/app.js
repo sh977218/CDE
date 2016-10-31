@@ -44,6 +44,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/cdesByTinyIdList', function (req, res) {
         mongo_cde.byTinyIdList(req.body, function (err, cdes) {
+            if (err) res.status(500).send();
             res.send(cdes);
         });
     });

@@ -1,1 +1,1 @@
-angular.bootstrap(document.body, ['systemModule'], {strictDi: true});
+angular.bootstrap(document.body, ['cdeAppModule'], {strictDi: true});

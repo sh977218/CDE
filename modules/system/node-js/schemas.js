@@ -261,7 +261,7 @@ var requestSchema = {
 
 var commentApprovalSchema = {
     element: {
-        tinyId: String
+        eltId: String
         , name: String
         , eltType: {type: String, enum: ["cde", "form"]}
     }
