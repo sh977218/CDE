@@ -40,20 +40,22 @@ exports.transferSteward = function(req, res) {
     
     if(req.isAuthenticated() && usersrvc.isAdminOf(req.user, req.body.from) && usersrvc.isAdminOf(req.user, req.body.to)) {
         daoManager.getDaoList().forEach(function(dao) {
-            dao.transferSteward(req.body.from, req.body.to, function(err, result) {
-                if(err || Number.isNaN(result)) {
-                    hasError = true;
-                    results.push({status: 400, message: 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. '});
-                } else if(result === 0) {
-                    results.push({status: 200, message: 'There are no ' + dao.name + ' to transfer. '});
-                } else {
-                    results.push({status: 200, message: result + ' ' + dao.name + ' transferred. '});
-                }
-                
-                if(results.length===daoManager.getDaoList().length) {
-                    return res.status(hasError === true ? 400 : 200).send(concatResultsMessages(results) );
-                }
-            });
+            if(dao.transferSteward){
+                dao.transferSteward(req.body.from, req.body.to, function(err, result) {
+                    if(err || Number.isNaN(result)) {
+                        hasError = true;
+                        results.push({status: 400, message: 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. '});
+                    } else if(result === 0) {
+                        results.push({status: 200, message: 'There are no ' + dao.name + ' to transfer. '});
+                    } else {
+                        results.push({status: 200, message: result + ' ' + dao.name + ' transferred. '});
+                    }
+
+                    if(results.length===daoManager.getDaoList().length) {
+                        return res.status(hasError === true ? 400 : 200).send(concatResultsMessages(results) );
+                    }
+                });
+            }
         });
     } else {
         res.status(400).send("Please login first.");
