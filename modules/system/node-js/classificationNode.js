@@ -62,9 +62,12 @@ exports.eltClassification = function (body, action, dao, cb) {
             });
         } else classify(steward, cde);
     };
-    if (body.cdeId) dao.byId(body.cdeId, findElements);
-    if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);
-    if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
+    if (body.cdeId && dao.byId)
+        dao.byId(body.cdeId, findElements);
+    if (body.tinyId && (!body.version) && dao.eltByTinyId)
+        dao.eltByTinyId(body.tinyId, findElements);
+    if (body.tinyId && body.version && dao.byTinyIdAndVersion)
+        dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
 };
 
 exports.modifyOrgClassification = function(request, action, callback) {
