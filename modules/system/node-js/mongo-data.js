@@ -304,7 +304,8 @@ exports.alterAttachmentStatus = function(id, status, cb) {
     });
     if (status === "approved") {
         daoManager.getDaoList().forEach(function(dao){
-            dao.setAttachmentApproved(id);
+            if (dao.setAttachmentApproved)
+                dao.setAttachmentApproved(id);
         });
     }
 };

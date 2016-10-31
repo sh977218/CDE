@@ -128,12 +128,8 @@ exports.create = function (form, user, callback) {
     });
 };
 
-exports.byId = function (formId, callback) {
-    if (!formId) callback("Not found", null);
-    Form.findOne({'_id': formId}, function (err, form) {
-        if (!form) err = "Cannot find form";
-        callback(err, form);
-    });
+exports.byId = function (id, callback) {
+    Form.findById(id, callback);
 };
 
 exports.userTotalSpace = function (name, callback) {

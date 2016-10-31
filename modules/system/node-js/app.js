@@ -775,7 +775,8 @@ exports.init = function (app) {
     app.get('/attachment/decline/:id', function (req, res) {
         if (!authorizationShared.hasRole(req.user, "AttachmentReviewer")) return res.status(401).send();
         daoManager.getDaoList().forEach(function (dao) {
-            dao.removeAttachmentLinks(req.params.id);
+            if (dao.removeAttachmentLinks)
+                dao.removeAttachmentLinks(req.params.id);
         });
         mongo_data_system.deleteFileById(req.params.id);
         res.send("Attachment declined");

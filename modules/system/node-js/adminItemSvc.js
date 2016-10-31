@@ -563,13 +563,13 @@ exports.removeAttachmentLinks = function (id, collection) {
 
 exports.setAttachmentApproved = function (id, collection) {
     collection.update(
-        {"attachments.fileid": id}
-        , {
+        {"attachments.fileid": id},
+        {
             $unset: {
                 "attachments.$.pendingApproval": ""
             }
-        }
-        , {multi: true}).exec();
+        },
+        {multi: true}).exec();
 };
 
 exports.fileUsed = function (id, collection, cb) {
