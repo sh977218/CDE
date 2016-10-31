@@ -16,13 +16,15 @@ public class UnresolvedComment extends CdeCommentTest {
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
         textNotPresent("There are unresolved comments");
+        clickElement(By.id("cancelRegStatus"));
 
         addComment("Simple comment");
 
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
         textPresent("There are unresolved comments");
-        
+        clickElement(By.id("cancelRegStatus"));
+
     }
 
 
