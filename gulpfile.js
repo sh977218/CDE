@@ -133,7 +133,8 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
                 .pipe(usemin({
                     jsAttributes: {
                         defer: true
-                    },                    assetsDir: "./modules/",
+                    },
+                    assetsDir: "./modules/",
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
                     js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
