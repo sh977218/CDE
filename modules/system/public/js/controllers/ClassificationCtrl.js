@@ -63,8 +63,13 @@ angular.module('systemModule').controller('ClassificationCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
+                },
+                pathArray: function () {
+                    return pathArray;
+                },
+                module: function () {
+                    return $scope.module;
                 }
-                , pathArray: function() {return pathArray;}
             }
         });
 
