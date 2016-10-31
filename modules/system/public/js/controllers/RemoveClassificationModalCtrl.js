@@ -2,6 +2,7 @@ angular.module('systemModule').controller('RemoveClassificationModalCtrl',
     ['$scope', '$uibModalInstance', '$timeout', 'classifName', 'pathArray', 'module',
         function ($scope, $modalInstance, $timeout, classifName, pathArray, module) {
     $scope.classifName = classifName;
+    $scope.module = module;
     $scope.userTyped = {name: ""};
     $scope.pathArray = pathArray;
     

@@ -162,4 +162,29 @@ exports.init = function (app, daoManager) {
 
         });
     });
+
+    app.delete('/classification/form', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_form, function (err) {
+            if (!err) {
+                res.end();
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.query.cdeId
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
+                });
+            } else {
+                res.status(202).send({error: {message: "Classification does not exists."}});
+            }
+        });
+    });
 };

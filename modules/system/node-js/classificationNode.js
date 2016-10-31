@@ -8,19 +8,19 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
 
 var classification = this;
 
-classification.saveCdeClassif = function(err, cde, cb) {
+classification.saveCdeClassif = function (err, elt, cb) {
     if (err) {
         if (cb) cb(err);
         return;
     }
-    cde.classification.forEach(function(steward, i) {
+    elt.classification.forEach(function (steward, i) {
         if (steward.elements.length === 0) {
             cde.classification.splice(i, 1);
         }
     });
-    cde.updated = new Date();
-    cde.markModified('classification');
-    cde.save(function() {
+    elt.updated = new Date();
+    elt.markModified('classification');
+    elt.save(function () {
         if (cb) cb(err);
     });
 };
