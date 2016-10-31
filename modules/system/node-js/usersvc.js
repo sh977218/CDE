@@ -65,7 +65,7 @@ exports.pinFormToBoard = function(req, res) {
 exports.removePinFromBoard = function(req, res) {
     var boardId = req.params.boardId;
     var deTinyId = req.params.deTinyId;
-    mongo_data.boardById(boardId, function(err, board) {
+    mongo_board.boardById(boardId, function(err, board) {
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");
         } else {

@@ -14,6 +14,7 @@ var express = require('express')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
     , usersvc = require('../../system/node-js/usersvc')
+    , usersrvc = require('../../system/node-js/usersrvc')
     ;
 
 exports.init = function (app, daoManager) {
