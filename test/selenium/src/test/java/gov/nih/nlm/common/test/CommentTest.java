@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 
 public abstract class CommentTest extends CommonTest {
 
-    private void addComment(String text) {
+    protected void addComment(String text) {
         clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
         hangon(2);

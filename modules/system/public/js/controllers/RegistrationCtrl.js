@@ -1,9 +1,17 @@
- angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$uibModal', '$location',
-     function($scope, $modal, $location)
+ angular.module('systemModule').controller('RegistrationCtrl', ['$scope', '$uibModal', '$location', '$http', 'Alert',
+     function($scope, $modal, $location, $http, Alert)
  {
      
     $scope.openRegStatusUpdate = function () {
-        var modalInstance = $modal.open({
+        $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
+            if (result && result.data && result.data.filter &&
+                result.data.filter(function (a) {return a.status !== 'resolved' && a.status !== 'deleted'})
+            ) {
+                Alert.addAlert('info', "Info: There are unresolved comments. ")
+            }
+        });
+
+       $modal.open({
             animation: false,
           templateUrl: '/system/public/html/regStatusUpdateModal.html',
           controller: 'RegistrationModalCtrl',
@@ -15,11 +23,9 @@
                   return $scope.isSiteAdmin();
               }     
           }
-        });
-
-        modalInstance.result.then(function (newElt) {
+        }).result.then(function (newElt) {
             $location.url($scope.baseLink + newElt.tinyId);
-            $scope.addAlert("success", "Saved");
+            Alert.addAlert("success", "Saved");
          }, function () {
              $scope.revert($scope.elt);
         });                    
