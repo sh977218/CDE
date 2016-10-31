@@ -116,7 +116,7 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                 });
 
                 modalInstance.result.then(function () {
-                    $scope.removeClassification(orgName, pathArray);
+                    $scope.removeClassification(orgName, 'cde', pathArray);
                 });
             };
 

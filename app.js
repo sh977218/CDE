@@ -167,7 +167,7 @@ app.use(function(req, res, next) {
     connections++;
     if (connections > maxLogsPerMinute) {        
         return next();
-    }
+    } else
     expressLogger(req, res, next);    
 });
 

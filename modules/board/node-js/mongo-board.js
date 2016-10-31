@@ -44,8 +44,8 @@ exports.nbBoardsByUserId = function (userId, callback) {
 
 exports.boardById = function (boardId, callback) {
     PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        if (!b) err = "Cannot find board";
-        if (!b.type) b.type = 'cde';
+        if (!b) err = "Cannot find board with id: " + boardId;
+        if (!b && !b.type) b.type = 'cde';
         callback(err, b);
     });
 };

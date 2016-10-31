@@ -48,7 +48,8 @@ public class EltIdMaps {
         eltMap.put("Service Item Display Name java.lang.String", "_Qg5FbwRP98");
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Specimen Inflammation Change Type", "vdw_hgaMyxc");
-        eltMap.put("Specimen Array", "dqrjKcPPFZN");
+        eltMap.put("Specimen Array", "vdw_hgaMyxc");
+        eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
