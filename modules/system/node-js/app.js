@@ -1,5 +1,6 @@
 var passport = require('passport')
     , mongo_data_system = require('./mongo-data')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
@@ -598,7 +599,7 @@ exports.init = function (app) {
                 , tinyId: elt.id || elt
                 , version: elt.version || null
             };
-            classificationNode.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
+            classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
         };
         adminItemSvc.bulkAction(req.body.elements, action, function () {
             var elts = req.body.elements.map(function (e) {
