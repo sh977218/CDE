@@ -1,5 +1,8 @@
 <div ng-controller="UsersMgtCtrl">
 
+    <button class="btn btn-default" ng-click="openCreateUser()" id="createUser">
+        <i class="fa fa-plus-square-o"></i> Create User</button>
+
     <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
         <input name="searchUsers" type="text" class="form-control" placeholder="enter user name"
                ng-model="search.username"

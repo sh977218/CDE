@@ -25,10 +25,11 @@ angular.module('systemModule').controller('VersionCtrl', ['$scope', '$uibModal',
 
 angular.module('systemModule').controller('SaveModalCtrl', ['$scope', 'elt', '$http',
     function ($scope, elt, $http) {
-        $scope.elt = elt;
 
-        $scope.$watch('elt.version', function () {
-            var lastVersion = $scope.elt.version;
+        $scope.elt = elt;
+        var lastVersion;
+        $scope.verifyUnicity = function () {
+            lastVersion = $scope.elt.version;
             if ($scope.elt.formElements) {
                 url = '/formByTinyIdAndVersion/' + $scope.elt.tinyId + "/" + $scope.elt.version;
             } else {
@@ -41,7 +42,8 @@ angular.module('systemModule').controller('SaveModalCtrl', ['$scope', 'elt', '$h
                 if (lastVersion !== $scope.elt.version) return;
                 $scope.saveForm.version.$setValidity('unique', false);
             });
-        });
+        };
 
+        $scope.verifyUnicity();
     }
 ]);

@@ -314,7 +314,7 @@ exports.removeComment = function (req, res, dao) {
             }
             if (removedComment) {
                 removedComment.status = "deleted";
-                dao.eltByTinyId(removedComment.element.eltId, function (err, elt) {
+                dao.eltByTinyId(comment.element.eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
                         (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
@@ -389,9 +389,9 @@ exports.declineComment = function (req, res) {
         res.status(403).send("You are not authorized to approve a comment.");
     }
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
-        if (err) return res.status(404).send("Comment not found");
+        if (err || !comment) return res.status(404).send("Comment not found");
 
-        if (req.body.replyIndex) {
+        if (req.body.replyIndex !== undefined) {
             if (comment.replies && comment.replies.length > replyIndex) {
                 comment.replies.splice(req.body.replyIndex, 1);
                 comment.save(function (err) {
@@ -417,10 +417,11 @@ exports.approveComment = function (req, res) {
     mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
         if (err || !comment) return res.status(404).send("Comment not found");
 
-        if (req.body.replyIndex) {
+        if (req.body.replyIndex !== undefined) {
             if (comment.replies && comment.replies.length > req.body.replyIndex) {
                 comment.replies[req.body.replyIndex].pendingApproval = false;
             }
+            comment.markModified("replies");
         } else {
             comment.pendingApproval = false;
         }

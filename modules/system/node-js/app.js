@@ -396,6 +396,22 @@ exports.init = function (app) {
         }
     });
 
+    app.put('/user', function (req, res) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
+            mongo_data_system.addUser(
+                {
+                    username: req.body.username,
+                    password: "umls",
+                    quota: 1024 * 1024 * 1024
+                },
+                function () {
+                    res.send();
+                });
+        } else {
+            res.status(401).send("Not Authorized");
+        }
+    });
+
     app.post('/addSiteAdmin', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {
             usersrvc.addSiteAdmin(req, res);
@@ -489,7 +505,7 @@ exports.init = function (app) {
     });
 
     app.post('/updateUserAvatar', function (req, res) {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
+        if (authorizationShared.hasRole(req.user, "OrgAuthority")) {
             usersrvc.updateUserAvatar(req.body, function (err) {
                 if (err) res.status(500).end();
                 else res.status(200).end();
@@ -1045,7 +1061,7 @@ exports.init = function (app) {
     }).start();
 
     app.get('/comments/tinyId/:tinyId', function (req, res) {
-        mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}, function(err, comments) {
+        mongo_data_system.Comment.find({"element.eltId": req.params.tinyId}).sort({created: 1}).exec(function(err, comments) {
             var result = comments.filter(c => c.status !== 'deleted');
             result.forEach(function (c) {
                 c.replies = c.replies.filter(r => r.status !== 'deleted');

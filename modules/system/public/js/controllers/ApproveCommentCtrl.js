@@ -40,14 +40,16 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     };
 
     $scope.declineComment = function(msg) {
-        $http.post('/comments/decline', msg.typeCommentApproval).
-            success(function(data, status, headers, config) {
-                $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
-            }).
-            error(function(data, status, headers, config) {
-                $scope.addAlert("danger", data);
-            });
+        $http.post('/comments/decline', {
+            commentId: msg.typeCommentApproval.comment.commentId,
+            replyIndex: msg.typeCommentApproval.comment.replyIndex
+        }).success(function(data, status, headers, config) {
+            $scope.addAlert("success", data);
+            $scope.closeMessage(msg);
+        }).
+        error(function(data, status, headers, config) {
+            $scope.addAlert("danger", data);
+        });
     };
 
 }]);

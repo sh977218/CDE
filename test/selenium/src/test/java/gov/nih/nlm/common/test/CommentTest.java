@@ -1,10 +1,6 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
-
-import java.util.List;
 
 public abstract class CommentTest extends CommonTest {
 
@@ -15,6 +11,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("postComment"));
         textPresent(text);
         textPresent("Comment added");
+        closeAlert();
     }
 
     private void addCommentNeedApproval(String text) {
@@ -28,6 +25,36 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
     }
 
+    public void showLongComments(String eltName) {
+        mustBeLoggedInAs(test_username, password);
+        goToEltByName(eltName);
+        addComment("very long replies comment");
+        textPresent("very long replies comment");
+        closeAlert();
+
+        for (int i = 1; i <= 5; i++) {
+            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + i);
+            scrollToViewById("replyBtn_0");
+            clickElement(By.id("replyBtn_0"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Reply to very long comment " + i);
+        }
+        for (int j = 6; j <= 10; j++) {
+            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + j);
+            scrollToViewById("replyBtn_0");
+            clickElement(By.id("replyBtn_0"));
+            textPresent("Reply added");
+            closeAlert();
+            textPresent("Show all " + j + " replies");
+        }
+        scrollToViewById("showAllRepliesButton-0-3");
+        clickElement(By.id("showAllRepliesButton-0-3"));
+        for (int k = 3; k <= 10; k++)
+            textPresent("Reply to very long comment " + k);
+
+    }
+
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
@@ -37,42 +64,25 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
-
-        findElement(By.name("commentTextArea")).sendKeys("very long replies comment");
-        clickElement(By.name("postComment"));
-        textPresent("Comment added");
-        closeAlert();
-
-        for (int i = 1; i <= 5; i++) {
-            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + i);
-            clickElement(By.id("replyBtn_2"));
-            textPresent("Reply added");
-            closeAlert();
-            textPresent("Reply to very long comment " + i);
-        }
-        for (int j = 6; j <= 10; j++) {
-            findElement(By.id("replyTextarea_2")).sendKeys("Reply to very long comment " + j);
-            clickElement(By.id("replyBtn_2"));
-            textPresent("Reply added");
-            closeAlert();
-            textPresent("Show all " + j + " replies");
-        }
-        scrollToViewById("showAllRepliesButton-2-3");
-        clickElement(By.id("showAllRepliesButton-2-3"));
-        for (int k = 3; k <= 10; k++)
-            textPresent("Reply to very long comment " + k);
-
+        clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
+        scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
 
+        clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
+        hangon(1);
+        scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
 
+        clickElement(By.id("replyTextarea_1"));
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
+        hangon(1);
+        scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
         textPresent("Reply added");
         closeAlert();
@@ -92,7 +102,7 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Reply to another comment", By.cssSelector(".strike"));
 
         clickElement(By.id("removeReply-0-1"));
-        textPresent("Reply removed");
+        textPresent("Comment removed");
         closeAlert();
 
         textPresent("My First Comment!");
@@ -117,8 +127,7 @@ public abstract class CommentTest extends CommonTest {
                 clickElement(By.id("removeComment-" + i));
                 i = length;
                 textPresent("Comment removed");
-                hangon(1);
-                Assert.assertTrue(!driver.findElement(By.cssSelector("BODY")).getText().contains(commentText));
+                textNotPresent(commentText);
             }
         }
     }
@@ -145,9 +154,10 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approvingComments(String eltName, String status, String user) {
-        String commentText = "Very Innocent Comment";
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
-        mustBeLoggedInAs(user, anonymousCommentUser_password);
+        mustBeLoggedInAs(user, password);
         goToEltByName(eltName, status);
         addCommentNeedApproval(commentText);
         logout();
@@ -156,35 +166,27 @@ public abstract class CommentTest extends CommonTest {
         textNotPresent(commentText);
         textPresent(censoredText);
 
-        doLogin(commentEditor_username, commentEditor_password);
+        mustBeLoggedInAs(commentEditor_username, commentEditor_password);
         clickElement(By.id("incomingMessage"));
 
         textPresent("comment approval");
-        clickElement(By.cssSelector(".accordion-toggle"));
 
-        String preClass = "";
-        try {
-            textPresent(eltName);
-        } catch (Exception e) {
-            preClass = "uib-accordion:nth-child(2) ";
-            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
-            textPresent(commentText);
-        }
+        clickElement(By.partialLinkText("comment approval | " +  user + " | " + commentText));
+        clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
 
-        clickElement(By.cssSelector(preClass + ".linkToElt"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.cssSelector(preClass + ".authorizeUser"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));;
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.cssSelector(preClass + ".approveComment"));
-        textPresent("Comment approved");
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));;
+        textPresent("Approved");
 
         logout();
         goToEltByName(eltName, status);
@@ -248,8 +250,9 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approveReply(String eltName) {
-        String commentText = "Top Level Comment";
-        String replyText = "Very Innocent Reply";
+        int randomNumber = (int)(Math.random() * 10000);
+        String commentText = "Top Level Comment " + randomNumber;
+        String replyText = "Very Innocent Reply " + randomNumber;
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
         goToEltByName(eltName);
         addCommentNeedApproval(commentText);
@@ -265,7 +268,7 @@ public abstract class CommentTest extends CommonTest {
         clickElement(By.id("incomingMessage"));
 
         clickElement(By.partialLinkText("comment approval | reguser | " + replyText));
-        clickElement(By.cssSelector("button.approveComment"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//button[contains(@class, 'approveComment')]"));
 
         textPresent("Message moved");
         textPresent("Approved");

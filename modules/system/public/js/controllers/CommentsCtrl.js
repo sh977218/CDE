@@ -3,7 +3,15 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         function loadComments() {
             $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
-                 $scope.eltComments = result.data;
+                $scope.eltComments = result.data;
+                $scope.eltComments.forEach(function (comment) {
+                    addAvatar(comment.username);
+                    if (comment.replies) {
+                        comment.replies.forEach(function (r) {
+                            addAvatar(r.username);
+                        })
+                    }
+                })
             });
         }
 
@@ -27,18 +35,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.deferredEltLoaded.promise.then(function () {
             $scope.elt.comments.forEach(function (comment) {
-                addAvatar(comment.userName);
-                if (comment.replies) {
-                    comment.replies.forEach(function (r) {
-                        addAvatar(r.username);
-                    })
-                }
             });
         });
         userResource.getPromise().then(function () {
             addAvatar(userResource.user.username);
         });
-
         $scope.canRemoveComment = function (com) {
             return ((userResource.user._id) &&
             (userResource.user._id === com.user ||
