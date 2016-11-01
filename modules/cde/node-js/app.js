@@ -265,17 +265,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.post('/classifyBoard', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.classifyCdesInBoard(req, function (err) {
-            if (!err) res.end();
-            else res.status(500).send(err);
-        });
-    });
-
     app.delete('/pincde/:deTinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             usersvc.removePinFromBoard(req, res);

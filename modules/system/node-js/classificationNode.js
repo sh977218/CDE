@@ -143,7 +143,7 @@ exports.classifyCdesInBoard = function(req, cb) {
             , categories: newClassification.categories
             , cdeId: id
         };
-        classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
+        classification.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
     };
     mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);

@@ -3,12 +3,26 @@ var elastic = require('../../cde/node-js/elastic')
     , mongo_board = require('./mongo-board')
     , cdesvc = require('../../cde/node-js/cdesvc')
     , js2xml = require('js2xmlparser')
+    , classificationNode_system = require('../../system/node-js/classificationNode')
+    , usersrvc = require('../../system/node-js/usersrvc')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-;
+    ;
 
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
+
+
+    app.post('/classifyBoard', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.classifyCdesInBoard(req, function (err) {
+            if (!err) res.end();
+            else res.status(500).send(err);
+        });
+    });
 
     app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
         elastic.boardSearch(req.body, function (err, result) {
