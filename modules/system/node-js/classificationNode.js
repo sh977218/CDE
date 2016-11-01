@@ -1,4 +1,5 @@
 var mongo_cde = require('../../cde/node-js/mongo-cde')
+    , mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('./mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
@@ -144,7 +145,7 @@ exports.classifyCdesInBoard = function(req, cb) {
         };
         classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    mongo_cde.boardById(boardId, function(err, board) {
+    mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
         var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
