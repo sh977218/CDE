@@ -199,7 +199,38 @@ exports.createApprovalMessage = function (user, role, type, details) {
 setInterval(function () {
     var d = new Date();
     d.setHours(d.getHours() - timeInHours);
-    mongo_data_system.Message.find({date: {$gte: d}}, function (err, messages) {
+    var urlMap = {
+        'cde': config.publicUrl + '/deView?tinyId=',
+        'form': config.publicUrl + '/formView?tinyId=',
+        'board': config.publicUrl + '/board/'
+    };
+
+
+    mongo_data_system.Comment.find({"replies.created": {$gte: d}}, function (err, comments) {
+        var emails = {};
+
+        async.each(comments,
+            function (comment, oneCommentDone) {
+                var usernamesForThisComment = [];
+                var allComments = [];
+                allComments.push(comment);
+                if (comment.replies && comment.replies.length > 0) {
+                    allComments.concat(comment.replies);
+                    allComments.pop();
+                }
+                async.each(allComments, function(commentOrReply, oneReplyDone) {
+                    if (usernamesForThisComment.indexOf(comment.username) === -1) {
+                        if (!emails[comment.username]) emails[comment.username] = [];
+                        emails[comment.username].push('<p>Somebody replied to one of your comments. <a href="' +
+                            urlMap[comment.element.eltType] + comment.element.eltId +
+                            '">Click to view the comment.</a></p>');
+                    }
+                }, function allRepliesDone() {
+                });
+            },
+            function allDone() {
+               // send email
+            });
     });
 }, 1000 * 60 * 60 * 4);
 
