@@ -2,6 +2,7 @@ var elastic = require('../../cde/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
     , mongo_board = require('./mongo-board')
     , cdesvc = require('../../cde/node-js/cdesvc')
+    , xml2js = require('xml2js')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
 ;
 

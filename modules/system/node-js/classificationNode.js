@@ -1,4 +1,4 @@
-var mongo_data_cde = require('../../cde/node-js/mongo-cde')
+var mongo_cde = require('../../cde/node-js/mongo-cde')
     , mongo_data_system = require('./mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
@@ -144,11 +144,11 @@ exports.classifyCdesInBoard = function(req, cb) {
         };
         classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
     };
-    mongo_data_cde.boardById(boardId, function(err, board) {
+    mongo_cde.boardById(boardId, function(err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
         var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
-        mongo_data_cde.cdesByTinyIdList(tinyIds, function(err, cdes) {
+        mongo_cde.byTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
             mongo_data_system.addToClassifAudit({

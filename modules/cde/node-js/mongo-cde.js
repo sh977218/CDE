@@ -103,9 +103,9 @@ exports.cdesByIdList = function (idList, callback) {
         });
 };
 
-exports.byTinyIdList = function (idList, callback) {
+exports.byTinyIdList = function (tinyIdList, callback) {
     DataElement.find({'archived': null}).where('tinyId')
-        .in(idList)
+        .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec(function (err, cdes) {
             cdes.forEach(mongo_data_system.formatElt);
