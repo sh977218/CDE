@@ -51,7 +51,7 @@ exports.transferSteward = function(req, res) {
                     }
                     oneDone();
                 });
-            }
+            } else oneDone();
         }, function allDone() {
             if(results.length===daoManager.getDaoList().length) {
                 return res.status(hasError === true ? 400 : 200).send(results.map(r=>r.messgae).join(''));
