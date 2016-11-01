@@ -195,6 +195,15 @@ exports.createApprovalMessage = function (user, role, type, details) {
     });
 };
 
+// email all users for all new approval messages every 4 hours
+setInterval(function () {
+    var d = new Date();
+    d.setHours(d.getHours() - timeInHours);
+    mongo_data_system.Message.find({date: {$gte: d}}, function (err, messages) {
+    });
+}, 1000 * 60 * 60 * 4);
+
+
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
         dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
@@ -234,7 +243,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send(err);
                     } else {
                         var message = "Comment added.";
-                        if (comment.pendingApproval) message += " Approval required."
+                        if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
                 });
