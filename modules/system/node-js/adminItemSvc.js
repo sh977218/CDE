@@ -209,8 +209,7 @@ setInterval(function () {
     mongo_data_system.Comment.find({"replies.created": {$gte: d}}, function (err, comments) {
         var emails = {};
 
-        async.each(comments,
-            function (comment, oneCommentDone) {
+        comments.forEach(function (comment) {
                 var usernamesForThisComment = [];
                 var allComments = [];
                 allComments.push(comment);
@@ -218,19 +217,24 @@ setInterval(function () {
                     allComments.concat(comment.replies);
                     allComments.pop();
                 }
-                async.each(allComments, function(commentOrReply, oneReplyDone) {
-                    if (usernamesForThisComment.indexOf(comment.username) === -1) {
-                        if (!emails[comment.username]) emails[comment.username] = [];
-                        emails[comment.username].push('<p>Somebody replied to one of your comments. <a href="' +
-                            urlMap[comment.element.eltType] + comment.element.eltId +
+                allComments.forEach(function(commentOrReply) {
+                    if (usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
+                        if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
+                        emails[commentOrReply.username].push('<p>Somebody replied to one of your comments. <a href="' +
+                            urlMap[commentOrReply.element.eltType] + commentOrReply.element.eltId +
                             '">Click to view the comment.</a></p>');
                     }
-                }, function allRepliesDone() {
                 });
-            },
-            function allDone() {
-               // send email
             });
+
+        Object.keys(emails).forEach(function(username) {
+            mongo_data_system.userByName(username, function (err, u) {
+                if (u && u.email && u.email.length > 0) {
+                       
+                }
+            });
+        });
+
     });
 }, 1000 * 60 * 60 * 4);
 
