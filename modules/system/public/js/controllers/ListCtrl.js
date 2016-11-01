@@ -432,7 +432,7 @@ angular.module('systemModule').controller('ListCtrl',
         if (userResource.user.username) {
             var modalInstance = $modal.open({
                 animation: false,
-                templateUrl: '/cde/public/html/selectBoardModal.html',
+                templateUrl: '/system/public/html/selectBoardModal.html',
                 controller: 'SelectCdeBoardModalCtrl',
                 resolve: {
                     boards: function () {

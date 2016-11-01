@@ -9,7 +9,7 @@ public class PublicBoardsTest extends BoardTest {
     public void searchPublicBoard() {
         mustBeLoggedOut();
         clickElement(By.id("boardsMenu"));
-        findElement(By.name("search")).sendKeys("board");
+        findElement(By.name("search")).sendKeys("boards");
         clickElement(By.id("search.submit"));
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
@@ -27,6 +27,6 @@ public class PublicBoardsTest extends BoardTest {
         clickElement(By.id("search.submit"));
         textPresent("No results were found. Try other criteria.");
         findElement(By.name("search")).sendKeys("\u0008");
-        textNotPresent("No board(s) found with search: noResultSearch");
+        textNotPresent("No boards(s) found with search: noResultSearch");
     }
 }

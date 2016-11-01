@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class PinTest extends BoardTest {
 
     @Test
-    public void pin() {
+    public void pinCdeIntoBoard() {
         mustBeLoggedInAs(pinUser, password);
         goToBoard("Smoking Board");
         Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 2);
@@ -21,7 +21,8 @@ public class PinTest extends BoardTest {
 
         goToCdeByName("School special accommodation indicator");
         clickElement(By.id("addToBoard"));
-        findElement(By.linkText("Blood Board")).click();
+        textPresent("Choose a Board to pin this element to");
+        clickElement(By.linkText("Blood Board"));
         textPresent("Added to Board");
         modalGone();
         closeAlert();

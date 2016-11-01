@@ -10,26 +10,26 @@ public class PublicVsPrivateBoard extends BoardTest {
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Public Board";
-        String boardDef = "This board will be public";
+        String boardDef = "This boards will be public";
 
         pinTo("Heart MUGA", boardName);
-        // by default, board is private.
+        // by default, boards is private.
 
         goToBoard(boardName);
-        // I can view my own board.
+        // I can view my own boards.
         textPresent("MUGA");
         String url = driver.getCurrentUrl();
         String boardId = url.substring(url.lastIndexOf("/") + 1);
 
         logout();
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(baseUrl + "/#/boards/" + boardId);
         // not logged in, I can't see
         textPresent("Board not found");
         closeAlert();
         textNotPresent(boardDef);
 
         loginAs(ctepCurator_username, password);
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(baseUrl + "/#/boards/" + boardId);
         // logged in as someone else, I can't see
         textPresent("Board not found");
         closeAlert();
@@ -42,7 +42,7 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
 
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(baseUrl + "/#/boards/" + boardId);
         // Now I can see;
         textPresent("MUGA");
 
@@ -61,7 +61,7 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
 
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(baseUrl + "/#/boards/" + boardId);
         // private again, I can't see
         textNotPresent("Not a very useful");
     }

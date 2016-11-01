@@ -133,7 +133,7 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-exports.classifyCdesInBoard = function(req, cb) {
+exports.classifyEltsInBoard = function (req, dao, cb) {
     var boardId = req.body.boardId;
     var newClassification = req.body.newClassification;
 
@@ -143,13 +143,13 @@ exports.classifyCdesInBoard = function(req, cb) {
             , categories: newClassification.categories
             , cdeId: id
         };
-        classification.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
+        classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
     };
     mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
         var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
-        mongo_cde.byTinyIdList(tinyIds, function(err, cdes) {
+        dao.byTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
             mongo_data_system.addToClassifAudit({

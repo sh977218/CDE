@@ -1,5 +1,7 @@
 var elastic = require('../../cde/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
+    , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('./mongo-board')
     , cdesvc = require('../../cde/node-js/cdesvc')
     , js2xml = require('js2xmlparser')
@@ -13,12 +15,22 @@ exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
 
 
-    app.post('/classifyBoard', function (req, res) {
+    app.post('/classifyCdeBoard', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
             res.status(401).send();
             return;
         }
-        classificationNode_system.classifyCdesInBoard(req, function (err) {
+        classificationNode_system.classifyEltsInBoard(req, mongo_cde, function (err) {
+            if (!err) res.end();
+            else res.status(500).send(err);
+        });
+    });
+    app.post('/classifyFormBoard', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.classifyEltsInBoard(req, mongo_form, function (err) {
             if (!err) res.end();
             else res.status(500).send(err);
         });

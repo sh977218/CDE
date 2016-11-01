@@ -12,7 +12,7 @@ public class CompareTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.linkText("Quick Board (0)")).click();
-        textPresent("The quick board is empty.");
+        textPresent("The quick boards is empty.");
     }
 
     @Test

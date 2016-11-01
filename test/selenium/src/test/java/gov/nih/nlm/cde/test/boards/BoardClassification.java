@@ -9,7 +9,7 @@ public class BoardClassification extends BoardTest {
     public void classifyAllCdes() {
         mustBeLoggedInAs(classifyBoardUser_username, password);
         goToBoard("Classify Board");
-        clickElement(By.id("board.classifyAll"));
+        clickElement(By.id("boards.classifyAll"));
         clickElement(By.xpath("//div[span/text() = 'Classify Board']/button"));
         textPresent("Elements classified");
         closeAlert();

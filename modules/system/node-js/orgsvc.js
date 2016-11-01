@@ -43,19 +43,17 @@ exports.transferSteward = function(req, res) {
                 dao.transferSteward(req.body.from, req.body.to, function(err, result) {
                     if(err || Number.isNaN(result)) {
                         hasError = true;
-                        results.push({status: 400, message: 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. '});
+                        results.push( 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. ');
                     } else if(result === 0) {
-                        results.push({status: 200, message: 'There are no ' + dao.name + ' to transfer. '});
+                        results.push( 'There are no ' + dao.name + ' to transfer. ');
                     } else {
-                        results.push({status: 200, message: result + ' ' + dao.name + ' transferred. '});
+                        results.push(result + ' ' + dao.name + ' transferred. ');
                     }
                     oneDone();
                 });
             } else oneDone();
         }, function allDone() {
-            if(results.length===daoManager.getDaoList().length) {
-                return res.status(hasError === true ? 400 : 200).send(results.map(r=>r.messgae).join(''));
-            }
+            return res.status(hasError? 400 : 200).send(results.join(''));
         });
     } else {
         res.status(400).send("Please login first.");

@@ -16,7 +16,7 @@ public class TourDeViewTest extends TourTest {
         getNext("This menu will take you back to the CDE search page");
         getNext("This menu will take you to the Form search page");
         getNext("Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them.");
-        getNext("The quick board is a volatile board for doing quick comparisons or CDE downloads.");
+        getNext("The quick boards is a volatile boards for doing quick comparisons or CDE downloads.");
         getNext("Here's where you can find more documentation about this site or start this tour again.");
         getNext("Personalize your search results. Include more registration statuses or configure how results are shown.");
         getNext("This section shows an overview of the CDE attributes.");
@@ -30,7 +30,7 @@ public class TourDeViewTest extends TourTest {
         getNext("CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.");
         getNext("If a the CDE is used in a Form, it will be displayed here.");
         getNext("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
-        getNext("If a CDE is used in a public board, the board will be shown in this section.");
+        getNext("If a CDE is used in a public boards, the boards will be shown in this section.");
         getNext("If a file is attached to a CDE, it can be view or downloaded here.");
         getNext("Derivation Rules are used to connect CDEs together, for example, in the form of a score.");
         getNext("This section lists CDEs that are most similar to the CDE currently viewed.");
