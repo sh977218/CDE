@@ -5,7 +5,7 @@
     $scope.openRegStatusUpdate = function () {
         $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
             if (result && result.data && result.data.filter &&
-                result.data.filter(function (a) {return a.status !== 'resolved' && a.status !== 'deleted'})
+                result.data.filter(function (a) {return a.status !== 'resolved' && a.status !== 'deleted'}).length > 0
             ) {
                 Alert.addAlert('info', "Info: There are unresolved comments. ")
             }
