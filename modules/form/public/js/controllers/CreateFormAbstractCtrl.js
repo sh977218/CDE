@@ -96,6 +96,9 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                         },
                         pathArray: function () {
                             return pathArray;
+                        },
+                        module: function () {
+                            return $scope.module;
                         }
                     }
                 });
