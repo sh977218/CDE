@@ -1,4 +1,4 @@
-angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates']).config(
+angular.module('cdeModule', ['resourcesCde', 'CdeMerge', 'ngRoute', 'cdeTemplates', 'boardTemplates']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.

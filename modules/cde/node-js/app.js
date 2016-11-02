@@ -141,13 +141,13 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.boardsByUserId(req.params.userId, function (result) {
+        mongo_board.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
+        mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
         });
     });
@@ -262,17 +262,6 @@ exports.init = function (app, daoManager) {
                     res.send("Board Removed.");
                 });
             });
-        });
-    });
-
-    app.post('/classifyBoard', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.classifyCdesInBoard(req, function (err) {
-            if (!err) res.end();
-            else res.status(500).send(err);
         });
     });
 
@@ -626,6 +615,31 @@ exports.init = function (app, daoManager) {
                 res.send({code: 403, msg: "Classification Already Exists"});
             }
 
+        });
+    });
+
+    app.delete('/classification/cde', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_cde, function (err) {
+            if (!err) {
+                res.end();
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.query.cdeId
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
+                });
+            } else {
+                res.status(202).send({error: {message: "Classification does not exists."}});
+            }
         });
     });
 

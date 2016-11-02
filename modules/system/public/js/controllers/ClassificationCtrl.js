@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('ClassificationCtrl',
-    ['$scope', '$uibModal', '$routeParams', 'CdeClassification', 'FormClassification', 'OrgHelpers', 'userResource',
-        function ($scope, $modal, $routeParams, CdeClassification, FormClassification, OrgHelpers, userResource) {
+    ['$scope', '$uibModal', '$routeParams', '$q', 'CdeClassification', 'FormClassification', 'OrgHelpers', 'userResource',
+        function ($scope, $modal, $routeParams, $promise, CdeClassification, FormClassification, OrgHelpers, userResource) {
     $scope.initCache();
 
     $scope.openAddClassificationModal = function () {
@@ -45,7 +45,7 @@ angular.module('systemModule').controller('ClassificationCtrl',
             cdeId: $scope.elt._id,
             orgName: orgName,
             categories: elts
-        }, function (res) {
+        }).$promise.then(function (res) {
             $scope.reload($routeParams);
             $scope.addAlert("success", "Classification Deleted");
         });
@@ -63,13 +63,18 @@ angular.module('systemModule').controller('ClassificationCtrl',
             resolve: {
                 classifName: function() {
                     return pathArray[pathArray.length-1];
+                },
+                pathArray: function () {
+                    return pathArray;
+                },
+                module: function () {
+                    return $scope.module;
                 }
-                , pathArray: function() {return pathArray;}
             }
         });
 
         modalInstance.result.then(function () {
-            $scope.removeClassification(orgName, pathArray);
+            $scope.removeClassification(orgName, $scope.module, pathArray);
         });
     };
  }]);

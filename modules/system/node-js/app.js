@@ -1,5 +1,6 @@
 var passport = require('passport')
     , mongo_data_system = require('./mongo-data')
+    , mongo_cde = require('../../cde/node-js/mongo-cde')
     , config = require('./parseConfig')
     , dbLogger = require('./dbLogger.js')
     , logging = require('./logging.js')
@@ -537,32 +538,7 @@ exports.init = function (app) {
             res.send(status);
         });
     });
-
-    app.delete('/classification/elt', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode.eltClassification(req.query, classificationShared.actions.delete, function (err) {
-            if (!err) {
-                res.end();
-                mongo_data_system.addToClassifAudit({
-                    date: new Date(),
-                    user: {
-                        username: req.user.username
-                    },
-                    elements: [{
-                        _id: req.query.cdeId
-                    }],
-                    action: "delete",
-                    path: [req.query.orgName].concat(req.query.categories)
-                });
-            } else {
-                res.status(202).send({error: {message: "Classification does not exists."}});
-            }
-        });
-    });
-
+    
     app.delete('/classification/org', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
             res.status(403).end();
@@ -623,7 +599,7 @@ exports.init = function (app) {
                 , tinyId: elt.id || elt
                 , version: elt.version || null
             };
-            classificationNode.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
+            classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
         };
         adminItemSvc.bulkAction(req.body.elements, action, function () {
             var elts = req.body.elements.map(function (e) {

@@ -36,6 +36,12 @@ exports.boardsByUserId = function (userId, callback) {
     });
 };
 
+exports.publicBoardsByDeTinyId = function (tinyId, callback) {
+    PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
+        callback(result);
+    });
+};
+
 exports.nbBoardsByUserId = function (userId, callback) {
     PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
         callback(err, result);
@@ -44,9 +50,14 @@ exports.nbBoardsByUserId = function (userId, callback) {
 
 exports.boardById = function (boardId, callback) {
     PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        if (!b) err = "Cannot find board";
-        if (!b.type) b.type = 'cde';
-        callback(err, b);
+        if (err) callback(err, b);
+        else if (!b) {
+            callback("Cannot find board. boardId: " + boardId, b);
+        }
+        else {
+            if (!b.type) b.type = 'cde';
+            callback(null, b);
+        }
     });
 };
 

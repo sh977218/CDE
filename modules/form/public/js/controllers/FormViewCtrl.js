@@ -583,7 +583,7 @@ angular.module('formModule').controller
     $scope.pinAllCdesModal = function () {
         var modalInstance = $modal.open({
             animation: false,
-            templateUrl: '/cde/public/html/selectBoardModal.html',
+            templateUrl: '/system/public/html/selectBoardModal.html',
             controller: 'SelectCdeBoardModalCtrl',
             resolve: {
                 boards: function () {
@@ -655,6 +655,34 @@ angular.module('formModule').controller
                 elt: function() {return $scope.elt;}
             }
         });
+    };
+
+
+    $scope.openPinModal = function (form) {
+        if (userResource.user.username) {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/selectBoardModal.html',
+                controller: 'SelectFormBoardModalCtrl'
+            });
+
+            modalInstance.result.then(function (selectedBoard) {
+                $http.put("/pin/form/" + form.tinyId + "/" + selectedBoard._id).then(function (response) {
+                    if (response.status === 200) {
+                        $scope.addAlert("success", response.data);
+                    } else
+                        $scope.addAlert("warning", response.data);
+                }, function (response) {
+                    $scope.addAlert("danger", response.data);
+                });
+            }, function () {
+            });
+        } else {
+            $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/ifYouLogInModal.html'
+            });
+        }
     };
 
 }]);

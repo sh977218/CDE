@@ -124,26 +124,26 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-            $scope.classifyBoard = function () {
+            $scope.classifyEltBoard = function () {
                 var $modalInstance = $modal.open({
                     animation: false,
-                    templateUrl: '/cde/public/html/classifyCdesInBoard.html',
+                    templateUrl: '/system/public/html/classifyCdesInBoard.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
                         // @TODO bad design -> refactor
                         cde: function () {
                             return null;
-                        }
-                        , orgName: function () {
+                        },
+                        orgName: function () {
                             return null;
-                        }
-                        , pathArray: function () {
+                        },
+                        pathArray: function () {
                             return null;
-                        }
-                        , module: function () {
-                            return null;
-                        }
-                        , addClassification: function () {
+                        },
+                        module: function () {
+                            return $scope.board.type;
+                        },
+                        addClassification: function () {
                             return {
                                 addClassification: function (newClassification) {
                                     var _timeout = $timeout(function () {
@@ -151,13 +151,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                     }, 3000);
                                     $http({
                                         method: 'post',
-                                        url: '/classifyBoard',
+                                        url: $scope.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
                                         data: {
-                                            boardId: $scope.board._id
-                                            , newClassification: newClassification
+                                            boardId: $scope.board._id,
+                                            newClassification: newClassification
                                         }
-                                    })
-                                        .success(function (data, status) {
+                                    }).success(function (data, status) {
                                             $timeout.cancel(_timeout);
                                             if (status === 200) $scope.addAlert("success", "All Elements classified.");
                                             else $scope.addAlert("danger", data.error.message);
@@ -184,6 +183,36 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         }
                     }
                 });
+            };
+
+            $scope.openPinModal = function (cde) {
+                if (userResource.user.username) {
+                    var ctrl = 'SelectCdeBoardModalCtrl';
+                    if ($scope.board.type === 'form')
+                        ctrl = 'SelectFormBoardModalCtrl';
+                    var modalInstance = $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/selectBoardModal.html',
+                        controller: ctrl
+                    });
+
+                    modalInstance.result.then(function (selectedBoard) {
+                        $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
+                            if (response.status === 200) {
+                                $scope.addAlert("success", response.data);
+                            } else
+                                $scope.addAlert("warning", response.data);
+                        }, function (response) {
+                            $scope.addAlert("danger", response.data);
+                        });
+                    }, function () {
+                    });
+                } else {
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/ifYouLogInModal.html'
+                    });
+                }
             };
             $scope.reload();
 

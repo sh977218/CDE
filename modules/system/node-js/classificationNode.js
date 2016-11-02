@@ -1,4 +1,5 @@
-var mongo_data_cde = require('../../cde/node-js/mongo-cde')
+var mongo_cde = require('../../cde/node-js/mongo-cde')
+    , mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('./mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
@@ -8,19 +9,19 @@ var mongo_data_cde = require('../../cde/node-js/mongo-cde')
 
 var classification = this;
 
-classification.saveCdeClassif = function(err, cde, cb) {
+classification.saveCdeClassif = function (err, elt, cb) {
     if (err) {
         if (cb) cb(err);
         return;
     }
-    cde.classification.forEach(function(steward, i) {
+    elt.classification.forEach(function (steward, i) {
         if (steward.elements.length === 0) {
-            cde.classification.splice(i, 1);
+            elt.classification.splice(i, 1);
         }
     });
-    cde.updated = new Date();
-    cde.markModified('classification');
-    cde.save(function() {
+    elt.updated = new Date();
+    elt.markModified('classification');
+    elt.save(function () {
         if (cb) cb(err);
     });
 };
@@ -62,9 +63,12 @@ exports.eltClassification = function (body, action, dao, cb) {
             });
         } else classify(steward, cde);
     };
-    if (body.cdeId) dao.byId(body.cdeId, findElements);
-    if (body.tinyId && (!body.version)) dao.eltByTinyId(body.tinyId, findElements);
-    if (body.tinyId && body.version) dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
+    if (body.cdeId && dao.byId)
+        dao.byId(body.cdeId, findElements);
+    if (body.tinyId && (!body.version) && dao.eltByTinyId)
+        dao.eltByTinyId(body.tinyId, findElements);
+    if (body.tinyId && body.version && dao.byTinyIdAndVersion)
+        dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
 };
 
 exports.modifyOrgClassification = function(request, action, callback) {
@@ -84,27 +88,31 @@ exports.modifyOrgClassification = function(request, action, callback) {
                     query[key] = request.categories[i];
                 }
                 daoManager.getDaoList().forEach(function(dao) {
-                    dao.query(query, function (err, result) {
-                        result.forEach(function(elt) {
-                            var steward = classificationShared.findSteward(elt, request.orgName);
-                            classificationShared.modifyCategory(steward.object, request.categories,
-                                {type: action, newname: request.newname}, function () {
-                                    classification.saveCdeClassif("", elt);
-                                });
-                        });
-                        if (result.length > 0) {
-                            mongo_data_system.addToClassifAudit({
-                                date: new Date()
-                                , user: {
-                                    username: "unknown"
-                                }
-                                , elements: result.map(function(e){return {tinyId: e.tinyId, eltType: dao.type};})
-                                , action: action
-                                , path: [request.orgName].concat(request.categories)
-                                , newname: request.newname
+                    if (dao.query) {
+                        dao.query(query, function (err, result) {
+                            result.forEach(function (elt) {
+                                var steward = classificationShared.findSteward(elt, request.orgName);
+                                classificationShared.modifyCategory(steward.object, request.categories,
+                                    {type: action, newname: request.newname}, function () {
+                                        classification.saveCdeClassif("", elt);
+                                    });
                             });
-                        }
-                    });
+                            if (result.length > 0) {
+                                mongo_data_system.addToClassifAudit({
+                                    date: new Date()
+                                    , user: {
+                                        username: "unknown"
+                                    }
+                                    , elements: result.map(function (e) {
+                                        return {tinyId: e.tinyId, eltType: dao.type};
+                                    })
+                                    , action: action
+                                    , path: [request.orgName].concat(request.categories)
+                                    , newname: request.newname
+                                });
+                            }
+                        });
+                    }
                 });
                 if(callback) callback(err, stewardOrg);
             });
@@ -125,7 +133,7 @@ exports.addOrgClassification = function(body, cb) {
     });
 };
 
-exports.classifyCdesInBoard = function(req, cb) {
+exports.classifyEltsInBoard = function (req, dao, cb) {
     var boardId = req.body.boardId;
     var newClassification = req.body.newClassification;
 
@@ -135,13 +143,18 @@ exports.classifyCdesInBoard = function(req, cb) {
             , categories: newClassification.categories
             , cdeId: id
         };
-        classification.eltClassification(classifReq, classificationShared.actions.create, actionCallback);
+        classification.eltClassification(classifReq, classificationShared.actions.create, dao, actionCallback);
     };
-    mongo_data_cde.boardById(boardId, function(err, board) {
+    mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
-        var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
-        mongo_data_cde.cdesByTinyIdList(tinyIds, function(err, cdes) {
+        var tinyIds = board.pins.map(function (elt) {
+            if (elt.deTinyId)
+                return elt.deTinyId;
+            else
+                return elt.formTinyId;
+        });
+        dao.byTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
             mongo_data_system.addToClassifAudit({

@@ -37,7 +37,7 @@ exports.pinFormToBoard = function(req, res) {
     var boardId = req.params.boardId;
 
     mongo_form.eltByTinyId(tinyId, function(err, form){
-        mongo_data.boardById(boardId, function(err, board) {
+        mongo_board.boardById(boardId, function(err, board) {
             if (err) return res.send("Board cannot be found.");
             if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
                 return res.send("You must own a board to edit it.");
@@ -65,7 +65,7 @@ exports.pinFormToBoard = function(req, res) {
 exports.removePinFromBoard = function(req, res) {
     var boardId = req.params.boardId;
     var deTinyId = req.params.deTinyId;
-    mongo_data.boardById(boardId, function(err, board) {
+    mongo_board.boardById(boardId, function(err, board) {
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");
         } else {
@@ -88,7 +88,7 @@ exports.removePinFromBoard = function(req, res) {
 exports.pinAllToBoard = function(req, cdes, res) {
     var ids = cdes.map(function(cde) {return cde.tinyId;});
     var boardId = req.body.board._id;
-    mongo_data.boardById(boardId, function(err, board) {
+    mongo_board.boardById(boardId, function(err, board) {
         if (err) return res.send("Board cannot be found.");
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");

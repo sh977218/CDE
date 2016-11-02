@@ -52,12 +52,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-exports.publicBoardsByDeTinyId = function (tinyId, callback) {
-    mongo_board.PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
-        callback(result);
-    });
-};
-
 exports.desByConcept = function (concept, callback) {
     DataElement.find(
         {
@@ -103,9 +97,9 @@ exports.cdesByIdList = function (idList, callback) {
         });
 };
 
-exports.byTinyIdList = function (idList, callback) {
+exports.byTinyIdList = function (tinyIdList, callback) {
     DataElement.find({'archived': null}).where('tinyId')
-        .in(idList)
+        .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec(function (err, cdes) {
             cdes.forEach(mongo_data_system.formatElt);
