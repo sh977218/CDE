@@ -198,7 +198,7 @@ exports.createApprovalMessage = function (user, role, type, details) {
 // email all users for all new approval messages every 4 hours
 setInterval(function () {
     var d = new Date();
-    d.setHours(d.getHours() - timeInHours);
+    d.setHours(d.getHours() - 4);
     var urlMap = {
         'cde': config.publicUrl + '/deView?tinyId=',
         'form': config.publicUrl + '/formView?tinyId=',
