@@ -72,7 +72,7 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='menu_qb_link']/a"));
         textPresent("CDE QuickBoard (0)");
         textPresent("Form QuickBoard (0)");
-        textPresent("The quick boards is empty.");
+        textPresent("The quick board is empty.");
     }
 
 }

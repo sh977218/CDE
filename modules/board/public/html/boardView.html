@@ -4,7 +4,7 @@
     <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
         <div class="searchInfo">
             <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                <div class="btn-group">
+                <div ng-if="board.type!=='form'" class="btn-group">
                     <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i>
