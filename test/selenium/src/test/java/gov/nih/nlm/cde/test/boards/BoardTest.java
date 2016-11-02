@@ -65,20 +65,6 @@ public class BoardTest extends NlmCdeBaseTest {
         closeAlert();
     }
 
-    public void removeBoard(String boardName) {
-        gotoMyBoards();
-        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("board_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                clickElement(By.id("removeBoard-" + i));
-                clickElement(By.id("confirmRemove-" + i));
-                textNotPresent(boardName);
-                return;
-            }
-        }
-    }
-
     protected void pinCdeToBoard(String cdeName, String cdeBoardName) {
         pinTo(cdeName, cdeBoardName, "cde");
     }
