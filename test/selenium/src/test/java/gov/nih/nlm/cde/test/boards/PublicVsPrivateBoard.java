@@ -12,7 +12,7 @@ public class PublicVsPrivateBoard extends BoardTest {
         String boardName = "Public Board";
         String boardDef = "This boards will be public";
 
-        pinTo("Heart MUGA", boardName);
+        pinTo("Heart MUGA Test Date", boardName);
         // by default, boards is private.
 
         goToBoard(boardName);
@@ -23,7 +23,7 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
         goToBoard(boardName);
-        textPresent("Boards not found");
+        textPresent("Board not found");
         closeAlert();
         textNotPresent(boardDef);
 

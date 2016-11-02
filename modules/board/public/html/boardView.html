@@ -4,7 +4,7 @@
     <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
         <div class="searchInfo">
             <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                <div ng-if="board.type!=='form'" class="btn-group">
+                <div ng-if="board.type !=='form'" class="btn-group">
                     <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-download"></i>
@@ -19,7 +19,7 @@
                     </ul>
                 </div>
 
-                <button ng-if="board.type==='form'" id="board.classifyAllForms" class="btn btn-default"
+                <button id="board.classifyAllForms" class="btn btn-default"
                         ng-click="classifyEltBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
