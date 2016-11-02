@@ -33,7 +33,7 @@ public class BoardManagement4Test extends BoardTest {
             num = Integer.parseInt(numElt.getText().trim());
         }
         Assert.assertEquals(0, num);
-        pinTo("Lymph Node Procedure", boardName);
+        pinCdeToBoard("Lymph Node Procedure", boardName);
         gotoMyBoards();
         textPresent(boardName);
         length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();

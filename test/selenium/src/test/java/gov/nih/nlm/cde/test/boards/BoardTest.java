@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
@@ -42,15 +43,18 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Public Boards"));
     }
 
-    public void createBoard(String name, String description) {
-        createBoard(name, description, "Board created.");
+    public void createBoard(String name, String description, String type) {
+        createBoard(name, description, "Board created.", type);
     }
 
-    public void createBoard(String name, String description, String response) {
+    public void createBoard(String name, String description, String type, String response) {
         gotoMyBoards();
         textPresent("Add Board");
         clickElement(By.id("addBoard"));
         textPresent("Create New Board");
+        if (type == "cde") type = "CDE";
+        if (type == "form") type = "Form";
+        new Select(driver.findElement(By.id("new-board-type"))).selectByVisibleText(type);
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
         hangon(2);
@@ -73,8 +77,19 @@ public class BoardTest extends NlmCdeBaseTest {
         }
     }
 
-    protected void pinTo(String cdeName, String boardName) {
-        openCdeInList(cdeName);
+    protected void pinCdeToBoard(String cdeName, String cdeBoardName) {
+        pinTo(cdeName, cdeBoardName, "cde");
+    }
+
+    protected void pinFormToBoard(String formName, String formBoardName) {
+        pinTo(formName, formBoardName, "form");
+    }
+
+    private void pinTo(String eltName, String boardName, String type) {
+        if (type == "cde")
+            openCdeInList(eltName);
+        if (type == "form")
+            openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
         clickElement(By.linkText(boardName));

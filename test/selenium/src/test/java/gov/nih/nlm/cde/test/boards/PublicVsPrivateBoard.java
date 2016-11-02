@@ -12,7 +12,7 @@ public class PublicVsPrivateBoard extends BoardTest {
         String boardName = "Public Board";
         String boardDef = "This boards will be public";
 
-        pinTo("Heart MUGA Test Date", boardName);
+        pinCdeToBoard("Heart MUGA Test Date", boardName);
         // by default, boards is private.
 
         goToBoard(boardName);

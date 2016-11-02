@@ -14,7 +14,7 @@ public class NoDoublePinTest extends BoardTest {
         String cdeName = "Specimen Array";
         String boardName = "Double Pin Board";
 
-        pinTo(cdeName, boardName);
+        pinCdeToBoard(cdeName, boardName);
 
         goToCdeSearch();
         openCdeInList(cdeName);
