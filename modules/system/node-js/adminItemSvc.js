@@ -198,15 +198,13 @@ exports.createApprovalMessage = function (user, role, type, details) {
 // email all users for all new approval messages every 4 hours
 setInterval(function () {
     var d = new Date();
-    //d.setHours(d.getHours() - timeInHours);
-    d.setMinutes(d.getMinutes() - 1);
+    d.setHours(d.getHours() - timeInHours);
     var urlMap = {
         'cde': config.publicUrl + '/deView?tinyId=',
         'form': config.publicUrl + '/formView?tinyId=',
         'board': config.publicUrl + '/board/'
     };
-
-
+    
     mongo_data_system.Comment.find({replies: {$elemMatch: {created: {$gte: d}, status: "active"}}}, function (err, comments) {
         var emails = {};
 
@@ -246,7 +244,7 @@ setInterval(function () {
 
     });
     // TODO change this time:
-}, 1000 * 60 * 1);
+}, 1000 * 60 * 60 * 4);
 
 
 exports.addComment = function (req, res, dao) {
