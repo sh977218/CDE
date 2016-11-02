@@ -198,7 +198,8 @@ exports.createApprovalMessage = function (user, role, type, details) {
 // email all users for all new approval messages every 4 hours
 setInterval(function () {
     var d = new Date();
-    d.setHours(d.getHours() - timeInHours);
+    //d.setHours(d.getHours() - timeInHours);
+    d.setMinutes(d.getMinutes() - 1);
     var urlMap = {
         'cde': config.publicUrl + '/deView?tinyId=',
         'form': config.publicUrl + '/formView?tinyId=',
@@ -206,7 +207,7 @@ setInterval(function () {
     };
 
 
-    mongo_data_system.Comment.find({"replies.created": {$gte: d}}, function (err, comments) {
+    mongo_data_system.Comment.find({replies: {$elemMatch: {created: {$gte: d}, status: "active"}}}, function (err, comments) {
         var emails = {};
 
         comments.forEach(function (comment) {
@@ -214,15 +215,20 @@ setInterval(function () {
                 var allComments = [];
                 allComments.push(comment);
                 if (comment.replies && comment.replies.length > 0) {
-                    allComments.concat(comment.replies);
+                    allComments = allComments.concat(comment.get('replies'));
                     allComments.pop();
                 }
                 allComments.forEach(function(commentOrReply) {
-                    if (usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
+                    if (commentOrReply.status === 'active' &&
+                        usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
+
                         if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
-                        emails[commentOrReply.username].push('<p>Somebody replied to one of your comments. <a href="' +
-                            urlMap[commentOrReply.element.eltType] + commentOrReply.element.eltId +
-                            '">Click to view the comment.</a></p>');
+                        usernamesForThisComment.push(commentOrReply.username);
+                        var message = 'Somebody replied to one of your comments. See the comment here: ' +
+                            urlMap[comment.element.eltType] + comment.element.eltId;
+                        if (emails[commentOrReply.username].indexOf(message) === -1) {
+                            emails[commentOrReply.username].push(message);
+                        }
                     }
                 });
             });
@@ -230,13 +236,17 @@ setInterval(function () {
         Object.keys(emails).forEach(function(username) {
             mongo_data_system.userByName(username, function (err, u) {
                 if (u && u.email && u.email.length > 0) {
-                       
+                    email.emailUsers({
+                        subject: "Somebody replied to your comment.",
+                        body: emails[username].join('\n')
+                    }, [u])
                 }
             });
         });
 
     });
-}, 1000 * 60 * 60 * 4);
+    // TODO change this time:
+}, 1000 * 60 * 1);
 
 
 exports.addComment = function (req, res, dao) {
