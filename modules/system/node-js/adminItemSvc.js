@@ -238,7 +238,6 @@ setInterval(function () {
                         subject: "Somebody replied to your comment.",
                         body: emails[username].join('\n')
                     }, [u]);
-                    console.log("email sent to " + u);
                 }
             });
         });
