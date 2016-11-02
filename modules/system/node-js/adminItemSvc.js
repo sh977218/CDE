@@ -335,9 +335,6 @@ exports.replyToComment = function (req, res) {
                     res.status(500).send(err);
                 } else {
                     res.send({message: "Reply added"});
-                    if (req.user.username !== comment.username) {
-
-                    }
                 }
             });
         });
