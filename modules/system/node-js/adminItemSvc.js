@@ -204,7 +204,7 @@ setInterval(function () {
         'form': config.publicUrl + '/formView?tinyId=',
         'board': config.publicUrl + '/board/'
     };
-    
+
     mongo_data_system.Comment.find({replies: {$elemMatch: {created: {$gte: d}, status: "active"}}}, function (err, comments) {
         var emails = {};
 
@@ -237,7 +237,8 @@ setInterval(function () {
                     email.emailUsers({
                         subject: "Somebody replied to your comment.",
                         body: emails[username].join('\n')
-                    }, [u])
+                    }, [u]);
+                    console.log("email sent to " + u);
                 }
             });
         });
