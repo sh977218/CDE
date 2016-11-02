@@ -33,7 +33,8 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText("LCC");
         clickElement(By.id("transferStewardButton"));
-        textPresent("4 forms transferred. 10 CDEs transferred.");
+        textPresent("4 forms transferred.");
+        textPresent("10 CDEs transferred.");
         closeAlert();
 
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
@@ -45,7 +46,8 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText("LCC");
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText(org1);
         clickElement(By.id("transferStewardButton"));
-        textPresent("4 forms transferred. 10 CDEs transferred.");
+        textPresent("4 forms transferred.");
+        textPresent("10 CDEs transferred.");
         closeAlert();
     }
 
