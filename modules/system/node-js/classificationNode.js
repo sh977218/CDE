@@ -16,7 +16,7 @@ classification.saveCdeClassif = function (err, elt, cb) {
     }
     elt.classification.forEach(function (steward, i) {
         if (steward.elements.length === 0) {
-            cde.classification.splice(i, 1);
+            elt.classification.splice(i, 1);
         }
     });
     elt.updated = new Date();
@@ -148,7 +148,7 @@ exports.classifyEltsInBoard = function (req, dao, cb) {
     mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
-        var tinyIds = board.pins.map(function(cde) {return cde.deTinyId;});
+        var tinyIds = board.pins.map(function(form) {return form.formTinyId;});
         dao.byTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);
