@@ -12,7 +12,7 @@ public class BoardManagement4Test extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         removeBoard("Remove me boards");
         hangon(2);
-        textPresent("done");
+        textPresent("Done");
     }
 
     @Test

@@ -148,7 +148,12 @@ exports.classifyEltsInBoard = function (req, dao, cb) {
     mongo_board.boardById(boardId, function (err, board) {
         if (err) return cb(err);
         if (!board) return cb("No such board");
-        var tinyIds = board.pins.map(function(form) {return form.formTinyId;});
+        var tinyIds = board.pins.map(function (elt) {
+            if (elt.deTinyId)
+                return elt.deTinyId;
+            else
+                return elt.formTinyId;
+        });
         dao.byTinyIdList(tinyIds, function(err, cdes) {
             var ids = cdes.map(function(cde) {return cde._id;});
             adminItemSvc.bulkAction(ids, action, cb);

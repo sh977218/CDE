@@ -17,7 +17,7 @@ public class ListTourTest extends TourTest {
         getNext("This menu will take you back to the CDE search page");
         getNext("This menu will take you to the Form search page");
         getNext("Boards allow registered users to group CDEs. Boards can be private or public. Boards are persistent and will not disappear unless you remove them.");
-        getNext("The quick board is a volatile boards for doing quick comparisons or CDE downloads.");
+        getNext("The quick board is a volatile board for doing quick comparisons or CDE downloads.");
         getNext("Here's where you can find more documentation about this site or start this tour again.");
         getNext("Personalize your search results. Include more registration statuses or configure how results are shown.");
         getNext("Enter one or more search terms. For example, search for \"Ethnicity\".");

@@ -19,7 +19,7 @@
                     </ul>
                 </div>
 
-                <button id="board.classifyAllForms" class="btn btn-default"
+                <button id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
                         ng-click="classifyEltBoard()">
                     <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                 </button>
