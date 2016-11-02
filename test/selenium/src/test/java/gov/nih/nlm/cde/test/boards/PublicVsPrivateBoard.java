@@ -22,9 +22,8 @@ public class PublicVsPrivateBoard extends BoardTest {
         String boardId = url.substring(url.lastIndexOf("/") + 1);
 
         logout();
-        driver.get(baseUrl + "/#/boards/" + boardId);
-        // not logged in, I can't see
-        textPresent("Board not found");
+        goToBoard(boardName);
+        textPresent("Boards not found");
         closeAlert();
         textNotPresent(boardDef);
 
