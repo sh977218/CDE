@@ -44,7 +44,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     public void createBoard(String name, String description, String type) {
-        createBoard(name, description, "Board created.", type);
+        createBoard(name, description, type, "Board created.");
     }
 
     public void createBoard(String name, String description, String type, String response) {
@@ -52,8 +52,10 @@ public class BoardTest extends NlmCdeBaseTest {
         textPresent("Add Board");
         clickElement(By.id("addBoard"));
         textPresent("Create New Board");
-        if (type == "cde") type = "CDE";
-        if (type == "form") type = "Form";
+        if (type.equals("cde"))
+            type = "CDE";
+        if (type.equals("form"))
+            type = "Form";
         new Select(driver.findElement(By.id("new-board-type"))).selectByVisibleText(type);
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);

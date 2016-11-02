@@ -13,7 +13,7 @@ public class CreateFormBoard extends BoardTest {
         String boardName = "formOnlyBoard";
         String formName1 = "Participant/Subject Contact Information";
         String formName2 = "Parkinson's Disease Quality of Life Scale (PDQUALIF)";
-        String formName3 = "Parkinson's Disease Medication Log";
+        String formName3 = "ER/Admission Therapeutic Procedures";
         createBoard(boardName, "this board only has forms.", "form");
 
         pinFormToBoard(formName1, boardName);
