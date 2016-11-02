@@ -217,6 +217,7 @@ exports.addComment = function (req, res, dao) {
                     var details = {
                         element: {
                             eltId: req.body.element.eltId,
+                            // TODO need to support board name
                             name: elt.naming[0].designation, eltType: dao.type
                         },
                         comment: {
@@ -235,7 +236,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
-                        if (comment.pendingApproval) message += " Approval required."
+                        if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
                 });
