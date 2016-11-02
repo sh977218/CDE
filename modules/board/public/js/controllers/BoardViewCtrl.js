@@ -39,8 +39,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         $scope.setViewTypes($scope.module);
                         $scope.includeInAccordion =
                             [
-                                "/" + $scope.board.type + "/public/html/accordion/boardAccordionActions.html",
-                                "/" + $scope.board.type + "/public/html/accordion/addToQuickBoardActions.html"
+                                "/system/public/html/accordion/boardAccordionActions.html",
+                                "/system/public/html/accordion/addToQuickBoardActions.html"
                         ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;

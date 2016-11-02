@@ -7,7 +7,7 @@ angular.module('cdeModule').controller('DEListCtrl',
         $scope.exporters.csv = {id: "csvExport", display: "CSV Export"};
 
         $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
-            "/cde/public/html/accordion/addToQuickBoardActions.html"];
+            "/system/public/html/accordion/addToQuickBoardActions.html"];
 
         $timeout(function () {
             $scope.search("cde");
