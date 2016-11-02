@@ -141,13 +141,13 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.boardsByUserId(req.params.userId, function (result) {
+        mongo_board.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
+        mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
         });
     });

@@ -52,12 +52,6 @@ exports.count = function (condition, callback) {
     });
 };
 
-exports.publicBoardsByDeTinyId = function (tinyId, callback) {
-    mongo_board.PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
-        callback(result);
-    });
-};
-
 exports.desByConcept = function (concept, callback) {
     DataElement.find(
         {

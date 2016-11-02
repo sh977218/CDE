@@ -22,13 +22,13 @@ public class PublicVsPrivateBoard extends BoardTest {
         String boardId = url.substring(url.lastIndexOf("/") + 1);
 
         logout();
-        goToBoard(boardName);
+        driver.get(url);
         textPresent("Board not found");
         closeAlert();
         textNotPresent(boardDef);
 
         loginAs(ctepCurator_username, password);
-        driver.get(baseUrl + "/#/boards/" + boardId);
+        driver.get(url);
         // logged in as someone else, I can't see
         textPresent("Board not found");
         closeAlert();
@@ -40,8 +40,7 @@ public class PublicVsPrivateBoard extends BoardTest {
         makePublic(boardName);
 
         logout();
-
-        driver.get(baseUrl + "/#/boards/" + boardId);
+        driver.get(url);
         // Now I can see;
         textPresent("MUGA");
 
@@ -51,8 +50,8 @@ public class PublicVsPrivateBoard extends BoardTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                findElement(By.id("publicIcon_" + i)).click();
-                findElement(By.id("confirmChangeStatus_" + i)).click();
+                clickElement(By.id("publicIcon_" + i));
+                clickElement(By.id("confirmChangeStatus_" + i));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
                 i = length;
             }
@@ -60,7 +59,7 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
 
-        driver.get(baseUrl + "/#/boards/" + boardId);
+        driver.get(url);
         // private again, I can't see
         textNotPresent("Not a very useful");
     }
