@@ -581,18 +581,16 @@ angular.module('formModule').controller
     };
 
     $scope.pinAllCdesModal = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/selectBoardModal.html',
-            controller: 'SelectCdeBoardModalCtrl',
+            controller: 'SelectBoardModalCtrl',
             resolve: {
-                boards: function () {
-                    return $scope.boards;
+                type: function () {
+                    return 'cde';
                 }
             }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
+        }).result.then(function (selectedBoard) {
             var filter = {
                 reset: function () {
                     this.tags = [];
@@ -613,7 +611,6 @@ angular.module('formModule').controller
             }).error(function () {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
-        }, function () {
         });
     };
 
@@ -657,16 +654,14 @@ angular.module('formModule').controller
         });
     };
 
-
     $scope.openPinModal = function (form) {
         if (userResource.user.username) {
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
                 templateUrl: '/system/public/html/selectBoardModal.html',
-                controller: 'SelectFormBoardModalCtrl'
-            });
-
-            modalInstance.result.then(function (selectedBoard) {
+                controller: 'SelectBoardModalCtrl',
+                resolve: {type: function () {return 'form';}}
+            }).result.then(function (selectedBoard) {
                 $http.put("/pin/form/" + form.tinyId + "/" + selectedBoard._id).then(function (response) {
                     if (response.status === 200) {
                         $scope.addAlert("success", response.data);
@@ -675,7 +670,6 @@ angular.module('formModule').controller
                 }, function (response) {
                     $scope.addAlert("danger", response.data);
                 });
-            }, function () {
             });
         } else {
             $modal.open({

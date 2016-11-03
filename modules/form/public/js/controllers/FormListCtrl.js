@@ -12,13 +12,12 @@ angular.module('formModule').controller('FormListCtrl',
             $scope.exporters.odm = {id: "odmExport", display: "ODM Export"};
             $scope.openPinModal = function (form) {
                 if (userResource.user.username) {
-                    var modalInstance = $modal.open({
+                    $modal.open({
                         animation: false,
                         templateUrl: '/system/public/html/selectBoardModal.html',
-                        controller: 'SelectFormBoardModalCtrl'
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
+                        controller: 'SelectBoardModalCtrl',
+                        resolve: {type: function () {return 'form'}}
+                    }).result.then(function (selectedBoard) {
                         $http.put("/pin/form/" + form.tinyId + "/" + selectedBoard._id).then(function (response) {
                             if (response.status === 200) {
                                 $scope.addAlert("success", response.data);
@@ -27,7 +26,6 @@ angular.module('formModule').controller('FormListCtrl',
                         }, function (response) {
                             $scope.addAlert("danger", response.data);
                         });
-                    }, function () {
                     });
                 } else {
                     $modal.open({

@@ -30,8 +30,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.accordionListStyle = "semi-transparent";
                 $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {
                     $scope.accordionListStyle = "";
-                    //$scope.cdes = [];
-                    //$scope.forms = [];
                     if (response.board) {
                         $scope.board = response.board;
                         var elts = $scope[$scope.board.type + 's'] = [];
@@ -187,16 +185,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
 
             $scope.openPinModal = function (cde) {
                 if (userResource.user.username) {
-                    var ctrl = 'SelectCdeBoardModalCtrl';
-                    if ($scope.board.type === 'form')
-                        ctrl = 'SelectFormBoardModalCtrl';
-                    var modalInstance = $modal.open({
+                    $modal.open({
                         animation: false,
                         templateUrl: '/system/public/html/selectBoardModal.html',
-                        controller: ctrl
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
+                        controller: 'SelectBoardModalCtrl',
+                        resolve: {type: function () {return $scope.board.type;}}
+                    }).result.then(function (selectedBoard) {
                         $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
                             if (response.status === 200) {
                                 $scope.addAlert("success", response.data);
@@ -205,7 +199,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         }, function (response) {
                             $scope.addAlert("danger", response.data);
                         });
-                    }, function () {
                     });
                 } else {
                     $modal.open({

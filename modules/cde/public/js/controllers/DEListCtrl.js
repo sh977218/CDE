@@ -92,7 +92,10 @@ angular.module('cdeModule').controller('DEListCtrl',
                 var modalInstance = $modal.open({
                     animation: false,
                     templateUrl: '/system/public/html/selectBoardModal.html',
-                    controller: 'SelectCdeBoardModalCtrl'
+                    controller: 'SelectBoardModalCtrl',
+                    resolve: {
+                        type: function () {return 'cde'}
+                    }
                 });
 
                 modalInstance.result.then(function (selectedBoard) {

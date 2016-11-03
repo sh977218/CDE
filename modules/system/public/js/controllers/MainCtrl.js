@@ -68,7 +68,32 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.isDocumentationEditor = function () {
                 return exports.hasRole(userResource.user, "DocumentationEditor");
             };
-            
+
+            $scope.openPinModal = function (elt, type) {
+                if (userResource.user.username) {
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/selectBoardModal.html',
+                        controller: 'SelectBoardModalCtrl',
+                        resolve: {type: function () {return type;}}
+                    }).result.then(function (selectedBoard) {
+                        $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
+                            if (response.status === 200) {
+                                $scope.addAlert("success", response.data);
+                            } else
+                                $scope.addAlert("warning", response.data);
+                        }, function (response) {
+                            $scope.addAlert("danger", response.data);
+                        });
+                    });
+                } else {
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/system/public/html/ifYouLogInModal.html'
+                    });
+                }
+            };
+
             $scope.isPageActive = function (viewLocation) {
                 return viewLocation === $location.path();
             };

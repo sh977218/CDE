@@ -11,13 +11,14 @@ angular.module('cdeModule').controller('FormCdeCtrl',
 
             $scope.openPinModal = function (cde) {
                 if (userResource.user.username) {
-                    var modalInstance = $modal.open({
+                    $modal.open({
                         animation: false,
                         templateUrl: '/system/public/html/selectBoardModal.html',
-                        controller: 'SelectCdeBoardModalCtrl'
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
+                        controller: 'SelectBoardModalCtrl',
+                        resolve: {
+                            type: function () {return 'cde'}
+                        }
+                    }).result.then(function (selectedBoard) {
                         $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
                             if (response.status === 200) {
                                 $scope.addAlert("success", response.data);
@@ -26,7 +27,6 @@ angular.module('cdeModule').controller('FormCdeCtrl',
                         }, function (response) {
                             $scope.addAlert("danger", response.data);
                         });
-                    }, function () {
                     });
                 } else {
                     $modal.open({

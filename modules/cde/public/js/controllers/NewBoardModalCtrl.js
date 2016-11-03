@@ -1,15 +1,7 @@
-angular.module('cdeModule').controller('NewBoardModalCtrl', ['$scope', '$uibModalInstance',
-    function ($scope, $modalInstance) {
+angular.module('cdeModule').controller('NewBoardModalCtrl', ['$scope',
+    function ($scope) {
         $scope.newBoard = {
             type: 'cde'
-        };
-
-        $scope.cancelCreate = function () {
-            $modalInstance.dismiss('cancel');
-        };
-
-        $scope.okCreate = function () {
-            $modalInstance.close($scope.newBoard);
         };
     }
 ]);
