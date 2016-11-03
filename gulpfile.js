@@ -45,7 +45,7 @@ gulp.task('wiredep', ['bower'], function() {
 });
 
 gulp.task('copyCode', ['wiredep'], function() {
-    ['article', 'cde', 'form', 'processManager', 'system', 'batch', 'embedded'].forEach(function(module) {
+    ['article', 'cde', 'form', 'processManager', 'system', 'batch', 'embedded', 'board'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
         gulp.src('./modules/' + module + '/shared/**/*')
@@ -98,7 +98,7 @@ gulp.task('copyCode', ['wiredep'], function() {
 });
 
 gulp.task('angularTemplates', function() {
-    ['cde', 'form', 'system', 'article', 'embedded'].forEach(function(module) {
+    ['cde', 'form', 'system', 'article', 'embedded', 'board'].forEach(function(module) {
         gulp
             .src("modules/" + module + "/public/js/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/bkup/"));
@@ -133,7 +133,8 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
                 .pipe(usemin({
                     jsAttributes: {
                         defer: true
-                    },                    assetsDir: "./modules/",
+                    },
+                    assetsDir: "./modules/",
                     css: [minifyCss({target: "./modules/system/assets/css/vendor", rebase: true}), 'concat', rev()],
                     js: [ uglify({mangle: false}), 'concat', rev() ]
                 }))
@@ -146,7 +147,7 @@ gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
 });
 
 gulp.task('emptyTemplates', ['usemin'], function() {
-    ['cde', 'form', 'system', 'article', 'embedded'].forEach(function(module) {
+    ['cde', 'form', 'system', 'article', 'embedded', 'board'].forEach(function(module) {
         return gulp.src("modules/" + module + "/public/js/bkup/angularTemplates.js")
             .pipe(gulp.dest("modules/" + module + "/public/js/"));
     });

@@ -1,8 +1,8 @@
 angular.module('systemModule').controller('AccordionCtrl',
-    ['$scope', '$location', '$window', function ($scope, $location, $window)
+    ['$scope', '$location', '$window', 'PinModal', function ($scope, $location, $window, PinModal)
 {
 
-
+    $scope.PinModal = PinModal.new($scope.module);
 
     $scope.interruptEvent = function (event) {
         if (event) {
@@ -35,7 +35,7 @@ angular.module('systemModule').controller('AccordionCtrl',
         $scope.interruptEvent(event);
         switch (action) {
             case "openPinModal":
-                $scope.openPinModal(elt);
+                PinModal.openPinModal(elt);
                 break;
             case "quickBoard.add":
                 $scope.quickBoard.add(elt);

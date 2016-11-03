@@ -428,20 +428,19 @@ angular.module('systemModule').controller('ListCtrl',
         });
     };
 
+    // TODO support only CDEs. Forms TODO later.
     $scope.showPinAllModal = function() {
         if (userResource.user.username) {
-            var modalInstance = $modal.open({
+            $modal.open({
                 animation: false,
-                templateUrl: '/cde/public/html/selectBoardModal.html',
+                templateUrl: '/system/public/html/selectBoardModal.html',
                 controller: 'SelectBoardModalCtrl',
                 resolve: {
-                    boards: function () {
-                        return $scope.boards;
+                    type: function () {
+                        return 'cde';
                     }
                 }
-            });
-
-            modalInstance.result.then(function (selectedBoard) {
+            }).result.then(function (selectedBoard) {
                 var filter = {
                     reset: function () {
                         this.tags = [];

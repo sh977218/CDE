@@ -235,7 +235,7 @@ schemas.commentSchema = new mongoose.Schema({
         }
     ],
     element: {
-        eltType: {type: String, enum: ["cde", "form"]},
+        eltType: {type: String, enum: ["cde", "form", "board"]},
         eltId: String
     }
 });
@@ -261,7 +261,7 @@ var requestSchema = {
 
 var commentApprovalSchema = {
     element: {
-        tinyId: String
+        eltId: String
         , name: String
         , eltType: {type: String, enum: ["cde", "form"]}
     }

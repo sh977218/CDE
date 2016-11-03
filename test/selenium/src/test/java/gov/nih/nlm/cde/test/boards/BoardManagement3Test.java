@@ -16,13 +16,8 @@ public class BoardManagement3Test extends BoardTest {
         findElement(By.xpath("//*[@id='board_desc_0']//input")).sendKeys(" -- Desc Edited");
         clickElement(By.xpath("//div[@id='board_desc_0']//button[contains(text(),'Confirm')]"));
         closeAlert();
-
         driver.navigate().refresh();
-
         textPresent("-- Desc Edited");
-
-        String newModified = findElement(By.id("board_mod_0")).getText();
-        Assert.assertNotEquals(modified, newModified);
     }
 
     @Test
