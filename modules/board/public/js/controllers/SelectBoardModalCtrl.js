@@ -9,7 +9,8 @@ angular.module('formModule').controller('SelectBoardModalCtrl', ['$scope', 'type
             sortBy: 'updatedDate',
             sortDirection: 'desc',
             tags: [],
-            selectedTypes: [type]
+            selectedTypes: [type],
+            types: ['cde', 'form']
         };
     }
 ]);

@@ -25,7 +25,7 @@
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
                     </label>
                 </div>
-                <div ng-if="filter.shareStatus.length > 1">
+                <div ng-if="filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
                         <input type="checkbox" data-checklist-model="filter.selectedShareStatus"

@@ -377,7 +377,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (sort) {
-        queryStuff.sort = {"views": {order: "desc"}};
+        queryStuff.sort = {
+            "views": {
+                order: 'desc'
+            }
+        };
     }
 
     // Get aggregations on classifications and statuses

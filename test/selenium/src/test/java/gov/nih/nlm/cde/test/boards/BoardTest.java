@@ -53,9 +53,9 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("addBoard"));
         textPresent("Create New Board");
         if (type.equals("cde"))
-            type = "CDE";
+            type = "CDEs";
         if (type.equals("form"))
-            type = "Form";
+            type = "Forms";
         new Select(driver.findElement(By.id("new-board-type"))).selectByVisibleText(type);
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);

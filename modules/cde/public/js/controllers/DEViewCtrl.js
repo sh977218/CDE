@@ -20,7 +20,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.quickBoard = QuickBoard;
 
-    $scope.pinModal = PinModal.new('cde');
+    $scope.PinModal = PinModal.new('cde');
 
     $scope.canCurate = false;
 
