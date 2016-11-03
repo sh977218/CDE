@@ -67,6 +67,7 @@ public class NlmCdeBaseTest {
     protected static String boarduser2_username = "boarduser2";
     protected static String boarduserEdit_username = "boarduserEdit";
     protected static String boardUser = "boarduser";
+    protected static String formboarduser = "formboarduser";
     protected static String pinUser = "pinuser";
     protected static String unpinUser = "unpinuser";
     protected static String docEditor = "docEditor";

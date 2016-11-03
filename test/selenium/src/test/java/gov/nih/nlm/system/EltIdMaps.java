@@ -49,6 +49,8 @@ public class EltIdMaps {
         eltMap.put("Service Item Display Name java.lang.String", "_Qg5FbwRP98");
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Specimen Inflammation Change Type", "vdw_hgaMyxc");
+        eltMap.put("Specimen Array", "vdw_hgaMyxc");
+        eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
@@ -80,6 +82,7 @@ public class EltIdMaps {
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
         eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
+        eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
         eltMap.put("Reg Status Lift", "mJmg93zRW");

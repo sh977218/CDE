@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
+        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  CdeDiff, $q, QuickBoard, $log, userResource)
+                  CdeDiff, $q, QuickBoard, $log, userResource, PinModal)
 {
 
     $scope.module = 'cde';
@@ -19,6 +19,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.pvLimit = 30;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.quickBoard = QuickBoard;
+
+    $scope.PinModal = PinModal.new('cde');
 
     $scope.canCurate = false;
 
@@ -37,6 +39,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.commentMode = !$scope.commentMode;
         });
     };
+
+    $scope.getEltId = function () {
+        return $scope.elt.tinyId;
+    };
+    $scope.getCtrlType = function () {return "cde";};
 
     $scope.tabs = {
         general: {
