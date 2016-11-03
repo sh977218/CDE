@@ -50,6 +50,7 @@ public class EltIdMaps {
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Specimen Inflammation Change Type", "vdw_hgaMyxc");
         eltMap.put("Specimen Array", "vdw_hgaMyxc");
+        eltMap.put("Sensory system abnormality stocking glove present text", "gPY57SQ7-ZF");
         eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");

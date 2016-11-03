@@ -42,6 +42,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 public class NlmCdeBaseTest {
 
     public static WebDriver driver;
+    public static WebDriver _driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
@@ -107,7 +108,6 @@ public class NlmCdeBaseTest {
             nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of cdes: " + nbOfCde);
             waitTimeCdes = 10;
-            waitTimeCdes = 10;
         }
         for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
             hangon(waitTimeForms);
@@ -164,12 +164,12 @@ public class NlmCdeBaseTest {
             driver = new RemoteWebDriver(_hubUrl, caps);
         } catch (SessionNotCreatedException e) {
             hangon(10);
-            driver = new RemoteWebDriver(_hubUrl, caps);
         }
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        driver = new RemoteWebDriver(_hubUrl, caps);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 5);
@@ -178,6 +178,13 @@ public class NlmCdeBaseTest {
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
+        DesiredCapabilities _caps = DesiredCapabilities.chrome();
+        ChromeOptions _options = new ChromeOptions();
+        _caps.setBrowserName("chrome");
+        _caps.setCapability(ChromeOptions.CAPABILITY, _options);
+        _driver = new RemoteWebDriver(_hubUrl, _caps);
+        _driver.get(baseUrl);
+        _driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
     }
 
