@@ -68,7 +68,7 @@ angular.module('systemModule').controller('MainCtrl',
             $scope.isDocumentationEditor = function () {
                 return exports.hasRole(userResource.user, "DocumentationEditor");
             };
-            
+
             $scope.isPageActive = function (viewLocation) {
                 return viewLocation === $location.path();
             };

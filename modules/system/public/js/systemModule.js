@@ -296,6 +296,39 @@ angular.module('systemModule').factory('ClassificationUtil', [function () {
     return factoryObj;
 }]);
 
+angular.module('systemModule').factory('PinModal', ["userResource", "$uibModal", "$http", 'Alert', function (userResource, $modal, $http, Alert) {
+    return {
+        new: function (type) {
+            return {
+                openPinModal: function (elt) {
+                    if (userResource.user.username) {
+                        $modal.open({
+                            animation: false,
+                            templateUrl: '/system/public/html/selectBoardModal.html',
+                            controller: 'SelectBoardModalCtrl',
+                            resolve: {type: function () {return type;}}
+                        }).result.then(function (selectedBoard) {
+                            $http.put("/pin/" + type + "/" + elt.tinyId + "/" + selectedBoard._id).then(function (response) {
+                                if (response.status === 200) {
+                                    Alert.addAlert("success", response.data);
+                                } else
+                                    Alert.addAlert("warning", response.data);
+                            }, function (response) {
+                                Alert.addAlert("danger", response.data);
+                            });
+                        });
+                    } else {
+                        $modal.open({
+                            animation: false,
+                            templateUrl: '/system/public/html/ifYouLogInModal.html'
+                        });
+                    }
+                }
+            };
+        }
+    };
+}]);
+
 angular.module('systemModule').factory('isAllowedModel', ["userResource", function (userResource) {
     var isAllowedModel = {};
 

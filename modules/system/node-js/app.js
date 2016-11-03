@@ -587,6 +587,7 @@ exports.init = function (app) {
         orgsvc.transferSteward(req, res);
     });
 
+    // TODO this works only for CDEs. Forms TODO later.
     app.post('/classification/bulk/tinyid', function (req, res) {
         if (!usersrvc.isCuratorOf(req.user, req.body.classification.orgName)) {
             res.status(403).send("Not Authorized");

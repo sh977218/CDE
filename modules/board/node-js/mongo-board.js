@@ -43,9 +43,7 @@ exports.publicBoardsByDeTinyId = function (tinyId, callback) {
 };
 
 exports.nbBoardsByUserId = function (userId, callback) {
-    PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
-        callback(err, result);
-    });
+    PinningBoard.count({"owner.userId": userId}).exec(callback);
 };
 
 exports.boardById = function (boardId, callback) {
@@ -65,8 +63,7 @@ exports.byId = exports.boardById;
 
 exports.boardList = function (from, limit, searchOptions, callback) {
     PinningBoard.find(searchOptions).exec(function (err, boards) {
-        // TODO Next line throws "undefined is not a function.why?
-        PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
+        PinningBoard.count(searchOptions).exec(function (err, count) {
             callback(err, {
                 boards: boards
                 , page: Math.ceil(from / limit)
