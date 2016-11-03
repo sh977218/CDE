@@ -30,8 +30,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.accordionListStyle = "semi-transparent";
                 $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {
                     $scope.accordionListStyle = "";
-                    //$scope.cdes = [];
-                    //$scope.forms = [];
                     if (response.board) {
                         $scope.board = response.board;
                         var elts = $scope[$scope.board.type + 's'] = [];
@@ -39,8 +37,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         $scope.setViewTypes($scope.module);
                         $scope.includeInAccordion =
                             [
-                                "/" + $scope.board.type + "/public/html/accordion/boardAccordionActions.html",
-                                "/" + $scope.board.type + "/public/html/accordion/addToQuickBoardActions.html"
+                                "/system/public/html/accordion/boardAccordionActions.html",
+                                "/system/public/html/accordion/addToQuickBoardActions.html"
                         ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
@@ -185,35 +183,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-            $scope.openPinModal = function (cde) {
-                if (userResource.user.username) {
-                    var ctrl = 'SelectCdeBoardModalCtrl';
-                    if ($scope.board.type === 'form')
-                        ctrl = 'SelectFormBoardModalCtrl';
-                    var modalInstance = $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/selectBoardModal.html',
-                        controller: ctrl
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
-                        $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                            if (response.status === 200) {
-                                $scope.addAlert("success", response.data);
-                            } else
-                                $scope.addAlert("warning", response.data);
-                        }, function (response) {
-                            $scope.addAlert("danger", response.data);
-                        });
-                    }, function () {
-                    });
-                } else {
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/ifYouLogInModal.html'
-                    });
-                }
-            };
             $scope.reload();
 
 }]);

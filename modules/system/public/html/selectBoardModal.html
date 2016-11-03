@@ -25,7 +25,7 @@
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
                     </label>
                 </div>
-                <div ng-if="filter.shareStatus.length > 1">
+                <div ng-if="filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
                         <input type="checkbox" data-checklist-model="filter.selectedShareStatus"
@@ -43,7 +43,7 @@
                             <i class="fa fa-globe" ng-show="board.shareStatus === 'Public'"></i>
                             <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"></i>
                         </span>
-                        <a href="" id="viewBoard_{{board.name}}" ng-click="ok(board)"
+                        <a href="" id="viewBoard_{{board.name}}" ng-click="$close(board)"
                            ng-bind="board.name"></a>
                     </h5>
                     <div tabindex="0"><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span> {{board.type==='form'?(board.pins.length && board.pins.length > 0?'Forms':'Form'):(board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}</div>
@@ -61,6 +61,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()" id="cancelSelect">Cancel</button>
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelSelect">Cancel</button>
 </div>
 </span>

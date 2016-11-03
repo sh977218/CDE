@@ -53,9 +53,9 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("addBoard"));
         textPresent("Create New Board");
         if (type.equals("cde"))
-            type = "CDE";
+            type = "CDEs";
         if (type.equals("form"))
-            type = "Form";
+            type = "Forms";
         new Select(driver.findElement(By.id("new-board-type"))).selectByVisibleText(type);
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
@@ -63,20 +63,6 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("createBoard"));
         textPresent(response);
         closeAlert();
-    }
-
-    public void removeBoard(String boardName) {
-        gotoMyBoards();
-        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("board_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                clickElement(By.id("removeBoard-" + i));
-                clickElement(By.id("confirmRemove-" + i));
-                textNotPresent(boardName);
-                return;
-            }
-        }
     }
 
     protected void pinCdeToBoard(String cdeName, String cdeBoardName) {

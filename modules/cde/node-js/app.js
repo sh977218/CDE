@@ -257,10 +257,13 @@ exports.init = function (app, daoManager) {
 
     app.delete('/board/:boardId', function (req, res) {
         authorization.boardOwnership(req, res, req.params.boardId, function(board) {
-            board.remove(function () {
-                elastic.boardRefresh(function () {
-                    res.send("Board Removed.");
-                });
+            board.remove(function (err) {
+                if (err) res.send(500);
+                else {
+                    elastic.boardRefresh(function () {
+                        res.send("Board Removed.");
+                    });
+                }
             });
         });
     });

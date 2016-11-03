@@ -1,5 +1,4 @@
-var mongo_cde = require('../../cde/node-js/mongo-cde')
-    , mongo_board = require('../../board/node-js/mongo-board')
+var mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('./mongo-data')
     , classificationShared = require('../shared/classificationShared')
     , daoManager = require('./moduleDaoManager')
@@ -21,31 +20,29 @@ classification.saveCdeClassif = function (err, elt, cb) {
     });
     elt.updated = new Date();
     elt.markModified('classification');
-    elt.save(function () {
-        if (cb) cb(err);
-    });
+    elt.save(cb);
 };
 
 exports.eltClassification = function (body, action, dao, cb) {
-    var classify = function (steward, cde) {
+    var classify = function (steward, elt) {
         if( !(body.categories instanceof Array) ) {
             body.categories = [body.categories];
         }
         if (action === classificationShared.actions.create) {
             classificationShared.addCategory(steward.object, body.categories, function(err) {
-                classification.saveCdeClassif(err, cde, cb);
+                classification.saveCdeClassif(err, elt, cb);
             });
         } else if (action === classificationShared.actions.delete) {
             classificationShared.modifyCategory(steward.object, body.categories, {type:"delete"}, function(err) {
-                classification.saveCdeClassif(err, cde, cb);
+                classification.saveCdeClassif(err, elt, cb);
             });
         }
 
     };
 
-    var  findElements = function(err, cde) {
-        if (!cde) return;
-        var steward = classificationShared.findSteward(cde, body.orgName);
+    var  findElements = function(err, elt) {
+        if (!elt) return;
+        var steward = classificationShared.findSteward(elt, body.orgName);
         if (!steward) {
             mongo_data_system.orgByName(body.orgName, function(stewardOrg) {
                 var classifOrg = {
@@ -56,12 +53,12 @@ exports.eltClassification = function (body, action, dao, cb) {
                 };
 
                 if (stewardOrg.workingGroupOf) classifOrg.workingGroup = true;
-                if (!cde.classification) cde.classification = [];
-                cde.classification.push(classifOrg);
-                steward = classificationShared.findSteward(cde, body.orgName);
-                classify(steward, cde);
+                if (!elt.classification) elt.classification = [];
+                elt.classification.push(classifOrg);
+                steward = classificationShared.findSteward(elt, body.orgName);
+                classify(steward, elt);
             });
-        } else classify(steward, cde);
+        } else classify(steward, elt);
     };
     if (body.cdeId && dao.byId)
         dao.byId(body.cdeId, findElements);

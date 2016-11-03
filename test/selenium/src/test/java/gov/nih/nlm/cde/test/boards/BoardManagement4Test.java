@@ -10,8 +10,12 @@ public class BoardManagement4Test extends BoardTest {
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
-        removeBoard("Remove me boards");
-        hangon(2);
+        String boardName = "Remove me board";
+        gotoMyBoards();
+        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
+        textPresent("Confirm Delete");
+        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
+        textNotPresent(boardName);
         textPresent("Done");
     }
 

@@ -347,8 +347,7 @@ exports.myBoards = function (user, filter, cb) {
         "aggs": {
             "typeAgg": {
                 "terms": {
-                    "field": "type",
-                    "size": 2
+                    "field": "type"
                 }
             },
             "tagAgg": {
@@ -359,8 +358,7 @@ exports.myBoards = function (user, filter, cb) {
             },
             "ssAgg": {
                 "terms": {
-                    "field": "shareStatus",
-                    "size": 2
+                    "field": "shareStatus"
                 }
             }
         },
