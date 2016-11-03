@@ -1,7 +1,7 @@
-angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource',
-    function ($scope, $http, userResource) {
+angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource', 'Alert',
+    function ($scope, $http, userResource, Alert) {
 
-        function loadComments() {
+        function loadComments(cb) {
             $http.get('/comments/eltId/' + $scope.getEltId()).then(function(result) {
                 $scope.eltComments = result.data;
                 $scope.eltComments.forEach(function (comment) {
@@ -12,6 +12,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                         })
                     }
                 })
+                if (cb) cb();
             });
         }
 
@@ -22,6 +23,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         socket.emit('openedDiscussion', {
             user: userResource.user,
             tinyId: $scope.elt.tinyId
+        });
+        socket.on("commentUpdated", function (message) {
+            loadComments(function () {
+                Alert.addAlert("success", message);
+            });
         });
 
         $scope.avatarUrls = {};
@@ -80,10 +86,6 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 loadComments();
             });
         };
-
-        socket.on("deCommentAdded", function (data) {
-            Alert.addAlert("success", "someone added a comment: " + data.comment.text);
-        });
         
         $scope.replyTo = function (commentId, reply, showReplies) {
             $http.post("/comments/reply", {

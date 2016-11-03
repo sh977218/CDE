@@ -222,6 +222,8 @@ app.use(function(err, req, res, next){
     }
     next();
 });
+var currentOpenConnections = {};
+exports.currentOpenConnections = currentOpenConnections;
 
 domain.run(function(){
     var server = http.createServer(app);
@@ -229,7 +231,6 @@ domain.run(function(){
     server.listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
-    var currentOpenConnections = {};
     require('socket.io')(server).on('connection', function (socket) {
         socket.on("openedDiscussion", function (discussion) {
             console.log(discussion.user.username + ' connected to socket IO on '
@@ -244,14 +245,7 @@ domain.run(function(){
             var connection = currentOpenConnections[discussion.tinyId];
             if (connection) delete currentOpenConnections[discussion.tinyId];
         });
-        socket.on('addComment', function (comment) {
-            console.log(comment.user.username + " added comment to : "
-                + comment.tinyId + " , comment: " + comment.text);
-            currentOpenConnections[comment.tinyId].forEach(function (conn) {
-                conn.socket.emit("deCommentAdded", comment);
-            })
-        });
-    })
+    });
 
 });
 

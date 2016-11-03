@@ -9,8 +9,6 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
-    , socketIo = require('socket.io')
-    , io = require('../../../app').io;
     ;
 
 exports.save = function (req, res, dao, cb) {
@@ -198,12 +196,14 @@ exports.createApprovalMessage = function (user, role, type, details) {
 };
 
 exports.addComment = function (req, res, dao) {
+    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
         idRetrievalFunc(req.body.element.eltId, function (err, elt) {
             if (!elt || err) {
                 res.status(404).send("Element does not exist.");
             } else {
+                var eltId = req.body.element.eltId;
                 var comment = new mongo_data_system.Comment({
                     user: req.user._id
                     , username: req.user.username
@@ -211,7 +211,7 @@ exports.addComment = function (req, res, dao) {
                     , text: req.body.comment
                     , element: {
                         eltType: dao.type,
-                        eltId: req.body.element.eltId
+                        eltId: eltId
                     }
                 });
                 if (!authorizationShared.canComment(req.user)) {
@@ -237,10 +237,14 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
-                        if (comment.pendingApproval) message += " Approval required."
+                        currentOpenConnections[eltId].forEach(function (socket) {
+                            socket.emit("commentUpdated", 'someone added a comment');
+                        });
+                        if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
-                });
+
+               });
             }
         });
     } else {
@@ -295,6 +299,7 @@ exports.replyToComment = function (req, res) {
 };
 
 exports.removeComment = function (req, res, dao) {
+    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
@@ -316,7 +321,8 @@ exports.removeComment = function (req, res, dao) {
             if (removedComment) {
                 removedComment.status = "deleted";
                 var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
-                idRetrievalFunc(comment.element.eltId, function (err, elt) {
+                var eltId = comment.element.eltId;
+                idRetrievalFunc(eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
                         (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
@@ -331,6 +337,9 @@ exports.removeComment = function (req, res, dao) {
                                 });
                                 res.status(500).send(err);
                             } else {
+                                currentOpenConnections[eltId].forEach(function (socket) {
+                                    socket.emit("commentUpdated", 'someone added a comment');
+                                });
                                 res.send({message: "Comment removed"});
                             }
                         });
