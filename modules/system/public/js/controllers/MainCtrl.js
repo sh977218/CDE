@@ -119,12 +119,10 @@ angular.module('systemModule').controller('MainCtrl',
 
             // Retrieves orgs details from database at an interval
             OrgHelpers.getOrgsDetailedInfoAPI();
-            $interval(function () {
-                OrgHelpers.getOrgsDetailedInfoAPI();
-            }, GLOBALS.getOrgsInterval);
 
             $scope.inboxVisible = function () {
-                return $scope.isOrgCurator() || $scope.isOrgAdmin() || exports.hasRole($scope.user, "CommentReviewer") || exports.hasRole($scope.user, "AttachmentReviewer");
+                return $scope.isOrgCurator() || $scope.isOrgAdmin() || exports.hasRole($scope.user, "CommentReviewer")
+                    || exports.hasRole($scope.user, "AttachmentReviewer");
             };
 
             $scope.checkMail = function () {
@@ -132,8 +130,12 @@ angular.module('systemModule').controller('MainCtrl',
                 $http.get('/mailStatus').success(function (data) {
                     if (data.count > 0) $scope.userHasMail = true;
                 });
-
             };
+
+            $interval(function () {
+                OrgHelpers.getOrgsDetailedInfoAPI();
+                $scope.checkMail();
+            }, GLOBALS.getOrgsInterval);
 
         }
     ]);
