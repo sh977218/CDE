@@ -8,7 +8,7 @@ var async = require('async')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , mongo_cde = require("../../cde/node-js/mongo-cde")
     , mongo_form = require("../../form/node-js/mongo-form")
-    , mongo_board = require("../../cde/node-js/mongo-board")
+    , mongo_board = require("../../board/node-js/mongo-board")
     , mongo_storedQuery = require("../../cde/node-js/mongo-storedQuery")
     ;
 
@@ -377,7 +377,11 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (sort) {
-        queryStuff.sort = {"views": {order: "desc"}};
+        queryStuff.sort = {
+            "views": {
+                order: 'desc'
+            }
+        };
     }
 
     // Get aggregations on classifications and statuses

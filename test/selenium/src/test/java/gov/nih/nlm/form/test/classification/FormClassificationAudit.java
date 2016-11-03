@@ -4,10 +4,10 @@ import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormClassifAudit extends BaseClassificationTest {
+public class FormClassificationAudit extends BaseClassificationTest {
     
     @Test
-    public void formClassifAudit() {
+    public void formClassificationAudit() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Functional Imaging");
         clickElement(By.id("classification_tab"));

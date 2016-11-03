@@ -9,13 +9,13 @@ public class BoardClassification extends BoardTest {
     public void classifyAllCdes() {
         mustBeLoggedInAs(classifyBoardUser_username, password);
         goToBoard("Classify Board");
-        clickElement(By.id("board.classifyAll"));
+        clickElement(By.id("board.classifyAllCdes"));
         clickElement(By.xpath("//div[span/text() = 'Classify Board']/button"));
         textPresent("Elements classified");
         closeAlert();
         clickElement(By.linkText("Manual muscle testing date and time"));
         clickElement(By.id("classification_tab"));
-        findElement(By.linkText("Classify Board"));
+        textPresent("Classify Board");
     }
 
 }

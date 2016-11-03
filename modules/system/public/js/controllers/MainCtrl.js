@@ -69,33 +69,6 @@ angular.module('systemModule').controller('MainCtrl',
                 return exports.hasRole(userResource.user, "DocumentationEditor");
             };
 
-            $scope.openPinModal = function (cde) {
-                if (userResource.user.username) {
-                    var modalInstance = $modal.open({
-                        animation: false,
-                        templateUrl: '/cde/public/html/selectBoardModal.html',
-                        controller: 'SelectBoardModalCtrl'
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
-                        $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                            if (response.status === 200) {
-                                $scope.addAlert("success", response.data);
-                            } else
-                                $scope.addAlert("warning", response.data);
-                        }, function (response) {
-                            $scope.addAlert("danger", response.data);
-                        });
-                    }, function () {
-                    });
-                } else {
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/ifYouLogInModal.html'
-                    });
-                }
-            };
-
             $scope.isPageActive = function (viewLocation) {
                 return viewLocation === $location.path();
             };

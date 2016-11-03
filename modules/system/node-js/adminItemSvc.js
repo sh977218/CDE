@@ -249,7 +249,8 @@ setInterval(function () {
 
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
-        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+        var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+        idRetrievalFunc(req.body.element.eltId, function (err, elt) {
             if (!elt || err) {
                 res.status(404).send("Element does not exist.");
             } else {
@@ -260,14 +261,14 @@ exports.addComment = function (req, res, dao) {
                     , text: req.body.comment
                     , element: {
                         eltType: dao.type,
-                        eltId: req.body.element.tinyId
+                        eltId: req.body.element.eltId
                     }
                 });
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var details = {
                         element: {
-                            tinyId: req.body.element.tinyId,
+                            eltId: req.body.element.eltId,
                             name: elt.naming[0].designation, eltType: dao.type
                         },
                         comment: {
@@ -283,7 +284,7 @@ exports.addComment = function (req, res, dao) {
                             origin: "system.adminItemSvc.addComment",
                             stack: new Error().stack
                         });
-                        res.status(500).send(err);
+                        res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
                         if (comment.pendingApproval) message += " Approval required.";
@@ -386,10 +387,12 @@ exports.removeComment = function (req, res, dao) {
             }
             if (removedComment) {
                 removedComment.status = "deleted";
-                dao.eltByTinyId(comment.element.eltId, function (err, elt) {
+                var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+                idRetrievalFunc(comment.element.eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
-                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                        (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
+                        (elt.owner && (elt.owner.username === req.user.username)) ||
                         req.user.siteAdmin
                     ) {
                         comment.save(function (err) {
@@ -634,13 +637,13 @@ exports.removeAttachmentLinks = function (id, collection) {
 
 exports.setAttachmentApproved = function (id, collection) {
     collection.update(
-        {"attachments.fileid": id}
-        , {
+        {"attachments.fileid": id},
+        {
             $unset: {
                 "attachments.$.pendingApproval": ""
             }
-        }
-        , {multi: true}).exec();
+        },
+        {multi: true}).exec();
 };
 
 exports.fileUsed = function (id, collection, cb) {

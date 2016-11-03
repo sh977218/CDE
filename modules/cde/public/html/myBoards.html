@@ -11,6 +11,14 @@
     </div>
     <div class="col-md-2 col-xs-4 noLeftRightPadding">
         <div id="sidebar-wrapper">
+            <div ng-if="filter.types.length > 0">
+                <h4>Type</h4>
+                <label ng-repeat="type in filter.types" class="my-board-tag">
+                    <input type="checkbox" data-checklist-model="filter.selectedTypes" data-checklist-value="type.key"
+                           checklist-change="loadMyBoards()" data-id="type-{{type.key}}">
+                    {{type.key}} ({{type.doc_count}})
+                </label>
+            </div>
             <div ng-if="filter.tags.length > 0">
                 <h4>Tags</h4>
                 <label ng-repeat="tag in filter.tags" class="my-board-tag">

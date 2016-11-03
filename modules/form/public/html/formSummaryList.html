@@ -10,6 +10,9 @@
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"
                id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
+            <a href tabindex="0" class="nonLinkAnchor" ng-click="interruptEvent($event);PinModal.openPinModal(elt)">
+                <i id="pinToBoard_{{$index}}" class="fa fa-thumb-tack hand-cursor" title="Attach to Board"
+                   role="link"> </i></a>
             <a href tabindex="0" class="nonLinkAnchor" ng-if="formQuickBoard.canAddElt(elt)"
                ng-click="formQuickBoard.add(elt)">
                 <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"

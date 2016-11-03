@@ -2,6 +2,9 @@ var express = require('express')
     , path = require('path')
     , formCtrl = require('./formCtrl')
     , mongo_form = require('./mongo-form')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
+    , classificationNode_system = require('../../system/node-js/classificationNode')
+    , classificationShared = require('../../system/shared/classificationShared')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , config = require('../../system/node-js/parseConfig')
     , multer = require('multer')
@@ -10,7 +13,8 @@ var express = require('express')
     , elastic_system = require('../../system/node-js/elastic')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
-    , usersvc = require('../../cde/node-js/usersvc')
+    , usersvc = require('../../system/node-js/usersvc')
+    , usersrvc = require('../../system/node-js/usersrvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -131,5 +135,56 @@ exports.init = function (app, daoManager) {
         } else {
             res.send("Please login first.");
         }
+    });
+
+    app.post('/classification/form', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_form, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.body.cdeId
+                    }],
+                    action: "add",
+                    path: [req.body.orgName].concat(req.body.categories)
+                });
+            } else {
+                res.send({code: 403, msg: "Classification Already Exists"});
+            }
+
+        });
+    });
+
+    app.delete('/classification/form', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_form, function (err) {
+            if (!err) {
+                res.end();
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.query.cdeId
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
+                });
+            } else {
+                res.status(202).send({error: {message: "Classification does not exists."}});
+            }
+        });
     });
 };

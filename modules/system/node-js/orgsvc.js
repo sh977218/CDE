@@ -2,8 +2,8 @@ var mongo_data = require('./mongo-data')
     , util = require('util')
     , daoManager = require('./moduleDaoManager')
     , usersrvc = require('./usersrvc')
+    , async = require('async')
     ;
-
 
 exports.managedOrgs = function(req, res) {
     mongo_data.managedOrgs(function(orgs) {
@@ -34,38 +34,28 @@ exports.updateOrg = function(req, res) {
 };
 
 exports.transferSteward = function(req, res) {
-
     var results = [];
     var hasError = false;
     
     if(req.isAuthenticated() && usersrvc.isAdminOf(req.user, req.body.from) && usersrvc.isAdminOf(req.user, req.body.to)) {
-        daoManager.getDaoList().forEach(function(dao) {
-            dao.transferSteward(req.body.from, req.body.to, function(err, result) {
-                if(err || Number.isNaN(result)) {
-                    hasError = true;
-                    results.push({status: 400, message: 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. '});
-                } else if(result === 0) {
-                    results.push({status: 200, message: 'There are no ' + dao.name + ' to transfer. '});
-                } else {
-                    results.push({status: 200, message: result + ' ' + dao.name + ' transferred. '});
-                }
-                
-                if(results.length===daoManager.getDaoList().length) {
-                    return res.status(hasError === true ? 400 : 200).send(concatResultsMessages(results) );
-                }
-            });
+        async.each(daoManager.getDaoList(), function(dao, oneDone) {
+            if (dao.transferSteward) {
+                dao.transferSteward(req.body.from, req.body.to, function(err, result) {
+                    if(err || Number.isNaN(result)) {
+                        hasError = true;
+                        results.push( 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. ');
+                    } else if(result === 0) {
+                        results.push( 'There are no ' + dao.name + ' to transfer. ');
+                    } else {
+                        results.push(result + ' ' + dao.name + ' transferred. ');
+                    }
+                    oneDone();
+                });
+            } else oneDone();
+        }, function allDone() {
+            return res.status(hasError? 400 : 200).send(results.join(''));
         });
     } else {
         res.status(400).send("Please login first.");
     }
 };
-
-function concatResultsMessages( results ) {
-    var finalMessage = '';
-    
-    for(var i=0; i<results.length; i++) {
-        finalMessage += results[i].message;
-    }
-    
-    return finalMessage;
-}
