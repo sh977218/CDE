@@ -335,6 +335,28 @@ exports.replyToComment = function (req, res) {
                     res.status(500).send(err);
                 } else {
                     res.send({message: "Reply added"});
+                    if (req.user.username !== comment.username) {
+                        var message = {
+                            recipient: {recipientType: "user", name: comment.username}
+                            , author: {authorType: "user", name: req.user.username}
+                            , date: new Date()
+                            , type: "CommentReply"
+                            , typeCommentReply: {
+                                // TODO change this when you merge board comments
+                                element: {
+                                    eltType: comment.element.type,
+                                    tinyId: comment.element.eltId,
+                                    name:  req.body.eltName
+                                }
+                                , comment: {
+                                    commentId: comment._id,
+                                    text: reply.text
+                                }
+                            }
+                            , states: []
+                        };
+                        mongo_data_system.createMessage(message);
+                    }
                 }
             });
         });

@@ -279,10 +279,11 @@ schemas.message = new mongoose.Schema({
     }
     , author: {authorType: String, name: String}
     , date: Date
-    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
+    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
     , typeAttachmentApproval: attachmentSchema
+    , typeCommentReply: commentApprovalSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date

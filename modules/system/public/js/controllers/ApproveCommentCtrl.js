@@ -7,7 +7,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         }).success(function(data, status, headers, config) {
                 $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
+                $scope.archiveMessage(msg);
             }).
             error(function(data, status, headers, config) {
                 $scope.addAlert("danger", data);
@@ -26,16 +26,11 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     };
     
     $scope.openAuthorizeUserModal = function(message){
-        var modalInstance = $modal.open({
+         $modal.open({
             animation: false,
             templateUrl: '/system/public/html/messages/approveUser.html'
-            , controller: 'ApproveUserModalCtrl'
-        });
-
-        modalInstance.result.then(function () {
+        }).result.then(function () {
             $scope.authorizeUser(message);
-        }, function () {
-            
         });
     };
 
@@ -45,7 +40,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         }).success(function(data, status, headers, config) {
             $scope.addAlert("success", data);
-            $scope.closeMessage(msg);
+            $scope.archiveMessage(msg);
         }).
         error(function(data, status, headers, config) {
             $scope.addAlert("danger", data);
@@ -54,13 +49,3 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
 
 }]);
 
-angular.module('systemModule').controller('ApproveUserModalCtrl', ['$scope', '$uibModalInstance',
-    function ($scope, $modalInstance) {
-
-    $scope.ok = function () {
-        $modalInstance.close();
-    };
-    $scope.cancel = function () {
-        $modalInstance.dismiss();
-    };
-}]);
