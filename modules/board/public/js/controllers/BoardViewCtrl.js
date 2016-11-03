@@ -23,6 +23,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 return $scope.board._id;
             };
             $scope.getCtrlType = function () {return "board";};
+            $scope.doesUserOwnElt = function () {
+                return userResource.user.siteAdmin || (userResource.user._id === $scope.board.owner.userId);
+            };
 
             $scope.deferredEltLoaded = $q.defer();
 

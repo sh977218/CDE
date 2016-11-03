@@ -43,6 +43,11 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.getEltId = function () {
         return $scope.elt.tinyId;
     };
+    $scope.doesUserOwnElt = function () {
+        return userResource.user.siteAdmin ||
+            (userResource.user._id && (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1)
+        );
+    };
     $scope.getCtrlType = function () {return "cde";};
 
     $scope.tabs = {

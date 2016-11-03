@@ -25,7 +25,11 @@ angular.module('formModule').controller
         return $scope.elt.tinyId;
     };
     $scope.getCtrlType = function () {return "form";};
-
+    $scope.doesUserOwnElt = function () {
+        return userResource.user.siteAdmin ||
+            (userResource.user._id && (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1)
+            );
+    };
 
     $scope.switchCommentMode = function(){
         $scope.commentMode = !$scope.commentMode;
