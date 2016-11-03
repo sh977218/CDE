@@ -1,8 +1,8 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -18,6 +18,8 @@ angular.module('formModule').controller
     $scope.isFormValid = true;
 
     var converter = new LFormsConverter(); // jshint ignore:line
+
+    $scope.pinModal = PinModal.new('cde');
 
     $scope.getEltId = function () {
         return $scope.elt.tinyId;
@@ -652,31 +654,6 @@ angular.module('formModule').controller
                 elt: function() {return $scope.elt;}
             }
         });
-    };
-
-    $scope.openPinModal = function (form) {
-        if (userResource.user.username) {
-            $modal.open({
-                animation: false,
-                templateUrl: '/system/public/html/selectBoardModal.html',
-                controller: 'SelectBoardModalCtrl',
-                resolve: {type: function () {return 'form';}}
-            }).result.then(function (selectedBoard) {
-                $http.put("/pin/form/" + form.tinyId + "/" + selectedBoard._id).then(function (response) {
-                    if (response.status === 200) {
-                        $scope.addAlert("success", response.data);
-                    } else
-                        $scope.addAlert("warning", response.data);
-                }, function (response) {
-                    $scope.addAlert("danger", response.data);
-                });
-            });
-        } else {
-            $modal.open({
-                animation: false,
-                templateUrl: '/system/public/html/ifYouLogInModal.html'
-            });
-        }
     };
 
 }]);

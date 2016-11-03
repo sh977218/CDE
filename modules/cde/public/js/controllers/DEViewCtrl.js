@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource',
+        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  CdeDiff, $q, QuickBoard, $log, userResource)
+                  CdeDiff, $q, QuickBoard, $log, userResource, PinModal)
 {
 
     $scope.module = 'cde';
@@ -19,6 +19,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
     $scope.pvLimit = 30;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
     $scope.quickBoard = QuickBoard;
+
+    $scope.pinModal = PinModal.new('cde');
 
     $scope.canCurate = false;
 
@@ -596,36 +598,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 elt: function() {return $scope.elt;}
             }
         });
-    };
-
-    $scope.openPinModal = function (cde) {
-        if (userResource.user.username) {
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: '/system/public/html/selectBoardModal.html',
-                controller: 'SelectBoardModalCtrl',
-                resolve: {
-                    type: function () {return 'cde'}
-                }
-            });
-
-            modalInstance.result.then(function (selectedBoard) {
-                $http.put("/pin/cde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                    if (response.status === 200) {
-                        $scope.addAlert("success", response.data);
-                    } else
-                        $scope.addAlert("warning", response.data);
-                }, function (response) {
-                    $scope.addAlert("danger", response.data);
-                });
-            }, function () {
-            });
-        } else {
-            $modal.open({
-                animation: false,
-                templateUrl: '/system/public/html/ifYouLogInModal.html'
-            });
-        }
     };
 
 }]);
