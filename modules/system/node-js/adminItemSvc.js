@@ -253,6 +253,7 @@ exports.addComment = function (req, res, dao) {
 };
 
 exports.replyToComment = function (req, res) {
+    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
@@ -264,6 +265,7 @@ exports.replyToComment = function (req, res) {
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
+            var eltId = req.body.eltId;
             if (!comment.replies) comment.replies = [];
             if (!authorizationShared.canComment(req.user)) {
                 reply.pendingApproval = true;
@@ -281,7 +283,7 @@ exports.replyToComment = function (req, res) {
                 exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
             }
             comment.replies.push(reply);
-            comment.save(function (err) {
+            comment.save(function (err, o) {
                 if (err) {
                     logging.errorLogger.error("Error: Cannot add comment.", {
                         origin: "system.adminItemSvc.addComment",
@@ -289,6 +291,12 @@ exports.replyToComment = function (req, res) {
                     });
                     res.status(500).send(err);
                 } else {
+                    currentOpenConnections[eltId].forEach(function (socket) {
+                        socket.emit("commentReplied", {
+                            commentId: o._id,
+                            message: 'someone replied a comment'
+                        });
+                    });
                     res.send({message: "Reply added"});
                 }
             });
@@ -338,7 +346,7 @@ exports.removeComment = function (req, res, dao) {
                                 res.status(500).send(err);
                             } else {
                                 currentOpenConnections[eltId].forEach(function (socket) {
-                                    socket.emit("commentUpdated", 'someone added a comment');
+                                    socket.emit("commentUpdated", 'someone removed a comment');
                                 });
                                 res.send({message: "Comment removed"});
                             }

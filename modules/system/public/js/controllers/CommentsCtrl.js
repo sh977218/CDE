@@ -11,7 +11,19 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                             addAvatar(r.username);
                         })
                     }
-                })
+                });
+                if (cb) cb();
+            });
+        }
+
+        function loadComment(commentId, cb) {
+            $http.get('/comment/' + commentId).then(function (result) {
+                var newComment = result.data;
+                $scope.eltComments.forEach(function (comment, i) {
+                    if (comment._id === newComment._id) {
+                        $scope.eltComments[i] = newComment;
+                    }
+                });
                 if (cb) cb();
             });
         }
@@ -28,6 +40,12 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             loadComments(function () {
                 Alert.addAlert("success", message);
             });
+        });
+        socket.on("commentReplied", function (data) {
+            var commentId = data.commentId;
+            loadComment(commentId, function () {
+                Alert.addAlert("success", data.message);
+            })
         });
 
         $scope.avatarUrls = {};
@@ -91,13 +109,9 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             $http.post("/comments/reply", {
                 commentId: commentId,
                 eltName: $scope.elt.naming[0].designation,
+                eltId: $scope.elt.tinyId,
                 reply: reply
             }).then(function (res) {
-                socket.emit("addComment", {
-                    user: userResource.user,
-                    tinyId: $scope.elt.tinyId,
-                    text: reply
-                });
                 $scope.addAlert("success", res.data.message);
                 loadComments();
                 $scope.eltComments.forEach(function (c) {

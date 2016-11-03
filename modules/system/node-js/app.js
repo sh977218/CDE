@@ -1027,6 +1027,14 @@ exports.init = function (app) {
         })
     });
 
+    app.get('/comment/:commentId', function (req, res) {
+        mongo_data_system.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
+            if (err) res.send(500);
+            else
+                res.send(comment);
+        })
+    });
+
     app.post('/comments/approve', adminItemSvc.approveComment);
 
     app.post('/comments/decline', adminItemSvc.declineComment);
