@@ -55,7 +55,7 @@ public class BoardExportTest extends BoardTest {
         String url_string = baseUrl + "/board/" + EltIdMaps.eltMap.get(board_name) + "/0/500";
         String response = given().when().get(url_string).asString();
         String[] expected2 = {
-                "\"name\":\"Board Export Test\",\"description\":\"Test for boards export\",\"shareStatus\":\"Public\"",
+                "\"name\":\"Board Export Test\",\"description\":\"Test for board export\",\"shareStatus\":\"Public\"",
                 "\"name\":\"Acute Hospitalized\"},{\"elements\":[{\"elements\":[{\"elements\":[],\"name\":\"Psychiatric and Psychological"
         };
         for (String s : expected2) {
