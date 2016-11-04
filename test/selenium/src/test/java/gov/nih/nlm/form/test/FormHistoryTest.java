@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test;
 import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
+import java.util.ArrayList;
 
 public class FormHistoryTest extends BaseFormTest {
 
