@@ -1,7 +1,9 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource', 'Alert',
     function ($scope, $http, userResource, Alert) {
 
-        function loadComments(cb) {
+        $scope.tempReplies = {};
+
+        function loadComments() {
             $http.get('/comments/eltId/' + $scope.getEltId()).then(function(result) {
                 $scope.eltComments = result.data;
                 $scope.eltComments.forEach(function (comment) {
@@ -12,41 +14,17 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                         })
                     }
                 });
-                if (cb) cb();
-            });
-        }
-
-        function loadComment(commentId, cb) {
-            $http.get('/comment/' + commentId).then(function (result) {
-                var newComment = result.data;
-                $scope.eltComments.forEach(function (comment, i) {
-                    if (comment._id === newComment._id) {
-                        $scope.eltComments[i] = newComment;
-                    }
-                });
-                if (cb) cb();
             });
         }
 
         loadComments();
 
         $scope.newComment = {};
-        var socket = io.connect('http://localhost:3001');
-        socket.emit('openedDiscussion', {
-            user: userResource.user,
-            tinyId: $scope.elt.tinyId
-        });
-        socket.on("commentUpdated", function (message) {
-            loadComments(function () {
-                Alert.addAlert("success", message);
-            });
-        });
-        socket.on("commentReplied", function (data) {
-            var commentId = data.commentId;
-            loadComment(commentId, function () {
-                Alert.addAlert("success", data.message);
-            })
-        });
+
+        var socket = io.connect(window.publicUrl + "/comment");
+        socket.emit("room", $scope.getEltId());
+        socket.on("commentUpdated", loadComments);
+        $scope.$on("$destroy", socket.close);
 
         $scope.avatarUrls = {};
         function addAvatar(username) {
@@ -78,8 +56,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 comment: $scope.newComment.content,
                 element: {eltId: $scope.getEltId()}
             }).then(function (res) {
-                $scope.addAlert("success", res.data.message);
-                loadComments();
+                Alert.addAlert("success", res.data.message);
                 $scope.newComment.content = "";
             });
         };
@@ -87,20 +64,20 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         $scope.removeComment = function (commentId, replyId) {
             $http.post("/comments/" + $scope.getCtrlType() + "/remove", {
                 commentId: commentId, replyId: replyId}).then(function (res) {
-                $scope.addAlert("success", res.data.message);
+                Alert.addAlert("success", res.data.message);
                 loadComments();
             });
         };
 
         $scope.updateCommentStatus = function (commentId, status) {
             $http.post("/comments/status/" + status, {commentId: commentId}).then(function (res) {
-                $scope.addAlert("success", res.data.message);
+                Alert.addAlert("success", res.data.message);
                 loadComments();
             });
         };
         $scope.updateReplyStatus = function (commentId, replyId, status) {
             $http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).then(function (res) {
-                $scope.addAlert("success", res.data.message);
+                Alert.addAlert("success", res.data.message);
                 loadComments();
             });
         };
@@ -121,11 +98,6 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
-        $scope.$on("$destroy", function () {
-            socket.emit('closedDiscussion', {
-                user: userResource.user,
-                tinyId: $scope.elt.tinyId
-            });
-        });
+
     }
 ]);

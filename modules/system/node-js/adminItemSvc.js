@@ -9,6 +9,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
+    , app = require("../../../app")
     ;
 
 exports.save = function (req, res, dao, cb) {
@@ -196,7 +197,6 @@ exports.createApprovalMessage = function (user, role, type, details) {
 };
 
 exports.addComment = function (req, res, dao) {
-    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
         idRetrievalFunc(req.body.element.eltId, function (err, elt) {
@@ -237,9 +237,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
-                        currentOpenConnections[eltId].forEach(function (socket) {
-                            socket.emit("commentUpdated", 'someone added a comment');
-                        });
+                        app.ioServer.of("/comment").emit('commentUpdated');
                         if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
@@ -283,7 +281,7 @@ exports.replyToComment = function (req, res) {
                 exports.createApprovalMessage(req.user, "CommentReviewer", "CommentApproval", details);
             }
             comment.replies.push(reply);
-            comment.save(function (err, o) {
+            comment.save(function (err) {
                 if (err) {
                     logging.errorLogger.error("Error: Cannot add comment.", {
                         origin: "system.adminItemSvc.addComment",
@@ -291,12 +289,7 @@ exports.replyToComment = function (req, res) {
                     });
                     res.status(500).send(err);
                 } else {
-                    currentOpenConnections[eltId].forEach(function (socket) {
-                        socket.emit("commentReplied", {
-                            commentId: o._id,
-                            message: 'someone replied a comment'
-                        });
-                    });
+                    app.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
                 }
             });
@@ -345,9 +338,7 @@ exports.removeComment = function (req, res, dao) {
                                 });
                                 res.status(500).send(err);
                             } else {
-                                currentOpenConnections[eltId].forEach(function (socket) {
-                                    socket.emit("commentUpdated", 'someone removed a comment');
-                                });
+                                app.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
                             }
                         });
@@ -392,6 +383,7 @@ exports.updateCommentStatus = function (req, res, status) {
                         });
                         res.status(500).send(err);
                     } else {
+                        app.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});
                     }
                 });

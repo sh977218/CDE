@@ -222,29 +222,27 @@ app.use(function(err, req, res, next){
     }
     next();
 });
-var currentOpenConnections = {};
-exports.currentOpenConnections = currentOpenConnections;
 
-domain.run(function(){
+
+var thisExports = exports;
+
+domain.run(function() {
     var server = http.createServer(app);
     exports.server = server;
     server.listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
-    require('socket.io')(server).on('connection', function (socket) {
-        socket.on("openedDiscussion", function (discussion) {
-            console.log(discussion.user.username + ' connected to socket IO on '
-                + discussion.tinyId);
-            var connection = currentOpenConnections[discussion.tinyId];
-            if (!connection) connection = currentOpenConnections[discussion.tinyId] = [];
-            else connection.push(socket);
-        });
-        socket.on("closedDiscussion", function (discussion) {
-            console.log(discussion.user.username + ' disconnected to socket IO on '
-                + discussion.tinyId);
-            var connection = currentOpenConnections[discussion.tinyId];
-            if (connection) delete currentOpenConnections[discussion.tinyId];
-        });
+    var ioServer = require('socket.io')(server);
+    thisExports.ioServer = ioServer;
+    ioServer.of("/comment")
+        .on('connection', function (client) {
+            client.on("room", function (room) {
+                client.join(room);
+            });
+
+            client.on("disconnect", function (disconnectEvent) {
+                console.log("disconnected");
+            });
     });
 
 });
