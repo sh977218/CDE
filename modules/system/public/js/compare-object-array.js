@@ -34,6 +34,7 @@
                         return a - b;
                     };
                 }
+                if (typeof options.doSort === 'undefined') options.doSort = true;
                 options.matchCount = 0;
                 options.results = [];
                 options.showTitle = false;
@@ -47,21 +48,48 @@
                     }
                     return -1;
                 }
-                leftArray.sort(options.sort);
-                rightArray.sort(options.sort);
+                function matchDifferentAttributes(a, noMatchArray) {
+                    if (a.tinyId) {
+                        var b = noMatchArray.find(function (elem) {
+                            return elem.tinyId === a.tinyId;
+                        });
+                    }
+                    var partialMatchItems = [];
+                    if (b) {
+                        options.properties.forEach(function (p) {
+                            if (!eval(p.equal)) {
+                                partialMatchItems.push(p.property);
+                            }
+                        });
+                        if (partialMatchItems.length === 0) {
+                            partialMatchItems.push("found");
+                        }
+                    }
+                    return partialMatchItems;
+                }
+
+                if (options.doSort) {
+                    leftArray.sort(options.sort);
+                    rightArray.sort(options.sort);
+                }
 
                 var beginRightIndex = 0;
                 leftArray.forEach(function (leftItem, leftIndex) {
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
+                        // left only iterated
+                        var partialMatchItems = matchDifferentAttributes(leftItem, rightArray);
                         options.showTitle = true;
-                        options.results.push({leftIndex: leftIndex, match: false});
+                        options.results.push({leftIndex: leftIndex, match: false, partialMatchItems: partialMatchItems});
                     } else {
+                        // right only before
                         options.matchCount++;
                         for (var i = beginRightIndex; i < foundInRight; i++) {
+                            var partialMatchItems = matchDifferentAttributes(rightArray[i], leftArray);
                             options.showTitle = true;
-                            options.results.push({rightIndex: i, match: false});
+                            options.results.push({rightIndex: i, match: false, partialMatchItems: partialMatchItems});
                         }
+                        // match
                         options.results.push({
                             leftIndex: leftIndex,
                             rightIndex: foundInRight,
@@ -69,10 +97,12 @@
                         });
                         beginRightIndex = foundInRight + 1;
                     }
+                    // right only after
                     if (leftIndex === leftArray.length - 1) {
                         for (var j = beginRightIndex; j < rightArray.length; j++) {
+                            var partialMatchItems = matchDifferentAttributes(rightArray[j], leftArray);
                             options.showTitle = true;
-                            options.results.push({rightIndex: j, match: false});
+                            options.results.push({rightIndex: j, match: false, partialMatchItems: partialMatchItems});
                         }
                     }
                 });

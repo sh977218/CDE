@@ -616,6 +616,7 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
+            $scope.$broadcast('reloadPriorForms');
             $scope.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);

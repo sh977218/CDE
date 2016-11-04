@@ -1,14 +1,17 @@
-<h4 for="historyCompare_{{options.title}}" ng-if="options.showTitle"
-       uib-tooltip="{{options.tooltip}}">{{options.title}}:</h4>
+<label for="historyCompare_{{options.title}}" ng-if="options.showTitle"
+       uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
 <div class="overflowHidden" id="historyCompare_{{options.title}}">
     <div class="col-md-6 historyCompareLeft">
         <div class="row quickBoardContentCompareCol overflowHidden" id="historyCompareLeft_{{options.title}}_{{$index}}"
              ng-repeat="result in options.results track by $index"
              ng-if="result.match === false && left[result.leftIndex] !== undefined">
             <div class="boxed-div">
+                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered
+                </div>
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="left[result.leftIndex]"
-                         ng-display-object-properties="p"></div>
+                         ng-display-object-properties="p"
+                         ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1"></div>
                 </div>
             </div>
         </div>
@@ -18,9 +21,13 @@
              ng-repeat="result in options.results track by $index"
              ng-if="result.match === false && right[result.rightIndex] !== undefined">
             <div class="boxed-div">
+                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered
+                </div>
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="right[result.rightIndex]"
-                         ng-display-object-properties="p"></div>
+                         ng-display-object-properties="p"
+                         ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1">
+                    </div>
                 </div>
             </div>
         </div>
