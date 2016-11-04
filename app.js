@@ -39,14 +39,14 @@ process.on('uncaughtException', function (err) {
     logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
 });
 
-domain.on('error', function(err){
+domain.on('error', function (err) {
     console.log("ERROR2: " + err);
     console.log(err.stack);
     logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
 });
 
 var winstonStream = {
-    write: function(message){
+    write: function (message) {
         logging.expressLogger.info(message);
     }
 };
@@ -58,7 +58,7 @@ app.set('trust proxy', true);
 
 app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
 
-app.use(bodyParser.urlencoded({ extended: false , limit: "5mb"}));
+app.use(bodyParser.urlencoded({extended: false, limit: "5mb"}));
 app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
@@ -70,9 +70,9 @@ var expressSettings = {
     , cookie: {httpOnly: true, secure: config.proxy}
 };
 
-var getRealIp = function(req) {
-  if (req._remoteAddress) return req._remoteAddress;
-  if (req.ip) return req.ip;
+var getRealIp = function (req) {
+    if (req._remoteAddress) return req._remoteAddress;
+    if (req.ip) return req.ip;
 };
 
 var blackIps = [];
@@ -82,7 +82,7 @@ var banEndsWith = config.banEndsWith || [];
 var banStartsWith = config.banStartsWith || [];
 
 var releaseHackersFrequency = 3 * 60 * 1000;
-setInterval(function releaseHackers () {
+setInterval(function releaseHackers() {
     blackIps.length = 0;
     timedBlackIps = timedBlackIps.filter(function (rec) {
         if ((Date.now() - rec.date) < releaseHackersFrequency) {
@@ -93,25 +93,25 @@ setInterval(function releaseHackers () {
 }, releaseHackersFrequency);
 
 app.use(function banHackers(req, res, next) {
-    banEndsWith.forEach(function(ban) {
-        if(req.originalUrl.slice(-(ban.length)) === ban) {
+    banEndsWith.forEach(function (ban) {
+        if (req.originalUrl.slice(-(ban.length)) === ban) {
             blackIps.push(getRealIp(req));
             timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
         }
     });
-    banStartsWith.forEach(function(ban) {
-        if(req.originalUrl.substr(0, ban.length) === ban) {
+    banStartsWith.forEach(function (ban) {
+        if (req.originalUrl.substr(0, ban.length) === ban) {
             blackIps.push(getRealIp(req));
             timedBlackIps.push({ip: getRealIp(req), date: Date.now()});
         }
     });
     next();
-});    
+});
 
 app.use(function preventSessionCreation(req, res, next) {
-    this.isFile = function(req) {
-        if (req.originalUrl.substr(req.originalUrl.length-3,3) === ".js") return true;
-        if (req.originalUrl.substr(req.originalUrl.length-4,4) === ".css") return true;
+    this.isFile = function (req) {
+        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === ".js") return true;
+        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".css") return true;
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".gif";
 
     };
@@ -119,64 +119,66 @@ app.use(function preventSessionCreation(req, res, next) {
         expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
-   } else {
-       next();
-   }
+    } else {
+        next();
+    }
 
 });
 
 // this hack for angular-send-feedback
-app.get("/icons.png", function(req, res) {
-    res.sendFile(path.join(__dirname,'/modules/components/angular-send-feedback/dist/icons.png'));
+app.get("/icons.png", function (req, res) {
+    res.sendFile(path.join(__dirname, '/modules/components/angular-send-feedback/dist/icons.png'));
 });
-app.use("/components", express.static(path.join(__dirname,'/modules/components')));
-app.use("/modules/components", express.static(path.join(__dirname,'/modules/components')));
-app.use("/cde/public", express.static(path.join(__dirname,'/modules/cde/public')));
-app.use("/system/public", express.static(path.join(__dirname,'/modules/system/public')));
-app.use("/board/public", express.static(path.join(__dirname,'/modules/board/public')));
+app.use("/components", express.static(path.join(__dirname, '/modules/components')));
+app.use("/modules/components", express.static(path.join(__dirname, '/modules/components')));
+app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
+app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
+app.use("/board/public", express.static(path.join(__dirname, '/modules/board/public')));
 
-app.use("/form/public", express.static(path.join(__dirname,'/modules/form/public')));
-app.use("/article/public", express.static(path.join(__dirname,'/modules/article/public')));
+app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
+app.use("/article/public", express.static(path.join(__dirname, '/modules/article/public')));
 
 app.use("/embedded/public",
-    function(req, res, next) {
+    function (req, res, next) {
         res.removeHeader("x-frame-options");
         next();
     },
-    express.static(path.join(__dirname,'/modules/embedded/public')));
+    express.static(path.join(__dirname, '/modules/embedded/public')));
 
 app.use(flash());
 auth.init(app);
 
-var logFormat = {remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
-    date: ":date", referrer: ":referrer", responseTime: ":response-time"};
+var logFormat = {
+    remoteAddr: ":real-remote-addr", url: ":url", method: ":method", httpStatus: ":status",
+    date: ":date", referrer: ":referrer", responseTime: ":response-time"
+};
 
-morganLogger.token('real-remote-addr', function(req) {
+morganLogger.token('real-remote-addr', function (req) {
     return getRealIp(req);
 });
 
 var expressLogger = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
 
 var connections = 0;
-setInterval(function() {
+setInterval(function () {
     connections = 0;
 }, 60000);
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
-    if (connections > maxLogsPerMinute) {        
+    if (connections > maxLogsPerMinute) {
         return next();
     } else
-    expressLogger(req, res, next);    
+        expressLogger(req, res, next);
 });
 
 app.set('views', path.join(__dirname, './modules'));
 
 var originalRender = express.response.render;
-express.response.render = function(view, module, msg) {
+express.response.render = function (view, module, msg) {
     if (!module) module = "cde";
-    originalRender.call(this,  path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
+    originalRender.call(this, path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
 };
 
 try {
@@ -205,15 +207,25 @@ try {
 
 app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/public/robots.txt')));
 
-app.use(function(err, req, res, next){
+app.use(function (err, req, res, next) {
     console.log("ERROR3: " + err);
     console.log(err.stack);
     if (req && req.body && req.body.password) req.body.password = "";
     var meta = {
         stack: err.stack
-        , origin: "app.express.error"
-        , request: {username: req.user?req.user.username:null, method: req.method, url: req.url, params: req.params, body: req.body, ip: req.ip, headers: {'user-agent': req.headers['user-agent']}}
-    }; 
+        ,
+        origin: "app.express.error"
+        ,
+        request: {
+            username: req.user ? req.user.username : null,
+            method: req.method,
+            url: req.url,
+            params: req.params,
+            body: req.body,
+            ip: req.ip,
+            headers: {'user-agent': req.headers['user-agent']}
+        }
+    };
     logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
     if (err.status === 403) {
         res.status(403).send("Unauthorized");
@@ -226,23 +238,25 @@ app.use(function(err, req, res, next){
 
 var thisExports = exports;
 
-domain.run(function() {
+domain.run(function () {
     var server = http.createServer(app);
     exports.server = server;
-    server.listen(app.get('port'), function(){
+    server.listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
     var ioServer = require('socket.io')(server);
     thisExports.ioServer = ioServer;
-    ioServer.of("/comment")
-        .on('connection', function (client) {
-            client.on("room", function (room) {
-                client.join(room.roomId);
-            });
+    var allOnlineUser = {};
+    ioServer.of("/comment").on('connection', function (client) {
+        client.on("room", function (room) {
+            client.join(room.roomId);
+            allOnlineUser[room.username] = true;
+            client.emit("updateUserStatus", allOnlineUser);
+        });
 
-            client.on("disconnect", function (disconnectEvent) {
-                console.log("disconnected");
-            });
+        client.on("disconnect", function (disconnectEvent) {
+            console.log("disconnected");
+        });
     });
 
 });

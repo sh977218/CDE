@@ -22,7 +22,7 @@
                             <td>
                                 <img ng-src="{{avatarUrls[comment.username.toLowerCase()]}}" width="32" height="32"
                                      alt="portrait"/>
-                                <div ng-class="{'user-online':user.isOnline,'user-offline':!user.isOnline}"></div>
+                                <div ng-class="{'user-online':allOnlineUsers[comment.username]}"></div>
                             </td>
                             <td>
                                 <div>
@@ -68,6 +68,7 @@
                                 <td>
                                     <img ng-src="{{avatarUrls[reply.username.toLowerCase()]}}" width="32" height="32"
                                          alt="portrait"/>
+                                    <div ng-class="{'user-online':allOnlineUsers[reply.username]}"></div>
                                 </td>
                                 <td>
                                     <div>

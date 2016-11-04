@@ -1,6 +1,8 @@
 angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'userResource', 'Alert',
     function ($scope, $http, userResource, Alert) {
 
+        $scope.allOnlineUsers = {};
+
         $scope.tempReplies = {};
 
         function loadComments() {
@@ -17,17 +19,22 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         }
 
+        function updateUserStatus(allOnlineUsers) {
+            $scope.allOnlineUsers = allOnlineUsers;
+        }
+
         loadComments();
 
         $scope.newComment = {};
 
-        var socket = io.connect(window.publicUrl + "/comment");
-        socket.emit("room", {
+        var commentSocket = io.connect(window.publicUrl + "/comment");
+        commentSocket.emit("room", {
             roomId: $scope.getEltId(),
             username: userResource.user.username
         });
-        socket.on("commentUpdated", loadComments);
-        $scope.$on("$destroy", socket.close);
+        commentSocket.on("commentUpdated", loadComments);
+        commentSocket.on("updateUserStatus", updateUserStatus);
+        $scope.$on("$destroy", commentSocket.close);
 
         $scope.avatarUrls = {};
         function addAvatar(username) {
