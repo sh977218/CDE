@@ -157,19 +157,18 @@ public class NlmCdeBaseTest {
         try {
             _hubUrl = new URL(hubUrl);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE,
-                    null, ex);
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             driver = new RemoteWebDriver(_hubUrl, caps);
         } catch (SessionNotCreatedException e) {
             hangon(10);
+            driver = new RemoteWebDriver(_hubUrl, caps);
         }
 
         System.out.println("baseUrl: " + baseUrl);
         driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-        driver = new RemoteWebDriver(_hubUrl, caps);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
         shortWait = new WebDriverWait(driver, 5);
@@ -177,14 +176,23 @@ public class NlmCdeBaseTest {
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
+    }
 
+    protected void startSecondBrowser() {
+
+        // second browser to test live comment.
         DesiredCapabilities _caps = DesiredCapabilities.chrome();
         ChromeOptions _options = new ChromeOptions();
         _caps.setBrowserName("chrome");
         _caps.setCapability(ChromeOptions.CAPABILITY, _options);
-        _driver = new RemoteWebDriver(_hubUrl, _caps);
-        _driver.get(baseUrl);
-        _driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        String hubUrl = System.getProperty("hubUrl");
+        URL _hubUrl = null;
+        try {
+            _hubUrl = new URL(hubUrl);
+            _driver = new RemoteWebDriver(_hubUrl, _caps);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

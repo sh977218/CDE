@@ -11,13 +11,10 @@ public class LiveCommentTest extends NlmCdeBaseTest {
     public void cdeLiveComment() {
         String cdeName = "Sensory system abnormality stocking glove present text";
 
-/*
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         clickElement(By.id("discussBtn"));
-        textPresent("Post Comment");
 
-*/
 
         _driver.get(baseUrl + "/home");
         _driver.findElement(By.id("login_link")).click();
@@ -29,16 +26,17 @@ public class LiveCommentTest extends NlmCdeBaseTest {
         _driver.findElement(By.id("commentTextArea")).sendKeys("newComment");
         _driver.findElement(By.id("postComment")).click();
 
-//        textPresent("newComment");
+
+        textPresent("newComment");
 
         _driver.findElement(By.id("replyTextarea_0")).sendKeys("newReply");
         _driver.findElement(By.id("replyBtn_0")).click();
 
-//        textPresent("newReply");
+        textPresent("newReply");
 
         _driver.findElement(By.id("removeComment-0")).click();
 
-//        textNotPresent("newReply");
+        textNotPresent("newReply");
 
 
     }
