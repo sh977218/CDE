@@ -270,7 +270,7 @@ exports.addComment = function (req, res, dao) {
                         element: {
                             eltId: req.body.element.eltId,
                             // TODO need to support board name
-                            name: elt.naming[0].designation, eltType: dao.type
+                            name: dao.getPrimaryName(elt), eltType: dao.type
                         },
                         comment: {
                             commentId: comment._id,

@@ -21,6 +21,10 @@ schemas.formSchema.pre('save', function (next) {
     next();
 });
 
+exports.getPrimaryName = function (elt) {
+    return elt.naming[0].designation;
+};
+
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
         callback(result === 0);
