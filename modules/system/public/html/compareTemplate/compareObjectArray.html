@@ -6,12 +6,12 @@
              ng-repeat="result in options.results track by $index"
              ng-if="result.match === false && left[result.leftIndex] !== undefined">
             <div class="boxed-div">
-                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered
-                </div>
+                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered</div>
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="left[result.leftIndex]"
                          ng-display-object-properties="p"
-                         ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1"></div>
+                         ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1">
+                    </div>
                 </div>
             </div>
         </div>
@@ -21,8 +21,7 @@
              ng-repeat="result in options.results track by $index"
              ng-if="result.match === false && right[result.rightIndex] !== undefined">
             <div class="boxed-div">
-                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered
-                </div>
+                <div ng-if="result.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered</div>
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="right[result.rightIndex]"
                          ng-display-object-properties="p"
