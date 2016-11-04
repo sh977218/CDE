@@ -1,43 +1,39 @@
 package gov.nih.nlm.common.test;
 
-import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
+@Test(singleThreaded = false, threadPoolSize = 5)
 public class LiveCommentTest extends NlmCdeBaseTest {
 
     @Test
-    public void cdeLiveComment() {
+    public void cdeLiveCommentTest_postComment() {
         String cdeName = "Sensory system abnormality stocking glove present text";
-
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("discussBtn"));
 
+        findElement(By.id("commentTextArea")).sendKeys("newComment from nlm");
+        clickElement(By.id("postComment"));
+        findElement(By.id("replyTextarea_0")).sendKeys("can u see this, ninds");
+        clickElement(By.id("replyBtn_0"));
+        textPresent("yes i can");
+        clickElement(By.id("removeComment-0"));
 
-        _driver.get(baseUrl + "/home");
-        _driver.findElement(By.id("login_link")).click();
-        _driver.findElement(By.id("uname")).sendKeys(ninds_username);
-        _driver.findElement(By.id("passwd")).sendKeys(password);
-        String tinyId = EltIdMaps.eltMap.get(cdeName);
-        _driver.get(baseUrl + "/deview" + "/?tinyId=" + tinyId);
-        _driver.findElement(By.id("discussBtn")).click();
-        _driver.findElement(By.id("commentTextArea")).sendKeys("newComment");
-        _driver.findElement(By.id("postComment")).click();
+    }
 
-
-        textPresent("newComment");
-
-        _driver.findElement(By.id("replyTextarea_0")).sendKeys("newReply");
-        _driver.findElement(By.id("replyBtn_0")).click();
-
-        textPresent("newReply");
-
-        _driver.findElement(By.id("removeComment-0")).click();
-
+    @Test
+    public void cdeLiveComment_retrieveComment() {
+        String cdeName = "Sensory system abnormality stocking glove present text";
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToCdeByName(cdeName);
+        clickElement(By.id("discussBtn"));
+        textPresent("newComment from nlm");
+        textPresent("can u see this, ninds");
+        findElement(By.id("replyTextarea_0")).sendKeys("yes i can");
+        clickElement(By.id("replyBtn_0"));
         textNotPresent("newReply");
-
 
     }
 }

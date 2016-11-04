@@ -178,24 +178,6 @@ public class NlmCdeBaseTest {
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
     }
 
-    protected void startSecondBrowser() {
-
-        // second browser to test live comment.
-        DesiredCapabilities _caps = DesiredCapabilities.chrome();
-        ChromeOptions _options = new ChromeOptions();
-        _caps.setBrowserName("chrome");
-        _caps.setCapability(ChromeOptions.CAPABILITY, _options);
-        String hubUrl = System.getProperty("hubUrl");
-        URL _hubUrl = null;
-        try {
-            _hubUrl = new URL(hubUrl);
-            _driver = new RemoteWebDriver(_hubUrl, _caps);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
     @BeforeMethod
     public void setUp(Method m) {
         filePerms = new HashSet();
