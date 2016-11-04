@@ -42,7 +42,7 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.id("viewCurrentEltLink"));
         driver.close();
 
-        driver.switchTo().window(wintabs.get(0))
+        driver.switchTo().window(wintabs.get(0));
         textNotPresent("View current form");
     }
 
