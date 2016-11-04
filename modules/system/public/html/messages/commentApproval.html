@@ -12,9 +12,9 @@
         <dd>{{message.typeCommentApproval.comment.text}}</dd>
     </dl> 
     <dl class="dl-horizontal">
-        <dt>Data Element</dt>
-        <dd><a target="_blank" class="linkToElt" href="/{{message.typeCommentApproval.element.eltType==='cde'?'deview':'formView'}}?tinyId={{message.typeCommentApproval.element.eltId}}">
-            {{message.typeCommentApproval.element.name}}</a></dd>
+        <dt>Element</dt>
+        <dd><a target="_blank" class="linkToElt"
+               ng-href="/{{message.typeCommentApproval.element.eltType==='cde'?'deview':'formView'}}?tinyId={{message.typeCommentApproval.element.eltId}}">{{message.typeCommentApproval.element.name}}</a></dd>
     </dl>     
 
 

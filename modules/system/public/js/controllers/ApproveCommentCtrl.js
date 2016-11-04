@@ -8,7 +8,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
         })
             .success(function(data) {
                 $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
+                $scope.archiveMessage(msg);
             }).
             error(function(data) {
                 $scope.addAlert("danger", data);
@@ -27,10 +27,9 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
     };
     
     $scope.openAuthorizeUserModal = function(message){
-       $modal.open({
+         $modal.open({
             animation: false,
             templateUrl: '/system/public/html/messages/approveUser.html'
-            , controller: function () {}
         }).result.then(function () {
             $scope.authorizeUser(message);
         });
@@ -42,7 +41,7 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         }).success(function(data) {
             $scope.addAlert("success", data);
-            $scope.closeMessage(msg);
+            $scope.archiveMessage(msg);
         }).
         error(function(data) {
             $scope.addAlert("danger", data);

@@ -64,10 +64,10 @@
             </ul>
             <ul ng-controller="AuthCtrl" class="ieFix nav navbar-nav navbar-right"
                 data-userloaded="loaded-{{user.userLoaded}}">
-                <a ng-cloak ng-if="userHasMail" title="New messages" href="/#/inbox">
+                <a ng-cloak ng-if="userHasMail" title="New messages" href="/inbox">
                     <i id="incomingMessage" class="fa fa-envelope text-danger userIcon"></i></a>
                 <li class="login" ng-class="{ active: isPageActive('/login')}" ng-show="!user._id">
-                    <a ng-click="goToLogin()" href="/#/login" id="login_link" title="Log in" aria-label="Log in"
+                    <a ng-click="goToLogin()" href="/login" id="login_link" title="Log in" aria-label="Log in"
                        ng-bind="'Log In'"></a>
                 </li>
                 <li uib-dropdown class="login" ng-if="user._id">
@@ -78,7 +78,7 @@
                         <li ng-show='user._id'>
                             <a href="/profile" id="user_profile">Profile</a>
                         </li>
-                        <li ng-show='inboxVisible()'>
+                        <li>
                             <a href="/inbox" id="user_inbox">Inbox</a>
                         </li>
                         <li ng-show="isOrgCurator()">
