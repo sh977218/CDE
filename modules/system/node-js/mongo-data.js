@@ -346,9 +346,7 @@ exports.updateOrg = function(org, res) {
 };
 
 exports.getAllUsernames = function(callback) {
-    User.find({}, {username: true, _id: false}).exec(function(err, usernames) {
-        callback(err, usernames);
-    });
+    User.find({}, {username: true, _id: false}).exec(callback);
 };
 
 exports.generateTinyId = function() {
@@ -362,19 +360,16 @@ exports.createMessage = function(msg, cb) {
         , comment: "cmnt"
     }];
     var message = new Message(msg);
-    message.save(function() {
-        if (cb) cb();
-    });
+    message.save(cb);
 };
 
 exports.updateMessage = function(msg, cb) {
     var id = msg._id;
     delete msg._id;
-    Message.update({_id: id}, msg).exec(function(err) {
-        cb(err);
-    });
+    Message.update({_id: id}, msg).exec(cb);
 };
 
+// TODO this function name is not good
 exports.getMessages = function(req, callback) {
     var authorRecipient = {
         "$and": [
@@ -431,18 +426,13 @@ exports.getMessages = function(req, callback) {
         return;
     }
 
-    Message.find(authorRecipient).where().exec(function(err, result) {
-        if (!err) callback(null, result);
-        else callback(err);
-    });
+    Message.find(authorRecipient).where().exec(callback);
 };
 
 exports.addUserRole = function(request, cb) {
     exports.userByName(request.username, function(err, u){
         u.roles.push(request.role);
-        u.save(function(err, u){
-            if(cb) cb(err, u);
-        });
+        u.save(cb);
     });
 };
 

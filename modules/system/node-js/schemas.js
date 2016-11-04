@@ -223,7 +223,7 @@ schemas.commentSchema = new mongoose.Schema({
     , username: String
     , created: Date
     , pendingApproval: Boolean
-    , status: {type: String, enum: ["active", "resolved", "deleted"]}
+    , status: {type: String, enum: ["active", "resolved", "deleted"], default: "active"}
     , replies: [
         {
             text: String
@@ -231,7 +231,7 @@ schemas.commentSchema = new mongoose.Schema({
             , username: String
             , created: Date
             , pendingApproval: Boolean
-            , status: {type: String, enum: ["active", "resolved", "deleted"]}
+            , status: {type: String, enum: ["active", "resolved", "deleted"], default: "active"}
         }
     ],
     element: {
@@ -279,10 +279,11 @@ schemas.message = new mongoose.Schema({
     }
     , author: {authorType: String, name: String}
     , date: Date
-    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval"]}
+    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply"]}
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
     , typeAttachmentApproval: attachmentSchema
+    , typeCommentReply: commentApprovalSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date

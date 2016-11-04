@@ -1,9 +1,11 @@
 angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList', function($scope, Mail, CdeList) {
+
     $scope.mailTypeReceived = "received";
     $scope.mailTypeSent = "sent";
     $scope.mailTypeArchived = "archived";
     
     $scope.mail = {received: [], sent: [], archived:[]};
+
     $scope.getMail = function(type) {
         Mail.getMail(type, null, function(mail) {
             $scope.mail[type] = mail;
@@ -35,7 +37,8 @@ angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList'
            });
         });
     };    
-    
+
+
     $scope.closeMessage = function(message) {
         message.states.unshift({
             "action" : "Approved",
@@ -48,6 +51,8 @@ angular.module('cdeModule').controller('InboxCtrl', ['$scope', 'Mail', 'CdeList'
         }, function () {
             $scope.addAlert("danger", "Message couldn't be retired.");        
         });        
-    };     
-}
-]);
+    };
+
+    $scope.archiveMessage = $scope.closeMessage;
+
+}]);

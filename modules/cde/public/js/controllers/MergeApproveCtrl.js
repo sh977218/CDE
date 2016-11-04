@@ -20,7 +20,7 @@ angular.module('cdeModule').controller('MergeApproveCtrl', ['$scope', '$uibModal
     
     $scope.approveMergeMessage = function(message) { 
         MergeCdes.approveMerge(message.typeRequest.source.object, message.typeRequest.destination.object, message.typeRequest.mergeFields, function() {
-            $scope.closeMessage(message);
+            $scope.archiveMessage(message);
         });
     }; 
 }]);

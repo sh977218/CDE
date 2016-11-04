@@ -178,14 +178,14 @@ public abstract class CommentTest extends CommonTest {
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));;
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));;
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));
         textPresent("Approved");
 
         logout();
