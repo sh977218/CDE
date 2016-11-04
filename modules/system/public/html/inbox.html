@@ -4,7 +4,8 @@
 
         <uib-accordion-group ng-if="message.type === 'CommentReply'">
             <uib-accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}} |
+                {{message.typeCommentReply.comment.text | limitTo : 30}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/messages/commentReplyMessage.html'"></div>
         </uib-accordion-group>
