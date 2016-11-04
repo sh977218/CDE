@@ -269,8 +269,8 @@ exports.addComment = function (req, res, dao) {
                     var details = {
                         element: {
                             eltId: req.body.element.eltId,
-                            // TODO need to support board name
-                            name: dao.getPrimaryName(elt), eltType: dao.type
+                            name: dao.getPrimaryName(elt),
+                            eltType: dao.type
                         },
                         comment: {
                             commentId: comment._id,
