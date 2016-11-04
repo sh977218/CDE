@@ -14,6 +14,7 @@ var express = require('express')
     , ipfilter = require('express-ipfilter')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
+    , passportSocketIo = require('passport.socketio')
     , methodOverride = require('method-override')
     , morganLogger = require('morgan')
     , compress = require('compression')
@@ -63,11 +64,12 @@ app.use(bodyParser.json({limit: "16mb"}));
 app.use(methodOverride());
 app.use(cookieParser());
 var expressSettings = {
-    secret: "Kfji76R"
-    , proxy: config.proxy
-    , resave: false
-    , saveUninitialized: false
-    , cookie: {httpOnly: true, secure: config.proxy}
+    store: mongo_data_system.sessionStore,
+    secret: "Kfji76R",
+    proxy: config.proxy,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {httpOnly: true, secure: config.proxy}
 };
 
 var getRealIp = function (req) {
@@ -116,7 +118,6 @@ app.use(function preventSessionCreation(req, res, next) {
 
     };
     if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
-        expressSettings.store = mongo_data_system.sessionStore;
         var initExpressSession = session(expressSettings);
         initExpressSession(req, res, next);
     } else {
@@ -245,13 +246,14 @@ domain.run(function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
     var ioServer = require('socket.io')(server);
-    thisExports.ioServer = ioServer;
+    thisExports.ioServer = ioServer.use(passportSocketIo.authorize(expressSettings));
     var allOnlineUser = {};
     ioServer.of("/comment").on('connection', function (client) {
-        client.on("room", function (room) {
-            client.join(room.roomId);
-            allOnlineUser[room.username] = true;
-            client.emit("updateUserStatus", allOnlineUser);
+        client.on("room", function (roomId) {
+            client.join(roomId);
+            if (!allOnlineUser[roomId]) allOnlineUser[roomId] = new Set();
+            allOnlineUser[roomId].add(client.conn.request.user.username);
+            ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
         });
 
         client.on("disconnect", function (disconnectEvent) {

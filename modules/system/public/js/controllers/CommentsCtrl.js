@@ -27,14 +27,11 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
 
         $scope.newComment = {};
 
-        var commentSocket = io.connect(window.publicUrl + "/comment");
-        commentSocket.emit("room", {
-            roomId: $scope.getEltId(),
-            username: userResource.user.username
-        });
-        commentSocket.on("commentUpdated", loadComments);
-        commentSocket.on("updateUserStatus", updateUserStatus);
-        $scope.$on("$destroy", commentSocket.close);
+        var socket = io.connect(window.publicUrl + "/comment");
+        socket.emit("room", $scope.getEltId());
+        socket.on("commentUpdated", loadComments);
+        socket.on("userJoined", updateUserStatus);
+        $scope.$on("$destroy", socket.close);
 
         $scope.avatarUrls = {};
         function addAvatar(username) {
