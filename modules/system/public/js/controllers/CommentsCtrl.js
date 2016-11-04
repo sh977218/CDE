@@ -22,7 +22,10 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         $scope.newComment = {};
 
         var socket = io.connect(window.publicUrl + "/comment");
-        socket.emit("room", $scope.getEltId());
+        socket.emit("room", {
+            roomId: $scope.getEltId(),
+            username: userResource.user.username
+        });
         socket.on("commentUpdated", loadComments);
         $scope.$on("$destroy", socket.close);
 

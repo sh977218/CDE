@@ -1,39 +1,58 @@
 package gov.nih.nlm.common.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.cde.test.comments.CdeCommentTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-@Test(singleThreaded = false, threadPoolSize = 5)
-public class LiveCommentTest extends NlmCdeBaseTest {
+public class LiveCommentTest extends CdeCommentTest {
+
+    private void replyComment(String reply, int i) {
+        findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
+        scrollToViewById("replyBtn_" + i);
+        clickElement(By.id("replyBtn_" + i));
+        textPresent("Reply added");
+        closeAlert();
+    }
 
     @Test
-    public void cdeLiveCommentTest_postComment() {
+    public void cdeLiveCommentTest() {
+        clickElement(By.id("vsacLink"));
         String cdeName = "Sensory system abnormality stocking glove present text";
+        switchTab(0);
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("discussBtn"));
 
-        findElement(By.id("commentTextArea")).sendKeys("newComment from nlm");
-        clickElement(By.id("postComment"));
-        findElement(By.id("replyTextarea_0")).sendKeys("can u see this, ninds");
-        clickElement(By.id("replyBtn_0"));
-        textPresent("yes i can");
+        switchTab(1);
+        goToCdeByName(cdeName);
+        String newComment = "newComment from nlm";
+        addComment(newComment);
+
+        switchTab(0);
+        textPresent(newComment);
+        String reply = "can you see this";
+        replyComment(reply, 0);
+
+        switchTab(1);
+        textPresent(reply);
+        String replyToReply = "yes, i can";
+        replyComment(replyToReply, 0);
+
+        switchTab(0);
+        textPresent(replyToReply);
+        clickElement(By.id("resolveComment-0"));
+
+        switchTab(1);
+        textPresent(newComment, By.cssSelector(".strike"));
+        clickElement(By.id("resolveReply-0-0"));
+
+
+        switchTab(0);
         clickElement(By.id("removeComment-0"));
 
-    }
-
-    @Test
-    public void cdeLiveComment_retrieveComment() {
-        String cdeName = "Sensory system abnormality stocking glove present text";
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName(cdeName);
-        clickElement(By.id("discussBtn"));
-        textPresent("newComment from nlm");
-        textPresent("can u see this, ninds");
-        findElement(By.id("replyTextarea_0")).sendKeys("yes i can");
-        clickElement(By.id("replyBtn_0"));
-        textNotPresent("newReply");
-
+        switchTab(1);
+        textNotPresent(newComment);
+        textNotPresent(reply);
+        textNotPresent(replyToReply);
     }
 }

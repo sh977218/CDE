@@ -237,7 +237,7 @@ domain.run(function() {
     ioServer.of("/comment")
         .on('connection', function (client) {
             client.on("room", function (room) {
-                client.join(room);
+                client.join(room.roomId);
             });
 
             client.on("disconnect", function (disconnectEvent) {
