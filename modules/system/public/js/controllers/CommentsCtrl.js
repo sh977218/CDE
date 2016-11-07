@@ -44,7 +44,9 @@ angular.module('systemModule').controller('CommentsCtrl',
                 $scope.$apply();
             });
 
-            $scope.$on("$destroy", socket.close);
+            $scope.$on("$destroy", function () {
+                socket.close();
+            });
 
             $scope.avatarUrls = {};
             function addAvatar(username) {

@@ -252,8 +252,8 @@ domain.run(function () {
     ioServer.of("/comment").on('connection', function (client) {
         client.on("room", function (roomId) {
             client.join(roomId);
-            if (!allOnlineUser[roomId]) allOnlineUser[roomId] = new Set();
-            allOnlineUser[roomId].add(client.conn.request.user.username);
+            if (!allOnlineUser[roomId]) allOnlineUser[roomId] = {};
+            allOnlineUser[roomId][client.conn.request.user.username] = true;
             ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
         });
         client.on("currentReplying", function (roomId, commentId) {
@@ -261,7 +261,15 @@ domain.run(function () {
         });
 
         client.on("disconnect", function (disconnectEvent) {
-            console.log("disconnected");
+            var username = client.conn.request.user.username;
+            Object.keys(allOnlineUser).forEach(function (roomId) {
+                Object.keys(allOnlineUser[roomId]).forEach(function (user) {
+                    if (user === username) {
+                        allOnlineUser[roomId][user] = false;
+                        ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
+                    }
+                })
+            });
         });
     });
 
