@@ -246,7 +246,8 @@ domain.run(function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
     var ioServer = require('socket.io')(server);
-    thisExports.ioServer = ioServer.use(passportSocketIo.authorize(expressSettings));
+    ioServer.use(passportSocketIo.authorize(expressSettings));
+    thisExports.ioServer = ioServer;
     var allOnlineUser = {};
     ioServer.of("/comment").on('connection', function (client) {
         client.on("room", function (roomId) {
@@ -254,6 +255,9 @@ domain.run(function () {
             if (!allOnlineUser[roomId]) allOnlineUser[roomId] = new Set();
             allOnlineUser[roomId].add(client.conn.request.user.username);
             ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
+        });
+        client.on("replyNotification", function (roomId, commentId) {
+            ioServer.of("/comment").to(roomId).emit("userTyping", commentId);
         });
 
         client.on("disconnect", function (disconnectEvent) {

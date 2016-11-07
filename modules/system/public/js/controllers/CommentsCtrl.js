@@ -23,6 +23,14 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             $scope.allOnlineUsers = allOnlineUsers;
         }
 
+        function updateCommentNotification(commentId) {
+            $scope.eltComments.forEach(function (c) {
+                if (c._id === commentId) {
+                    c.notification = true;
+                }
+            })
+        }
+
         loadComments();
 
         $scope.newComment = {};
@@ -31,6 +39,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         socket.emit("room", $scope.getEltId());
         socket.on("commentUpdated", loadComments);
         socket.on("userJoined", updateUserStatus);
+        socket.on("userTyping", updateCommentNotification);
         $scope.$on("$destroy", socket.close);
 
         $scope.avatarUrls = {};
@@ -97,6 +106,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
                 reply: reply
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
+                $scope.tempReplies[commentId] = '';
                 loadComments();
                 $scope.eltComments.forEach(function (c) {
                     if (c._id === commentId)
@@ -105,6 +115,9 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
-
+        $scope.focusOnReply = function (comment) {
+            comment.openReply = true;
+            socket.emit('replyNotification', $scope.getEltId(), comment._id);
+        }
     }
 ]);
