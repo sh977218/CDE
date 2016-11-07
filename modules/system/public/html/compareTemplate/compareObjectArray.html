@@ -10,6 +10,7 @@
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="left[result.leftIndex]"
                          ng-display-object-properties="p"
+                         ng-display-object-show-attribute="result.displayedAttributes.indexOf('all') !== -1 || result.displayedAttributes.indexOf(p.property) !== -1"
                          ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1">
                     </div>
                 </div>
@@ -25,6 +26,7 @@
                 <div ng-repeat="p in options.properties">
                     <div ng-display-object ng-display-object-obj="right[result.rightIndex]"
                          ng-display-object-properties="p"
+                         ng-display-object-show-attribute="result.displayedAttributes.indexOf('all') !== -1 || result.displayedAttributes.indexOf(p.property) !== -1"
                          ng-display-object-show-warning-icon="result.partialMatchItems.indexOf(p.property) !== -1">
                     </div>
                 </div>

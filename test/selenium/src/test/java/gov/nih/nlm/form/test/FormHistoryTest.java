@@ -41,10 +41,12 @@ public class FormHistoryTest extends BaseFormTest {
         driver.switchTo().window(wintabs.get(1));
         textPresent("View current form");
         clickElement(By.id("viewCurrentEltLink"));
+        textNotPresent("View current form");
         driver.close();
-
         driver.switchTo().window(wintabs.get(0));
         textNotPresent("View current form");
+
+
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {

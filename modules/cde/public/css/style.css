@@ -1303,5 +1303,5 @@ input.ng-invalid {
 .compareMessage {
     text-align: right;
     color: darkred;
-    font-weight: 800
+    font-weight: 800;
 }

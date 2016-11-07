@@ -66,34 +66,49 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                     switch (elem.elementType) {
                         case "question":
                             targetArray.push({
-                                o: elem, tinyId: elem.question.cde.tinyId, section: section,
-                                answers: (elem.question.answers.length > 2 ?
-                                    elem.question.answers.slice(0, 2).concat({permissibleValue: '...'}) :
-                                    elem.question.answers),
-                                cardinality: {
-                                    "0": {
-                                        "1": "0 or 1",
-                                        "-1": "0 or more"
-                                    },
-                                    "1": {
-                                        "1": "Exactly 1",
-                                        "-1": "1 or more"
-                                    }
-                                }[elem.cardinality.min][elem.cardinality.max]
+                                o: elem,
+                                calculated: {
+                                    tinyId: elem.question.cde.tinyId,
+                                    section: section,
+                                    answers: (elem.question.answers.length > 2 ?
+                                        elem.question.answers.slice(0, 2).concat({permissibleValue: '...'}) :
+                                        elem.question.answers),
+                                    cardinality: {
+                                        "0": {
+                                            "1": "0 or 1",
+                                            "-1": "0 or more"
+                                        },
+                                        "1": {
+                                            "1": "Exactly 1",
+                                            "-1": "1 or more"
+                                        }
+                                    }[elem.cardinality.min][elem.cardinality.max],
+                                    minValue:
+                                        (elem.question.datatypeNumber ? elem.question.datatypeNumber.minValue : ''),
+                                    maxValue:
+                                        (elem.question.datatypeNumber ? elem.question.datatypeNumber.maxValue : ''),
+                                    precision:
+                                        (elem.question.datatypeNumber ? elem.question.datatypeNumber.precision : '')
+                                }
                             });
                             break;
                         case "form":
-                            targetArray.push({o: elem, tinyId: elem.inForm.form.tinyId, section: section});
+                            targetArray.push({
+                                o: elem,
+                                calculated: {
+                                    tinyId: elem.inForm.form.tinyId,
+                                    section: section
+                                }
+                            });
                             break;
                         case "section":
                             targetArray.push({
                                 o: elem,
-                                section: (section ? section + " => " + elem.label : elem.label)
+                                calculated: {
+                                    section: (section ? section + " => " + elem.label : elem.label)
+                                }
                             });
                             extractFormItems(elem, (section ? section + " => " + elem.label : elem.label), targetArray);
-                            break;
-                        default:
-                            console.log("ERROR unknown elementType: " + elem.elementType);
                             break;
                     }
                 });
@@ -335,47 +350,101 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
         };
         $scope.questionOptions = {
             equal: function (a, b) {
-                return a.tinyId === b.tinyId &&
-                    a.section === b.section &&
+                return a.calculated.tinyId === b.calculated.tinyId &&
+                    a.calculated.section === b.calculated.section &&
                     a.o.label === b.o.label &&
                     a.o.hideLabel === b.o.hideLabel &&
-                    a.cardinality === b.cardinality &&
+                    a.calculated.cardinality === b.calculated.cardinality &&
                     a.o.question.required === b.o.question.required &&
+                    a.o.question.datatype === b.o.question.datatype &&
                     a.o.question.multiselect === b.o.question.multiselect &&
+                    a.o.skipLogic.condition === b.o.skipLogic.condition &&
+                    a.calculated.minValue === b.calculated.minValue &&
+                    a.calculated.maxValue === b.calculated.maxValue &&
+                    a.calculated.precision === b.calculated.precision &&
                     a.o.question.defaultAnswer === b.o.question.defaultAnswer &&
                     angular.equals(a.o.question.uoms, b.o.question.uoms) &&
                     angular.equals(a.o.question.answers, b.o.question.answers);
             },
             doSort: false,
-            title: 'Questions and Forms',
+            title: 'Form Description',
             hideSame: true,
             properties: [
-                {label: 'Label', property: 'o.label', equal: 'a.o.label === b.o.label'},
                 {
-                    label: 'Tiny Id', property: 'tinyId', equal: 'a.tinyId === b.tinyId',
-                    link: true, url: '/#/deview/?tinyId='
+                    label: 'Label',
+                    property: 'o.label',
+                    equal: 'a.o.label === b.o.label'
                 },
-                {label: 'Section', property: 'section', equal: 'a.section === b.section'},
-                {label: 'Hide Label', property: 'o.hideLabel', equal: 'a.o.hideLabel === b.o.hideLabel'},
-                {label: 'Cardinality', property: 'cardinality', equal: 'a.cardinality === b.cardinality'},
                 {
-                    label: 'Required', property: 'o.question.required',
+                    label: 'Tiny Id',
+                    property: 'calculated.tinyId',
+                    equal: 'a.calculated.tinyId === b.calculated.tinyId',
+                    link: true,
+                    url: '/#/deview/?tinyId='
+                },
+                {
+                    label: 'Section',
+                    property: 'calculated.section',
+                    equal: 'a.calculated.section === b.calculated.section'
+                },
+                {
+                    label: 'Hide Label',
+                    property: 'o.hideLabel',
+                    equal: 'a.o.hideLabel === b.o.hideLabel'},
+                {
+                    label: 'Required',
+                    property: 'o.question.required',
                     equal: 'a.o.question.required === b.o.question.required'
                 },
                 {
-                    label: 'Multiselect', property: 'o.question.multiselect',
+                    label: 'Cardinality',
+                    property: 'calculated.cardinality',
+                    equal: 'a.calculated.cardinality === b.calculated.cardinality'
+                },
+                {
+                    label: 'Multi-select',
+                    property: 'o.question.multiselect',
                     equal: 'a.o.question.multiselect === b.o.question.multiselect'
                 },
                 {
-                    label: 'Default Answer', property: 'o.question.defaultAnswer',
+                    label: 'Show If',
+                    property: 'o.skipLogic.condition',
+                    equal: 'a.o.skipLogic.condition === b.o.skipLogic.condition'
+                },
+                {
+                    label: 'Default Answer',
+                    property: 'o.question.defaultAnswer',
                     equal: 'a.o.question.defaultAnswer === b.o.question.defaultAnswer'
                 },
                 {
-                    label: 'Unit of Measurement', property: 'o.question.uoms',
+                    label: 'Datatype',
+                    property: 'o.question.datatype',
+                    equal: 'a.o.question.datatype === b.o.question.datatype'
+                },
+                {
+                    label: 'Min Value',
+                    property: 'calculated.minValue',
+                    equal: 'a.calculated.minValue === b.calculated.minValue'
+                },
+                {
+                    label: 'Max Value',
+                    property: 'calculated.maxValue',
+                    equal: 'a.calculated.maxValue === b.calculated.maxValue'
+                },
+                {
+                    label: 'Precision',
+                    property: 'calculated.precision',
+                    equal: 'a.calculated.precision === b.calculated.precision'
+                },
+                {
+                    label: 'Units of Measure',
+                    property: 'o.question.uoms',
                     equal: 'angular.equals(a.o.question.uoms, b.o.question.uoms)'
                 },
                 {
-                    label: 'Answer', property: 'answers', displayAs: 'permissibleValue',
+                    label: 'Answer List',
+                    property: 'calculated.answers',
+                    displayAs: 'permissibleValue',
                     equal: 'angular.equals(a.o.question.answers, b.o.question.answers)'
                 }
             ],

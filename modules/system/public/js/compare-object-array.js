@@ -48,10 +48,46 @@
                     }
                     return -1;
                 }
-                function matchDifferentAttributes(a, noMatchArray) {
-                    if (a.tinyId) {
+                function displayedAttributes(a, b, noMatchArray) {
+                    if (a.o == null) return ["all"];
+                    var leftDisplayAttributes = [];
+                    var rightDisplayAttributes = [];
+                    if (a != null) {
+                        var o = a.o;
+                        var calculated = a.calculated;
+                        leftDisplayAttributes = options.properties.filter(function (p) {
+                            var pValue = eval(p.property);
+                            return pValue != null && pValue.length !== 0;
+                        });
+                    }
+                    if (b == null) {
                         var b = noMatchArray.find(function (elem) {
-                            return elem.tinyId === a.tinyId;
+                            return elem.calculated.tinyId === a.calculated.tinyId;
+                        });
+                    }
+                    if (b != null) {
+                        var o = b.o;
+                        var calculated = b.calculated;
+                        rightDisplayAttributes = options.properties.filter(function (p) {
+                            var pValue = eval(p.property);
+                            return pValue != null && pValue.length !== 0;
+                        });
+                    }
+                    leftDisplayAttributes = leftDisplayAttributes.map(function (p) {
+                        return p.property;
+                    });
+                    rightDisplayAttributes = rightDisplayAttributes.map(function (p) {
+                        return p.property;
+                    });
+                    rightDisplayAttributes.forEach(function(value){
+                        if (leftDisplayAttributes.indexOf(value)==-1) leftDisplayAttributes.push(value);
+                    });
+                    return leftDisplayAttributes;
+                }
+                function partialMatchAttributes(a, noMatchArray) {
+                    if (a.calculated && a.calculated.tinyId) {
+                        var b = noMatchArray.find(function (elem) {
+                            return elem.calculated.tinyId === a.calculated.tinyId;
                         });
                     }
                     var partialMatchItems = [];
@@ -75,34 +111,54 @@
 
                 var beginRightIndex = 0;
                 leftArray.forEach(function (leftItem, leftIndex) {
+                    //var displayAttribute;
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
                         // left only iterated
-                        var partialMatchItems = matchDifferentAttributes(leftItem, rightArray);
+                        //displayAttribute = leftItem != null && leftItem !== '';
                         options.showTitle = true;
-                        options.results.push({leftIndex: leftIndex, match: false, partialMatchItems: partialMatchItems});
+                        options.results.push({
+                            leftIndex: leftIndex,
+                            match: false,
+                            displayedAttributes: displayedAttributes(leftItem, null, rightArray),
+                            partialMatchItems: partialMatchAttributes(leftItem, rightArray)
+                        });
                     } else {
                         // right only before
                         options.matchCount++;
                         for (var i = beginRightIndex; i < foundInRight; i++) {
-                            var partialMatchItems = matchDifferentAttributes(rightArray[i], leftArray);
+                            //displayAttribute = rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                             options.showTitle = true;
-                            options.results.push({rightIndex: i, match: false, partialMatchItems: partialMatchItems});
+                            options.results.push({
+                                rightIndex: i,
+                                match: false,
+                                displayedAttributes: displayedAttributes(rightArray[i], null, leftArray),
+                                partialMatchItems: partialMatchAttributes(rightArray[i], leftArray)
+                            });
                         }
                         // match
+                        //displayAttribute = leftItem != null && leftItem !== '' ||
+                        //    rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                         options.results.push({
                             leftIndex: leftIndex,
                             rightIndex: foundInRight,
-                            match: true
+                            match: true,
+                            displayedAttributes: displayedAttributes(leftItem, rightArray[foundInRight]),
+                            partialMatchItems: []
                         });
                         beginRightIndex = foundInRight + 1;
                     }
                     // right only after
                     if (leftIndex === leftArray.length - 1) {
                         for (var j = beginRightIndex; j < rightArray.length; j++) {
-                            var partialMatchItems = matchDifferentAttributes(rightArray[j], leftArray);
+                            //displayAttribute = rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                             options.showTitle = true;
-                            options.results.push({rightIndex: j, match: false, partialMatchItems: partialMatchItems});
+                            options.results.push({
+                                rightIndex: j,
+                                match: false,
+                                displayedAttributes: displayedAttributes(rightArray[j], null, leftArray),
+                                partialMatchItems: partialMatchAttributes(rightArray[j], leftArray)
+                            });
                         }
                     }
                 });

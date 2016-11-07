@@ -8,6 +8,7 @@
                     scope: {
                         obj: '=ngDisplayObjectObj',
                         properties: '=ngDisplayObjectProperties',
+                        showAttribute: '=ngDisplayObjectShowAttribute',
                         showWarningIcon: '=ngDisplayObjectShowWarningIcon'
                     },
                     controller: ["$scope", function ($scope) {
@@ -58,6 +59,7 @@
                     return o;
                 },
                 applyHtml: function ($scope, $element) {
+                    if (typeof $scope.showAttribute !== 'undefined' && !$scope.showAttribute) return;
                     var propertyValue = this.getValueByNestedProperty($scope.obj, $scope.properties.property);
                     $scope.value = "";
                     $scope.type = typeof propertyValue;
