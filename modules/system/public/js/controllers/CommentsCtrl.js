@@ -23,14 +23,6 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             $scope.allOnlineUsers = allOnlineUsers;
         }
 
-        function updateCommentNotification(commentId) {
-            $scope.eltComments.forEach(function (c) {
-                if (c._id === commentId) {
-                    c.notification = true;
-                }
-            })
-        }
-
         loadComments();
 
         $scope.newComment = {};
@@ -39,7 +31,22 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         socket.emit("room", $scope.getEltId());
         socket.on("commentUpdated", loadComments);
         socket.on("userJoined", updateUserStatus);
-        socket.on("userTyping", updateCommentNotification);
+        socket.on("userTyping", function (commentId) {
+            $scope.eltComments.forEach(function (c) {
+                if (c._id === commentId) {
+                    c.currentReplying = true;
+                    $scope.$apply();
+                }
+            })
+        });
+        socket.on("userNotTyping", function (commentId) {
+            $scope.eltComments.forEach(function (c) {
+                if (c._id === commentId) {
+                    c.currentReplying = false;
+                    $scope.$apply();
+                }
+            })
+        });
         $scope.$on("$destroy", socket.close);
 
         $scope.avatarUrls = {};
@@ -115,9 +122,18 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             });
         };
 
+        $scope.cancelReply = function (comment) {
+            tempReplies[comment._id] = '';
+            comment.openReply = false;
+        };
+
         $scope.focusOnReply = function (comment) {
             comment.openReply = true;
-            socket.emit('replyNotification', $scope.getEltId(), comment._id);
-        }
+            socket.emit('currentReplying', $scope.getEltId(), comment._id);
+        };
+        $scope.blurOnReply = function (comment) {
+            comment.openReply = false;
+            socket.emit('currentNotReplying', $scope.getEltId(), comment._id);
+        };
     }
 ]);

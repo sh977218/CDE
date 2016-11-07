@@ -256,8 +256,11 @@ domain.run(function () {
             allOnlineUser[roomId].add(client.conn.request.user.username);
             ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
         });
-        client.on("replyNotification", function (roomId, commentId) {
+        client.on("currentReplying", function (roomId, commentId) {
             ioServer.of("/comment").to(roomId).emit("userTyping", commentId);
+        });
+        client.on("currentNotReplying", function (roomId, commentId) {
+            ioServer.of("/comment").to(roomId).emit("userNotTyping", commentId);
         });
 
         client.on("disconnect", function (disconnectEvent) {

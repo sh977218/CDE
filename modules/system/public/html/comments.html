@@ -13,7 +13,7 @@
     <br/>
 
     <div class="comment" ng-repeat="(commentIndex, comment) in eltComments">
-        <span ng-show="comment.notification">someone is replying</span>
+        <span class="replying" ng-show="comment.currentReplying">someone is replying</span>
         <div class="rootComment">
             <div class="commentBody">
                 <div class="commentHeader">
@@ -216,14 +216,15 @@
         <div data-type="reply" class="replyInputDiv" ng-if="user._id">
             <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
                       rows="1" msd-elastic ng-model="tempReplies[comment._id]"
-                      ng-focus="focusOnReply(comment)" placeholder="Reply to this comment">
+                      placeholder="Reply to this comment" ng-focus="focusOnReply(comment)"
+                      ng-blur="blurOnReply(comment)">
                       </textarea>
             <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
                 <button ng-click="replyTo(comment._id, tempReplies[comment._id], comment.showReplies)" style="margin-left: 0"
                         ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary"
                         id="replyBtn_{{commentIndex}}">Reply
                 </button>
-                <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
+                <button ng-click="cancelReply(comment);" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>
