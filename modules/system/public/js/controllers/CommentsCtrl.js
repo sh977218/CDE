@@ -33,11 +33,12 @@ angular.module('systemModule').controller('CommentsCtrl',
             });
             socket.on("userTyping", function (commentId) {
                 $scope.eltComments.forEach(function (c) {
+                    $timeout.cancel(c.timer);
                     if (c._id === commentId) {
                         c.currentReplying = true;
-                        $timeout(function () {
+                        c.timer = $timeout(function () {
                             c.currentReplying = false;
-                        }, 5000)
+                        }, 5000);
                     }
                 });
                 $scope.$apply();
@@ -126,6 +127,8 @@ angular.module('systemModule').controller('CommentsCtrl',
 
             $scope.focusOnReply = function (comment) {
                 comment.openReply = true;
+            };
+            $scope.changeOnReply = function (comment) {
                 socket.emit('currentReplying', $scope.getEltId(), comment._id);
             };
         }
