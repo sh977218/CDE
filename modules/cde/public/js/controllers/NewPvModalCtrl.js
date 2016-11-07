@@ -25,5 +25,4 @@ angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$timeout
                 $scope.newPv.permissibleValue = $scope.umlsTerms[$index].name;
             }
         };
-
     }]);
