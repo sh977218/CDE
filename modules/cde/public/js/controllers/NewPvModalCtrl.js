@@ -1,5 +1,5 @@
-angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$uibModalInstance', '$timeout', '$http',
-    function ($scope, $modalInstance, $timeout, $http) {
+angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$timeout', '$http',
+    function ($scope, $timeout, $http) {
 
         $scope.newPv = {};
         $scope.umlsTerms = [];
@@ -24,13 +24,5 @@ angular.module('systemModule').controller('NewPvModalCtrl', ['$scope', '$uibModa
             if (!$scope.newPv.permissibleValue || $scope.newPv.length === 0) {
                 $scope.newPv.permissibleValue = $scope.umlsTerms[$index].name;
             }
-        };
-
-        $scope.cancelCreate = function () {
-            $modalInstance.dismiss('cancel');
-        };
-
-        $scope.okCreate = function () {
-            $modalInstance.close($scope.newPv);
         };
     }]);
