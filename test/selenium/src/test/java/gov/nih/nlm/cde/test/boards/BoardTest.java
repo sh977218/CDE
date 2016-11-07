@@ -74,10 +74,8 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     private void pinTo(String eltName, String boardName, String type) {
-        if (type == "cde")
-            openCdeInList(eltName);
-        if (type == "form")
-            openFormInList(eltName);
+        if (type.equals("cde")) openCdeInList(eltName);
+        if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
         clickElement(By.linkText(boardName));
@@ -86,7 +84,7 @@ public class BoardTest extends NlmCdeBaseTest {
         modalGone();
     }
 
-    protected void goToBoard(String boardName) {
+    public void goToBoard(String boardName) {
         String boardId = EltIdMaps.eltMap.get(boardName);
         if (boardId != null) {
             driver.get(baseUrl + "/board/" + boardId);
