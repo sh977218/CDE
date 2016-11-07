@@ -290,9 +290,6 @@ exports.addComment = function (req, res, dao) {
                         var message = "Comment added.";
                         if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
-                        if (dao.type === 'board'  ) {
-
-                        }
                     }
                 });
             }
