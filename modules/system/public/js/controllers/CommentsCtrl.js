@@ -32,11 +32,9 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             addAvatar(userResource.user.username);
         });
         $scope.canRemoveComment = function (com) {
-            return ((userResource.user._id) &&
-            (userResource.user._id === com.user ||
-            (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
-            userResource.user.siteAdmin ) );
+            return $scope.doesUserOwnElt() || (userResource.user._id && (userResource.user._id === com.user));
         };
+
         $scope.canResolveComment = function (com) {
             return com.status !== "resolved" && $scope.canRemoveComment(com);
         };
@@ -78,7 +76,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         $scope.replyTo = function (commentId, reply, showReplies) {
             $http.post("/comments/reply", {
                 commentId: commentId,
-                eltName: $scope.elt.naming[0].designation,
+                eltName: $scope.getEltName(),
                 reply: reply
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);

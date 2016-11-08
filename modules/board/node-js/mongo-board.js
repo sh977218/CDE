@@ -22,6 +22,11 @@ schemas.pinningBoardSchema.pre('remove', function (next) {
     next();
 });
 
+exports.getPrimaryName = function (elt) {
+    return elt.name;
+};
+
+
 exports.getStream = function (condition) {
     return PinningBoard.find(condition).sort({_id: -1}).stream();
 };
