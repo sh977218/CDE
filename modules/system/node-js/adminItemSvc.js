@@ -315,7 +315,6 @@ exports.replyToComment = function (req, res) {
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
-            var eltId = req.body.eltId;
             if (!comment.replies) comment.replies = [];
             if (!authorizationShared.canComment(req.user)) {
                 reply.pendingApproval = true;

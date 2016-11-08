@@ -733,7 +733,7 @@ exports.init = function (app) {
     });
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.status(401).send();
+        if (!req.user) return res.send({count: 0});
         mongo_data_system.mailStatus(req.user, function (err, result) {
             res.send({count: result});
         });
