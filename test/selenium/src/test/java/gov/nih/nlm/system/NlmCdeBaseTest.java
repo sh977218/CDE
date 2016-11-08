@@ -42,7 +42,6 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 public class NlmCdeBaseTest {
 
     public static WebDriver driver;
-    public static WebDriver _driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
 
@@ -697,8 +696,8 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        List<String> tabs2 = new ArrayList(driver.getWindowHandles());
-        driver.switchTo().window(tabs2.get(i));
+        List<String> tabs = new ArrayList(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(i));
     }
 
     protected void fillInput(String type, String value) {

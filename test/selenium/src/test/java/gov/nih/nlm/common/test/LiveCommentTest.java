@@ -22,10 +22,11 @@ public class LiveCommentTest extends CdeCommentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         clickElement(By.id("discussBtn"));
+        hangon(2);
 
         switchTab(1);
         goToCdeByName(cdeName);
-        String newComment = "newComment from nlm";
+        String newComment = "new comment from nlm";
         addComment(newComment);
 
         switchTab(0);
@@ -40,6 +41,7 @@ public class LiveCommentTest extends CdeCommentTest {
 
         switchTab(0);
         textPresent(replyToReply);
+        findElement(By.id("comment-user-status-0")).getAttribute("class").contains("user-online");
         clickElement(By.id("resolveComment-0"));
 
         switchTab(1);
