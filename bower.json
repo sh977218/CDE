@@ -33,8 +33,7 @@
     "checklist-model": "0.9.0",
     "angular-ui-sortable": "0.14.0",
     "async": "2.0.0-rc.5",
-    "angular-elastic": "2.5.1",
-    "socket.io-client": "1.5.0"
+    "angular-elastic": "2.5.1"
   },
   "resolutions": {
     "angular": "1.5.3",
