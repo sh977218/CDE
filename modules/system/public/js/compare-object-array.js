@@ -53,10 +53,8 @@
                     var leftDisplayAttributes = [];
                     var rightDisplayAttributes = [];
                     if (a != null) {
-                        var o = a.o;
-                        var calculated = a.calculated;
                         leftDisplayAttributes = options.properties.filter(function (p) {
-                            var pValue = eval(p.property);
+                            var pValue = p.getProperty(a);
                             return pValue != null && pValue.length !== 0;
                         });
                     }
@@ -66,10 +64,8 @@
                         });
                     }
                     if (b != null) {
-                        var o = b.o;
-                        var calculated = b.calculated;
                         rightDisplayAttributes = options.properties.filter(function (p) {
-                            var pValue = eval(p.property);
+                            var pValue = p.getProperty(b);
                             return pValue != null && pValue.length !== 0;
                         });
                     }
@@ -93,7 +89,7 @@
                     var partialMatchItems = [];
                     if (b) {
                         options.properties.forEach(function (p) {
-                            if (!eval(p.equal)) {
+                            if (!angular.equals(p.getProperty(a), p.getProperty(b))) {
                                 partialMatchItems.push(p.property);
                             }
                         });

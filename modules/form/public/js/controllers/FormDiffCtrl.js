@@ -83,6 +83,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                                             "-1": "1 or more"
                                         }
                                     }[elem.cardinality.min][elem.cardinality.max],
+                                    showIf: (elem.skipLogic ? elem.skipLogic.condition : ''),
                                     minValue:
                                         (elem.question.datatypeNumber ? elem.question.datatypeNumber.minValue : ''),
                                     maxValue:
@@ -158,196 +159,6 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
             }
         };
 
-        $scope.versionOptions = {
-            title: 'Versions',
-            hideSame: true,
-            tooltip: ''
-        };
-        $scope.statusOptions = {
-            title: 'Status',
-            hideSame: true,
-            tooltip: ''
-        };
-        $scope.stewardOrgNameOptions = {
-            title: 'StewardOrg Name',
-            hideSame: true,
-            tooltip: ''
-        };
-        $scope.namingOptions = {
-            equal: function (a, b) {
-                return a.designation === b.designation &&
-                    a.definition === b.definition &&
-                    a.languageCode === b.languageCode &&
-                    a.context.acceptability === b.context.acceptability &&
-                    a.context.contextName === b.context.contextName;
-            },
-            sort: function (a, b) {
-                return a.designation.localeCompare(b.designation);
-            },
-            tooltip: "Sorted by name. New/Removed if any value is modified",
-            title: 'Naming',
-            hideSame: true,
-            properties: [
-                {label: 'Name', property: 'designation'},
-                {label: 'Definition', property: 'definition'},
-                {label: 'Context', property: 'context.contextName'}
-            ]
-        };
-        $scope.dataElementConceptOptions = {
-            equal: function (a, b) {
-                return a.name === b.name &&
-                    a.origin === b.origin &&
-                    a.originId === b.originId;
-            },
-            sort: function (a, b) {
-                return a.name.localeCompare(b.name);
-            },
-            tooltip: 'Sorted by name, New/Removed if any value is modified',
-            title: 'Data Element Concepts',
-            hideSame: true,
-            properties: [
-                {label: 'Name', property: 'name'},
-                {label: 'Origin', property: 'origin'},
-                {label: 'OriginId', property: 'originId'}
-            ]
-        };
-        $scope.propertyConceptOptions = {
-            equal: function (a, b) {
-                return a.name === b.name &&
-                    a.origin === b.origin &&
-                    a.originId === b.originId;
-            },
-            sort: function (a, b) {
-                return a.name.localeCompare(b.name);
-            },
-            tooltip: 'Sorted by name, New/Removed if any value is modified',
-            title: 'Property Concepts',
-            hideSame: true,
-            properties: [
-                {label: 'Name', property: 'name'},
-                {label: 'Origin', property: 'origin'},
-                {label: 'OriginId', property: 'originId'}
-            ]
-        };
-        $scope.objectClassConceptOptions = {
-            equal: function (a, b) {
-                return a.name === b.name &&
-                    a.origin === b.origin &&
-                    a.originId === b.originId;
-            },
-            sort: function (a, b) {
-                return a.name.localeCompare(b.name);
-            },
-            tooltip: 'Sorted by name, New/Removed if any value is modified',
-            title: 'ObjectClass Concepts',
-            hideSame: true,
-            properties: [
-                {label: 'Name', property: 'name'},
-                {label: 'Origin', property: 'origin'},
-                {label: 'OriginId', property: 'originId'}
-            ]
-        };
-        $scope.referenceDocumentsOptions = {
-            equal: function (a, b) {
-                return a.title === b.title;
-            },
-            sort: function (a, b) {
-                return a.title.localeCompare(b.title);
-            },
-            title: 'Reference Documents',
-            hideSame: true,
-            properties: [
-                {label: 'Title', property: 'title'},
-                {label: 'URI', property: 'uri'},
-                {label: 'Provider Org', property: 'providerOrg'},
-                {label: 'Language Code', property: 'languageCode'},
-                {label: 'Document', property: 'document'}
-            ]
-        };
-        $scope.propertiesOptions = {
-            equal: function (a, b) {
-                return a.key === b.key &&
-                    a.value === b.value &&
-                    a.valueFormat === b.valueFormat;
-            },
-            sort: function (a, b) {
-                return a.key.localeCompare(b.key);
-            },
-            title: 'Properties',
-            hideSame: true,
-            properties: [
-                {label: 'Key', property: 'key'},
-                {label: 'Value', property: 'value'}
-            ]
-        };
-        $scope.attachmentsOptions = {
-            equal: function (a, b) {
-                return a.fileid === b.fileid;
-            },
-            sort: function (a, b) {
-                return a.filename.localeCompare(b.filename);
-            },
-            title: 'Attachments',
-            hideSame: true,
-            properties: [
-                {label: 'Filename', property: 'filename'},
-                {label: 'Size', property: 'filesize'},
-                {label: 'Uploaded date', property: 'uploadDate'},
-                {label: 'Uploaded by', property: 'uploadedBy.username'}
-            ]
-        };
-        $scope.idsOptions = {
-            equal: function (a, b) {
-                return a.id === b.id &&
-                    a.source === b.source &&
-                    a.version === b.version;
-            },
-            sort: function (a, b) {
-                return a.id.localeCompare(b.id);
-            },
-            title: 'Identifiers',
-            hideSame: true,
-            properties: [
-                {label: 'Source', property: 'source'},
-                {label: 'ID', property: 'id'},
-                {label: 'Version', property: 'version'}
-            ]
-        };
-        $scope.sourcesOptions = {
-            equal: function (a, b) {
-                return a.sourceName === b.sourceName &&
-                    a.dateCreated === b.dateCreated &&
-                    a.dateModified === b.dateModified &&
-                    a.registrationStatus === b.registrationStatus &&
-                    a.datatype === b.datatype;
-            },
-            sort: function (a, b) {
-                return a.sourceName.localeCompare(b.sourceName);
-            },
-            title: 'Sources',
-            hideSame: true,
-            properties: [
-                {label: 'Source Name', property: 'sourceName'},
-                {label: 'Source Created Date', property: 'dateCreated'},
-                {label: 'Source Modified Date', property: 'dateModified'},
-                {label: 'Source Status', property: 'registrationStatus'},
-                {label: 'Source Data Type', property: 'datatype'}
-            ]
-        };
-        $scope.classificationsOptions = {
-            title: 'Classifications',
-            hideSame: true
-        };
-        $scope.valueDomainDatatypeOptions = {
-            title: 'Value Type',
-            hideSame: false,
-            tooltip: ''
-        };
-        $scope.datatypeValueListOptions = {
-            title: 'Value List Data Type',
-            hideSame: false,
-            tooltip: ''
-        };
         $scope.questionOptions = {
             equal: function (a, b) {
                 return a.calculated.tinyId === b.calculated.tinyId &&
@@ -358,7 +169,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                     a.o.question.required === b.o.question.required &&
                     a.o.question.datatype === b.o.question.datatype &&
                     a.o.question.multiselect === b.o.question.multiselect &&
-                    a.o.skipLogic.condition === b.o.skipLogic.condition &&
+                    a.calculated.showIf === b.calculated.showIf &&
                     a.calculated.minValue === b.calculated.minValue &&
                     a.calculated.maxValue === b.calculated.maxValue &&
                     a.calculated.precision === b.calculated.precision &&
@@ -373,79 +184,80 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                 {
                     label: 'Label',
                     property: 'o.label',
-                    equal: 'a.o.label === b.o.label'
+                    getProperty: function (p) { return p.o.label; }
                 },
                 {
                     label: 'Tiny Id',
                     property: 'calculated.tinyId',
-                    equal: 'a.calculated.tinyId === b.calculated.tinyId',
+                    getProperty: function (p) { return p.calculated.tinyId; },
                     link: true,
                     url: '/#/deview/?tinyId='
                 },
                 {
                     label: 'Section',
                     property: 'calculated.section',
-                    equal: 'a.calculated.section === b.calculated.section'
+                    getProperty: function (p) { return p.calculated.section; }
                 },
                 {
                     label: 'Hide Label',
                     property: 'o.hideLabel',
-                    equal: 'a.o.hideLabel === b.o.hideLabel'},
+                    getProperty: function (p) { return p.o.hideLabel; }
+                },
                 {
                     label: 'Required',
                     property: 'o.question.required',
-                    equal: 'a.o.question.required === b.o.question.required'
+                    getProperty: function (p) { return p.o.question.required; }
                 },
                 {
                     label: 'Cardinality',
                     property: 'calculated.cardinality',
-                    equal: 'a.calculated.cardinality === b.calculated.cardinality'
+                    getProperty: function (p) { return p.calculated.cardinality; }
                 },
                 {
                     label: 'Multi-select',
                     property: 'o.question.multiselect',
-                    equal: 'a.o.question.multiselect === b.o.question.multiselect'
+                    getProperty: function (p) { return p.o.question.multiselect; }
                 },
                 {
                     label: 'Show If',
-                    property: 'o.skipLogic.condition',
-                    equal: 'a.o.skipLogic.condition === b.o.skipLogic.condition'
+                    property: 'calculated.showIf',
+                    getProperty: function (p) { return p.calculated.showIf; }
                 },
                 {
                     label: 'Default Answer',
                     property: 'o.question.defaultAnswer',
-                    equal: 'a.o.question.defaultAnswer === b.o.question.defaultAnswer'
+                    getProperty: function (p) { return p.o.question.defaultAnswer; }
                 },
                 {
                     label: 'Datatype',
                     property: 'o.question.datatype',
-                    equal: 'a.o.question.datatype === b.o.question.datatype'
+                    getProperty: function (p) { return p.o.question.datatype; }
                 },
                 {
                     label: 'Min Value',
                     property: 'calculated.minValue',
-                    equal: 'a.calculated.minValue === b.calculated.minValue'
+                    getProperty: function (p) { return p.calculated.minValue; }
                 },
                 {
                     label: 'Max Value',
                     property: 'calculated.maxValue',
-                    equal: 'a.calculated.maxValue === b.calculated.maxValue'
+                    getProperty: function (p) { return p.calculated.maxValue; }
                 },
                 {
                     label: 'Precision',
                     property: 'calculated.precision',
-                    equal: 'a.calculated.precision === b.calculated.precision'
+                    getProperty: function (p) { return p.calculated.precision; }
                 },
                 {
                     label: 'Units of Measure',
                     property: 'o.question.uoms',
-                    equal: 'angular.equals(a.o.question.uoms, b.o.question.uoms)'
+                    getProperty: function (p) { return p.o.question.uoms; }
                 },
                 {
                     label: 'Answer List',
                     property: 'calculated.answers',
-                    displayAs: 'permissibleValue',
-                    equal: 'angular.equals(a.o.question.answers, b.o.question.answers)'
+                    getProperty: function (p) { return p.o.question.answers; },
+                    displayAs: 'permissibleValue'
                 }
             ],
             wipeUseless: $scope.wipeUseless

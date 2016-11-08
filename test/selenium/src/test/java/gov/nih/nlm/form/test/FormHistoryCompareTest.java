@@ -25,9 +25,9 @@ public class FormHistoryCompareTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[2]"));
         selectHistoryAndCompare(1,2);
         textPresent("Reordered",
-                By.xpath("//*[@id=historyCompareLeft_Form Description_4']//div[contains(@class,'compareMessage')]"));
+                By.xpath("//*[@id='historyCompareLeft_Form Description_4']//div[contains(@class,'compareMessage')]"));
         textPresent("Reordered",
-                By.xpath("//*[@id=historyCompareRight_Form Description_2']//div[contains(@class,'compareMessage')]"));
+                By.xpath("//*[@id='historyCompareRight_Form Description_2']//div[contains(@class,'compareMessage')]"));
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
