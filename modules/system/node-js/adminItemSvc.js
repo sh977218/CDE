@@ -304,7 +304,6 @@ exports.addComment = function (req, res, dao) {
 };
 
 exports.replyToComment = function (req, res) {
-    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
@@ -375,7 +374,6 @@ exports.replyToComment = function (req, res) {
 };
 
 exports.removeComment = function (req, res, dao) {
-    var currentOpenConnections = require('../../../app').currentOpenConnections;
     if (req.isAuthenticated()) {
         mongo_data_system.Comment.findOne({_id: req.body.commentId}, function (err, comment) {
             if (err) {
