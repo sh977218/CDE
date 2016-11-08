@@ -64,6 +64,8 @@ public class EltIdMaps {
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
+        eltMap.put("Form History Test", "QkGEqKVNZ");
+        eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");

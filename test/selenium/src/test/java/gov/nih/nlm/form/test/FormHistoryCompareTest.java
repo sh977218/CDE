@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormHistoryTest extends BaseFormTest {
+public class FormHistoryCompareTest extends BaseFormTest {
 
     @Test
     public void formHistoryTest() {
