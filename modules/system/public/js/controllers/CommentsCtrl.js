@@ -38,7 +38,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                         c.currentReplying = true;
                         c.timer = $timeout(function () {
                             c.currentReplying = false;
-                        }, 5000);
+                        }, 10000);
                     }
                 });
                 $scope.$apply();

@@ -1291,6 +1291,10 @@ input.ng-invalid {
     border: 1px solid red !important;
 }
 
+.replying {
+    font-weight: bold;
+}
+
 .replying:after {
     overflow: hidden;
     display: inline-block;
