@@ -18,10 +18,11 @@ public class FormHistoryCompareTest extends BaseFormTest {
 
         selectHistoryAndCompare(2,3);
         findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_1']//*[contains(@class,'unmatchedIcon')]"));
-        findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_1']//*[contains(@class,'unmatchedIcon')]"));
+        findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_2']//*[contains(@class,'unmatchedIcon')]"));
         findElement(By.xpath("//*[@id='historyCompareRight_Form Description_4']//*[contains(@class,'unmatchedIcon')]"));
         findElement(By.xpath("//*[@id='historyCompareRight_Form Description_5']//*[contains(@class,'unmatchedIcon')]"));
 
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[2]"));
         selectHistoryAndCompare(1,2);
         textPresent("Reordered",
                 By.xpath("//*[@id=historyCompareLeft_Form Description_4']//div[contains(@class,'compareMessage')]"));
