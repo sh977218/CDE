@@ -1,8 +1,11 @@
 var cdesvc = require('./cdesvc')
-    , usersvc = require('./usersvc')
+    , usersvc = require('./../../system/node-js/usersvc')
     , mongo_cde = require('./mongo-cde')
+    , mongo_board = require('../../board/node-js/mongo-board')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
+    , classificationShared = require('../../system/shared/classificationShared')
     , xml2js = require('xml2js')
     , vsac = require('./vsac-io')
     , config = require('../../system/node-js/parseConfig')
@@ -28,13 +31,6 @@ exports.init = function (app, daoManager) {
 
     daoManager.registerDao(mongo_cde);
 
-    app.post('/boardSearch', exportShared.nocacheMiddleware, function (req, res) {
-        elastic.boardSearch(req.body, function (err, result) {
-            if (err) return res.status(500).send(err);
-            return res.send(result);
-        });
-    });
-
     app.post('/myBoards', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             return res.status(403).send();
@@ -47,7 +43,8 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/cdesByTinyIdList', function (req, res) {
-        mongo_cde.cdesByTinyIdList(req.body, function (err, cdes) {
+        mongo_cde.byTinyIdList(req.body, function (err, cdes) {
+            if (err) res.status(500).send();
             res.send(cdes);
         });
     });
@@ -144,62 +141,14 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.boardsByUserId(req.params.userId, function (result) {
+        mongo_board.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
         });
     });
 
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
+        mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
-        });
-    });
-    app.get('/board/:boardId/:start/:size?/', exportShared.nocacheMiddleware, function (req, res) {
-        var size = 20;
-        if (req.params.size) {
-            size = req.params.size;
-        }
-        if (size > 500) {
-            return res.status(403).send("Request too large");
-        }
-
-        mongo_cde.boardById(req.params.boardId, function (err, board) {
-            if (board) {
-                if (board.shareStatus !== "Public") {
-                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
-                        return res.status(403).end();
-                    }
-                }
-                var totalItems = board.pins.length;
-                board.pins = board.pins.splice(req.params.start, size).map(function(a) {
-                    return a.toObject();
-                });
-                delete board._doc.owner.userId;
-                var idList = board.pins.map(function(p) {
-                    return p.deTinyId;
-                });
-                mongo_cde.cdesByTinyIdList(idList, function (err, cdes) {
-                    if (req.query.type === "xml"){
-                        res.setHeader("Content-Type", "application/xml");
-                        var exportBoard ={
-                            board: exportShared.stripBsonIds(board.toObject()),
-                            cdes: cdesvc.hideProprietaryCodes(cdes.map(function(oneCde) {return exportShared.stripBsonIds(oneCde.toObject());}), req.user),
-                            totalItems: totalItems
-                        };
-                        exportBoard = exportShared.stripBsonIds(exportBoard);
-
-                        res.send(js2xml("export", exportBoard));
-
-                    }
-                    else {
-                        res.send({board: board, cdes: cdesvc.hideProprietaryCodes(cdes, req.user), totalItems: totalItems});
-                    }
-                });
-            } else {
-                res.status(404).end();
-            }
-
-
         });
     });
 
@@ -219,9 +168,9 @@ exports.init = function (app, daoManager) {
                 if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
                     return res.status(403).send("You don't have permission to make boards public!");
                 }
-                mongo_cde.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                mongo_board.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                     if (nbBoards < boardQuota) {
-                        mongo_cde.newBoard(board, function (err) {
+                        mongo_board.newBoard(board, function (err) {
                             if (err) res.status(500).send("An error occurred. ");
                             elastic.boardRefresh(function () {
                                 res.send();
@@ -232,7 +181,7 @@ exports.init = function (app, daoManager) {
                     }
                 });
             } else {
-                mongo_cde.boardById(board._id, function (err, b) {
+                mongo_board.boardById(board._id, function (err, b) {
                     if (err) {
                         logging.errorLogger.error("Cannot find board by id", {
                             origin: "cde.app.board",
@@ -308,22 +257,14 @@ exports.init = function (app, daoManager) {
 
     app.delete('/board/:boardId', function (req, res) {
         authorization.boardOwnership(req, res, req.params.boardId, function(board) {
-            board.remove(function () {
-                elastic.boardRefresh(function () {
-                    res.send("Board Removed.");
-                });
+            board.remove(function (err) {
+                if (err) res.send(500);
+                else {
+                    elastic.boardRefresh(function () {
+                        res.send("Board Removed.");
+                    });
+                }
             });
-        });
-    });
-
-    app.post('/classifyBoard', function (req, res) {
-        if (!usersrvc.isCuratorOf(req.user, req.body.newClassification.orgName)) {
-            res.status(401).send();
-            return;
-        }
-        classificationNode_system.classifyCdesInBoard(req, function (err) {
-            if (!err) res.end();
-            else res.status(500).send(err);
         });
     });
 
@@ -335,9 +276,16 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.put('/pincde/:tinyId/:boardId', function (req, res) {
+    app.put('/pin/cde/:tinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
-            usersvc.pinToBoard(req, res);
+            usersvc.pinCdeToBoard(req, res);
+        } else {
+            res.send("Please login first.");
+        }
+    });
+    app.put('/pin/form/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            usersvc.pinFormToBoard(req, res);
         } else {
             res.send("Please login first.");
         }
@@ -644,6 +592,57 @@ exports.init = function (app, daoManager) {
         elastic.get(req.params.id, function (err, result) {
             if (err) throw err;
             else res.send(result);
+        });
+    });
+
+    app.post('/classification/cde', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.body.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.body, classificationShared.actions.create, mongo_cde, function (err) {
+            if (!err) {
+                res.send({code: 200, msg: "Classification Added"});
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.body.cdeId
+                    }],
+                    action: "add",
+                    path: [req.body.orgName].concat(req.body.categories)
+                });
+            } else {
+                res.send({code: 403, msg: "Classification Already Exists"});
+            }
+
+        });
+    });
+
+    app.delete('/classification/cde', function (req, res) {
+        if (!usersrvc.isCuratorOf(req.user, req.query.orgName)) {
+            res.status(401).send();
+            return;
+        }
+        classificationNode_system.eltClassification(req.query, classificationShared.actions.delete, mongo_cde, function (err) {
+            if (!err) {
+                res.end();
+                mongo_data_system.addToClassifAudit({
+                    date: new Date(),
+                    user: {
+                        username: req.user.username
+                    },
+                    elements: [{
+                        _id: req.query.cdeId
+                    }],
+                    action: "delete",
+                    path: [req.query.orgName].concat(req.query.categories)
+                });
+            } else {
+                res.status(202).send({error: {message: "Classification does not exists."}});
+            }
         });
     });
 

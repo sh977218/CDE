@@ -1,4 +1,4 @@
-<div tabindex="0"><span id="board_num_cdes_{{$index}}">{{board.pins.length}}</span> CDEs</div>
+<div tabindex="0"><span id="board_num_cdes_{{$index}}">{{board.pins.length}}</span> {{board.type ==='form'?'Forms':'CDEs'}}</div>
 
 <div id="board_desc_{{$index}}" inline-edit model="board.description" is-allowed="canEditBoard()"
      on-ok="save(board);"></div>

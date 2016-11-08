@@ -110,13 +110,18 @@ angular.module('cdeModule').controller('CreateCdeAbstractCtrl',
                     resolve: {
                         classifName: function() {
                             return pathArray[pathArray.length-1];
+                        },
+                        pathArray: function () {
+                            return pathArray;
+                        },
+                        module: function () {
+                            return $scope.module;
                         }
-                        , pathArray: function() {return pathArray;}
                     }
                 });
 
                 modalInstance.result.then(function () {
-                    $scope.removeClassification(orgName, pathArray);
+                    $scope.removeClassification(orgName, 'cde', pathArray);
                 });
             };
 

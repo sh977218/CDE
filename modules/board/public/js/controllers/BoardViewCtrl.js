@@ -1,14 +1,13 @@
 angular.module('cdeModule').controller('BoardViewCtrl',
-    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert',
-        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert) {
+    ['$scope', '$routeParams', '$http', 'OrgHelpers', 'userResource', 'SearchSettings', '$uibModal', '$timeout', 'Alert', '$q',
+        function ($scope, $routeParams, $http, OrgHelpers, userResource, SearchSettings, $modal, $timeout, Alert, $q) {
 
-            $scope.module = 'cde';
-            $scope.cdes = [];
+            $scope.elts = [];
             $scope.currentPage = 1;
 
-            $scope.includeInAccordion = ["/cde/public/html/accordion/boardAccordionActions.html",
-                "/cde/public/html/accordion/addToQuickBoardActions.html"
-            ];
+            // @TODO what is this?
+            $scope.ejsPage = 'board';
+
             $scope.includeInQuickBoard = ["/cde/public/html/accordion/sortCdes.html"];
 
             $scope.setPage = function (p) {
@@ -16,28 +15,50 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.reload();
             };
 
+            $scope.switchCommentMode = function(){
+                $scope.commentMode = !$scope.commentMode;
+            };
+
+            $scope.getEltId = function () {return $scope.board._id;};
+            $scope.getEltName = function () {return $scope.board.name;};
+            $scope.getCtrlType = function () {return "board";};
+            $scope.doesUserOwnElt = function () {
+                return userResource.user.siteAdmin || (userResource.user.username === $scope.board.owner.username);
+            };
+
+            $scope.deferredEltLoaded = $q.defer();
+
             $scope.reload = function () {
                 $scope.accordionListStyle = "semi-transparent";
                 $http.get("/board/" + $routeParams.boardId + "/" + (($scope.currentPage - 1) * 20)).success(function (response) {
                     $scope.accordionListStyle = "";
-                    $scope.cdes = [];
                     if (response.board) {
                         $scope.board = response.board;
+                        var elts = $scope[$scope.board.type + 's'] = [];
+                        $scope.module = $scope.board.type;
+                        $scope.setViewTypes($scope.module);
+                        $scope.includeInAccordion =
+                            [
+                                "/system/public/html/accordion/boardAccordionActions.html",
+                                "/system/public/html/accordion/addToQuickBoardActions.html"
+                        ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;
-                        var respCdes = response.cdes;
-                        for (var i = 0; i < pins.length; i++) {
-                            for (var j = 0; j < respCdes.length; j++) {
-                                if (pins[i].deTinyId === respCdes[j].tinyId) {
-                                    pins[i].cde = respCdes[j];
-                                    $scope.cdes.push(respCdes[j]);
+                        var respElts = response.elts;
+                        pins.forEach(function (pin) {
+                            var pinId = $scope.board.type==='cde'?pin.deTinyId:pin.formTinyId;
+                            respElts.forEach(function (elt) {
+                                if (pinId === elt.tinyId) {
+                                    pins.elt = elt;
+                                    elts.push(elt);
                                 }
-                            }
-                        }
-                        $scope.cdes.forEach(function (elt) {
+                            });
+                        });
+                        elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
+                        $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
                     $scope.addAlert("danger", "Board not found");
@@ -56,7 +77,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     .success(function (response) {
                         SearchSettings.getPromise().then(function (settings) {
                             var csv = exports.getCdeCsvHeader(settings.tableViewFields);
-                            response.cdes.forEach(function (ele) {
+                            response.elts.forEach(function (ele) {
                                 csv += exports.convertToCsv(exports.projectCdeForExport(ele, settings.tableViewFields));
                             });
                             if (csv) {
@@ -103,26 +124,26 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 });
             };
 
-            $scope.classifyBoard = function () {
+            $scope.classifyEltBoard = function () {
                 var $modalInstance = $modal.open({
                     animation: false,
-                    templateUrl: '/cde/public/html/classifyCdesInBoard.html',
+                    templateUrl: '/system/public/html/classifyCdesInBoard.html',
                     controller: 'AddClassificationModalCtrl',
                     resolve: {
                         // @TODO bad design -> refactor
                         cde: function () {
                             return null;
-                        }
-                        , orgName: function () {
+                        },
+                        orgName: function () {
                             return null;
-                        }
-                        , pathArray: function () {
+                        },
+                        pathArray: function () {
                             return null;
-                        }
-                        , module: function () {
-                            return null;
-                        }
-                        , addClassification: function () {
+                        },
+                        module: function () {
+                            return $scope.board.type;
+                        },
+                        addClassification: function () {
                             return {
                                 addClassification: function (newClassification) {
                                     var _timeout = $timeout(function () {
@@ -130,13 +151,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                     }, 3000);
                                     $http({
                                         method: 'post',
-                                        url: '/classifyBoard',
+                                        url: $scope.board.type === 'form' ? '/classifyFormBoard' : '/classifyCdeBoard',
                                         data: {
-                                            boardId: $scope.board._id
-                                            , newClassification: newClassification
+                                            boardId: $scope.board._id,
+                                            newClassification: newClassification
                                         }
-                                    })
-                                        .success(function (data, status) {
+                                    }).success(function (data, status) {
                                             $timeout.cancel(_timeout);
                                             if (status === 200) $scope.addAlert("success", "All Elements classified.");
                                             else $scope.addAlert("danger", data.error.message);
@@ -164,6 +184,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             };
+
             $scope.reload();
 
 }]);

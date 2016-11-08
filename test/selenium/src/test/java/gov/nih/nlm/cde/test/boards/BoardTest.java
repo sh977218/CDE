@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.boards;
 import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
@@ -42,15 +43,20 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Public Boards"));
     }
 
-    public void createBoard(String name, String description) {
-        createBoard(name, description, "Board created.");
+    public void createBoard(String name, String description, String type) {
+        createBoard(name, description, type, "Board created.");
     }
 
-    public void createBoard(String name, String description, String response) {
+    public void createBoard(String name, String description, String type, String response) {
         gotoMyBoards();
         textPresent("Add Board");
         clickElement(By.id("addBoard"));
         textPresent("Create New Board");
+        if (type.equals("cde"))
+            type = "CDEs";
+        if (type.equals("form"))
+            type = "Forms";
+        new Select(driver.findElement(By.id("new-board-type"))).selectByVisibleText(type);
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
         hangon(2);
@@ -59,30 +65,26 @@ public class BoardTest extends NlmCdeBaseTest {
         closeAlert();
     }
 
-    public void removeBoard(String boardName) {
-        gotoMyBoards();
-        int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
-        for (int i = 0; i < length; i++) {
-            String name = findElement(By.id("board_name_" + i)).getText();
-            if (boardName.equals(name)) {
-                clickElement(By.id("removeBoard-" + i));
-                clickElement(By.id("confirmRemove-" + i));
-                textNotPresent(boardName);
-                return;
-            }
-        }
+    protected void pinCdeToBoard(String cdeName, String cdeBoardName) {
+        pinTo(cdeName, cdeBoardName, "cde");
     }
 
-    protected void pinTo(String cdeName, String boardName) {
-        openCdeInList(cdeName);
+    protected void pinFormToBoard(String formName, String formBoardName) {
+        pinTo(formName, formBoardName, "form");
+    }
+
+    private void pinTo(String eltName, String boardName, String type) {
+        if (type.equals("cde")) openCdeInList(eltName);
+        if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
+        textPresent(boardName);
         clickElement(By.linkText(boardName));
         textPresent("Added to Board");
         closeAlert();
         modalGone();
     }
 
-    protected void goToBoard(String boardName) {
+    public void goToBoard(String boardName) {
         String boardId = EltIdMaps.eltMap.get(boardName);
         if (boardId != null) {
             driver.get(baseUrl + "/board/" + boardId);

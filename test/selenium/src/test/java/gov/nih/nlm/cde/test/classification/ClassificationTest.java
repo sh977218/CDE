@@ -71,7 +71,7 @@ public class ClassificationTest extends BaseClassificationTest {
 	public void deleteClassification() {
 		mustBeLoggedInAs(classificationMgtUser_username, password);
 		goToCdeByName("Spectroscopy geometry location not applicable indicator");
-		findElement(By.linkText("Classification")).click();
+		clickElement(By.linkText("Classification"));
 		findElement(By.id("classification-Domain,Assessments and Examinations,Imaging Diagnostics"));
 		removeClassificationMethod(new String[] { "Domain","Assessments and Examinations", "Imaging Diagnostics" });
         wait.until(ExpectedConditions.not(ExpectedConditions.

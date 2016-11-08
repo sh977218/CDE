@@ -211,6 +211,16 @@ exports.removeOrg = function (id, callback) {
   Org.findOne({"_id": id}).remove().exec(callback);
 };
 
+exports.formatElt = function (elt) {
+    function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    elt._doc.stewardOrgCopy = elt.stewardOrg;
+    elt._doc.primaryNameCopy = escapeHTML(elt.naming[0].designation);
+    elt._doc.primaryDefinitionCopy = escapeHTML(elt.naming[0].definition);
+};
+
 exports.userTotalSpace = function(Model, name, callback) {
     Model.aggregate(
             {$match: {"attachments.uploadedBy.username": name}},
@@ -294,14 +304,16 @@ exports.alterAttachmentStatus = function(id, status, cb) {
     });
     if (status === "approved") {
         daoManager.getDaoList().forEach(function(dao){
-            dao.setAttachmentApproved(id);
+            if (dao.setAttachmentApproved)
+                dao.setAttachmentApproved(id);
         });
     }
 };
 
 exports.removeAttachmentIfNotUsed = function(id) {
     async.map(daoManager.getDaoList(), function(dao, cb) {
-        dao.fileUsed(id, cb);
+        if(dao.fileUsed)
+            dao.fileUsed(id, cb);
     }, function(err, results){
         if (results.indexOf(true)===-1) exports.deleteFileById(id);
     });
@@ -334,9 +346,7 @@ exports.updateOrg = function(org, res) {
 };
 
 exports.getAllUsernames = function(callback) {
-    User.find({}, {username: true, _id: false}).exec(function(err, usernames) {
-        callback(err, usernames);
-    });
+    User.find({}, {username: true, _id: false}).exec(callback);
 };
 
 exports.generateTinyId = function() {
@@ -350,19 +360,16 @@ exports.createMessage = function(msg, cb) {
         , comment: "cmnt"
     }];
     var message = new Message(msg);
-    message.save(function() {
-        if (cb) cb();
-    });
+    message.save(cb);
 };
 
 exports.updateMessage = function(msg, cb) {
     var id = msg._id;
     delete msg._id;
-    Message.update({_id: id}, msg).exec(function(err) {
-        cb(err);
-    });
+    Message.update({_id: id}, msg).exec(cb);
 };
 
+// TODO this function name is not good
 exports.getMessages = function(req, callback) {
     var authorRecipient = {
         "$and": [
@@ -419,18 +426,13 @@ exports.getMessages = function(req, callback) {
         return;
     }
 
-    Message.find(authorRecipient).where().exec(function(err, result) {
-        if (!err) callback(null, result);
-        else callback(err);
-    });
+    Message.find(authorRecipient).where().exec(callback);
 };
 
 exports.addUserRole = function(request, cb) {
     exports.userByName(request.username, function(err, u){
         u.roles.push(request.role);
-        u.save(function(err, u){
-            if(cb) cb(err, u);
-        });
+        u.save(cb);
     });
 };
 
@@ -456,8 +458,10 @@ exports.addToClassifAudit = function(msg) {
     };
     daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]) {
-            if (msg.elements[0]._id) dao.byId(msg.elements[0]._id, persistClassifRecord);
-            if (msg.elements[0].tinyId) dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+            if (msg.elements[0]._id && dao.byId)
+                dao.byId(msg.elements[0]._id, persistClassifRecord);
+            if (msg.elements[0].tinyId && dao.eltByTinyId)
+                dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
         }
     });
 };

@@ -195,9 +195,62 @@ exports.createApprovalMessage = function (user, role, type, details) {
     });
 };
 
+// email all users for all new approval messages every 4 hours
+setInterval(function () {
+    var d = new Date();
+    d.setHours(d.getHours() - 4);
+    var urlMap = {
+        'cde': config.publicUrl + '/deView?tinyId=',
+        'form': config.publicUrl + '/formView?tinyId=',
+        'board': config.publicUrl + '/board/'
+    };
+
+    mongo_data_system.Comment.find({replies: {$elemMatch: {created: {$gte: d}, status: "active"}}}, function (err, comments) {
+        var emails = {};
+
+        comments.forEach(function (comment) {
+                var usernamesForThisComment = [];
+                var allComments = [];
+                allComments.push(comment);
+                if (comment.replies && comment.replies.length > 0) {
+                    allComments = allComments.concat(comment.get('replies'));
+                    allComments.pop();
+                }
+                allComments.forEach(function(commentOrReply) {
+                    if (commentOrReply.status === 'active' &&
+                        usernamesForThisComment.indexOf(commentOrReply.username) === -1) {
+
+                        if (!emails[commentOrReply.username]) emails[commentOrReply.username] = [];
+                        usernamesForThisComment.push(commentOrReply.username);
+                        var message = 'Somebody replied to one of your comments. See the comment here: ' +
+                            urlMap[comment.element.eltType] + comment.element.eltId;
+                        if (emails[commentOrReply.username].indexOf(message) === -1) {
+                            emails[commentOrReply.username].push(message);
+                        }
+                    }
+                });
+            });
+
+        Object.keys(emails).forEach(function(username) {
+            mongo_data_system.userByName(username, function (err, u) {
+                if (u && u.email && u.email.length > 0) {
+                    email.emailUsers({
+                        subject: "Somebody replied to your comment.",
+                        body: emails[username].join('\n')
+                    }, [u]);
+                }
+            });
+        });
+
+    });
+    // TODO change this time:
+}, 1000 * 60 * 60 * 4);
+
+
 exports.addComment = function (req, res, dao) {
     if (req.isAuthenticated()) {
-        dao.eltByTinyId(req.body.element.tinyId, function (err, elt) {
+        var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+        idRetrievalFunc(req.body.element.eltId, function (err, elt) {
             if (!elt || err) {
                 res.status(404).send("Element does not exist.");
             } else {
@@ -208,15 +261,16 @@ exports.addComment = function (req, res, dao) {
                     , text: req.body.comment
                     , element: {
                         eltType: dao.type,
-                        eltId: req.body.element.tinyId
+                        eltId: req.body.element.eltId
                     }
                 });
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var details = {
                         element: {
-                            tinyId: req.body.element.tinyId,
-                            name: elt.naming[0].designation, eltType: dao.type
+                            eltId: req.body.element.eltId,
+                            name: dao.getPrimaryName(elt),
+                            eltType: dao.type
                         },
                         comment: {
                             commentId: comment._id,
@@ -231,10 +285,10 @@ exports.addComment = function (req, res, dao) {
                             origin: "system.adminItemSvc.addComment",
                             stack: new Error().stack
                         });
-                        res.status(500).send(err);
+                        res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
-                        if (comment.pendingApproval) message += " Approval required."
+                        if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
                 });
@@ -283,6 +337,28 @@ exports.replyToComment = function (req, res) {
                     res.status(500).send(err);
                 } else {
                     res.send({message: "Reply added"});
+                    if (req.user.username !== comment.username) {
+                        var message = {
+                            recipient: {recipientType: "user", name: comment.username}
+                            , author: {authorType: "user", name: req.user.username}
+                            , date: new Date()
+                            , type: "CommentReply"
+                            , typeCommentReply: {
+                                // TODO change this when you merge board comments
+                                element: {
+                                    eltType: comment.element.type,
+                                    tinyId: comment.element.eltId,
+                                    name:  req.body.eltName
+                                }
+                                , comment: {
+                                    commentId: comment._id,
+                                    text: reply.text
+                                }
+                            }
+                            , states: []
+                        };
+                        mongo_data_system.createMessage(message);
+                    }
                 }
             });
         });
@@ -312,10 +388,12 @@ exports.removeComment = function (req, res, dao) {
             }
             if (removedComment) {
                 removedComment.status = "deleted";
-                dao.eltByTinyId(comment.element.eltId, function (err, elt) {
+                var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
+                idRetrievalFunc(comment.element.eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
-                        (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1) ||
+                        (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
+                        (elt.owner && (elt.owner.username === req.user.username)) ||
                         req.user.siteAdmin
                     ) {
                         comment.save(function (err) {
@@ -560,13 +638,13 @@ exports.removeAttachmentLinks = function (id, collection) {
 
 exports.setAttachmentApproved = function (id, collection) {
     collection.update(
-        {"attachments.fileid": id}
-        , {
+        {"attachments.fileid": id},
+        {
             $unset: {
                 "attachments.$.pendingApproval": ""
             }
-        }
-        , {multi: true}).exec();
+        },
+        {multi: true}).exec();
 };
 
 exports.fileUsed = function (id, collection, cb) {

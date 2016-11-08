@@ -12,7 +12,8 @@ public class FormCdesTest extends BaseFormTest {
         clickElement(By.id("cdeList_tab"));
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - fluency sub score");
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score");
-        clickElement(By.partialLinkText("- memory sub score"));
+        clickElement(By.id("acc_link_29"));
+        scrollToViewById("openCdeInNewTab_29");
         textPresent("Sub-score for memory section as part of Addenbrooke's Cognitive Examination - Revised (ACE-R).");
         textPresent("ACERMemrySubScore");
         clickElement(By.id("addToCompare_1"));

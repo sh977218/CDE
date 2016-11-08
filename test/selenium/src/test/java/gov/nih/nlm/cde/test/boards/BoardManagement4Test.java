@@ -10,9 +10,13 @@ public class BoardManagement4Test extends BoardTest {
     @Test
     public void removeBoard() {
         mustBeLoggedInAs(boardUser, password);
-        removeBoard("Remove me board");
-        hangon(2);
-        textNotPresent("Not a very useful");
+        String boardName = "Remove me board";
+        gotoMyBoards();
+        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
+        textPresent("Confirm Delete");
+        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
+        textNotPresent(boardName);
+        textPresent("Done");
     }
 
     @Test
@@ -21,6 +25,7 @@ public class BoardManagement4Test extends BoardTest {
         String boardName = "Number Increment Board";
         gotoMyBoards();
         WebElement numElt = null;
+        int num = 0;
         int length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("board_name_" + i)).getText();
@@ -28,9 +33,11 @@ public class BoardManagement4Test extends BoardTest {
                 numElt = findElement(By.id("board_num_cdes_" + i));
             }
         }
-        int num = Integer.parseInt(numElt.getText().trim());
+        if (numElt != null) {
+            num = Integer.parseInt(numElt.getText().trim());
+        }
         Assert.assertEquals(0, num);
-        pinTo("Lymph Node Procedure", boardName);
+        pinCdeToBoard("Lymph Node Procedure", boardName);
         gotoMyBoards();
         textPresent(boardName);
         length = driver.findElements(By.xpath("//*[@class='my-board-card']")).size();

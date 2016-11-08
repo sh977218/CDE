@@ -66,7 +66,7 @@ angular.module('CdeMerge', [])
             $http.post('/mail/messages/new', dat).success(success).error(error);
         },
         getMail: function(type, query, cb) {              
-            $http.post("/mail/messages/"+type, query).then(function(response) {
+            $http.post("/mail/messages/" + type, query).then(function(response) {
                 cb(response.data);
             });
         },

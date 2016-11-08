@@ -2,7 +2,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
     function ($scope, $http, userResource) {
 
         function loadComments() {
-            $http.get('/comments/tinyId/' + $scope.elt.tinyId).then(function(result) {
+            $http.get('/comments/eltId/' + $scope.getEltId()).then(function(result) {
                 $scope.eltComments = result.data;
                 $scope.eltComments.forEach(function (comment) {
                     addAvatar(comment.username);
@@ -28,19 +28,13 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
             }
         }
 
-        $scope.deferredEltLoaded.promise.then(function () {
-            $scope.elt.comments.forEach(function (comment) {
-            });
-        });
         userResource.getPromise().then(function () {
             addAvatar(userResource.user.username);
         });
         $scope.canRemoveComment = function (com) {
-            return ((userResource.user._id) &&
-            (userResource.user._id === com.user ||
-            (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1) ||
-            userResource.user.siteAdmin ) );
+            return $scope.doesUserOwnElt() || (userResource.user._id && (userResource.user._id === com.user));
         };
+
         $scope.canResolveComment = function (com) {
             return com.status !== "resolved" && $scope.canRemoveComment(com);
         };
@@ -49,9 +43,9 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         };
 
         $scope.addComment = function () {
-            $http.post("/comments/" + $scope.module + "/add", {
+            $http.post("/comments/" + $scope.getCtrlType() + "/add", {
                 comment: $scope.newComment.content,
-                element: {tinyId: $scope.elt.tinyId}
+                element: {eltId: $scope.getEltId()}
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 loadComments();
@@ -60,7 +54,8 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         };
 
         $scope.removeComment = function (commentId, replyId) {
-            $http.post("/comments/" + $scope.module + "/remove", {commentId: commentId, replyId: replyId}).then(function (res) {
+            $http.post("/comments/" + $scope.getCtrlType() + "/remove", {
+                commentId: commentId, replyId: replyId}).then(function (res) {
                 $scope.addAlert("success", res.data.message);
                 loadComments();
             });
@@ -81,7 +76,7 @@ angular.module('systemModule').controller('CommentsCtrl', ['$scope', '$http', 'u
         $scope.replyTo = function (commentId, reply, showReplies) {
             $http.post("/comments/reply", {
                 commentId: commentId,
-                eltName: $scope.elt.naming[0].designation,
+                eltName: $scope.getEltName(),
                 reply: reply
             }).then(function (res) {
                 $scope.addAlert("success", res.data.message);

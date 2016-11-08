@@ -16,10 +16,10 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
     @Test
     public void cdeSearchXmlExport() {
         goToCdeSearch();
-        findElement(By.id("browseOrg-CTEP")).click();
+        clickElement(By.id("browseOrg-CTEP"));
         textPresent("All Statuses");
-        findElement(By.id("export")).click();
-        findElement(By.id("xmlExport")).click();
+        clickElement(By.id("export"));
+        clickElement(By.id("xmlExport"));
         textPresent("export is being generated");
         textPresent("Export downloaded.");
         closeAlert();

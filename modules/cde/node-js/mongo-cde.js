@@ -2,6 +2,7 @@ var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , schemas_system = require('../../system/node-js/schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
+    , mongo_board = require('../../board/node-js/mongo-board')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
@@ -17,7 +18,6 @@ exports.name = "CDEs";
 var conn = connHelper.establishConnection(config.database.appData);
 
 var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 var User = conn.model('User', schemas_system.userSchema);
 var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
 exports.DataElement = DataElement;
@@ -25,7 +25,6 @@ exports.User = User;
 
 var mongo_data = this;
 exports.DataElement = DataElement;
-exports.PinningBoard = PinningBoard;
 
 schemas.dataElementSchema.pre('save', function (next) {
     var self = this;
@@ -33,16 +32,9 @@ schemas.dataElementSchema.pre('save', function (next) {
     next();
 });
 
-schemas.pinningBoardSchema.pre('save', function (next) {
-    var self = this;
-    elastic.boardUpdateOrInsert(self);
-    next();
-});
-schemas.pinningBoardSchema.pre('remove', function (next) {
-    var self = this;
-    elastic.boardDelete(self);
-    next();
-});
+exports.getPrimaryName = function (elt) {
+    return elt.naming[0].designation;
+};
 
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
@@ -54,24 +46,6 @@ exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).stream();
 };
 
-exports.boardsByUserId = function (userId, callback) {
-    PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
-        callback(result);
-    });
-};
-
-exports.nbBoardsByUserId = function (userId, callback) {
-    PinningBoard.count({"owner.userId": userId}).exec(function (err, result) {
-        callback(err, result);
-    });
-};
-
-exports.publicBoardsByDeTinyId = function (tinyId, callback) {
-    PinningBoard.find({"pins.deTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
-        callback(result);
-    });
-};
-
 exports.userTotalSpace = function (name, callback) {
     mongo_data_system.userTotalSpace(DataElement, name, callback);
 };
@@ -79,20 +53,6 @@ exports.userTotalSpace = function (name, callback) {
 exports.count = function (condition, callback) {
     DataElement.count(condition).count().exec(function (err, count) {
         callback(err, count);
-    });
-};
-
-exports.boardList = function (from, limit, searchOptions, callback) {
-    PinningBoard.find(searchOptions).exec(function (err, boards) {
-        // TODO Next line throws "undefined is not a function.why?
-        PinningBoard.find(searchOptions).count(searchOptions).exec(function (err, count) {
-            callback(err, {
-                boards: boards
-                , page: Math.ceil(from / limit)
-                , pages: Math.ceil(count / limit)
-                , totalNumber: count
-            });
-        });
     });
 };
 
@@ -131,16 +91,6 @@ exports.eltByTinyId = function (tinyId, callback) {
     });
 };
 
-exports.formatCde = function (cde) {
-    function escapeHTML(s) {
-        return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    cde._doc.stewardOrgCopy = cde.stewardOrg;
-    cde._doc.primaryNameCopy = escapeHTML(cde.naming[0].designation);
-    cde._doc.primaryDefinitionCopy = escapeHTML(cde.naming[0].definition);
-};
-
 exports.cdesByIdList = function (idList, callback) {
     DataElement.find().where('_id')
         .in(idList)
@@ -151,18 +101,18 @@ exports.cdesByIdList = function (idList, callback) {
         });
 };
 
-exports.cdesByTinyIdList = function (idList, callback) {
+exports.byTinyIdList = function (tinyIdList, callback) {
     DataElement.find({'archived': null}).where('tinyId')
-        .in(idList)
+        .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec(function (err, cdes) {
-            cdes.forEach(mongo_data.formatCde);
+            cdes.forEach(mongo_data_system.formatElt);
             callback(err, cdes);
         });
 };
 
 exports.cdesByTinyIdListInOrder = function (idList, callback) {
-    exports.cdesByTinyIdList(idList, function (err, cdes) {
+    exports.byTinyIdList(idList, function (err, cdes) {
         var reorderedCdes = idList.map(function (id) {
             for (var i = 0; i < cdes.length; i++) {
                 if (id === cdes[i].tinyId) return cdes[i];
@@ -238,13 +188,6 @@ exports.incDeView = function (cde) {
     }
 };
 
-exports.boardById = function (boardId, callback) {
-    PinningBoard.findOne({'_id': boardId}, function (err, b) {
-        if (!b) err = "Cannot find board";
-        callback(err, b);
-    });
-};
-
 exports.addToViewHistory = function (cde, user) {
     if (!cde || !user) return logging.errorLogger.error("Error: Cannot update viewing history", {
         origin: "cde.mongo-cde.addToViewHistory",
@@ -268,12 +211,6 @@ exports.addToViewHistory = function (cde, user) {
     });
 };
 
-exports.newBoard = function (board, callback) {
-    var newBoard = new PinningBoard(board);
-    newBoard.save(function (err) {
-        callback(err, newBoard);
-    });
-};
 
 // TODO this method should be removed.
 exports.save = function (mongooseObject, callback) {
@@ -486,7 +423,7 @@ exports.derivationOutputs = function (inputTinyId, cb) {
 };
 
 var correctBoardPinsForCde = function (doc, cb) {
-    PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
+    mongo_board.PinningBoard.update({"pins.deTinyId": doc.tinyId}, {"pins.$.deName": doc.naming[0].designation}).exec(function (err) {
         if (err) throw err;
         if (cb) cb();
     });
@@ -504,7 +441,7 @@ new CronJob({
         console.log("Repairing Board <-> CDE references.");
         var dayBeforeYesterday = new Date();
         dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-        PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
+        mongo_board.PinningBoard.find().distinct('pins.deTinyId', function (err, ids) {
             if (err) throw "Cannot repair CDE references.";
             async.eachSeries(ids, function (id, cb) {
                 DataElement.findOne({tinyId: id, archived: null}).exec(function (err, de) {

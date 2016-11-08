@@ -4,8 +4,12 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
         'module', 'cde', 'orgName', 'pathArray', 'addClassification', 'localStorageService', 'userResource',
         function($scope, $timeout, $modalInstance, ClassificationTree, Organization, ClassificationPathBuilder, module,
                  cde, orgName, pathArray, addClassification, localStorageService, userResource)
-
 {
+
+    $scope.module = module;
+    $scope.myOrgs = userResource.userOrgs;
+    $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
+    $scope.classTree = ClassificationTree;
 
     $scope.viewTypes = {
         "byClassTree": {
@@ -29,13 +33,7 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     $scope.resetTree = function() {
         $scope.newClassification.categories = [];
     };
-    
-    $scope.module = module;
-    $scope.myOrgs = userResource.userOrgs;
-    $scope.path = (orgName ? $scope.path = ClassificationPathBuilder.constructPath(orgName, pathArray) : undefined);
 
-    $scope.classTree = ClassificationTree;
-    
     $scope.selectOrg = function(name) {
         if(name) {
             $scope.newClassification.orgName = name;
@@ -55,11 +53,11 @@ angular.module('systemModule').controller('AddClassificationModalCtrl',
     $scope.addClassification = function (lastLeafName) {        
         var deepCopy = {
             orgName: $scope.newClassification.orgName
-            , categories: $scope.newClassification.categories.map(function(cat){return cat;})     
+            , categories: $scope.newClassification.categories.map(function(cat){return cat;})
             , cdeId: cde._id
         };
-        deepCopy.categories.push(lastLeafName);        
-        addClassification.addClassification(deepCopy);        
+        deepCopy.categories.push(lastLeafName);
+        addClassification.addClassification(deepCopy, $scope.module);
         $scope.insertToClassificationHistory(deepCopy); 
     };     
     

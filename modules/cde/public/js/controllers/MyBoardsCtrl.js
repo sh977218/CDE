@@ -6,6 +6,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
             $scope.filter = {
                 tags: [],
                 shareStatus: [],
+                type:[],
                 getSuggestedTags: function (search) {
                     var newSuggestTags = this.suggestTags.slice();
                     if (search && newSuggestTags.indexOf(search) === -1) {
@@ -29,6 +30,7 @@ angular.module('cdeModule').controller('MyBoardsCtrl',
                         return h._source;
                     });
                     $scope.filter.tags = response.aggregations.tagAgg.buckets;
+                    $scope.filter.types = response.aggregations.typeAgg.buckets;
                     $scope.filter.shareStatus = response.aggregations.ssAgg.buckets;
                     $scope.filter.suggestTags = response.aggregations.tagAgg.buckets.map(function (t) {
                         return t.key;

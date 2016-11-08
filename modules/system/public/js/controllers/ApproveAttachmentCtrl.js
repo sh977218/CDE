@@ -1,22 +1,24 @@
-angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$http', 'Mail', '$uibModal', function($scope, $http, Mail, $modal) {
+angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$http', 'Alert',
+    function($scope, $http, Alert) {
+
     $scope.approveAttachment = function(msg) {
         $http.get('/attachment/approve/' + msg.typeAttachmentApproval.fileid).
-            success(function(data, status, headers, config) {
-                $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
+            success(function(data) {
+                Alert.addAlert("success", data);
+                $scope.archiveMessage(msg);
             }).
-            error(function(data, status, headers, config) {
-                $scope.addAlert("danger", data);
+            error(function(data) {
+                Alert.addAlert("danger", data);
             });
     };
     $scope.declineAttachment = function(msg) {
         $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).
-            success(function(data, status, headers, config) {
-                $scope.addAlert("success", data);
-                $scope.closeMessage(msg);
+            success(function(data) {
+                Alert.addAlert("success", data);
+                $scope.archiveMessage(msg);
             }).
-            error(function(data, status, headers, config) {
-                $scope.addAlert("danger", data);
+            error(function(data) {
+                Alert.addAlert("danger", data);
             });
     };    
         

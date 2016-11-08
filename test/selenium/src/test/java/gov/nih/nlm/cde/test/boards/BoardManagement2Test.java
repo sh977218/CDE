@@ -13,8 +13,8 @@ public class BoardManagement2Test extends BoardTest {
         String board2 = "Second CDE Board";
         String cdeName = "Biomarker Outcome Characteristics java.lang.String";
 
-        pinTo(cdeName, board1);
-        pinTo(cdeName, board2);
+        pinCdeToBoard(cdeName, board1);
+        pinCdeToBoard(cdeName, board2);
 
         goToCdeByName(cdeName);
         showAllTabs();

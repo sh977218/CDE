@@ -1,6 +1,6 @@
 <span ng-controller="MyBoardsCtrl">
 <div class="modal-header">
-    <h3>Choose a Board to pin this CDE to
+    <h3>Choose a Board to pin this element to
 
             <button class="btn btn-small btn-default" value="add" ng-click="openNewBoard()"
                     id="addBoard" style="margin-bottom: 10px;">
@@ -25,7 +25,7 @@
                         <small>{{tag.key}} ({{tag.doc_count}})</small>
                     </label>
                 </div>
-                <div ng-if="filter.shareStatus.length > 1">
+                <div ng-if="filter.shareStatus.length > 0">
                     <h4>Share Status</h4>
                     <label ng-repeat="ss in filter.shareStatus" class="my-board-tag">
                         <input type="checkbox" data-checklist-model="filter.selectedShareStatus"
@@ -43,10 +43,10 @@
                             <i class="fa fa-globe" ng-show="board.shareStatus === 'Public'"></i>
                             <i class="fa fa-lock" ng-hide="board.shareStatus === 'Public'"></i>
                         </span>
-                        <a href="" id="viewBoard_{{board.name}}" ng-click="ok(board)"
+                        <a href="" id="viewBoard_{{board.name}}" ng-click="$close(board)"
                            ng-bind="board.name"></a>
                     </h5>
-                    <div tabindex="0"><span id="board_num_cdes_{{$index}}">{{board.pins.length}}</span> CDEs</div>
+                    <div tabindex="0"><span id="board_num_{{board.type}}s_{{$index}}">{{board.pins.length}}</span> {{board.type==='form'?(board.pins.length && board.pins.length > 0?'Forms':'Form'):(board.pins.length && board.pins.length > 0?'CDEs':'CDE')}}</div>
                     <div id="board_tag_{{$index}}" class="myBoardTags">
                         <span ng-repeat="tag in board.tags">
                             <span class="label label-default"><i class="fa fa-hashtag"></i>{{tag}}</span>
@@ -61,6 +61,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()" id="cancelSelect">Cancel</button>
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelSelect">Cancel</button>
 </div>
 </span>

@@ -1,17 +1,23 @@
-angular.module('systemModule').controller('SwitchListViewCtrl', ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
-    function ($scope, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
+angular.module('systemModule').controller('SwitchListViewCtrl',
+    ['$scope', 'OrgHelpers', 'SearchSettings', 'QuickBoard', 'FormQuickBoard', 'localStorageService',
+        function ($scope, OrgHelpers, SearchSettings, QuickBoard, FormQuickBoard, localStorageService) {
 
-        $scope.viewTypes = {
-            accordion: {
-                url: '/' + $scope.module + '/public/html/' + $scope.module + 'AccordionList.html'
-            }, table: {
-                url : '/' + $scope.module + '/public/html/' + $scope.module + 'GridList.html'
-            }, sideBySide: {
-                url: '/system/public/html/eltsCompare.html'
-            }, summary: {
-                url: "/" + $scope.module + "/public/html/" + $scope.module + "SummaryList.html"
-            }
+
+        $scope.setViewTypes = function (module) {
+            $scope.viewTypes = {
+                accordion: {
+                    url: '/' + module + '/public/html/' + module + 'AccordionList.html'
+                }, table: {
+                    url : '/' + module + '/public/html/' + module + 'GridList.html'
+                }, sideBySide: {
+                    url: '/system/public/html/eltsCompare.html'
+                }, summary: {
+                    url: "/" + module + "/public/html/" + module + "SummaryList.html"
+                }
+            };
         };
+
+        $scope.setViewTypes($scope.module);
 
         $scope.maxLines = 5;
         $scope.lineLength = 50;

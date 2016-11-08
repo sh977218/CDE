@@ -17,12 +17,12 @@ public class OrgWithSpecialNames extends BaseClassificationTest {
         createClassificationName("org / or Org", new String[]{"Sub / Classif"});
 
         goToCdeByName("SCI Classification light touch single side score");
-        findElement(By.linkText("Classification")).click();
-        findElement(By.id("addClassification")).click();
+        clickElement(By.linkText("Classification"));
+        clickElement(By.id("addClassification"));
         hangon(1);
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         textPresent("Sub / Classif");
-        findElement(By.xpath("//div[@id=\"addClassificationModalBody\"]//button[contains(text(),'Classify')]")).click();
+        clickElement(By.xpath("//div[@id=\"addClassificationModalBody\"]//button[contains(text(),'Classify')]"));
         textPresent("Classification Added");
         findElement(By.id("closeModal")).click();
         modalGone();

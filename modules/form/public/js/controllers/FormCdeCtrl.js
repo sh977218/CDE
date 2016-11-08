@@ -1,15 +1,18 @@
-angular.module('cdeModule').controller('FormCdeCtrl', ['$scope', 'CdeList',
-    function ($scope, CdeList) {
+angular.module('cdeModule').controller('FormCdeCtrl',
+    ['$scope', '$uibModal', 'CdeList', 'PinModal', function ($scope, $modal, CdeList, PinModal) {
+        
+            $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+                "/system/public/html/accordion/addToQuickBoardActions.html"];
 
-        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
-            "/cde/public/html/accordion/addToQuickBoardActions.html"];
+            function getFormCdes() {
+                CdeList.byTinyIdList($scope.formCdeIds, function (cdes) {
+                    $scope.cdes = cdes;
+                });
+            }
 
-        function getFormCdes() {
-            CdeList.byTinyIdList($scope.formCdeIds, function (cdes) {
-                $scope.cdes = cdes;
-            });
-        }
+            $scope.$on('loadFormCdes', getFormCdes);
 
-        $scope.$on('loadFormCdes', getFormCdes);
+            $scope.PinModal = PinModal.new('cde');
 
-    }]);
+
+        }]);

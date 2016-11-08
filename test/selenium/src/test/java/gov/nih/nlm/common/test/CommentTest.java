@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 
 public abstract class CommentTest extends CommonTest {
 
-    private void addComment(String text) {
+    protected void addComment(String text) {
         clickElement(By.id("discussBtn"));
         findElement(By.name("commentTextArea")).sendKeys(text);
         hangon(2);
@@ -178,14 +178,14 @@ public abstract class CommentTest extends CommonTest {
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));;
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'authorizeUser')]"));
         clickElement(By.id("authorizeUserOK"));
 
         textPresent("Role added");
         closeAlert();
         modalGone();
 
-        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));;
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'approveComment')]"));
         textPresent("Approved");
 
         logout();

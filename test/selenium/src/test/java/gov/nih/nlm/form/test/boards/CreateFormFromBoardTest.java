@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.board;
+package gov.nih.nlm.form.test.boards;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.cde.test.boards.BoardTest;
@@ -11,13 +11,12 @@ public class CreateFormFromBoardTest extends BoardTest {
     BaseClassificationTest baseClassificationTest = new BaseClassificationTest();
 
     @Test
-    @RecordVideo
     public void createFormFromBoard() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToBoard("Form Board");
         clickElement(By.id("mb.createForm"));
-        findElement(By.id("eltName")).sendKeys("New form from board");
-        findElement(By.id("eltDefinition")).sendKeys("New form from board definition");
+        findElement(By.id("eltName")).sendKeys("New form from boards");
+        findElement(By.id("eltDefinition")).sendKeys("New form from boards definition");
         findElement(By.id("formVersion")).sendKeys("1.0");
         new Select(findElement(By.id("elt.stewardOrg.name"))).selectByVisibleText("TEST");
         baseClassificationTest.addClassificationToNewCdeMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});

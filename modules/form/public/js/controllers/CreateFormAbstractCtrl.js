@@ -40,7 +40,7 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                 }
             };
 
-            $scope.removeClassification = function (orgName, elts) {
+            $scope.removeClassification = function (orgName, module, elts) {
                 var steward = exports.findSteward($scope.elt, orgName);
                 exports.modifyCategory(steward.object, elts, {type: exports.actions.delete});
                 if (steward.object.elements.length === 0) {
@@ -96,12 +96,15 @@ angular.module('formModule').controller('CreateFormAbstractCtrl',
                         },
                         pathArray: function () {
                             return pathArray;
+                        },
+                        module: function () {
+                            return $scope.module;
                         }
                     }
                 });
 
                 modalInstance.result.then(function () {
-                    $scope.removeClassification(orgName, pathArray);
+                    $scope.removeClassification(orgName, 'form', pathArray);
                 });
             };
 

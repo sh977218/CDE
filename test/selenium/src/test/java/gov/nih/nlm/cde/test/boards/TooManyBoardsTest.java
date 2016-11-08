@@ -8,8 +8,8 @@ public class TooManyBoardsTest extends BoardTest {
     public void tooManyBoards() {
         mustBeLoggedInAs(boardBot_username, password);
         gotoMyBoards();
-        createBoard("a 50th board created", "This board should be created!");
-        createBoard("Fail board!", "This board will disappear!", "You have too many boards!");
+        createBoard("a 50th boards created", "This boards should be created!", "cde");
+        createBoard("Fail boards!", "This boards will disappear!", "cde", "You have too many boards!");
     }
 
 }

@@ -1,7 +1,7 @@
 var config = require('./parseConfig')
     , mongo_cde = require('./../../cde/node-js/mongo-cde')
     , mongo_form = require('../../form/node-js/mongo-form')
-    , mongo_board = require('./../../cde/node-js/mongo-board')
+    , mongo_board = require('./../../board/node-js/mongo-board')
     , mongo_storedQuery = require('./../../cde/node-js/mongo-storedQuery')
     , mongo_data_system = require('./mongo-data')
     , elastic = require('./elastic')

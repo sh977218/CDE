@@ -54,6 +54,7 @@ var users = [
     , {username: 'testuser', password: 'pass', quota: 1073741824, viewHistory: [], email: "test@example.com",
         roles: ["BoardPublisher", "CommentAuthor"]}
     , {username: 'boarduser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
+    , {username: 'formboarduser', password: 'pass', orgCurator: [], orgAdmin: ["NINDS","TEST"],quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boarduser1', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boardsearchuser', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}
     , {username: 'boarduser2', password: 'pass', quota: 1073741824, viewHistory: [], roles: ["BoardPublisher"]}

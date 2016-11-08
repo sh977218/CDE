@@ -109,8 +109,7 @@
         <div ng-show="selectedElements.indexOf(e.name) > -1" style="margin-left: 5px">
             <div ng-repeat="e in e.elements | orderBy:'name'"
                  ng-show="searchSettings.classification.indexOf(e.name) > -1 || e.level > searchSettings.classification.length"
-                 ng-include="'facet_elements_tree.html'"
-            >
+                 ng-include="'facet_elements_tree.html'">
             </div>
         </div>
     </script>

@@ -69,33 +69,6 @@ angular.module('systemModule').controller('MainCtrl',
                 return exports.hasRole(userResource.user, "DocumentationEditor");
             };
 
-            $scope.openPinModal = function (cde) {
-                if (userResource.user.username) {
-                    var modalInstance = $modal.open({
-                        animation: false,
-                        templateUrl: '/cde/public/html/selectBoardModal.html',
-                        controller: 'SelectBoardModalCtrl'
-                    });
-
-                    modalInstance.result.then(function (selectedBoard) {
-                        $http.put("/pincde/" + cde.tinyId + "/" + selectedBoard._id).then(function (response) {
-                            if (response.status === 200) {
-                                $scope.addAlert("success", response.data);
-                            } else
-                                $scope.addAlert("warning", response.data);
-                        }, function (response) {
-                            $scope.addAlert("danger", response.data);
-                        });
-                    }, function () {
-                    });
-                } else {
-                    $modal.open({
-                        animation: false,
-                        templateUrl: '/system/public/html/ifYouLogInModal.html'
-                    });
-                }
-            };
-
             $scope.isPageActive = function (viewLocation) {
                 return viewLocation === $location.path();
             };
@@ -146,21 +119,17 @@ angular.module('systemModule').controller('MainCtrl',
 
             // Retrieves orgs details from database at an interval
             OrgHelpers.getOrgsDetailedInfoAPI();
-            $interval(function () {
-                OrgHelpers.getOrgsDetailedInfoAPI();
-            }, GLOBALS.getOrgsInterval);
-
-            $scope.inboxVisible = function () {
-                return $scope.isOrgCurator() || $scope.isOrgAdmin() || exports.hasRole($scope.user, "CommentReviewer") || exports.hasRole($scope.user, "AttachmentReviewer");
-            };
 
             $scope.checkMail = function () {
-                if (!$scope.inboxVisible()) return false;
                 $http.get('/mailStatus').success(function (data) {
                     if (data.count > 0) $scope.userHasMail = true;
                 });
-
             };
+
+            $interval(function () {
+                OrgHelpers.getOrgsDetailedInfoAPI();
+                $scope.checkMail();
+            }, GLOBALS.getOrgsInterval);
 
         }
     ]);

@@ -40,7 +40,7 @@
                        ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{$index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="ejsPage!='board'" class="btn btn-small btn-default"
-                       ng-click="openPinModal(elt)" id="pin_{{$index}}">
+                       ng-click="PinModal.openPinModal(elt)" id="pin_{{$index}}">
                         <i class="fa fa-thumb-tack"></i> Attach to Board</a>
                     <a tabindex="0" ng-if="user._id && ejsPage=='board'" class="btn btn-small btn-default"
                        ng-click="unpin(elt)" id="unpin_{{$index}}">

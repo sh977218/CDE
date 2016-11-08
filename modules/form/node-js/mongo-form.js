@@ -21,6 +21,10 @@ schemas.formSchema.pre('save', function (next) {
     next();
 });
 
+exports.getPrimaryName = function (elt) {
+    return elt.naming[0].designation;
+};
+
 exports.idExists = function (id, callback) {
     Form.count({_id: id}).count().then(function (result) {
         callback(result === 0);
@@ -157,6 +161,15 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
         if (err) callback(err);
         else callback("", elt);
     });
+};
+
+exports.byTinyIdList = function (idList, callback) {
+    Form.find({'archived': null}).where('tinyId')
+        .in(idList)
+        .exec(function (err, forms) {
+            forms.forEach(mongo_data_system.formatElt);
+            callback(err, forms);
+        });
 };
 
 exports.eltByTinyId = function (tinyId, callback) {

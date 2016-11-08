@@ -1,8 +1,8 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -18,6 +18,17 @@ angular.module('formModule').controller
     $scope.isFormValid = true;
 
     var converter = new LFormsConverter(); // jshint ignore:line
+
+    $scope.pinModal = PinModal.new('cde');
+
+    $scope.getEltId = function () {return $scope.elt.tinyId;};
+    $scope.getEltName = function () {return $scope.elt.naming[0].designation;};
+    $scope.getCtrlType = function () {return "form";};
+    $scope.doesUserOwnElt = function () {
+        return userResource.user.siteAdmin ||
+            (userResource.user._id && (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1)
+            );
+    };
 
     $scope.switchCommentMode = function(){
         $scope.commentMode = !$scope.commentMode;
@@ -575,18 +586,16 @@ angular.module('formModule').controller
     };
 
     $scope.pinAllCdesModal = function () {
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
-            templateUrl: '/cde/public/html/selectBoardModal.html',
+            templateUrl: '/system/public/html/selectBoardModal.html',
             controller: 'SelectBoardModalCtrl',
             resolve: {
-                boards: function () {
-                    return $scope.boards;
+                type: function () {
+                    return 'cde';
                 }
             }
-        });
-
-        modalInstance.result.then(function (selectedBoard) {
+        }).result.then(function (selectedBoard) {
             var filter = {
                 reset: function () {
                     this.tags = [];
@@ -607,7 +616,6 @@ angular.module('formModule').controller
             }).error(function () {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
-        }, function () {
         });
     };
 

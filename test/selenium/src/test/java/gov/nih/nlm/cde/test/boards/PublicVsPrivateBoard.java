@@ -10,26 +10,25 @@ public class PublicVsPrivateBoard extends BoardTest {
     public void publicVsPrivateBoards() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Public Board";
-        String boardDef = "This board will be public";
+        String boardDef = "This boards will be public";
 
-        pinTo("Heart MUGA", boardName);
-        // by default, board is private.
+        pinCdeToBoard("Heart MUGA Test Date", boardName);
+        // by default, boards is private.
 
         goToBoard(boardName);
-        // I can view my own board.
+        // I can view my own boards.
         textPresent("MUGA");
         String url = driver.getCurrentUrl();
         String boardId = url.substring(url.lastIndexOf("/") + 1);
 
         logout();
-        driver.get(baseUrl + "/#/board/" + boardId);
-        // not logged in, I can't see
+        driver.get(url);
         textPresent("Board not found");
         closeAlert();
         textNotPresent(boardDef);
 
         loginAs(ctepCurator_username, password);
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(url);
         // logged in as someone else, I can't see
         textPresent("Board not found");
         closeAlert();
@@ -41,8 +40,7 @@ public class PublicVsPrivateBoard extends BoardTest {
         makePublic(boardName);
 
         logout();
-
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(url);
         // Now I can see;
         textPresent("MUGA");
 
@@ -52,8 +50,8 @@ public class PublicVsPrivateBoard extends BoardTest {
         for (int i = 0; i < length; i++) {
             String name = findElement(By.id("dd_name_" + i)).getText();
             if (boardName.equals(name)) {
-                findElement(By.id("publicIcon_" + i)).click();
-                findElement(By.id("confirmChangeStatus_" + i)).click();
+                clickElement(By.id("publicIcon_" + i));
+                clickElement(By.id("confirmChangeStatus_" + i));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("privateIcon_" + i)));
                 i = length;
             }
@@ -61,7 +59,7 @@ public class PublicVsPrivateBoard extends BoardTest {
 
         logout();
 
-        driver.get(baseUrl + "/#/board/" + boardId);
+        driver.get(url);
         // private again, I can't see
         textNotPresent("Not a very useful");
     }
