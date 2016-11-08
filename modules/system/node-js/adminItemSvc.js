@@ -271,7 +271,8 @@ exports.addComment = function (req, res, dao) {
                     var details = {
                         element: {
                             eltId: req.body.element.eltId,
-                            name: elt.naming[0].designation, eltType: dao.type
+                            name: dao.getPrimaryName(elt),
+                            eltType: dao.type
                         },
                         comment: {
                             commentId: comment._id,

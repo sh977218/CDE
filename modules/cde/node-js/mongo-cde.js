@@ -32,6 +32,10 @@ schemas.dataElementSchema.pre('save', function (next) {
     next();
 });
 
+exports.getPrimaryName = function (elt) {
+    return elt.naming[0].designation;
+};
+
 exports.exists = function (condition, callback) {
     DataElement.count(condition, function (err, result) {
         callback(err, result > 0);
