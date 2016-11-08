@@ -78,6 +78,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                     comment: $scope.newComment.content,
                     element: {eltId: $scope.getEltId()}
                 }).then(function (res) {
+                    loadComments();
                     Alert.addAlert("success", res.data.message);
                     $scope.newComment.content = "";
                 });
