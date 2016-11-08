@@ -7,14 +7,14 @@ import org.testng.annotations.Test;
 public class FormHistoryCompareTest extends BaseFormTest {
 
     @Test
-    public void formHistoryTest() {
+    public void formHistoryCompareTest() {
         String formName = "Form History Compare Test";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         showAllTabs();
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
-        Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
+        Assert.assertEquals(4, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
         selectHistoryAndCompare(2,3);
         findElement(By.xpath("//*[@id='historyCompareLeft_Form Description_1']//*[contains(@class,'unmatchedIcon')]"));
