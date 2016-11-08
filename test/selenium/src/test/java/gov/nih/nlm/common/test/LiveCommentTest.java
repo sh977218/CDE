@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.cde.test.comments.CdeCommentTest;
+import junit.framework.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -41,7 +42,7 @@ public class LiveCommentTest extends CdeCommentTest {
 
         switchTab(0);
         textPresent(replyToReply);
-        findElement(By.id("comment-user-status-0")).getAttribute("class").contains("user-online");
+        Assert.assertEquals(true, findElement(By.id("comment-user-status-0")).getAttribute("class").contains("user-online"));
         clickElement(By.id("resolveComment-0"));
 
         switchTab(1);
