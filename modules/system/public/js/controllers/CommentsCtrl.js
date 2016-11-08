@@ -27,14 +27,10 @@ angular.module('systemModule').controller('CommentsCtrl',
             var socket = io.connect(window.publicUrl + "/comment");
             socket.emit("room", $scope.getEltId());
             socket.on("commentUpdated", loadComments);
-            socket.on("userJoined", function (allOnlineUsers) {
-                $scope.allOnlineUsers = allOnlineUsers;
-                $scope.$apply();
-            });
-            socket.on("userTyping", function (commentId) {
+            socket.on("userTyping", function (data) {
                 $scope.eltComments.forEach(function (c) {
                     $timeout.cancel(c.timer);
-                    if (c._id === commentId) {
+                    if (c._id === data.commentId && data.username !== userResource.user.username) {
                         c.currentReplying = true;
                         c.timer = $timeout(function () {
                             c.currentReplying = false;

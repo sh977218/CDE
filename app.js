@@ -248,27 +248,14 @@ domain.run(function () {
     var ioServer = require('socket.io')(server);
     ioServer.use(passportSocketIo.authorize(expressSettings));
     thisExports.ioServer = ioServer;
-    var allOnlineUser = {};
     ioServer.of("/comment").on('connection', function (client) {
         client.on("room", function (roomId) {
             client.join(roomId);
-            if (!allOnlineUser[roomId]) allOnlineUser[roomId] = {};
-            allOnlineUser[roomId][client.conn.request.user.username] = true;
-            ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
         });
         client.on("currentReplying", function (roomId, commentId) {
-            ioServer.of("/comment").to(roomId).emit("userTyping", commentId);
-        });
-
-        client.on("disconnect", function (disconnectEvent) {
-            var username = client.conn.request.user.username;
-            Object.keys(allOnlineUser).forEach(function (roomId) {
-                Object.keys(allOnlineUser[roomId]).forEach(function (user) {
-                    if (user === username) {
-                        allOnlineUser[roomId][user] = false;
-                        ioServer.of("/comment").to(roomId).emit("userJoined", allOnlineUser[roomId]);
-                    }
-                })
+            ioServer.of("/comment").to(roomId).emit("userTyping", {
+                commentId: commentId,
+                username: client.conn.request.user.username
             });
         });
     });
