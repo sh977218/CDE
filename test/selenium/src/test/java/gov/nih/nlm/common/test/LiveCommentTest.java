@@ -42,7 +42,6 @@ public class LiveCommentTest extends CdeCommentTest {
 
         switchTab(0);
         textPresent(replyToReply);
-        Assert.assertEquals(true, findElement(By.id("comment-user-status-0")).getAttribute("class").contains("user-online"));
         clickElement(By.id("resolveComment-0"));
 
         switchTab(1);

@@ -23,8 +23,6 @@
                             <td>
                                 <img ng-src="{{avatarUrls[comment.username.toLowerCase()]}}" width="32" height="32"
                                      alt="portrait"/>
-                                <div id="comment-user-status-{{commentIndex}}" class="user-status comment-user-status"
-                                     ng-class="{'user-online':allOnlineUsers[comment.username],'user-offline':!allOnlineUsers[comment.username]}"></div>
                             </td>
                             <td>
                                 <div>
@@ -70,9 +68,6 @@
                                 <td>
                                     <img ng-src="{{avatarUrls[reply.username.toLowerCase()]}}" width="32" height="32"
                                          alt="portrait"/>
-                                    <div id="replay-user-status-{{commentIndex}}-{{replyIndex}}"
-                                         class="user-status reply-user-status"
-                                         ng-class="{'user-online':allOnlineUsers[reply.username],'user-offline':!allOnlineUsers[reply.username]}"></div>
                                 </td>
                                 <td>
                                     <div>
