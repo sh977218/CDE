@@ -6,7 +6,7 @@ angular.module('systemModule').controller('CommentsCtrl',
 
             $scope.tempReplies = {};
 
-            function loadComments() {
+            function loadComments(cb) {
                 $http.get('/comments/eltId/' + $scope.getEltId()).then(function (result) {
                     $scope.eltComments = result.data;
                     $scope.eltComments.forEach(function (comment) {
@@ -17,6 +17,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                             })
                         }
                     });
+                    if (cb)cb();
                 });
             }
 
@@ -74,9 +75,10 @@ angular.module('systemModule').controller('CommentsCtrl',
                     comment: $scope.newComment.content,
                     element: {eltId: $scope.getEltId()}
                 }).then(function (res) {
-                    loadComments();
-                    Alert.addAlert("success", res.data.message);
                     $scope.newComment.content = "";
+                    loadComments(function () {
+                        Alert.addAlert("success", res.data.message);
+                    });
                 });
             };
 
@@ -84,21 +86,24 @@ angular.module('systemModule').controller('CommentsCtrl',
                 $http.post("/comments/" + $scope.getCtrlType() + "/remove", {
                     commentId: commentId, replyId: replyId
                 }).then(function (res) {
-                    Alert.addAlert("success", res.data.message);
-                    loadComments();
+                    loadComments(function () {
+                        Alert.addAlert("success", res.data.message);
+                    });
                 });
             };
 
             $scope.updateCommentStatus = function (commentId, status) {
                 $http.post("/comments/status/" + status, {commentId: commentId}).then(function (res) {
-                    Alert.addAlert("success", res.data.message);
-                    loadComments();
+                    loadComments(function () {
+                        Alert.addAlert("success", res.data.message);
+                    });
                 });
             };
             $scope.updateReplyStatus = function (commentId, replyId, status) {
                 $http.post("/comments/status/" + status, {commentId: commentId, replyId: replyId}).then(function (res) {
-                    Alert.addAlert("success", res.data.message);
-                    loadComments();
+                    loadComments(function () {
+                        Alert.addAlert("success", res.data.message);
+                    });
                 });
             };
 
@@ -109,12 +114,13 @@ angular.module('systemModule').controller('CommentsCtrl',
                     eltId: $scope.elt.tinyId,
                     reply: reply
                 }).then(function (res) {
-                    $scope.addAlert("success", res.data.message);
                     $scope.tempReplies[commentId] = '';
-                    loadComments();
-                    $scope.eltComments.forEach(function (c) {
-                        if (c._id === commentId)
-                            c.showReplies = showReplies;
+                    loadComments(function () {
+                        $scope.eltComments.forEach(function (c) {
+                            if (c._id === commentId)
+                                c.showReplies = showReplies;
+                        });
+                        $scope.addAlert("success", res.data.message);
                     });
                 });
             };
