@@ -20,7 +20,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
         };
         $scope.$on('loadPriorForms', loadPriorForms);
         $scope.formHistoryCtrlLoadedPromise.resolve();
-        $scope.$on('reloadPriorForms', function () {
+        $scope.$on('eltReloaded', function () {
             delete $scope.priorForms;
             loadPriorForms();
         });

@@ -107,11 +107,9 @@
 
                 var beginRightIndex = 0;
                 leftArray.forEach(function (leftItem, leftIndex) {
-                    //var displayAttribute;
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
                         // left only iterated
-                        //displayAttribute = leftItem != null && leftItem !== '';
                         options.showTitle = true;
                         options.results.push({
                             leftIndex: leftIndex,
@@ -133,8 +131,6 @@
                             });
                         }
                         // match
-                        //displayAttribute = leftItem != null && leftItem !== '' ||
-                        //    rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                         options.results.push({
                             leftIndex: leftIndex,
                             rightIndex: foundInRight,
