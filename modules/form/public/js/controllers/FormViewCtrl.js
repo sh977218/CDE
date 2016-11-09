@@ -138,15 +138,6 @@ angular.module('formModule').controller
             show: false,
             hideable: true
         },
-        discussions: {
-            heading: "Discussions",
-            includes: ['/system/public/html/comments.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
-        },
         boards: {
             heading: "Boards",
             includes: [], select: function (thisTab) {
