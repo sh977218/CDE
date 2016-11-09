@@ -22,7 +22,6 @@
                             <td>
                                 <img ng-src="{{avatarUrls[comment.username.toLowerCase()]}}" width="32" height="32"
                                      alt="portrait"/>
-                                <div ng-class="{'user-online':user.isOnline,'user-offline':!user.isOnline}"></div>
                             </td>
                             <td>
                                 <div>
@@ -211,17 +210,18 @@
                 </div>
             </div>
         </div>
+        <span class="replying padding10" ng-show="comment.currentReplying">Someone is typing</span>
         <div data-type="reply" class="replyInputDiv" ng-if="user._id">
-            <textarea rows="1" msd-elastic ng-model="comment.tempReply" name="replyTextArea" class="replyInputTextarea"
-                      placeholder="Reply to this comment" ng-focus="comment.openReply = true"
-                      id="replyTextarea_{{commentIndex}}">
-                      </textarea>
+            <textarea class="replyInputTextarea" id="replyTextarea_{{commentIndex}}" name="replyTextArea"
+                      rows="1" msd-elastic ng-model="tempReplies[comment._id]"
+                      placeholder="Reply to this comment" ng-change="changeOnReply(comment)"
+                      ng-focus="focusOnReply(comment)">
+            </textarea>
             <div class="replyInputBtn" ng-show="comment.openReply" style="margin-top: 10px">
-                <button ng-click="replyTo(comment._id, comment.tempReply,comment.showReplies)" style="margin-left: 0"
-                        ng-disabled="replyForm.replyTextArea.$invalid" class="btn btn-primary"
-                        id="replyBtn_{{commentIndex}}">Reply
+                <button ng-click="replyTo(comment._id, tempReplies[comment._id], comment.showReplies)" style="margin-left: 0"
+                        class="btn btn-primary" id="replyBtn_{{commentIndex}}">Reply
                 </button>
-                <button ng-click="comment.openReply = false" class="btn btn-default">Cancel</button>
+                <button ng-click="cancelReply(comment);" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>

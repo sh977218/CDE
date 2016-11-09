@@ -57,7 +57,9 @@
     "xsd-schema-validator": "0.3.1",
     "csv": "0.4.6",
     "byline": "4.2.1",
-    "archiver": "git://github.com/ludetc/node-archiver.git#360649a2886e9a3b28c38625227a10484de84d60"
+    "archiver": "git://github.com/ludetc/node-archiver.git#360649a2886e9a3b28c38625227a10484de84d60",
+    "socket.io": "1.4.5",
+    "passport.socketio":"3.7.0"
   },
   "devDependencies": {
     "tar": "2.1.0",

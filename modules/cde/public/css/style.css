@@ -33,6 +33,9 @@ body {
     padding-top: 8px;
 }
 
+.padding10 {
+    padding: 10px;
+}
 .pt20 {
     padding-top: 20px;
 }
@@ -1304,4 +1307,30 @@ input.ng-invalid {
     text-align: right;
     color: darkred;
     font-weight: 800;
+}
+
+.replying {
+    font-weight: bold;
+}
+
+.replying:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4, end) 1500ms infinite;
+    animation: ellipsis steps(4, end) 1500ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 20px;
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 20px;
+    }
 }
