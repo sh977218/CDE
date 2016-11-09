@@ -160,7 +160,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms');});
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,
             hideable: true

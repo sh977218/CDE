@@ -109,7 +109,6 @@
                 leftArray.forEach(function (leftItem, leftIndex) {
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
-                        // left only iterated
                         options.showTitle = true;
                         options.results.push({
                             leftIndex: leftIndex,
@@ -121,7 +120,6 @@
                         // right only before
                         options.matchCount++;
                         for (var i = beginRightIndex; i < foundInRight; i++) {
-                            //displayAttribute = rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                             options.showTitle = true;
                             options.results.push({
                                 rightIndex: i,
@@ -143,7 +141,6 @@
                     // right only after
                     if (leftIndex === leftArray.length - 1) {
                         for (var j = beginRightIndex; j < rightArray.length; j++) {
-                            //displayAttribute = rightArray[foundInRight] != null && rightArray[foundInRight] !== '';
                             options.showTitle = true;
                             options.results.push({
                                 rightIndex: j,
