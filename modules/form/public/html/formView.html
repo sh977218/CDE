@@ -72,9 +72,9 @@
                 <i class="fa fa-clone"></i> Copy
             </button>
 
-            <button class="btn btn-small btn-default" role="button" tabindex="0"
+            <button class="btn btn-small btn-default" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
                     ng-click="switchCommentMode()" title="Discuss Form" id="discussBtn">
-                <i class="fa fa-comment"></i> Discuss
+                <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
             </button>
         </h3>
 

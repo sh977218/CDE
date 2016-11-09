@@ -4,6 +4,7 @@ import gov.nih.nlm.system.EltIdMaps;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardComments extends NlmCdeBaseTest {
@@ -14,6 +15,8 @@ public class BoardComments extends NlmCdeBaseTest {
         String boardName = "Stomach Cancer";
         String boardId = EltIdMaps.eltMap.get(boardName);
         driver.get(baseUrl + "/board/" + boardId);
+        findElement(By.id("discussBtn"));
+        Assert.assertEquals(findElements(By.cssSelector(".discussWrench")).size(), 0);
         clickElement(By.id("discussBtn"));
 
         String commentText = "Here is the first comment";
@@ -43,6 +46,7 @@ public class BoardComments extends NlmCdeBaseTest {
 
         mustBeLoggedInAs("reguser", password);
         driver.get(baseUrl + "/board/" + boardId);
+        findElement(By.cssSelector(".discussWrench"));
         clickElement(By.id("discussBtn"));
         textPresent(commentText);
         findElement(By.id("removeComment-0"));
