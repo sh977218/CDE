@@ -39,9 +39,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
             $scope.commentMode = !$scope.commentMode;
         });
     };
-
-    $scope.getEltId = function () {
-        return $scope.elt.tinyId;
+    $scope.getEltId = function () {return $scope.elt.tinyId;};
+    $scope.getEltName = function () {return $scope.elt.naming[0].designation;};
+    $scope.doesUserOwnElt = function () {
+        return userResource.user.siteAdmin ||
+            (userResource.user._id && (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1)
+        );
     };
     $scope.getCtrlType = function () {return "cde";};
 

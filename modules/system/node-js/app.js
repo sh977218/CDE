@@ -30,7 +30,6 @@ var passport = require('passport')
     ;
 
 exports.init = function (app) {
-
     var getRealIp = function (req) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
@@ -734,7 +733,7 @@ exports.init = function (app) {
     });
 
     app.get('/mailStatus', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) return res.status(401).send();
+        if (!req.user) return res.send({count: 0});
         mongo_data_system.mailStatus(req.user, function (err, result) {
             res.send({count: result});
         });
@@ -1012,7 +1011,6 @@ exports.init = function (app) {
         timeZone: "America/New_York"
     }).start();
 
-
     app.get('/comments/eltId/:eltId', function (req, res) {
         mongo_data_system.Comment.find({"element.eltId": req.params.eltId}).sort({created: 1}).exec(function(err, comments) {
             var result = comments.filter(c => c.status !== 'deleted');
@@ -1029,6 +1027,14 @@ exports.init = function (app) {
         })
     });
 
+    app.get('/comment/:commentId', function (req, res) {
+        mongo_data_system.Comment.findOne({_id: req.params.commentId}).exec(function (err, comment) {
+            if (err) res.send(500);
+            else
+                res.send(comment);
+        })
+    });
+
     app.post('/comments/approve', adminItemSvc.approveComment);
 
     app.post('/comments/decline', adminItemSvc.declineComment);
@@ -1040,6 +1046,5 @@ exports.init = function (app) {
         adminItemSvc.updateCommentStatus(req, res, "active");
     });
     app.post('/comments/reply', adminItemSvc.replyToComment);
-
 
 };

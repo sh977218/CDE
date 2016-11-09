@@ -263,7 +263,7 @@ var commentApprovalSchema = {
     element: {
         eltId: String
         , name: String
-        , eltType: {type: String, enum: ["cde", "form"]}
+        , eltType: {type: String, enum: ["cde", "form", "board"]}
     }
     , comment: {
         commentId: String,

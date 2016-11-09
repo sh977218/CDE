@@ -9,6 +9,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
+    , app = require("../../../app")
     ;
 
 exports.save = function (req, res, dao, cb) {
@@ -254,6 +255,7 @@ exports.addComment = function (req, res, dao) {
             if (!elt || err) {
                 res.status(404).send("Element does not exist.");
             } else {
+                var eltId = req.body.element.eltId;
                 var comment = new mongo_data_system.Comment({
                     user: req.user._id
                     , username: req.user.username
@@ -261,7 +263,7 @@ exports.addComment = function (req, res, dao) {
                     , text: req.body.comment
                     , element: {
                         eltType: dao.type,
-                        eltId: req.body.element.eltId
+                        eltId: eltId
                     }
                 });
                 if (!authorizationShared.canComment(req.user)) {
@@ -269,7 +271,8 @@ exports.addComment = function (req, res, dao) {
                     var details = {
                         element: {
                             eltId: req.body.element.eltId,
-                            name: elt.naming[0].designation, eltType: dao.type
+                            name: dao.getPrimaryName(elt),
+                            eltType: dao.type
                         },
                         comment: {
                             commentId: comment._id,
@@ -287,10 +290,12 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
+                        app.ioServer.of("/comment").emit('commentUpdated');
                         if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
-                });
+
+               });
             }
         });
     } else {
@@ -335,6 +340,7 @@ exports.replyToComment = function (req, res) {
                     });
                     res.status(500).send(err);
                 } else {
+                    app.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
                     if (req.user.username !== comment.username) {
                         var message = {
@@ -388,7 +394,8 @@ exports.removeComment = function (req, res, dao) {
             if (removedComment) {
                 removedComment.status = "deleted";
                 var idRetrievalFunc = dao.eltByTinyId ? dao.eltByTinyId : dao.byId;
-                idRetrievalFunc(comment.element.eltId, function (err, elt) {
+                var eltId = comment.element.eltId;
+                idRetrievalFunc(eltId, function (err, elt) {
                     if (err || !elt) return res.status(404).send("elt not found");
                     if (req.user.username === removedComment.username ||
                         (elt.stewardOrg && (req.user.orgAdmin.indexOf(elt.stewardOrg.name) > -1)) ||
@@ -403,6 +410,7 @@ exports.removeComment = function (req, res, dao) {
                                 });
                                 res.status(500).send(err);
                             } else {
+                                app.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
                             }
                         });
@@ -447,6 +455,7 @@ exports.updateCommentStatus = function (req, res, status) {
                         });
                         res.status(500).send(err);
                     } else {
+                        app.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});
                     }
                 });

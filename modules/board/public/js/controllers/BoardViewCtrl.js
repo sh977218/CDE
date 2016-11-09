@@ -19,10 +19,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.commentMode = !$scope.commentMode;
             };
 
-            $scope.getEltId = function () {
-                return $scope.board._id;
-            };
+            $scope.getEltId = function () {return $scope.board._id;};
+            $scope.getEltName = function () {return $scope.board.name;};
             $scope.getCtrlType = function () {return "board";};
+            $scope.doesUserOwnElt = function () {
+                return userResource.user.siteAdmin || (userResource.user.username === $scope.board.owner.username);
+            };
 
             $scope.deferredEltLoaded = $q.defer();
 

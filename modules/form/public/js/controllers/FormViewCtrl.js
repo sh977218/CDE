@@ -21,11 +21,14 @@ angular.module('formModule').controller
 
     $scope.pinModal = PinModal.new('cde');
 
-    $scope.getEltId = function () {
-        return $scope.elt.tinyId;
-    };
+    $scope.getEltId = function () {return $scope.elt.tinyId;};
+    $scope.getEltName = function () {return $scope.elt.naming[0].designation;};
     $scope.getCtrlType = function () {return "form";};
-
+    $scope.doesUserOwnElt = function () {
+        return userResource.user.siteAdmin ||
+            (userResource.user._id && (userResource.user.orgAdmin.indexOf($scope.elt.stewardOrg.name) > -1)
+            );
+    };
 
     $scope.switchCommentMode = function(){
         $scope.commentMode = !$scope.commentMode;
@@ -129,15 +132,6 @@ angular.module('formModule').controller
         ids: {
             heading: "Identifiers",
             includes: ['/system/public/html/identifiers.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
-        },
-        discussions: {
-            heading: "Discussions",
-            includes: ['/system/public/html/comments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             },

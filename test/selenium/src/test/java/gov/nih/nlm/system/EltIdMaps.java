@@ -19,6 +19,7 @@ public class EltIdMaps {
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");
         eltMap.put("Genotype Therapy Basis Mutation", "PwdyV7rn1Pp");
+        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
         eltMap.put("History data reliability type", "K8v6jJWkmmC");
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
@@ -49,17 +50,12 @@ public class EltIdMaps {
         eltMap.put("Specimen Block Received Count", "fPFAp0Onkcx");
         eltMap.put("Specimen Inflammation Change Type", "vdw_hgaMyxc");
         eltMap.put("Specimen Array", "vdw_hgaMyxc");
+        eltMap.put("Sensory system abnormality stocking glove present text", "gPY57SQ7-ZF");
         eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G-NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
-        eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
-        eltMap.put("Neoadjuvant Therapy", "7yN4tn_EW");
-        eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
-        eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
-        eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
-        eltMap.put("Hospital Confidential Institution Referred From Facility Number Code", "Hemf6zdy6o4");
 
         // Forms
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
@@ -92,6 +88,7 @@ public class EltIdMaps {
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
         eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
+        eltMap.put("Stomach Cancer", "55f19755541fd83c2166cbc1");
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
         eltMap.put("Unpin Board", "57114b5328329938330f5c7f");
 

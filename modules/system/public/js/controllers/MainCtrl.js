@@ -121,9 +121,11 @@ angular.module('systemModule').controller('MainCtrl',
             OrgHelpers.getOrgsDetailedInfoAPI();
 
             $scope.checkMail = function () {
-                $http.get('/mailStatus').success(function (data) {
-                    if (data.count > 0) $scope.userHasMail = true;
-                });
+                if (userResource.user) {
+                    $http.get('/mailStatus').success(function (data) {
+                        if (data.count > 0) $scope.userHasMail = true;
+                    });
+                }
             };
 
             $interval(function () {

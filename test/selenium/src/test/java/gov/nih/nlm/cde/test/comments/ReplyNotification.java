@@ -10,7 +10,7 @@ public class ReplyNotification extends CdeCommentTest {
         mustBeLoggedInAs(test_username, password);
 
         String eltName = "Milestone currently able indicator";
-        int randomNumber = (int)(Math.random() * 10000);
+        int randomNumber = (int) (Math.random() * 10000);
         String commentText = "Comment with reply " + randomNumber;
         String replyText = "Reply will trigger notification " + randomNumber;
 
@@ -22,7 +22,7 @@ public class ReplyNotification extends CdeCommentTest {
 
         clickElement(By.id("discussBtn"));
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
-        hangon(2);
+        scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();

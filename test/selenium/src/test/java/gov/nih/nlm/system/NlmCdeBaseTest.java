@@ -107,7 +107,6 @@ public class NlmCdeBaseTest {
             nbOfCde = Integer.valueOf(get(baseUrl + "/elasticSearch/count").asString());
             System.out.println("nb of cdes: " + nbOfCde);
             waitTimeCdes = 10;
-            waitTimeCdes = 10;
         }
         for (int j = 0; j < 5 && nbOfForms < totalForms; j++) {
             hangon(waitTimeForms);
@@ -157,8 +156,7 @@ public class NlmCdeBaseTest {
         try {
             _hubUrl = new URL(hubUrl);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE,
-                    null, ex);
+            Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             driver = new RemoteWebDriver(_hubUrl, caps);
@@ -177,8 +175,6 @@ public class NlmCdeBaseTest {
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
-
-
     }
 
     @BeforeMethod
@@ -700,8 +696,8 @@ public class NlmCdeBaseTest {
 
     protected void switchTab(int i) {
         hangon(1);
-        List<String> tabs2 = new ArrayList(driver.getWindowHandles());
-        driver.switchTo().window(tabs2.get(i));
+        List<String> tabs = new ArrayList(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(i));
     }
 
     protected void fillInput(String type, String value) {
