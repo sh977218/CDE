@@ -257,8 +257,9 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         addCommentNeedApproval(commentText);
 
+        clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
-        hangon(2);
+        hangon(1);
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
