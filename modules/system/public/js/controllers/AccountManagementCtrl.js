@@ -90,12 +90,12 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getOrgCurators(); 
     
     $scope.addSiteAdmin = function() {
-        AccountManagement.addSiteAdmin({
-            username: $scope.admin.username
-            },
+        AccountManagement.addSiteAdmin({username: $scope.admin.username},
             function(res) {
                   Alert.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
+            }, function () {
+                Alert.addAlert("danger", "There was an issue adding this administrator.");
             }
         );
         $scope.admin.username = "";
@@ -108,6 +108,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             function(res) {
                   Alert.addAlert("success", res);
                   $scope.siteAdmins = $scope.getSiteAdmins();
+            }, function (){
+               Alert.addAlert("danger", "There was an issue adding this administrator.");
             }
         );
     };
