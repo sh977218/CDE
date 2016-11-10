@@ -123,6 +123,7 @@
                 leftArray.forEach(function (leftItem, leftIndex) {
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
+                        // left only
                         options.showTitle = true;
                         partials = partialMatchAttributes(leftItem, rightArray);
                         result.push({
