@@ -361,7 +361,7 @@ angular.module('formModule').controller
 
     $scope.updateSkipLogic = function (section) {
         if (!section.skipLogic) return;
-        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "' = '" + section.skipLogic.condition3 + "'";
+        section.skipLogic.condition = "'" + section.skipLogic.condition1 + "'='" + section.skipLogic.condition3 + "'";
         $scope.stageElt();
     };
 
@@ -460,7 +460,7 @@ angular.module('formModule').controller
     $scope.validateSkipLogic = function(skipLogic, previousQuestions, $item) {
         if (!skipLogic) skipLogic = {condition: ''};
         if ($item) {
-            skipLogic.condition = preSkipLogicSelect + " " + $item;
+            skipLogic.condition = preSkipLogicSelect + $item;
         }
         $timeout(function() {
             var logic = skipLogic.condition;
@@ -509,11 +509,11 @@ angular.module('formModule').controller
                  return '"' + questionSanitizer(q.label) + '" ';
              });
          } else if (tokens.length % 4 === 1) {
-             options = [" = ", " < ", " > "];
+             options = ["=", "<", ">"];
          } else if (tokens.length % 4 === 2) {
              options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
          } else if (tokens.length % 4 === 3) {
-             options = [" AND ", " OR"];
+             options = ["AND", "OR"];
          }
          return options;
     };

@@ -123,12 +123,8 @@ angular.module('systemModule').controller('CommentsCtrl',
 
             $scope.cancelReply = function (comment) {
                 $scope.tempReplies[comment._id] = '';
-                comment.openReply = false;
             };
 
-            $scope.focusOnReply = function (comment) {
-                comment.openReply = true;
-            };
             $scope.changeOnReply = function (comment) {
                 socket.emit('currentReplying', $scope.getEltId(), comment._id);
             };
