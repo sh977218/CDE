@@ -1316,3 +1316,11 @@ input.ng-invalid {
         width: 20px;
     }
 }
+
+.highlightedTab {
+    background-color: rgb(255, 240, 180)
+}
+
+.currentTabComment {
+    margin-left: -15px;
+}

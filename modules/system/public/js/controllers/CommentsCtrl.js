@@ -11,7 +11,10 @@ angular.module('systemModule').controller('CommentsCtrl',
                     $scope.eltComments = result.data;
                     $scope.eltComments.forEach(function (comment) {
                         if (comment.linkedTab) {
-                            $('#' + comment.linkedTab + '_tab').find('uib-tab-heading').css('background-color', 'rgb(255, 240, 180)');
+                            $scope.tabs[comment.linkedTab].highlight = true;
+                        }
+                        if (comment.linkedTab === $scope.currentTab) {
+                            comment.class = 'currentTabComment';
                         }
                         addAvatar(comment.username);
                         if (comment.replies) {
