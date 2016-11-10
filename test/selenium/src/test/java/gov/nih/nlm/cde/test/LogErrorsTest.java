@@ -40,6 +40,6 @@ public class LogErrorsTest extends NlmCdeBaseTest {
 
         clickElement(By.linkText("Client Errors"));
         textPresent("ReferenceError");
-        textPresent("trigger is not defined at");
+        textPresent("trigger is not defined");
     }
 }
