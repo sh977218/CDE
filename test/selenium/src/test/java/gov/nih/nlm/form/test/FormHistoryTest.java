@@ -34,7 +34,7 @@ public class FormHistoryTest extends BaseFormTest {
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
 
         selectHistoryAndCompare(1,2);
-        textPresent(newFormDef, By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[@data-title='definition']"));
+        textPresent(newFormDef, By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
 
         clickElement(By.id("prior-1"));
         ArrayList<String> wintabs = new ArrayList<String> (driver.getWindowHandles());

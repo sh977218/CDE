@@ -162,20 +162,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
         $scope.questionOptions = {
             equal: function (a, b) {
                 return a.calculated.tinyId === b.calculated.tinyId &&
-                    a.calculated.section === b.calculated.section &&
-                    a.o.label === b.o.label &&
-                    a.o.hideLabel === b.o.hideLabel &&
-                    a.calculated.cardinality === b.calculated.cardinality &&
-                    a.o.question.required === b.o.question.required &&
-                    a.o.question.datatype === b.o.question.datatype &&
-                    a.o.question.multiselect === b.o.question.multiselect &&
-                    a.calculated.showIf === b.calculated.showIf &&
-                    a.calculated.minValue === b.calculated.minValue &&
-                    a.calculated.maxValue === b.calculated.maxValue &&
-                    a.calculated.precision === b.calculated.precision &&
-                    a.o.question.defaultAnswer === b.o.question.defaultAnswer &&
-                    angular.equals(a.o.question.uoms, b.o.question.uoms) &&
-                    angular.equals(a.o.question.answers, b.o.question.answers);
+                    a.calculated.section === b.calculated.section;
             },
             doSort: false,
             title: 'Form Description',
