@@ -10,6 +10,9 @@ angular.module('systemModule').controller('CommentsCtrl',
                 $http.get('/comments/eltId/' + $scope.getEltId()).then(function (result) {
                     $scope.eltComments = result.data;
                     $scope.eltComments.forEach(function (comment) {
+                        if (comment.linkedTab) {
+                            $('#' + comment.linkedTab + '_tab').find('uib-tab-heading').css('background-color', 'rgb(255, 240, 180)');
+                        }
                         addAvatar(comment.username);
                         if (comment.replies) {
                             comment.replies.forEach(function (r) {
@@ -42,6 +45,9 @@ angular.module('systemModule').controller('CommentsCtrl',
             });
 
             $scope.$on("$destroy", function () {
+                $(".uib-tab").each(function () {
+                    $(this).find('uib-tab-heading').css('background-color', '');
+                });
                 socket.close();
             });
 
@@ -70,6 +76,7 @@ angular.module('systemModule').controller('CommentsCtrl',
             $scope.addComment = function () {
                 $http.post("/comments/" + $scope.getCtrlType() + "/add", {
                     comment: $scope.newComment.content,
+                    linkedTab: $scope.currentTab,
                     element: {eltId: $scope.getEltId()}
                 }).then(function (res) {
                     $scope.newComment.content = "";
