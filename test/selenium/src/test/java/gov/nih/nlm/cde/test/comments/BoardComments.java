@@ -36,7 +36,7 @@ public class BoardComments extends NlmCdeBaseTest {
         mustBeLoggedInAs(commentEditor_username, password);
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span[contains(., '" + commentText + "')]"));
-        clickElement(By.cssSelector("button.approveComment"));
+        clickElement(By.cssSelector(".panel-open button.approveComment"));
         textPresent("Message moved to archived.");
         closeAlert();
         closeAlert();
