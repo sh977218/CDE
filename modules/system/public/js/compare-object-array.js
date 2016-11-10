@@ -132,8 +132,7 @@
                             displayedAttributes: displayedAttributes(leftItem, null, rightArray),
                             partialMatchItems: partials
                         });
-                        if (partials.indexOf("found") === -1)
-                            previous = 'nomatch';
+                        previous = 'nomatch';
                     } else {
                         // right only before
                         options.matchCount++;
@@ -146,17 +145,17 @@
                                 displayedAttributes: displayedAttributes(rightArray[i], null, leftArray),
                                 partialMatchItems: partials
                             });
-                            if (partials.indexOf("found") === -1)
-                                previous = 'nomatch';
+                            previous = 'nomatch';
                         }
                         // match
-                        if (previous !== 'match') { result = []; options.results.push(result); }
+                        partials = matchAttributes(leftItem, rightArray[foundInRight])
+                        if (previous !== 'match' && partials.length > 0) { result = []; options.results.push(result); }
                         result.push({
                             leftIndex: leftIndex,
                             rightIndex: foundInRight,
                             match: true,
                             displayedAttributes: displayedAttributes(leftItem, rightArray[foundInRight]),
-                            partialMatchItems: matchAttributes(leftItem, rightArray[foundInRight])
+                            partialMatchItems: partials
                         });
                         beginRightIndex = foundInRight + 1;
                         previous = 'match';
@@ -172,8 +171,7 @@
                                 displayedAttributes: displayedAttributes(rightArray[j], null, leftArray),
                                 partialMatchItems: partials
                             });
-                            if (partials.indexOf("found") === -1)
-                                previous = 'nomatch';
+                            previous = 'nomatch';
                         }
                     }
                 });
