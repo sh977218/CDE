@@ -92,7 +92,7 @@
                         <input ng-disabled="!(section.formElements.length > 1)"
                                type="text" ng-model="question.skipLogic.condition"
                                class="form-control skipLogicCondition" ng-trim="false"
-                               ng-click="validateSkipLogic(question.skipLogic,section.formElements)"
+                               ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
                                uib-typeahead="opt for opt in getCurrentOptions($viewValue, section.formElements, question,$parent.$index) | filter:tokens.unmatched"
                                typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
                                typeahead-on-select="validateSkipLogic(question.skipLogic, section.formElements, $item)"
