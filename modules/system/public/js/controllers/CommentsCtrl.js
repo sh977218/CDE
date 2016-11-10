@@ -13,9 +13,6 @@ angular.module('systemModule').controller('CommentsCtrl',
                         if (comment.linkedTab) {
                             $scope.tabs[comment.linkedTab].highlight = true;
                         }
-                        if (comment.linkedTab === $scope.currentTab) {
-                            comment.class = 'currentTabComment';
-                        }
                         addAvatar(comment.username);
                         if (comment.replies) {
                             comment.replies.forEach(function (r) {

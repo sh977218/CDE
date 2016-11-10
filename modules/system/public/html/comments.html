@@ -12,7 +12,7 @@
     </div>
     <br/>
 
-    <div class="comment" ng-class="{'{{comment.class}}':comment.class}"
+    <div class="comment" ng-class="{currentTabComment:tabs[comment.linkedTab].active}"
          ng-repeat="(commentIndex, comment) in eltComments">
         <div class="rootComment">
             <div class="commentBody">

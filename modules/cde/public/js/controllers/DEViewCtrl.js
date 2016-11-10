@@ -32,12 +32,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
-        if ($scope.commentMode) {
-            $scope.commentMode = false;
-            $timeout(function () {
-                $scope.commentMode = true;
-            }, 0)
-        }
     }
 
     $scope.switchCommentMode = function(){
