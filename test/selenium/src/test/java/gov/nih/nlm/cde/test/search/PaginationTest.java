@@ -10,12 +10,12 @@ public class PaginationTest extends NlmCdeBaseTest {
     public void paginationTest() {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("patient");
-        findElement(By.id("search.submit")).click();
-        findElement(By.id("li-blank-NINDS")).click();
-        findElement(By.id("li-blank-Disease")).click();
+        clickElement(By.id("search.submit"));
+        clickElement(By.id("li-blank-NINDS"));
+        clickElement(By.id("li-blank-Disease"));
         hangon(2);
-        findElement(By.id("li-blank-Qualified")).click();
-        findElement(By.linkText("Next")).click();
+        clickElement(By.id("li-blank-Qualified"));
+        clickElement(By.linkText("Next"));
         hangon(2);
         textPresent("results for patient | NINDS > Disease | All Topics | Qualified");
     }
