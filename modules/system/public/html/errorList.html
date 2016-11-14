@@ -12,10 +12,10 @@ Excluding: {{excludeFilters}}
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="err in records" ng-include="'/system/public/html/' + errorType + 'ErrorList.html'">
-    </tr>
+    <tr class="{{errorType}}Error" ng-repeat="(errIndex, err) in records"
+        ng-include="'/system/public/html/' + errorType + 'ErrorList.html'"></tr>
     </tbody>
 </table>
 
 <uib-pagination total-items="1000" ng-model="currentPage" ng-change="gotoPage(currentPage)"
-                max-size="10"></uib-pagination>
+                max-size='10'></uib-pagination>
