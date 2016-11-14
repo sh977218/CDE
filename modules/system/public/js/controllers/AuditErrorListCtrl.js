@@ -1,9 +1,9 @@
-angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http',
-    function ($scope, $http) {
+angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$http', '$uibModal',
+    function ($scope, $http, $modal) {
 
     $scope.records = [];
 
-    var itemsPerPage = 10;
+        $scope.itemsPerPage = 50;
 
     function fetchErrors(skip, limit, cb) {
         $http.post($scope.api, {skip: skip, limit: limit, excludeOrigin: $scope.excludeFilters}).success(function (result) {
@@ -13,7 +13,7 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
     }
 
     $scope.gotoPage = function (page, cb) {
-        fetchErrors(itemsPerPage * (page - 1), itemsPerPage, cb);
+        fetchErrors($scope.itemsPerPage * (page - 1), $scope.itemsPerPage, cb);
     };
 
     $scope.excludeFilters = [];
@@ -26,4 +26,27 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
 
     $scope.currentPage = 1;
 
+        $scope.openErrorDetail = function (error) {
+            $modal.open({
+                animation: false,
+                templateUrl: '/system/public/html/errorDetail.html',
+                size: 'lg',
+                resolve: {
+                    Error: function () {
+                        return error;
+                    },
+                    ErrorDetailFields: function () {
+                        return $scope.errorDetailFields;
+                    }
+                },
+                controller: 'ErrorDetailCtrl'
+            }).result.then(function () {
+            });
+        }
+}]);
+
+
+angular.module("systemModule").controller('ErrorDetailCtrl', ['$scope', 'Error', 'ErrorDetailFields', function ($scope, Error, ErrorDetailFields) {
+    $scope.error = Error;
+    $scope.errorDetailFields = ErrorDetailFields;
 }]);
