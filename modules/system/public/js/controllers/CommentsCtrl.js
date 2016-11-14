@@ -10,6 +10,9 @@ angular.module('systemModule').controller('CommentsCtrl',
                 $http.get('/comments/eltId/' + $scope.getEltId()).then(function (result) {
                     $scope.eltComments = result.data;
                     $scope.eltComments.forEach(function (comment) {
+                        if (comment.linkedTab) {
+                            $scope.tabs[comment.linkedTab].highlight = true;
+                        }
                         addAvatar(comment.username);
                         if (comment.replies) {
                             comment.replies.forEach(function (r) {
@@ -70,6 +73,7 @@ angular.module('systemModule').controller('CommentsCtrl',
             $scope.addComment = function () {
                 $http.post("/comments/" + $scope.getCtrlType() + "/add", {
                     comment: $scope.newComment.content,
+                    linkedTab: $scope.currentTab,
                     element: {eltId: $scope.getEltId()}
                 }).then(function (res) {
                     $scope.newComment.content = "";
