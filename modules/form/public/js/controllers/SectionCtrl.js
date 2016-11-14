@@ -176,11 +176,15 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 resolve: {
                     cde: function () {
                         return question.question.cde;
+                    },
+                    form: function () {
+                        return $scope.elt;
                     }
                 }
             });
-
             modalInstance.result.then(function (selectedName) {
+                if (selectedName === question.label)
+                    return;
                 if (selectedName.length > 0) {
                     question.label = selectedName;
                     question.hideLabel = false;
