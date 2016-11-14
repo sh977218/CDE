@@ -1035,6 +1035,8 @@ exports.init = function (app) {
         })
     });
 
+    app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
+
     app.post('/comments/approve', adminItemSvc.approveComment);
 
     app.post('/comments/decline', adminItemSvc.declineComment);
