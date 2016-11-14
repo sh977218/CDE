@@ -53,6 +53,6 @@ public class FormHistoryTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
-        textPresent("Differences");
+        textPresent("Changes");
     }
 }
