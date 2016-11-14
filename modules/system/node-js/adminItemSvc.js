@@ -525,6 +525,15 @@ exports.commentsForUser = function (req, res) {
     });
 };
 
+exports.allComments = function (req, res) {
+    mongo_data_system.Comment.find({status: {"$ne": "deleted"}}).skip(req.params.from)
+        .limit(req.params.size).sort({created: -1}).exec(function(err, results) {
+        if (err) return res.status(500).send("Unable to retrieve comments");
+        return res.send(results);
+    });
+};
+
+
 exports.acceptFork = function (req, res, dao) {
     if (req.isAuthenticated()) {
         if (!req.body.id) {

@@ -305,5 +305,25 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
     $scope.getAllUsernames();
 
+    $scope.getComments = function (page) {
+        $http.get("/allComments/" + (page-1) * 30 + "/30").then(function(result) {
+            $scope.latestComments = result.data;
+        });
+    };
+
+    $scope.currentCommentsPage = 1;
+    $scope.$watch("currentCommentsPage", function () {
+        $scope.getComments($scope.currentCommentsPage);
+    });
+
+    $scope.getEltLink = function(c) {
+        return {
+                'cde': "/deview?tinyId=",
+                'form': "/formView?tinyId=",
+                'board': "/board/"
+            }[c.element.eltType] + c.element.eltId;
+    }
+
+
 }
 ]);

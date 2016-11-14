@@ -35,7 +35,7 @@ angular.module('systemModule').controller('ProfileCtrl',
         return {
             'cde': "/deview?tinyId=",
             'form': "/formView?tinyId=",
-            'board': "/board?_id="
+            'board': "/board/"
         }[c.element.eltType] + c.element.eltId;
     }
 
