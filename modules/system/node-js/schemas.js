@@ -223,6 +223,7 @@ schemas.commentSchema = new mongoose.Schema({
     , username: String
     , created: Date
     , pendingApproval: Boolean
+    , linkedTab: String
     , status: {type: String, enum: ["active", "resolved", "deleted"], default: "active"}
     , replies: [
         {
