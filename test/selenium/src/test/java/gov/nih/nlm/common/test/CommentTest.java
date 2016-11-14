@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
+import org.testng.Assert;
 
 public abstract class CommentTest extends CommonTest {
 
@@ -60,21 +61,29 @@ public abstract class CommentTest extends CommonTest {
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
-        addComment("My First Comment!");
-        textPresent("My First Comment!");
-        findElement(By.name("commentTextArea")).sendKeys("another comment");
+        showAllTabs();
+        clickElement(By.id("status_tab"));
+        addComment("My First Comment about Status!");
+        textPresent("My First Comment about Status!");
+        Assert.assertEquals(true, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
+
+        clickElement(By.id("naming_tab"));
+        findElement(By.name("commentTextArea")).sendKeys("another comment about Naming");
         clickElement(By.name("postComment"));
         textPresent("Comment added");
         closeAlert();
+        Assert.assertEquals(false, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));
+        Assert.assertEquals(true, findElement(By.id("comment_1")).getAttribute("class").contains("currentTabComment"));
+
         clickElement(By.id("replyTextarea_0"));
-        findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment");
+        findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment about Status");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
         textPresent("Reply added");
         closeAlert();
 
         clickElement(By.id("replyTextarea_0"));
-        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment");
+        findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
         hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
@@ -82,7 +91,7 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
 
         clickElement(By.id("replyTextarea_1"));
-        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment");
+        findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
         hangon(1);
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
@@ -107,11 +116,11 @@ public abstract class CommentTest extends CommonTest {
         textPresent("Comment removed");
         closeAlert();
 
-        textPresent("My First Comment!");
-        textPresent("Reply to First comment");
-        textNotPresent("Second reply to First comment");
-        textPresent("another comment");
-        textPresent("Reply to another comment");
+        textPresent("My First Comment about Status!");
+        textPresent("Reply to First comment about Status");
+        textNotPresent("Second reply to First comment about Status");
+        textPresent("another comment about Naming");
+        textPresent("Reply to another comment about Naming");
     }
 
     public void orgAdminCanRemoveComment(String eltName, String status) {
@@ -156,7 +165,7 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approvingComments(String eltName, String status, String user) {
-        int randomNumber = (int)(Math.random() * 10000);
+        int randomNumber = (int) (Math.random() * 10000);
         String commentText = "Very Innocent Comment " + randomNumber;
         String censoredText = "This comment is pending approval";
         mustBeLoggedInAs(user, password);
@@ -173,7 +182,7 @@ public abstract class CommentTest extends CommonTest {
 
         textPresent("comment approval");
 
-        clickElement(By.partialLinkText("comment approval | " +  user + " | " + commentText));
+        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
         clickElement(By.xpath("//div[@aria-expanded='true']//a[contains(., '" + eltName + "')]"));
 
         switchTab(1);
@@ -252,7 +261,7 @@ public abstract class CommentTest extends CommonTest {
     }
 
     public void approveReply(String eltName) {
-        int randomNumber = (int)(Math.random() * 10000);
+        int randomNumber = (int) (Math.random() * 10000);
         String commentText = "Top Level Comment " + randomNumber;
         String replyText = "Very Innocent Reply " + randomNumber;
         mustBeLoggedInAs(reguser_username, anonymousCommentUser_password);
