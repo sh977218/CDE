@@ -48,7 +48,7 @@ exports.storedQueryUpdateOrInsert = function (elt) {
             body: doc
         }, function (err) {
             if (err) {
-                exports.logError({
+                dbLogger.logError({
                     message: "Unable to Index document: " + doc.tinyId,
                     origin: "storedQuery.elastic.updateOrInsert",
                     stack: err,
