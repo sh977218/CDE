@@ -137,11 +137,11 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         rule = rule.trim();
         if (rule.indexOf("AND") > -1) {
             return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements) &&
-                $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4, 100), formElements);
+                $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements);
         }
         if (rule.indexOf("OR") > -1) {
             return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements) ||
-                $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3, 100), formElements))
+                $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements))
         }
         var ruleArr = rule.split(/[>|<|=|<=|>=]/);
         var questionLabel = ruleArr[0].replace(/"/g, "").trim();

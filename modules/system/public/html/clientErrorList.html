@@ -1,8 +1,5 @@
-<td>{{err.date | date:'MM/dd/yyyy @ h:mma'}}</td>
-<td style="word-break: break-all" ng-text-truncate="err.name"></td>
-<td style="word-break: break-all" ng-text-truncate="err.message"></td>
-<td>{{err.username}}</td>
-<td>{{err.ip}}</td>
-<td>{{err.userAgent}}</td>
-<td>{{err.url}}</td>
-<td ng-text-truncate="err.stack" style="word-break: break-all"></td>
+<td class="fake-link" ng-click="openErrorDetail(err);" id="{{errorType}}Error_{{errIndex}}">
+    {{err.date | date:'MM/dd/yyyy @h:mma'}}
+</td>
+<td> {{err.name | limitTo:80 }}</td>
+<td> {{err.message | limitTo:80 }}</td>
