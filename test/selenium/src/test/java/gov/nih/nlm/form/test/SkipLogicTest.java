@@ -71,7 +71,6 @@ public class SkipLogicTest extends BaseFormTest {
     private void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
                                boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        hangon(1);
         textPresent(textToBePresent, By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
         int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
         Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
