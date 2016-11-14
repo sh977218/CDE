@@ -1,7 +1,7 @@
 <div uib-accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
     <div uib-accordion-group is-open="">
         <div uib-accordion-heading>
-            <div class="row" ng-class="{'bg-warning': question.question.cde.outdated}">
+            <div class="row" ng-class="{'bg-warning': question.question.cde.outdated || question.updatedSkipLogic}">
                 <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
                     <i class="fa fa-arrows question-move-handle"></i>
                 </div>
@@ -37,7 +37,7 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
                     <div class="col-sm-7" id="dd_question_title_{{$index}}">
                         <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
-                           ng-click="openNameSelect(question)"></i>
+                           ng-click="openNameSelect(question,section)"></i>
                         {{question.label | placeHoldEmpty}}
                     </div>
                 </div>
