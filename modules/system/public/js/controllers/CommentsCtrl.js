@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('CommentsCtrl',
-    ['$scope', '$http', '$timeout', 'userResource', 'Alert',
-        function ($scope, $http, $timeout, userResource, Alert) {
+    ['$scope', '$http', '$timeout', 'userResource', 'Alert', '$timeout',
+        function ($scope, $http, $timeout, userResource, Alert, $timeout) {
 
             $scope.allOnlineUsers = {};
 
@@ -38,7 +38,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                         }, 10000);
                     }
                 });
-                $scope.$apply();
+                $timeout($scope.apply, 0);
             });
 
             $scope.$on("$destroy", function () {
