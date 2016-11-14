@@ -45,9 +45,6 @@ angular.module('systemModule').controller('CommentsCtrl',
             });
 
             $scope.$on("$destroy", function () {
-                $(".uib-tab").each(function () {
-                    $(this).find('uib-tab-heading').css('background-color', '');
-                });
                 socket.close();
             });
 
