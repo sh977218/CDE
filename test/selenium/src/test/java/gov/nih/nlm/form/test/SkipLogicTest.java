@@ -134,4 +134,13 @@ public class SkipLogicTest extends BaseFormTest {
 
     }
 
+    @Test
+    public void updateSkipLogicWhenEditLabel() {
+        String formName = "Study Discontinuation/Completion";
+        mustBeLoggedInAs(ninds_username, password);
+        goToFormByName(formName);
+        clickElement(By.id("description_tab"));
+        
+    }
+
 }
