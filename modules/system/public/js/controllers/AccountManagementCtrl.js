@@ -307,14 +307,19 @@ angular.module('systemModule').controller('AccountManagementCtrl',
 
     $scope.getComments = function (page) {
         $http.get("/allComments/" + (page-1) * 30 + "/30").then(function(result) {
-            $scope.latestComments = result.data;
+            $scope.comments.latestComments = result.data;
+            if ($scope.comments.latestComments.length === 0) {
+                $scope.comments.totalItems = (page - 2) * 30;
+            } else if ($scope.comments.latestComments.length < 30) {
+                $scope.comments.totalItems = (page - 2) * 30 + $scope.comments.latestComments.length;
+            }
         });
     };
 
-    $scope.$watch("currentCommentsPage", function () {
-        $scope.getComments($scope.currentCommentsPage);
+    $scope.$watch("comments.currentCommentsPage", function () {
+        $scope.getComments($scope.comments.currentCommentsPage);
     });
-    $scope.currentCommentsPage = 1;
+    $scope.comments = {currentCommentsPage: 1, totalItems: 10000};
 
     $scope.getEltLink = function(c) {
         return {

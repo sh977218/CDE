@@ -10,7 +10,7 @@
             <div ng-include="'/system/public/html/usersMgt.html'"></div>
         </div>
         <div uib-tab heading="Comments">
-            <div ng-if="latestComments.length > 0">
+            <div ng-if="comments.latestComments.length > 0">
                 <h3>User Comments</h3>
                 <table class="table table-border table-striped table-responsive">
                     <thead>
@@ -20,7 +20,7 @@
                     <th>Type</th>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="c in latestComments">
+                    <tr ng-repeat="c in comments.latestComments">
                         <td>{{c.username}}</td>
                         <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
                         <td>{{c.text}}</td>
@@ -28,9 +28,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <div>Currnet: {{currentCommentsPage}}</div>
-                <ul uib-pager total-items="10000" ng-model="currentCommentsPage"></ul>
             </div>
+            <ul uib-pager total-items="comments.totalItems" ng-model="comments.currentCommentsPage"></ul>
         </div>
         <div uib-tab heading="Batch Uploads" select="initBatchUpload()">
             <div ng-include="'/system/public/html/batchUpload.html'"></div>

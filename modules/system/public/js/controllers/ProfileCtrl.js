@@ -25,11 +25,25 @@ angular.module('systemModule').controller('ProfileCtrl',
             $scope.hasQuota = userResource.user.quota;
             $scope.orgCurator = userResource.user.orgCurator.toString().replace(/,/g, ', ');
             $scope.orgAdmin = userResource.user.orgAdmin.toString().replace(/,/g, ', ');
-            $http.get("/commentsFor/" + userResource.user.username + "/0/30").then(function(result) {
-               $scope.latestComments = result.data;
-            });
+            $scope.getComments(1);
         }
     });
+
+    $scope.getComments = function (page) {
+        $http.get("/commentsFor/" + userResource.user.username + "/" + (page-1) * 30 + "/30").then(function(result) {
+            $scope.comments.latestComments = result.data;
+            if ($scope.comments.latestComments.length === 0) {
+                $scope.comments.totalItems = (page - 2) * 30;
+            } else if ($scope.comments.latestComments.length < 30) {
+                $scope.comments.totalItems = (page - 2) * 30 + $scope.comments.latestComments.length;
+            }
+        });
+    };
+
+    $scope.$watch("comments.currentCommentsPage", function () {
+        $scope.getComments($scope.comments.currentCommentsPage);
+    });
+    $scope.comments = {currentCommentsPage: 1, totalItems: 10000};
 
     $scope.getEltLink = function(c) {
         return {
