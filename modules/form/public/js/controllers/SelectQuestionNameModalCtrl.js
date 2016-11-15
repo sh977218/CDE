@@ -14,16 +14,18 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
             function checkAndUpdateLabel(section, doUpdate, selectedNaming) {
                 section.formElements.forEach(function (fe) {
                     if (fe.skipLogic && fe.skipLogic.condition) {
+                        var updateSkipLogic = false;
                         var tokens = SkipLogicUtil.tokenSplitter(fe.skipLogic.condition);
                         tokens.forEach(function (token, i) {
                             if (i % 2 === 0 && token === question.label) {
                                 $scope.updateSkipLogic = true;
+                                updateSkipLogic = true;
                                 if (doUpdate && selectedNaming)
                                     tokens[i] = '"' + selectedNaming + '"';
                             } else if (i % 2 === 0 && token !== question.label)
                                 tokens[i] = '"' + tokens[i] + '"';
                         });
-                        if (doUpdate) {
+                        if (doUpdate && updateSkipLogic) {
                             fe.skipLogic.condition = tokens.join('');
                             fe.updatedSkipLogic = true;
                         }
@@ -35,8 +37,7 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
 
             $scope.okSelect = function (naming) {
                 if (!naming) {
-                    $modalInstance.close("");
-                    return;
+                    return $modalInstance.close("");
                 }
                 checkAndUpdateLabel(section, true, naming.designation);
                 $modalInstance.close(naming.designation);

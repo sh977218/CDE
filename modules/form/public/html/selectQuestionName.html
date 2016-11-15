@@ -6,7 +6,7 @@
     <div ng-if="cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
     <div ng-if="cde === 'error'">There is an issue retrieving this Data Element.</div>
     <div class="uib-alert alert-warning" ng-if="updateSkipLogic">
-        There are skip logic attached to this label. They will be updated too.
+        Some show if rules reference this label. They will be updated.
     </div>
 
     <div ng-repeat="naming in cde.naming" class="row" id="q_select_name_{{$index}}">
