@@ -139,6 +139,8 @@ public class SkipLogicTest extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
+        clickElement(By.id(""));
+
         clickElement(By.id("description_tab"));
         
     }
