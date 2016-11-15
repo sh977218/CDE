@@ -25,7 +25,7 @@
             </span>
             </div>
         </div>
-        <hr/>
+        <hr ng-if="displayInstruction"/>
         <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">
             <div ng-switch-when="true">
                 <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>
@@ -36,14 +36,10 @@
                         <div class="col-md-12" ng-include="'/form/public/html/formRenderQuestion.html'"
                              ng-init="formElements = section.formElements; question = formElement; question.question.answer = question.question.defaultAnswer"></div>
                     </div>
-                    <div ng-if="formElement.elementType === 'section'"
+                    <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
                          ng-include="'/form/public/html/formRenderSection.html'"
-                         ng-init="formElements = section.formElements; section = formElement;"></div>
-                    <div ng-if="formElement.elementType === 'form'"
-                         ng-include="'/form/public/html/formRenderForm.html'"
                          ng-init="formElements = section.formElements; section = formElement;">
                     </div>
-
                 </div>
             </div>
         </div>

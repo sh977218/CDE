@@ -33,7 +33,8 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         textPresent("Symptomology");
 
         clickElement(By.id("nativeFormRenderLink"));
-        textPresent("Embedded Form: new inner form label");
+        textPresent(newFormLabel);
+        textPresent("Symptomology");
 
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
         Assert.assertEquals(odmResponse.contains(newFormLabel), true, "Actual: " + odmResponse);
