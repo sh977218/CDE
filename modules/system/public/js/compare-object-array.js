@@ -34,6 +34,7 @@
                         return a - b;
                     };
                 }
+                if (typeof options.doSort === 'undefined') options.doSort = true;
                 options.matchCount = 0;
                 options.results = [];
                 options.showTitle = false;
@@ -47,32 +48,130 @@
                     }
                     return -1;
                 }
-                leftArray.sort(options.sort);
-                rightArray.sort(options.sort);
+                function displayedAttributes(a, b, noMatchArray) {
+                    if (a.o == null) return ["all"];
+                    var leftDisplayAttributes = [];
+                    var rightDisplayAttributes = [];
+                    if (a != null) {
+                        leftDisplayAttributes = options.properties.filter(function (p) {
+                            var pValue = p.getProperty(a);
+                            return pValue != null && pValue.length !== 0;
+                        });
+                    }
+                    if (b == null) {
+                        var b = noMatchArray.find(function (elem) {
+                            return elem.calculated.tinyId === a.calculated.tinyId;
+                        });
+                    }
+                    if (b != null) {
+                        rightDisplayAttributes = options.properties.filter(function (p) {
+                            var pValue = p.getProperty(b);
+                            return pValue != null && pValue.length !== 0;
+                        });
+                    }
+                    leftDisplayAttributes = leftDisplayAttributes.map(function (p) {
+                        return p.property;
+                    });
+                    rightDisplayAttributes = rightDisplayAttributes.map(function (p) {
+                        return p.property;
+                    });
+                    rightDisplayAttributes.forEach(function(value){
+                        if (leftDisplayAttributes.indexOf(value)==-1) leftDisplayAttributes.push(value);
+                    });
+                    return leftDisplayAttributes;
+                }
+                function partialMatchAttributes(a, noMatchArray) {
+                    if (a.calculated && a.calculated.tinyId) {
+                        var b = noMatchArray.find(function (elem) {
+                            return elem.calculated.tinyId === a.calculated.tinyId;
+                        });
+                    }
+                    var partialMatchItems = [];
+                    if (b) {
+                        options.properties.forEach(function (p) {
+                            if (!angular.equals(p.getProperty(a), p.getProperty(b))) {
+                                partialMatchItems.push(p.property);
+                            }
+                        });
+                        partialMatchItems.push("found");
+                    }
+                    return partialMatchItems;
+                }
+                function matchAttributes(a, b) {
+                    var partialMatchItems = [];
+                    if (a && a.calculated && a.calculated.tinyId &&
+                        b && b.calculated && b.calculated.tinyId) {
+                        options.properties.forEach(function (p) {
+                            if (!angular.equals(p.getProperty(a), p.getProperty(b))) {
+                                partialMatchItems.push(p.property);
+                            }
+                        });
+                    }
+                    return partialMatchItems;
+                }
+
+                if (options.doSort) {
+                    leftArray.sort(options.sort);
+                    rightArray.sort(options.sort);
+                }
 
                 var beginRightIndex = 0;
+                var previous = 'match';
+                var result = [];
+                var partials;
+                options.results.push(result);
                 leftArray.forEach(function (leftItem, leftIndex) {
                     var foundInRight = findIndexInArray(rightArray, beginRightIndex, leftItem, options.equal);
                     if (foundInRight === -1) {
+                        // left only
                         options.showTitle = true;
-                        options.results.push({leftIndex: leftIndex, match: false});
+                        partials = partialMatchAttributes(leftItem, rightArray);
+                        result.push({
+                            leftIndex: leftIndex,
+                            match: false,
+                            displayedAttributes: displayedAttributes(leftItem, null, rightArray),
+                            partialMatchItems: partials
+                        });
+                        previous = 'nomatch';
                     } else {
+                        // right only before
                         options.matchCount++;
                         for (var i = beginRightIndex; i < foundInRight; i++) {
                             options.showTitle = true;
-                            options.results.push({rightIndex: i, match: false});
+                            partials = partialMatchAttributes(rightArray[i], leftArray);
+                            result.push({
+                                rightIndex: i,
+                                match: false,
+                                displayedAttributes: displayedAttributes(rightArray[i], null, leftArray),
+                                partialMatchItems: partials
+                            });
+                            previous = 'nomatch';
                         }
-                        options.results.push({
+                        // match
+                        partials = matchAttributes(leftItem, rightArray[foundInRight])
+                        if (previous !== 'match' && partials.length > 0) { result = []; options.results.push(result); }
+                        result.push({
                             leftIndex: leftIndex,
                             rightIndex: foundInRight,
-                            match: true
+                            match: true,
+                            displayedAttributes: displayedAttributes(leftItem, rightArray[foundInRight]),
+                            partialMatchItems: partials
                         });
                         beginRightIndex = foundInRight + 1;
+                        previous = 'match';
                     }
+                    // right only after
                     if (leftIndex === leftArray.length - 1) {
                         for (var j = beginRightIndex; j < rightArray.length; j++) {
                             options.showTitle = true;
-                            options.results.push({rightIndex: j, match: false});
+                            partials = partialMatchAttributes(rightArray[j], leftArray)
+                            result.push({
+                                rightIndex: j,
+                                match: false,
+                                displayedAttributes: displayedAttributes(rightArray[j], null, leftArray),
+                                partialMatchItems: partials
+                            });
+                            previous = 'nomatch';
                         }
                     }
                 });

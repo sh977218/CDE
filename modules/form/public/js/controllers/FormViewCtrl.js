@@ -160,7 +160,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms');});
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,
             hideable: true
@@ -617,6 +617,7 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
+            $scope.$broadcast('eltReloaded');
             $scope.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);
