@@ -1,26 +1,37 @@
-<h4 for="historyCompare_{{options.title}}" ng-if="options.showTitle"
-       uib-tooltip="{{options.tooltip}}">{{options.title}}:</h4>
-<div class="overflowHidden" id="historyCompare_{{options.title}}">
+<label for="historyCompare_{{options.title}}" ng-if="options.showTitle"
+       uib-tooltip="{{options.tooltip}}">{{options.title}}:</label>
+<div class="overflowHidden" id="historyCompare_{{options.title}}" ng-repeat="result in options.results track by $index"
+        ng-init="sectionIndex = $index">
     <div class="col-md-6 historyCompareLeft">
-        <div class="row quickBoardContentCompareCol overflowHidden" id="historyCompareLeft_{{options.title}}_{{$index}}"
-             ng-repeat="result in options.results track by $index"
-             ng-if="result.match === false && left[result.leftIndex] !== undefined">
+        <div class="row quickBoardContentCompareCol overflowHidden"
+             id="historyCompareLeft_{{options.title}}_{{sectionIndex}}_{{$index}}"
+             ng-repeat="entry in result track by $index"
+             ng-if="(entry.match === true && entry.partialMatchItems.length > 0) || (entry.match === false && left[entry.leftIndex] !== undefined)">
             <div class="boxed-div">
+                <div ng-if="entry.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered</div>
                 <div ng-repeat="p in options.properties">
-                    <div ng-display-object ng-display-object-obj="left[result.leftIndex]"
-                         ng-display-object-properties="p"></div>
+                    <div ng-display-object ng-display-object-obj="left[entry.leftIndex]"
+                         ng-display-object-properties="p"
+                         ng-display-object-show-attribute="entry.displayedAttributes.indexOf('all') !== -1 || entry.displayedAttributes.indexOf(p.property) !== -1"
+                         ng-display-object-show-warning-icon="entry.partialMatchItems.indexOf(p.property) !== -1">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-xs-6 historyCompareRight">
-        <div class="quickBoardContentCompareCol overflowHidden" id="historyCompareRight_{{options.title}}_{{$index}}"
-             ng-repeat="result in options.results track by $index"
-             ng-if="result.match === false && right[result.rightIndex] !== undefined">
+        <div class="quickBoardContentCompareCol overflowHidden"
+             id="historyCompareRight_{{options.title}}_{{sectionIndex}}_{{$index}}"
+             ng-repeat="entry in result track by $index"
+             ng-if="(entry.match === true && entry.partialMatchItems.length > 0) || (entry.match === false && right[entry.rightIndex] !== undefined)">
             <div class="boxed-div">
+                <div ng-if="entry.partialMatchItems.indexOf('found') !== -1" class="compareMessage">Reordered</div>
                 <div ng-repeat="p in options.properties">
-                    <div ng-display-object ng-display-object-obj="right[result.rightIndex]"
-                         ng-display-object-properties="p"></div>
+                    <div ng-display-object ng-display-object-obj="right[entry.rightIndex]"
+                         ng-display-object-properties="p"
+                         ng-display-object-show-attribute="entry.displayedAttributes.indexOf('all') !== -1 || entry.displayedAttributes.indexOf(p.property) !== -1"
+                         ng-display-object-show-warning-icon="entry.partialMatchItems.indexOf(p.property) !== -1">
+                    </div>
                 </div>
             </div>
         </div>

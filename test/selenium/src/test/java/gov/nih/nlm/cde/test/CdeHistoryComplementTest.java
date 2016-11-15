@@ -35,10 +35,10 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Alternative Name 1", By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[@data-title='designation']"));
-        textPresent("Alternative Definition 1", By.xpath("//*[@id='historyCompareLeft_Naming_0']//div[@data-title='definition']"));
-        textPresent("Code Name 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//div[@data-title='name']"));
-        textPresent("Code ID 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0']//div[@data-title='originId']"));
+        textPresent("Alternative Name 1", By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='designation']"));
+        textPresent("Alternative Definition 1", By.xpath("//*[@id='historyCompareLeft_Naming_0_0']//div[@data-title='definition']"));
+        textPresent("Code Name 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//div[@data-title='name']"));
+        textPresent("Code ID 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//div[@data-title='originId']"));
 
         goToCdeByName(cdeName);
         showAllTabs();
@@ -66,9 +66,9 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         showAllTabs();
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
-        textPresent("Origin 1", By.xpath("//*//*[@id='historyCompareLeft_Identifiers_1']//*[@data-title='source']"));
-        textPresent("Identifier 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_1']//*[@data-title='id']"));
-        textPresent("Version 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_1']//*[@data-title='version']"));
+        textPresent("Origin 1", By.xpath("//*//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='source']"));
+        textPresent("Identifier 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='id']"));
+        textPresent("Version 1", By.xpath("//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='version']"));
     }
 
 

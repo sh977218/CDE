@@ -740,7 +740,7 @@ public class NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
-        textPresent("Differences");
+        textPresent("Changes");
     }
 
     protected void checkInHistory(String field, String oldValue, String newValue) {

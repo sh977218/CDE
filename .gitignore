@@ -8,6 +8,7 @@ test-console.o
 bower_components
 modules/components/
 modules/system/views/version.html
+*.orig
 
 ## Secret Config Files
 views/version.html
@@ -26,6 +27,7 @@ logs
 /test/selenium/build/
 /test/selenium/chromedriver
 /test/selenium/chromedriver.exe
+/dump/
 
 ## Pulled at build time
 
