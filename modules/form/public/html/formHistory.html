@@ -1,33 +1,59 @@
 <h4 tabindex="0">History</h4>
-<div class="row" ng-controller="FormDiffCtrl">
-    <div class="col-md-5">
-        <table ng-show="priorForms.length > 0" class="table" id="historyTable">
-            <caption tabindex="0">List of previous versions</caption>
-            <thead>
-            <tr>
-                <th tabindex="0">Updated</th>
-                <th tabindex="0">Updated by</th>
-                <th tabindex="0">Change Note</th>
-                <th tabindex="0">See Full</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td tabindex="0">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-                <td tabindex="0">{{elt.updatedBy.username}}</td>
-                <td tabindex="0">{{elt.changeNote}}</td>
-                <td tabindex="0">Currently Viewing</td>
-            </tr>
-            <tr ng-repeat="priorForm in priorForms | orderBy:[nullsToBottom,'-updated']">
-                <td tabindex="0">{{priorForm.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-                <td tabindex="0">{{priorForm.updatedBy.username || priorForm.createdBy || "Imported"}}</td>
-                <td tabindex="0">{{priorForm.changeNote}}</td>
-                <td tabindex="0">
-                    <a href="/#/formView?formId={{priorForm._id}}" id="prior-{{$index}}" class="fa fa-eye"> View</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div tabindex="0" ng-hide="priorForms.length > 0">This Form has no history</div>
+<div ng-controller="DiffConfigCtrl">
+    <div class="row" ng-controller="FormDiffCtrl">
+        <div class="col-lg-4 col-md-5" ng-if="priorForms.length > 0">
+            <table class="table table-hover" id="historyTable">
+                <caption>List of previous versions. Click rows to select them.
+                    <button ng-if="selectedIds.length === 2" id="historyCompareBtn"
+                            class="btn btn-default" ng-click="viewDiff()">
+                        <i class="fa fa-files-o"></i> Compare
+                    </button>
+                </caption>
+                <thead>
+                <tr>
+                    <th width="30px"></th>
+                    <th>Updated</th>
+                    <th>Updated by</th>
+                    <th>Change Note</th>
+                    <th>Version</th>
+                    <th style="text-align: center">View</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-click="setSelected(elt._id);"
+                    ng-class="{success: isSelected(elt._id)}">
+                    <td>
+                        <i class="fa fa-check-square-o" ng-if="isSelected(elt._id)" aria-hidden="true"></i>
+                        <i class="fa fa-square-o" ng-if="!isSelected(elt._id)" aria-hidden="true"></i>
+                    </td>
+                    <td>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                    <td>{{elt.updatedBy.username}}</td>
+                    <td>{{elt.changeNote}}</td>
+                    <td>{{elt.version}}</td>
+                    <td class="historyView disabledText">Viewing</td>
+                </tr>
+                <tr ng-repeat="priorForm in priorForms | orderBy:[nullsToFront].concat('updated'):true"
+                    ng-click="setSelected(priorForm._id);"
+                    ng-class="{success: isSelected(priorForm._id)}">
+                    <td>
+                        <i class="fa fa-check-square-o" ng-if="isSelected(priorForm._id)" aria-hidden="true"></i>
+                        <i class="fa fa-square-o" ng-if="!isSelected(priorForm._id)" aria-hidden="true"></i>
+                    </td>
+                    <td>{{priorForm.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+                    <td>{{priorForm.updatedBy.username || priorForm.createdBy || "Imported"}}</td>
+                    <td>{{priorForm.changeNote}}</td>
+                    <td>{{priorForm.version}}</td>
+                    <td class="historyView historyViewButton"
+                        ng-click="clickView($event,'/formView?formId=',priorForm._id);" id="prior-{{$index}}">
+                        <span class="fa fa-eye fa-2x"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4 col-md-5" ng-if="!(priorForms.length > 0)">This Form has no history</div>
+        <div class="col-lg-8 col-md-7">
+            <div ng-include="'/system/public/html/historyCompare.html'"></div>
+        </div>
     </div>
 </div>

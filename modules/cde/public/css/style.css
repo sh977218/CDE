@@ -161,6 +161,10 @@ body {
     pointer-events: none;
 }
 
+.disabledText {
+    color: darkgray;
+}
+
 .btn {
     margin-left: 10px;
 }
@@ -1283,12 +1287,26 @@ div + .questionPlaceholder {
     position: static;
 }
 
-.historyView:hover {
-    background-color: #c1d7ea !important;
+.historyView, .table > tbody > tr > td.historyView {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.historyViewButton:hover, .table > tbody > tr > td.historyView.historyViewButton:hover {
+    background-color: #c1d7ea;
+    cursor: pointer;
 }
 
 input.ng-invalid {
     border: 1px solid red !important;
+}
+
+.compareMessage {
+    text-align: right;
+    color: darkred;
+    font-weight: 800;
 }
 
 .replying {
