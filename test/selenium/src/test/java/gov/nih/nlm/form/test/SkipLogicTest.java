@@ -26,15 +26,23 @@ public class SkipLogicTest extends BaseFormTest {
 
     @Test
     public void editSkipLogicTest() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedOut();
         String formName = "PROMIS SF v1.0-Fatigue 8a";
+        goToFormByName(formName);
+        String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
+        clickElement(By.id("description_tab"));
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        clickElement(By.id("question_accordion_3_2"));
+        scrollToViewById("question_accordion_3_3");
+        textPresent("Sometimes");
+        Assert.assertEquals(findElement(By.xpath(inputXpath)).getAttribute("disabled"), "true");
+
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.id("question_accordion_3_2"));
         textPresent("Sometimes");
-
-        String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
 
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1,
                 true, "Unexpected number of tokens in expression 1");
