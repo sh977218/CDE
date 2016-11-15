@@ -231,25 +231,14 @@ public abstract class CommentTest extends CommonTest {
         hangon(1);
         clickElement(By.id("incomingMessage"));
 
-        textPresent("comment approval");
-        clickElement(By.cssSelector(".accordion-toggle"));
+        clickElement(By.partialLinkText("comment approval | " + user + " | " + commentText));
 
-        String preClass = "";
-        try {
-            textPresent(eltName);
-        } catch (Exception e) {
-            preClass = "accordion:nth-child(2) ";
-            clickElement(By.cssSelector(preClass + ".accordion-toggle"));
-            textPresent(commentText);
-        }
-
-        clickElement(By.cssSelector(preClass + ".linkToElt"));
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'linkToElt')]"));
         switchTab(1);
         textPresent(eltName);
         switchTabAndClose(0);
 
-        clickElement(By.cssSelector(preClass + ".declineComment"));
-        textPresent("Comment declined");
+        clickElement(By.xpath("//div[@aria-expanded='true']//*[contains(@class, 'declineComment')]"));
 
         logout();
         goToEltByName(eltName, status);
