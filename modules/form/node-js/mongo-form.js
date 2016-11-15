@@ -44,7 +44,7 @@ exports.count = function (condition, callback) {
 exports.priorForms = function (formId, callback) {
     Form.findById(formId).exec(function (err, form) {
         if (form !== null) {
-            return Form.find({}, "updated updatedBy changeNote")
+            return Form.find({}, "updated updatedBy changeNote version")
                 .where("_id").in(form.history).exec(function (err, forms) {
                     callback(err, forms);
                 });
