@@ -158,7 +158,7 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.id("question_accordion_0_0"));
         scrollToViewById("dd_question_title_0");
         clickElement(By.xpath("//*[@id='dd_question_title_0']//i"));
-        textPresent("There are skip logic attached to this label. They will be updated too.");
+        textPresent("Some show if rules reference this label. They will be updated.");
         clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
 
         String cssClass = findElement(By.xpath("//*[@id='question_4']//h4/a/span/div")).getAttribute("class");
@@ -167,7 +167,7 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.id("question_accordion_0_2"));
         scrollToViewById("dd_question_title_2");
         clickElement(By.xpath("//*[@id='dd_question_title_2']//i"));
-        textPresent("There are skip logic attached to this label. They will be updated too.");
+        textPresent("Some show if rules reference this label. They will be updated.");
         clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
 
         saveForm();
