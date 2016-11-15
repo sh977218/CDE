@@ -7,7 +7,9 @@ angular.module('cdeModule').controller('UpdateCdeRefVersionCtrl', ['$scope', '$h
                 return convert;
         };
         $http.get("/debytinyid/" + newQuestion.question.cde.tinyId).then(function (newCde) {
-            $http.get("/debytinyid/" + currentQuestion.question.cde.tinyId + "/" + currentQuestion.question.cde.version).then(function (oldCde) {
+            var cdeUrl = currentQuestion.question.cde.tinyId +
+                (currentQuestion.question.cde.version ? "/" + currentQuestion.question.cde.version : "");
+            $http.get("/debytinyid/" + cdeUrl).then(function (oldCde) {
                 $scope.bLabel = !angular.equals(newCde.data.naming, oldCde.data.naming);
             });
             var found = false;
@@ -25,7 +27,9 @@ angular.module('cdeModule').controller('UpdateCdeRefVersionCtrl', ['$scope', '$h
             != $scope.emptyStringToNull(newQuestion.question.defaultAnswer);
         $scope.bCde = true;
         if (newQuestion.question.datatype === "Number") {
-            if (currentQuestion.question.datatype === "Number") {
+            if (currentQuestion.question.datatype === "Number" &&
+                currentQuestion.question.datatypeNumber &&
+                newQuestion.question.datatypeNumber) {
                 $scope.bNumberMin = currentQuestion.question.datatypeNumber.minValue
                     != newQuestion.question.datatypeNumber.minValue;
                 $scope.bNumberMax = currentQuestion.question.datatypeNumber.maxValue
