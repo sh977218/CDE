@@ -13,7 +13,7 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
         clickElement(By.id("renderPreviewButton"));
         clickElement(By.id("nativeFormRenderLink"));
         textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
-        textPresent("Embedded Form: Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
+        textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
     }
 
