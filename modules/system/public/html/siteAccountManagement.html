@@ -28,7 +28,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <ul uib-pager total-items="totalItems" ng-model="currentCommentsPage"></ul>
+                <div>Currnet: {{currentCommentsPage}}</div>
+                <ul uib-pager total-items="10000" ng-model="currentCommentsPage"></ul>
             </div>
         </div>
         <div uib-tab heading="Batch Uploads" select="initBatchUpload()">

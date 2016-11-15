@@ -311,10 +311,10 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         });
     };
 
-    $scope.currentCommentsPage = 1;
     $scope.$watch("currentCommentsPage", function () {
         $scope.getComments($scope.currentCommentsPage);
     });
+    $scope.currentCommentsPage = 1;
 
     $scope.getEltLink = function(c) {
         return {
