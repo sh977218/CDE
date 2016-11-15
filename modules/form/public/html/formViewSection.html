@@ -25,7 +25,7 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
                          ng-class="{'has-error':section.skipLogic.skipLogicError}">
-                        <input ng-disabled="!(parent.formElements.length > 1)"
+                        <input ng-disabled="!(parent.formElements.length > 1) || !canCurate"
                                type="text" ng-model="section.skipLogic.condition"
                                class="form-control skipLogicCondition" ng-trim="false"
                                ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
