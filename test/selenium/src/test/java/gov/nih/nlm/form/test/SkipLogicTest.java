@@ -139,10 +139,38 @@ public class SkipLogicTest extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id(""));
-
+        clickElement(By.id("nativeFormRenderLink"));
+        textNotPresent("Reason for premature intervention discontinuation");
+        clickElement(By.xpath("//*[@id='Off study date_0']//button"));
+        findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
+        new Select(findElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']/select"))).selectByVisibleText("No");
+        textPresent("Reason for premature intervention discontinuation");
         clickElement(By.id("description_tab"));
-        
+        textPresent("Show Question Search Area");
+        clickElement(By.id("question_accordion_0_0"));
+        scrollToViewById("dd_question_title_0");
+        clickElement(By.xpath("//*[@id='dd_question_title_0']//i"));
+        textPresent("There are skip logic attached to this label. They will be updated too.");
+        clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
+
+        String cssClass = findElement(By.xpath("//*[@id='question_4']//h4/a/span/div")).getAttribute("class");
+        Assert.assertEquals(cssClass.contains("bg-warning"), true);
+
+        clickElement(By.id("question_accordion_0_2"));
+        scrollToViewById("dd_question_title_2");
+        clickElement(By.xpath("//*[@id='dd_question_title_2']//i"));
+        textPresent("There are skip logic attached to this label. They will be updated too.");
+        clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
+
+        saveForm();
+        goToFormByName(formName);
+        clickElement(By.id("nativeFormRenderLink"));
+        textNotPresent("Reason for premature intervention discontinuation");
+        clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
+        findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
+        new Select(findElement(By.xpath("//*[@id='Off study intervention prematurely indicator_2']/select"))).selectByVisibleText("No");
+        textPresent("Reason for premature intervention discontinuation");
+
     }
 
 }

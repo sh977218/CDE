@@ -11,18 +11,17 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
                 $scope.cde = "error";
             });
 
-            function checkAndUpdateLabel(section, selectedNaming, doUpdate) {
+            function checkAndUpdateLabel(section, doUpdate, selectedNaming) {
                 section.formElements.forEach(function (fe) {
                     if (fe.skipLogic && fe.skipLogic.condition) {
                         var tokens = SkipLogicUtil.tokenSplitter(fe.skipLogic.condition);
                         tokens.forEach(function (token, i) {
                             if (i % 2 === 0 && token === question.label) {
-                                if (selectedNaming) {
-                                    tokens[i] = '"' + selectedNaming + '"';
-                                    tokens[i + 2] = '"' + tokens[i + 2] + '"';
-                                }
                                 $scope.updateSkipLogic = true;
-                            }
+                                if (doUpdate && selectedNaming)
+                                    tokens[i] = '"' + selectedNaming + '"';
+                            } else if (i % 2 === 0 && token !== question.label)
+                                tokens[i] = '"' + tokens[i] + '"';
                         });
                         if (doUpdate) {
                             fe.skipLogic.condition = tokens.join('');
@@ -32,14 +31,14 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
                 });
             }
 
-            checkAndUpdateLabel(section, null, false);
+            checkAndUpdateLabel(section);
 
             $scope.okSelect = function (naming) {
                 if (!naming) {
                     $modalInstance.close("");
                     return;
                 }
-                checkAndUpdateLabel(section, naming.designation, true);
+                checkAndUpdateLabel(section, true, naming.designation);
                 $modalInstance.close(naming.designation);
             };
         }
