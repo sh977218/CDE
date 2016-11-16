@@ -161,8 +161,8 @@ public class SkipLogicTest extends BaseFormTest {
         textPresent("Some show if rules reference this label. They will be updated.");
         clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
 
-        String cssClass = findElement(By.xpath("//*[@id='question_4']//h4/a/span/div")).getAttribute("class");
-        Assert.assertEquals(cssClass.contains("bg-warning"), true);
+        String cssClass = findElement(By.xpath("//*[@id='question_4']//h4/a/span/div/div/i[contains(@class,'fa-cog')]")).getAttribute("class");
+        Assert.assertEquals(cssClass.contains("fa-spin"), true);
 
         clickElement(By.id("question_accordion_0_2"));
         scrollToViewById("dd_question_title_2");
