@@ -196,7 +196,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
     $scope.canBeDisplayedAsMatrix = function (section) {
         var result = true;
         var answerHash;
-        section.formElements.forEach(function (formElem) {
+        section && section.formElements && section.formElements.forEach(function (formElem) {
             if (formElem.elementType !== 'question') {
                 return result = false;
             } else {

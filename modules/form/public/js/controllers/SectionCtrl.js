@@ -92,8 +92,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         question.label = n.designation;
                 });
                 if (cde.valueDomain.permissibleValues.length > 0) {
-                    // elastic only store 20 pv, retrieve pv when have more than 19 pv.
-                    if (cde.valueDomain.permissibleValues.length > 19) {
+                    // elastic only store 10 pv, retrieve pv when have more than 9 pv.
+                    if (cde.valueDomain.permissibleValues.length > 9) {
                         $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);

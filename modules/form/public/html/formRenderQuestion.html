@@ -18,21 +18,21 @@
             </div>
             <div ng-switch-default ng-switch="question.question.datatype" id="{{question.label}}_{{$index}}">
                 <div ng-switch-when="Value List">
-                    <fieldset ng-if="!question.question.multiselect" class="form-group">
+                    <fieldset ng-if="!question.question.multiselect">
                         <div class="radio" ng-repeat="pv in question.question.answers">
                             <label>
                                 <input ng-model="question.question.answer" ng-required="question.question.required"
                                        type="radio" ng-value="pv.permissibleValue"/>
-                                {{pv.permissibleValue}}
+                                {{pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue}}
                             </label>
                         </div>
                     </fieldset>
-                    <div ng-if="question.question.multiselect" class="form-group">
+                    <div ng-if="question.question.multiselect">
                         <div class="checkbox" ng-repeat="pv in question.question.answers">
                             <label>
                                 <input checklist-model="question.question.answer" ng-required="question.question.required"
                                        type="checkbox" checklist-value="pv.permissibleValue"/>
-                                {{pv.permissibleValue}}
+                                {{pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue}}
                             </label>
                         </div>
                     </div>
@@ -47,21 +47,25 @@
                         <i class="glyphicon glyphicon-calendar"></i>
                     </button>
                 </div>
-                <input ng-switch-when="Number" name="{{question.question.cde.tinyId}}" class="form-control"
-                       type="number" ng-required="question.question.required"
-                       ng-model="question.question.answer"
-                       min="{{question.question.datatypeNumber.minValue}}"
-                       max="{{question.question.datatypeNumber.maxValue}}"/>
-                <div ng-switch-default>
+                <div ng-switch-when="Number" ng-class="{'input-group': question.question.uoms.length > 0}">
+                    <input type="number" class="form-control" ng-required="question.question.required"
+                           ng-model="question.question.answer" name="{{question.question.cde.tinyId}}"
+                           min="{{question.question.datatypeNumber.minValue}}"
+                           max="{{question.question.datatypeNumber.maxValue}}"/>
+                    <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
+                           ng-init="question.question.answerUom = question.question.uoms[0]"
+                           ng-repeat="uom in question.question.uoms">
+                        <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}
+                    </label>
+                </div>
+                <div ng-switch-default ng-class="{'input-group': question.question.uoms.length > 0}">
                     <input type="text" class="form-control" ng-required="question.question.required"
                            ng-model="question.question.answer" name=""/>
-                    <div ng-if="question.question.uoms.length > 0"
-                         ng-init="question.question.answerUom = question.question.uoms[0]"
-                         class="radio" ng-repeat="uom in question.question.uoms">
-                        <label>
-                            <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}
-                        </label>
-                    </div>
+                    <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
+                           ng-init="question.question.answerUom = question.question.uoms[0]"
+                           ng-repeat="uom in question.question.uoms">
+                        <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}
+                    </label>
                 </div>
 
                 <div>
@@ -71,5 +75,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>
