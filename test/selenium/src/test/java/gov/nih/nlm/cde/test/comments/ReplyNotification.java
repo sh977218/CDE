@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test.comments;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class ReplyNotification extends CdeCommentTest {
@@ -21,6 +22,7 @@ public class ReplyNotification extends CdeCommentTest {
         goToEltByName(eltName);
 
         clickElement(By.id("discussBtn"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("replyTextarea_0")));
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
