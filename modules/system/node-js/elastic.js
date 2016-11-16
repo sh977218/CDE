@@ -626,12 +626,14 @@ exports.elasticsearch = function (query, type, cb) {
     search.body = query;
     esClient.search(search, function(error, response) {
         if (error) {
-            if (response.statusCode === 400) {
-                logging.errorLogger.error("Error: ElasticSearch Error",
-                    {
-                        origin: "system.elastic.elasticsearch", stack: error.stack,
-                        details: JSON.stringify(query)
-                    });
+            if (response.status === 400) {
+                if (response.error.type !== 'search_phase_execution_exception') {
+                    logging.errorLogger.error("Error: ElasticSearch Error",
+                        {
+                            origin: "system.elastic.elasticsearch", stack: error.stack,
+                            details: JSON.stringify(query)
+                        });
+                }
                 cb("Invalid Query");
             } else {
                 var querystr = "cannot stringify query";
