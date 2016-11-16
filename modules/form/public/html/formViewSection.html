@@ -5,7 +5,7 @@
                 <i class="fa fa-arrows fa-lg"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
-                   title="{{section.updatedSkipLogic?'Section has updated show if rule':'Suestion has show if rule'}}"></i>
+                   title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
             </div>
             <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit
                  model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div>
