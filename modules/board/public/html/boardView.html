@@ -1,5 +1,27 @@
 <div ng-controller="BoardViewCtrl">
+    <div ng-if="board.reviewer.length > 0">
+        <div class="col-md-12">
+            <div class="col-md-1">
+                <label class="floatLeft">Reviewers:</label>
+            </div>
+            <div class="floatLeft" ng-repeat="reviewer in board.reviewer">
+                <span class="icon-stack icon-4x">
+                    <i class="fa fa-user fa-2x" title="{{reviewer.username}} {{reviewer.status}}"
+                       aria-hidden="true"></i>
+                    <i class="fa overlay-lower-right"
+                       ng-class="{'fa-check green-icon':reviewer.status === 'accepted',
+                       'fa-times red-icon':reviewer.status === 'rejected',
+                       'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
+                </span>
+            </div>
+        </div>
+    </div>
     <h3 class="centerText" id="board_name_{{board.name}}">{{board.name}}
+        <button class="btn btn-small btn-default" ng-click="addReviewerToBoard()">
+            <i class="fa fa-plus">Add Reviewer</i>
+        </button>
+        <button class="btn btn-small btn-default" ng-click="addViewerToBoard()">
+            <i class="fa fa-plus">Add Viewer</i></button>
         <button class="btn btn-small btn-default pull-right" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
                 ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
             <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss</button>

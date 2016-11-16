@@ -1437,3 +1437,20 @@ input.ng-invalid {
     position: absolute;
     width: 0;
 }
+
+.overlay-lower-right {
+    position: relative;
+    right: 10px;
+}
+
+.green-icon {
+    color: #51A351;
+}
+
+.red-icon {
+    color: red;
+}
+
+.yellow-icon {
+    color: yellow;
+}

@@ -184,6 +184,32 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             };
+            $scope.addReviewerToBoard = function () {
+                $modal.open({
+                    animation: false,
+                    templateUrl: '/board/public/html/addReviewerToBoard.html',
+                    controller: 'AddReviewerToBoardCtrl',
+                    resolve: {
+                        board: function () {
+                            return $scope.board;
+                        }
+                    }
+                });
+            };
+            $scope.addViewerToBoard = function () {
+/*                $modal.open({
+                    animation: false,
+                    templateUrl: '/board/public/html/addViewerToBoard.html',
+                    controller: 'AddViewerToBoardCtrl',
+                    resolve: {
+                        board: function () {
+                            return $scope.board;
+                        }
+                    }
+                });*/
+            };
+
+
 
             $scope.reload();
 

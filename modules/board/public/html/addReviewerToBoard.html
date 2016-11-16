@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h3>Add Reviewers to this board</h3>
+</div>
+<div class="modal-body">
+    <label for="username">username:</label>
+    <input id="username" ng-model="searchString">
+    <button ng-click="addUserToBoard()">Add</button>
+    <div ng-repeat="user in board.reviewer">
+        {{user.username}}
+    </div>
+    <button class="btn btn-default done" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
+</div>

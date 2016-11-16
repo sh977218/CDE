@@ -24,7 +24,10 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         username: String
     },
     pins: [pinSchema],
-    reviewer: [{username: String}],
+    reviewer: [{
+        username: {type: String, default: 'cde', enum: ['invited', 'accepted', 'rejected']},
+        status: String
+    }],
     viewer: [{username: String}]
 });
 schemas.pinningBoardSchema.pre('save', function (next) {
