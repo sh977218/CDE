@@ -5,6 +5,10 @@
 <div class="modal-body">
     <div ng-if="cde === null"><i class="fa fa-spinner fa-pulse"></i> Loading...</div>
     <div ng-if="cde === 'error'">There is an issue retrieving this Data Element.</div>
+    <div class="uib-alert alert-warning" ng-if="updateSkipLogic">
+        Some show if rules reference this label. They will be updated.
+    </div>
+
     <div ng-repeat="naming in cde.naming" class="row" id="q_select_name_{{$index}}">
         <div class="col-md-3">
             <button class="btn btn-default" ng-click="okSelect(naming)"><i class="fa fa-check"></i> Select</button>
@@ -24,12 +28,12 @@
 
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-default" ng-click="okClear()"><i class="fa fa-stop"></i> No Label</button>
+            <button class="btn btn-default" ng-click="okSelect()"><i class="fa fa-stop"></i> No Label</button>
         </div>
     </div>
 
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancelCreate()" id="cancelSelect">Cancel</button>
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelSelect">Cancel</button>
 </div>

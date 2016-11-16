@@ -1,10 +1,10 @@
 angular.module('cdeModule').controller('DEViewCtrl',
     ['$scope', '$routeParams', '$uibModal', '$window', '$http', '$timeout', 'DataElement',
         'DataElementTinyId', 'isAllowedModel', 'OrgHelpers', '$rootScope', 'TourContent',
-        'CdeDiff', '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
+        '$q', 'QuickBoard', '$log', 'userResource', 'PinModal',
         function ($scope, $routeParams, $modal, $window, $http, $timeout, DataElement, DataElementTinyId,
                   isAllowedModel, OrgHelpers, $rootScope, TourContent,
-                  CdeDiff, $q, QuickBoard, $log, userResource, PinModal)
+                  $q, QuickBoard, $log, userResource, PinModal)
 {
 
     $scope.module = 'cde';
