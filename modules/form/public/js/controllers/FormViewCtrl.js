@@ -209,13 +209,15 @@ angular.module('formModule').controller
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
         converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
+            $timeout(function () {
                 $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
-            },
-            function (err) {
-                $scope.error = err;
-            });
+            }, 0);
+        },
+        function (err) {
+            $scope.error = err;
+        });
     };
 
     $scope.raiseLimit = function() {

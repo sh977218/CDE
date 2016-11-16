@@ -34,6 +34,7 @@ public abstract class CommentTest extends CommonTest {
         closeAlert();
 
         for (int i = 1; i <= 5; i++) {
+            hangon(1);
             findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + i);
             scrollToViewById("replyBtn_0");
             clickElement(By.id("replyBtn_0"));
@@ -42,6 +43,7 @@ public abstract class CommentTest extends CommonTest {
             textPresent("Reply to very long comment " + i);
         }
         for (int j = 6; j <= 10; j++) {
+            hangon(1);
             findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + j);
             scrollToViewById("replyBtn_0");
             clickElement(By.id("replyBtn_0"));
