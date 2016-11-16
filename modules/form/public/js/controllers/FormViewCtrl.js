@@ -160,7 +160,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formHistory.html'],
             select: function () {
                 setCurrentTab();
-                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadPriorForms');});
+                $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,
             hideable: true
@@ -209,13 +209,15 @@ angular.module('formModule').controller
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
         converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
+            $timeout(function () {
                 $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
-            },
-            function (err) {
-                $scope.error = err;
-            });
+            }, 0);
+        },
+        function (err) {
+            $scope.error = err;
+        });
     };
 
     $scope.raiseLimit = function() {
@@ -615,6 +617,7 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
+            $scope.$broadcast('eltReloaded');
             $scope.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);

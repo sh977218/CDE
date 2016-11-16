@@ -84,6 +84,10 @@ body {
     margin-bottom: 3px;
 }
 
+.mb5 {
+    margin-bottom: 5px;
+}
+
 .ib {
     display: inline-block;
 }
@@ -159,6 +163,10 @@ body {
 .disabled {
     opacity: 0.5;
     pointer-events: none;
+}
+
+.disabledText {
+    color: darkgray;
 }
 
 .btn {
@@ -1283,12 +1291,26 @@ div + .questionPlaceholder {
     position: static;
 }
 
-.historyView:hover {
-    background-color: #c1d7ea !important;
+.historyView, .table > tbody > tr > td.historyView {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.historyViewButton:hover, .table > tbody > tr > td.historyView.historyViewButton:hover {
+    background-color: #c1d7ea;
+    cursor: pointer;
 }
 
 input.ng-invalid {
     border: 1px solid red !important;
+}
+
+.compareMessage {
+    text-align: right;
+    color: darkred;
+    font-weight: 800;
 }
 
 .replying {
@@ -1315,4 +1337,39 @@ input.ng-invalid {
     to {
         width: 20px;
     }
+}
+
+.highlightedTab {
+    background-color: rgb(255, 240, 180)
+}
+
+.currentTabComment {
+    margin-left: -50px;
+}
+
+.comment-arrow-outer {
+    border-top: none;
+    border-bottom: 24px solid transparent;
+    border-left: none;
+    border-right: 24px solid #ddd;
+    left: -25px;
+    top: -1px;
+    z-index: -1;
+    height: 0;
+    position: absolute;
+    width: 0;
+}
+
+.comment-arrow-inner {
+    cursor: default;
+    border-top: none;
+    border-bottom: 26px solid transparent;
+    border-left: none;
+    border-right: 26px solid #fff;
+    left: -22px;
+    z-index: 501;
+    top: 0;
+    height: 0;
+    position: absolute;
+    width: 0;
 }

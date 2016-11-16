@@ -256,7 +256,7 @@ exports.addComment = function (req, res, dao) {
                 res.status(404).send("Element does not exist.");
             } else {
                 var eltId = req.body.element.eltId;
-                var comment = new mongo_data_system.Comment({
+                var commentObj = {
                     user: req.user._id
                     , username: req.user.username
                     , created: new Date().toJSON()
@@ -265,7 +265,11 @@ exports.addComment = function (req, res, dao) {
                         eltType: dao.type,
                         eltId: eltId
                     }
-                });
+                };
+                if (req.body.linkedTab) {
+                    commentObj.linkedTab = req.body.linkedTab;
+                }
+                var comment = new mongo_data_system.Comment(commentObj);
                 if (!authorizationShared.canComment(req.user)) {
                     comment.pendingApproval = true;
                     var details = {
