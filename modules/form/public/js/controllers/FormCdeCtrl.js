@@ -7,19 +7,23 @@ angular.module('cdeModule').controller('FormCdeCtrl',
             function getFormCdes() {
                 CdeList.byTinyIdList($scope.formCdeIds, function (cdes) {
                     $scope.cdes = cdes;
-                    $scope.formCdeIds.forEach(function (id, index){
-                        var finds = $scope.cdes.filter(function (e) { return e.tinyId === id });
-                        var loc = -1;
-                        for (var i = 0; i < finds.length; i++) {
-                            loc = $scope.cdes.indexOf(finds[i]);
-                            if(loc >= index) break;
+
+                    for (var i = 0, iForm = 0; i < $scope.cdes.length && iForm < $scope.formCdeIds.length;) {
+                        var finds = $scope.cdes.filter(function (e) { return e.tinyId === $scope.formCdeIds[iForm] });
+                        iForm++;
+                        for (var j = 0, loc = -1; j < finds.length; j++) {
+                            loc = $scope.cdes.indexOf(finds[j]);
+                            if (loc !== -1 && loc >= i) {
+                                if (loc > i) {
+                                    var temp = $scope.cdes[i];
+                                    $scope.cdes[i] = $scope.cdes[loc];
+                                    $scope.cdes[loc] = temp;
+                                }
+                                i++;
+                                break;
+                            }
                         }
-                        if (loc !== -1 && loc > index) {
-                            var temp = $scope.cdes[index];
-                            $scope.cdes[index] = $scope.cdes[loc];
-                            $scope.cdes[loc] = temp;
-                        }
-                    });
+                    }
                 });
             }
 
