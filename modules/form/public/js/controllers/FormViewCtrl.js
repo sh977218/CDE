@@ -1,8 +1,8 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -86,7 +86,6 @@ angular.module('formModule').controller
             includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                console.log("CDE LIST Selected");
                 $timeout($scope.$broadcast('loadFormCdes'), 0);
             },
             show: false,
@@ -209,13 +208,15 @@ angular.module('formModule').controller
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
         converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
+            $timeout(function () {
                 $scope.lfData = new LFormsData(lfData); //jshint ignore:line
                 $scope.$apply($scope.lfData);
                 $scope.formPreviewLoading = false;
-            },
-            function (err) {
-                $scope.error = err;
-            });
+            }, 0);
+        },
+        function (err) {
+            $scope.error = err;
+        });
     };
 
     $scope.raiseLimit = function() {
@@ -365,63 +366,6 @@ angular.module('formModule').controller
         $scope.stageElt();
     };
 
-        var tokenSplitter = function (str) {
-            var tokens = [];
-        if (!str) {
-            tokens.unmatched = "";
-            return tokens;
-        }
-        str = str.trim();
-            var res = str.match(/^"[^"]+"/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        var t = res[0];
-        str = str.substring(t.length).trim();
-        t = t.substring(1, t.length - 1);
-        tokens.push(t);
-
-        res = str.match(/^[=|<|>]/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        tokens.push(t);
-        str = str.substring(t.length).trim();
-
-        res = str.match(/^"([^"]+)"/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        var newT = res[0].substring(1, t.length - 1);
-        tokens.push(newT);
-        str = str.substr(t.length).trim();
-
-        res = str.match(/^((\bAND\b)|(\bOR\b))/);
-        if (!res) {
-            tokens.unmatched = str;
-            return tokens;
-        }
-        t = res[0];
-        tokens.push(t);
-        str = str.substring(t.length).trim();
-
-        tokens.unmatched = str;
-
-        if (str.length > 0) {
-            var innerTokens = tokenSplitter(str);
-            var outerTokens = tokens.concat(innerTokens);
-            outerTokens.unmatched = innerTokens.unmatched;
-            return outerTokens;
-        } else {
-            return tokens;
-        }
-    };
-
     function validateSingleExpression(tokens, previousQuestions) {
         var filteredQuestions = previousQuestions.filter(function (pq) {
             return questionSanitizer(pq.label) === tokens[0];
@@ -464,7 +408,7 @@ angular.module('formModule').controller
         }
         $timeout(function() {
             var logic = skipLogic.condition;
-            var tokens = tokenSplitter(logic);
+            var tokens = SkipLogicUtil.tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
                 $scope.isFormValid = false;
@@ -491,7 +435,7 @@ angular.module('formModule').controller
          if (!currentContent) currentContent = '';
          if (!thisQuestion.skipLogic) thisQuestion.skipLogic = {condition: ''};
 
-         var tokens = tokenSplitter(currentContent);
+         var tokens = SkipLogicUtil.tokenSplitter(currentContent);
          $scope.tokens = tokens;
 
          preSkipLogicSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);

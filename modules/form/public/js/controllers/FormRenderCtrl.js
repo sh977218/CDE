@@ -136,12 +136,12 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         if (!rule) return true;
         rule = rule.trim();
         if (rule.indexOf("AND") > -1) {
-            return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements) &&
-                $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements);
+            return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, question) &&
+                $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, question);
         }
         if (rule.indexOf("OR") > -1) {
-            return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements) ||
-                $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements))
+            return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements, question) ||
+            $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements, question))
         }
         var ruleArr = rule.split(/[>|<|=|<=|>=]/);
         var questionLabel = ruleArr[0].replace(/"/g, "").trim();
