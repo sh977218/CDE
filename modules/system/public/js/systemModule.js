@@ -194,7 +194,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 };
             }]
         };
-    }]);
+    }])
+;
 
 angular.module('systemModule').filter('placeHoldEmpty', [function () {
     return function (input) {

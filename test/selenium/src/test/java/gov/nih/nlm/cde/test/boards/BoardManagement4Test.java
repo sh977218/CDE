@@ -15,8 +15,9 @@ public class BoardManagement4Test extends BoardTest {
         clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
         textPresent("Confirm Delete");
         clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
-        textNotPresent(boardName);
         textPresent("Done");
+        closeAlert();
+        textNotPresent(boardName);
     }
 
     @Test

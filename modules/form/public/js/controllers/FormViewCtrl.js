@@ -86,7 +86,6 @@ angular.module('formModule').controller
             includes: ['/form/public/html/cdeList.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                console.log("CDE LIST Selected");
                 $timeout($scope.$broadcast('loadFormCdes'), 0);
             },
             show: false,
