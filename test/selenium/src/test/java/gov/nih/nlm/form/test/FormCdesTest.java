@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class FormCdesTest extends BaseFormTest {
