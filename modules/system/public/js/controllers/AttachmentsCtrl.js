@@ -1,23 +1,25 @@
-angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$location', function ($scope, $rootScope, $http, $timeout, $location) {
+angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootScope', '$http', '$timeout', '$location',
+    function ($scope, $rootScope, $http, $timeout, $location) {
+
     $scope.setFiles = function (element) {
-        $scope.$apply(function ($scope) {
-            // Turn the FileList object into an Array
-            $scope.files = [];
-            for (var i = 0; i < element.files.length; i++) {
-                if (element.files[i].size > (5 * 1024 * 1024)) {
-                    $scope.message = "Size is limited to 5Mb per attachment";
-                } else {
-                    $scope.files.push(element.files[i]);
+        $timeout(function () {
+            $scope.$apply(function ($scope) {
+                // Turn the FileList object into an Array
+                $scope.files = [];
+                for (var i = 0; i < element.files.length; i++) {
+                    if (element.files[i].size > (5 * 1024 * 1024)) {
+                        $scope.message = "Size is limited to 5Mb per attachment";
+                    } else {
+                        $scope.files.push(element.files[i]);
+                    }
                 }
-            }
-            $scope.progressVisible = false;
-        });
+                $scope.progressVisible = false;
+            });
+        }, 0);
     };
 
     $scope.uploadFiles = function () {
-        for (var i in $scope.files) {
-            $scope.uploadFile($scope.files[i]);
-        }
+        $scope.files.forEach($scope.uploadFile);
     };
 
     $scope.uploadFile = function (file) {
@@ -35,13 +37,15 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     };
 
     function uploadProgress(evt) {
-        $scope.$apply(function () {
-            if (evt.lengthComputable) {
-                $scope.progress = Math.round(evt.loaded * 100 / evt.total);
-            } else {
-                $scope.progress = 'unable to compute';
-            }
-        });
+        $timeout(function () {
+            $scope.$apply(function () {
+                if (evt.lengthComputable) {
+                    $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+                } else {
+                    $scope.progress = 'unable to compute';
+                }
+            });
+        }, 0);
     }
 
     function uploadComplete(evt) {
@@ -63,9 +67,11 @@ angular.module('systemModule').controller('AttachmentsCtrl', ['$scope', '$rootSc
     }
 
     function uploadCanceled(evt) {
-        $scope.$apply(function () {
-            $scope.progressVisible = false;
-        });
+        $timeout(function () {
+            $scope.$apply(function () {
+                $scope.progressVisible = false;
+            });
+        }, 0);
     }
 
     $scope.removeAttachment = function (index) {
