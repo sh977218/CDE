@@ -168,19 +168,23 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }
         };
 
-        $scope.openNameSelect = function (question) {
+        $scope.openNameSelect = function (question, section) {
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: '/form/public/html/selectQuestionName.html',
                 controller: 'SelectQuestionNameModalCtrl',
                 resolve: {
-                    cde: function () {
-                        return question.question.cde;
+                    question: function () {
+                        return question;
+                    },
+                    section: function () {
+                        return section;
                     }
                 }
             });
-
             modalInstance.result.then(function (selectedName) {
+                if (selectedName === question.label)
+                    return;
                 if (selectedName.length > 0) {
                     question.label = selectedName;
                     question.hideLabel = false;

@@ -23,7 +23,9 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         userId: mongoose.Schema.Types.ObjectId,
         username: String
     },
-    pins: [pinSchema]
+    pins: [pinSchema],
+    reviewer: [{username: String}],
+    viewer: [{username: String}]
 });
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();
