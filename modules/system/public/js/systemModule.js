@@ -30,6 +30,11 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
         }).when('/inbox', {
             controller: 'InboxCtrl',
             templateUrl: '/system/public/html/inbox.html'
+        }).when('/orgComments', {
+            controller: ['$scope', function($scope) {
+                $scope.commentsUrl = "/orgComments/";
+            }],
+            templateUrl: '/system/public/html/latestComments.html'
         }).when('/siteaccountmanagement', {
             controller: 'AccountManagementCtrl',
             templateUrl: '/system/public/html/siteAccountManagement.html'

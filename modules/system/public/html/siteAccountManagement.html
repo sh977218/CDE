@@ -10,26 +10,7 @@
             <div ng-include="'/system/public/html/usersMgt.html'"></div>
         </div>
         <div uib-tab heading="Comments">
-            <div ng-if="comments.latestComments.length > 0">
-                <h3>User Comments</h3>
-                <table class="table table-border table-striped table-responsive">
-                    <thead>
-                    <th>Username</th>
-                    <th>Date</th>
-                    <th>Text</th>
-                    <th>Type</th>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="c in comments.latestComments">
-                        <td>{{c.username}}</td>
-                        <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
-                        <td>{{c.text}}</td>
-                        <td><a href="{{getEltLink(c)}}" target="_blank">{{c.element.eltType}}</a></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <ul uib-pager total-items="comments.totalItems" ng-model="comments.currentCommentsPage"></ul>
+            <div ng-include="'/system/public/html/latestComments.html'"></div>
         </div>
         <div uib-tab heading="Batch Uploads" select="initBatchUpload()">
             <div ng-include="'/system/public/html/batchUpload.html'"></div>

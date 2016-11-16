@@ -8,7 +8,6 @@ angular.module('systemModule').controller('ProfileCtrl',
             $scope.cdes = response;
     });
 
-
     $scope.saveProfile = function () {
         $timeout(function () {
             $http.post('/user/me', userResource.user).then(function (res) {
@@ -20,6 +19,7 @@ angular.module('systemModule').controller('ProfileCtrl',
             });
         }, 0);
     };
+
     userResource.getPromise().then(function () {
         if (userResource.user.username) {
             $scope.hasQuota = userResource.user.quota;
@@ -35,7 +35,7 @@ angular.module('systemModule').controller('ProfileCtrl',
             if ($scope.comments.latestComments.length === 0) {
                 $scope.comments.totalItems = (page - 2) * 30;
             } else if ($scope.comments.latestComments.length < 30) {
-                $scope.comments.totalItems = (page - 2) * 30 + $scope.comments.latestComments.length;
+                $scope.comments.totalItems = (page - 1) * 30 + $scope.comments.latestComments.length;
             }
         });
     };

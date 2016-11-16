@@ -10,6 +10,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
     , app = require("../../../app")
+    , usersrvc = require('./usersrvc')
     ;
 
 exports.save = function (req, res, dao, cb) {
@@ -533,6 +534,47 @@ exports.allComments = function (req, res) {
     mongo_data_system.Comment.find({status: {"$ne": "deleted"}}).skip(req.params.from)
         .limit(req.params.size).sort({created: -1}).exec(function(err, results) {
         if (err) return res.status(500).send("Unable to retrieve comments");
+        return res.send(results);
+    });
+};
+
+exports.orgComments = function (req, res) {
+    var myOrgs = usersrvc.myOrgs(req.user);
+    if (!myOrgs || myOrgs.length === 0) {
+        return res.send([]);
+    }
+    mongo_data_system.Comment.aggregate(
+        [
+            {$match: {'status': {$ne: 'deleted'}}},
+            {$lookup: {
+                from: 'dataelements',
+                localField: 'element.eltId',
+                foreignField: 'tinyId',
+                as: 'embeddedCde'
+            }},
+            {$lookup: {
+                from: 'forms',
+                localField: 'element.eltId',
+                foreignField: 'tinyId',
+                as: 'embeddedForm'
+            }},
+            {$match: {
+                $or: [
+                    {'embeddedCde.stewardOrg.name': {$in: myOrgs}},
+                    {'embeddedForm.stewardOrg.name': {$in: myOrgs}},
+                    {'embeddedCde.classification.stewardOrg.name': {$in: myOrgs}},
+                    {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
+                ]
+            }},
+            {$sort: {created: -1}},
+            {$skip: parseInt(req.params.from)},
+            {$limit: parseInt(req.params.size)}
+        ]
+    ).exec(function(err, results) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("Unable to retrieve comments");
+        }
         return res.send(results);
     });
 };
