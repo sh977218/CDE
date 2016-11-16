@@ -1,24 +1,46 @@
 angular.module('formModule').controller('SelectQuestionNameModalCtrl',
-    ['$scope', '$uibModalInstance', '$http', 'cde', function ($scope, $modalInstance, $http, cde) {
+    ['$scope', '$uibModalInstance', '$http', 'SkipLogicUtil', 'question', 'section',
+        function ($scope, $modalInstance, $http, SkipLogicUtil, question, section) {
 
-        var url = "/debytinyid/" + cde.tinyId;
-        if (cde.version) url += "/" + cde.version;
-        $http.get(url).success(function (result) {
-            $scope.cde = result;
-        }).error(function error() {
-            $scope.cde = "error";
-        });
+            var cde = question.question.cde;
+            var url = "/debytinyid/" + cde.tinyId;
+            if (cde.version) url += "/" + cde.version;
+            $http.get(url).success(function (result) {
+                $scope.cde = result;
+            }).error(function error() {
+                $scope.cde = "error";
+            });
 
-        $scope.okClear = function() {
-            $modalInstance.close("");
-        };
+            function checkAndUpdateLabel(section, doUpdate, selectedNaming) {
+                section.formElements.forEach(function (fe) {
+                    if (fe.skipLogic && fe.skipLogic.condition) {
+                        var updateSkipLogic = false;
+                        var tokens = SkipLogicUtil.tokenSplitter(fe.skipLogic.condition);
+                        tokens.forEach(function (token, i) {
+                            if (i % 2 === 0 && token === question.label) {
+                                $scope.updateSkipLogic = true;
+                                updateSkipLogic = true;
+                                if (doUpdate && selectedNaming)
+                                    tokens[i] = '"' + selectedNaming + '"';
+                            } else if (i % 2 === 0 && token !== question.label)
+                                tokens[i] = '"' + tokens[i] + '"';
+                        });
+                        if (doUpdate && updateSkipLogic) {
+                            fe.skipLogic.condition = tokens.join('');
+                            fe.updatedSkipLogic = true;
+                        }
+                    }
+                });
+            }
 
-        $scope.okSelect = function (naming) {
-            $modalInstance.close(naming.designation);
-        };
+            checkAndUpdateLabel(section);
 
-        $scope.cancelCreate = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }
-]);
+            $scope.okSelect = function (naming) {
+                if (!naming) {
+                    return $modalInstance.close("");
+                }
+                checkAndUpdateLabel(section, true, naming.designation);
+                $modalInstance.close(naming.designation);
+            };
+        }
+    ]);
