@@ -220,6 +220,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         return result;
     };
 
+    $scope.areValuesStackable = function (values) {
+        return !values.some(function (e) { return e.valueMeaningName.length > 50 });
+    }
+
 }]);
 
 

@@ -19,11 +19,9 @@ public class FormTotalScoreTest extends BaseFormTest {
         clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
 
-        WebElement scoreSection = findElement(By.id("formRenderSection_Score Section"));
-        List<WebElement> selects = scoreSection.findElements(By.tagName("select"));
-        new Select(selects.get(0)).selectByValue("string:2");
-        new Select(selects.get(1)).selectByValue("string:1");
-        new Select(selects.get(2)).selectByValue("string:3");
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - effort indicator_0']//*[text()='2=Slightly']"));
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - indifference indicator_1']//*[text()='1=Slightly']"));
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - apathetic indicator_2']//*[text()='3=A lot']"));
         textPresent("Score: 6");
     }
 }

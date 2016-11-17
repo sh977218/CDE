@@ -19,8 +19,7 @@ public class SkipLogicTest extends BaseFormTest {
         findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
                 "subscale T score']]/following-sibling::div//input")).sendKeys("200");
         textPresent("Patient Gender Category");
-        new Select(findElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//select")))
-                .selectByVisibleText("Female Gender");
+        clickElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//*[text()[contains(., 'Female Gender')]]"));
         textPresent("Female Patient Screening");
     }
 
@@ -61,9 +60,8 @@ public class SkipLogicTest extends BaseFormTest {
 
         clickElement(By.id("nativeFormRenderLink"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        findElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']/select"))
-                .selectByVisibleText("Not at all");
-        new Select(findElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']/select"))).selectByVisibleText("A little bit");
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//[text()[contains(., 'Not at all')]]"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
