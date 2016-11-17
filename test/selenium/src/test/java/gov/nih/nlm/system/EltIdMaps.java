@@ -15,6 +15,7 @@ public class EltIdMaps {
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
+        eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H-tWNZ");
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
         eltMap.put("Gastrointestinal therapy water flush status", "HyQz9G0oYaE");
@@ -44,6 +45,7 @@ public class EltIdMaps {
         eltMap.put("Pulmonary function lung function measurement", "CC09PXVh8dF");
         eltMap.put("PvValidatorCde", "7Jn4ByTd_");
         eltMap.put("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale", "7k_flGOZ_3de");
+        eltMap.put("Sarcoma Dominant Histology Type", "KHj2gnZqxZW");
         eltMap.put("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator", "NuQwuCAZrz5");
         eltMap.put("SDC Adrenal", "XySUBn_NZ");
         eltMap.put("Service Item Display Name java.lang.String", "_Qg5FbwRP98");
