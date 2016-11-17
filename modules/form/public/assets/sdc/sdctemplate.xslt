@@ -18,8 +18,6 @@
 		<html>
 			<head>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-				<script type="text/javascript" src="sdc.js"></script>
-
                 <link rel="stylesheet" href="/form/public/assets/sdc/sdctemplate.css" type="text/css" />
 			</head>
 			<body align="left">
