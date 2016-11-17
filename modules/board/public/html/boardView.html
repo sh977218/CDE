@@ -1,11 +1,11 @@
-<div ng-controller="BoardViewCtrl as boardViewCtrl">
+<div ng-controller="BoardViewCtrl">
     <div ng-if="board.users.length > 0">
         <div class="col-md-12">
             <div class="col-md-1">
                 <label class="floatLeft">Reviewers:</label>
             </div>
             <div class="floatLeft"
-                 ng-repeat="reviewer in board.users | filter:boardViewCtrl:filterByReviewer">
+                 ng-repeat="reviewer in getReviewers()">
                 <span class="icon-stack icon-4x" uib-dropdown>
                     <i id="{{reviewer.username}}" class="fa fa-user fa-2x hoverGrey"
                        title="{{reviewer.username}} {{reviewer.status}}"
@@ -21,14 +21,14 @@
                        'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
                 </span>
             </div>
-            <i class="fa fa-2x fa-plus hoverGrey"></i>
+            <i class="fa fa-2x fa-plus hoverGrey" ng-click="addReviewerToBoard()"></i>
             <button class="btn btn-default">Start Review</button>
         </div>
         <div class="col-md-12">
             <div class="col-md-1">
                 <label class="floatLeft">Viewers:</label>
             </div>
-            <div class="floatLeft pr18" ng-repeat="viewer in board.users | filter:BoardViewCtrl:filterByViewer">
+            <div class="floatLeft pr18" ng-repeat="viewer in getViewers()">
                 <span class="icon-stack icon-4x" uib-dropdown>
                     <i id="{{viewer.username}}" class="fa fa-user fa-2x hoverGrey"
                        title="{{viewer.username}} view"

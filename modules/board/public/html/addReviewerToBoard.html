@@ -4,8 +4,9 @@
 <div class="modal-body">
     <label for="username">username:</label>
     <input id="username" ng-model="searchString">
-    <button ng-click="addUserToBoard()">Add</button>
-    <div ng-repeat="user in board.reviewer">
+    <button ng-click="searchUsersByUsername()">search</button>
+    <div ng-if="searchUsers && searchUsers.length === 0">No users found</div>
+    <div ng-repeat="user in searchUsers">
         {{user.username}}
     </div>
     <button class="btn btn-default done" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
