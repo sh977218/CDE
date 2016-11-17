@@ -10,11 +10,11 @@ public class LatestComments extends CdeCommentTest {
     public void latestComments() {
         mustBeLoggedInAs(commentEditor_username, password);
 
-        String nindsComment = "FAD Total score value";
+        String nindsComment = "comment to FAD score";
         String caBIGComment = "comment to Sarcoman";
 
-        goToCdeByName(nindsComment);
-        addComment("comment to FAD score");
+        goToCdeByName("FAD Total score value");
+        addComment(nindsComment);
 
         goToCdeByName("Sarcoma Dominant Histology Type");
         addComment(caBIGComment);
