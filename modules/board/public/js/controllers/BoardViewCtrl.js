@@ -184,6 +184,17 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             };
+            this.filterByReviewer = function (u) {
+                return board.users.filter(function (u) {
+                    return u.roles.indexOf('reviewer') !== -1;
+                })
+            };
+            this.filterByViewer = function (u) {
+                return board.users.filter(function (u) {
+                    return u.roles.indexOf('viewer') !== -1;
+                })
+            };
+
             $scope.addReviewerToBoard = function () {
                 $modal.open({
                     animation: false,
