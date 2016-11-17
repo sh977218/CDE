@@ -4,13 +4,17 @@ angular.module('formModule').controller('AddReviewerToBoardCtrl',
             $scope.searchString = '';
             $scope.board = board;
             $scope.searchUsersByUsername = function () {
-                $http.get('/user/' + $scope.searchString).then(function (response) {
-                    if (!response.error) {
-                        $scope.searchUsers = response.data;
-                    }
-                });
+                if ($scope.searchString.trim().length === 0) {
+                    return;
+                } else {
+                    $http.get('/user/' + $scope.searchString).then(function (response) {
+                        if (!response.error) {
+                            $scope.searchUsers = response.data;
+                        }
+                    });
+                }
             };
-            $scope.addUserToBoard = function () {
+            $scope.saveBoardUsers = function (u) {
                 if (!$scope.board.users) $scope.board.users = [];
                 $scope.board.users.push({username: $scope.searchString});
             }
