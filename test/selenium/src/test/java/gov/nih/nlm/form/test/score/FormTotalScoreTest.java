@@ -19,9 +19,9 @@ public class FormTotalScoreTest extends BaseFormTest {
         clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
 
-        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - effort indicator_0']//*[text()='2=Slightly']"));
-        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - indifference indicator_1']//*[text()='1=Slightly']"));
-        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - apathetic indicator_2']//*[text()='3=A lot']"));
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - effort indicator_0']//label[contains(.,'2')]"));
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - indifference indicator_1']//label[contains(.,'1')]"));
+        clickElement(By.xpath("//*[@id='Apathy Scale (AS) - apathetic indicator_2']//label[contains(.,'3')]"));
         textPresent("Score: 6");
     }
 }
