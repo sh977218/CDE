@@ -8,7 +8,7 @@ public class LatestComments extends CdeCommentTest {
 
     @Test
     public void latestComments() {
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(commentEditor_username, password);
 
         String nindsComment = "FAD Total score value";
         String caBIGComment = "comment to Sarcoman";
