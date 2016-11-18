@@ -195,11 +195,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 })
             };
 
-            $scope.addReviewerToBoard = function () {
+            $scope.shareBoard = function () {
                 $modal.open({
                     animation: false,
-                    templateUrl: '/board/public/html/addReviewerToBoard.html',
-                    controller: 'AddReviewerToBoardCtrl',
+                    templateUrl: '/board/public/html/ShareBoard.html',
+                    controller: 'ShareBoardCtrl',
                     resolve: {
                         board: function () {
                             return $scope.board;

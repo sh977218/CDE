@@ -1,0 +1,63 @@
+<div class="modal-header">
+    <h3>Share this board</h3>
+</div>
+<div class="modal-body">
+    <label style="font-size: 13px;">Link to share (only accessible by collaborators)</label>
+    <input id="sharedLink" readonly="readonly" type="text" value="{{url}}" onclick="this.select()">
+
+    <div style="font-size: 13px;">Who has access</div>
+    <div class="padding10">
+        <table class="table">
+            <tbody>
+            <tr ng-repeat="user in board.users">
+                <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
+                <td>{{user.username}} {{board.owner.username === user.username?'(you)':''}}</td>
+                <td uib-dropdown>
+                    <div uib-dropdown-toggle>
+                        <div class="floatLeft">
+                            <i class="fa fa-pencil" style="width: 20px"></i>
+                        </div>
+                        <div class="floatLeft">
+                            <i class="fa fa-caret-down"></i>
+                        </div>
+                    </div>
+                    <ul uib-dropdown-menu>
+                        <li ng-repeat="role in user.roles">
+                            <a class="ib" style="line-height: 15px;">
+                                <i class="fa fa-check floatLeft"></i> &nbsp;&nbsp;can {{role}}</a>
+                        </li>
+                    </ul>
+                </td>
+                <td><i class="fa fa-times" ng-click="deleteUser(user)"></i></td>
+            </tr>
+            </tbody>
+            <tr>
+                <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
+                <td>
+                    <input placeholder="Enter username..." style="width:100%" ng-model="newUser.username" required/>
+                </td>
+                <td uib-dropdown>
+                    <div uib-dropdown-toggle>
+                        <div class="floatLeft">
+                            <i class="fa fa-pencil" style="width: 20px"></i>
+                        </div>
+                        <div class="floatLeft">
+                            <i class="fa fa-caret-down"></i>
+                        </div>
+                    </div>
+                    <ul uib-dropdown-menu>
+                        <li>
+                            <a href ng-model="newUser.roles">can view</a>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <button class="btn btn-default" ng-click="sendInvitation(newUser)">Send</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Close</button>
+</div>

@@ -1,48 +1,4 @@
 <div ng-controller="BoardViewCtrl">
-    <div ng-if="board.users.length > 0">
-        <div class="col-md-12">
-            <div class="col-md-1">
-                <label class="floatLeft">Reviewers:</label>
-            </div>
-            <div class="floatLeft"
-                 ng-repeat="reviewer in getReviewers()">
-                <span class="icon-stack icon-4x" uib-dropdown>
-                    <i id="{{reviewer.username}}" class="fa fa-user fa-2x hoverGrey"
-                       title="{{reviewer.username}} {{reviewer.status}}"
-                       aria-hidden="true" uib-dropdown-toggle></i>
-                    <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="{{reviewer.username}}">
-                        <li>
-                            <a href>delete</a>
-                        </li>
-                    </ul>
-                    <i class="fa overlay-lower-right"
-                       ng-class="{'fa-check green-icon':reviewer.status === 'approved',
-                       'fa-times red-icon':reviewer.status === 'disapproved',
-                       'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
-                </span>
-            </div>
-            <button class="btn btn-default" ng-click="addReviewerToBoard()">Add User</button>
-            <button class="btn btn-default">Start Review</button>
-        </div>
-        <div class="col-md-12">
-            <div class="col-md-1">
-                <label class="floatLeft">Viewers:</label>
-            </div>
-            <div class="floatLeft pr18" ng-repeat="viewer in getViewers()">
-                <span class="icon-stack icon-4x" uib-dropdown>
-                    <i id="{{viewer.username}}" class="fa fa-user fa-2x hoverGrey"
-                       title="{{viewer.username}} view"
-                       aria-hidden="true" uib-dropdown-toggle></i>
-                    <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="{{viewer.username}}">
-                        <li>
-                            <a href>delete</a>
-                        </li>
-                    </ul>
-                </span>
-            </div>
-            <i class="fa fa-2x fa-plus hoverGrey"></i>
-        </div>
-    </div>
     <h3 class="centerText" id="board_name_{{board.name}}">{{board.name}}
         <button class="btn btn-small btn-default pull-right" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
                 ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
@@ -84,6 +40,8 @@
             <div class="btn-group  pull-right">
                 <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
             </div>
+            <button class="btn btn-default pull-right" ng-click="shareBoard()">Share</button>
+
         </div>
 
         <div ng-if="board.type" ng-include="viewTypes[listViewType].url"></div>
