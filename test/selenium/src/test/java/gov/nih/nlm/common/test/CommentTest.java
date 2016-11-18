@@ -31,7 +31,6 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         addComment("very long replies comment");
         textPresent("very long replies comment");
-        closeAlert();
 
         for (int i = 1; i <= 5; i++) {
             hangon(1);
