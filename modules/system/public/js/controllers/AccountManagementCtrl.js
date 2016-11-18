@@ -77,6 +77,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getMyOrgAdmins = function() {
         $http.get("/myOrgsAdmins").then(function(response) {
             $scope.myOrgAdmins = response.data.orgs;
+            $scope.admin.orgName = $scope.myOrgAdmins[0].name;
         });
     };
     $scope.getMyOrgAdmins();
