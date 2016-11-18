@@ -51,8 +51,7 @@ public abstract class CommentTest extends CommonTest {
             closeAlert();
             textPresent("Show all " + j + " replies");
         }
-        scrollToViewById("showAllRepliesButton-0-3");
-        clickElement(By.id("showAllRepliesButton-0-3"));
+        clickElement(By.linkText("Show all 10 replies"));
         for (int k = 3; k <= 10; k++)
             textPresent("Reply to very long comment " + k);
 

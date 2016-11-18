@@ -1,0 +1,18 @@
+<div ng-if="comments.latestComments.length > 0">
+    <h3>Comments</h3>
+    <table class="table table-border table-striped table-responsive">
+        <thead>
+        <th>Date</th>
+        <th>Text</th>
+        <th>Type</th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="c in comments.latestComments">
+            <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
+            <td>{{c.text}}</td>
+            <td><a href="{{getEltLink(c)}}" target="_blank">{{c.element.eltType}}</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <ul uib-pager total-items="comments.totalItems" ng-model="comments.currentCommentsPage"></ul>
+</div>

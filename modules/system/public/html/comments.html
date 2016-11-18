@@ -161,10 +161,10 @@
                 </div>
                 <div class="showRepliesButtonDiv"
                      ng-if="!comment.showReplies && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
-                    <div class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
-                         ng-click="comment.showReplies = true">
+                    <a class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
+                         ng-click="comment.showReplies = true" href="">
                         Show all {{comment.replies.length}} replies
-                    </div>
+                    </a>
                 </div>
                 <div ng-if="replyIndex >= comment.replies.length - 2">
                     <div class="reply">
