@@ -207,16 +207,18 @@ angular.module('formModule').controller
     $scope.renderPreview = function () {
         $scope.formPreviewRendered = true;
         $scope.formPreviewLoading = true;
-        converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
-            $timeout(function () {
-                $scope.lfData = new LFormsData(lfData); //jshint ignore:line
-                $scope.$apply($scope.lfData);
-                $scope.formPreviewLoading = false;
-            }, 0);
-        },
-        function (err) {
-            $scope.error = err;
-        });
+        if ($scope.formCdeIds.length > 0) {
+            converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
+                    $timeout(function () {
+                        $scope.lfData = new LFormsData(lfData); //jshint ignore:line
+                        $scope.$apply($scope.lfData);
+                        $scope.formPreviewLoading = false;
+                    }, 0);
+                },
+                function (err) {
+                    $scope.error = err;
+                });
+        }
     };
 
     $scope.raiseLimit = function() {
