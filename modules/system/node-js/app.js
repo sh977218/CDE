@@ -47,7 +47,7 @@ exports.init = function (app) {
         "/board/:id", "/deview", "/myboards", "/sdcview",
         "/cdeStatusReport", "/deview", "/myboards", "/sdcview",
         "/formView", "/quickBoard", "/searchSettings", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority"].forEach(function (path) {
+        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(function (path) {
         app.get(path, function (req, res) {
             res.render('index', 'system', {config: config, loggedIn: req.user ? true : false, version: version});
         });
@@ -1046,6 +1046,12 @@ exports.init = function (app) {
                 res.send(comment);
         })
     });
+
+    app.get('/commentsfor/:username/:from/:size', adminItemSvc.commentsForUser);
+
+    app.get('/allComments/:from/:size', adminItemSvc.allComments);
+
+    app.get('/orgComments/:from/:size', adminItemSvc.orgComments);
 
     app.post('/comments/approve', adminItemSvc.approveComment);
 

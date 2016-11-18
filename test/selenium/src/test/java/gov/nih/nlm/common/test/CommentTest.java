@@ -31,15 +31,12 @@ public abstract class CommentTest extends CommonTest {
         goToEltByName(eltName);
         addComment("very long replies comment");
         textPresent("very long replies comment");
-        closeAlert();
 
         for (int i = 1; i <= 5; i++) {
             hangon(1);
             findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + i);
             scrollToViewById("replyBtn_0");
             clickElement(By.id("replyBtn_0"));
-            textPresent("Reply added");
-            closeAlert();
             textPresent("Reply to very long comment " + i);
         }
         for (int j = 6; j <= 10; j++) {
@@ -47,12 +44,10 @@ public abstract class CommentTest extends CommonTest {
             findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + j);
             scrollToViewById("replyBtn_0");
             clickElement(By.id("replyBtn_0"));
-            textPresent("Reply added");
-            closeAlert();
             textPresent("Show all " + j + " replies");
         }
-        scrollToViewById("showAllRepliesButton-0-3");
-        clickElement(By.id("showAllRepliesButton-0-3"));
+        clickElement(By.linkText("Show all 10 replies"));
+        textNotPresent("Show all 10 replies");
         for (int k = 3; k <= 10; k++)
             textPresent("Reply to very long comment " + k);
 
@@ -79,24 +74,18 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.id("replyTextarea_0")).sendKeys("Reply to First comment about Status");
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
-        textPresent("Reply added");
-        closeAlert();
 
         clickElement(By.id("replyTextarea_0"));
         findElement(By.id("replyTextarea_0")).sendKeys("Second reply to First comment about Status");
         hangon(1);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
-        textPresent("Reply added");
-        closeAlert();
 
         clickElement(By.id("replyTextarea_1"));
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
         hangon(1);
         scrollToViewById("replyBtn_1");
         clickElement(By.id("replyBtn_1"));
-        textPresent("Reply added");
-        closeAlert();
 
         clickElement(By.id("resolveReply-0-0"));
         textPresent("Saved");
@@ -261,8 +250,6 @@ public abstract class CommentTest extends CommonTest {
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         hangon(1);
         clickElement(By.id("replyBtn_0"));
-        textPresent("Reply added");
-        closeAlert();
         textNotPresent(replyText);
 
         mustBeLoggedInAs(commentEditor_username, commentEditor_password);
