@@ -15,7 +15,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
 
     $scope.openNewProperty = function () {
         keysLoaded.promise.then(function () {
-
             if (!$scope.allKeys || $scope.allKeys.length === 0) {
                 Alert.addAlert("warning", "No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
                 return;
@@ -24,13 +23,17 @@ angular.module('systemModule').controller('PropertiesCtrl',
             $modal.open({
                 animation: false,
                 templateUrl: 'newPropertyModalContent.html',
-                controller: 'NewPropertyModalCtrl',
+                controller: ['$scope', 'elt', 'OrgHelpers',
+                    function ($scope, elt, OrgHelpers) {
+                        $scope.elt = elt;
+                        OrgHelpers.deferred.promise.then(function () {
+                            $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
+                        });
+                        $scope.newProperty = {};
+                    }],
                 resolve: {
                     elt: function () {
                         return $scope.elt;
-                    },
-                    module: function () {
-                        return $scope.module;
                     }
                 }
             }).result.then(function (newProperty) {
@@ -51,8 +54,6 @@ angular.module('systemModule').controller('PropertiesCtrl',
                 }
             });
         });
-
-
     };
     
     $scope.removeProperty = function (index) {
@@ -81,25 +82,4 @@ angular.module('systemModule').controller('PropertiesCtrl',
         }, 0);
     };
 
-}]);
-
-angular.module('systemModule').controller('NewPropertyModalCtrl',
-    ['$scope', '$uibModalInstance', 'module', 'elt', 'OrgHelpers',
-    function ($scope, $modalInstance, module, elt, OrgHelpers) {
-
-        $scope.elt = elt;
-
-        OrgHelpers.deferred.promise.then(function () {
-            $scope.orgPropertyKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-        });
-
-        $scope.newProperty = {};
-
-        $scope.okCreate = function () {
-            $modalInstance.close($scope.newProperty);
-        };
-
-        $scope.cancelCreate = function() {
-            $modalInstance.dismiss("Cancel");
-        };
 }]);
