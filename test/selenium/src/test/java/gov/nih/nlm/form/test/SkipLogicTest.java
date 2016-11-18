@@ -19,7 +19,7 @@ public class SkipLogicTest extends BaseFormTest {
         findElement(By.xpath("//div[div/label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
                 "subscale T score']]/following-sibling::div//input")).sendKeys("200");
         textPresent("Patient Gender Category");
-        clickElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//*[text()[contains(., 'Female Gender')]]"));
+        clickElement(By.xpath("//div[div/label[text()='Patient Gender Category']]/following-sibling::div//*[text()[contains(., 'Female Gender')]]"));
         textPresent("Female Patient Screening");
     }
 
@@ -149,7 +149,7 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
-        clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]"));
+        clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]/input"));
         textPresent("Reason for premature intervention discontinuation");
         clickElement(By.id("description_tab"));
         textPresent("Show Question Search Area");
