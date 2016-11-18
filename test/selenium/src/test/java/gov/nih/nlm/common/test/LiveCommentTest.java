@@ -11,8 +11,6 @@ public class LiveCommentTest extends CdeCommentTest {
         findElement(By.id("replyTextarea_" + i)).sendKeys(reply);
         scrollToViewById("replyBtn_" + i);
         clickElement(By.id("replyBtn_" + i));
-        textPresent("Reply added");
-        closeAlert();
     }
 
     @Test

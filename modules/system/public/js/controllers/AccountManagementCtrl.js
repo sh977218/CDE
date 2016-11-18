@@ -77,6 +77,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     $scope.getMyOrgAdmins = function() {
         $http.get("/myOrgsAdmins").then(function(response) {
             $scope.myOrgAdmins = response.data.orgs;
+            $scope.admin.orgName = $scope.myOrgAdmins[0].name;
         });
     };
     $scope.getMyOrgAdmins();
@@ -149,7 +150,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
                 if (userResource.user._id === userId) {
                     $location.url("/");
                 }
-            }        
+            }, function () {
+                Alert.alert("An error occured.");
+            }
         );
     };
 
@@ -161,6 +164,8 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             function(res) {
                   Alert.addAlert("success", res);
                   $scope.orgCurators = $scope.getOrgCurators(); 
+            }, function () {
+                Alert.alert("An error occured.");
             }
         );
         resetOrgCuratorForm();
@@ -174,8 +179,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             function (res) {
                 Alert.addAlert("success", res);
                 $scope.orgCurators = $scope.getOrgCurators(); 
+            }, function () {
+                Alert.alert("An error occured.");
             }
-        
         );
     };
 
@@ -199,7 +205,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
             function(res) {
                 Alert.addAlert("success", res);
                 $scope.orgs = $scope.getOrgs();
-            }
+            }, function () {
+               Alert.alert("An error occured.");
+           }
         );
     };
 
@@ -233,7 +241,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
     };
 
     $scope.addOrgProperty = function(org) {
-        modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/addValueModal.html',
             controller: function () {}
@@ -243,7 +251,7 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         });
     };
     $scope.addOrgContext = function(org) {
-        modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/system/public/html/addValueModal.html',
             controller: function () {}

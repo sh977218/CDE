@@ -108,20 +108,15 @@ angular.module('systemModule').controller('CommentsCtrl',
                 });
             };
 
-            $scope.replyTo = function (commentId, reply, showReplies) {
+            $scope.showAllReplies = {};
+            $scope.replyTo = function (commentId, reply) {
                 $http.post("/comments/reply", {
                     commentId: commentId,
                     eltName: $scope.getEltName(),
                     reply: reply
                 }).then(function (res) {
                     $scope.tempReplies[commentId] = '';
-                    loadComments(function () {
-                        $scope.eltComments.forEach(function (c) {
-                            if (c._id === commentId)
-                                c.showReplies = showReplies;
-                        });
-                        $scope.addAlert("success", res.data.message);
-                    });
+                    loadComments();
                 });
             };
 
