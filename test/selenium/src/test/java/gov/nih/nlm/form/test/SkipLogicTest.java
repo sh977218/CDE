@@ -175,6 +175,7 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
+        clickElement(By.xpath("//button[text()='Done']"));
         clickElement(By.xpath("//*[@id='Off study intervention prematurely indicator_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
 
