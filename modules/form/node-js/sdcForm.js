@@ -17,21 +17,6 @@ function addQuestion(parent, question) {
         newQuestion.OtherText = {"@val": question.instructions.value};
     }
 
-    if (question.question.cde.ids.length>0) {
-        newQuestion.CodedValue = [];
-        question.question.cde.ids.forEach(function(id){
-            newQuestion["CodedValue"].push({
-                "Code":{"@val": id.id}
-                , "CodeSystem": {
-                    "CodeSystemName": {"@val": id.source}
-                }
-            });
-            if (id.version) {
-                newQuestion.CodedValue[newQuestion.CodedValue.length-1].CodeSystem.Version = {"@val":id.version};
-            }
-        });
-    }
-
     if (question.question.datatype === 'Value List') {
         newQuestion.ListField = {"List": []};
         if (question.question.multiselect) newQuestion.ListField["@maxSelections"] = "0";
@@ -65,6 +50,24 @@ function addQuestion(parent, question) {
     idToName[question.question.cde.tinyId] = question.label;
 
     var questionEle = parent.ele({Question: newQuestion});
+
+    if (question.question.cde.ids.length>0) {
+        question.question.cde.ids.forEach(function(id){
+            var codedValueEle = questionEle.ele(
+                {CodedValue: {
+                    "Code": {"@val": id.id}
+                    , "CodeSystem": {
+                        "CodeSystemName": {"@val": id.source}
+                    }
+                }
+                });
+            if (id.version) {
+                codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {"@val":id.version}});
+            }
+        });
+    }
+
+
     questionsInSection[question.label] = questionEle;
 }
 
