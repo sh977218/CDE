@@ -33,8 +33,6 @@ public class BoardComments extends NlmCdeBaseTest {
         String replyText = "Reply to first comment";
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         clickElement(By.id("replyBtn_0"));
-        textPresent("Reply added");
-        closeAlert();
 
         mustBeLoggedInAs(commentEditor_username, password);
         clickElement(By.id("incomingMessage"));
