@@ -1,9 +1,10 @@
 angular.module('formModule').controller('ShareBoardCtrl',
-    ['$scope', '$location', '$uibModalInstance', 'board', 'userResource', 'Form', '$http',
-        function ($scope, $location, $modalInstance, board, userResource, Form, $http) {
+    ['$scope', '$location', '$http', '$uibModalInstance', 'board', 'userResource',
+        function ($scope, $location, $http, $modalInstance, board, userResource) {
             $scope.url = $location.absUrl();
             $scope.searchString = '';
-            $scope.board = board;
+            $scope.owner = board.owner;
+            $scope.users = angular.copy(board.users);
             $scope.newUser = {roles: []};
             $scope.allRoles = ['reviewer', 'viewer', 'editor'];
             $scope.sendInvitation = function (newUser) {
@@ -11,24 +12,24 @@ angular.module('formModule').controller('ShareBoardCtrl',
                     alert('username is empty');
                     return;
                 }
-                var existedUser = board.users.filter(function (o) {
+                var existedUser = $scope.users.filter(function (o) {
                     return o.username === newUser.username;
                 });
                 if (existedUser[0]) {
                     alert('user exists');
                 } else {
-                    board.users.push(newUser);
-                    $scope.newUser = {};
+                    $scope.users.push(newUser);
+                    $scope.newUser = {roles: []};
                 }
             };
             $scope.deleteUser = function (u) {
-                board.users = board.users.filter(function (o) {
+                $scope.users = $scope.users.filter(function (o) {
                     return o.username !== u.username;
                 })
             };
             $scope.saveBoardUsers = function (u) {
-                if (!$scope.board.users) $scope.board.users = [];
-                $scope.board.users.push({username: $scope.searchString});
+                if (!$scope.users) $scope.users = [];
+                $scope.users.push({username: $scope.searchString});
             };
             $scope.changeRole = function (user, role) {
                 if (user.roles.indexOf(role) !== -1) {
@@ -37,7 +38,19 @@ angular.module('formModule').controller('ShareBoardCtrl',
                     })
                 } else {
                     user.roles.push(role);
+                    user.status = 'invited';
                 }
+            };
+            $scope.startReview = function () {
+                $http.post('/board/users', {
+                    boardId: board._id,
+                    user: userResource.user,
+                    owner: board.owner,
+                    users: $scope.users
+                }).then(function (response) {
+
+                    $modalInstance.close($scope.users);
+                });
             }
         }
     ]);

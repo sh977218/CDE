@@ -3,6 +3,9 @@ var elastic = require('../../cde/node-js/elastic')
     , mongo_cde = require('../../cde/node-js/mongo-cde')
     , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('./mongo-board')
+    , config = require('../../system/node-js/parseConfig')
+    , authorizationShared = require("../../system/shared/authorizationShared")
+    , logging = require('../../system/node-js/logging.js')
     , cdesvc = require('../../cde/node-js/cdesvc')
     , js2xml = require('js2xmlparser')
     , classificationNode_system = require('../../system/node-js/classificationNode')
@@ -101,4 +104,104 @@ exports.init = function (app, daoManager) {
         adminItemSvc.removeComment(req, res, mongo_board);
     });
 
+    app.post('/board', function (req, res) {
+        var boardQuota = config.boardQuota || 50;
+        var checkUnauthorizedPublishing = function (user, shareStatus) {
+            return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
+        };
+        if (req.isAuthenticated()) {
+            var board = req.body;
+            if (!board._id) {
+                board.createdDate = Date.now();
+                board.owner = {
+                    userId: req.user._id,
+                    username: req.user.username
+                };
+                if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
+                    return res.status(403).send("You don't have permission to make boards public!");
+                }
+                mongo_board.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
+                    if (nbBoards < boardQuota) {
+                        mongo_board.newBoard(board, function (err) {
+                            if (err) res.status(500).send("An error occurred. ");
+                            elastic.boardRefresh(function () {
+                                res.send();
+                            });
+                        });
+                    } else {
+                        res.status(403).send("You have too many boards!");
+                    }
+                });
+            } else {
+                mongo_board.boardById(board._id, function (err, b) {
+                    if (err) {
+                        logging.errorLogger.error("Cannot find board by id", {
+                            origin: "cde.app.board",
+                            stack: new Error().stack,
+                            request: logging.generateErrorLogRequest(req),
+                            details: "board._id " + board._id
+                        });
+                        return res.status(404).send("Cannot find board.");
+                    }
+                    b.name = board.name;
+                    b.description = board.description;
+                    b.shareStatus = board.shareStatus;
+                    b.pins = board.pins;
+                    b.tags = board.tags;
+
+                    if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
+                        return res.status(403).send("You don't have permission to make boards public!");
+                    }
+                    b.save(function (err) {
+                        if (err) {
+                            logging.errorLogger.error("Cannot save board", {
+                                origin: "cde.app.board",
+                                stack: new Error().stack,
+                                request: logging.generateErrorLogRequest(req),
+                                details: "board._id " + board._id
+                            });
+                        }
+                        elastic.boardRefresh(function () {
+                            res.send(b);
+                        });
+                    });
+                });
+            }
+        } else {
+            res.send("You must be logged in to do this.");
+        }
+    });
+
+    app.post("/board/users", function (req, res) {
+        if (req.isAuthenticated()) {
+            var boardId = req.body.boardId;
+            var users = req.body.users;
+            var user = req.body.user;
+            var owner = req.body.owner;
+            if (owner.username !== user.username) {
+                return res.send("You do not have permission.");
+            } else {
+                mongo_board.boardById(boardId, function (err, board) {
+                    if (err) return res.send(500);
+                    else {
+                        board.users = users;
+                        board.markModified("users");
+                        board.save(function (e) {
+                            if (e) {
+                                return res.send(500);
+                            }
+                            else {
+                                return res.send("done");
+                            }
+                        })
+                    }
+                })
+            }
+        }
+        else {
+            res.send("You must be logged in to do this.");
+        }
+    })
+    
+    
 };

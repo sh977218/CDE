@@ -25,9 +25,9 @@ schemas.pinningBoardSchema = new mongoose.Schema({
     },
     pins: [pinSchema],
     users: [{
-        username: {type: String, default: 'cde', enum: ['invited', 'approved', 'disapproved']},
+        username: String,
         roles: [{type: String, enum: ['viewer', 'reviewer']}],
-        status: String
+        status: {type: String, default: 'cde', enum: ['invited', 'approved', 'disapproved']}
     }]
 });
 schemas.pinningBoardSchema.pre('save', function (next) {

@@ -9,9 +9,9 @@
     <div class="padding10">
         <table class="table">
             <tbody>
-            <tr ng-repeat="user in board.users">
+            <tr ng-repeat="user in users">
                 <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
-                <td>{{user.username}} {{board.owner.username === user.username?'(you)':''}}</td>
+                <td>{{user.username}} {{owner.username === user.username?'(you)':''}}</td>
                 <td uib-dropdown>
                     <div uib-dropdown-toggle>
                         <div class="floatLeft">
@@ -60,6 +60,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default">Start Review</button>
+    <button class="btn btn-default" ng-click="startReview()">Start Review</button>
     <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Close</button>
 </div>

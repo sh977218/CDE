@@ -205,22 +205,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             return $scope.board;
                         }
                     }
+                }).result.then(function (users) {
+                    $scope.board.users = users;
                 });
             };
-            $scope.addViewerToBoard = function () {
-/*                $modal.open({
-                    animation: false,
-                    templateUrl: '/board/public/html/addViewerToBoard.html',
-                    controller: 'AddViewerToBoardCtrl',
-                    resolve: {
-                        board: function () {
-                            return $scope.board;
-                        }
-                    }
-                });*/
-            };
-
-
 
             $scope.reload();
 
