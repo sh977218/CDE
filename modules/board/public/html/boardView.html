@@ -1,10 +1,26 @@
 <div ng-controller="BoardViewCtrl">
+    <div ng-if="board.users.length > 0">
+        <div class="col-md-12">
+            <div class="col-md-1">
+                <label class="floatLeft">Reviewers:</label>
+            </div>
+            <div class="floatLeft"
+                 ng-repeat="reviewer in getReviewers()">
+                <i id="{{reviewer.username}}" class="fa fa-user fa-2x hoverGrey"
+                   title="{{reviewer.username}} {{reviewer.status}}"
+                   aria-hidden="true" uib-dropdown-toggle></i>
+                <i class="fa overlay-lower-right"
+                   ng-class="{'fa-check green-icon':reviewer.status === 'approved',
+                       'fa-times red-icon':reviewer.status === 'disapproved',
+                       'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
+            </div>
+        </div>
+    </div>
     <h3 class="centerText" id="board_name_{{board.name}}">{{board.name}}
         <button class="btn btn-small btn-default pull-right" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
                 ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
             <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss</button>
     </h3>
-
     <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
         <div class="searchInfo">
             <div class="btn-group  pull-right" ng-controller="ExportCtrl">

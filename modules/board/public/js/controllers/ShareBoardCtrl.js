@@ -4,7 +4,8 @@ angular.module('formModule').controller('ShareBoardCtrl',
             $scope.url = $location.absUrl();
             $scope.searchString = '';
             $scope.board = board;
-            $scope.newUser = {};
+            $scope.newUser = {roles: []};
+            $scope.allRoles = ['reviewer', 'viewer', 'editor'];
             $scope.sendInvitation = function (newUser) {
                 if (newUser.username.trim().length === 0) {
                     alert('username is empty');
@@ -28,6 +29,15 @@ angular.module('formModule').controller('ShareBoardCtrl',
             $scope.saveBoardUsers = function (u) {
                 if (!$scope.board.users) $scope.board.users = [];
                 $scope.board.users.push({username: $scope.searchString});
+            };
+            $scope.changeRole = function (user, role) {
+                if (user.roles.indexOf(role) !== -1) {
+                    user.roles = user.roles.filter(function (r) {
+                        return r !== role;
+                    })
+                } else {
+                    user.roles.push(role);
+                }
             }
         }
     ]);

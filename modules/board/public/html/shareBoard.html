@@ -22,9 +22,9 @@
                         </div>
                     </div>
                     <ul uib-dropdown-menu>
-                        <li ng-repeat="role in user.roles">
+                        <li ng-repeat="role in allRoles" value="{{role}}" ng-click="changeRole(user,role)">
                             <a class="ib" style="line-height: 15px;">
-                                <i class="fa fa-check floatLeft"></i> &nbsp;&nbsp;{{role}}</a>
+                                <i class="fa fa-check floatLeft" ng-show="user.roles.indexOf(role) !== -1"></i> &nbsp;&nbsp;{{role}}</a>
                         </li>
                     </ul>
                 </td>
@@ -46,8 +46,9 @@
                         </div>
                     </div>
                     <ul uib-dropdown-menu>
-                        <li>
-                            <a href ng-model="newUser.roles">can view</a>
+                        <li ng-repeat="role in allRoles" value="{{role}}" ng-click="changeRole(newUser,role)">
+                            <a class="ib" style="line-height: 15px;">
+                                <i class="fa fa-check floatLeft" ng-show="newUser.roles.indexOf(role) !== -1"></i> &nbsp;&nbsp;{{role}}</a>
                         </li>
                     </ul>
                 </td>
@@ -59,5 +60,6 @@
     </div>
 </div>
 <div class="modal-footer">
+    <button class="btn btn-default">Start Review</button>
     <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Close</button>
 </div>
