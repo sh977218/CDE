@@ -1,11 +1,12 @@
-<div class="col-md-8" ng-switch="cdeStatusRules.length > 0">
+<div ng-controller="RegStatusValidationCtrl" class="col-md-8">
+    <div ng-switch="hasRules()">
     <h2 id="regStatusValidationRules">Validation Rules</h2>
 
     <div ng-switch-when="true">
         The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
         This CDE is used by the following <b>Stewards</b>: <span ng-repeat="orgName in elt.usedBy">{{orgName}}<span ng-if="$index + 1 < elt.usedBy.length">,</span> </span><br>
         In order to promote this CDE to a different registration status, it must obey the following validation rules:
-        <div ng-controller="RegStatusValidationCtrl">
+        <div>
             <div ng-repeat="(statusName, status) in cdeStatusRules" ng-show="showStatus(status)">
                 <h3>Validation Rules for {{statusName}} Status</h3>
                 <div ng-repeat="(orgName, org) in status">
@@ -21,5 +22,5 @@
     <div ng-switch-when="false">
         There are no validation rules for this CDE.
     </div>
-
+</div>
 </div>

@@ -22,5 +22,8 @@ angular.module('cdeModule').controller('RegStatusValidationCtrl', ['$scope', 'Or
         $scope.showStatus = function (status) {
             return Object.keys(status).length > 0;
         };
+        $scope.hasRules = function () {
+            return Object.keys($scope.cdeStatusRules).length > 0;
+        };
 
     }]);
