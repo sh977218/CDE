@@ -26,7 +26,8 @@ public class QuestionDefaultValue extends BaseFormTest {
         clickElement(By.linkText("native"));
 
         // this find ensures option Brother is selected.
-        findElement(By.xpath("//div[./div/label[text()='From whom/ what were the medical history data obtained']]//select/option[@label='Brother'][@selected='selected']"));
+        findElement(By.xpath("//div[div/div/label[text()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))
+                .findElement(By.cssSelector("input:checked"));
         
     }
 
