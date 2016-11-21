@@ -1,5 +1,5 @@
 angular.module('CdeMerge', [])
-.factory('MergeCdes', function(DataElement, CDE, CdeClassificationTransfer) {
+.factory('MergeCdes', ['DataElement', 'CDE', 'CdeClassificationTransfer', function(DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
     service.approveMergeMessage = function(message) { 
         service.approveMerge(message.typeRequest.source.object, message.typeRequest.destination.object, message.typeRequest.mergeFields, function() {
@@ -45,8 +45,8 @@ angular.module('CdeMerge', [])
         });
     }; 
     return service;
-})   
-.factory('MergeRequest', function(Mail) {
+}])
+.factory('MergeRequest', ['Mail', function(Mail) {
     return {
         create: function(dat, success, error) {              
             var message = {
@@ -59,7 +59,7 @@ angular.module('CdeMerge', [])
             Mail.sendMessage(message, success, error);
         }
     };
-})   
+}])
 .factory('Mail', ["$http", function($http) {
     return {
         sendMessage: function(dat, success, error) {              

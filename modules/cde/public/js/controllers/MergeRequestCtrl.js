@@ -5,7 +5,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
         $scope.retiredIndex = retiredIndex;
         var modalInstance = $modal.open({
             animation: false,
-            templateUrl: 'mergeModal.html',
+            templateUrl: '/cde/public/html/mergeModal.html',
             controller: 'MergeModalCtrl',
             resolve: {
                 cdes: function() {return $scope.cdes;},
