@@ -26,8 +26,6 @@ public class ReplyNotification extends CdeCommentTest {
         findElement(By.id("replyTextarea_0")).sendKeys(replyText);
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
-        textPresent("Reply added");
-        closeAlert();
 
         mustBeLoggedInAs(test_username, password);
         clickElement(By.id("incomingMessage"));

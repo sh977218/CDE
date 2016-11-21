@@ -2,6 +2,7 @@
 package gov.nih.nlm.cde.test.regstatus;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
@@ -29,7 +30,14 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         driver.navigate().back();
         showSearchFilters();
         hangon(1);
-        clickElement(By.id("li-blank-Preferred Standard"));
+        try {
+            clickElement(By.id("li-blank-Preferred Standard"));
+        } catch (TimeoutException e) {
+            goToCdeSearch();
+            clickElement(By.id("browseOrg-PBTC"));
+            showSearchFilters();
+            clickElement(By.id("li-blank-Preferred Standard"));
+        }
         textPresent("1 results for");
         clickElement(By.id("linkToElt_0"));
         showAllTabs();

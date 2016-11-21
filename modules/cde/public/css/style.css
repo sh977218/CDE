@@ -1131,10 +1131,6 @@ div + .questionPlaceholder {
     height: 600px
 }
 
-.formRenderPanel {
-    margin-left: 10px;
-}
-
 .pdtp9 {
     padding-top: 9px;
 }
@@ -1436,4 +1432,29 @@ input.ng-invalid {
     height: 0;
     position: absolute;
     width: 0;
+}
+
+.native-item {
+    margin-left: 50px;
+}
+
+.native-nostack .native-item {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 70px;
+    width: 100%;
+}
+
+.native-box {
+    padding-left: 50px;
+    width: 100%;
+}
+
+.native-section {
+    counter-reset: section;
+}
+
+.native-question:before {
+    counter-increment: section;
+    content: counter(section) ". ";
 }

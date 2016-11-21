@@ -1,5 +1,5 @@
 <div ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements, question)">
-<div ng-if="displayInstruction" class="row">
+    <div ng-if="displayInstruction" class="row">
         <div class="col-md-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
                 <span ng-bind="question.instructions.value"></span></span>
@@ -8,44 +8,72 @@
             </span>
         </div>
     </div>
-    <div class="row mb5">
-        <div class="col-md-3">
-            <label tabindex="0">{{question.label}}</label>
+    <div class="row">
+        <div class="col-md-12">
+            <label tabindex="0" ng-class="{'native-question': displayNumbering }">{{question.label}}</label>
         </div>
-        <div ng-switch="question.question.isScore">
-            <div ng-switch-when="true">
-                Score: <span ng-disabled="true" ng-bind="score(question)"></span>
-            </div>
-            <div ng-switch-default>
-                <div ng-switch="question.question.datatype" class="col-md-9" id="{{question.label}}_{{$index}}">
-                    <select ng-switch-when="Value List" class="form-control" ng-model="question.question.answer"
-                            ng-required="question.question.required"
-                            ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers">
-                    </select>
-                    <div ng-switch-when="Date">
-                        <input class="form-control floatLeft" uib-datepicker-popup="MM/dd/yyyy"
+    </div>
+    <div class="row mb5">
+        <div class="col-md-12">
+            <div ng-switch="question.question.isScore">
+                <div ng-switch-when="true">
+                    Score: <span ng-disabled="true" ng-bind="score(question)"></span>
+                </div>
+                <div ng-switch-default ng-switch="question.question.datatype" id="{{question.label}}_{{$index}}">
+                    <div ng-switch-when="Value List"
+                         ng-class="{'native-nostack': !areValuesStackable(question.question.answers)}">
+                        <fieldset ng-if="!question.question.multiselect">
+                            <div class="radio" style="padding-top: 0;">
+                                <label ng-repeat="pv in question.question.answers" class="native-item">
+                                    <input ng-model="question.question.answer" ng-required="question.question.required"
+                                           type="radio" ng-value="pv.permissibleValue"/>
+                                    {{pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue}}
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div ng-if="question.question.multiselect">
+                            <div class="checkbox" style="padding-top: 0;">
+                                <label ng-repeat="pv in question.question.answers" class="native-item">
+                                    <input checklist-model="question.question.answer"
+                                           ng-required="question.question.required"
+                                           type="checkbox" checklist-value="pv.permissibleValue"/>
+                                    {{pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-switch-when="Date" class="input-group native-box">
+                        <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
                                datepicker-options="question.question.dateOptions" is-open="question.question.opened"
                                type="text" ng-required="question.question.required" alt-input-formats="['yyyy']"
                                ng-model="question.question.answer"/>
-                        <button type="button" class="btn btn-default floatLeft"
-                                ng-click="question.question.opened = true">
-                            <i class="glyphicon glyphicon-calendar"></i>
-                        </button>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    ng-click="question.question.opened = true">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </div>
                     </div>
-                    <input ng-switch-when="Number" name="{{question.question.cde.tinyId}}" class="form-control"
-                           type="number" ng-required="question.question.required"
-                           ng-model="question.question.answer"
-                           min="{{question.question.datatypeNumber.minValue}}"
-                           max="{{question.question.datatypeNumber.maxValue}}"/>
-                    <span ng-switch-default class="form-group">
-                          <input type="text" class="form-control" ng-required="question.question.required"
-                                 ng-model="question.question.answer" name=""/>
-                          <select class="form-control" ng-if="question.question.uoms.length > 0"
-                                  ng-model="question.question.answerUom"
-                                  ng-init="question.question.answerUom = question.question.uoms[0]">
-                              <option ng-repeat="uom in question.question.uoms">{{uom}}</option>
-                          </select>
-                    </span>
+                    <div ng-switch-when="Number" ng-class="{'input-group': question.question.uoms.length > 0}"
+                         class="native-box">
+                        <input type="number" class="form-control" ng-required="question.question.required"
+                               ng-model="question.question.answer" name="{{question.question.cde.tinyId}}"
+                               min="{{question.question.datatypeNumber.minValue}}"
+                               max="{{question.question.datatypeNumber.maxValue}}"/>
+                        <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
+                               ng-repeat="uom in question.question.uoms">
+                            <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}
+                        </label>
+                    </div>
+                    <div ng-switch-default ng-class="{'input-group': question.question.uoms.length > 0}"
+                         class="native-box">
+                        <input type="text" class="form-control" ng-required="question.question.required"
+                               ng-model="question.question.answer" name=""/>
+                        <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
+                               ng-repeat="uom in question.question.uoms">
+                            <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}
+                        </label>
+                    </div>
 
                     <div>
                         <span ng-show="sectionLabel[question.question.cde.tinyId].$error.min">Value is below min.</span>

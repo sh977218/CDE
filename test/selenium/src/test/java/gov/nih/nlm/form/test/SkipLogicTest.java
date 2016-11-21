@@ -16,11 +16,10 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
-        findElement(By.xpath("//div[label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
+        findElement(By.xpath("//div[div/label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
                 "subscale T score']]/following-sibling::div//input")).sendKeys("200");
         textPresent("Patient Gender Category");
-        new Select(findElement(By.xpath("//div[label[text()='Patient Gender Category']]/following-sibling::div//select")))
-                .selectByVisibleText("Female Gender");
+        clickElement(By.xpath("//div[div/label[text()='Patient Gender Category']]/following-sibling::div//*[text()[contains(., 'Female Gender')]]"));
         textPresent("Female Patient Screening");
     }
 
@@ -61,9 +60,8 @@ public class SkipLogicTest extends BaseFormTest {
 
         clickElement(By.id("nativeFormRenderLink"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        new Select(findElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']/select")))
-                .selectByVisibleText("Not at all");
-        new Select(findElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']/select"))).selectByVisibleText("A little bit");
+        clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
+        clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
 
@@ -151,7 +149,8 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
-        new Select(findElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']/select"))).selectByVisibleText("No");
+        clickElement(By.xpath("//button[text()='Done']"));
+        clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
         clickElement(By.id("description_tab"));
         textPresent("Show Question Search Area");
@@ -176,7 +175,8 @@ public class SkipLogicTest extends BaseFormTest {
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
-        new Select(findElement(By.xpath("//*[@id='Off study intervention prematurely indicator_2']/select"))).selectByVisibleText("No");
+        clickElement(By.xpath("//button[text()='Done']"));
+        clickElement(By.xpath("//*[@id='Off study intervention prematurely indicator_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
 
     }

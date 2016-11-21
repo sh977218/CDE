@@ -62,7 +62,7 @@
             </div>
         </div>
         <div ng-repeat="(replyIndex, reply) in comment.replies" data-type="replyComment">
-            <div ng-if="comment.showReplies || comment.replies.length <= 5">
+            <div ng-if="showAllReplies[comment._id] || comment.replies.length <= 5">
                 <div class="reply">
                     <div class="commentHeader">
                         <table style="width: 100%;">
@@ -110,7 +110,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="!(comment.showReplies || comment.replies.length <= 5)">
+            <div ng-if="!(showAllReplies[comment._id] || comment.replies.length <= 5)">
                 <div ng-if="replyIndex < 2">
                     <div class="reply">
                         <div class="commentHeader">
@@ -160,9 +160,9 @@
                     </div>
                 </div>
                 <div class="showRepliesButtonDiv"
-                     ng-if="!comment.showReplies && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
+                     ng-if="!showAllReplies[comment._id] && replyIndex === 3 && replyIndex >= 2 && replyIndex < comment.replies.length - 2">
                     <a class="showRepliesButton" id="showAllRepliesButton-{{commentIndex}}-{{replyIndex}}"
-                         ng-click="comment.showReplies = true" href="">
+                         ng-click="showAllReplies[comment._id] = true" href="">
                         Show all {{comment.replies.length}} replies
                     </a>
                 </div>
@@ -221,7 +221,7 @@
                       placeholder="Reply to this comment" ng-change="changeOnReply(comment)">
             </textarea>
             <div class="replyInputBtn" ng-show="tempReplies[comment._id].length > 0" style="margin-top: 10px">
-                <button ng-click="replyTo(comment._id, tempReplies[comment._id], comment.showReplies)" style="margin-left: 0"
+                <button ng-click="replyTo(comment._id, tempReplies[comment._id])" style="margin-left: 0"
                         class="btn btn-primary" id="replyBtn_{{commentIndex}}">Reply
                 </button>
                 <button ng-click="cancelReply(comment);" class="btn btn-default">Cancel</button>

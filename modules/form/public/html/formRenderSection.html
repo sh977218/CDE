@@ -1,9 +1,9 @@
 <div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements,section)"
-     class="panel panel-default formRenderSection formRenderPanel" id="formRenderSection_{{section.label}}">
+     class="panel panel-default native-section" id="formRenderSection_{{section.label}}">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-9">
-                <h4 tabindex="0">{{section.label}}</h4>
+                <h4 tabindex="0" class="panel-title">{{section.label}}</h4>
             </div>
             <div class="col-md-3" ng-if="canRepeat(section)">
                 <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)">
@@ -32,11 +32,11 @@
             </div>
             <div ng-switch-default>
                 <div ng-repeat="formElement in section.formElements track by $index" class="row">
-                    <div ng-if="formElement.elementType === 'question'">
-                        <div class="col-md-12" ng-include="'/form/public/html/formRenderQuestion.html'"
+                    <div ng-if="formElement.elementType === 'question'" class="col-md-12">
+                        <div ng-include="'/form/public/html/formRenderQuestion.html'"
                              ng-init="formElements = section.formElements; question = formElement; question.question.answer = question.question.defaultAnswer"></div>
                     </div>
-                    <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
+                    <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'" class="col-md-12"
                          ng-include="'/form/public/html/formRenderSection.html'"
                          ng-init="formElements = section.formElements; section = formElement;">
                     </div>

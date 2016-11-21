@@ -7,6 +7,13 @@
                 </label>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="displayNumbering"> Display Question Numbers
+                </label>
+            </div>
+        </div>
     </div>
     <h2>{{elt.naming[0].designation}}</h2>
 
@@ -16,12 +23,9 @@
                 id="select_display_profile"></select>
     </div>
 
-    <form name="sectionLabel" role="form" class="form-inline">
-        <div ng-repeat="formElement in elt.formElements track by $index" class="row">
-            <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formRenderQuestion.html'"
-                 ng-init="question = formElement;  formElements = elt.formElements;"></div>
-            <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
-                 ng-include="'/form/public/html/formRenderSection.html'"
+    <form name="sectionLabel" role="form" class="form-horizontal">
+        <div ng-repeat="formElement in elt.formElements track by $index">
+            <div ng-include="'/form/public/html/formRenderSection.html'"
                  ng-init="section = formElement; formElements = elt.formElements;"></div>
         </div>
     </form>
