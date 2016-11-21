@@ -48,7 +48,6 @@ angular.module('formModule').controller('ShareBoardCtrl',
                     owner: board.owner,
                     users: $scope.users
                 }).then(function (response) {
-
                     $modalInstance.close($scope.users);
                 });
             }

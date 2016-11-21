@@ -1,5 +1,5 @@
 <div ng-controller="BoardViewCtrl">
-    <div ng-if="board.users.length > 0">
+    <div ng-if="board.users.length > 0 && board.owner.username === user.username">
         <div class="col-md-12">
             <div class="col-md-1">
                 <label class="floatLeft">Reviewers:</label>
@@ -15,6 +15,14 @@
                        'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
             </div>
         </div>
+    </div>
+    <div class="col-md-12" ng-if="board.owner.username !== user.username">
+        <button class="btn btn-default" ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
+                ng-click="changeBoardStatus('approved')">
+            <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+        <button class="btn btn-default" ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
+                ng-click="changeBoardStatus('disapproved')">
+            <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
     </div>
     <h3 class="centerText" id="board_name_{{board.name}}">{{board.name}}
         <button class="btn btn-small btn-default pull-right" role="button" tabindex="0" ng-controller="HasCommentsCtrl"

@@ -58,6 +58,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
+                        $scope.board.users.filter(function (u) {
+                            if (u.username === userResource.user.username)
+                                $scope.boardStatus = u.status;
+                        });
                         $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
@@ -209,8 +213,15 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.board.users = users;
                 });
             };
-
+            $scope.changeBoardStatus = function (s) {
+                $http.post('/board/status', {
+                    boardId: $scope.board._id,
+                    status: s
+                }).then(function (response) {
+                    $scope.boardStatus = s;
+                    Alert.addAlert('warning', response.data);
+                });
+            };
             $scope.reload();
-
 }]);
 

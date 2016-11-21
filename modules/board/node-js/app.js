@@ -55,7 +55,20 @@ exports.init = function (app, daoManager) {
         mongo_board.boardById(req.params.boardId, function (err, board) {
             if (board) {
                 if (board.shareStatus !== "Public") {
-                    if (!req.isAuthenticated() || (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id))) {
+                    var updateLastView = false;
+                    var viewers = board.users.filter(function (u) {
+                        if (u.username === req.user.username) {
+                            u.lastView = new Date();
+                            updateLastView = true;
+                            board.markModified('users');
+                        }
+                        return u.roles.indexOf('viewer') !== -1;
+                    }).map(function (u) {
+                        return u.username;
+                    });
+                    if (updateLastView) board.save();
+                    if (!req.isAuthenticated() ||
+                        (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) && viewers.indexOf(req.user.username) === -1) {
                         return res.status(403).end();
                     }
                 }
@@ -201,7 +214,35 @@ exports.init = function (app, daoManager) {
         else {
             res.send("You must be logged in to do this.");
         }
-    })
+    });
+    app.post("/board/status", function (req, res) {
+        if (req.isAuthenticated()) {
+            var boardId = req.body.boardId;
+            var status = req.body.status;
+            var user = req.user;
+            mongo_board.boardById(boardId, function (err, board) {
+                if (err) return res.send(500);
+                else {
+                    board.users.forEach(function (u) {
+                        if (u.username === user.username)
+                            u.status = status;
+                    });
+                    board.markModified("users");
+                    board.save(function (e) {
+                        if (e) {
+                            return res.send(500);
+                        }
+                        else {
+                            return res.send(status + " board.");
+                        }
+                    })
+                }
+            })
+        }
+        else {
+            res.send("You must be logged in to do this.");
+        }
+    });
     
     
 };

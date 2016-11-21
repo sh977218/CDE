@@ -1476,10 +1476,21 @@ input.ng-invalid {
     color: #51A351;
 }
 
+.bg-color-green {
+    background-color: #51A351 !important;
+    color: white !important;
+}
 .red-icon {
     color: red;
 }
 
+.white-icon {
+    color: white !important;
+}
+
+.bg-color-red {
+    background-color: red !important;
+}
 .yellow-icon {
     color: yellow;
 }
