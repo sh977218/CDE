@@ -31,7 +31,7 @@
                         </li>
                     </ul>
                 </td>
-                <td><i class="fa fa-times" ng-click="deleteUser(user)"></i></td>
+                <td><i class="fa fa-trash-o" ng-click="deleteUser(user)"></i></td>
             </tr>
             <tr>
                 <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
@@ -41,7 +41,7 @@
                 <td uib-dropdown>
                     <div uib-dropdown-toggle>
                         <div class="floatLeft">
-                            <i class="fa width20"
+                            <i class="fa width20" style="line-height: 15px;"
                                ng-class="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>
                         </div>
                         <div class="floatLeft">
@@ -51,15 +51,13 @@
                     <ul uib-dropdown-menu>
                         <li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(newUser,role)">
                             <a class="ib" style="line-height: 15px;">
-                                <i class="fa fa-check" ng-show="newUser.role === role.name"></i>
+                                <i class="fa width20" ng-class="{'fa-check':newUser.role === role.name}"></i>
                                 <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
                             </a>
                         </li>
                     </ul>
                 </td>
-                <td>
-                    <button class="btn btn-default btn-xs" ng-click="addInvitation(newUser)">Add</button>
-                </td>
+                <td><i class="fa fa-plus" ng-click="addInvitation(newUser)"></i></td>
             </tr>
             </tbody>
         </table>

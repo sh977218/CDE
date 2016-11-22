@@ -33,6 +33,12 @@ body {
     padding-top: 8px;
 }
 
+.mr2 {
+    margin-right: 2px;
+}
+.ml2 {
+    margin-right: 2px;
+}
 .padding10 {
     padding: 10px;
 }.padding3 {
@@ -1466,8 +1472,8 @@ input.ng-invalid {
 
 .overlay-lower-right {
     position: relative;
-    left: 25px;
-    bottom: 10px;
+    left: -10px;
+    top: -6px;
 }
 
 .hoverGrey:hover {

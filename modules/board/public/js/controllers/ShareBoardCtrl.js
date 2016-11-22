@@ -1,11 +1,11 @@
 angular.module('formModule').controller('ShareBoardCtrl',
-    ['$scope', '$location', '$http', '$uibModalInstance', 'board', 'userResource',
-        function ($scope, $location, $http, $modalInstance, board, userResource) {
+    ['$scope', '$location', '$http', '$uibModalInstance', 'board', 'userResource', 'Alert',
+        function ($scope, $location, $http, $modalInstance, board, userResource, Alert) {
             $scope.url = $location.absUrl();
             $scope.searchString = '';
             $scope.owner = board.owner;
             $scope.users = angular.copy(board.users);
-            $scope.newUser = {};
+            $scope.newUser = {username: '', role: 'viewer'};
             $scope.allRoles = [{
                 label: 'can review',
                 name: 'reviewer',
@@ -17,17 +17,18 @@ angular.module('formModule').controller('ShareBoardCtrl',
             }];
             $scope.addInvitation = function (newUser) {
                 if (newUser.username.trim().length === 0) {
-                    alert('username is empty');
+                    Alert.addAlert('danger', 'username is empty');
                     return;
                 }
                 var existedUser = $scope.users.filter(function (o) {
                     return o.username === newUser.username;
                 });
                 if (existedUser[0]) {
-                    alert('user exists');
+                    Alert.addAlert('danger', 'username exists');
+                    return;
                 } else {
                     $scope.users.push(newUser);
-                    $scope.newUser = {};
+                    $scope.newUser = {username: '', role: 'viewer'};
                 }
             };
             $scope.deleteUser = function (u) {
