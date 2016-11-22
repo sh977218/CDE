@@ -216,25 +216,19 @@ exports.init = function (app, daoManager) {
     });
     app.post("/board/status", function (req, res) {
         if (req.isAuthenticated()) {
-            var boardId = req.body.boardId;
             var status = req.body.status;
-            var user = req.user;
-            mongo_board.boardById(boardId, function (err, board) {
+            mongo_board.boardById(req.body.boardId, function (err, board) {
                 if (err) return res.send(500);
                 else {
                     board.users.forEach(function (u) {
-                        if (u.username === user.username)
+                        if (u.username === req.user.username)
                             u.status = status;
                     });
                     board.markModified("users");
-                    board.save(function (e) {
-                        if (e) {
-                            return res.send(500);
-                        }
-                        else {
-                            return res.send(status + " board.");
-                        }
-                    })
+                    board.save(function (err) {
+                        if (err) { res.status(500); }
+                        return res.send();
+                    });
                 }
             })
         }
