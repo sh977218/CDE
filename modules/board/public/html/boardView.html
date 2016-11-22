@@ -1,82 +1,99 @@
 <div ng-controller="BoardViewCtrl">
-    <div ng-if="board.users.length > 0 && board.owner.username === user.username">
-        <div class="col-md-12">
-            <div class="col-md-1">
-                <label class="floatLeft">Reviewers:</label>
+    <div ng-if="board && (canView || canReview)">
+        <div ng-if="board.users.length > 0" class="pt20">
+            <div class="col-md-9">
+                <div class="floatLeft"
+                     ng-repeat="reviewer in getReviewers()">
+                    <span class="fa-stack fa-lg" title="{{reviewer.username}} {{reviewer.status}}">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                        <i class="fa overlay-lower-right"
+                           ng-class="{'fa-check green-icon':reviewer.status === 'approved',
+                           'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
+                    </span>
+                </div>
+                <div ng-if="board.status !=='reviewStarted'" class="pull-right">
+                    <button class="btn btn-default btn-sm floatLeft" ng-click="startReview()"> Start Review</button>
+                    <input uib-datepicker-popup="dd-MMMM-yyyy" class="floatLeft padding3" placeholder="review ends..."
+                           datepicker-options="endReviewDateOption" is-open="board.opened"
+                           datepicker-append-to-body="true"
+                           type="text" alt-input-formats="['yyyy']" ng-model="board.endReviewDate"/>
+                    <button type="button" class="btn btn-default btn-sm floatLeft" ng-click="board.opened = true">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </div>
             </div>
-            <div class="floatLeft"
-                 ng-repeat="reviewer in getReviewers()">
-                <i id="{{reviewer.username}}" class="fa fa-user fa-2x hoverGrey"
-                   title="{{reviewer.username}} {{reviewer.status}}"
-                   aria-hidden="true" uib-dropdown-toggle></i>
-                <i class="fa overlay-lower-right"
-                   ng-class="{'fa-check green-icon':reviewer.status === 'approved',
-                       'fa-times red-icon':reviewer.status === 'disapproved',
-                       'fa-paper-plane yellow-icon':reviewer.status === 'invited'}"></i>
+            <div class="col-md-3" ng-if="canReview">
+                <button class="btn btn-default btn-sm" ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
+                        ng-click="changeBoardStatus('approved')">
+                    <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                <button class="btn btn-default btn-sm"
+                        ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
+                        ng-click="changeBoardStatus('disapproved')">
+                    <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
             </div>
         </div>
-    </div>
-    <div class="col-md-12" ng-if="board.owner.username !== user.username">
-        <button class="btn btn-default" ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
-                ng-click="changeBoardStatus('approved')">
-            <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-        <button class="btn btn-default" ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
-                ng-click="changeBoardStatus('disapproved')">
-            <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
-    </div>
-    <h3 class="centerText" id="board_name_{{board.name}}">{{board.name}}
-        <button class="btn btn-small btn-default pull-right" role="button" tabindex="0" ng-controller="HasCommentsCtrl"
-                ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
-            <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss</button>
-    </h3>
-    <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
-        <div class="searchInfo">
-            <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                <div ng-if="board.type !=='form'" class="btn-group">
-                    <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-download"></i>
-                        Export Board<span class="caret"></span>
+        <h3 class="centerText clear" id="board_name_{{board.name}}">{{board.name}}
+            <button class="btn btn-small btn-default pull-right" role="button" tabindex="0"
+                    ng-controller="HasCommentsCtrl"
+                    ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
+                <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
+            </button>
+        </h3>
+        <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+            <div class="searchInfo">
+                <div class="btn-group  pull-right" ng-controller="ExportCtrl">
+                    <div ng-if="board.type !=='form'" class="btn-group">
+                        <button id="export" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-download"></i>
+                            Export Board<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a id="csvExport" ng-click="exportBoard()" onmouseover="" class="hand-cursor"> CSV
+                                File, NIH/CDE</a></li>
+                            <li><a id='jsonExport' ng-href="/board/{{board._id}}/0/500/?type=json" target="_blank">JSON
+                                File, NIH/CDE
+                                Schema</a></li>
+                            <li><a id='xmlExport' ng-href="/board/{{board._id}}/0/500/?type=xml" target="_blank">XML
+                                File, NIH/CDE
+                                Schema</a></li>
+                        </ul>
+                    </div>
+
+                    <button id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
+                            ng-click="classifyEltBoard()">
+                        <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a id="csvExport"  ng-click="exportBoard()" onmouseover="" style="cursor: pointer;"> CSV File, NIH/CDE</a></li>
-                        <li><a id='jsonExport' ng-href="/board/{{board._id}}/0/500/?type=json" target="_blank">JSON File, NIH/CDE
-                            Schema</a></li>
-                        <li><a id='xmlExport' ng-href="/board/{{board._id}}/0/500/?type=xml" target="_blank">XML File, NIH/CDE
-                            Schema</a></li>
-                    </ul>
+
+
+                </div>
+                <div class="btn-group  pull-right" ng-controller="ExportCtrl">
+                    <button id="mb.createForm" value="Create Form" ng-click="createFormFromBoard()"
+                            class="btn btn-default" ng-if="canCreateForms()">
+                        <i class="fa"></i> Create Form
+                    </button>
                 </div>
 
-                <button id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s" class="btn btn-default"
-                        ng-click="classifyEltBoard()">
-                    <i class="fa fa-folder-open-o"></i> Classify All {{board.type==='form'?'Form':'CDE'}}s
+                <div class="btn-group  pull-right">
+                    <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
+                </div>
+                <button class="btn btn-default pull-right" ng-if="user.username === board.owner.username"
+                        ng-click="shareBoard()">Share
                 </button>
 
-
-            </div>
-            <div class="btn-group  pull-right" ng-controller="ExportCtrl">
-                <button id="mb.createForm" value="Create Form" ng-click="createFormFromBoard()"
-                        class="btn btn-default" ng-if="canCreateForms()">
-                    <i class="fa"></i> Create Form
-                </button>
             </div>
 
-            <div class="btn-group  pull-right">
-                <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
-            </div>
-            <button class="btn btn-default pull-right" ng-click="shareBoard()">Share</button>
+            <div ng-if="board.type" ng-include="viewTypes[listViewType].url"></div>
 
+            <uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
+                            ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></uib-pagination>
         </div>
 
-        <div ng-if="board.type" ng-include="viewTypes[listViewType].url"></div>
+        <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
+             style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
+            <div ng-include="'/system/public/html/comments.html'" style="padding:30px;"></div>
+        </div>
 
-        <uib-pagination align="center" direction-links="true" items-per-page="20" total-items="totalItems"
-                        ng-model="currentPage" max-size="10" ng-change="setPage(currentPage)"></uib-pagination>
     </div>
-
-    <div ng-if="commentMode" ng-class="{'col-sm-3':commentMode,'':!commentMode}"
-         style="padding-left:10px;box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-        <div ng-include="'/system/public/html/comments.html'" style="padding:30px;"></div>
-    </div>
-
 </div>

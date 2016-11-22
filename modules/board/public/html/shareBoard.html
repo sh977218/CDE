@@ -15,22 +15,24 @@
                 <td uib-dropdown>
                     <div uib-dropdown-toggle>
                         <div class="floatLeft">
-                            <i class="fa fa-pencil" style="width: 20px"></i>
+                            <i class="fa width20"
+                               ng-class="{'fa-eye':user.role === 'viewer','fa-search-plus':user.role === 'reviewer'}"></i>
                         </div>
                         <div class="floatLeft">
                             <i class="fa fa-caret-down"></i>
                         </div>
                     </div>
                     <ul uib-dropdown-menu>
-                        <li ng-repeat="role in allRoles" value="{{role}}" ng-click="changeRole(user,role)">
+                        <li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(user,role)">
                             <a class="ib" style="line-height: 15px;">
-                                <i class="fa fa-check floatLeft" ng-show="user.roles.indexOf(role) !== -1"></i> &nbsp;&nbsp;{{role}}</a>
+                                <i class="fa width20" ng-class="{'fa-check':user.role === role.name}"></i>
+                                <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
+                            </a>
                         </li>
                     </ul>
                 </td>
                 <td><i class="fa fa-times" ng-click="deleteUser(user)"></i></td>
             </tr>
-            </tbody>
             <tr>
                 <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
                 <td>
@@ -39,27 +41,31 @@
                 <td uib-dropdown>
                     <div uib-dropdown-toggle>
                         <div class="floatLeft">
-                            <i class="fa fa-pencil" style="width: 20px"></i>
+                            <i class="fa width20"
+                               ng-class="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>
                         </div>
                         <div class="floatLeft">
                             <i class="fa fa-caret-down"></i>
                         </div>
                     </div>
                     <ul uib-dropdown-menu>
-                        <li ng-repeat="role in allRoles" value="{{role}}" ng-click="changeRole(newUser,role)">
+                        <li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(newUser,role)">
                             <a class="ib" style="line-height: 15px;">
-                                <i class="fa fa-check floatLeft" ng-show="newUser.roles.indexOf(role) !== -1"></i> &nbsp;&nbsp;{{role}}</a>
+                                <i class="fa fa-check" ng-show="newUser.role === role.name"></i>
+                                <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
+                            </a>
                         </li>
                     </ul>
                 </td>
                 <td>
-                    <button class="btn btn-default" ng-click="sendInvitation(newUser)">Send</button>
+                    <button class="btn btn-default btn-xs" ng-click="addInvitation(newUser)">Add</button>
                 </td>
             </tr>
+            </tbody>
         </table>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default" ng-click="startReview()">Start Review</button>
-    <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Close</button>
+    <button class="btn btn-default floatLeft bg-color-blue" ng-click="ok()">Send</button>
+    <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
 </div>

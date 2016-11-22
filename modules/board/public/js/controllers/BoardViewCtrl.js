@@ -58,9 +58,18 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
+                        if ($scope.board.owner.username === userResource.user.username) {
+                            $scope.canView = true;
+                            $scope.canReview = true;
+                        }
                         $scope.board.users.filter(function (u) {
-                            if (u.username === userResource.user.username)
+                            if (u.username === userResource.user.username) {
+                                if (u.role === 'viewer')
+                                    $scope.canView = true;
+                                if (u.role === 'reviewer')
+                                    $scope.canReview = true;
                                 $scope.boardStatus = u.status;
+                            }
                         });
                         $scope.deferredEltLoaded.resolve();
                     }
@@ -190,12 +199,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
             $scope.getReviewers = function () {
                 return $scope.board.users.filter(function (u) {
-                    return u.roles.indexOf('reviewer') !== -1;
+                    return u.role === 'reviewer';
                 })
             };
             $scope.getViewers = function (u) {
                 return $scope.board.users.filter(function (u) {
-                    return u.roles.indexOf('viewer') !== -1;
+                    return u.role === 'viewer';
                 })
             };
 
@@ -222,6 +231,21 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     Alert.addAlert('warning', response.data);
                 });
             };
+            $scope.startReview = function () {
+                $http.post("/board/startReview", {
+                    boardId: $scope.board._id,
+                    endReviewDate: $scope.board.endReviewDate
+                }).success(function () {
+                    $scope.reload(function () {
+                        Alert.addAlert('success', 'board review started.')
+                    });
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            };
+            $scope.startReviewDateOption = {};
+//            minDate: new Date()
             $scope.reload();
 }]);
 

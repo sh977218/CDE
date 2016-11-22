@@ -5,9 +5,17 @@ angular.module('formModule').controller('ShareBoardCtrl',
             $scope.searchString = '';
             $scope.owner = board.owner;
             $scope.users = angular.copy(board.users);
-            $scope.newUser = {roles: []};
-            $scope.allRoles = ['reviewer', 'viewer', 'editor'];
-            $scope.sendInvitation = function (newUser) {
+            $scope.newUser = {};
+            $scope.allRoles = [{
+                label: 'can review',
+                name: 'reviewer',
+                icon: 'fa-search-plus'
+            }, {
+                label: 'can view',
+                name: 'viewer',
+                icon: 'fa-eye'
+            }];
+            $scope.addInvitation = function (newUser) {
                 if (newUser.username.trim().length === 0) {
                     alert('username is empty');
                     return;
@@ -19,7 +27,7 @@ angular.module('formModule').controller('ShareBoardCtrl',
                     alert('user exists');
                 } else {
                     $scope.users.push(newUser);
-                    $scope.newUser = {roles: []};
+                    $scope.newUser = {};
                 }
             };
             $scope.deleteUser = function (u) {
@@ -31,17 +39,11 @@ angular.module('formModule').controller('ShareBoardCtrl',
                 if (!$scope.users) $scope.users = [];
                 $scope.users.push({username: $scope.searchString});
             };
-            $scope.changeRole = function (user, role) {
-                if (user.roles.indexOf(role) !== -1) {
-                    user.roles = user.roles.filter(function (r) {
-                        return r !== role;
-                    })
-                } else {
-                    user.roles.push(role);
-                    user.status = 'invited';
-                }
+            $scope.changeRole = function (newUser, role) {
+                newUser.role = role.name;
+                newUser.status = 'invited';
             };
-            $scope.startReview = function () {
+            $scope.ok = function () {
                 $http.post('/board/users', {
                     boardId: board._id,
                     user: userResource.user,

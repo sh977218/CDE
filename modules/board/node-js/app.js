@@ -62,7 +62,7 @@ exports.init = function (app, daoManager) {
                             updateLastView = true;
                             board.markModified('users');
                         }
-                        return u.roles.indexOf('viewer') !== -1;
+                        return u.role === 'viewer' || u.role === 'reviewer';
                     }).map(function (u) {
                         return u.username;
                     });
@@ -101,7 +101,7 @@ exports.init = function (app, daoManager) {
                     }
                     else {
                         elts = cdesvc.hideProprietaryCodes(elts, req.user);
-                        res.send({board: board, elts: elts, totalItems: totalItems});
+                        res.send({board, elts, totalItems});
                     }
                 });
             } else {
@@ -161,7 +161,6 @@ exports.init = function (app, daoManager) {
                     b.shareStatus = board.shareStatus;
                     b.pins = board.pins;
                     b.tags = board.tags;
-
                     if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
                         return res.status(403).send("You don't have permission to make boards public!");
                     }
@@ -236,6 +235,36 @@ exports.init = function (app, daoManager) {
                             return res.send(status + " board.");
                         }
                     })
+                }
+            })
+        }
+        else {
+            res.send("You must be logged in to do this.");
+        }
+    });
+    app.post("/board/startReview", function (req, res) {
+        if (req.isAuthenticated()) {
+            var boardId = req.body.boardId;
+            var endReviewDate = req.body.endReviewDate;
+            var user = req.user;
+            mongo_board.boardById(boardId, function (err, board) {
+                if (err) return res.send(500);
+                else {
+                    if (board.status === 'reviewStarted') {
+                        return res.send('board review already started');
+                    } else {
+                        board.status = 'reviewStarted';
+                        board.startReviewDate = new Date();
+                        board.endReviewDate = endReviewDate;
+                        board.save(function (e) {
+                            if (e) {
+                                return res.send(500);
+                            }
+                            else {
+                                return res.send(status + " board.");
+                            }
+                        })
+                    }
                 }
             })
         }

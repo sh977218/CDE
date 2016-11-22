@@ -26,10 +26,13 @@ schemas.pinningBoardSchema = new mongoose.Schema({
     pins: [pinSchema],
     users: [{
         username: String,
-        roles: [{type: String, enum: ['viewer', 'reviewer']}],
+        role: {type: String, enum: ['viewer', 'reviewer']},
         lastView: Date,
-        status: {type: String, default: 'cde', enum: ['invited', 'approved', 'disapproved']}
-    }]
+        status: {type: String, default: 'invited', enum: ['invited', 'approved', 'disapproved']}
+    }],
+    status: String,
+    startReviewDate: Date,
+    endReviewDate: Date
 });
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();
