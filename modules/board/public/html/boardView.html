@@ -1,45 +1,51 @@
 <div ng-controller="BoardViewCtrl">
-    <div ng-if="board && (canView || canReview)">
-        <div ng-if="board.users.length > 0" class="pt20">
-            <div class="col-md-9">
-                <div class="floatLeft"
-                     ng-repeat="reviewer in getReviewers()">
-                    <span class="fa-stack fa-lg" title="{{reviewer.username}} {{reviewer.status}}">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                        <i class="fa overlay-lower-right"
-                           ng-class="{'fa-check green-icon':reviewer.status === 'approved',
-                           'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
-                    </span>
-                </div>
-                <div ng-if="board.status !=='reviewStarted'" class="pull-right">
-                    <button class="btn btn-default btn-sm floatLeft" ng-click="startReview()"> Start Review</button>
-                    <input uib-datepicker-popup="dd-MMMM-yyyy" class="floatLeft padding3" placeholder="review ends..."
-                           datepicker-options="endReviewDateOption" is-open="board.opened"
-                           datepicker-append-to-body="true"
-                           type="text" alt-input-formats="['yyyy']" ng-model="board.endReviewDate"/>
-                    <button type="button" class="btn btn-default btn-sm floatLeft" ng-click="board.opened = true">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                </div>
+    <div ng-if="board" style="overflow: hidden">
+        <div class="row">
+            <div class="col-xs-6">
+                <h3 id="board_name_{{board.name}}" style="margin-left: 15px">{{board.name}}</h3>
             </div>
-            <div class="col-md-3" ng-if="canReview">
-                <button class="btn btn-default btn-sm" ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
-                        ng-click="changeBoardStatus('approved')">
-                    <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-                <button class="btn btn-default btn-sm"
-                        ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
-                        ng-click="changeBoardStatus('disapproved')">
-                    <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+            <div class="col-xs-6">
+                <span class="pull-right pt20">
+                    <button class="btn btn-default btn-sm" ng-if="user.username === board.owner.username"
+                            ng-click="shareBoard()"><i class="fa fa-link"></i> Share
+                    </button>
+                    <button class="btn btn-sm btn-default" role="button" tabindex="0"
+                            ng-controller="HasCommentsCtrl"
+                            ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
+                        <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                    </button>
+                </span>
+                <span ng-if="getReviewers().length > 0" class="pt20 pull-right">
+                    <span ng-repeat="reviewer in getReviewers()">
+                        <span title="{{reviewer.username}} {{reviewer.status}}">
+                            <i class="fa fa-2x fa-user-circle"></i>
+                            <i class="fa overlay-lower-right"
+                               ng-class="{'fa-check green-icon':reviewer.status === 'approved',
+                               'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
+                        </span>
+                    </span>
+                    <span ng-if="!isReviewActive()">
+                        <button class="btn btn-default btn-sm" ng-click="startReview()"> Start Review</button>
+                    </span>
+                    <span ng-if="isReviewActive()">
+                        <button class="btn btn-default btn-sm" ng-click="endReview()"> End Review</button>
+                    </span>
+                    <span ng-if="canReview()">
+                        <button class="btn btn-default btn-sm" ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
+                                ng-click="changeBoardStatus('approved')">
+                            <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
+                        <button class="btn btn-default btn-sm"
+                                ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
+                                ng-click="changeBoardStatus('disapproved')">
+                            <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
+                    </span>
+                </span>
+
             </div>
         </div>
-        <h3 class="centerText clear" id="board_name_{{board.name}}">{{board.name}}
-            <button class="btn btn-small btn-default pull-right" role="button" tabindex="0"
-                    ng-controller="HasCommentsCtrl"
-                    ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
-                <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
-            </button>
-        </h3>
+
+
+
         <div ng-class="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
             <div class="searchInfo">
                 <div class="btn-group  pull-right" ng-controller="ExportCtrl">
@@ -78,9 +84,7 @@
                 <div class="btn-group  pull-right">
                     <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
                 </div>
-                <button class="btn btn-default pull-right" ng-if="user.username === board.owner.username"
-                        ng-click="shareBoard()">Share
-                </button>
+
 
             </div>
 

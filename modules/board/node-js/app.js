@@ -243,35 +243,22 @@ exports.init = function (app, daoManager) {
         }
     });
     app.post("/board/startReview", function (req, res) {
-        if (req.isAuthenticated()) {
-            var boardId = req.body.boardId;
-            var endReviewDate = req.body.endReviewDate;
-            var user = req.user;
-            mongo_board.boardById(boardId, function (err, board) {
-                if (err) return res.send(500);
-                else {
-                    if (board.status === 'reviewStarted') {
-                        return res.send('board review already started');
-                    } else {
-                        board.status = 'reviewStarted';
-                        board.startReviewDate = new Date();
-                        board.endReviewDate = endReviewDate;
-                        board.save(function (e) {
-                            if (e) {
-                                return res.send(500);
-                            }
-                            else {
-                                return res.send(status + " board.");
-                            }
-                        })
-                    }
-                }
-            })
-        }
-        else {
-            res.send("You must be logged in to do this.");
-        }
+        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+            board.review.startDate = new Date();
+            board.save(function (err) {
+                if (err) { res.status(500); }
+                return res.send();
+            });
+        });
     });
-    
+    app.post("/board/endReview", function (req, res) {
+        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+            board.review.endDate = new Date();
+            board.save(function (err) {
+                if (err) { res.status(500); }
+                return res.send();
+            });
+        });
+    });
     
 };

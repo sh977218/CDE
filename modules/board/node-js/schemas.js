@@ -30,9 +30,10 @@ schemas.pinningBoardSchema = new mongoose.Schema({
         lastView: Date,
         status: {type: String, default: 'invited', enum: ['invited', 'approved', 'disapproved']}
     }],
-    status: String,
-    startReviewDate: Date,
-    endReviewDate: Date
+    review: {
+        startDate: Date,
+        endDate: Date
+    }
 });
 schemas.pinningBoardSchema.pre('save', function (next) {
     this.updatedDate = Date.now();

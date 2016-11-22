@@ -58,19 +58,15 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
-                        if ($scope.board.owner.username === userResource.user.username) {
-                            $scope.canView = true;
-                            $scope.canReview = true;
-                        }
-                        $scope.board.users.filter(function (u) {
-                            if (u.username === userResource.user.username) {
-                                if (u.role === 'viewer')
-                                    $scope.canView = true;
-                                if (u.role === 'reviewer')
-                                    $scope.canReview = true;
-                                $scope.boardStatus = u.status;
-                            }
-                        });
+                        //$scope.board.users.filter(function (u) {
+                        //    if (u.username === userResource.user.username) {
+                        //        if (u.role === 'viewer')
+                        //            $scope.canView = true;
+                        //        if (u.role === 'reviewer')
+                        //            $scope.canReview = true;
+                        //        $scope.boardStatus = u.status;
+                        //    }
+                        //});
                         $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
@@ -202,12 +198,17 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     return u.role === 'reviewer';
                 })
             };
-            $scope.getViewers = function (u) {
-                return $scope.board.users.filter(function (u) {
-                    return u.role === 'viewer';
-                })
+            $scope.isReviewActive = function() {
+                return $scope.board.review &&
+                        $scope.board.review.startDate < Date.now() &&
+                    (!$scope.review.endDate || $scope.review.endDate > Date.now());
             };
-
+            $scope.canReview = function () {
+                return $scope.isReviewActive() &&
+                    $scope.board.users.filter(function (u) {
+                        return u.role === 'reviewer' && u.username === userResource.user.username;}
+                    ).length > 0;
+            };
             $scope.shareBoard = function () {
                 $modal.open({
                     animation: false,
