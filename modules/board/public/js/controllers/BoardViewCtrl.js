@@ -195,11 +195,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 })
             };
             function isReviewStarted() {
-                return $scope.board.review.startDate && new Date($scope.board.review.startDate) < new Date();
+                return $scope.board.review && $scope.board.review.startDate && new Date($scope.board.review.startDate) < new Date();
             }
 
             function isReviewEnded() {
-                return ($scope.board.review.endDate && new Date($scope.board.review.endDate) < new Date());
+                return $scope.board.review && $scope.board.review.endDate && new Date($scope.board.review.endDate) < new Date();
             }
             $scope.isReviewActive = function() {
                 var started = isReviewStarted();

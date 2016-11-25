@@ -27,7 +27,16 @@ public class AddReviewerToBoardTest extends BoardTest {
         addNewUser("reguser", "viewer");
         addNewUser("ninds", "reviewer");
         clickElement(By.id("sendBtn"));
-        
+        clickElement(By.id("startReviewBtn"));
+        textPresent("End Review");
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToBoard(boardName);
+        clickElement(By.id("approveBoardBtn"));
+        closeAlert();
+        mustBeLoggedInAs(ninds_username, password);
+        goToBoard(boardName);
+        clickElement(By.id("disApproveBoardBtn"));
+        closeAlert();
     }
 
     @Test

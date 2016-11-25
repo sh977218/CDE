@@ -11,17 +11,19 @@
                            'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
                     </span>
                     <span ng-if="!isReviewActive() && user.username === board.owner.username ">
-                        <button class="btn btn-default btn-sm" ng-click="startReview()"> Start Review</button>
+                        <button class="btn btn-default btn-sm" id="startReviewBtn"
+                                ng-click="startReview()"> Start Review</button>
                     </span>
                     <span ng-if="isReviewActive() && user.username === board.owner.username">
-                        <button class="btn btn-default btn-sm" ng-click="endReview()"> End Review</button>
+                        <button class="btn btn-default btn-sm" id="endReviewBtn"
+                                ng-click="endReview()"> End Review</button>
                     </span>
                     <span ng-if="canReview()">
-                        <button class="btn btn-default btn-sm"
+                        <button class="btn btn-default btn-sm" id="approveBoardBtn"
                                 ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
                                 ng-click="boardApproval('approved')">
                             <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
-                        <button class="btn btn-default btn-sm"
+                        <button class="btn btn-default btn-sm" id="disApproveBoardBtn"
                                 ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                 ng-click="boardApproval('disapproved')">
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
