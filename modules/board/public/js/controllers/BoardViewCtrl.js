@@ -58,15 +58,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
-                        //$scope.board.users.filter(function (u) {
-                        //    if (u.username === userResource.user.username) {
-                        //        if (u.role === 'viewer')
-                        //            $scope.canView = true;
-                        //        if (u.role === 'reviewer')
-                        //            $scope.canReview = true;
-                        //        $scope.boardStatus = u.status;
-                        //    }
-                        //});
                         $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
@@ -245,8 +236,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.reload();
                 });
             };
-            $scope.startReviewDateOption = {};
-//            minDate: new Date()
             $scope.reload();
 }]);
 

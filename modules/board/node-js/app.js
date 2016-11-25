@@ -16,7 +16,7 @@ var elastic = require('../../cde/node-js/elastic')
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
-    
+
     app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_board.boardsByUserId(req.params.userId, function (result) {
             res.send(result);
@@ -274,21 +274,34 @@ exports.init = function (app, daoManager) {
             res.send("You must be logged in to do this.");
         }
     });
-    app.post("/board/status", function (req, res) {
+    app.post("/board/approval", function (req, res) {
         if (req.isAuthenticated()) {
-            var status = req.body.status;
+            var approval = req.body.approval;
             mongo_board.boardById(req.body.boardId, function (err, board) {
                 if (err) return res.send(500);
                 else {
-                    board.users.forEach(function (u) {
-                        if (u.username === req.user.username)
-                            u.status = status;
-                    });
-                    board.markModified("users");
-                    board.save(function (err) {
-                        if (err) { res.status(500); }
-                        return res.send();
-                    });
+                    if (!board.review.startDate) return res.status(500).send('board has not started review yet.');
+                    else if (board.review.endDate <= new Date()) return res.status(500).send('board has already ended review.');
+                    else {
+                        var foundUser = false;
+                        board.users.forEach(function (u) {
+                            if (u.username === req.user.username) {
+                                foundUser = true;
+                                u.approval = approval;
+                            }
+                        });
+                        if (foundUser) {
+                            board.markModified("users");
+                            board.save(function (err) {
+                                if (err) {
+                                    res.status(500);
+                                }
+                                return res.send();
+                            });
+                        } else {
+                            return res.status(500).send('not authorized.');
+                        }
+                    }
                 }
             })
         }
