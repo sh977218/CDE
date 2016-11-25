@@ -1,18 +1,26 @@
-<div class="col-md-8">
+<div ng-controller="RegStatusValidationCtrl" class="col-md-8">
+    <div ng-switch="hasRules()">
     <h2 id="regStatusValidationRules">Validation Rules</h2>
-    The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
-    This CDE is used by the following <b>Stewards</b>: <span ng-repeat="orgName in elt.usedBy">{{orgName}}<span ng-if="$index + 1 < elt.usedBy.length">,</span> </span><br>
-    In order to promote this CDE to a different registration status, it must obey the following validation rules:
-    <div ng-controller="RegStatusValidationCtrl">
-        <div ng-repeat="(statusName, status) in cdeStatusRules" ng-show="showStatus(status)">
-            <h3>Validation Rules for {{statusName}} Status</h3>
-            <div ng-repeat="(orgName, org) in status">
-                <h5>Steward <b>{{orgName}}</b> requires the following conditions to be met, in order to promote this CDE to <b>{{statusName}}</b> status:</h5>
-                <div ng-repeat="rule in org" id="rule_{{statusName}}_{{$index}}">
-                    <i class="fa  btn-xs" ng-class="{'fa-check btn-success':cdePassingRule(elt, rule), 'fa-times btn-danger': !cdePassingRule(elt, rule)}"></i> {{rule.ruleName}}
+
+    <div ng-switch-when="true">
+        The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
+        This CDE is used by the following <b>Stewards</b>: <span ng-repeat="orgName in elt.usedBy">{{orgName}}<span ng-if="$index + 1 < elt.usedBy.length">,</span> </span><br>
+        In order to promote this CDE to a different registration status, it must obey the following validation rules:
+        <div>
+            <div ng-repeat="(statusName, status) in cdeStatusRules" ng-show="showStatus(status)">
+                <h3>Validation Rules for {{statusName}} Status</h3>
+                <div ng-repeat="(orgName, org) in status">
+                    <h5>Steward <b>{{orgName}}</b> requires the following conditions to be met, in order to promote this CDE to <b>{{statusName}}</b> status:</h5>
+                    <div ng-repeat="rule in org" id="rule_{{statusName}}_{{$index}}">
+                        <i class="fa  btn-xs" ng-class="{'fa-check btn-success':cdePassingRule(elt, rule), 'fa-times btn-danger': !cdePassingRule(elt, rule)}"></i> {{rule.ruleName}}
+                    </div>
                 </div>
+                <hr>
             </div>
-            <hr>
         </div>
     </div>
+    <div ng-switch-when="false">
+        There are no validation rules for this CDE.
+    </div>
+</div>
 </div>
