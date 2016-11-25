@@ -10,10 +10,10 @@
                            ng-class="{'fa-check green-icon':reviewer.status === 'approved',
                            'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
                     </span>
-                    <span ng-if="!isReviewActive()">
+                    <span ng-if="!isReviewActive() && user.username === board.owner.username ">
                         <button class="btn btn-default btn-sm" ng-click="startReview()"> Start Review</button>
                     </span>
-                    <span ng-if="isReviewActive()">
+                    <span ng-if="isReviewActive() && user.username === board.owner.username">
                         <button class="btn btn-default btn-sm" ng-click="endReview()"> End Review</button>
                     </span>
                     <span ng-if="canReview()">
