@@ -17,6 +17,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         String attachmentName = "nih-logo-color.png";
         showAllTabs();
         addAttachment(attachmentName);
+        textPresent(attachmentName + " - This attachment cannot");
         // wait before checking inbox
         hangon(5);
         reviewAttachment(attachmentName);
