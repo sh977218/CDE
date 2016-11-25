@@ -282,13 +282,13 @@ exports.init = function (app, daoManager) {
                 if (err) return res.send(500);
                 else {
                     if (!board.review.startDate) return res.status(500).send('board has not started review yet.');
-                    else if (board.review.endDate <= new Date()) return res.status(500).send('board has already ended review.');
+                    else if (board.review.endDate < new Date()) return res.status(500).send('board has already ended review.');
                     else {
                         var foundUser = false;
                         board.users.forEach(function (u) {
                             if (u.username === req.user.username) {
                                 foundUser = true;
-                                u.approval = approval;
+                                u.status = approval;
                             }
                         });
                         if (foundUser) {
@@ -313,7 +313,8 @@ exports.init = function (app, daoManager) {
     app.post("/board/startReview", function (req, res) {
         authorization.boardOwnership(req, res, req.body.boardId, function(board) {
             board.review.startDate = new Date();
-            board.save(function (err) {
+            board.review.endDate = undefined;
+            board.save(function (err, o) {
                 if (err) { res.status(500); }
                 return res.send();
             });

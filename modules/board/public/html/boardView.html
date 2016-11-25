@@ -19,11 +19,11 @@
                     <span ng-if="canReview()">
                         <button class="btn btn-default btn-sm"
                                 ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"
-                                ng-click="changeBoardStatus('approved')">
+                                ng-click="boardApproval('approved')">
                             <i class="fa fa-check">&nbsp;&nbsp;Approve</i></button>
                         <button class="btn btn-default btn-sm"
                                 ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
-                                ng-click="changeBoardStatus('disapproved')">
+                                ng-click="boardApproval('disapproved')">
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
                     </span>
                 </span>

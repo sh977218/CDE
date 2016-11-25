@@ -58,6 +58,11 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
                         });
+                        $scope.board.users.filter(function (u) {
+                            if (u.username === userResource.user.username) {
+                                $scope.boardStatus = u.status;
+                            }
+                        });
                         $scope.deferredEltLoaded.resolve();
                     }
                 }).error(function () {
@@ -189,9 +194,17 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     return u.role === 'reviewer';
                 })
             };
+            function isReviewStarted() {
+                return $scope.board.review.startDate && new Date($scope.board.review.startDate) < new Date();
+            }
+
+            function isReviewEnded() {
+                return ($scope.board.review.endDate && new Date($scope.board.review.endDate) < new Date());
+            }
             $scope.isReviewActive = function() {
-                return $scope.board.review && $scope.board.review.startDate < Date.now() &&
-                    (!$scope.board.review.endDate || $scope.board.review.endDate > Date.now());
+                var started = isReviewStarted();
+                var ended = isReviewEnded();
+                return $scope.board.review && isReviewStarted() && !isReviewEnded();
             };
             $scope.canReview = function () {
                 return $scope.isReviewActive() &&
@@ -213,19 +226,30 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     $scope.board.users = users;
                 });
             };
-            $scope.changeBoardStatus = function (s) {
-                $http.post('/board/status', {
+            $scope.boardApproval = function (approval) {
+                $http.post('/board/approval', {
                     boardId: $scope.board._id,
-                    status: s
+                    approval: approval
                 }).then(function (response) {
-                    $scope.boardStatus = s;
-                    Alert.addAlert('warning', response.data);
+                    $scope.boardStatus = approval;
+                    Alert.addAlert('warning', approval + " board.");
                 });
             };
             $scope.startReview = function () {
                 $http.post("/board/startReview", {
-                    boardId: $scope.board._id,
-                    endReviewDate: $scope.board.endReviewDate
+                    boardId: $scope.board._id
+                }).success(function () {
+                    $scope.reload(function () {
+                        Alert.addAlert('success', 'board review started.')
+                    });
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            };
+            $scope.endReview = function () {
+                $http.post("/board/endReview", {
+                    boardId: $scope.board._id
                 }).success(function () {
                     $scope.reload(function () {
                         Alert.addAlert('success', 'board review started.')
