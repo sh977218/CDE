@@ -17,38 +17,6 @@ function addQuestion(parent, question) {
         newQuestion.OtherText = {"@val": question.instructions.value};
     }
 
-    if (question.question.datatype === 'Value List') {
-        newQuestion.ListField = {"List": []};
-        if (question.question.multiselect) newQuestion.ListField["@maxSelections"] = "0";
-
-        if (question.question.answers) {
-            question.question.answers.forEach(function (answer) {
-                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                var q = {
-                    "@ID": "NA_" + Math.random(),
-                    "@title": title
-                };
-                if (answer.codeSystemName) {
-                    q["CodedValue"] = {
-                        "Code":{"@val":answer.valueMeaningCode}
-                        , "CodeSystem": {
-                            "CodeSystemName": {"@val": answer.codeSystemName}
-                        }
-                    };
-                }
-                newQuestion.ListField.List.push({ListItem: q});
-            });
-        }
-    } else {
-        newQuestion.ResponseField = {
-            "Response": {
-                "string": {"@name": "NA_" + Math.random(), "@maxLength": "4000"}
-            }
-        };
-    }
-
-    idToName[question.question.cde.tinyId] = question.label;
-
     var questionEle = parent.ele({Question: newQuestion});
 
     if (question.question.cde.ids.length>0) {
@@ -67,6 +35,34 @@ function addQuestion(parent, question) {
         });
     }
 
+    if (question.question.datatype === 'Value List') {
+        var newListField = questionEle.ele("ListField");
+        var newList = newListField.ele("List");
+        if (question.question.multiselect) newListField.att("maxSelections", "0");
+
+        if (question.question.answers) {
+            question.question.answers.forEach(function (answer) {
+                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
+                var q = {
+                    "@ID": "NA_" + Math.random(),
+                    "@title": title
+                };
+                if (answer.codeSystemName) {
+                    q["CodedValue"] = {
+                        "Code":{"@val":answer.valueMeaningCode}
+                        , "CodeSystem": {
+                            "CodeSystemName": {"@val": answer.codeSystemName}
+                        }
+                    };
+                }
+                newList.ele({ListItem: q});
+            });
+        }
+    } else {
+        questionEle.ele("ResponseField").ele("Response").ele("string", {"name": "NA_" + Math.random(), "maxLength": "4000"});
+    }
+
+    idToName[question.question.cde.tinyId] = question.label;
 
     questionsInSection[question.label] = questionEle;
 }
@@ -140,7 +136,7 @@ var doSection = function (parent, section) {
 
 var idToName = {};
 
-exports.formToSDC = function (form) {
+exports.formToSDC = function (form, renderer) {
 
     var formDesign = builder.create({
         "FormDesign": {
@@ -181,6 +177,10 @@ exports.formToSDC = function (form) {
         }
     });
 
-    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
 
+    if (renderer === "defaultHtml") {
+        return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr
+    } else {
+        return xmlStr;
+    }
 };

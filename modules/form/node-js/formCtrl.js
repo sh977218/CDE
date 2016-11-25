@@ -192,7 +192,7 @@ var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
     fetchWholeForm(form, function (wholeForm) {
         if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
-        res.send(sdc.formToSDC(wholeForm));
+        res.send(sdc.formToSDC(wholeForm, req.query.renderer));
     });
 };
 
