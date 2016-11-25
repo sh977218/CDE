@@ -36,20 +36,22 @@
             <tr>
                 <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
                 <td>
-                    <input placeholder="Enter username..." style="width:100%" ng-model="newUser.username" required/>
+                    <input placeholder="Enter username..." style="width:100%" id="newUser_username"
+                           ng-model="newUser.username" required/>
                 </td>
                 <td uib-dropdown>
                     <div uib-dropdown-toggle>
                         <div class="floatLeft">
-                            <i class="fa width20" style="line-height: 15px;"
+                            <i class="fa width20" style="line-height: 15px;" id="newUser_role"
                                ng-class="{'fa-eye':newUser.role === 'viewer','fa-search-plus':newUser.role === 'reviewer'}"></i>
                         </div>
                         <div class="floatLeft">
-                            <i class="fa fa-caret-down"></i>
+                            <i id="newUser_change" class="fa fa-caret-down"></i>
                         </div>
                     </div>
                     <ul uib-dropdown-menu>
-                        <li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(newUser,role)">
+                        <li ng-repeat="role in allRoles" value="{{role.name}}" ng-click="changeRole(newUser,role)"
+                            id="newUser_role_{{role.name}}">
                             <a class="ib" style="line-height: 15px;">
                                 <i class="fa width20" ng-class="{'fa-check':newUser.role === role.name}"></i>
                                 <i class="fa {{role.icon}}"></i> &nbsp;&nbsp;{{role.label}}
@@ -57,13 +59,13 @@
                         </li>
                     </ul>
                 </td>
-                <td><i class="fa fa-plus" ng-click="addInvitation(newUser)"></i></td>
+                <td><i class="fa fa-plus" id="addUserBtn" ng-click="addUser(newUser)"></i></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-info" ng-click="ok()">Send</button>
+    <button class="btn btn-info" ng-click="ok()" id="sendBtn">Send</button>
     <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
 </div>

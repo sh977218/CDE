@@ -190,9 +190,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 })
             };
             $scope.isReviewActive = function() {
-                return $scope.board.review &&
-                        $scope.board.review.startDate < Date.now() &&
-                    (!$scope.review.endDate || $scope.review.endDate > Date.now());
+                return $scope.board.review && $scope.board.review.startDate < Date.now() &&
+                    (!$scope.board.review.endDate || $scope.board.review.endDate > Date.now());
             };
             $scope.canReview = function () {
                 return $scope.isReviewActive() &&

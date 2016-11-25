@@ -15,7 +15,7 @@ angular.module('formModule').controller('ShareBoardCtrl',
                 name: 'viewer',
                 icon: 'fa-eye'
             }];
-            $scope.addInvitation = function (newUser) {
+            $scope.addUser = function (newUser) {
                 if (newUser.username.trim().length === 0) {
                     Alert.addAlert('danger', 'username is empty');
                     return;
