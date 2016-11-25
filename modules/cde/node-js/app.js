@@ -324,7 +324,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/classification/cde/moveclassif', function (req, res) {
-        classificationNode.moveClassifications(req, function (err, cde) {
+        classificationNode.moveClassifications(req, res, function (err, cde) {
             if (!err) res.send(cde);
         });
     });

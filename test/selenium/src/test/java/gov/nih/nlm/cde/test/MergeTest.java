@@ -52,6 +52,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Cancer Related Risks");
         findElement(By.linkText("Naming")).click();
         textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned.");
+        showAllTabs();
         findElement(By.linkText("Identifiers")).click();
         textPresent("3279225");
     }
@@ -72,6 +73,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         findElement(By.linkText("Classification")).click();
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
+        showAllTabs();
         findElement(By.linkText("Identifiers")).click();
         textPresent("2005490");
     }

@@ -1,47 +1,45 @@
 angular.module('cdeModule').controller('MergeRequestCtrl',
-    ['$scope', '$uibModal', '$location', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource',
-        function($scope, $modal, $location, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource',
+        function($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
-        var modalInstance = $modal.open({
+        $modal.open({
             animation: false,
             templateUrl: '/cde/public/html/mergeModal.html',
             controller: 'MergeModalCtrl',
             resolve: {
-                cdes: function() {return $scope.cdes;},
-                retiredIndex: function() {return $scope.retiredIndex;},
+                cdeSource: function() {return $http.get('/deByTinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);},
+                cdeTarget: function() {return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);},
                 user: function() {return userResource.user;}
             }
-        });        
-        
-        modalInstance.result.then(function (dat) {
-            if(dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
-                MergeRequest.create(dat, function() {
+        }).result.then(function (dat) {
+            if (dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
+                MergeRequest.create(dat, function () {
                     if (!dat.mergeRequest.source.object.registrationState) dat.mergeRequest.source.object.registrationState = {};
                     dat.mergeRequest.source.object.registrationState.administrativeStatus = "Retire Candidate";
                     dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
-                    DataElement.save(dat.mergeRequest.source.object, function(cde) {   
+                    DataElement.save(dat.mergeRequest.source.object, function (cde) {
                         $location.url("deCompare");
                         $scope.addAlert("success", "Merge request sent");
-                    });                
-                }, function() {
-                   $scope.addAlert("danger", "There was an error creating this merge request.")
+                    });
+                }, function () {
+                    $scope.addAlert("danger", "There was an error creating this merge request.")
                 });
             } else {
-                var gotoNewElement = function(mr) {
-                    MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function(cde) {                                        
+                var gotoNewElement = function (mr) {
+                    MergeCdes.approveMerge(mr.source.object, mr.destination.object, mr.mergeFields, function (cde) {
                         $location.url("deview?tinyId=" + cde.tinyId);
                         $scope.addAlert("success", "CDEs successfully merged");
-                    }); 
+                    });
                 };
                 if (dat.approval.ownDestinationCde) {
-                    $scope.showVersioning(dat.mergeRequest, function() {
+                    $scope.showVersioning(dat.mergeRequest, function () {
                         gotoNewElement(dat.mergeRequest);
                     });
                 } else {
-                    gotoNewElement(dat.mergeRequest);                 
+                    gotoNewElement(dat.mergeRequest);
                 }
-            }            
+            }
         });
     };
     
