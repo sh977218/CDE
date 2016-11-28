@@ -137,7 +137,7 @@ var doSection = function (parent, section) {
 
 var idToName = {};
 
-exports.formToSDC = function (form, renderer) {
+exports.formToSDC = function (form, renderer, cb) {
 
     var formDesign = builder.create({
         "FormDesign": {
@@ -175,7 +175,7 @@ exports.formToSDC = function (form, renderer) {
 
     var xmlStr = formDesign.end({pretty: false});
 
-    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
+    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err) {
         if (err) {
             dbLogger.logError({
                 message: "SDC Schema validation error: ",
@@ -183,15 +183,15 @@ exports.formToSDC = function (form, renderer) {
                 stack: err,
                 details: "formID: " + form._id
             });
+            xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
         }
-        xmlStr = "<!-- Validation Error: " + JSON.stringify(err) + " -->" + xmlStr;
+        if (noSupport) {
+            cb("SDC Export does not support questions outside of sections. ");
+        } else if (renderer === "defaultHtml") {
+            cb("<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr)
+        } else {
+            cb(xmlStr);
+        }
     });
 
-    if (noSupport) {
-        return "SDC Export does not support questions outside of sections. "
-    } else if (renderer === "defaultHtml") {
-        return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr
-    } else {
-        return xmlStr;
-    }
 };

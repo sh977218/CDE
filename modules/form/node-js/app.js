@@ -64,7 +64,7 @@ exports.init = function (app, daoManager) {
                 return res.status(500).send();
             } else {
                 res.setHeader("Content-Type", "application/xml");
-                res.send(sdc.formToSDC(form));
+                sdc.formToSDC(form, null, function (txt) {res.send(txt);});
             }
         });
     });
