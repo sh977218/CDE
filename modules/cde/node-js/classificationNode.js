@@ -2,7 +2,7 @@ var mongo_cde = require('./mongo-cde')
     , usersvc = require('../../system/node-js/usersrvc')
     , classificationShared = require('../../system/shared/classificationShared.js');
 
-exports.moveClassifications = function(req, res, cb) {
+exports.moveClassifications = function(req, cb) {
     mongo_cde.byTinyIdList([req.body.cdeSource.tinyId, req.body.cdeTarget.tinyId], function(err, cde) {
         var source = null;
         var destination = null;
@@ -14,7 +14,7 @@ exports.moveClassifications = function(req, res, cb) {
             destination = cde[0];            
         }
         if (!usersvc.isCuratorOf(req.user, source.stewardOrg.name)) {
-            res.status(403).end();
+            cb(403, null);
             return;
         }              
         classificationShared.transferClassifications(source, destination);
