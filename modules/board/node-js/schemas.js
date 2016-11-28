@@ -27,7 +27,7 @@ schemas.pinningBoardSchema = new mongoose.Schema({
     users: [{
         username: String,
         role: {type: String, enum: ['viewer', 'reviewer']},
-        lastView: Date,
+        lastViewed: Date,
         status: {type: String, default: 'invited', enum: ['invited', 'approved', 'disapproved']}
     }],
     review: {

@@ -20,7 +20,7 @@ exports.passToTransporter = function(mailOptions, cb){
             console.log('Message sent: ' + info.response);
         }
         if (cb) cb(error);
-    });       
+    });
 };
 
 exports.assembleRecipient = function (users) {

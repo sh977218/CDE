@@ -121,7 +121,7 @@ exports.init = function (app, daoManager) {
                     var updateLastView = false;
                     var viewers = board.users.filter(function (u) {
                         if (u.username === req.user.username) {
-                            u.lastView = new Date();
+                            u.lastViewed = new Date();
                             updateLastView = true;
                             board.markModified('users');
                         }
@@ -129,7 +129,14 @@ exports.init = function (app, daoManager) {
                     }).map(function (u) {
                         return u.username;
                     });
-                    if (updateLastView) board.save();
+                    if (updateLastView) {
+                        board.update({
+                            _id: board._id,
+                            "users": {username: req.user.username}
+                        }, {$set: {"users.$.lastViewed": new Date()}}, function (err) {
+                            if (err) res.status(500).send();
+                        });
+                    }
                     if (!req.isAuthenticated() ||
                         (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) && viewers.indexOf(req.user.username) === -1) {
                         return res.status(403).end();
