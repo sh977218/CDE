@@ -1,5 +1,5 @@
 angular.module('CdeMerge', [])
-.factory('MergeCdes', function(DataElement, CDE, CdeClassificationTransfer) {
+.factory('MergeCdes', ['$http', 'DataElement', 'CDE', 'CdeClassificationTransfer', function($http, DataElement, CDE, CdeClassificationTransfer) {
     var service = this;
     service.approveMergeMessage = function(message) { 
         service.approveMerge(message.typeRequest.source.object, message.typeRequest.destination.object, message.typeRequest.mergeFields, function() {
@@ -7,24 +7,28 @@ angular.module('CdeMerge', [])
         });
     };
     service.approveMerge = function(source, destination, fields, callback) {
-        service.source = source;
-        service.destination = destination;
-        Object.keys(fields).forEach(function(field) {
-            if (fields[field]) {
-                service.transferFields(service.source, service.destination, field);
+        $http.get('/deByTinyId/' + source.tinyId).then(function (result) {
+            service.source = result.data;
+            return $http.get('/deByTinyId/' + destination.tinyId);
+        }).then(function (result) {
+            service.destination = result.data;
+            Object.keys(fields).forEach(function(field) {
+                if (fields[field]) {
+                    service.transferFields(service.source, service.destination, field);
+                }
+            });
+
+            if (fields.ids || fields.properties || fields.naming) {
+                exports.transferClassifications(service.source, service.destination);
+                DataElement.save(service.destination, function (cde) {
+                    service.retireSource(service.source, service.destination, function() {
+                        if (callback) callback(cde);
+                    });
+                });
+            } else {
+                CdeClassificationTransfer.byTinyIds(service.source.tinyId, service.destination.tinyId, callback);
             }
         });
-       
-        if (fields.ids || fields.properties || fields.naming) {
-            exports.transferClassifications(service.source, service.destination);
-            DataElement.save(service.destination, function (cde) {
-                service.retireSource(service.source, service.destination, function() {
-                    if (callback) callback(cde);
-                });             
-            });
-        } else {
-            CdeClassificationTransfer.byTinyIds(service.source.tinyId, service.destination.tinyId, callback);
-        }
     };
     service.transferFields = function(source, destination, type) {
         if (!source[type]) return;
@@ -45,8 +49,8 @@ angular.module('CdeMerge', [])
         });
     }; 
     return service;
-})   
-.factory('MergeRequest', function(Mail) {
+}])
+.factory('MergeRequest', ['Mail', function(Mail) {
     return {
         create: function(dat, success, error) {              
             var message = {
@@ -59,7 +63,7 @@ angular.module('CdeMerge', [])
             Mail.sendMessage(message, success, error);
         }
     };
-})   
+}])
 .factory('Mail', ["$http", function($http) {
     return {
         sendMessage: function(dat, success, error) {              
