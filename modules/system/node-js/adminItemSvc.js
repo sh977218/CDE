@@ -246,7 +246,7 @@ setInterval(function () {
 
     });
     // TODO change this time:
-}, 1000 * 60 * 60 * 4);
+}, 0);
 
 
 exports.addComment = function (req, res, dao) {

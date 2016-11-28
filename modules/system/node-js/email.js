@@ -23,8 +23,12 @@ exports.passToTransporter = function(mailOptions, cb){
     });       
 };
 
-exports.assembleRecipient = function(users) {
-    return users.filter(function(a){return typeof(a.email)!=="undefined";}).map(function(a) {return a.email;}).join(",");
+exports.assembleRecipient = function (users) {
+    return users.filter(function (a) {
+        return typeof(a.email) !== "undefined";
+    }).map(function (a) {
+        return a.email;
+    }).join(",");
 };
 
 exports.emailUsers = function(msg, users, cb) {

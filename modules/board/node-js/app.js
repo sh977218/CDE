@@ -1,5 +1,6 @@
 var elastic = require('../../cde/node-js/elastic')
     , exportShared = require('../../system/shared/exportShared')
+    , mongo_data_system = require('../../system/node-js/mongo-data')
     , mongo_cde = require('../../cde/node-js/mongo-cde')
     , mongo_form = require('../../form/node-js/mongo-form')
     , mongo_board = require('./mongo-board')
@@ -11,6 +12,7 @@ var elastic = require('../../cde/node-js/elastic')
     , js2xml = require('js2xmlparser')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , usersrvc = require('../../system/node-js/usersrvc')
+    , email = require('../../system/node-js/email')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     ;
 
@@ -30,12 +32,12 @@ exports.init = function (app, daoManager) {
     });
 
     function boardMove(req, res, moveFunc) {
-        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+        authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             var index = 0;
             board.get('pins').forEach(function (p, i) {
                 if (p.get('deTinyId') === req.body.tinyId) index = i;
             });
-            if(index > -1) {
+            if (index > -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
@@ -47,25 +49,25 @@ exports.init = function (app, daoManager) {
         });
     }
 
-    app.post('/board/pin/move/up', function(req, res) {
-        boardMove(req, res, function(board, index) {
+    app.post('/board/pin/move/up', function (req, res) {
+        boardMove(req, res, function (board, index) {
             board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
         });
     });
-    app.post('/board/pin/move/down', function(req, res) {
-        boardMove(req, res, function(board, index) {
+    app.post('/board/pin/move/down', function (req, res) {
+        boardMove(req, res, function (board, index) {
             board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
         });
     });
-    app.post('/board/pin/move/top', function(req, res) {
-        boardMove(req, res, function(board, index) {
+    app.post('/board/pin/move/top', function (req, res) {
+        boardMove(req, res, function (board, index) {
             board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
         });
     });
 
 
     app.delete('/board/:boardId', function (req, res) {
-        authorization.boardOwnership(req, res, req.params.boardId, function(board) {
+        authorization.boardOwnership(req, res, req.params.boardId, function (board) {
             board.remove(function (err) {
                 if (err) res.send(500);
                 else {
@@ -311,23 +313,46 @@ exports.init = function (app, daoManager) {
         }
     });
     app.post("/board/startReview", function (req, res) {
-        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+        authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.review.startDate = new Date();
             board.review.endDate = undefined;
             board.save(function (err, o) {
-                if (err) { res.status(500); }
-                return res.send();
+                if (err) {
+                    res.status(500).send();
+                }
+                else {
+                    var usernames = board.users.filter(function (u) {
+                        return u.role === 'reviewer';
+                    }).map(function (u) {
+                        return u.username;
+                    });
+                    usernames.forEach(function (username) {
+                        mongo_data_system.userByName(username, function (err, u) {
+                            if (u && u.email && u.email.length > 0) {
+                                email.emailUsers({
+                                    subject: "You you been added to review board: " + board.name,
+                                    body: "go to board to review and response."
+                                }, [u], function (e) {
+                                    if (e) res.status(500).send();
+                                    else res.send();
+                                });
+                            }
+                        });
+                    });
+                }
             });
         });
     });
     app.post("/board/endReview", function (req, res) {
-        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
+        authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.review.endDate = new Date();
             board.save(function (err) {
-                if (err) { res.status(500); }
+                if (err) {
+                    res.status(500);
+                }
                 return res.send();
             });
         });
     });
-    
+
 };
