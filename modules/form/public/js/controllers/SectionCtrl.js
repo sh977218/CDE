@@ -94,7 +94,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 if (cde.valueDomain.permissibleValues.length > 0) {
                     // elastic only store 10 pv, retrieve pv when have more than 9 pv.
                     if (cde.valueDomain.permissibleValues.length > 9) {
-                        $http.get("/debytinyid/" + cde.tinyId + "/" + cde.version?cde.version:"").then(function (result) {
+                        $http.get("/debytinyid/" + cde.tinyId + "/" + (cde.version?cde.version:"")).then(function (result) {
                             result.data.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
