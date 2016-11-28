@@ -1,7 +1,8 @@
 var validator = require('xsd-schema-validator'),
     xml2js = require('xml2js'),
-    builder = require('xmlbuilder')
-;
+    builder = require('xmlbuilder'),
+    dbLogger = require('../../system/node-js/dbLogger.js')
+    ;
 
 function addQuestion(parent, question) {
 
@@ -158,11 +159,15 @@ exports.formToSDC = function (form, renderer) {
         }
     });
 
+    var noSupport = false;
+
     var childItems = body.ele({ChildItems: {}});
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
             doSection(childItems, formElement);
+        } else {
+            noSupport = "true";
         }
     });
 
@@ -171,14 +176,20 @@ exports.formToSDC = function (form, renderer) {
     var xmlStr = formDesign.end({pretty: false});
 
     validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-        if (err) console.log('Validate SDC error: ' + err);
-        if (result && !result.valid) {
-            console.log(JSON.stringify(result));
+        if (err) {
+            dbLogger.logError({
+                message: "SDC Schema validation error: ",
+                origin: "sdcForm.formToSDC",
+                stack: err,
+                details: "formID: " + form._id
+            });
         }
+        xmlStr = "<!-- Validation Error: " + JSON.stringify(err) + " -->" + xmlStr;
     });
 
-
-    if (renderer === "defaultHtml") {
+    if (noSupport) {
+        return "SDC Export does not support questions outside of sections. "
+    } else if (renderer === "defaultHtml") {
         return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr
     } else {
         return xmlStr;
