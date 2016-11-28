@@ -1,7 +1,7 @@
-angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalInstance', 'cdes', 'retiredIndex', 'user',
-    function($scope, $modalInstance, cdes, retiredIndex, user) {
-    $scope.source = cdes[retiredIndex];
-    $scope.target = cdes[(retiredIndex + 1) % 2];
+angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalInstance', 'cdeSource', 'cdeTarget', 'user',
+    function($scope, $modalInstance, cdeSource, cdeTarget, user) {
+    $scope.source = cdeSource.data;
+    $scope.target = cdeTarget.data;
     $scope.mergeRequest = {
         source: {tinyId: $scope.source.tinyId, object: $scope.source}
         , destination: {tinyId: $scope.target.tinyId, object: $scope.target}
