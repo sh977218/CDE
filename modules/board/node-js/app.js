@@ -123,17 +123,20 @@ exports.init = function (app, daoManager) {
                         if (u.username === req.user.username) {
                             u.lastViewed = new Date();
                             updateLastView = true;
-                            board.markModified('users');
                         }
                         return u.role === 'viewer' || u.role === 'reviewer';
                     }).map(function (u) {
                         return u.username;
                     });
                     if (updateLastView) {
-                        board.update({
+                        mongo_board.PinningBoard.findOneAndUpdate({
                             _id: board._id,
-                            "users": {username: req.user.username}
-                        }, {$set: {"users.$.lastViewed": new Date()}}, function (err) {
+                            "users.username": req.user.username
+                        }, {
+                            $set: {
+                                "users.$.lastViewed": new Date()
+                            }
+                        }, function (err) {
                             if (err) res.status(500).send();
                         });
                     }
@@ -291,18 +294,26 @@ exports.init = function (app, daoManager) {
                 if (err) return res.send(500);
                 else {
                     if (!board.review.startDate) return res.status(500).send('board has not started review yet.');
-                    else if (board.review.endDate < new Date()) return res.status(500).send('board has already ended review.');
+                    else if (board.review.endDate && board.review.endDate < new Date()) return res.status(500).send('board has already ended review.');
                     else {
                         var foundUser = false;
                         board.users.forEach(function (u) {
                             if (u.username === req.user.username) {
                                 foundUser = true;
-                                u.status = approval;
+                                u.status.approval = approval;
+                                u.status.reviewedDate = new Date();
                             }
                         });
                         if (foundUser) {
-                            board.markModified("users");
-                            board.save(function (err) {
+                            mongo_board.PinningBoard.findOneAndUpdate({
+                                _id: board._id,
+                                "users.username": req.user.username
+                            }, {
+                                $set: {
+                                    "users.$.status.approval": approval,
+                                    "users.$.status.reviewedDate": new Date()
+                                }
+                            }, function (err) {
                                 if (err) {
                                     res.status(500);
                                 }
@@ -323,7 +334,14 @@ exports.init = function (app, daoManager) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.review.startDate = new Date();
             board.review.endDate = undefined;
-            board.save(function (err, o) {
+            mongo_board.PinningBoard.findOneAndUpdate({
+                _id: board._id
+            }, {
+                $set: {
+                    "review.startDate": new Date(),
+                    "review.endDate": undefined
+                }
+            }, function (err) {
                 if (err) {
                     res.status(500).send();
                 }

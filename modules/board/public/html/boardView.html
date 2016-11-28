@@ -6,11 +6,11 @@
             <div class="pull-right">
                 <span ng-if="getReviewers().length > 0" class="pt20 floatLeft">
                     <span ng-repeat="reviewer in getReviewers()"
-                          title="{{reviewer.username}} {{reviewer.status}} {{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
+                          title="{{reviewer.username}} {{reviewer.status.approval}} {{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
                         <i class="fa overlay-lower-right"
-                           ng-class="{'fa-check green-icon':reviewer.status === 'approved',
-                           'fa-times red-icon':reviewer.status === 'disapproved'}"></i>
+                           ng-class="{'fa-check green-icon':reviewer.status.approval === 'approved',
+                           'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
                     <span ng-class="{'green-icon':getApprovedReviewers().length/getReviewers().length >= 0.5}">
                         {{getApprovedReviewers().length/getReviewers().length * 100}}

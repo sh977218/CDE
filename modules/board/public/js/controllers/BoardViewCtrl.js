@@ -67,7 +67,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         $scope.board.users.filter(function (u) {
                             if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
                             if (u.username === userResource.user.username) {
-                                $scope.boardStatus = u.status;
+                                $scope.boardStatus = u.status.approval;
                             }
                         });
                         $scope.deferredEltLoaded.resolve();
@@ -203,15 +203,15 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
             $scope.getApprovedReviewers = function () {
                 return $scope.board.users.filter(function (u) {
-                    return u.role === 'reviewer' && u.status === 'approved';
+                    return u.role === 'reviewer' && u.status.approval === 'approved';
                 })
             };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
                 $scope.board.users.forEach(function (u) {
                     if (u.username === userResource.user.username &&
-                        u.role === 'reviewer' && u.status === 'approved'
-                        && new Date($scope.board.updatedDate) < new Date(u.lastView)) {
+                        u.role === 'reviewer' && u.status.approval === 'approved'
+                        && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
                         isModifiedSinceReview = true;
                     }
                 });
