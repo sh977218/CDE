@@ -27,7 +27,9 @@ logs
 /test/selenium/build/
 /test/selenium/chromedriver
 /test/selenium/chromedriver.exe
+/test/selenium/out/
 /dump/
+*.iml
 
 ## Pulled at build time
 
