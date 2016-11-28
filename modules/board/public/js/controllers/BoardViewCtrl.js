@@ -201,10 +201,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     return u.role === 'reviewer';
                 })
             };
-            $scope.getApprovedReviewers = function () {
+            $scope.reviewCompletionPercentage = function () {
                 return $scope.board.users.filter(function (u) {
                     return u.role === 'reviewer' && u.status.approval === 'approved';
-                })
+                    }).length / $scope.board.users.filter(function (u) {
+                        return u.role === 'reviewer';
+                    }).length;
             };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
@@ -258,7 +260,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     approval: approval
                 }).then(function (response) {
                     $scope.boardStatus = approval;
-                    Alert.addAlert('warning', approval + " board.");
+                    $scope.reload(function () {
+                        $scope.reviewCompletionPercentage();
+                        Alert.addAlert('warning', approval + " board.");
+                    });
                 });
             };
             $scope.startReview = function () {

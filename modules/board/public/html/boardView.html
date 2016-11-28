@@ -12,8 +12,9 @@
                            ng-class="{'fa-check green-icon':reviewer.status.approval === 'approved',
                            'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
-                    <span ng-class="{'green-icon':getApprovedReviewers().length/getReviewers().length >= 0.5}">
-                        {{getApprovedReviewers().length/getReviewers().length * 100}}
+                    <span ng-if="isReviewActive()"
+                          ng-class="{'green-icon':reviewCompletionPercentage() >= 0.5}">
+                        {{reviewCompletionPercentage() * 100}}
                         <i class="fa fa-percent" aria-hidden="true"></i></span>
                     <span ng-if="!isReviewActive() && user.username === board.owner.username ">
                         <button class="btn btn-default btn-sm" id="startReviewBtn"

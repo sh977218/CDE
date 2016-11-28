@@ -53,6 +53,9 @@ angular.module('formModule').controller('ShareBoardCtrl',
                 }).then(function (response) {
                     $modalInstance.close($scope.users);
                 });
-            }
+            };
+            $scope.notifyUser = function (u) {
+
+            };
         }
     ]);
