@@ -98,7 +98,7 @@ public class EltIdMaps {
         eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
-        eltMap.put("Schizophrenia", "5711498c28329938330f5c4f");
+        eltMap.put("Schizophrenia", "55f198bf541fd83c2166cbdf");
         eltMap.put("Stomach Cancer", "55f19755541fd83c2166cbc1");
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
         eltMap.put("Unpin Board", "57114b5328329938330f5c7f");
