@@ -233,6 +233,18 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 var ended = isReviewEnded();
                 return $scope.board.review && isReviewStarted() && !isReviewEnded();
             };
+            $scope.getPendingReviewers = function () {
+                return $scope.getReviewers().filter(function (u) {
+                    return u.status.approval === 'invited';
+                })
+            };
+            $scope.remindReview = function () {
+                $http.post('/board/remindReview', {
+                    boardId: $scope.board._id
+                }).then(function (response) {
+                    Alert.addAlert('success', "Remind sent.");
+                });
+            };
             $scope.canReview = function () {
                 return $scope.isReviewActive() &&
                     $scope.board.users.filter(function (u) {

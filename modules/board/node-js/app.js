@@ -346,12 +346,11 @@ exports.init = function (app, daoManager) {
                     res.status(500).send();
                 }
                 else {
-                    var usernames = board.users.filter(function (u) {
+                    board.users.filter(function (u) {
                         return u.role === 'reviewer';
                     }).map(function (u) {
                         return u.username;
-                    });
-                    usernames.forEach(function (username) {
+                    }).forEach(function (username) {
                         mongo_data_system.userByName(username, function (err, u) {
                             if (u && u.email && u.email.length > 0) {
                                 email.emailUsers({
@@ -376,6 +375,27 @@ exports.init = function (app, daoManager) {
                     res.status(500);
                 }
                 return res.send();
+            });
+        });
+    });
+    app.post("/board/remindReview", function (req, res) {
+        authorization.boardOwnership(req, res, req.body.boardId, function (board) {
+            board.users.filter(function (u) {
+                return u.role === 'reviewer' && status.approval === 'invited';
+            }).map(function (u) {
+                return u.username;
+            }).forEach(function (username) {
+                mongo_data_system.userByName(username, function (err, u) {
+                    if (u && u.email && u.email.length > 0) {
+                        email.emailUsers({
+                            subject: "You have a pending board to review: " + board.name,
+                            body: "go to board to review and response."
+                        }, [u], function (e) {
+                            if (e) res.status(500).send();
+                            else res.send();
+                        });
+                    }
+                });
             });
         });
     });
