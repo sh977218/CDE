@@ -38,37 +38,4 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("disApproveBoardBtn"));
         closeAlert();
     }
-
-    @Test
-    public void reviewerCanViewPrivateSharedBoard() {
-        String boardName = "Schizophrenia";
-        mustBeLoggedInAs(reguser_username, password);
-        goToBoard(boardName);
-        textPresent(boardName);
-        textNotPresent("Start Review");
-        textNotPresent("End Review");
-        textNotPresent("Share");
-    }
-
-    @Test
-    public void viewerCanViewPrivateSharedBoard() {
-        String boardName = "Schizophrenia";
-        mustBeLoggedInAs(test_username, password);
-        goToBoard(boardName);
-        textPresent(boardName);
-        textNotPresent("Start Review");
-        textNotPresent("End Review");
-        textNotPresent("Share");
-    }
-
-    @Test
-    public void reviewerCannotReviewBeforeStartReview() {
-        String boardName = "Schizophrenia";
-        mustBeLoggedInAs(reguser_username, password);
-        goToBoard(boardName);
-        textPresent(boardName);
-        textNotPresent("Approve");
-        textNotPresent("Disapprove");
-    }
-
 }

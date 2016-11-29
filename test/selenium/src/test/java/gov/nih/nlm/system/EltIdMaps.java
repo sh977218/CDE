@@ -85,13 +85,17 @@ public class EltIdMaps {
         eltMap.put("Blood Board", "5711497e28329938330f5c4c");
         eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
         eltMap.put("Bipolar Disorder", "55f198c8541fd83c2166cbe2");
+        eltMap.put("Chronic Lower-Back Pain", "55f197d6541fd83c2166cbc9");
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
+        eltMap.put("Gliobastroma Multiform", "55f19768541fd83c2166cbc4");
+        eltMap.put("Hypertension", "55f19808541fd83c2166cbcf");
         eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
-        eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
+        eltMap.put("Plantar Fibromatosis", "55f197e0541fd83c2166cbcc");
+        eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
         eltMap.put("Schizophrenia", "5711498c28329938330f5c4f");
