@@ -27,7 +27,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     });
 
 exports.sessionStore = sessionStore;
-
+exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;

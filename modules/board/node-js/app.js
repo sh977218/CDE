@@ -358,7 +358,6 @@ exports.init = function (app, daoManager) {
                                     body: "go to board to review and response."
                                 }, [u], function (e) {
                                     if (e) res.status(500).send();
-                                    else res.send();
                                 });
                             }
                         });
@@ -381,7 +380,7 @@ exports.init = function (app, daoManager) {
     app.post("/board/remindReview", function (req, res) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.users.filter(function (u) {
-                return u.role === 'reviewer' && status.approval === 'invited';
+                return u.role === 'reviewer' && u.status.approval === 'invited';
             }).map(function (u) {
                 return u.username;
             }).forEach(function (username) {
@@ -395,6 +394,27 @@ exports.init = function (app, daoManager) {
                             else res.send();
                         });
                     }
+                    mongo_data_system.Message.findOneAndUpdate({
+                        'type': 'BoardApproval',
+                        'author.authorType': "user",
+                        'author.name': req.user.username,
+                        'recipient.recipientType': "user", 'recipient.name': u.username,
+                        'typeBoardApproval.element.eltType': 'board',
+                        'typeBoardApproval.element.name': board.name,
+                        'typeBoardApproval.element.eltId': board._id
+                    }, {
+                        $set: {date: new Date()},
+                        $push: {
+                            "states": {
+                                "action": "Filed",
+                                "date": new Date(),
+                                "comment": "board"
+                            }
+                        }
+                    }, {upsert: true}, function (err) {
+                        if (err) res.status(500).send();
+                        else res.send();
+                    })
                 });
             });
         });

@@ -276,7 +276,7 @@ var boardApprovalSchema = {
     element: {
         eltId: String,
         name: String,
-        eltType: "board"
+        eltType: {type: String, enum: ["cde", "form", "board"]}
     }
 };
 
