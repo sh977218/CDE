@@ -344,8 +344,8 @@ exports.init = function (app, daoManager) {
             }, function (err) {
                 if (err) {
                     res.status(500).send();
-                }
-                else {
+                } else {
+                    res.send();
                     board.users.filter(function (u) {
                         return u.role === 'reviewer';
                     }).map(function (u) {
@@ -357,7 +357,13 @@ exports.init = function (app, daoManager) {
                                     subject: "You you been added to review board: " + board.name,
                                     body: "go to board to review and response."
                                 }, [u], function (e) {
-                                    if (e) res.status(500).send();
+                                    if (e) {
+                                        dbLogger.logError({
+                                            message: "Unable to email user: " + board._id,
+                                            stack: e,
+                                            details: ""
+                                        });
+                                    }
                                 });
                             }
                         });

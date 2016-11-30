@@ -31,8 +31,7 @@
                         </li>
                     </ul>
                 </td>
-                <td><i class="fa fa-trash-o" ng-click="deleteUser(user)"></i></td>
-                <td><i class="fa fa-paper-plane" ng-click="notifyUser(user)"></i></td>
+                <td><i class="fa fa-trash-o" ng-click="deleteUser($index)"></i></td>
             </tr>
             <tr>
                 <td class="centerText bg-color-grey"><i class="fa fa-user"></i></td>
@@ -60,14 +59,13 @@
                         </li>
                     </ul>
                 </td>
-                <td><i class="fa fa-plus" id="addUserBtn" ng-click="addUser(newUser)"></i></td>
-                <td></td>
+                <td><i class="fa fa-plus" id="addUserBtn" ng-click="addUser(newUser)" ng-if="newUser.username"></i></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-info" ng-click="ok()" id="sendBtnsendBtn">Send</button>
+    <button class="btn btn-info" ng-click="ok()" id="sendBtn" ng-disabled="!changesMade">Send</button>
     <button class="btn btn-default pull-right" ng-click="$dismiss('cancel')" id="closeModal">Cancel</button>
 </div>

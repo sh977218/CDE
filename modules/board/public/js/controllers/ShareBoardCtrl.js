@@ -16,27 +16,21 @@ angular.module('formModule').controller('ShareBoardCtrl',
                 icon: 'fa-eye'
             }];
             $scope.addUser = function (newUser) {
-                if (newUser.username.trim().length === 0) {
-                    Alert.addAlert('danger', 'username is empty');
-                    return;
-                }
-                var existedUser = $scope.users.filter(function (o) {
-                    return o.username === newUser.username;
-                });
-                if (existedUser[0]) {
+                if ($scope.users.filter(function (o) {
+                        return o.username === newUser.username;
+                    })[0]) {
                     Alert.addAlert('danger', 'username exists');
-                    return;
                 } else {
                     $scope.users.push(newUser);
                     $scope.newUser = {username: '', role: 'viewer'};
+                    $scope.changesMade = true;
                 }
             };
-            $scope.deleteUser = function (u) {
-                $scope.users = $scope.users.filter(function (o) {
-                    return o.username !== u.username;
-                })
+            $scope.deleteUser = function (index) {
+                $scope.users.splice(index, 1);
+                $scope.changesMade = true;
             };
-            $scope.saveBoardUsers = function (u) {
+            $scope.saveBoardUsers = function () {
                 if (!$scope.users) $scope.users = [];
                 $scope.users.push({username: $scope.searchString});
             };
@@ -50,12 +44,9 @@ angular.module('formModule').controller('ShareBoardCtrl',
                     user: userResource.user,
                     owner: board.owner,
                     users: $scope.users
-                }).then(function (response) {
+                }).then(function () {
                     $modalInstance.close($scope.users);
                 });
-            };
-            $scope.notifyUser = function (u) {
-
             };
         }
     ]);

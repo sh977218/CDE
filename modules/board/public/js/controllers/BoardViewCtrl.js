@@ -201,13 +201,6 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     return u.role === 'reviewer';
                 })
             };
-            $scope.reviewCompletionPercentage = function () {
-                return $scope.board.users.filter(function (u) {
-                    return u.role === 'reviewer' && u.status.approval === 'approved';
-                    }).length / $scope.board.users.filter(function (u) {
-                        return u.role === 'reviewer';
-                    }).length;
-            };
             $scope.modifiedSinceReview = function () {
                 var isModifiedSinceReview = false;
                 $scope.board.users.forEach(function (u) {
@@ -221,16 +214,16 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             function isReviewStarted() {
-                return $scope.board.review && $scope.board.review.startDate && new Date($scope.board.review.startDate) < new Date();
+                return $scope.board.review && $scope.board.review.startDate &&
+                    new Date($scope.board.review.startDate) < new Date();
             }
 
             function isReviewEnded() {
-                return $scope.board.review && $scope.board.review.endDate && new Date($scope.board.review.endDate) < new Date();
+                return $scope.board.review && $scope.board.review.endDate &&
+                    new Date($scope.board.review.endDate) < new Date();
             }
 
             $scope.isReviewActive = function () {
-                var started = isReviewStarted();
-                var ended = isReviewEnded();
                 return $scope.board.review && isReviewStarted() && !isReviewEnded();
             };
             $scope.getPendingReviewers = function () {
@@ -241,8 +234,8 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.remindReview = function () {
                 $http.post('/board/remindReview', {
                     boardId: $scope.board._id
-                }).then(function (response) {
-                    Alert.addAlert('success', "Remind sent.");
+                }).then(function () {
+                    Alert.addAlert('success', "Reminder sent.");
                 });
             };
             $scope.canReview = function () {
@@ -270,21 +263,16 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $http.post('/board/approval', {
                     boardId: $scope.board._id,
                     approval: approval
-                }).then(function (response) {
+                }).then(function () {
                     $scope.boardStatus = approval;
-                    $scope.reload(function () {
-                        $scope.reviewCompletionPercentage();
-                        Alert.addAlert('warning', approval + " board.");
-                    });
+                    $scope.reload();
                 });
             };
             $scope.startReview = function () {
                 $http.post("/board/startReview", {
                     boardId: $scope.board._id
                 }).success(function () {
-                    $scope.reload(function () {
-                        Alert.addAlert('success', 'board review started.')
-                    });
+                    $scope.reload();
                 }).error(function (response) {
                     Alert.addAlert("danger", response);
                     $scope.reload();

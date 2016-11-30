@@ -6,16 +6,12 @@
             <div class="pull-right">
                 <span ng-if="getReviewers().length > 0" class="pt20 floatLeft">
                     <span ng-repeat="reviewer in getReviewers()"
-                          title="{{reviewer.username}} {{reviewer.status.approval}} {{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
+                          title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
                         <i class="fa overlay-lower-right"
                            ng-class="{'fa-check green-icon':reviewer.status.approval === 'approved',
                            'fa-times red-icon':reviewer.status.approval === 'disapproved'}"></i>
                     </span>
-                    <span ng-if="isReviewActive()"
-                          ng-class="{'green-icon':reviewCompletionPercentage() >= 0.5}">
-                        {{reviewCompletionPercentage() * 100}}
-                        <i class="fa fa-percent" aria-hidden="true"></i></span>
                     <span ng-if="!isReviewActive() && user.username === board.owner.username ">
                         <button class="btn btn-default btn-sm" id="startReviewBtn"
                                 ng-click="startReview()"> Start Review</button>
@@ -26,7 +22,7 @@
                     </span>
                     <span ng-if="isReviewActive() && user.username === board.owner.username && getPendingReviewers().length > 0">
                         <button class="btn btn-default btn-sm" id="remindReviewBtn"
-                                ng-click="remindReview()"> Remind Review</button>
+                                ng-click="remindReview()"> Send Reminder</button>
                     </span>
                     <span ng-if="canReview()">
                         <button class="btn btn-default btn-sm" id="approveBoardBtn"
