@@ -24,10 +24,8 @@
     </div>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
-        <div ng-repeat="formElement in elt.formElements track by $index">
-            <div ng-include="'/form/public/html/formRenderSection.html'"
-                 ng-init="section = formElement; formElements = elt.formElements;"></div>
-        </div>
+        <div ng-include="'/form/public/html/formRenderSection.html'"
+             ng-init="formElements = []; section = elt;"></div>
     </form>
 
     <uib-alert type="danger" ng-show="skipLogicError.length > 0">
