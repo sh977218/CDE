@@ -36,6 +36,7 @@ angular.module('formModule').controller('ShareBoardCtrl',
             };
             $scope.changeRole = function (newUser, role) {
                 newUser.role = role.name;
+                $scope.changesMade = true;
                 newUser.status = 'invited';
             };
             $scope.ok = function () {

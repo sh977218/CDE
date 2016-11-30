@@ -338,9 +338,7 @@ exports.init = function (app, daoManager) {
             board.users.forEach(function (u) {
                 u.status.approval = 'invited';
             });
-            mongo_board.PinningBoard.findOneAndUpdate({
-                _id: board._id
-            }, {
+            mongo_board.PinningBoard.findOneAndUpdate({_id: board._id}, {
                 $set: {
                     "users": board.users,
                     "review.startDate": new Date(),
@@ -370,6 +368,29 @@ exports.init = function (app, daoManager) {
                                         });
                                     }
                                 });
+                            }
+                            if (u && u.username && u.username.length > 0) {
+                                mongo_data_system.Message.findOneAndUpdate({
+                                    'type': 'BoardApproval',
+                                    'author.authorType': "user",
+                                    'author.name': req.user.username,
+                                    'recipient.recipientType': "user", 'recipient.name': u.username,
+                                    'typeBoardApproval.element.eltType': 'board',
+                                    'typeBoardApproval.element.name': board.name,
+                                    'typeBoardApproval.element.eltId': board._id
+                                }, {
+                                    $set: {date: new Date()},
+                                    $push: {
+                                        "states": {
+                                            "action": "Filed",
+                                            "date": new Date(),
+                                            "comment": "board"
+                                        }
+                                    }
+                                }, {upsert: true}, function (err) {
+                                    if (err) res.status(500).send();
+                                    else res.send();
+                                })
                             }
                         });
                     });

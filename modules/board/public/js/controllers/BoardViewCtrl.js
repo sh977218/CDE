@@ -241,9 +241,9 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.canReview = function () {
                 return $scope.isReviewActive() &&
                     $scope.board.users.filter(function (u) {
-                            return u.role === 'reviewer' && u.username === userResource.user.username;
-                        }
-                    ).length > 0;
+                        return u.role === 'reviewer'
+                            && u.username.toLowerCase() === userResource.user.username.toLowerCase();
+                    }).length > 0;
             };
             $scope.shareBoard = function () {
                 $modal.open({
