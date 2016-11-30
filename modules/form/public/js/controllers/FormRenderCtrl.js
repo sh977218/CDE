@@ -155,15 +155,16 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 if (operator === '>=') {
                     return new Date(realAnswer) >= new Date(expectedAnswer);
                 }
-
             } else if (realAnswerObj.question.datatype === 'Number') {
                 if (operator === '=') return realAnswer === parseInt(expectedAnswer);
                 if (operator === '<') return realAnswer < parseInt(expectedAnswer);
                 if (operator === '>') return realAnswer > parseInt(expectedAnswer);
                 if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
                 if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
-
             } else if (realAnswerObj.question.datatype === 'Text') {
+                if (operator === '=') return realAnswer === expectedAnswer;
+                else return false;
+            } else if (realAnswerObj.question.datatype === 'Value List' ) {
                 if (operator === '=') return realAnswer === expectedAnswer;
                 else return false;
             } else {
