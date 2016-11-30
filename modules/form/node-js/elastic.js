@@ -2,6 +2,7 @@ var config = require('../../system/node-js/parseConfig')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../system/node-js/elasticSearchInit')
+    , formCtrl = require('./formCtrl')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -9,23 +10,25 @@ var esClient = new elasticsearch.Client({
 });
 
 exports.updateOrInsert = function(elt) {
-    var doc = esInit.riverFunction(elt.toObject());
-    if (doc) {
-        delete doc._id;
-        esClient.index({
-            index: config.elastic.formIndex.name,
-            type: "form",
-            id: doc.tinyId,
-            body: doc
-        }, function (err) {
-            if (err) {
-                dbLogger.logError({
-                    message: "Unable to Re-Index document: " + doc.tinyId,
-                    origin: "form.elastic.updateOrInsert",
-                    stack: err,
-                    details: ""
-                });
-            }
-        });
-    }
+    formCtrl.fetchWholeForm(elt, function (wholeForm) {
+        var doc = esInit.riverFunction(wholeForm);
+        if (doc) {
+            delete doc._id;
+            esClient.index({
+                index: config.elastic.formIndex.name,
+                type: "form",
+                id: doc.tinyId,
+                body: doc
+            }, function (err) {
+                if (err) {
+                    dbLogger.logError({
+                        message: "Unable to Re-Index document: " + doc.tinyId,
+                        origin: "form.elastic.updateOrInsert",
+                        stack: err,
+                        details: ""
+                    });
+                }
+            });
+        }
+    });
 };

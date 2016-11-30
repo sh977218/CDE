@@ -136,7 +136,7 @@ exports.formByTinyIdVersion = function (req, res) {
 };
 
 
-function fetchWholeForm(Form, callback) {
+exports.fetchWholeForm = function(Form, callback) {
     var maxDepth = 8;
     var depth = 0;
     var form = JSON.parse(JSON.stringify(Form));
@@ -175,13 +175,13 @@ function fetchWholeForm(Form, callback) {
     loopFormElements(form, function () {
         callback(form);
     });
-}
+};
 
 exports.wholeFormById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     mongo_data_form.eltByTinyId(req.params.id, function (err, form) {
-        fetchWholeForm(form, function (f) {
+        exports.fetchWholeForm(form, function (f) {
             if (!req.user) adminSvc.hideProprietaryIds(f);
             res.send(f);
         });
@@ -190,7 +190,7 @@ exports.wholeFormById = function (req, res) {
 
 var getFormSdc = function (form, req, res) {
     res.setHeader("Content-Type", "application/xml");
-    fetchWholeForm(form, function (wholeForm) {
+    exports.fetchWholeForm(form, function (wholeForm) {
         if (!req.user) adminSvc.hideProprietaryIds(wholeForm);
         res.send(sdc.formToSDC(wholeForm));
     });
