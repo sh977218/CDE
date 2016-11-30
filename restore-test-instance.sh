@@ -33,6 +33,7 @@ mongorestore --drop -d test -c forms test/data/formDump/forms.bson -u $db_user -
 mongorestore --drop -d test -c pinningBoards test/data/cdedump/pinningBoards.bson -u $db_user -p $db_password
 mongorestore --drop -d test -c orgs test/data/cdedump/orgs.bson -u $db_user -p $db_password
 mongorestore --drop -d test -c meshclassifications test/data/meshclassifications.bson -u $db_user -p $db_password
+mongorestore --drop -d test -c comments test/data/comments.bson -u $db_user -p $db_password
 
 mongo test test/createLargeBoard.js -u $db_user -p $db_password
 mongo test test/createManyBoards.js -u $db_user -p $db_password
