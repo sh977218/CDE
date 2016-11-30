@@ -255,7 +255,7 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             $scope.shareBoard = function () {
                 $modal.open({
                     animation: false,
-                    templateUrl: '/board/public/html/ShareBoard.html',
+                    templateUrl: '/board/public/html/shareBoard.html',
                     controller: 'ShareBoardCtrl',
                     resolve: {
                         board: function () {
