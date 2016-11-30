@@ -14,6 +14,7 @@ var elastic = require('../../cde/node-js/elastic')
     , usersrvc = require('../../system/node-js/usersrvc')
     , email = require('../../system/node-js/email')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
+    , dbLogger = require('../../system/node-js/dbLogger.js')
     ;
 
 exports.init = function (app, daoManager) {
@@ -120,13 +121,13 @@ exports.init = function (app, daoManager) {
                     if (!req.user || !req.user.username) return res.status(500).send();
                     var updateLastView = false;
                     var viewers = board.users.filter(function (u) {
-                        if (u.username === req.user.username) {
+                        if (u.username.toLowerCase() === req.user.username.toLowerCase()) {
                             u.lastViewed = new Date();
                             updateLastView = true;
                         }
                         return u.role === 'viewer' || u.role === 'reviewer';
                     }).map(function (u) {
-                        return u.username;
+                        return u.username.toLowerCase();
                     });
                     if (updateLastView) {
                         mongo_board.PinningBoard.findOneAndUpdate({
@@ -141,7 +142,7 @@ exports.init = function (app, daoManager) {
                         });
                     }
                     if (!req.isAuthenticated() ||
-                        (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) && viewers.indexOf(req.user.username) === -1) {
+                        (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) && viewers.indexOf(req.user.username.toLowerCase()) === -1) {
                         return res.status(403).end();
                     }
                 }
@@ -334,10 +335,14 @@ exports.init = function (app, daoManager) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.review.startDate = new Date();
             board.review.endDate = undefined;
+            board.users.forEach(function (u) {
+                u.status.approval = 'invited';
+            });
             mongo_board.PinningBoard.findOneAndUpdate({
                 _id: board._id
             }, {
                 $set: {
+                    "users": board.users,
                     "review.startDate": new Date(),
                     "review.endDate": undefined
                 }
@@ -359,9 +364,9 @@ exports.init = function (app, daoManager) {
                                 }, [u], function (e) {
                                     if (e) {
                                         dbLogger.logError({
-                                            message: "Unable to email user: " + board._id,
+                                            message: "Unable to email user",
                                             stack: e,
-                                            details: ""
+                                            details: "user: " + u.username + " in board: " + board._id
                                         });
                                     }
                                 });

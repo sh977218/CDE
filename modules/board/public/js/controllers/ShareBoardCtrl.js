@@ -17,7 +17,7 @@ angular.module('formModule').controller('ShareBoardCtrl',
             }];
             $scope.addUser = function (newUser) {
                 if ($scope.users.filter(function (o) {
-                        return o.username === newUser.username;
+                        return o.username.toLowerCase() === newUser.username.toLowerCase();
                     })[0]) {
                     Alert.addAlert('danger', 'username exists');
                 } else {

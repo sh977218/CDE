@@ -1,10 +1,19 @@
 <div ng-controller="BoardViewCtrl">
-    <div ng-if="board" style="overflow: hidden">
+    <div ng-if="board" class="overflowHidden">
         <div class="col-md-12">
             <h3 class="ib" id="board_name_{{board.name}}">{{board.name}} <span
                     ng-if="modifiedSinceReview()">(Board has been modified since last review)</span></h3>
-            <div class="pull-right">
-                <span ng-if="getReviewers().length > 0" class="pt20 floatLeft">
+            <span class="pt20 floatLeft pull-right">
+                <button class="btn btn-sm btn-default" role="button" tabindex="0"
+                        ng-controller="HasCommentsCtrl"
+                        ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
+                    <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
+                </button>
+            </span>
+            <div class="pull-right boxed-div padding0 margin0">
+                <span ng-if="getReviewers().length > 0" class="padding10 floatLeft overflowHidden">
+                    <span ng-if="board.review.startDate">Started on: {{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
+                    <span ng-if="board.review.endDate">Ended on: {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
                     <span ng-repeat="reviewer in getReviewers()"
                           title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
@@ -34,17 +43,12 @@
                                 ng-click="boardApproval('disapproved')">
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
                     </span>
-                </span>
-                <span class="pt20 floatLeft">
-                    <button class="btn btn-default btn-sm" id="shareBoardBtn"
-                            ng-if="user.username === board.owner.username"
-                            ng-click="shareBoard()"><i class="fa fa-link"></i> Share
-                    </button>
-                    <button class="btn btn-sm btn-default" role="button" tabindex="0"
-                            ng-controller="HasCommentsCtrl"
-                            ng-click="switchCommentMode()" title="Discuss CDE" id="discussBtn">
-                        <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
-                    </button>
+                    <span>
+                        <button class="btn btn-default btn-sm" id="shareBoardBtn"
+                                ng-if="user.username === board.owner.username"
+                                ng-click="shareBoard()"><i class="fa fa-link"></i> Share
+                        </button>
+                    </span>
                 </span>
             </div>
         </div>
