@@ -18,9 +18,12 @@
             </span>
             <div class="pull-right boxed-div padding0 margin0">
                 <span ng-if="getReviewers().length > 0" class="padding10 floatLeft overflowHidden">
-                    <span ng-if="board.review.startDate">Started on: {{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
-                    <span ng-if="board.review.endDate">Ended on: {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
-                    <span ng-repeat="reviewer in getReviewers()" id="reviewer_{{reviewer.username}}"
+                    <b ng-if="!board.review.startDate && !board.review.endDate">Not started</b>
+                    <b ng-if="board.review.startDate && board.review.endDate">Ended</b>
+                    <b ng-if="board.review.startDate && !board.review.endDate">In progress</b>
+                    <span ng-if="board.review.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
+                    <span ng-if="board.review.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
+                    <span ng-repeat="reviewer in getReviewers()"
                           title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
                         <i class="fa fa-lg fa-user-circle mr2 ml2"></i>
                         <i class="fa overlay-lower-right" id="reviewer_{{reviewer.username}}_status"
