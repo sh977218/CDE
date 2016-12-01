@@ -33,6 +33,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
+        textPresent("In progress");
         clickElement(By.id("board_Bipolar Disorder"));
         clickElement(By.id("approveBoardBtn"));
         closeAlert();
@@ -43,6 +44,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
+        textPresent("In progress");
         clickElement(By.id("board_Bipolar Disorder"));
         clickElement(By.id("disApproveBoardBtn"));
         closeAlert();
