@@ -1,7 +1,8 @@
 var validator = require('xsd-schema-validator'),
     xml2js = require('xml2js'),
-    builder = require('xmlbuilder')
-;
+    builder = require('xmlbuilder'),
+    dbLogger = require('../../system/node-js/dbLogger.js')
+    ;
 
 function addQuestion(parent, question) {
 
@@ -16,38 +17,6 @@ function addQuestion(parent, question) {
     if (question.instructions) {
         newQuestion.OtherText = {"@val": question.instructions.value};
     }
-
-    if (question.question.datatype === 'Value List') {
-        newQuestion.ListField = {"List": []};
-        if (question.question.multiselect) newQuestion.ListField["@maxSelections"] = "0";
-
-        if (question.question.answers) {
-            question.question.answers.forEach(function (answer) {
-                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
-                var q = {
-                    "@ID": "NA_" + Math.random(),
-                    "@title": title
-                };
-                if (answer.codeSystemName) {
-                    q["CodedValue"] = {
-                        "Code":{"@val":answer.valueMeaningCode}
-                        , "CodeSystem": {
-                            "CodeSystemName": {"@val": answer.codeSystemName}
-                        }
-                    };
-                }
-                newQuestion.ListField.List.push({ListItem: q});
-            });
-        }
-    } else {
-        newQuestion.ResponseField = {
-            "Response": {
-                "string": {"@name": "NA_" + Math.random(), "@maxLength": "4000"}
-            }
-        };
-    }
-
-    idToName[question.question.cde.tinyId] = question.label;
 
     var questionEle = parent.ele({Question: newQuestion});
 
@@ -67,6 +36,34 @@ function addQuestion(parent, question) {
         });
     }
 
+    if (question.question.datatype === 'Value List') {
+        var newListField = questionEle.ele("ListField");
+        var newList = newListField.ele("List");
+        if (question.question.multiselect) newListField.att("maxSelections", "0");
+
+        if (question.question.answers) {
+            question.question.answers.forEach(function (answer) {
+                var title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
+                var q = {
+                    "@ID": "NA_" + Math.random(),
+                    "@title": title
+                };
+                if (answer.codeSystemName) {
+                    q["CodedValue"] = {
+                        "Code":{"@val":answer.valueMeaningCode}
+                        , "CodeSystem": {
+                            "CodeSystemName": {"@val": answer.codeSystemName}
+                        }
+                    };
+                }
+                newList.ele({ListItem: q});
+            });
+        }
+    } else {
+        questionEle.ele("ResponseField").ele("Response").ele("string", {"name": "NA_" + Math.random(), "maxLength": "4000"});
+    }
+
+    idToName[question.question.cde.tinyId] = question.label;
 
     questionsInSection[question.label] = questionEle;
 }
@@ -140,7 +137,7 @@ var doSection = function (parent, section) {
 
 var idToName = {};
 
-exports.formToSDC = function (form) {
+exports.formToSDC = function (form, renderer, cb) {
 
     var formDesign = builder.create({
         "FormDesign": {
@@ -162,11 +159,15 @@ exports.formToSDC = function (form) {
         }
     });
 
+    var noSupport = false;
+
     var childItems = body.ele({ChildItems: {}});
 
     form.formElements.forEach(function (formElement) {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
             doSection(childItems, formElement);
+        } else {
+            noSupport = "true";
         }
     });
 
@@ -174,13 +175,23 @@ exports.formToSDC = function (form) {
 
     var xmlStr = formDesign.end({pretty: false});
 
-    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err, result) {
-        if (err) console.log('Validate SDC error: ' + err);
-        if (result && !result.valid) {
-            console.log(JSON.stringify(result));
+    validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', function (err) {
+        if (err) {
+            dbLogger.logError({
+                message: "SDC Schema validation error: ",
+                origin: "sdcForm.formToSDC",
+                stack: err,
+                details: "formID: " + form._id
+            });
+            xmlStr = "<!-- Validation Error: " + err + " -->" + xmlStr;
+        }
+        if (noSupport) {
+            cb("SDC Export does not support questions outside of sections. ");
+        } else if (renderer === "defaultHtml") {
+            cb("<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr)
+        } else {
+            cb(xmlStr);
         }
     });
-
-    return "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
 
 };

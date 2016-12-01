@@ -29,28 +29,10 @@ public abstract class CommentTest extends CommonTest {
     public void showLongComments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
-        addComment("very long replies comment");
-        textPresent("very long replies comment");
-
-        for (int i = 1; i <= 5; i++) {
-            hangon(1);
-            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + i);
-            scrollToViewById("replyBtn_0");
-            clickElement(By.id("replyBtn_0"));
-            textPresent("Reply to very long comment " + i);
-        }
-        for (int j = 6; j <= 10; j++) {
-            hangon(1);
-            findElement(By.id("replyTextarea_0")).sendKeys("Reply to very long comment " + j);
-            scrollToViewById("replyBtn_0");
-            clickElement(By.id("replyBtn_0"));
-            textPresent("Show all " + j + " replies");
-        }
+        clickElement(By.id("discussBtn"));
         clickElement(By.linkText("Show all 10 replies"));
         textNotPresent("Show all 10 replies");
-        for (int k = 3; k <= 10; k++)
-            textPresent("Reply to very long comment " + k);
-
+        for (int k = 1; k <= 10; k++) textPresent("Reply to very long comment " + k);
     }
 
     public void comments(String eltName) {
