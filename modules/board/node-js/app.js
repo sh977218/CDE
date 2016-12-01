@@ -382,9 +382,13 @@ exports.init = function (app, daoManager) {
                                     $set: {date: new Date()},
                                     $push: {
                                         "states": {
-                                            "action": "Filed",
-                                            "date": new Date(),
-                                            "comment": "board"
+                                            $each: [
+                                                {
+                                                    "action": "Filed",
+                                                    "date": new Date(),
+                                                    "comment": "board"
+                                                }],
+                                            $position: 0
                                         }
                                     }
                                 }, {upsert: true}, function (err) {
@@ -416,41 +420,41 @@ exports.init = function (app, daoManager) {
             }).map(function (u) {
                 return u.username;
             }).forEach(function (username) {
-                mongo_data_system.userByName(username, function (err, u) {
+                mongo_data_system.userByName(username, function (err, user) {
                     if (err) res.status.send(500);
-                    else if (u && u.email && u.email.length > 0) {
+                    if (user && user.email && user.email.length > 0) {
                         email.emailUsers({
                             subject: "You have a pending board to review: " + board.name,
                             body: "go to board to review and response."
-                        }, [u], function (e) {
+                        }, [user], function (e) {
                             if (e) res.status(500).send();
-                            else res.send();
+                            mongo_data_system.Message.findOneAndUpdate({
+                                'type': 'BoardApproval',
+                                'author.authorType': "user",
+                                'author.name': req.user.username,
+                                'recipient.recipientType': "user", 'recipient.name': user.username,
+                                'typeBoardApproval.element.eltType': 'board',
+                                'typeBoardApproval.element.name': board.name,
+                                'typeBoardApproval.element.eltId': board._id
+                            }, {
+                                $set: {date: new Date()},
+                                $push: {
+                                    "states": {
+                                        $each: [
+                                            {
+                                                "action": "Filed",
+                                                "date": new Date(),
+                                                "comment": "board"
+                                            }],
+                                        $position: 0
+                                    }
+                                }
+                            }, {upsert: true}, function (err) {
+                                if (err) res.status(500).send();
+                                else res.send();
+                            })
                         });
                     }
-                    else if (u && u.username) {
-                        mongo_data_system.Message.findOneAndUpdate({
-                            'type': 'BoardApproval',
-                            'author.authorType': "user",
-                            'author.name': req.user.username,
-                            'recipient.recipientType': "user", 'recipient.name': u.username,
-                            'typeBoardApproval.element.eltType': 'board',
-                            'typeBoardApproval.element.name': board.name,
-                            'typeBoardApproval.element.eltId': board._id
-                        }, {
-                            $set: {date: new Date()},
-                            $push: {
-                                "states": {
-                                    "action": "Filed",
-                                    "date": new Date(),
-                                    "comment": "board"
-                                }
-                            }
-                        }, {upsert: true}, function (err) {
-                            if (err) res.status(500).send();
-                            else res.send();
-                        })
-                    }
-                    else res.send();
                 });
             });
         });

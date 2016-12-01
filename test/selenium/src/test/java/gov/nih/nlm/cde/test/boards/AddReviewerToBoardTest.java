@@ -33,10 +33,10 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
-        textPresent("In progress");
         clickElement(By.id("board_Bipolar Disorder"));
+        switchTab(1);
+        textPresent("In progress");
         clickElement(By.id("approveBoardBtn"));
-        closeAlert();
         switchTabAndClose(0);
         clickElement(By.xpath("//button[.='Archive']"));
         closeAlert();
@@ -44,10 +44,10 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("incomingMessage"));
         clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
         textPresent(boardName);
-        textPresent("In progress");
         clickElement(By.id("board_Bipolar Disorder"));
+        switchTab(1);
+        textPresent("In progress");
         clickElement(By.id("disApproveBoardBtn"));
-        closeAlert();
         switchTabAndClose(0);
         clickElement(By.xpath("//button[.='Archive']"));
         closeAlert();
