@@ -10,6 +10,12 @@
                     <i class="fa fa-comment" ng-class="{discussWrench: hasComments && !commentMode}"></i> Discuss
                 </button>
             </span>
+             <span class="pt20 floatLeft pull-right">
+                <button class="btn btn-default btn-sm" id="shareBoardBtn"
+                        ng-if="user.username === board.owner.username"
+                        ng-click="shareBoard()"><i class="fa fa-link"></i> Share
+                </button>
+            </span>
             <div class="pull-right boxed-div padding0 margin0">
                 <span ng-if="getReviewers().length > 0" class="padding10 floatLeft overflowHidden">
                     <span ng-if="board.review.startDate">Started on: {{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
@@ -42,12 +48,6 @@
                                 ng-class="{'bg-color-red white-icon':boardStatus==='disapproved'}"
                                 ng-click="boardApproval('disapproved')">
                             <i class="fa fa-times">&nbsp;&nbsp;Disapprove</i></button>
-                    </span>
-                    <span>
-                        <button class="btn btn-default btn-sm" id="shareBoardBtn"
-                                ng-if="user.username === board.owner.username"
-                                ng-click="shareBoard()"><i class="fa fa-link"></i> Share
-                        </button>
                     </span>
                 </span>
             </div>
