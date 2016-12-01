@@ -417,7 +417,8 @@ exports.init = function (app, daoManager) {
                 return u.username;
             }).forEach(function (username) {
                 mongo_data_system.userByName(username, function (err, u) {
-                    if (u && u.email && u.email.length > 0) {
+                    if (err) res.status.send(500);
+                    else if (u && u.email && u.email.length > 0) {
                         email.emailUsers({
                             subject: "You have a pending board to review: " + board.name,
                             body: "go to board to review and response."
@@ -426,27 +427,30 @@ exports.init = function (app, daoManager) {
                             else res.send();
                         });
                     }
-                    mongo_data_system.Message.findOneAndUpdate({
-                        'type': 'BoardApproval',
-                        'author.authorType': "user",
-                        'author.name': req.user.username,
-                        'recipient.recipientType': "user", 'recipient.name': u.username,
-                        'typeBoardApproval.element.eltType': 'board',
-                        'typeBoardApproval.element.name': board.name,
-                        'typeBoardApproval.element.eltId': board._id
-                    }, {
-                        $set: {date: new Date()},
-                        $push: {
-                            "states": {
-                                "action": "Filed",
-                                "date": new Date(),
-                                "comment": "board"
+                    else if (u && u.username) {
+                        mongo_data_system.Message.findOneAndUpdate({
+                            'type': 'BoardApproval',
+                            'author.authorType': "user",
+                            'author.name': req.user.username,
+                            'recipient.recipientType': "user", 'recipient.name': u.username,
+                            'typeBoardApproval.element.eltType': 'board',
+                            'typeBoardApproval.element.name': board.name,
+                            'typeBoardApproval.element.eltId': board._id
+                        }, {
+                            $set: {date: new Date()},
+                            $push: {
+                                "states": {
+                                    "action": "Filed",
+                                    "date": new Date(),
+                                    "comment": "board"
+                                }
                             }
-                        }
-                    }, {upsert: true}, function (err) {
-                        if (err) res.status(500).send();
-                        else res.send();
-                    })
+                        }, {upsert: true}, function (err) {
+                            if (err) res.status(500).send();
+                            else res.send();
+                        })
+                    }
+                    else res.send();
                 });
             });
         });

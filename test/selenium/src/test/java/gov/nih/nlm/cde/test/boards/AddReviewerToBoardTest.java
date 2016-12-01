@@ -30,12 +30,28 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("startReviewBtn"));
         textPresent("End Review");
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToBoard(boardName);
+        clickElement(By.id("incomingMessage"));
+        clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
+        textPresent(boardName);
+        clickElement(By.id("board_Bipolar Disorder"));
         clickElement(By.id("approveBoardBtn"));
         closeAlert();
+        switchTabAndClose(0);
+        clickElement(By.xpath("//button[.='Archive']"));
+        closeAlert();
         mustBeLoggedInAs(ninds_username, password);
-        goToBoard(boardName);
+        clickElement(By.id("incomingMessage"));
+        clickElement(By.xpath("//span/span[contains(., '| board approval | boarduser')]"));
+        textPresent(boardName);
+        clickElement(By.id("board_Bipolar Disorder"));
         clickElement(By.id("disApproveBoardBtn"));
         closeAlert();
+        switchTabAndClose(0);
+        clickElement(By.xpath("//button[.='Archive']"));
+        closeAlert();
+        mustBeLoggedInAs(boardUser, password);
+        goToBoard(boardName);
+        Assert.assertEquals(findElement(By.id("reviewer_nlm_status")).getAttribute("class").contains("green-icon"), true);
+        Assert.assertEquals(findElement(By.id("reviewer_ninds_status")).getAttribute("class").contains("red-icon"), true);
     }
 }
