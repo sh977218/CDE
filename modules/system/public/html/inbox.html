@@ -35,7 +35,7 @@
 
         <uib-accordion-group ng-if="message.type === 'BoardApproval'">
             <uib-accordion-heading>
-                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} ( {{message.typeAttachmentApproval.filename}} ) | {{message.author.name}}
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
             </uib-accordion-heading>
             <div ng-include="'/system/public/html/boardApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
         </uib-accordion-group>
