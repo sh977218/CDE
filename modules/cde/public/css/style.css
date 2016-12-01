@@ -84,10 +84,6 @@ body {
     margin-bottom: 3px;
 }
 
-.mb5 {
-    margin-bottom: 5px;
-}
-
 .ib {
     display: inline-block;
 }
@@ -1434,27 +1430,24 @@ input.ng-invalid {
     width: 0;
 }
 
-.native-item {
-    margin-left: 50px;
-}
-
-.native-nostack .native-item {
-    width: 100%;
-    margin-left: 0;
-    padding-left: 70px;
-    width: 100%;
-}
-
-.native-box {
-    padding-left: 50px;
-    width: 100%;
-}
-
 .native-section {
     counter-reset: section;
 }
 
-.native-question:before {
+.form-horizontal .native-section .radio-inline,
+.form-horizontal .native-section .checkbox-inline {
+    padding-top: 0;
+}
+
+.native-question-label:before {
     counter-increment: section;
     content: counter(section) ". ";
+}
+
+.native-question-answers {
+    margin-bottom: 5px;
+}
+
+.native-box {
+    padding-left: 7%;
 }

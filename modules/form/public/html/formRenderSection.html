@@ -1,9 +1,9 @@
 <div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements,section)"
-     class="panel panel-default native-section" id="formRenderSection_{{section.label}}">
-    <div class="panel-heading">
+     ng-class="[{'panel panel-default':isSectionDisplayed(section)}, 'native-section']" id="formRenderSection_{{section.label}}">
+    <div ng-class="{'panel-heading':isSectionDisplayed(section)}">
         <div class="row">
             <div class="col-md-9">
-                <h4 tabindex="0" class="panel-title">{{section.label}}</h4>
+                <h4 tabindex="0" ng-class="{'panel-title':isSectionDisplayed(section)}">{{section.label}}</h4>
             </div>
             <div class="col-md-3" ng-if="canRepeat(section)">
                 <button class="btn btn-default fa fa-plus" ng-click="addSection(section, formElements, $index)">
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="panel-body">
+    <div ng-class="{'panel-body':isSectionDisplayed(section)}">
         <div ng-if="displayInstruction" class="row">
             <div class="col-md-12" ng-switch="section.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
