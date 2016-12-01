@@ -50,6 +50,10 @@
                         <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
                             XML File, SDC Schema</a>
                     </li>
+                    <li ng-if="user._id && !isIe()">
+                        <a id='sdcHtmlExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
+                            XML File, SDC Schema with XSL Transform</a>
+                    </li>
                     <li ng-if="user._id">
                         <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE
                             Schema</a>
