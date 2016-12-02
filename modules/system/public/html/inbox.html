@@ -33,9 +33,16 @@
             <div ng-include="'/system/public/html/attachmentApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
         </uib-accordion-group>
 
+        <uib-accordion-group ng-if="message.type === 'BoardApproval'">
+            <uib-accordion-heading>
+                {{message.date | date : medium}} | {{message.type | camelCaseToHuman}} | {{message.author.name}}
+            </uib-accordion-heading>
+            <div ng-include="'/system/public/html/boardApproval.html'" ng-init="orgName = orgToManage; page = 'management';"></div>
+        </uib-accordion-group>
+
     </uib-accordion>
     </script>
-    <h4 ng-show='mail[mailTypeReceived].length==0 && mail[mailTypeSent].length==0 && mail[mailTypeArchived].length==0'><center>Your Inbox is empty.</center></h4>
+    <h4 ng-show='mail[mailTypeReceived].length==0 && mail[mailTypeSent].length==0 && mail[mailTypeArchived].length==0' class="centerText">Your Inbox is empty.</h4>
     <div ng-repeat="type in [mailTypeReceived, mailTypeSent, mailTypeArchived]" id="mail_{{type}}">
         <h3 ng-show="type==mailTypeReceived && mail[type].length>0">Received</h3>
         <h3 ng-show="type==mailTypeSent && mail[type].length>0">Sent</h3>

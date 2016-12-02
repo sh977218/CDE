@@ -140,134 +140,6 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_board.boardsByUserId(req.params.userId, function (result) {
-            res.send(result);
-        });
-    });
-
-    app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
-            res.send(result);
-        });
-    });
-
-    app.post('/board', function (req, res) {
-        var boardQuota = config.boardQuota || 50;
-        var checkUnauthorizedPublishing = function (user, shareStatus) {
-            return shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
-        };
-        if (req.isAuthenticated()) {
-            var board = req.body;
-            if (!board._id) {
-                board.createdDate = Date.now();
-                board.owner = {
-                    userId: req.user._id,
-                    username: req.user.username
-                };
-                if (checkUnauthorizedPublishing(req.user, req.body.shareStatus)) {
-                    return res.status(403).send("You don't have permission to make boards public!");
-                }
-                mongo_board.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
-                    if (nbBoards < boardQuota) {
-                        mongo_board.newBoard(board, function (err) {
-                            if (err) res.status(500).send("An error occurred. ");
-                            elastic.boardRefresh(function () {
-                                res.send();
-                            });
-                        });
-                    } else {
-                        res.status(403).send("You have too many boards!");
-                    }
-                });
-            } else {
-                mongo_board.boardById(board._id, function (err, b) {
-                    if (err) {
-                        logging.errorLogger.error("Cannot find board by id", {
-                            origin: "cde.app.board",
-                            stack: new Error().stack,
-                            request: logging.generateErrorLogRequest(req),
-                            details: "board._id " + board._id
-                        });
-                        return res.status(404).send("Cannot find board.");
-                    }
-                    b.name = board.name;
-                    b.description = board.description;
-                    b.shareStatus = board.shareStatus;
-                    b.pins = board.pins;
-                    b.tags = board.tags;
-
-                    if (checkUnauthorizedPublishing(req.user, b.shareStatus)) {
-                        return res.status(403).send("You don't have permission to make boards public!");
-                    }
-                    b.save(function (err) {
-                        if (err) {
-                            logging.errorLogger.error("Cannot save board", {
-                                origin: "cde.app.board",
-                                stack: new Error().stack,
-                                request: logging.generateErrorLogRequest(req),
-                                details: "board._id " + board._id
-                            });
-                        }
-                        elastic.boardRefresh(function () {
-                            res.send(b);
-                        });
-                    });
-                });
-            }
-        } else {
-            res.send("You must be logged in to do this.");
-        }
-    });
-
-    function boardMove(req, res, moveFunc) {
-        authorization.boardOwnership(req, res, req.body.boardId, function(board) {
-            var index = 0;
-            board.get('pins').forEach(function (p, i) {
-                if (p.get('deTinyId') === req.body.tinyId) index = i;
-            });
-            if(index > -1) {
-                moveFunc(board, index);
-                board.save(function (err) {
-                    if (err) res.status(500).send();
-                    res.send();
-                });
-            } else {
-                res.send();
-            }
-        });
-    }
-
-    app.post('/board/pin/move/up', function(req, res) {
-        boardMove(req, res, function(board, index) {
-            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
-        });
-    });
-    app.post('/board/pin/move/down', function(req, res) {
-        boardMove(req, res, function(board, index) {
-            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
-        });
-    });
-    app.post('/board/pin/move/top', function(req, res) {
-        boardMove(req, res, function(board, index) {
-            board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
-        });
-    });
-
-
-    app.delete('/board/:boardId', function (req, res) {
-        authorization.boardOwnership(req, res, req.params.boardId, function(board) {
-            board.remove(function (err) {
-                if (err) res.send(500);
-                else {
-                    elastic.boardRefresh(function () {
-                        res.send("Board Removed.");
-                    });
-                }
-            });
-        });
-    });
-
     app.delete('/pincde/:deTinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {
             usersvc.removePinFromBoard(req, res);
@@ -325,7 +197,10 @@ exports.init = function (app, daoManager) {
 
     app.post('/classification/cde/moveclassif', function (req, res) {
         classificationNode.moveClassifications(req, function (err, cde) {
-            if (!err) res.send(cde);
+            if (!err)
+                res.send(cde);
+            else
+                res.status(403).end();
         });
     });
 

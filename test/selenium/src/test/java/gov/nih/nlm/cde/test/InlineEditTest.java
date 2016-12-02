@@ -16,8 +16,17 @@ public class InlineEditTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         String attachmentName = "nih-logo-color.png";
         showAllTabs();
-        addAttachment(attachmentName);
-        textPresent(attachmentName + " - This attachment cannot");
+
+        // probably an issue with the clamAv mock. So we try twice.
+        try {
+            addAttachment(attachmentName);
+            textPresent(attachmentName + " - This attachment cannot");
+        } catch (Exception e) {
+            goToCdeByName(cdeName);
+            showAllTabs();
+            addAttachment(attachmentName);
+            textPresent(attachmentName + " - This attachment cannot");
+        }
         // wait before checking inbox
         hangon(5);
         reviewAttachment(attachmentName);

@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$routeParams', '$window',
-    function ($scope, $http, $routeParams, $window)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$routeParams',
+    function ($scope, $http, $routeParams)
 {
 
     $scope.displayInstruction = false;
@@ -89,11 +89,6 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         return result;
     };
 
-    $scope.isIe = function () {
-        var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /MSIE/i};
-        return browsers['ie'].test($window.navigator.userAgent);
-    };
-
     var stripFieldsOut = function (elt) {
         delete elt.cardinality;
         delete elt.$$hashKey;
@@ -113,22 +108,6 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
             for (var i = 0; i < elt.formElements.length; i++) {
                 stripFieldsOut(elt.formElements[i]);
             }
-        }
-    };
-
-
-    $scope.exportStr = function () {
-        if (!$scope.isIe()) {
-            var formData = JSON.parse(JSON.stringify($scope.elt));
-            if (formData.formElements) {
-                for (var i = 0; i < formData.formElements.length; i++) {
-                    stripFieldsOut(formData.formElements[i]);
-                }
-            }
-            $scope.encodedStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formData));
-        } else {
-            alert("For security reasons, this feature is not supported in IE. ");
-            $scope.encodedStr = '/';
         }
     };
 
@@ -177,15 +156,16 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 if (operator === '>=') {
                     return new Date(realAnswer) >= new Date(expectedAnswer);
                 }
-
             } else if (realAnswerObj.question.datatype === 'Number') {
                 if (operator === '=') return realAnswer === parseInt(expectedAnswer);
                 if (operator === '<') return realAnswer < parseInt(expectedAnswer);
                 if (operator === '>') return realAnswer > parseInt(expectedAnswer);
                 if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
                 if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
-
             } else if (realAnswerObj.question.datatype === 'Text') {
+                if (operator === '=') return realAnswer === expectedAnswer;
+                else return false;
+            } else if (realAnswerObj.question.datatype === 'Value List' ) {
                 if (operator === '=') return realAnswer === expectedAnswer;
                 else return false;
             } else {
