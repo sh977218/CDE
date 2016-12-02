@@ -34,9 +34,11 @@ exports.init = function (app, daoManager) {
 
     function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            if (board.get('pins').find(function (p) {
+            var index;
+            if (board.get('pins').find(function (p, i) {
+                    index = i;
                     return p.get('deTinyId') === req.body.tinyId;
-                }).length > 0) {
+                })) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
@@ -68,7 +70,7 @@ exports.init = function (app, daoManager) {
     app.delete('/board/:boardId', function (req, res) {
         authorization.boardOwnership(req, res, req.params.boardId, function (board) {
             board.remove(function (err) {
-                if (err) res.send(500);
+                if (err) res.status(500).send();
                 else {
                     elastic.boardRefresh(function () {
                         res.send("Board Removed.");
@@ -136,7 +138,10 @@ exports.init = function (app, daoManager) {
                                 "users.$.lastViewed": new Date()
                             }
                         }, function (err) {
-                            if (err) res.status(500).send();
+                            if (err) {
+                                res.status(500).send();
+                                return;
+                            }
                         });
                     }
                     if (!req.isAuthenticated() ||
@@ -266,7 +271,7 @@ exports.init = function (app, daoManager) {
                 return res.send("You do not have permission.");
             } else {
                 mongo_board.boardById(boardId, function (err, board) {
-                    if (err) return res.send(500);
+                    if (err) return res.status(500).send();
                     else {
                         board.users = users;
                         board.markModified("users");
@@ -295,15 +300,13 @@ exports.init = function (app, daoManager) {
                     if (!board.review.startDate) return res.status(500).send('board has not started review yet.');
                     else if (board.review.endDate && board.review.endDate < new Date()) return res.status(500).send('board has already ended review.');
                     else {
-                        var foundUser = false;
-                        board.users.forEach(function (u) {
-                            if (u.username === req.user.username) {
-                                foundUser = true;
-                                u.status.approval = approval;
-                                u.status.reviewedDate = new Date();
-                            }
-                        });
-                        if (foundUser) {
+                        if (board.users.find(function (u) {
+                                if (u.username === req.user.username) {
+                                    u.status.approval = approval;
+                                    u.status.reviewedDate = new Date();
+                                    return true;
+                                }
+                            })) {
                             mongo_board.PinningBoard.findOneAndUpdate({
                                 _id: board._id,
                                 "users.username": req.user.username
@@ -313,14 +316,10 @@ exports.init = function (app, daoManager) {
                                     "users.$.status.reviewedDate": new Date()
                                 }
                             }, function (err) {
-                                if (err) {
-                                    res.status(500);
-                                }
+                                if (err) res.status(500);
                                 return res.send();
                             });
-                        } else {
-                            return res.status(500).send('not authorized.');
-                        }
+                        } else return res.status(500).send('not authorized.');
                     }
                 }
             })
@@ -346,7 +345,6 @@ exports.init = function (app, daoManager) {
                 if (err) {
                     res.status(500).send();
                 } else {
-                    res.send();
                     board.users.filter(function (u) {
                         return u.role === 'reviewer';
                     }).map(function (u) {
@@ -367,7 +365,7 @@ exports.init = function (app, daoManager) {
                                     }
                                 });
                             }
-                            if (u && u.username && u.username.length > 0) {
+                            else if (u && u.username && u.username.length > 0) {
                                 mongo_data_system.Message.findOneAndUpdate({
                                     'type': 'BoardApproval',
                                     'author.authorType': "user",
@@ -393,7 +391,7 @@ exports.init = function (app, daoManager) {
                                     if (err) res.status(500).send();
                                     else res.send();
                                 })
-                            }
+                            } else res.send();
                         });
                     });
                 }
@@ -404,9 +402,7 @@ exports.init = function (app, daoManager) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
             board.review.endDate = new Date();
             board.save(function (err) {
-                if (err) {
-                    res.status(500);
-                }
+                if (err) res.status(500);
                 return res.send();
             });
         });
