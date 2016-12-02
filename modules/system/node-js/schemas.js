@@ -272,6 +272,13 @@ var commentApprovalSchema = {
         text: String
     }
 };
+var boardApprovalSchema = {
+    element: {
+        eltId: String,
+        name: String,
+        eltType: {type: String, enum: ["cde", "form", "board"]}
+    }
+};
 
 schemas.message = new mongoose.Schema({
     recipient: {
@@ -280,11 +287,16 @@ schemas.message = new mongoose.Schema({
     }
     , author: {authorType: String, name: String}
     , date: Date
-    , type: {type: String, enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply"]}
+    ,
+    type: {
+        type: String,
+        enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
+    }
     , typeRequest: requestSchema
     , typeCommentApproval: commentApprovalSchema
     , typeAttachmentApproval: attachmentSchema
     , typeCommentReply: commentApprovalSchema
+    , typeBoardApproval: boardApprovalSchema
     , states: [{
         action: {type: String, enum: ["Approved", "Filed"]}
         , date: Date

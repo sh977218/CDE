@@ -377,6 +377,18 @@ exports.init = function (app) {
             });
         }
     });
+    app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
+        if (!req.user) {
+            res.send("Not logged in.");
+        } else if (!req.params.search) {
+            res.send("search is empty.");
+        } else {
+            mongo_data_system.usersByName(req.params.search, function (err, users) {
+                if (err) res.send(500);
+                else res.send(users);
+            });
+        }
+    });
 
     app.post('/user/me', function (req, res) {
         if (!req.user) {
