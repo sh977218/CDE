@@ -14,7 +14,7 @@
     }
   },
   "mesh": {
-    "baseUrl": "https://meshb-qa.nlm.nih.gov"
+    "baseUrl": "https://meshb.nlm.nih.gov"
   },
   "internalIP": "130.14.",
   "banEndsWith": [
