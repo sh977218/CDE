@@ -38,10 +38,6 @@
                         <button class="btn btn-default btn-sm" id="endReviewBtn"
                                 ng-click="endReview()"> End Review</button>
                     </span>
-                    <span ng-if="isReviewActive() && user.username === board.owner.username && getPendingReviewers().length > 0">
-                        <button class="btn btn-default btn-sm" id="remindReviewBtn"
-                                ng-click="remindReview()"> Send Reminder</button>
-                    </span>
                     <span ng-if="canReview()">
                         <button class="btn btn-default btn-sm" id="approveBoardBtn"
                                 ng-class="{'bg-color-green white-icon':boardStatus==='approved'}"

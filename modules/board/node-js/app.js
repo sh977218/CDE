@@ -345,6 +345,7 @@ exports.init = function (app, daoManager) {
                 if (err) {
                     res.status(500).send();
                 } else {
+                    res.send();
                     board.users.filter(function (u) {
                         return u.role === 'reviewer';
                     }).map(function (u) {
@@ -365,7 +366,7 @@ exports.init = function (app, daoManager) {
                                     }
                                 });
                             }
-                            else if (u && u.username && u.username.length > 0) {
+                            if (u && u.username && u.username.length > 0) {
                                 mongo_data_system.Message.findOneAndUpdate({
                                     'type': 'BoardApproval',
                                     'author.authorType': "user",
@@ -388,10 +389,15 @@ exports.init = function (app, daoManager) {
                                         }
                                     }
                                 }, {upsert: true}, function (err) {
-                                    if (err) res.status(500).send();
-                                    else res.send();
+                                    if (err) {
+                                        dbLogger.logError({
+                                            message: "Unable to send inbox user",
+                                            stack: err,
+                                            details: "user: " + u.username + " in board: " + board._id
+                                        });
+                                    }
                                 })
-                            } else res.send();
+                            }
                         });
                     });
                 }
