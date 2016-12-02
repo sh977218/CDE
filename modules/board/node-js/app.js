@@ -34,15 +34,13 @@ exports.init = function (app, daoManager) {
 
     function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            var index = 0;
-            board.get('pins').forEach(function (p, i) {
-                if (p.get('deTinyId') === req.body.tinyId) index = i;
-            });
-            if (index > -1) {
+            if (board.get('pins').find(function (p) {
+                    return p.get('deTinyId') === req.body.tinyId;
+                }).length > 0) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
-                    res.send();
+                    else res.send();
                 });
             } else {
                 res.send();
