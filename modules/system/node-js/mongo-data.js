@@ -27,7 +27,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     });
 
 exports.sessionStore = sessionStore;
-
+exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
@@ -93,6 +93,9 @@ exports.orgNames = function(callback) {
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(callback);
+};
+exports.usersByName = function (name, callback) {
+    User.find({'username': new RegExp('^' + name + '$', "i")}).exec(callback);
 };
 
 exports.usersByPartialName = function(name, callback) {
