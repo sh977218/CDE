@@ -181,10 +181,6 @@ exports.riverFunction = function (elt, cb) {
         cb(e);
     };
 
-    if (getElt === formCtrl.fetchWholeForm) {
-        console.log("this form has in forms: " + elt.tinyId);
-    }
-
     getElt(elt, function(elt) {
 
         function escapeHTML(s) {
