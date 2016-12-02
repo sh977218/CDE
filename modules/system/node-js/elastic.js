@@ -377,6 +377,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (sort) {
+        //noinspection JSAnnotator
         queryStuff.sort = {
             "views": {
                 order: 'desc'
