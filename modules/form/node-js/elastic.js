@@ -2,7 +2,6 @@ var config = require('../../system/node-js/parseConfig')
     , dbLogger = require('../../system/node-js/dbLogger.js')
     , elasticsearch = require('elasticsearch')
     , esInit = require('../../system/node-js/elasticSearchInit')
-    , formCtrl = require('./formCtrl')
     ;
 
 var esClient = new elasticsearch.Client({
@@ -10,8 +9,7 @@ var esClient = new elasticsearch.Client({
 });
 
 exports.updateOrInsert = function(elt) {
-    formCtrl.fetchWholeForm(elt, function (wholeForm) {
-        var doc = esInit.riverFunction(wholeForm);
+    esInit.riverFunction(elt, function (doc) {
         if (doc) {
             delete doc._id;
             esClient.index({

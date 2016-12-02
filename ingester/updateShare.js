@@ -2,7 +2,7 @@ var xml2js = require('xml2js'),
     builder = new xml2js.Builder({attrkey: 'attribute'}),
     Readable = require('stream').Readable,
     mongo_data = require('../modules/system/node-js/mongo-data'),
-    cdesvc = require('../modules/cde/node-js/cdesvc'),
+    cdediff = require('../modules/cde/node-js/cdediff'),
     classificationShared = require('../modules/system/shared/classificationShared')
     ;
 
@@ -85,7 +85,7 @@ exports.compareObjects = function (existingForm, newForm) {
     classificationShared.sortClassification(newForm);
     newForm = JSON.parse(JSON.stringify(newForm));
     exports.wipeUseless(newForm);
-    return cdesvc.diff(existingForm, newForm);
+    return cdediff.diff(existingForm, newForm);
 };
 
 exports.removeClassificationTree = function (element, org) {

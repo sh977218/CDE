@@ -22,25 +22,26 @@ var StoredQueryModel = mongo_storedQuery.StoredQueryModel;
 var FeedbackModel = conn.model('FeedbackIssue', schemas_system.feedbackIssueSchema);
 
 function sqEsUpdate(elt) {
-    var doc = esInit.storedQueryRiverFunction(elt.toObject());
-    if (doc) {
-        delete doc._id;
-        esClient.index({
-            index: config.elastic.storedQueryIndex.name,
-            type: "storedquery",
-            id: elt._id.toString(),
-            body: doc
-        }, function (err) {
-            if (err) {
-                exports.logError({
-                    message: "Unable to Index document: " + doc.tinyId,
-                    origin: "storedQuery.elastic.updateOrInsert",
-                    stack: err,
-                    details: ""
-                });
-            }
-        });
-    }
+    esInit.storedQueryRiverFunction(elt.toObject(), function (doc) {
+        if (doc) {
+            delete doc._id;
+            esClient.index({
+                index: config.elastic.storedQueryIndex.name,
+                type: "storedquery",
+                id: elt._id.toString(),
+                body: doc
+            }, function (err) {
+                if (err) {
+                    exports.logError({
+                        message: "Unable to Index document: " + doc.tinyId,
+                        origin: "storedQuery.elastic.updateOrInsert",
+                        stack: err,
+                        details: ""
+                    });
+                }
+            });
+        }
+    });
 }
 
 exports.storeQuery = function(settings, callback) {

@@ -1,13 +1,12 @@
 var async = require('async'),
     mongo_cde = require('../modules/cde/node-js/mongo-cde'),
-    cdesvc = require('../modules/cde/node-js/cdesvc'),
+    cdediff = require('../modules/cde/node-js/cdediff'),
     classificationShared = require('../modules/system/shared/classificationShared'),
     MigrationDataElement = require('./createMigrationConnection').MigrationDataElementModel,
     DataElement = mongo_cde.DataElement,
     MigrationOrg = require('./createMigrationConnection').MigrationOrgModel,
     Org = require('../modules/system/node-js/mongo-data').Org,
-    updateShare = require('./updateShare')
-    ;
+    updateShare = require('./updateShare');
 
 var cdeSource = process.argv[3];
 
@@ -86,7 +85,7 @@ function compareCdes(existingCde, newCde) {
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
-    return cdesvc.diff(existingCde, newCde);
+    return cdediff.diff(existingCde, newCde);
 }
 
 function processCde(migrationCde, existingCde, orgName, processCdeCb) {
