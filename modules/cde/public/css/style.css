@@ -33,9 +33,25 @@ body {
     padding-top: 8px;
 }
 
+.mr2 {
+    margin-right: 2px;
+}
+
+.ml2 {
+    margin-right: 2px;
+}
+
+.padding0 {
+    padding: 0px !important;
+}
 .padding10 {
     padding: 10px;
 }
+
+.padding3 {
+    padding: 3px;
+}
+
 .pt20 {
     padding-top: 20px;
 }
@@ -72,6 +88,10 @@ body {
     padding-right: 5px;
 }
 
+.pr18 {
+    padding-right: 18px;
+}
+
 .pr20 {
     padding-right: 20px;
 }
@@ -80,6 +100,9 @@ body {
     margin-top: 20px;
 }
 
+.margin0 {
+    magin: 0px !important;
+}
 .mb3 {
     margin-bottom: 3px;
 }
@@ -727,13 +750,14 @@ button#selectDefault {
     background-color: #f2f2f2;
 }
 
-.welcomeSearchFieldset > legend{
-    width:auto;
+.welcomeSearchFieldset > legend {
+    width: auto;
     border-bottom: none;
     padding: 0 5px 0 5px;
     margin-bottom: 10px;
     background-color: white;
 }
+
 .welcomeCount {
     bottom: 1px;
     right: 40px;
@@ -769,7 +793,7 @@ button#selectDefault {
     float: left;
 }
 
-#embedSearchArea  {
+#embedSearchArea {
     padding: 20px;
 }
 
@@ -1026,6 +1050,7 @@ div + .questionPlaceholder {
 .floatLeft {
     float: left;
 }
+
 .codeCell {
     word-wrap: break-word;
     /*min-width: 8%;*/
@@ -1160,7 +1185,9 @@ div + .questionPlaceholder {
     }
 }
 
-#searchBoardsForm {margin-right: 10px;}
+#searchBoardsForm {
+    margin-right: 10px;
+}
 
 .strike {
     text-decoration: line-through;
@@ -1207,7 +1234,7 @@ div + .questionPlaceholder {
 }
 
 .rightSideComments {
-    padding:30px;
+    padding: 30px;
     background-color: #f5f5f5;
     box-shadow: inset 10px 0 5px -2px #888;
 }
@@ -1337,9 +1364,17 @@ input.ng-invalid {
 }
 
 @-webkit-keyframes pulsate {
-    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
-    50% {opacity: 1.0;}
-    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+    0% {
+        -webkit-transform: scale(0.1, 0.1);
+        opacity: 0.0;
+    }
+    50% {
+        opacity: 1.0;
+    }
+    100% {
+        -webkit-transform: scale(1.2, 1.2);
+        opacity: 0.0;
+    }
 }
 
 @-webkit-keyframes wrench {
@@ -1451,3 +1486,65 @@ input.ng-invalid {
 .native-box {
     padding-left: 7%;
 }
+
+.overlay-lower-right {
+    position: relative;
+    width: 5px;
+    left: -10px;
+    top: -6px;
+}
+
+.hoverGrey:hover {
+    background-color: lightgrey;
+    cursor: pointer;
+}
+
+.green-icon {
+    color: #51A351;
+}
+
+.bg-color-green {
+    background-color: #51A351 !important;
+    color: white !important;
+}
+
+.red-icon {
+    color: red;
+}
+
+.white-icon {
+    color: white !important;
+}
+
+.bg-color-red {
+    background-color: red !important;
+}
+
+.yellow-icon {
+    color: yellow;
+}
+
+.bg-color-grey {
+    background-color: #f5f5f5;
+}
+
+.bg-color-blue {
+    background-color: #4d90fe !important;
+}
+
+#sharedLink {
+    color: #555;
+    font-family: arial, sans-serif;
+    margin-bottom: 4px;
+    width: 100%;
+    resize: none;
+}
+
+.width20 {
+    width: 20px
+}
+
+.clear {
+    clear: both;
+}
+

@@ -12,6 +12,7 @@ var PinningBoard = conn.model('PinningBoard', schemas.pinningBoardSchema);
 exports.PinningBoard = PinningBoard;
 
 schemas.pinningBoardSchema.pre('save', function (next) {
+    this.updatedDate = Date.now();
     var self = this;
     elastic.boardUpdateOrInsert(self);
     next();
