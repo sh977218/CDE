@@ -39,6 +39,7 @@ public class MeshTopics extends NlmCdeBaseTest {
                 clickElement(By.linkText("Browse by Topic"));
                 clickElement(By.partialLinkText("Health Care Economics and Organizations"));
                 clickElement(By.id("li-blank-Organizations"));
+                scrollToViewById("li-blank-Organizations");
                 clickElement(By.id("li-blank-Government"));
                 clickElement(By.id("li-blank-Federal Government"));
                 clickElement(By.id("li-blank-United States Government Agencies"));
@@ -57,6 +58,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.linkText("Browse by Topic"));
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
+        scrollToViewById("li-blank-Organizations");
         clickElement(By.id("li-blank-Government"));
         clickElement(By.id("li-blank-Federal Government"));
         clickElement(By.id("li-blank-United States Government Agencies"));
