@@ -547,9 +547,9 @@ exports.syncWithMesh = function(allMappings) {
         classifToSimpleTrees[m.flatClassification] = m.flatTrees;
     });
 
-//    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
+    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
 //    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde))];
-    var searches = [JSON.parse(JSON.stringify(searchTemplate.form))];
+//    var searches = [JSON.parse(JSON.stringify(searchTemplate.form))];
     searches.forEach(function (search) {
         search.scroll = '1m';
         search.search_type = 'scan';
@@ -604,7 +604,7 @@ exports.syncWithMesh = function(allMappings) {
                         });
                         scrollThrough(newScrollId, s);
                     } else {
-                        console.log("done syncing with MeSH");
+                        console.log("done syncing " + s.index + " with MeSH");
                     }
                 }
             });
