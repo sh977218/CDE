@@ -35,6 +35,14 @@
                         <input type="checkbox" ng-model="profile.displayValues" ng-disabled="!canCurate"
                                id="displayValues_{{$index}}" ng-click="stageElt()"/>
                     </dd>
+                    <dt tabindex="0">Display Instructions: </dt>
+                    <dd>
+                        <input type="checkbox" ng-model="profile.displayInstructions">
+                    </dd>
+                    <dt tabindex="0">Display Question Numbers: </dt>
+                    <dd>
+                        <input type="checkbox" ng-model="profile.displayNumbering">
+                    </dd>
                 </dl>
             </div>
         </div>

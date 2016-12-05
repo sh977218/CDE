@@ -38,10 +38,6 @@ angular.module('formModule').controller
         showCodingInstruction: true
     };
 
-    $scope.setRenderFormat = function (format) {
-        $scope.renderWith = format;
-    };
-
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
     }
@@ -157,8 +153,8 @@ angular.module('formModule').controller
         history: {
             heading: "History",
             includes: ['/form/public/html/formHistory.html'],
-            select: function () {
-                setCurrentTab();
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
                 $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,

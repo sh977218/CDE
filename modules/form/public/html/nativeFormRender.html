@@ -1,26 +1,31 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="displayInstruction"> Display Instruction
-                </label>
-            </div>
+    <div style="margin: 8px 0;">
+        <div style="display: inline-block">
+            <a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile:</a>
+            <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
+                    id="select_display_profile"></select>
         </div>
-        <div class="col-md-3">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="displayNumbering"> Display Question Numbers
-                </label>
-            </div>
-        </div>
+
+        <button class="btn btn-sm btn-default" data-url="/lformsView?tinyId={{elt.tinyId}}" onclick="window.open(this.getAttribute('data-url'),'_blank')">Render via
+            <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by
+            <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.
+        </button>
+
+        <button class="btn btn-sm btn-default" data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc" onclick="window.open(this.getAttribute('data-url'),'_blank')">
+            Render via <a ng-href="#" target="_blank" onclick="window.open('https://datascience.nih.gov/bd2k/about/org/SDC','_blank'); stopImmediatePropagation();return false;">SDC</a> format.
+        </button>
     </div>
+
+    <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
+        <span class="fa fa-warning" aria-hidden="true"></span>
+        <span class="sr-only">Warning:</span>
+        Save form to update rendering
+    </div>
+
     <h2>{{elt.naming[0].designation}}</h2>
 
-    <div ng-if="elt.displayProfiles.length > 0">
-        Display Profile:
-        <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
-                id="select_display_profile"></select>
+    <div ng-if="formPreviewLoading">
+        <h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
     </div>
 
     <form name="sectionLabel" role="form" class="form-horizontal">

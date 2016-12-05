@@ -187,4 +187,8 @@ exports.init = function (app, daoManager) {
             }
         });
     });
+
+    app.get('/lformsView', function (req, res) {
+        res.render('lformsRender','form');
+    });
 };
