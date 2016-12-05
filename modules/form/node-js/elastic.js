@@ -9,9 +9,9 @@ var esClient = new elasticsearch.Client({
 });
 
 exports.updateOrInsert = function(elt) {
-    esInit.riverFunction(elt, function (doc) {
+    esInit.riverFunction(elt.toObject(), function (doc) {
+        delete doc._id;
         if (doc) {
-            delete doc._id;
             esClient.index({
                 index: config.elastic.formIndex.name,
                 type: "form",

@@ -173,6 +173,7 @@ exports.fetchWholeForm = function(Form, callback) {
         }
     };
     loopFormElements(form, function () {
+        if (form.toObject()) form = form.toObject();
         callback(form);
     });
 };

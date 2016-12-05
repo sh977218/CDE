@@ -158,9 +158,8 @@ exports.storedQueryRiverFunction = function (elt, cb) {
     return cb(elt);
 };
 
-exports.riverFunction = function (elt, cb) {
-    if (elt.archived) return cb();
-
+exports.riverFunction = function (_elt, cb) {
+    if (_elt.archived) return cb();
 
     function hasInForm(e) {
         if (!e.formElements) {
@@ -178,11 +177,11 @@ exports.riverFunction = function (elt, cb) {
 
     var formCtrl = require('../../form/node-js/formCtrl');
 
-    var getElt = hasInForm(elt) ? formCtrl.fetchWholeForm : function (e, cb) {
+    var getElt = hasInForm(_elt) ? formCtrl.fetchWholeForm : function (e, cb) {
         cb(e);
     };
 
-    getElt(elt, function(elt) {
+    getElt(_elt, function(elt) {
 
         function escapeHTML(s) {
             return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
