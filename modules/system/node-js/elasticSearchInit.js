@@ -1,6 +1,5 @@
 var config = require('config'),
-    hash = require("crypto"),
-    formCtrl = require('../../form/node-js/formCtrl')
+    hash = require("crypto")
 ;
 
 exports.createIndexJson = {
@@ -176,6 +175,8 @@ exports.riverFunction = function (elt, cb) {
             }
         }
     }
+
+    var formCtrl = require('../../form/node-js/formCtrl');
 
     var getElt = hasInForm(elt) ? formCtrl.fetchWholeForm : function (e, cb) {
         cb(e);
