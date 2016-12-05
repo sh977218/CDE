@@ -547,8 +547,9 @@ exports.syncWithMesh = function(allMappings) {
         classifToSimpleTrees[m.flatClassification] = m.flatTrees;
     });
 
-    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
-//    var searches = [JSON.parse(JSON.stringify(searchTemplate.form))];
+//    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
+//    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde))];
+    var searches = [JSON.parse(JSON.stringify(searchTemplate.form))];
     searches.forEach(function (search) {
         search.scroll = '1m';
         search.search_type = 'scan';
