@@ -522,12 +522,12 @@ var searchTemplate = {
     }
 };
 
-exports.meshSyncStatus = {
-    cde: {done: 0},
-    form: {done: 0}
-};
-
 exports.syncWithMesh = function(allMappings) {
+
+    exports.meshSyncStatus = {
+        dataelement: {done: 0},
+        form: {done: 0}
+    };
 
     var classifToTrees = {};
     allMappings.forEach(function(m) {
@@ -548,8 +548,6 @@ exports.syncWithMesh = function(allMappings) {
     });
 
     var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
-//    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde))];
-//    var searches = [JSON.parse(JSON.stringify(searchTemplate.form))];
     searches.forEach(function (search) {
         search.scroll = '1m';
         search.search_type = 'scan';
@@ -567,7 +565,7 @@ exports.syncWithMesh = function(allMappings) {
                         });
                 } else {
                     var newScrollId = response._scroll_id;
-                    exports.meshSyncStatus[s.type === 'dataelement' ? 'cde' : s.type].total = response.hits.total;
+                    exports.meshSyncStatus[s.type].total = response.hits.total;
                     if (response.hits.hits.length > 0) {
                         response.hits.hits.forEach(function (hit) {
                             var thisElt = hit._source;
@@ -601,7 +599,7 @@ exports.syncWithMesh = function(allMappings) {
                                     if (err) console.log("ERR: " + err);
                                 });
                             }
-                            exports.meshSyncStatus[s.type === 'dataelement' ? 'cde' : s.type].done++;
+                            exports.meshSyncStatus[s.type].done++;
                         });
                         scrollThrough(newScrollId, s);
                     } else {
