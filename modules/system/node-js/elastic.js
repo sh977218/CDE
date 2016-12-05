@@ -573,6 +573,7 @@ exports.syncWithMesh = function(allMappings) {
                             var thisElt = hit._source;
                             var trees = new Set();
                             var simpleTrees = new Set();
+                            if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
                             thisElt.flatClassifications.forEach(function (fc) {
                                 if (classifToTrees[fc]) {
                                     classifToTrees[fc].forEach(function (node) {
