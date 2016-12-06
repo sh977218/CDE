@@ -35,21 +35,21 @@ public class MeshTopics extends NlmCdeBaseTest {
             clickElement(By.linkText("Browse by Topic"));
             textPresent("Health Care Economics and Organizations (11148)");
         } catch (Exception e) {
-            System.out.println("Fail after one 30 seconds.");
+            System.out.println("Retry after one 30 seconds.");
             try {
                 hangon(20);
                 clickElement(By.id("menu_cdes_link"));
                 clickElement(By.linkText("Browse by Topic"));
                 textPresent("Health Care Economics and Organizations (11148)");
             } catch (Exception ex) {
-                System.out.println("Fail after one 20 seconds.");
+                System.out.println("Retry after one 20 seconds.");
                 try {
                     hangon(10);
                     clickElement(By.id("menu_cdes_link"));
                     clickElement(By.linkText("Browse by Topic"));
                     textPresent("Health Care Economics and Organizations (11148)");
                 } catch (Exception exc) {
-                    System.out.println("Fail after one 10 seconds.");
+                    System.out.println("Retry after one 10 seconds.");
                 }
             }
         }
@@ -63,7 +63,7 @@ public class MeshTopics extends NlmCdeBaseTest {
         driver.navigate().refresh();
         scrollToViewById("li-checked-National Institutes of Health (U.S.)");
         hangon(5);
-        textPresent("National Institute of Neurological Disorders and Stroke (11129)");
+        textPresent("National Institute of Neurological Disorders and Stroke");
         textPresent("results for All Terms | All Classifications | Health Care > Health Care Economics and Organizat... | All St");
         clickElement(By.id("menu_forms_link"));
         clickElement(By.linkText("Browse by Topic"));
