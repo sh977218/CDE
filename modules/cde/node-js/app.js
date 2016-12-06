@@ -1,4 +1,5 @@
 var cdesvc = require('./cdesvc')
+    , cdediff = require('./cdediff')
     , usersvc = require('./../../system/node-js/usersvc')
     , mongo_cde = require('./mongo-cde')
     , mongo_board = require('../../board/node-js/mongo-board')
@@ -175,7 +176,7 @@ exports.init = function (app, daoManager) {
             if (err) return res.status(404).send("Cannot retrieve DataElement.");
             if (!dataElement.history || dataElement.history.length < 1) return res.send([]);
             mongo_cde.byId(dataElement.history[dataElement.history.length - 1], function (err, priorDe) {
-                var diff = cdesvc.diff(dataElement, priorDe);
+                var diff = cdediff.diff(dataElement, priorDe);
                 res.send(diff);
             });
         });

@@ -114,6 +114,11 @@ exports.daoMap = {
 
 exports.reIndex = function (index, cb) {
     var riverFunction = index.filter;
+    if (!riverFunction) {
+        riverFunction = function (elt, cb) {
+            cb(elt);
+        };
+    }
     var startTime = new Date().getTime();
     var indexType = Object.keys(index.indexJson.mappings)[0];
     // start re-index all
@@ -129,9 +134,11 @@ exports.reIndex = function (index, cb) {
         var stream = exports.daoMap[index.name].getStream(condition);
         stream.on('data', function (elt) {
             stream.pause();
-            injector.queueDocument(riverFunction ? riverFunction(elt.toObject()) : elt.toObject(), function () {
-                index.count++;
-                stream.resume();
+            riverFunction(elt.toObject(), function (afterRiverElt) {
+                injector.queueDocument(afterRiverElt, function () {
+                    index.count++;
+                    stream.resume();
+                });
             });
         });
         stream.on('end', function () {

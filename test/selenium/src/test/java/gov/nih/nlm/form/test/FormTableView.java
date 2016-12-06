@@ -45,7 +45,7 @@ public class FormTableView extends BaseFormTest {
         textNotPresent("Steward");
         textNotPresent("Used by");
         textNotPresent("Identifiers");
-        textNotPresent("Questions");
+        textNotPresent("Questions", By.cssSelector("thead"));
 
         textNotPresent("Alternate Name for a Table View Form!");
         textNotPresent("TESTOrg");

@@ -237,10 +237,10 @@ angular.module('formModule').controller
         var maxDepth = 8;
         var depth = 0;
         var loopFormElements = function (form, cb) {
+            depth++;
             if (form.formElements) {
-                async.forEach(form.formElements, function (fe, doneOne) { // jshint ignore:line
+                async.forEach(form.formElements, function (fe, doneOne) {
                     if (fe.elementType === 'form') {
-                        depth++;
                         if (depth < maxDepth) {
                             $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
                                 .then(function (result) {
