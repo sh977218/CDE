@@ -5,8 +5,7 @@ var config = require('../../system/node-js/parseConfig')
     , mongo_board = require('../../board/node-js/mongo-board')
     , connHelper = require('../../system/node-js/connections')
     , logging = require('../../system/node-js/logging')
-    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
-    , cdesvc = require("./cdesvc")
+    , cdediff = require("./cdediff")
     , async = require('async')
     , CronJob = require('cron').CronJob
     , elastic = require('./elastic')
@@ -330,7 +329,7 @@ exports.transferSteward = function (from, to, callback) {
 };
 
 exports.saveModification = function (oldDe, newDe, user) {
-    var diff = cdesvc.diff(newDe, oldDe);
+    var diff = cdediff.diff(newDe, oldDe);
     var message = {
         date: new Date()
         , user: {
@@ -364,11 +363,19 @@ exports.getCdeAuditLog = function (params, callback) {
 };
 
 exports.removeAttachmentLinks = function (id) {
-    adminItemSvc.removeAttachmentLinks(id, DataElement);
+    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
+    DataElement.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
 };
 
 exports.setAttachmentApproved = function (id) {
-    adminItemSvc.setAttachmentApproved(id, DataElement);
+    DataElement.update(
+        {"attachments.fileid": id},
+        {
+            $unset: {
+                "attachments.$.pendingApproval": ""
+            }
+        },
+        {multi: true}).exec();
 };
 
 exports.byOtherId = function (source, id, cb) {
@@ -411,8 +418,9 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
 };
 
 exports.fileUsed = function (id, cb) {
-    adminItemSvc.fileUsed(id, DataElement, cb);
-};
+    DataElement.find({"attachments.fileid": id}).count().exec(function (err, count) {
+        cb(err, count > 0);
+    });};
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
     DataElement.find({archived: null}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
