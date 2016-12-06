@@ -16,11 +16,7 @@ angular.module('systemModule').controller('DiffConfigCtrl', ['$scope', function 
     };
     $scope.namingOptions = {
         equal: function (a, b) {
-            return a.designation === b.designation &&
-                a.definition === b.definition &&
-                a.languageCode === b.languageCode &&
-                a.context.acceptability === b.context.acceptability &&
-                a.context.contextName === b.context.contextName;
+            return angular.equals(a, b);
         },
         sort: function (a, b) {
             return a.designation.localeCompare(b.designation);

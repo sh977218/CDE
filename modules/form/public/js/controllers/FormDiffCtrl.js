@@ -63,6 +63,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
         function extractFormItems(tree, section, targetArray) {
             if (tree.formElements) {
                 tree.formElements.forEach(function (elem) {
+                    if (!elem.cardinality) elem.cardinality = {min: 1, max: 1};
                     switch (elem.elementType) {
                         case "question":
                             targetArray.push({
