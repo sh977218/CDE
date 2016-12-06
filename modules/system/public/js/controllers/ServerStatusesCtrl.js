@@ -50,7 +50,7 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         };
 
         $scope.syncMesh = function() {
-            $http.post("syncWithMesh");
+            $http.post("/syncWithMesh");
             var indexFn = setInterval(function () {
                 $http.get('/syncWithMesh').success(function (result) {
                     $scope.meshSyncs = result;

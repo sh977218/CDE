@@ -523,7 +523,6 @@ var searchTemplate = {
 };
 
 exports.syncWithMesh = function(allMappings) {
-
     exports.meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}

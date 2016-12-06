@@ -39,12 +39,12 @@ public class MeshTopics extends NlmCdeBaseTest {
                 clickElement(By.linkText("Browse by Topic"));
                 clickElement(By.partialLinkText("Health Care Economics and Organizations"));
                 clickElement(By.id("li-blank-Organizations"));
-                scrollToViewById("status_filter");
                 clickElement(By.id("li-blank-Government"));
                 clickElement(By.id("li-blank-Federal Government"));
                 clickElement(By.id("li-blank-United States Government Agencies"));
                 clickElement(By.id("li-blank-United States Dept. of Health and Human Services"));
-                clickElement(By.id("li-blank-National Institute of Neurological Disorders and Stroke"));
+                clickElement(By.id("li-blank-National Institutes of Health (U.S.)"));
+                scrollToViewById("status_filter");
                 i = 2;
                 e = null;
             } catch (TimeoutException ex) {
@@ -58,12 +58,12 @@ public class MeshTopics extends NlmCdeBaseTest {
         clickElement(By.linkText("Browse by Topic"));
         clickElement(By.partialLinkText("Health Care Economics and Organizations"));
         clickElement(By.id("li-blank-Organizations"));
-        scrollToViewById("status_filter");
         clickElement(By.id("li-blank-Government"));
         clickElement(By.id("li-blank-Federal Government"));
         clickElement(By.id("li-blank-United States Government Agencies"));
         clickElement(By.id("li-blank-United States Dept. of Health and Human Services"));
         clickElement(By.id("li-blank-National Institute of Neurological Disorders and Stroke"));
+        scrollToViewById("status_filter");
     }
 
 }
