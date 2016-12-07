@@ -6,13 +6,21 @@
                     id="select_display_profile"></select>
         </div>
 
-        <button class="btn btn-sm btn-default" data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}" onclick="window.open(this.getAttribute('data-url'),'_blank')">
-            Printable form via <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" onclick="window.open('https://lhncbc.nlm.nih.gov/project/lforms','_blank'); stopImmediatePropagation();return false;">LForms</a>
+        <button class="btn btn-sm btn-default" id="button_lforms"
+                data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                onclick="window.open(this.getAttribute('data-url'),'_blank')">
+            Printable form via LForms
         </button>
 
-        <button class="btn btn-sm btn-default" data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml" onclick="window.open(this.getAttribute('data-url'),'_blank')">
-            Printable form via <a ng-href="#" target="_blank" onclick="window.open('https://datascience.nih.gov/bd2k/about/org/SDC','_blank'); stopImmediatePropagation();return false;">SDC</a>
+        <button class="btn btn-sm btn-default" id="button_sdc"
+                data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                onclick="window.open(this.getAttribute('data-url'),'_blank')">
+            Printable form via SDC
         </button>
+
+        (Rendering provided by
+        <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
+        <a href="https://datascience.nih.gov/bd2k/about/org/SDC" target="_blank">SDC</a>)
     </div>
 
     <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
@@ -22,10 +30,6 @@
     </div>
 
     <h2>{{elt.naming[0].designation}}</h2>
-
-    <div ng-if="formPreviewLoading">
-        <h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1>
-    </div>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
         <div ng-include="'/form/public/html/formRenderSection.html'"

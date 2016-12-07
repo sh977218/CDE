@@ -1477,7 +1477,7 @@ input.ng-invalid {
     width: 0;
 }
 
-.native-section {
+.form-horizontal {
     counter-reset: section;
 }
 

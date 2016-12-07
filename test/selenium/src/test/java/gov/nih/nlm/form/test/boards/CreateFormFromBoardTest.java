@@ -24,8 +24,9 @@ public class CreateFormFromBoardTest extends BoardTest {
         clickElement(By.id("submit"));
         textPresent("Incomplete");
         textNotPresent("have newer version");
-        textPresent("Date Done");
+        textPresent("Form Description");
         textPresent("cdeCompare1");
+        textPresent("cdeCompare2");
     }
 
 }

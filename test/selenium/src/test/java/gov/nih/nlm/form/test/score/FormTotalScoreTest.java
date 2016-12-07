@@ -16,7 +16,6 @@ public class FormTotalScoreTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Apathy Scale (AS)";
         goToFormByName(formName);
-        clickElement(By.linkText("native"));
         textPresent("Score: Incomplete answers");
 
         clickElement(By.xpath("//*[@id='Apathy Scale (AS) - effort indicator_0']//label[contains(.,'2')]"));
