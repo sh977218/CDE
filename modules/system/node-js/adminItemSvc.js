@@ -9,7 +9,7 @@ var mongo_data_system = require('../../system/node-js/mongo-data')
     , logging = require('./logging')
     , email = require('../../system/node-js/email')
     , streamifier = require('streamifier')
-    , app = require("../../../app")
+    , ioServer = require("./ioServer")
     , usersrvc = require('./usersrvc')
     ;
 
@@ -295,7 +295,7 @@ exports.addComment = function (req, res, dao) {
                         res.status(500).send("There was an issue saving this comment.");
                     } else {
                         var message = "Comment added.";
-                        app.ioServer.of("/comment").emit('commentUpdated');
+                        ioServer.ioServer.of("/comment").emit('commentUpdated');
                         if (comment.pendingApproval) message += " Approval required.";
                         res.send({message: message});
                     }
@@ -345,7 +345,7 @@ exports.replyToComment = function (req, res) {
                     });
                     res.status(500).send(err);
                 } else {
-                    app.ioServer.of("/comment").emit('commentUpdated');
+                    ioServer.ioServer.of("/comment").emit('commentUpdated');
                     res.send({message: "Reply added"});
                     if (req.user.username !== comment.username) {
                         var message = {
@@ -415,7 +415,7 @@ exports.removeComment = function (req, res, dao) {
                                 });
                                 res.status(500).send(err);
                             } else {
-                                app.ioServer.of("/comment").emit('commentUpdated');
+                                ioServer.ioServer.of("/comment").emit('commentUpdated');
                                 res.send({message: "Comment removed"});
                             }
                         });
@@ -460,7 +460,7 @@ exports.updateCommentStatus = function (req, res, status) {
                         });
                         res.status(500).send(err);
                     } else {
-                        app.ioServer.of("/comment").emit('commentUpdated');
+                        ioServer.ioServer.of("/comment").emit('commentUpdated');
                         res.send({message: "Saved."});
                     }
                 });
@@ -693,32 +693,4 @@ exports.hideProprietaryIds = function(elt) {
             }
         });
     }
-};
-
-exports.removeAttachmentLinks = function (id, collection) {
-    collection.update(
-        {"attachments.fileid": id}
-        , {
-            $pull: {
-                "attachments": {"fileid": id}
-            }
-        }
-        , {multi: true}).exec();
-};
-
-exports.setAttachmentApproved = function (id, collection) {
-    collection.update(
-        {"attachments.fileid": id},
-        {
-            $unset: {
-                "attachments.$.pendingApproval": ""
-            }
-        },
-        {multi: true}).exec();
-};
-
-exports.fileUsed = function (id, collection, cb) {
-    collection.find({"attachments.fileid": id}).count().exec(function (err, count) {
-        cb(err, count > 0);
-    });
 };

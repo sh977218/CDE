@@ -9,23 +9,24 @@ var esClient = new elasticsearch.Client({
 });
 
 exports.updateOrInsert = function(elt) {
-    var doc = esInit.riverFunction(elt.toObject());
-    if (doc) {
-        delete doc._id;
-        esClient.index({
-            index: config.elastic.formIndex.name,
-            type: "form",
-            id: doc.tinyId,
-            body: doc
-        }, function (err) {
-            if (err) {
-                dbLogger.logError({
-                    message: "Unable to Re-Index document: " + doc.tinyId,
-                    origin: "form.elastic.updateOrInsert",
-                    stack: err,
-                    details: ""
-                });
-            }
-        });
-    }
+    esInit.riverFunction(elt.toObject(), function (doc) {
+        if (doc) {
+            delete doc._id;
+            esClient.index({
+                index: config.elastic.formIndex.name,
+                type: "form",
+                id: doc.tinyId,
+                body: doc
+            }, function (err) {
+                if (err) {
+                    dbLogger.logError({
+                        message: "Unable to Re-Index document: " + doc.tinyId,
+                        origin: "form.elastic.updateOrInsert",
+                        stack: err,
+                        details: ""
+                    });
+                }
+            });
+        }
+    });
 };
