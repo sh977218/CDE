@@ -1,6 +1,5 @@
-var path = require('path');
-
-var express = require('express')
+var path = require('path')
+    , express = require('express')
     , http = require('http')
     , flash = require('connect-flash')
     , mongo_data_system = require('./modules/system/node-js/mongo-data')
@@ -14,12 +13,12 @@ var express = require('express')
     , ipfilter = require('express-ipfilter')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
-    , passportSocketIo = require('passport.socketio')
     , methodOverride = require('method-override')
     , morganLogger = require('morgan')
     , compress = require('compression')
     , helmet = require('helmet')
     , kibanaProxy = require("./modules/system/node-js/kibanaProxy")
+    , ioServer = require('./modules/system/node-js/ioServer')
     ;
 
 require('./modules/system/node-js/elastic').initEs();
@@ -245,21 +244,7 @@ domain.run(function () {
     server.listen(app.get('port'), function () {
         console.log('Express server listening on port ' + app.get('port'));
     });
-    var ioServer = require('socket.io')(server);
-    ioServer.use(passportSocketIo.authorize(expressSettings));
-    thisExports.ioServer = ioServer;
-    ioServer.of("/comment").on('connection', function (client) {
-        client.on("room", function (roomId) {
-            client.join(roomId);
-        });
-        client.on("currentReplying", function (roomId, commentId) {
-            ioServer.of("/comment").to(roomId).emit("userTyping", {
-                commentId: commentId,
-                username: client.conn.request.user.username
-            });
-        });
-    });
-
+    ioServer.startServer(server, expressSettings);
 });
 
 

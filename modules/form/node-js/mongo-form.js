@@ -2,7 +2,6 @@ var config = require('../../system/node-js/parseConfig')
     , schemas = require('./schemas')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , connHelper = require('../../system/node-js/connections')
-    , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , logging = require('../../system/node-js/logging')
     , elastic = require('./elastic')
     ;
@@ -179,13 +178,23 @@ exports.eltByTinyId = function (tinyId, callback) {
 };
 
 exports.removeAttachmentLinks = function (id) {
-    adminItemSvc.removeAttachmentLinks(id, Form);
+    Form.update({"attachments.fileid": id}, {$pull: {"attachments": {"fileid": id}}});
 };
 
 exports.setAttachmentApproved = function (id) {
-    adminItemSvc.setAttachmentApproved(id, Form);
+    Form.update(
+        {"attachments.fileid": id},
+        {
+            $unset: {
+                "attachments.$.pendingApproval": ""
+            }
+        },
+        {multi: true}).exec();
 };
 
+
 exports.fileUsed = function (id, cb) {
-    adminItemSvc.fileUsed(id, Form, cb);
+    Form.find({"attachments.fileid": id}).count().exec(function (err, count) {
+        cb(err, count > 0);
+    });
 };

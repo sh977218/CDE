@@ -1,5 +1,6 @@
-var config = require('config');
-var hash = require("crypto");
+var config = require('config'),
+    hash = require("crypto")
+;
 
 exports.createIndexJson = {
     "mappings": {
@@ -149,128 +150,145 @@ exports.createFormIndexJson = {
     }
 };
 
-exports.storedQueryRiverFunction = function (elt) {
+exports.storedQueryRiverFunction = function (elt, cb) {
     elt.selectedElements1.forEach(function (se, i) {
         elt['classifLevel' + i] = se;
     });
     elt.search_suggest = elt.searchTerm;
-    return elt;
+    return cb(elt);
 };
 
-exports.riverFunction = function (elt) {
-    if (elt.archived) return null;
+exports.riverFunction = function (_elt, cb) {
+    if (_elt.archived) return cb();
 
-    function escapeHTML(s) {
-        return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    var flatArray = [];
-
-    function doClassif(currentString, classif) {
-        if (currentString.length > 0) {
-            currentString = currentString + ';';
-        }
-        currentString = currentString + classif.name;
-        flatArray.push(currentString);
-        if (classif.elements) {
-            for (var i = 0; i < classif.elements.length; i++) {
-                doClassif(currentString, classif.elements[i]);
-            }
-        }
-    }
-
-    function flattenClassification(doc) {
-        if (doc.classification) {
-            for (var i = 0; i < doc.classification.length; i++) {
-                if (doc.classification[i].elements) {
-                    for (var j = 0; j < doc.classification[i].elements.length; j++) {
-                        doClassif(doc.classification[i].stewardOrg.name, doc.classification[i].elements[j]);
-                    }
+    function hasInForm(e) {
+        if (!e.formElements) {
+            return false;
+        } else {
+            if (e.formElements.find(fe => fe.elementType === 'form')) {
+                return true;
+            } else {
+                for (var i = 0; i < e.formElements.length; i++) {
+                    if (hasInForm(e.formElements[i])) return true;
                 }
             }
         }
     }
 
-    function findFormQuestionNr(fe) {
-        var n = 0;
-        if (fe.formElements) {
-            for (var i = 0; i < fe.formElements.length; i++) {
-                var e = fe.formElements[i];
-                if (e.elementType && e.elementType === 'question') n++;
-                else n = n + findFormQuestionNr(e);
+    var formCtrl = require('../../form/node-js/formCtrl');
+
+    var getElt = hasInForm(_elt) ? formCtrl.fetchWholeForm : function (e, cb) {
+        cb(e);
+    };
+
+    getElt(_elt, function(elt) {
+
+        function escapeHTML(s) {
+            return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        var flatArray = [];
+
+        function doClassif(currentString, classif) {
+            if (currentString.length > 0) {
+                currentString = currentString + ';';
+            }
+            currentString = currentString + classif.name;
+            flatArray.push(currentString);
+            if (classif.elements) {
+                for (var i = 0; i < classif.elements.length; i++) {
+                    doClassif(currentString, classif.elements[i]);
+                }
             }
         }
-        return n;
-    }
 
-    elt.numQuestions = findFormQuestionNr(elt);
-
-    flattenClassification(elt);
-    if (elt.valueDomain && elt.valueDomain.permissibleValues) {
-        elt.valueDomain.nbOfPVs = elt.valueDomain.permissibleValues.length;
-        if (elt.valueDomain.permissibleValues.length > 20) {
-            elt.valueDomain.permissibleValues.length = 20;
+        function flattenClassification(doc) {
+            if (doc.classification) {
+                for (var i = 0; i < doc.classification.length; i++) {
+                    if (doc.classification[i].elements) {
+                        for (var j = 0; j < doc.classification[i].elements.length; j++) {
+                            doClassif(doc.classification[i].stewardOrg.name, doc.classification[i].elements[j]);
+                        }
+                    }
+                }
+            }
         }
-    }
-    elt.flatClassifications = flatArray;
-    elt.stewardOrgCopy = elt.stewardOrg;
-    elt.steward = elt.stewardOrg.name;
-    elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
 
-    var primDef;
-    for (var i = 0; i < elt.naming.length; i++) {
-        if (elt.naming[i].definition) {
-            primDef = elt.naming[i];
-            i = elt.naming.length;
+        function findFormQuestionNr(fe) {
+            var n = 0;
+            if (fe.formElements) {
+                for (var i = 0; i < fe.formElements.length; i++) {
+                    var e = fe.formElements[i];
+                    if (e.elementType && e.elementType === 'question') n++;
+                    else n = n + findFormQuestionNr(e);
+                }
+            }
+            return n;
         }
-    }
-    if (primDef) {
-        if (primDef.definitionFormat === 'html') {
-            elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
+
+        elt.numQuestions = findFormQuestionNr(elt);
+
+        flattenClassification(elt);
+        if (elt.valueDomain && elt.valueDomain.permissibleValues) {
+            elt.valueDomain.nbOfPVs = elt.valueDomain.permissibleValues.length;
+            if (elt.valueDomain.permissibleValues.length > 20) {
+                elt.valueDomain.permissibleValues.length = 20;
+            }
+        }
+        elt.flatClassifications = flatArray;
+        elt.stewardOrgCopy = elt.stewardOrg;
+        elt.steward = elt.stewardOrg.name;
+        elt.primaryNameCopy = elt.naming ? escapeHTML(elt.naming[0].designation) : '';
+
+        var primDef;
+        for (var i = 0; i < elt.naming.length; i++) {
+            if (elt.naming[i].definition) {
+                primDef = elt.naming[i];
+                i = elt.naming.length;
+            }
+        }
+        if (primDef) {
+            if (primDef.definitionFormat === 'html') {
+                elt.primaryDefinitionCopy = primDef.definition.replace(/<(?:.|\\n)*?>/gm, '');
+            } else {
+                elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
+            }
         } else {
-            elt.primaryDefinitionCopy = elt.naming ? escapeHTML(primDef.definition) : '';
+            elt.primaryDefinitionCopy = '';
         }
-    } else {
-        elt.primaryDefinitionCopy = '';
-    }
-    var regStatusSortMap = {
-        Retired: 6,
-        Incomplete: 5,
-        Candidate: 4,
-        Recorded: 3,
-        Qualified: 2,
-        Standard: 1,
-        "Preferred Standard": 0
-    };
-    elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
-    if (elt.classification) {
-        var size = elt.classification.length;
-        if (size > 10) {
-            elt.classificationBoost = 2.1;
+        var regStatusSortMap = {
+            Retired: 6,
+            Incomplete: 5,
+            Candidate: 4,
+            Recorded: 3,
+            Qualified: 2,
+            Standard: 1,
+            "Preferred Standard": 0
+        };
+        elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
+        if (elt.classification) {
+            var size = elt.classification.length;
+            if (size > 10) {
+                elt.classificationBoost = 2.1;
+            }
+            else {
+                elt.classificationBoost = 0.1 + 0.2 * size;
+            }
+        } else {
+            elt.classificationBoost = 0.1;
         }
-        else {
-            elt.classificationBoost = 0.1 + 0.2 * size;
-        }
-    } else {
-        elt.classificationBoost = 0.1;
-    }
-    elt.flatIds = [];
-    if (elt.ids) {
-        for (var i = 0; i < elt.ids.length; i++) {
-            elt.flatIds.push(elt.ids[i].source + ' ' + elt.ids[i].id + ' ' + elt.ids[i].version);
-        }
-    }
-    elt.flatProperties = [];
-    if (elt.properties) {
-        elt.properties.forEach(function (p) {
-            elt.flatProperties.push(p.key + ' ' + p.value);
+        elt.flatIds = elt.ids.map(function (id) {
+            return  id.source + ' ' + id.id + ' ' + id.version
         });
-    }
-    if (elt.forkOf) {
-        elt.isFork = true;
-    }
+        elt.flatProperties = elt.properties.map(function (p) {
+            return p.key + ' ' + p.value;
+        });
+        if (elt.forkOf) {
+            elt.isFork = true;
+        }
 
-    return elt;
+        return cb(elt);
+    });
 
 };
 
