@@ -165,7 +165,13 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 if (operator === '=') return realAnswer === expectedAnswer;
                 else return false;
             } else if (realAnswerObj.question.datatype === 'Value List' ) {
-                if (operator === '=') return realAnswer === expectedAnswer;
+                if (operator === '=') {
+                    if (typeof realAnswer === 'object') {
+                        return realAnswer.indexOf(expectedAnswer) > -1;
+                    } else {
+                        return realAnswer === expectedAnswer;
+                    }
+                }
                 else return false;
             } else {
                 return true;
