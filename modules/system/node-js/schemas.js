@@ -389,7 +389,7 @@ schemas.logSchema = new mongoose.Schema(
         , httpStatus: String
         , date: {type: Date, index: true}
         , referrer: String
-        , responseTime: Number
+        , responseTime: {type: Number, index: true}
     }, {safe: {w: 0}, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
 
 schemas.logErrorSchema = new mongoose.Schema(
