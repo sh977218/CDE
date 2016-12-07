@@ -31,11 +31,22 @@ gulp.task('copyNpmDeps', ['npm'], function() {
 });
 
 gulp.task('bower', function() {
+    bower({cwd:'bower_lforms'})
+        .pipe(gulp.dest('./modules/components'));
     return bower()
         .pipe(gulp.dest('./modules/components'));
 });
 
 gulp.task('wiredep', ['bower'], function() {
+    fs.readFile("./bower_lforms/bower.json", "utf-8", function(err, _data) {
+        gulp.src("./modules/form/public/html/lformsRender.html")
+            .pipe(wiredep({
+                bowerJson: JSON.parse(_data),
+                directory: "modules/components"
+                , ignorePath: "../.."
+            }))
+            .pipe(gulp.dest("./modules/form/public/html"));
+    });
     return gulp.src("./modules/system/views/index.ejs")
         .pipe(wiredep({
             directory: "modules/components"

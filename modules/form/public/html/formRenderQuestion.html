@@ -1,5 +1,5 @@
 <div ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements, question)">
-    <div ng-if="displayInstruction" class="row">
+    <div ng-if="selection.selectedProfile.displayInstructions" class="row">
         <div class="col-md-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
                 <span ng-bind="question.instructions.value"></span></span>
@@ -10,7 +10,7 @@
     </div>
     <div class="row" ng-if="question.label">
         <div class="col-md-12">
-            <label tabindex="0" ng-class="{'native-question-label': displayNumbering }" ng-bind-html="question.label"></label>
+            <label tabindex="0" ng-class="{'native-question-label': selection.selectedProfile.displayNumbering }" ng-bind-html="question.label"></label>
         </div>
     </div>
     <div class="row native-question-answers">

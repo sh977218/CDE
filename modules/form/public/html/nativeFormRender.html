@@ -6,13 +6,12 @@
                     id="select_display_profile"></select>
         </div>
 
-        <button class="btn btn-sm btn-default" data-url="/lformsView?tinyId={{elt.tinyId}}" onclick="window.open(this.getAttribute('data-url'),'_blank')">Render via
-            <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by
-            <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.
+        <button class="btn btn-sm btn-default" data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}" onclick="window.open(this.getAttribute('data-url'),'_blank')">
+            Printable form via <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" onclick="window.open('https://lhncbc.nlm.nih.gov/project/lforms','_blank'); stopImmediatePropagation();return false;">LForms</a>
         </button>
 
-        <button class="btn btn-sm btn-default" data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc" onclick="window.open(this.getAttribute('data-url'),'_blank')">
-            Render via <a ng-href="#" target="_blank" onclick="window.open('https://datascience.nih.gov/bd2k/about/org/SDC','_blank'); stopImmediatePropagation();return false;">SDC</a> format.
+        <button class="btn btn-sm btn-default" data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml" onclick="window.open(this.getAttribute('data-url'),'_blank')">
+            Printable form via <a ng-href="#" target="_blank" onclick="window.open('https://datascience.nih.gov/bd2k/about/org/SDC','_blank'); stopImmediatePropagation();return false;">SDC</a>
         </button>
     </div>
 

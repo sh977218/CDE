@@ -37,11 +37,13 @@
                     </dd>
                     <dt tabindex="0">Display Instructions: </dt>
                     <dd>
-                        <input type="checkbox" ng-model="profile.displayInstructions">
+                        <input type="checkbox" ng-model="profile.displayInstructions" ng-disabled="!canCurate"
+                               id="displayInstructions_{{$index}}" ng-click="stageElt()">
                     </dd>
                     <dt tabindex="0">Display Question Numbers: </dt>
                     <dd>
-                        <input type="checkbox" ng-model="profile.displayNumbering">
+                        <input type="checkbox" ng-model="profile.displayNumbering" ng-disabled="!canCurate"
+                               id="displayNumbering_{{$index}}" ng-click="stageElt()">
                     </dd>
                 </dl>
             </div>

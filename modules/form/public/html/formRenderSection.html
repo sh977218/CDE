@@ -16,7 +16,7 @@
         </div>
     </div>
     <div ng-class="{'panel-body':isSectionDisplayed(section)}">
-        <div ng-if="displayInstruction" class="row">
+        <div ng-if="selection.selectedProfile.displayInstructions" class="row">
             <div class="col-md-12" ng-switch="section.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
                 <span ng-bind="section.instructions.value"></span></span>
