@@ -175,7 +175,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 }
                 else return false;
             } else {
-                return true;
+                return realAnswer === expectedAnswer;
             }
         } else return false;
     };

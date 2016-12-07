@@ -382,7 +382,7 @@ angular.module('formModule').controller
         } else {
             var filteredQuestion = filteredQuestions[0];
             if (filteredQuestion.question.datatype === 'Value List') {
-                if (filteredQuestion.question.answers.map(function (a) {
+                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
                         return questionSanitizer(a.permissibleValue);
                     }).indexOf(tokens[2]) < 0) {
                     return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
