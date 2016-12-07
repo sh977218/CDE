@@ -65,7 +65,7 @@ public class NindsFormLoader implements Runnable {
 
     private void goToNindsSiteAndGoToPageOf(int pageStart) {
         driver.get(url);
-        textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
+        textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS");
         hangon(10);
         Select pageSizeSelect = new Select(findElement(By.id("ddlPageSize")));
         pageSizeSelect.selectByVisibleText("100");
@@ -74,33 +74,33 @@ public class NindsFormLoader implements Runnable {
         hangon(5);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(By.id("ContentPlaceHolder1_btnClear")));
-        textPresent("2605 items found.");
+        textPresent("2712 items found.");
         if (pageStart > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
-            textPresent("Page: 27 of 27");
+            textPresent("Page: 28 of 28");
             goToPageFromLast(pageStart);
         } else {
             for (int i = 1; i < pageStart; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-                textPresent("Page: " + i + " of 27");
+                textPresent("Page: " + i + " of 28");
             }
         }
     }
 
     private void goToPageFromLast(int pageStart) {
-        for (int n = 27; n > pageStart; n--) {
+        for (int n = 28; n > pageStart; n--) {
             findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
             int num = n - 1;
-            String s = "Page: " + num + " of 27";
+            String s = "Page: " + num + " of 28";
             textPresent(s);
         }
     }
 
     private void findAndSaveToForms(int pageStart, int pageEnd) {
         System.out.println("running page from " + pageStart + " to " + pageEnd);
-        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 28";
         textPresent(textToBePresent);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
         for (int i = 1; i < trs.size(); i++) {
@@ -239,7 +239,7 @@ public class NindsFormLoader implements Runnable {
         try {
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         } catch (Exception e) {
-            System.out.println("tried once fail. try another. pageStart :" + pageStart);
+            System.out.println("tried finding '" + text + "' once fail. try another. pageStart :" + pageStart);
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         }
         return true;
