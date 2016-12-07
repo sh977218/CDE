@@ -24,10 +24,8 @@
 
         <div class="row">
             <div class="col-md-6">
-                <span ng-bind-html="elt.primaryDefinitionCopy"></span>
-                <br><br>
-
-                <dl class="dl-horizontal">
+                <b>{{elt.numQuestions}} Questions</b> - <span ng-bind-html="elt.primaryDefinitionCopy"></span>
+                <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
                     <dt tabindex="0">Steward:</dt>
                     <dd tabindex="0" ng-bind-html="elt.stewardOrg.name"></dd>
                     <dt tabindex="0" ng-show="elt.classification.length > 0">Used By:</dt>
@@ -39,10 +37,6 @@
                             </span>
                         </span>
                     </dd>
-                    <dt tabindex="0" id="dt_status">Status:</dt>
-                    <dd tabindex="0" id="dd_status">{{elt.registrationState.registrationStatus}}</dd>
-                    <!--<dt tabindex="0" id="dt_nQuestion-{{$index}}">Questions:</dt>-->
-                    <!--<dd tabindex="0" id="dd_nQuestion-{{$index}}">{{elt.numQuestions}}</dd>-->
                 </dl>
             </div>
             <div class="col-md-2">

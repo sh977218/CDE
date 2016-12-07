@@ -1,6 +1,6 @@
 var async = require('async');
 var mongo_cde = require('../../modules/cde/node-js/mongo-cde');
-var cdesvc = require('../../modules/cde/node-js/cdesvc');
+var cdediff = require('../../modules/cde/node-js/cdediff');
 var classificationShared = require('../../modules/system/shared/classificationShared');
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
@@ -89,7 +89,7 @@ function compareCdes(existingCde, newCde) {
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
-    return cdesvc.diff(existingCde, newCde);
+    return cdediff.diff(existingCde, newCde);
 }
 
 function processCde(migrationCde, existingCde, processCdeCb) {
