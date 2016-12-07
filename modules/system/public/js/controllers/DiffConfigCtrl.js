@@ -135,9 +135,7 @@ angular.module('systemModule').controller('DiffConfigCtrl', ['$scope', function 
     };
     $scope.idsOptions = {
         equal: function (a, b) {
-            return a.id === b.id &&
-                a.source === b.source &&
-                a.version === b.version;
+            return angular.equals(a, b);
         },
         sort: function (a, b) {
             return a.id.localeCompare(b.id);
