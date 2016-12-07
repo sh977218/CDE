@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class EltIdMaps {
 
-    public static Map<String, String> eltMap = new HashMap<String, String>();
+    public static Map<String, String> eltMap = new HashMap<>();
 
     static {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
@@ -68,6 +68,7 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
