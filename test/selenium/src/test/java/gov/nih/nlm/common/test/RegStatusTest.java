@@ -50,7 +50,7 @@ public abstract class RegStatusTest extends CommonTest {
         findElement(By.name("administrativeNote")).sendKeys("Admin Note 1");
         findElement(By.name("unresolvedIssue")).sendKeys("Unresolved Issue 1");
         clickElement(By.id("saveRegStatus"));
-        textPresent("Saved.");
+        textPresent("Saved");
         closeAlert();
         setLowStatusesVisible();
         waitForESUpdate();
