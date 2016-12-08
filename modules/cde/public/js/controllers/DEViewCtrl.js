@@ -134,14 +134,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             hideable: true
 
         },
-        mappingSpecifications: {
-            heading: "Mappings", includes: ['/cde/public/html/mappingSpecifications.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
-        },
         boards: {
             heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
             select: function (thisTab) {
@@ -537,12 +529,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             title: "Forms",
             placement: "bottom",
             content: "If a the CDE is used in a Form, it will be displayed here. "
-        },
-        {
-            element: "#mappingSpecifications_tab",
-            title: "Mappings",
-            content: "This section supports mapping of a CDE to external resources such as C-CDA document templates.",
-            placement: "bottom"
         },
         {
             element: "#discussions_tab",
