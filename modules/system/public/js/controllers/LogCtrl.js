@@ -36,6 +36,7 @@ angular.module('systemModule').controller('LogCtrl', ['$scope', '$http', functio
                       , url: log.url
                       , method: log.method
                       , status: log.httpStatus
+                        , respTime: log.responseTime
                     });
                 }                
             });            
