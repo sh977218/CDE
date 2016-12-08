@@ -67,7 +67,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 isAllowed: '&',
                 onOk: '&',
                 typeaheadSource: '=',
-                linkSource: '='
+                linkSource: '@'
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: ["$scope", function ($scope) {

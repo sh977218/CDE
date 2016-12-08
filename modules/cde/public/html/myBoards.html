@@ -65,7 +65,7 @@
                            ng-click="showChangeStatus = true" id="privateIcon_{{$index}}"></i>
                     </span>
                     <span id="viewBoard_{{board.name}}" inline-edit model="board.name"
-                          link-source="'/board/'+{{board._id}}" is-allowed="canEditBoard()" on-ok="save(board);"></span>
+                          link-source="/board/{{board._id}}" is-allowed="canEditBoard()" on-ok="save(board);"></span>
                 </h4>
                 <div ng-include="'/cde/public/html/boardTemplate.html'"></div>
             </div>
