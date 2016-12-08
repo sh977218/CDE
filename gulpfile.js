@@ -39,7 +39,7 @@ gulp.task('lhc-wiredep', ['bower'], function() {
     gulp.src("./modules/form/public/html/lformsRender.html")
         .pipe(wiredep({
             directory: "modules/components"
-            , ignorePath: "../.."
+            , ignorePath: "../../.."
         }))
         .pipe(gulp.dest("./modules/form/public/html"));
 });
