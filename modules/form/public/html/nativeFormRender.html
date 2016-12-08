@@ -40,7 +40,7 @@
              ng-init="formElements = []; section = elt;"></div>
     </form>
 
-    <uib-alert type="danger" ng-show="skipLogicError.length > 0">
+    <uib-alert type="danger" ng-if="skipLogicError.length > 0">
         <span ng-bind="skipLogicError"></span>
     </uib-alert>
 </div>
