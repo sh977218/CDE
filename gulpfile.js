@@ -102,8 +102,8 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep'], function() {
     gulp.src('./ingester/**')
         .pipe(gulp.dest(config.node.buildDir + "/ingester/"));
 
-    //gulp.src('./modules/embedded/**')
-    //    .pipe(gulp.dest(config.node.buildDir + "/modules/embedded"));
+    gulp.src('./modules/form/public/html/lformsRender.html')
+        .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/"));
 
     gulp.src('./modules/form/public/assets/sdc/*')
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/assets/sdc"));
