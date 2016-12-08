@@ -31,31 +31,33 @@ gulp.task('copyNpmDeps', ['npm'], function() {
 });
 
 gulp.task('bower', function() {
-    bower({cwd:'bower_lforms'})
-        .pipe(gulp.dest('./modules/components'));
     return bower()
         .pipe(gulp.dest('./modules/components'));
 });
 
-gulp.task('wiredep', ['bower'], function() {
-    fs.readFile("./bower_lforms/bower.json", "utf-8", function(err, _data) {
-        gulp.src("./modules/form/public/html/lformsRender.html")
-            .pipe(wiredep({
-                bowerJson: JSON.parse(_data),
-                directory: "modules/components"
-                , ignorePath: "../.."
-            }))
-            .pipe(gulp.dest("./modules/form/public/html"));
-    });
-    return gulp.src("./modules/system/views/index.ejs")
+gulp.task('lhc-wiredep', ['bower'], function() {
+    gulp.src("./modules/form/public/html/lformsRender.html")
         .pipe(wiredep({
             directory: "modules/components"
             , ignorePath: "../.."
         }))
+        .pipe(gulp.dest("./modules/form/public/html"));
+});
+
+gulp.task('wiredep', ['bower'], function() {
+    return gulp.src("./modules/system/views/index.ejs")
+        .pipe(wiredep({
+            directory: "modules/components",
+            exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
+                '/components/lforms', '/components/oboe', '/components/traverse',
+                '/components/lodash', '/components/lforms-converter'
+            ],
+            ignorePath: "../.."
+        }))
         .pipe(gulp.dest("./modules/system/views"));
 });
 
-gulp.task('copyCode', ['wiredep'], function() {
+gulp.task('copyCode', ['wiredep', 'lhc-wiredep'], function() {
     ['article', 'cde', 'form', 'processManager', 'system', 'batch', 'embedded', 'board'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
