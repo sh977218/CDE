@@ -325,8 +325,7 @@ exports.removeAttachmentIfNotUsed = function(id) {
 exports.getFile = function(user, id, res) {
     gfs.exist({ _id: id }, function (err, found) {
         if (err || !found) {
-            res.status(404).send("File not found.");
-            return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
+            return res.status(404).send("File not found.");
         }
         gfs.findOne({ _id: id}, function (err, file) {
             res.contentType(file.contentType);
