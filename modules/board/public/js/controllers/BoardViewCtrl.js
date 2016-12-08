@@ -15,13 +15,19 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                 $scope.reload();
             };
 
-            $scope.switchCommentMode = function(){
+            $scope.switchCommentMode = function () {
                 $scope.commentMode = !$scope.commentMode;
             };
 
-            $scope.getEltId = function () {return $scope.board._id;};
-            $scope.getEltName = function () {return $scope.board.name;};
-            $scope.getCtrlType = function () {return "board";};
+            $scope.getEltId = function () {
+                return $scope.board._id;
+            };
+            $scope.getEltName = function () {
+                return $scope.board.name;
+            };
+            $scope.getCtrlType = function () {
+                return "board";
+            };
             $scope.doesUserOwnElt = function () {
                 return userResource.user.siteAdmin || (userResource.user.username === $scope.board.owner.username);
             };
@@ -41,13 +47,13 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                             [
                                 "/system/public/html/accordion/boardAccordionActions.html",
                                 "/system/public/html/accordion/addToQuickBoardActions.html"
-                        ];
+                            ];
                         $scope.totalItems = response.totalItems;
                         $scope.numPages = $scope.totalItems / 20;
                         var pins = $scope.board.pins;
                         var respElts = response.elts;
                         pins.forEach(function (pin) {
-                            var pinId = $scope.board.type==='cde'?pin.deTinyId:pin.formTinyId;
+                            var pinId = $scope.board.type === 'cde' ? pin.deTinyId : pin.formTinyId;
                             respElts.forEach(function (elt) {
                                 if (pinId === elt.tinyId) {
                                     pins.elt = elt;
@@ -57,6 +63,12 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                         });
                         elts.forEach(function (elt) {
                             elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                        });
+                        $scope.board.users.filter(function (u) {
+                            if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
+                            if (u.username === userResource.user.username) {
+                                $scope.boardStatus = u.status.approval;
+                            }
                         });
                         $scope.deferredEltLoaded.resolve();
                     }
@@ -157,10 +169,10 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                                             newClassification: newClassification
                                         }
                                     }).success(function (data, status) {
-                                            $timeout.cancel(_timeout);
-                                            if (status === 200) $scope.addAlert("success", "All Elements classified.");
-                                            else $scope.addAlert("danger", data.error.message);
-                                        }).error(function () {
+                                        $timeout.cancel(_timeout);
+                                        if (status === 200) $scope.addAlert("success", "All Elements classified.");
+                                        else $scope.addAlert("danger", data.error.message);
+                                    }).error(function () {
                                         $scope.addAlert("danger", "Unexpected error. Not Elements were classified! You may try again.");
                                         $timeout.cancel(_timeout);
                                     });
@@ -184,8 +196,100 @@ angular.module('cdeModule').controller('BoardViewCtrl',
                     }
                 });
             };
+            $scope.getReviewers = function () {
+                return $scope.board.users.filter(function (u) {
+                    return u.role === 'reviewer';
+                })
+            };
+            $scope.modifiedSinceReview = function () {
+                var isModifiedSinceReview = false;
+                $scope.board.users.forEach(function (u) {
+                    if (u.username === userResource.user.username &&
+                        u.role === 'reviewer' && u.status.approval === 'approved'
+                        && new Date($scope.board.updatedDate) >= new Date(u.status.reviewedDate)) {
+                        isModifiedSinceReview = true;
+                    }
+                });
+                return isModifiedSinceReview;
+            };
 
+            function isReviewStarted() {
+                return $scope.board.review && $scope.board.review.startDate &&
+                    new Date($scope.board.review.startDate) < new Date();
+            }
+
+            function isReviewEnded() {
+                return $scope.board.review && $scope.board.review.endDate &&
+                    new Date($scope.board.review.endDate) < new Date();
+            }
+
+            $scope.isReviewActive = function () {
+                return $scope.board.review && isReviewStarted() && !isReviewEnded();
+            };
+            $scope.getPendingReviewers = function () {
+                return $scope.getReviewers().filter(function (u) {
+                    return u.status.approval === 'invited';
+                })
+            };
+            $scope.remindReview = function () {
+                $http.post('/board/remindReview', {
+                    boardId: $scope.board._id
+                }).then(function () {
+                    Alert.addAlert('success', "Reminder sent.");
+                });
+            };
+            $scope.canReview = function () {
+                return $scope.isReviewActive() &&
+                    $scope.board.users.filter(function (u) {
+                        return u.role === 'reviewer'
+                            && u.username.toLowerCase() === userResource.user.username.toLowerCase();
+                    }).length > 0;
+            };
+            $scope.shareBoard = function () {
+                $modal.open({
+                    animation: false,
+                    templateUrl: '/board/public/html/shareBoard.html',
+                    controller: 'ShareBoardCtrl',
+                    resolve: {
+                        board: function () {
+                            return $scope.board;
+                        }
+                    }
+                }).result.then(function (users) {
+                    $scope.board.users = users;
+                });
+            };
+            $scope.boardApproval = function (approval) {
+                $http.post('/board/approval', {
+                    boardId: $scope.board._id,
+                    approval: approval
+                }).then(function () {
+                    $scope.boardStatus = approval;
+                    $scope.reload();
+                });
+            };
+            $scope.startReview = function () {
+                $http.post("/board/startReview", {
+                    boardId: $scope.board._id
+                }).success(function () {
+                    $scope.reload();
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            };
+            $scope.endReview = function () {
+                $http.post("/board/endReview", {
+                    boardId: $scope.board._id
+                }).success(function () {
+                    $scope.reload(function () {
+                        Alert.addAlert('success', 'board review started.')
+                    });
+                }).error(function (response) {
+                    Alert.addAlert("danger", response);
+                    $scope.reload();
+                });
+            };
             $scope.reload();
-
-}]);
+        }]);
 

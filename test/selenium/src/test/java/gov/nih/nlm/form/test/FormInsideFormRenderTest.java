@@ -22,7 +22,7 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("Loinc Widget Test Form");
         clickElement(By.id("export"));
-        clickElement(By.id("sdcExport"));
+        clickElement(By.id("sdcHtmlExport"));
         switchTab(1);
         textPresent("PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");

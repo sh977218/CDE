@@ -1,8 +1,8 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', '$window',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, $window) {
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -221,6 +221,10 @@ angular.module('formModule').controller
         }
     };
 
+    $scope.isIe = function () {
+        return [].find === undefined;
+    };
+
     $scope.raiseLimit = function() {
         if ($scope.formCdeIds) {
             if ($scope.nbOfEltsLimit < $scope.formCdeIds.length) {
@@ -233,17 +237,18 @@ angular.module('formModule').controller
         var maxDepth = 8;
         var depth = 0;
         var loopFormElements = function (form, cb) {
+            depth++;
             if (form.formElements) {
-                async.forEach(form.formElements, function (fe, doneOne) { // jshint ignore:line
+                async.forEach(form.formElements, function (fe, doneOne) {
                     if (fe.elementType === 'form') {
-                        depth++;
                         if (depth < maxDepth) {
-                            $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version).then(function (result) {
-                                fe.formElements = result.data.formElements;
-                                loopFormElements(fe, function () {
-                                    depth--;
-                                    doneOne();
-                                });
+                            $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
+                                .then(function (result) {
+                                    fe.formElements = result.data.formElements;
+                                    loopFormElements(fe, function () {
+                                        depth--;
+                                        doneOne();
+                                    });
                             });
                         }
                         else doneOne();

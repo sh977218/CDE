@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class EltIdMaps {
 
-    public static Map<String, String> eltMap = new HashMap<String, String>();
+    public static Map<String, String> eltMap = new HashMap<>();
 
     static {
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
@@ -68,6 +68,7 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
@@ -84,15 +85,21 @@ public class EltIdMaps {
         //Boards
         eltMap.put("Blood Board", "5711497e28329938330f5c4c");
         eltMap.put("Board Export Test", "56bb7e300210aac4271b4335");
+        eltMap.put("Bipolar Disorder", "55f198c8541fd83c2166cbe2");
+        eltMap.put("Chronic Lower-Back Pain", "55f197d6541fd83c2166cbc9");
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
+        eltMap.put("Gliobastroma Multiform", "55f19768541fd83c2166cbc4");
+        eltMap.put("Hypertension", "55f19808541fd83c2166cbcf");
         eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
-        eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");
+        eltMap.put("Plantar Fibromatosis", "55f197e0541fd83c2166cbcc");
+        eltMap.put("Public Board", "5750474d89949d54384ee640");
         eltMap.put("Reg Status Lift", "mJmg93zRW");
         eltMap.put("Smoking Board", "5711498c28329938330f5c4f");
+        eltMap.put("Schizophrenia", "55f198bf541fd83c2166cbdf");
         eltMap.put("Stomach Cancer", "55f19755541fd83c2166cbc1");
         eltMap.put("Test Pinning Board", "5755db5a4dace9c03f784a9f");
         eltMap.put("Unpin Board", "57114b5328329938330f5c7f");

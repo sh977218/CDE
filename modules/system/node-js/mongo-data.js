@@ -27,7 +27,7 @@ var conn = connHelper.establishConnection(config.database.appData),
     });
 
 exports.sessionStore = sessionStore;
-
+exports.Message = Message;
 exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.Org = Org;
@@ -93,6 +93,9 @@ exports.orgNames = function(callback) {
 
 exports.userByName = function(name, callback) {
     User.findOne({'username': new RegExp('^'+name+'$', "i")}).exec(callback);
+};
+exports.usersByName = function (name, callback) {
+    User.find({'username': new RegExp('^' + name + '$', "i")}).exec(callback);
 };
 
 exports.usersByPartialName = function(name, callback) {
@@ -248,7 +251,7 @@ exports.addAttachment = function(file, user, comment, elt, cb) {
     var attachment = {
         fileid: null
         , filename: file.originalname
-        , filetype: file.type
+        , filetype: file.mimetype
         , uploadDate: Date.now()
         , comment: comment
         , filesize: file.size
@@ -322,10 +325,10 @@ exports.removeAttachmentIfNotUsed = function(id) {
 exports.getFile = function(user, id, res) {
     gfs.exist({ _id: id }, function (err, found) {
         if (err || !found) {
-            res.status(404).send("File not found.");
-            return logging.errorLogger.error("File not found.", {origin: "system.mongo.getFile", stack: new Error().stack, details: "fileid "+id});
+            return res.status(404).send("File not found.");
         }
         gfs.findOne({ _id: id}, function (err, file) {
+            res.contentType(file.contentType);
             if (file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer")) gfs.createReadStream({ _id: id }).pipe(res);
             else res.status(403).send("This file has not been approved yet.");
         });
