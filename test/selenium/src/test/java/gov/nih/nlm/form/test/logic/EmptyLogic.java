@@ -27,16 +27,16 @@ public class EmptyLogic extends NlmCdeBaseTest {
 
         // Numbers
         textPresent("Pulmonary function test not done other text");
-        findElement(By.xpath("//div[@id='Head injury prior number_0']//input")).sendKeys("0");
+        findElement(By.xpath("//div[@id='Head injury prior number_4']//input")).sendKeys("0");
         textNotPresent("Pulmonary function test not done other text");
-        findElement(By.xpath("//div[@id='Head injury prior number_0']//input")).clear();
+        findElement(By.xpath("//div[@id='Head injury prior number_4']//input")).clear();
         textPresent("Pulmonary function test not done other text");
 
         // Text
         textPresent("Perianal problem other text");
-        findElement(By.xpath("//div[@id='Noncompliant Reason Text_0']//input")).sendKeys("abc");
+        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).sendKeys("abc");
         textNotPresent("Perianal problem other text");
-        findElement(By.xpath("//div[@id='Noncompliant Reason Text_0']//input")).clear();
+        findElement(By.xpath("//div[@id='Noncompliant Reason Text_6']//input")).clear();
         textPresent("Perianal problem other text");
 
     }
