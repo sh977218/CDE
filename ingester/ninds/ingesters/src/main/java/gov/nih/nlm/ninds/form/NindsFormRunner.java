@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,8 +41,8 @@ public class NindsFormRunner {
 
 
         int nbOfThread = 1;
-        int startingPage = 2;
-        int endingPages = 2;
+        int startingPage = 4;
+        int endingPages = 4;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {
