@@ -1,8 +1,7 @@
 var cdesvc = require('./cdesvc')
     , cdediff = require('./cdediff')
-    , usersvc = require('./../../system/node-js/usersvc')
+    , boardsvc = require('./../../board/node-js/boardsvc')
     , mongo_cde = require('./mongo-cde')
-    , mongo_board = require('../../board/node-js/mongo-board')
     , mongo_data_system = require('../../system/node-js/mongo-data')
     , classificationNode_system = require('../../system/node-js/classificationNode')
     , classificationNode = require('./classificationNode')
@@ -141,28 +140,6 @@ exports.init = function (app, daoManager) {
         }
     });
 
-    app.delete('/pincde/:deTinyId/:boardId', function (req, res) {
-        if (req.isAuthenticated()) {
-            usersvc.removePinFromBoard(req, res);
-        } else {
-            res.send("Please login first.");
-        }
-    });
-
-    app.put('/pin/cde/:tinyId/:boardId', function (req, res) {
-        if (req.isAuthenticated()) {
-            usersvc.pinCdeToBoard(req, res);
-        } else {
-            res.send("Please login first.");
-        }
-    });
-    app.put('/pin/form/:tinyId/:boardId', function (req, res) {
-        if (req.isAuthenticated()) {
-            usersvc.pinFormToBoard(req, res);
-        } else {
-            res.send("Please login first.");
-        }
-    });
 
     app.get('/autocomplete/org/:name', exportShared.nocacheMiddleware, function (req, res) {
         mongo_cde.org_autocomplete(req.params.name, function (result) {
@@ -365,7 +342,7 @@ exports.init = function (app, daoManager) {
                 res.status(403).send("Maximum number excesses.");
             } else {
                 elastic_system.elasticsearch(query, 'cde', function (err, cdes) {
-                    usersvc.pinAllToBoard(req, cdes.cdes, res);
+                    boardsvc.pinAllToBoard(req, cdes.cdes, res);
                 });
             }
         } else {

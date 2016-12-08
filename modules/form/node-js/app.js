@@ -13,7 +13,7 @@ var express = require('express')
     , elastic_system = require('../../system/node-js/elastic')
     , sharedElastic = require('../../system/node-js/elastic.js')
     , exportShared = require('../../system/shared/exportShared')
-    , usersvc = require('../../system/node-js/usersvc')
+    , boardsvc = require('../../board/node-js/boardsvc')
     , usersrvc = require('../../system/node-js/usersrvc')
     ;
 
@@ -127,7 +127,7 @@ exports.init = function (app, daoManager) {
                     var fakeCdes = allTinyIds.map(function (_tinyId) {
                         return {tinyId: _tinyId};
                     });
-                    usersvc.pinAllToBoard(req, fakeCdes, res);
+                    boardsvc.pinAllToBoard(req, fakeCdes, res);
                 } else {
                     res.status(404).end();
                 }
