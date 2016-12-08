@@ -49,6 +49,7 @@ public class MyForm {
         diseaseNameSet.add("Spinal Muscular Atrophy");
         diseaseNameSet.add("Stroke");
         diseaseNameSet.add("Traumatic Brain Injury");
+        diseaseNameSet.add("Chiari I Malformation");
 
         diseaseNameMap.put("Amyotrophic Lateral Sclerosis", "Amyotrophic Lateral Sclerosis");
         diseaseNameMap.put("Congenital Muscular Dystrophy", "Congenital Muscular Dystrophy");
@@ -69,6 +70,7 @@ public class MyForm {
         diseaseNameMap.put("Spinal Muscular Atrophy", "Spinal Muscular Atrophy");
         diseaseNameMap.put("Stroke", "Stroke");
         diseaseNameMap.put("Traumatic Brain Injury", "Traumatic Brain Injury");
+        diseaseNameMap.put("Chiari I Malformation", "Chiari I Malformation");
     }
 
     public MyForm() {
