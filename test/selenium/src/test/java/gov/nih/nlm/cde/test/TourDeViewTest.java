@@ -29,7 +29,6 @@ public class TourDeViewTest extends TourTest {
         getNext("This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.");
         getNext("CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.");
         getNext("If a the CDE is used in a Form, it will be displayed here.");
-        getNext("This section supports mapping of a CDE to external resources such as C-CDA document templates.");
         getNext("If a CDE is used in a public board, the board will be shown in this section.");
         getNext("If a file is attached to a CDE, it can be view or downloaded here.");
         getNext("Derivation Rules are used to connect CDEs together, for example, in the form of a score.");

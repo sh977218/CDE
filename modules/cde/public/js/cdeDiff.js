@@ -5,7 +5,6 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             {fieldName: "Naming", path: ["naming"]}
             , {fieldName: "Properties", path: ["properties"]}
             , {fieldName: "Identifiers", path: ["ids"]}
-            , {fieldName: "Mapping Specifications", path: ["mappingSpecifications"]}
             , {fieldName: "Attachments", path: ["attachments"]}
             , {fieldName: "Version", path: ["version"]}
         ]
@@ -58,9 +57,6 @@ angular.module('cdeModule').factory('CdeDiffPopulate', function() {
             , {fieldName: "Attachments - Filename", path: ["attachments", -1, "filename"]}
             , {fieldName: "Attachments - Upload Date", path: ["attachments", -1, "uploadDate"]}
             , {fieldName: "Attachments - File Size", path: ["attachments", -1, "filesize"]} 
-            , {fieldName: "Mapping Specifications - Content", path: ["mappingSpecifications", -1, "content"]}
-            , {fieldName: "Mapping Specifications - Type", path: ["mappingSpecifications", -1, "spec_type"]}
-            , {fieldName: "Mapping Specifications - Script", path: ["mappingSpecifications", -1, "script"]}           
         ]
         , 4: [
             {fieldName: "Permissible Values", path: ["valueDomain", "permissibleValues", -1, "permissibleValue"]}
