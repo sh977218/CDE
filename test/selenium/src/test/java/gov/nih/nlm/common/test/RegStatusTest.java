@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -52,7 +53,11 @@ public abstract class RegStatusTest extends CommonTest {
         closeAlert();
         setLowStatusesVisible();
         waitForESUpdate();
-        goToEltByName(eltName);
+        try {
+            goToEltByName(eltName);
+        } catch (TimeoutException e) {
+            goToEltByName(eltName);
+        }
         textPresent("Recorded");
         showAllTabs();
         clickElement(By.id("status_tab"));
