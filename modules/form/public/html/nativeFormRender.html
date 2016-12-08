@@ -1,26 +1,30 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
     <div style="margin: 8px 0;">
-        <div style="display: inline-block">
-            <a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile:</a>
-            <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
-                    id="select_display_profile"></select>
-        </div>
+        <span class="form-inline">
+            <div style="display: inline-block" class="form-group">
+                <label for="select_display_profile"><a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile: </a></label>
+                <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
+                        id="select_display_profile" class="form-control"></select>
+            </div>
+        </span>
 
-        <button class="btn btn-sm btn-default" id="button_lforms"
-                data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
-                onclick="window.open(this.getAttribute('data-url'),'_blank')">
-            Printable form via LForms
-        </button>
+        <span class="pull-right">
+            <button class="btn btn-default" id="button_lforms"
+                    data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                Render with LForms
+            </button>
 
-        <button class="btn btn-sm btn-default" id="button_sdc"
-                data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                onclick="window.open(this.getAttribute('data-url'),'_blank')">
-            Printable form via SDC
-        </button>
+            <button class="btn btn-default" id="button_sdc"
+                    data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                Render with SDC Profile
+            </button>
 
-        (Rendering provided by
-        <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
-        <a href="https://datascience.nih.gov/bd2k/about/org/SDC" target="_blank">SDC</a>)
+            (Provided by
+            <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
+            <a href="http://wiki.siframework.org/Structured+Data+Capture+Initiative" target="_blank">ONC</a>)
+        </span>
     </div>
 
     <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
