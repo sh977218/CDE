@@ -23,7 +23,6 @@ public class QuestionDefaultValue extends BaseFormTest {
         saveForm();
 
         goToFormByName("History Data Source and Reliability");
-        clickElement(By.linkText("native"));
 
         // this find ensures option Brother is selected.
         findElement(By.xpath("//div[div/div/label[text()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))

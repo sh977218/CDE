@@ -377,23 +377,6 @@ exports.init = function (app, daoManager) {
         adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
     });
 
-    app.get('/cde/mappingSpecifications/types', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.getDistinct("mappingSpecifications.spec_type", function (err, types) {
-            if (err) res.status(500).send("Unexpected Error");
-            else {
-                res.send(types);
-            }
-        });
-    });
-
-    app.get('/cde/mappingSpecifications/contents', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_cde.getDistinct("mappingSpecifications.content", function (err, contents) {
-            if (err) res.status(500).send("Unexpected Error");
-            else {
-                res.send(contents);
-            }
-        });
-    });
 
     app.post('/getCdeAuditLog', function (req, res) {
         if (req.isAuthenticated() && req.user.siteAdmin) {

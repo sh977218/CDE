@@ -16,7 +16,6 @@ public class RenderRequiredFieldsTest extends NlmCdeBaseTest {
     @Test
     public void requiredFields() {
         goToFormByName("Required Field Form");
-        clickElement(By.linkText("native"));
 
         Assert.assertFalse(isRequired(
                 findElement(By.xpath("(//div[@id='formRenderSection_New Section']//input)[1]"))));
