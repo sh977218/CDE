@@ -271,7 +271,9 @@ angular.module('systemModule').controller('ListCtrl',
             }
 
             $scope[type + 's'].forEach(function (elt) {
-                elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                OrgHelpers.deferred.promise.then(function() {
+                    elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                });
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope[type + 's'], "list");
