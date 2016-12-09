@@ -1,47 +1,11 @@
-<div ng-switch="elt.noRenderAllowed">
-    <div ng-switch-when="true">
-        Rendering has been disabled for this form.
-    </div>
-    <div class="{{rightPanel}}" ng-switch-default="false">
-        <div ng-if="formPreviewRendered">
+<div ng-if="elt.noRenderAllowed" class="centerText mt20">
+    Rendering has been disabled for this form.
+</div>
+<div ng-if="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+     class="centerText mt20">
+    This form has no content. There is nothing to preview.
+</div>
 
-            <div ng-if="elt.formElements.length > 0" ng-switch="renderWith">
-                <div ng-if="renderWith !== 'native'" ng-switch="elt.unsaved">
-                    <div ng-switch-when="true">
-                        <h1 class="pt60 pb40 text-center">save form to update rendering.</h1>
-                    </div>
-                    <div ng-switch-default>
-                        <div>Rendering done via
-                            <a href="https://lhncbc.nlm.nih.gov/project/lforms">LForms</a> by
-                            <a href="https://lhncbc.nlm.nih.gov/">LHNCBC</a>.
-                        </div>
-                        <div ng-if="formPreviewLoading">
-                            <h1 class="pt60 pb40 text-center"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
-                        <lforms lf-data="lfData"
-                                lf-options='lfOptions'></lforms>
-                        <small>You may also preview this form in
-                            <a href="" ng-click="setRenderFormat('native')" id="nativeFormRenderLink">native</a>
-                            format or in <a ng-href="/form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">SDC
-                                format.</a>
-                        </small>
-                    </div>
-                </div>
-                <div ng-if="renderWith === 'native'">
-                    <div ng-include="'/form/public/html/nativeFormRender.html'"></div>
-                    <small>You may also preview this form with <a href=""
-                                                                  ng-click="setRenderFormat('lforms')">LForms</a>.
-                    </small>
-                </div>
-            </div>
-            <div ng-if="!(elt.formElements.length > 0)" id="warningNoCde">
-                This form has no content. There is nothing to preview.
-            </div>
-        </div>
-
-        <div ng-if="!formPreviewRendered" style="text-align: center; margin-top: 20px">
-            This form is large and is not automatically displayed. <br><br>
-            <button class="btn btn-default" ng-click="renderPreview()" id="renderPreviewButton">Preview this Form
-            </button>
-        </div>
-    </div>
+<div ng-if="!elt.noRenderAllowed && elt.formElements.length > 0"
+     ng-include="'/form/public/html/nativeFormRender.html'">
 </div>
