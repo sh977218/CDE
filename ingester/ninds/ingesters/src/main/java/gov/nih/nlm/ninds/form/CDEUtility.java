@@ -88,7 +88,7 @@ public class CDEUtility {
 
         List<WebElement> trs = driver.findElements(By.xpath(selector));
 
-        List<WebElement> headerTds = trs.get(1).findElements(By.xpath("/td"));
+        List<WebElement> headerTds = trs.get(1).findElements(By.xpath("td"));
         List<String> headers = new ArrayList();
         for (WebElement hTd : headerTds) {
             headers.add(hTd.getText().replace("\"", " ").trim());

@@ -18,9 +18,9 @@ public class NindsFormRunner {
 
         Map<String, String> diseaseMap = Consts.diseaseMap;
 
-        int nbOfThread = 2;
+        int nbOfThread = 3;
         int startingPage = 1;
-        int endingPages = 2;
+        int endingPages = 3;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {
