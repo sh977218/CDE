@@ -9,7 +9,6 @@ public class EmptyLogic extends NlmCdeBaseTest {
     @Test
     public void emptyLogic() {
         goToFormByName("Empty Logic");
-        clickElement(By.id("nativeFormRenderLink"));
 
         // Dates
         textPresent("Data unknown indicator");
