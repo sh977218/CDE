@@ -9,9 +9,6 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     @Test
     public void nativeFormRenderTest() {
         goToFormByName("Loinc Widget Test Form");
-        textPresent("This form is large and is not automatically displayed.");
-        clickElement(By.id("renderPreviewButton"));
-        clickElement(By.id("nativeFormRenderLink"));
         textPresent("Outside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");
@@ -32,11 +29,12 @@ public class FormInsideFormRenderTest extends NlmCdeBaseTest {
     @Test
     public void lFormRenderTest() {
         goToFormByName("Loinc Widget Test Form");
-        textPresent("This form is large and is not automatically displayed.");
-        clickElement(By.id("renderPreviewButton"));
+        clickElement(By.id("button_lforms"));
+        switchTab(1);
         textPresent("PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("section contains form");
         textPresent("Are you able to get on and off the toilet?");
+        switchTabAndClose(0);
     }
 
     @Test
