@@ -47,5 +47,14 @@ public class CreateFormBoard extends BoardTest {
         clickElement(By.id("classification_tab"));
         textPresent("Classify Board");
 
+        goToBoard(boardName);
+        textPresent(formName1);
+        textPresent(formName2);
+        textPresent(formName3);
+
+        clickElement(By.id("unpin_1"));
+        textPresent("Unpinned.");
+        closeAlert();
+        textNotPresent(formName2);
     }
 }

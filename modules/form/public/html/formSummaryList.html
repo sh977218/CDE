@@ -1,4 +1,4 @@
-<div ng-repeat="elt in forms track by elt.tinyId">
+<div ng-repeat="(eltIndex, elt) in forms track by elt.tinyId">
 
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
