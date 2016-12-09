@@ -13,8 +13,7 @@ public class SpringMongoConfig {
     public
     @Bean
     MongoDbFactory mongoDbFactory() throws Exception {
-        String mongoUri = "mongodb://miguser:password@localhost:27017/migration";
-        return new SimpleMongoDbFactory(new MongoClientURI(mongoUri));
+        return new SimpleMongoDbFactory(new MongoClientURI(Consts.MONGO_URL));
     }
 
     public

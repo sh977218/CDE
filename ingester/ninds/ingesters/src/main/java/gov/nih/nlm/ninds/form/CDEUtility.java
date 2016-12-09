@@ -9,9 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CDEUtility {
     public CDEUtility() {
@@ -19,17 +17,17 @@ public class CDEUtility {
 
     public void checkDataQuality(MongoOperations mongoOperation, String url) {
         List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
-        if (dataTypeList.size() > 4) {
+        if (dataTypeList.size() > Consts.maxDatatypeSize) {
             System.out.println("data type is not good. size: " + dataTypeList.size() + " url:" + url);
             System.exit(1);
         }
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
-        if (inputRestrictionsList.size() > 3) {
+        if (inputRestrictionsList.size() > Consts.maxInputRestrictionsSize) {
             System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
             System.exit(1);
         }
         List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
-        if (distinctDiseaseNameList.size() > 19) {
+        if (distinctDiseaseNameList.size() > Consts.diseaseNum) {
             System.out.println("distinct diseaseName is not good. size: " + distinctDiseaseNameList.size() + " url:" + url);
             System.exit(1);
         }
@@ -54,7 +52,6 @@ public class CDEUtility {
     }
 
     public String cleanFormName(String s) {
-        //.replace(" - Paper version", " Paper version")
         String result = s.replace("\"", " ").replace("©", "").replace("™", "").trim();
         String[] badStrings = {
                 "For additional information please visit NINDS-Coriell",
@@ -86,13 +83,6 @@ public class CDEUtility {
         return result;
     }
 
-    Map<String, String> headerPropertyMap = new HashMap<String, String>();
-    {
-        headerPropertyMap.put("CDE ID", "cdeId");
-        headerPropertyMap.put("CDE Name", "cdeName");
-    }
-
-
     public void getCdesList(WebDriver driver, MyForm form) {
         String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
 
@@ -108,14 +98,13 @@ public class CDEUtility {
             Cde cde = new Cde();
             WebElement tr = trs.get(i);
             List<WebElement> tds = tr.findElements(By.cssSelector("td"));
-            for (int j = 1; j < headers.size() + 1; j++) {
+            for (int j = 0; j < headers.size(); j++) {
                 String text = tds.get(j).getText().replace("\"", " ").trim();
                 try {
-                    Field field = Cde.class.getDeclaredField(headers.get(j -1));
-                    field.set(this, text);
-                } catch (NoSuchFieldException e) {
-                    // do something here.
-                } catch (IllegalAccessException e) {
+                    String cdeField = Consts.fieldPropertyMap.get(headers.get(j));
+                    Field field = cde.getClass().getDeclaredField(cdeField);
+                    field.set(cde, text);
+                } catch (Exception e) {
                     // do something here.
                 }
             }
