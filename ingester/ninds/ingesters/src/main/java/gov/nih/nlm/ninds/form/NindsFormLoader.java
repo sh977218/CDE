@@ -122,9 +122,9 @@ public class NindsFormLoader implements Runnable {
                             form.setFormId(id.replace("NOC-", ""));
                         else
                             form.setFormId(downloadLink.split("CrfId=")[1]);
-                        List<WebElement> copyRightClass = td.findElements(By.className("copyright"));
-                        if (copyRightClass.size() > 0) {
-                            form.setCopyRight(true);
+                        List<WebElement> copyrightClass = td.findElements(By.className("copyright"));
+                        if (copyrightClass.size() > 0) {
+                            form.setCopyright(true);
                         }
                     }
                     form.setCrfModuleGuideline(cdeUtility.cleanFormName(text));
@@ -155,7 +155,7 @@ public class NindsFormLoader implements Runnable {
             Query searchDuplicatedFormQuery = new Query(Criteria.where("formId").is(form.getFormId())
                     .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
                     .and("description").is(form.getDescription())
-                    .and("copyRight").is(form.isCopyRight())
+                    .and("copyright").is(form.isCopyright())
                     .and("downloadLink").is(form.getDownloadLink())
                     .and("versionNum").is(form.getVersionNum())
                     .and("versionDate").is(form.getVersionDate())

@@ -76,9 +76,9 @@ public class FindMissingForms implements Runnable {
             form.setUrl(url);
             form.setRow(i);
             List<WebElement> aList = we.findElements(By.xpath("/a"));
-            List<WebElement> copyRightList = we.findElements(By.className("copyright"));
-            if (copyRightList.size() > 0) {
-                form.setCopyRight(true);
+            List<WebElement> copyrightList = we.findElements(By.className("copyright"));
+            if (copyrightList.size() > 0) {
+                form.setCopyright(true);
             }
             String formId, downloadLink = "";
             if (aList.size() > 0) {
