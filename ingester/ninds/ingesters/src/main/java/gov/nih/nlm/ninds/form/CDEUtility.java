@@ -7,8 +7,11 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CDEUtility {
     public CDEUtility() {
@@ -83,7 +86,44 @@ public class CDEUtility {
         return result;
     }
 
+    Map<String, String> headerPropertyMap = new HashMap<String, String>();
+    {
+        headerPropertyMap.put("CDE ID", "cdeId");
+        headerPropertyMap.put("CDE Name", "cdeName");
+    }
+
+
     public void getCdesList(WebDriver driver, MyForm form) {
+        String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
+
+        List<WebElement> trs = driver.findElements(By.xpath(selector));
+
+        List<WebElement> headerTds = trs.get(1).findElements(By.cssSelector("td"));
+        List<String> headers = new ArrayList();
+        for (WebElement hTd : headerTds) {
+            headers.add(hTd.getText().replace("\"", " ").trim());
+        }
+
+        for (int i = 2; i < trs.size(); i++) {
+            Cde cde = new Cde();
+            WebElement tr = trs.get(i);
+            List<WebElement> tds = tr.findElements(By.cssSelector("td"));
+            for (int j = 1; j < headers.size() + 1; j++) {
+                String text = tds.get(j).getText().replace("\"", " ").trim();
+                try {
+                    Field field = Cde.class.getDeclaredField(headers.get(j -1));
+                    field.set(this, text);
+                } catch (NoSuchFieldException e) {
+                    // do something here.
+                } catch (IllegalAccessException e) {
+                    // do something here.
+                }
+            }
+            form.getCdes().add(cde);
+        }
+    }
+
+    public void getCdesList2(WebDriver driver, MyForm form) {
         String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
         List<WebElement> trs = driver.findElements(By.xpath(selector));
         for (int i = 2; i < trs.size(); i++) {
