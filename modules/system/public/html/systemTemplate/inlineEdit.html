@@ -1,7 +1,9 @@
 <span>
     <span ng-hide="editMode">
         <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
-           ng-click="edit();"></i> {{model | placeHoldEmpty}}
+           ng-click="edit();"></i>
+        <a ng-if="linkSource" ng-href="{{linkSource}}" target="_blank">{{model | placeHoldEmpty}}</a>
+        <span ng-if="!linkSource">{{model | placeHoldEmpty}}</span>
     </span>
     <form name="inlineForm" ng-show="editMode">
         <input name="inlineInput" type="{{inputType}}" autocomplete="off" ng-model="value"

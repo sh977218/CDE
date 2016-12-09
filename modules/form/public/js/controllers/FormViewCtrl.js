@@ -17,8 +17,6 @@ angular.module('formModule').controller
     $scope.deferredEltLoaded = $q.defer();
     $scope.isFormValid = true;
 
-    var converter = new LFormsConverter(); // jshint ignore:line
-
     $scope.pinModal = PinModal.new('cde');
 
     $scope.getEltId = function () {return $scope.elt.tinyId;};
@@ -36,10 +34,6 @@ angular.module('formModule').controller
 
     $scope.lfOptions = {
         showCodingInstruction: true
-    };
-
-    $scope.setRenderFormat = function (format) {
-        $scope.renderWith = format;
     };
 
     function setCurrentTab(thisTab) {
@@ -157,8 +151,8 @@ angular.module('formModule').controller
         history: {
             heading: "History",
             includes: ['/form/public/html/formHistory.html'],
-            select: function () {
-                setCurrentTab();
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
                 $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,
@@ -202,24 +196,6 @@ angular.module('formModule').controller
     if (route._id) query = {formId: route._id, type: '_id'};
     if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
-
-    $scope.formPreviewRendered = false;
-    $scope.renderPreview = function () {
-        $scope.formPreviewRendered = true;
-        $scope.formPreviewLoading = true;
-        if ($scope.formCdeIds.length > 0) {
-            converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
-                    $timeout(function () {
-                        $scope.lfData = new LFormsData(lfData); //jshint ignore:line
-                        $scope.$apply($scope.lfData);
-                        $scope.formPreviewLoading = false;
-                    }, 0);
-                },
-                function (err) {
-                    $scope.error = err;
-                });
-        }
-    };
 
     $scope.isIe = function () {
         return [].find === undefined;
@@ -286,7 +262,6 @@ angular.module('formModule').controller
                 isAllowedModel.setDisplayStatusWarning($scope);
                 areDerivationRulesSatisfied();
                 //setDefaultValues();
-                if ($scope.formCdeIds.length < 21) $scope.renderPreview();
                 $scope.deferredEltLoaded.resolve();
                 if (route.tab) {
                     $scope.tabs.more.select();
@@ -382,7 +357,7 @@ angular.module('formModule').controller
         } else {
             var filteredQuestion = filteredQuestions[0];
             if (filteredQuestion.question.datatype === 'Value List') {
-                if (filteredQuestion.question.answers.map(function (a) {
+                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
                         return questionSanitizer(a.permissibleValue);
                     }).indexOf(tokens[2]) < 0) {
                     return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
@@ -400,7 +375,7 @@ angular.module('formModule').controller
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
-                if ( new Date(tokens[2]).toString() === 'Invalid Date')
+                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
                     return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '".';
             }
         }
@@ -414,7 +389,7 @@ angular.module('formModule').controller
             skipLogic.condition = preSkipLogicSelect + $item;
         }
         $timeout(function() {
-            var logic = skipLogic.condition;
+            var logic = skipLogic.condition.trim();
             var tokens = SkipLogicUtil.tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
@@ -422,6 +397,7 @@ angular.module('formModule').controller
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
             if (!logic || logic.length === 0) {
+                $scope.stageElt($scope.elt);
                 return;
             }
             if ((tokens.length - 3) % 4 !== 0) {

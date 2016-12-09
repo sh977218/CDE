@@ -60,6 +60,7 @@ public class EltIdMaps {
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
 
         // Forms
+        eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
@@ -88,6 +89,7 @@ public class EltIdMaps {
         eltMap.put("Bipolar Disorder", "55f198c8541fd83c2166cbe2");
         eltMap.put("Chronic Lower-Back Pain", "55f197d6541fd83c2166cbc9");
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
+        eltMap.put("Cerebral Palsy", "55f1974a541fd83c2166cbbe");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
         eltMap.put("Gliobastroma Multiform", "55f19768541fd83c2166cbc4");
