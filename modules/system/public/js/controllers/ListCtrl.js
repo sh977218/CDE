@@ -238,8 +238,7 @@ angular.module('systemModule').controller('ListCtrl',
 
         Elastic.generalSearchQuery(settings, type, function (err, result, corrected) {
             if (corrected && $scope.searchSettings.q) $scope.currentSearchTerm = $scope.searchSettings.q.replace(/[^\w\s]/gi, '');
-            //
-            $window.scrollTo(0, 0);
+            //$window.scrollTo(0, 0);
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
