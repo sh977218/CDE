@@ -134,6 +134,8 @@ exports.formJson = {
         , sectionsAsMatrix: {type: Boolean}
         , displayValues: {type: Boolean}
         , context: {contextName: String}
+        , displayInstructions: {type: Boolean}
+        , displayNumbering: {type: Boolean}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
