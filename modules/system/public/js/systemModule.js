@@ -331,7 +331,7 @@ angular.module('systemModule').factory('SkipLogicUtil', [function () {
         tokens.push(t);
         str = str.substring(t.length).trim();
 
-        res = str.match(/^"([^"]+)"/);
+        res = str.match(/^"([^"]*)"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
