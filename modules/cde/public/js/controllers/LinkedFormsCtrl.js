@@ -8,6 +8,11 @@ angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResour
         $scope.reload("form");
     });
 
+    $scope.includeInAccordion = [
+        "/cde/public/html/accordion/pinAccordionActions.html",
+        "/system/public/html/accordion/addToQuickBoardActions.html"
+    ];
+
     $scope.getFormText = function() {
         if (!$scope.forms || $scope.forms.length === 0) {return "There are no forms that use this CDE.";}
         else if ($scope.forms.length === 1) {return "There is 1 form that uses this CDE.";}

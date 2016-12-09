@@ -31,6 +31,8 @@ public class CreateFormBoard extends BoardTest {
         clickElement(By.id("form_gridView"));
         textPresent("Other Names");
         textPresent("Registration Status");
+        
+        switchTabAndClose(0);
 
         goToFormByName(formName1);
         showAllTabs();
