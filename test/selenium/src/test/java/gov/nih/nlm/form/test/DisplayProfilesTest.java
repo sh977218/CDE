@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class DisplayProfilesTest extends BaseFormTest {
 
-    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues) {
+    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering) {
         findElement(By.id("addDisplayProfile")).click();
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
@@ -15,6 +15,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
         if (matrix) clickElement(By.id("displayAsMatrix_" + index));
         if (displayValues) clickElement(By.id("displayValues_" + index));
+        if (instructions) clickElement(By.id("displayInstructions_" + index));
+        if (numbering) clickElement(By.id("displayNumbering_" + index));
     }
 
     @Test(priority = -1)
@@ -22,18 +24,14 @@ public class DisplayProfilesTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
-        textNotPresent("Display Profile:");
-        showAllTabs();
-        clickElement(By.id("displayProfiles_tab"));
 
-        createDisplayProfile(0, "Matrix and Values", true, true);
-        createDisplayProfile(1, "Matrix No Values", true, false);
-        createDisplayProfile(2, "No Matrix No Values", false, false);
-
+        clickElement(By.partialLinkText("Display Profile:"));
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true);
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false);
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false);
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
-        clickElement(By.linkText("native"));
         textPresent("In the past 7 days");
         textPresent("Display Profile:");
 
@@ -70,7 +68,7 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         saveForm();
         clickElement(By.linkText("General Details"));
-        textNotPresent("Display Profile:");
+        textPresent("Display Profile:");
     }
 
 }

@@ -17,8 +17,6 @@ angular.module('formModule').controller
     $scope.deferredEltLoaded = $q.defer();
     $scope.isFormValid = true;
 
-    var converter = new LFormsConverter(); // jshint ignore:line
-
     $scope.pinModal = PinModal.new('cde');
 
     $scope.getEltId = function () {return $scope.elt.tinyId;};
@@ -36,10 +34,6 @@ angular.module('formModule').controller
 
     $scope.lfOptions = {
         showCodingInstruction: true
-    };
-
-    $scope.setRenderFormat = function (format) {
-        $scope.renderWith = format;
     };
 
     function setCurrentTab(thisTab) {
@@ -157,8 +151,8 @@ angular.module('formModule').controller
         history: {
             heading: "History",
             includes: ['/form/public/html/formHistory.html'],
-            select: function () {
-                setCurrentTab();
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
                 $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
             },
             show: false,
@@ -202,24 +196,6 @@ angular.module('formModule').controller
     if (route._id) query = {formId: route._id, type: '_id'};
     if (route.formId) query = {formId: route.formId, type: '_id'};
     if (route.tinyId) query = {formId: route.tinyId, type: 'tinyId'};
-
-    $scope.formPreviewRendered = false;
-    $scope.renderPreview = function () {
-        $scope.formPreviewRendered = true;
-        $scope.formPreviewLoading = true;
-        if ($scope.formCdeIds.length > 0) {
-            converter.convert('wholeForm/' + $scope.elt.tinyId, function (lfData) {
-                    $timeout(function () {
-                        $scope.lfData = new LFormsData(lfData); //jshint ignore:line
-                        $scope.$apply($scope.lfData);
-                        $scope.formPreviewLoading = false;
-                    }, 0);
-                },
-                function (err) {
-                    $scope.error = err;
-                });
-        }
-    };
 
     $scope.isIe = function () {
         return [].find === undefined;
@@ -286,7 +262,6 @@ angular.module('formModule').controller
                 isAllowedModel.setDisplayStatusWarning($scope);
                 areDerivationRulesSatisfied();
                 //setDefaultValues();
-                if ($scope.formCdeIds.length < 21) $scope.renderPreview();
                 $scope.deferredEltLoaded.resolve();
                 if (route.tab) {
                     $scope.tabs.more.select();

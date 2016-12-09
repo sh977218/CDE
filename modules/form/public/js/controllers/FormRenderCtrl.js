@@ -166,11 +166,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 else return false;
             } else if (realAnswerObj.question.datatype === 'Value List' ) {
                 if (operator === '=') {
-                    if (typeof realAnswer === 'object') {
+                    if (Array.isArray(realAnswer))
                         return realAnswer.indexOf(expectedAnswer) > -1;
-                    } else {
+                    else
                         return realAnswer === expectedAnswer;
-                    }
                 }
                 else return false;
             } else {
@@ -206,9 +205,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         return result;
     };
 
-    $scope.areValuesStackable = function (values) {
-        return !values.some(function (e) { return e.valueMeaningName.length > 50 });
-    }
+    $scope.isSectionDisplayed = function (section) {
+        return section.label || section.formElements.some(function (elem) {return elem.elementType === "question";});
+    };
 
 }]);
 
