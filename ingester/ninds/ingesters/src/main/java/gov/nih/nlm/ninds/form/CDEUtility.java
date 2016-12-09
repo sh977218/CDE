@@ -97,7 +97,7 @@ public class CDEUtility {
         for (int i = 2; i < trs.size(); i++) {
             Cde cde = new Cde();
             WebElement tr = trs.get(i);
-            List<WebElement> tds = tr.findElements(By.cssSelector("td"));
+            List<WebElement> tds = tr.findElements(By.xpath("td"));
             for (int j = 0; j < headers.size(); j++) {
                 String text = tds.get(j).getText().replace("\"", " ").trim();
                 try {

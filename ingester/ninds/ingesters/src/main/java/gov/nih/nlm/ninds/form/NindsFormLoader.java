@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -16,13 +18,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NindsFormLoader implements Runnable {
     MongoOperations mongoOperation;
-    Map<String, String> diseaseMap = new HashMap<String, String>();
+    Map<String, String> diseaseMap = Consts.diseaseMap;
     String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
     WebDriver driver;
     WebDriver classifDriver;
@@ -31,13 +32,13 @@ public class NindsFormLoader implements Runnable {
     int pageEnd;
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
 
-    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) throws IOException, AWTException {
+    public NindsFormLoader(int pStart, int pEnd) throws IOException, AWTException {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        this.pageStart = ps;
-        this.pageEnd = pe;
-        this.mongoOperation = mongoOperation;
-        this.diseaseMap = diseaseMap;
+        this.pageStart = pStart;
+        this.pageEnd = pEnd;
+        this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
     }
@@ -45,7 +46,9 @@ public class NindsFormLoader implements Runnable {
     @Override
     public void run() {
         this.driver = new ChromeDriver();
+        this.driver.manage().window().maximize();
         this.classifDriver = new ChromeDriver();
+        this.classifDriver.manage().window().maximize();
         this.wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(pageStart);
@@ -102,6 +105,7 @@ public class NindsFormLoader implements Runnable {
         System.out.println("running page from " + pageStart + " to " + pageEnd);
         String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 28";
         textPresent(textToBePresent);
+        hangon(5);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
         for (int i = 1; i < trs.size(); i++) {
             List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));

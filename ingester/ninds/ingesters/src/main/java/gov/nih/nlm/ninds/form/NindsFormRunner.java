@@ -1,30 +1,20 @@
 package gov.nih.nlm.ninds.form;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
-
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NindsFormRunner {
     public static void main(String[] args) throws IOException, AWTException {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
 
-
-        Map<String, String> diseaseMap = Consts.diseaseMap;
-
-        int nbOfThread = 3;
+        int nbOfThread = 1;
         int startingPage = 1;
-        int endingPages = 3;
+        int endingPages = 1;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {
-            Runnable worker = new NindsFormLoader(i, i, mongoOperation, diseaseMap);
+            Runnable worker = new NindsFormLoader(i, i);
             executor1.execute(worker);
         }
         executor1.shutdown();
