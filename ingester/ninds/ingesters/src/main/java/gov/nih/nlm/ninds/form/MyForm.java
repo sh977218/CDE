@@ -14,7 +14,7 @@ public class MyForm {
     private String url = "";
     private String crfModuleGuideline = "";
     private String description = "";
-    private boolean copyRight = false;
+    private boolean copyright = false;
     private String downloadLink = "";
     private String formId = "";
     private ArrayList<Cde> cdes = new ArrayList<Cde>();
@@ -124,12 +124,12 @@ public class MyForm {
         this.description = description;
     }
 
-    public boolean isCopyRight() {
-        return copyRight;
+    public boolean isCopyright() {
+        return copyright;
     }
 
-    public void setCopyRight(boolean copyRight) {
-        this.copyRight = copyRight;
+    public void setCopyright(boolean copyright) {
+        this.copyright = copyright;
     }
 
     public String getDownloadLink() {
@@ -230,7 +230,7 @@ public class MyForm {
                 ", url='" + url + '\'' +
                 ", crfModuleGuideline='" + crfModuleGuideline + '\'' +
                 ", description='" + description + '\'' +
-                ", copyRight=" + copyRight +
+                ", copyright=" + copyright +
                 ", downloadLink='" + downloadLink + '\'' +
                 ", formId='" + formId + '\'' +
                 ", cdes=" + cdes +

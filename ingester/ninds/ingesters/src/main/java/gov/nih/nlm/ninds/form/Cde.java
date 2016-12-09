@@ -17,7 +17,7 @@ public class Cde {
     String versionDate;
     String aliasesForVariableName;
     String crfModuleGuideline;
-    String copyRight;
+    String copyright;
     String subDomain;
     String domain;
     String previousTitle;

@@ -174,7 +174,7 @@ public class CDEUtility {
                 if (index == 17) {
                     List<WebElement> table = td.findElements(By.cssSelector("table"));
                     if (table.size() > 0) {
-                        cde.copyRight = "true";
+                        cde.copyright = "true";
                         noise = 1;
                     }
                 }
