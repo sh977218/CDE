@@ -29,8 +29,6 @@ public class DisallowRenderingTest extends BaseFormTest {
 
         mustBeLoggedOut();
         goToFormByName("Short Form 36-Item Health Survey (SF-36)");
-        textPresent("This form is large");
-        clickElement(By.id("renderPreviewButton"));
         textPresent("In general, would you say");
         clickElement(By.id("description_tab"));
         textPresent("In general, would you say");
