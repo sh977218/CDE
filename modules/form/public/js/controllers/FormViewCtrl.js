@@ -357,7 +357,7 @@ angular.module('formModule').controller
         } else {
             var filteredQuestion = filteredQuestions[0];
             if (filteredQuestion.question.datatype === 'Value List') {
-                if (filteredQuestion.question.answers.map(function (a) {
+                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
                         return questionSanitizer(a.permissibleValue);
                     }).indexOf(tokens[2]) < 0) {
                     return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
@@ -375,7 +375,7 @@ angular.module('formModule').controller
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
-                if ( new Date(tokens[2]).toString() === 'Invalid Date')
+                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
                     return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '".';
             }
         }
@@ -389,7 +389,7 @@ angular.module('formModule').controller
             skipLogic.condition = preSkipLogicSelect + $item;
         }
         $timeout(function() {
-            var logic = skipLogic.condition;
+            var logic = skipLogic.condition.trim();
             var tokens = SkipLogicUtil.tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
@@ -397,6 +397,7 @@ angular.module('formModule').controller
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
             if (!logic || logic.length === 0) {
+                $scope.stageElt($scope.elt);
                 return;
             }
             if ((tokens.length - 3) % 4 !== 0) {

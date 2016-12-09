@@ -137,7 +137,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
-        if (realAnswer) {
+        if (((!realAnswer && typeof realAnswer !== 'number') || ("" + realAnswer).trim().length === 0)&& expectedAnswer === "") return true;
+        else if (realAnswer) {
             if (realAnswerObj.question.datatype === 'Date') {
                 question.question.dateOptions = {};
                 if (operator === '=') {
@@ -173,7 +174,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 }
                 else return false;
             } else {
-                return true;
+                return realAnswer === expectedAnswer;
             }
         } else return false;
     };
