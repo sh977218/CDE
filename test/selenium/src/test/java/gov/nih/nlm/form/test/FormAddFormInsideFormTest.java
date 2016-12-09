@@ -27,14 +27,14 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        textPresent("This form is large and is not automatically displayed.");
-        clickElement(By.id("renderPreviewButton"));
         textPresent(newFormLabel);
         textPresent("Symptomology");
 
-        clickElement(By.id("nativeFormRenderLink"));
+        clickElement(By.id("button_lforms"));
+        switchTab(1);
         textPresent(newFormLabel);
         textPresent("Symptomology");
+        switchTabAndClose(0);
 
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
         Assert.assertEquals(odmResponse.contains(newFormLabel), true, "Actual: " + odmResponse);

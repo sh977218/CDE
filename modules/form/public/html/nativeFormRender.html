@@ -1,34 +1,46 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="displayInstruction"> Display Instruction
-                </label>
+    <div style="margin: 8px 0;">
+        <span class="form-inline">
+            <div style="display: inline-block" class="form-group">
+                <label for="select_display_profile"><a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile: </a></label>
+                <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
+                        id="select_display_profile" class="form-control"></select>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" ng-model="displayNumbering"> Display Question Numbers
-                </label>
-            </div>
-        </div>
-    </div>
-    <h2>{{elt.naming[0].designation}}</h2>
+        </span>
 
-    <div ng-if="elt.displayProfiles.length > 0">
-        Display Profile:
-        <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
-                id="select_display_profile"></select>
+        <span class="pull-right">
+            <button class="btn btn-default" id="button_lforms"
+                    data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                Render with LForms
+            </button>
+
+            <button class="btn btn-default" id="button_sdc"
+                    data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                Render with SDC Profile
+            </button>
+
+            (Provided by
+            <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
+            <a href="http://wiki.siframework.org/Structured+Data+Capture+Initiative" target="_blank">ONC</a>)
+        </span>
     </div>
+
+    <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
+        <span class="fa fa-warning" aria-hidden="true"></span>
+        <span class="sr-only">Warning:</span>
+        Save form to update rendering
+    </div>
+
+    <h2>{{elt.naming[0].designation}}</h2>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
         <div ng-include="'/form/public/html/formRenderSection.html'"
              ng-init="formElements = []; section = elt;"></div>
     </form>
 
-    <uib-alert type="danger" ng-show="skipLogicError.length > 0">
+    <uib-alert type="danger" ng-if="skipLogicError.length > 0">
         <span ng-bind="skipLogicError"></span>
     </uib-alert>
 </div>
