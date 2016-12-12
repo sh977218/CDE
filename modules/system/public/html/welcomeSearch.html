@@ -58,7 +58,7 @@
                     </i>
                 </div>
             </div>
-            <div ng-if="topics.Diseases" uib-tab heading="Browse by Topic" active="byTopic"  ng-click="browseByTopic(true)">
+            <div ng-if="topics.Diseases" uib-tab heading="Browse by Topic" active="byTopic" ng-click="browseByTopic(true)">
                 <div ng-repeat="(key, value) in topics">
                     <div ng-class="{'row':$index %3 === 2}">
                         <div class="col-md-4">
