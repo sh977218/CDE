@@ -950,7 +950,7 @@ exports.init = function (app) {
         async.each(descArr, function(desc, oneDescDone) {
             request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function(err, response, oneDescBody) {
                 async.each(oneDescBody.TreeNumberList.TreeNumber, function(treeNumber, tnDone) {
-                    request(config.mesh.baseUrl + "/api/tree/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
+                    request(config.mesh.baseUrl + "/api/treeServerSide/" + treeNumber.t, {json: true}, function(err, response, oneTreeBody) {
                         var flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                         if (oneTreeBody.parents && oneTreeBody.parents.length > 0) {
                             flatTree = flatTree +  ";" + oneTreeBody.parents.map(function(a) {
