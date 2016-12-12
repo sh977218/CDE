@@ -384,6 +384,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (sort) {
+        //noinspection JSAnnotator
         queryStuff.sort = {
             "views": {
                 order: 'desc'
@@ -528,10 +529,11 @@ var searchTemplate = {
     }
 };
 
-exports.meshSyncStatus = {
-};
-
 exports.syncWithMesh = function(allMappings) {
+    exports.meshSyncStatus = {
+        dataelement: {done: 0},
+        form: {done: 0}
+    };
 
     var classifToTrees = {};
     allMappings.forEach(function(m) {
@@ -551,14 +553,14 @@ exports.syncWithMesh = function(allMappings) {
         classifToSimpleTrees[m.flatClassification] = m.flatTrees;
     });
 
-    var search = JSON.parse(JSON.stringify(searchTemplate.cde));
-    search.scroll = '1m';
-    search.search_type = 'scan';
-    search.body = {};
+    var searches = [JSON.parse(JSON.stringify(searchTemplate.cde)), JSON.parse(JSON.stringify(searchTemplate.form))];
+    searches.forEach(function (search) {
+        search.scroll = '1m';
+        search.search_type = 'scan';
+        search.body = {};
+    });
 
-    exports.meshSyncStatus.done = 0;
-
-    var scrollThrough = function (scrollId) {
+    var scrollThrough = function (scrollId, s) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'},
             function (err, response) {
                 if (err) {
@@ -569,12 +571,13 @@ exports.syncWithMesh = function(allMappings) {
                         });
                 } else {
                     var newScrollId = response._scroll_id;
-                    exports.meshSyncStatus.total = response.hits.total;
+                    exports.meshSyncStatus[s.type].total = response.hits.total;
                     if (response.hits.hits.length > 0) {
                         response.hits.hits.forEach(function (hit) {
                             var thisElt = hit._source;
                             var trees = new Set();
                             var simpleTrees = new Set();
+                            if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
                             thisElt.flatClassifications.forEach(function (fc) {
                                 if (classifToTrees[fc]) {
                                     classifToTrees[fc].forEach(function (node) {
@@ -589,8 +592,8 @@ exports.syncWithMesh = function(allMappings) {
                             });
                             if (trees.size > 0) {
                                 esClient.update({
-                                    index: config.elastic.index.name,
-                                    type: "dataelement",
+                                    index: s.index,
+                                    type: s.type,
                                     id: thisElt.tinyId,
                                     body: {
                                         doc: {
@@ -602,28 +605,30 @@ exports.syncWithMesh = function(allMappings) {
                                     if (err) console.log("ERR: " + err);
                                 });
                             }
-                            exports.meshSyncStatus.done++;
+                            exports.meshSyncStatus[s.type].done++;
                         });
-                        scrollThrough(newScrollId);
+                        scrollThrough(newScrollId, s);
                     } else {
-                        console.log("done syncing with MeSH");
+                        console.log("done syncing " + s.index + " with MeSH");
                     }
                 }
             });
     };
 
-    esClient.search(search, function (err, response) {
-        if (err) {
-            lock = false;
-            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
-                {
-                    origin: "system.elastic.syncWithMesh", stack: new Error().stack,
-                    details: ""
-                });
-        } else {
-            scrollThrough(response._scroll_id);
-        }
-    });
+    searches.forEach(function (search) {
+        esClient.search(search, function (err, response) {
+            if (err) {
+                lock = false;
+                logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
+                    {
+                        origin: "system.elastic.syncWithMesh", stack: new Error().stack,
+                        details: ""
+                    });
+            } else {
+                scrollThrough(response._scroll_id, search);
+            }
+        });
+    })
 
 };
 
