@@ -12,8 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 import java.awt.*;
 import java.io.IOException;
@@ -108,7 +106,7 @@ public class NindsFormLoader implements Runnable {
         hangon(5);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
         for (int i = 1; i < trs.size(); i++) {
-            List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
+            List<WebElement> tds = trs.get(i).findElements(By.xpath("td"));
             MyForm form = new MyForm();
             form.setPage(pageStart);
             form.setRow(i);
@@ -155,27 +153,8 @@ public class NindsFormLoader implements Runnable {
                 index++;
             }
             getDomainAndSubDomain(form);
-
-            Query searchDuplicatedFormQuery = new Query(Criteria.where("formId").is(form.getFormId())
-                    .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
-                    .and("description").is(form.getDescription())
-                    .and("copyright").is(form.isCopyright())
-                    .and("downloadLink").is(form.getDownloadLink())
-                    .and("versionNum").is(form.getVersionNum())
-                    .and("versionDate").is(form.getVersionDate())
-                    .and("diseaseName").is(form.getDiseaseName())
-                    .and("subDiseaseName").is(form.getSubDiseaseName())
-                    .and("domainName").is(form.getDomainName())
-                    .and("subDomainName").is(form.getSubDomainName()));
-            MyForm existingForm = mongoOperation.findOne(searchDuplicatedFormQuery, MyForm.class);
-            if (existingForm != null) {
-                this.log.info.add("search with query: " + searchDuplicatedFormQuery.toString());
-                this.log.info.add("found existing form in migration: " + existingForm);
-                this.log.info.add("found form on web:" + form);
-            } else {
-                form.setCreateDate(new Date());
-                mongoOperation.save(form);
-            }
+            form.setCreateDate(new Date());
+            mongoOperation.save(form);
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
@@ -186,11 +165,11 @@ public class NindsFormLoader implements Runnable {
 
 
     private void getDomainAndSubDomain(MyForm form) {
-        String crfModuleGuideline = form.getCrfModuleGuideline().trim();
+        String formId = form.getFormId().trim();
         classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.getDiseaseName()));
-        String subDomianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::a[1]";
-        String domianSelector1 = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
+        String subDomianSelector = "//*[@title=\"" + formId + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::a[1]";
+        String domianSelector1 = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
         List<WebElement> subDomains = classifDriver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));

@@ -8,9 +8,9 @@ import java.util.concurrent.Executors;
 public class NindsFormRunner {
     public static void main(String[] args) throws IOException, AWTException {
 
-        int nbOfThread = 1;
+        int nbOfThread = 3;
         int startingPage = 1;
-        int endingPages = 1;
+        int endingPages = 28;
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {

@@ -42,6 +42,21 @@ function checkExistingNaming(existingNaming, newCde) {
 }
 
 /**
+ * @param existingSources
+ * @param {{source}} newCde
+ */
+function checkExistingSources(existingSources, newCde) {
+    var exist = false;
+    existingSources.forEach(function (existingSource) {
+        if (existingSource.source === 'NINDS' || existingSource.source === '') {
+            existingSource = newCde.sources[0];
+            exist = true;
+        }
+    });
+    if (!exist) existingSources.push(newCde.sources[0])
+}
+
+/**
  * @param existingIds
  * @param {{variableName,cdeId,cadsrId,variableName}} newCde
  */
@@ -142,6 +157,10 @@ function transferCde(existingCde, newCde, ninds) {
     var existingNaming = existingCde.get('naming');
     checkExistingNaming(existingNaming, newCde);
 
+    // merge sources
+    var existingSources = existingCde.get('sources');
+    checkExistingSources(existingSources, newCde);
+
     // merge ids
     var existingIds = existingCde.get('ids');
     checkExistingIds(existingIds, newCde);
@@ -169,7 +188,8 @@ function createCde(cde, ninds) {
         context: {
             contextName: "Health",
             acceptability: "preferred"
-        }
+        },
+        source: 'NINDS'
     }];
     if (cde.questionText !== 'N/A')
         naming.push({
@@ -177,8 +197,15 @@ function createCde(cde, ninds) {
             languageCode: "EN-US",
             context: {
                 contextName: 'Question Text'
-            }
+            },
+            source: 'NINDS'
         });
+
+    var sources = [{
+        sourceName: 'NINDS',
+        updated: cde.versionDate,
+        datatype: cde.dataType
+    }];
 
     var ids = [{source: 'NINDS', id: cde.cdeId, version: Number(cde.versionNum).toString()}];
     if (cde.cadsrId && cde.cadsrId.length > 0)
@@ -188,24 +215,27 @@ function createCde(cde, ninds) {
 
     var properties = [];
     if (cde.previousTitle && cde.previousTitle.length > 0)
-        properties.push({key: 'NINDS Previous Title', value: cde.previousTitle});
+        properties.push({key: 'NINDS Previous Title', value: cde.previousTitle, source: 'NINDS'});
     if (cde.instruction && cde.instruction.length > 0)
         properties.push({
             key: 'NINDS Guidelines',
             value: ninds.get('formId') + newline + cde.instruction + newline,
-            valueFormat: 'html'
+            valueFormat: 'html',
+            source: 'NINDS'
         });
     if (cde.aliasesForVariableName && cde.aliasesForVariableName.length > 0 && cde.aliasesForVariableName !== 'Aliases for variable name not defined')
         properties.push({
             key: 'Aliases for Variable Name',
-            value: cde.aliasesForVariableName
+            value: cde.aliasesForVariableName,
+            source: 'NINDS'
         });
 
     var referenceDocuments = [];
     if (removeNewline(cde.reference) && removeNewline(cde.reference).length > 0 && removeNewline(cde.reference) !== 'No references available')
         referenceDocuments.push({
             title: removeNewline(cde.reference),
-            uri: (cde.reference.indexOf('http://www.') !== -1 || cde.reference.indexOf('https://www.') !== -1) ? cde.reference : ''
+            uri: (cde.reference.indexOf('http://www.') !== -1 || cde.reference.indexOf('https://www.') !== -1) ? cde.reference : '',
+            source: 'NINDS'
         });
 
 
@@ -261,11 +291,11 @@ function createCde(cde, ninds) {
     var newCde = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: "NINDS"},
-        createdBy: {username: 'batchloader'},
+        createdBy: {username: 'batchLoader'},
         created: today,
         imported: today,
         registrationState: {registrationStatus: "Qualified"},
-        source: 'NINDS',
+        sources: sources,
         version: Number(cde.versionNum).toString(),
         naming: naming,
         referenceDocuments: referenceDocuments,
