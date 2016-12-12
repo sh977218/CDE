@@ -19,8 +19,9 @@
             </div>
             <div>
                 <button class="btn btn-default" ng-click="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
-                <uib-progressbar ng-if="meshSync.total > 0 && meshSync.done > 0" class="progress-striped active"
-                                 max="meshSync.total" value="meshSync.done" type="success">
+                <uib-progressbar ng-repeat="meshSync in meshSyncs" ng-if="meshSync.total > 0 && meshSync.done > 0"
+                                 class="progress-striped active" max="meshSync.total" value="meshSync.done"
+                                 type="success">
                     {{meshSync.done}} / {{meshSync.total}}
                 </uib-progressbar>
             </div>
