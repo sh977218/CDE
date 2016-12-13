@@ -241,6 +241,7 @@ function createCde(cde, ninds) {
     };
     var permissibleValues = [];
     var pvsArray = cde.permissibleValue.split(';');
+    var isPvValueNumber = /^\d+$/.test(pvsArray[0]);
     var pdsArray = cde.permissibleDescription.split(';');
     if (pvsArray.length !== pdsArray.length) {
         console.log('*******************permissibleValue and permissibleDescription do not match.');
@@ -250,12 +251,19 @@ function createCde(cde, ninds) {
         process.exit(1);
     }
     for (var i = 0; i < pvsArray.length; i++) {
-        if (pvsArray[i].length > 0)
-            permissibleValues.push({
+        if (pvsArray[i].length > 0) {
+            var pv = {
                 permissibleValue: pvsArray[i],
-                valueMeaningName: pvsArray[i],
                 valueMeaningDefinition: pdsArray[i]
-            });
+            };
+
+            if (isPvValueNumber) {
+                pv.valueMeaningName = pdsArray[i];
+            } else {
+                pv.valueMeaningName = pvsArray[i];
+            }
+        }
+        permissibleValues.push();
     }
     if (cde.inputRestrictions === 'Free-Form Entry') {
         if (cde.dataType === 'Alphanumeric') {
