@@ -50,13 +50,14 @@ angular.module('systemModule').controller('ServerStatusesCtrl', ['$scope', '$htt
         };
 
         $scope.syncMesh = function() {
-            $http.post("syncWithMesh");
+            $http.post("/syncWithMesh");
             var indexFn = setInterval(function () {
                 $http.get('/syncWithMesh').success(function (result) {
-                    $scope.meshSync = result;
-                    if (result.done === result.total) {
+                    $scope.meshSyncs = result;
+                    if (result.cde.done === result.cde.total
+                        && result.form.done === result.form.total) {
                         clearInterval(indexFn);
-                        delete $scope.meshSync;
+                        delete $scope.meshSyncs;
                     }
                 });
             }, 1000);
