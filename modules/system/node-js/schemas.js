@@ -286,8 +286,7 @@ schemas.message = new mongoose.Schema({
         , name: String
     }
     , author: {authorType: String, name: String}
-    , date: Date
-    ,
+    , date: Date,
     type: {
         type: String,
         enum: ["MergeRequest", "CommentApproval", "AttachmentApproval", "CommentReply", "BoardApproval"]
