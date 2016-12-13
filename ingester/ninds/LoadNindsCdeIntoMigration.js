@@ -43,17 +43,14 @@ function checkExistingNaming(existingNaming, newCde) {
 
 /**
  * @param existingSources
- * @param {{source}} newCde
+ * @param {{dataType}} newCde
  */
 function checkExistingSources(existingSources, newCde) {
-    var exist = false;
     existingSources.forEach(function (existingSource) {
-        if (existingSource.source === 'NINDS' || existingSource.source === '') {
-            existingSource = newCde.sources[0];
-            exist = true;
+        if (existingSource.datatype !== newCde.dataType) {
+            existingSources.push({source: 'NINDS', dataType: newCde.dataType})
         }
     });
-    if (!exist) existingSources.push(newCde.sources[0])
 }
 
 /**
@@ -260,28 +257,48 @@ function createCde(cde, ninds) {
                 valueMeaningDefinition: pdsArray[i]
             });
     }
-    if (cde.dataType === 'Alphanumeric') {
-        if (cde.inputRestrictions === 'Free-Form Entry') {
-            valueDomain.datatypeText = {maxLength: Number(cde.size)};
+    if (cde.inputRestrictions === 'Free-Form Entry') {
+        if (cde.dataType === 'Alphanumeric') {
             valueDomain.datatype = 'Text';
-        } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
-            valueDomain.permissibleValues = permissibleValues;
-            valueDomain.datatype = 'Value List';
+            valueDomain.datatypeText = {maxLength: Number(cde.size)};
+        } else if (cde.dataType === 'Date or Date & Time') {
+            valueDomain.datatype = 'Date';
+            valueDomain.datatypeDate = {format: 'MM/DD/YYYY'};
+        } else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
+            valueDomain.datatypeNumber = {
+                minValue: Number(cde.minValue),
+                maxValue: Number(cde.maxValue)
+            };
         } else {
-            console.log('unknown cde.inputRestrictions found:' + cde.inputRestrictions);
+            console.log('unknown cde.dataType found:' + cde.dataType);
             console.log('*******************ninds:\n' + ninds);
             console.log('*******************cde:\n' + cde);
             //noinspection JSUnresolvedVariable
             process.exit(1);
         }
-    }
-    else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
-        valueDomain.datatypeNumber = {minValue: Number(cde.minValue), maxValue: Number(cde.maxValue)};
-        valueDomain.datatype = 'Number';
-    } else if (cde.dataType === 'Date or Date & Time') {
-        valueDomain.datatype = 'Date';
+
+    } else if (cde.inputRestrictions === 'Single Pre-Defined Value Selected' || cde.inputRestrictions === 'Multiple Pre-Defined Values Selected') {
+        if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
+            valueDomain.datatypeValueList = {datatype: 'Number'};
+        }
+        else if (cde.dataType === 'Alphanumeric') {
+            valueDomain.datatypeValueList = {datatype: 'Text'};
+        }
+        else if (cde.dataType === 'Date or Date & Time') {
+            valueDomain.datatypeValueList = {datatype: 'Date'};
+        } else {
+            console.log('unknown cde.dataType found:' + cde.dataType);
+            console.log('*******************ninds:\n' + ninds);
+            console.log('*******************cde:\n' + cde);
+            //noinspection JSUnresolvedVariable
+            process.exit(1);
+
+        }
+
+        valueDomain.permissibleValues = permissibleValues;
+        valueDomain.datatype = 'Value List';
     } else {
-        console.log('unknown cde.dataType found:' + cde.dataType);
+        console.log('unknown cde.inputRestrictions found:' + cde.inputRestrictions);
         console.log('*******************ninds:\n' + ninds);
         console.log('*******************cde:\n' + cde);
         //noinspection JSUnresolvedVariable

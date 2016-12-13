@@ -7,6 +7,8 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,11 +24,12 @@ public class FindMissingForms implements Runnable {
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
     String diseaseName;
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
 
-    FindMissingForms(String url, MongoOperations mongoOperation) {
+    FindMissingForms(String url) {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         this.url = url;
-        this.mongoOperation = mongoOperation;
+        this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
     }
 
     @Override

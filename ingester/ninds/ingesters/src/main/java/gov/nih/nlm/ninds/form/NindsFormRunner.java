@@ -2,6 +2,8 @@ package gov.nih.nlm.ninds.form;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,6 +13,7 @@ public class NindsFormRunner {
         int nbOfThread = 3;
         int startingPage = 1;
         int endingPages = 28;
+
         ExecutorService executor1 = Executors.newFixedThreadPool(nbOfThread);
 
         for (int i = startingPage; i <= endingPages; i++) {
@@ -21,18 +24,18 @@ public class NindsFormRunner {
         while (!executor1.isTerminated()) {
         }
         System.out.println("Finished all forms. from " + startingPage + " to " + endingPages);
-/*
+
         ExecutorService executor2 = Executors.newFixedThreadPool(nbOfThread);
-        Iterator it = diseaseMap.entrySet().iterator();
+        Iterator it = Consts.diseaseMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue(), mongoOperation);
+            Runnable worker = new FindMissingForms("https://commondataelements.ninds.nih.gov/" + pair.getValue());
             executor2.execute(worker);
         }
         executor2.shutdown();
         while (!executor2.isTerminated()) {
         }
-        System.out.println("Finished all forms in the map: " + diseaseMap);
-        System.exit(0);*/
+        System.out.println("Finished all forms in the map: " + Consts.diseaseMap);
+        System.exit(0);
     }
 }
