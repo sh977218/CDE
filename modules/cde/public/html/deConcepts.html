@@ -19,7 +19,7 @@
                 <td tabindex="0" itemprop="codeValue">{{concept.originId}}</td>
                 <td headers="actions" ng-if="canCurate">
                     <span tabindex="0" href id="remove{{type}}-{{$index}}" class="btn-default fa fa-trash-o"
-                          ng-click="removeConcept(type)" title="Remove" href></span>
+                          ng-click="removeConcept(type, $index)" title="Remove" href></span>
 
                     <div sortable-array="elt[type].concepts" index="$index" cb="stageElt(elt)"></div>
                 </td>
