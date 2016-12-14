@@ -404,7 +404,7 @@ function run() {
             });
         },
         function (cb) {
-            var stream = MigrationNindsModel.find({'cdes.cdeId': 'C12426'}).stream();
+            var stream = MigrationNindsModel.find({}).stream();
             stream.on('data', function (ninds) {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
