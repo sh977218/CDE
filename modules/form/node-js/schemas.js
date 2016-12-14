@@ -30,6 +30,7 @@ var questionSchema = {
     , multiselect: Boolean
     , answers: [sharedSchemas.permissibleValueSchema]
     , defaultAnswer: String
+    , nonEditable: Boolean
 };
 
 var sectionSchema = {};
