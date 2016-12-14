@@ -249,6 +249,16 @@ angular.module('formModule').controller
         });
     }
 
+    var setDefaultAnswer = function (section) {
+        section.formElements.forEach(function (fe) {
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                setDefaultAnswer(fe);
+            } else if (fe.elementType === 'question'){
+                fe.question.answer = fe.question.defaultAnswer
+            }
+        });
+    };
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             var formCopy = angular.copy(form);
@@ -270,9 +280,9 @@ angular.module('formModule').controller
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
-                $scope.section = wholeForm;
                 $scope.formElements = [];
                 $scope.formElement = wholeForm;
+                setDefaultAnswer(wholeForm);
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
