@@ -263,7 +263,7 @@ function createCde(cde, ninds) {
                 pv.valueMeaningName = pvsArray[i];
             }
         }
-        permissibleValues.push();
+        permissibleValues.push(pv);
     }
     if (cde.inputRestrictions === 'Free-Form Entry') {
         if (cde.dataType === 'Alphanumeric') {
