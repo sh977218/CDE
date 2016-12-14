@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$routeParams',
-    function ($scope, $http, $routeParams)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope',
+    function ($scope)
 {
 
     $scope.displayInstruction = false;
@@ -11,25 +11,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         }
     };
 
-    var reload = function (id) {
-        $http.get('/form/' + id).then(function (result) {
-            $scope.elt = result.data;
-            delete $scope.elt.attachments;
-            delete $scope.elt.classification;
-            delete $scope.elt.comments;
-            delete $scope.elt.created;
-            delete $scope.elt.createdBy;
-            delete $scope.elt.history;
-            delete $scope.elt.properties;
-            delete $scope.elt.registrationState;
-            delete $scope.elt.stewardOrg;
-            setSelectedProfile();
-        });
-    };
-
-    if ($routeParams.id) {
-        reload($routeParams);
-    }
+    $scope.$on('eltReloaded', function () {
+        setSelectedProfile();
+    });
     setSelectedProfile();
 
     var removeAnswers = function (formElt) {

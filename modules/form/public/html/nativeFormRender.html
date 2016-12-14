@@ -37,7 +37,7 @@
 
     <form name="sectionLabel" role="form" class="form-horizontal">
         <div ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElements = []; section = elt;"></div>
+             ng-init="formElements = []; "></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">
