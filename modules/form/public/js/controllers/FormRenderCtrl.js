@@ -111,9 +111,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         }
     };
 
-    $scope.evaluateSkipLogic = function (rule, formElements, question) {
-        if (!rule) return true;
-        rule = rule.trim();
+    $scope.evaluateSkipLogic = function (question, formElements) {
+        if (!question.skipLogic || !question.skipLogic.condition) return true;
+        var rule = question.skipLogic.condition.trim();
         if (rule.indexOf("AND") > -1) {
             return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, question) &&
                 $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, question);

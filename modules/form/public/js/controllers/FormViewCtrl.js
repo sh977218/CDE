@@ -272,6 +272,7 @@ angular.module('formModule').controller
                 }
                 $scope.section = wholeForm;
                 $scope.formElements = [];
+                $scope.formElement = wholeForm;
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

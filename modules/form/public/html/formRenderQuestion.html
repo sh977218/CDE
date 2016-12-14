@@ -1,4 +1,4 @@
-<div ng-show="evaluateSkipLogic(question.skipLogic.condition, formElements, question)">
+<div ng-show="evaluateSkipLogic(question, formElements)">
     <div ng-if="selection.selectedProfile.displayInstructions" class="row">
         <div class="col-md-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
