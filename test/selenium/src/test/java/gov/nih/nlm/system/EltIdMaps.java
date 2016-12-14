@@ -13,6 +13,7 @@ public class EltIdMaps {
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
+        eltMap.put("ConceptCDE", "mkBls_Z0M");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
