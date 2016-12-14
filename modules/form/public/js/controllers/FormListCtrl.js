@@ -12,7 +12,6 @@ angular.module('formModule').controller('FormListCtrl',
 
     $scope.PinModal = PinModal.new('form');
 
-
     $scope.includeInAccordion = [
         "/cde/public/html/accordion/pinAccordionActions.html",
         "/system/public/html/accordion/addToQuickBoardActions.html"
