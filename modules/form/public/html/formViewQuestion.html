@@ -162,6 +162,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" ng-if="question.question.defaultAnswer">
+                    <div class="col-sm-2 questionSectionLabel text-right">Non Editable:</div>
+                    <div class="col-sm-7" id="dd_question_noedit_{{$index}}">
+                        <input type="checkbox" ng-model="question.question.nonEditable" ng-disabled="!canCurate"
+                               ng-click="stageElt()"/>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
                     <div class="col-sm-7" id="dd_d_cde_{{$index}}">
