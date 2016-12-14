@@ -262,8 +262,8 @@ function createCde(cde, ninds) {
             } else {
                 pv.valueMeaningName = pvsArray[i];
             }
+            permissibleValues.push(pv);
         }
-        permissibleValues.push(pv);
     }
     if (cde.inputRestrictions === 'Free-Form Entry') {
         if (cde.dataType === 'Alphanumeric') {
@@ -404,7 +404,7 @@ function run() {
             });
         },
         function (cb) {
-            var stream = MigrationNindsModel.find({}).stream();
+            var stream = MigrationNindsModel.find({'cdes.cdeId': 'C12426'}).stream();
             stream.on('data', function (ninds) {
                 stream.pause();
                 if (ninds && ninds.get('cdes').length > 0) {
