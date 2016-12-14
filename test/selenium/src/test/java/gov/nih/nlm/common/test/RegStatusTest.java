@@ -52,6 +52,7 @@ public abstract class RegStatusTest extends CommonTest {
         clickElement(By.id("saveRegStatus"));
         textPresent("Saved");
         closeAlert();
+        setLowStatusesVisible();
         try {
             goToEltByName(eltName);
         } catch (TimeoutException e) {
