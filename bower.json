@@ -27,14 +27,14 @@
     "jszip": "2.5.0",
     "jxon": "2.0.0-beta.2",
     "jscrypto": "https://github.com/ludetc/node2web_crypto.git#aaa33d1402be4216da3acc209ee9f3eac2493ff5",
-    "lforms": "7.6.0",
-    "autocomplete-lhc": "9.1.2",
-    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#05d8a5c5eb031d159d747f4534836086aa4fd3ea",
     "ngInfiniteScroll": "1.2.2",
     "checklist-model": "0.9.0",
     "angular-ui-sortable": "0.14.0",
     "async": "2.0.0-rc.5",
-    "angular-elastic": "2.5.1"
+    "angular-elastic": "2.5.1",
+    "lforms": "7.6.0",
+    "autocomplete-lhc": "9.1.2",
+    "lforms-converter": "https://github.com/sh977218/lforms-converter.git#05d8a5c5eb031d159d747f4534836086aa4fd3ea"
   },
   "resolutions": {
     "angular": "1.5.3",

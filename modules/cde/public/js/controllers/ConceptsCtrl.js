@@ -13,8 +13,6 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
         });
     };
 
-
-
     $scope.dataElementConceptRemoveConcept = function (index) {
         $scope.elt.dataElementConcept.concepts.splice(index, 1);
         $scope.elt.unsaved = true;
@@ -30,8 +28,8 @@ angular.module('cdeModule').controller('ConceptsCtrl', ['$scope', '$uibModal', '
         $scope.elt.unsaved = true;
     };
 
-    $scope.removeConcept = function(type) {
-        $scope[type + 'RemoveConcept']();
+    $scope.removeConcept = function(type, i) {
+        $scope[type + 'RemoveConcept'](i);
     };
 
     $scope.conceptConfigurations = {

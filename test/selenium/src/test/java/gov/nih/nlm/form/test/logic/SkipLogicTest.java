@@ -14,7 +14,6 @@ public class SkipLogicTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
-        clickElement(By.linkText("native"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
         findElement(By.xpath("//div[div/label[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
@@ -59,7 +58,6 @@ public class SkipLogicTest extends BaseFormTest {
         saveForm();
         goToFormByName(formName);
 
-        clickElement(By.id("nativeFormRenderLink"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
@@ -117,8 +115,7 @@ public class SkipLogicTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        clickElement(By.id("nativeFormRenderLink"));
-        textPresent("Display Instruction");
+        textPresent("Display Profile");
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");
         textNotPresent("Laterality Type");
@@ -148,7 +145,6 @@ public class SkipLogicTest extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.id("nativeFormRenderLink"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
@@ -174,7 +170,6 @@ public class SkipLogicTest extends BaseFormTest {
 
         saveForm();
         goToFormByName(formName);
-        clickElement(By.id("nativeFormRenderLink"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");

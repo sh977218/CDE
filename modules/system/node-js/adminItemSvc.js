@@ -356,8 +356,8 @@ exports.replyToComment = function (req, res) {
                             , typeCommentReply: {
                                 // TODO change this when you merge board comments
                                 element: {
-                                    eltType: comment.element.type,
-                                    tinyId: comment.element.eltId,
+                                    eltType: comment.element.eltType,
+                                    eltId: comment.element.eltId,
                                     name:  req.body.eltName
                                 }
                                 , comment: {

@@ -5,7 +5,7 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
     'ui.bootstrap', 'ngSanitize', 'ngRoute', 'textAngular', 'LocalStorageModule', 'matchMedia', 'ui.sortable',
     'ui.scrollfix', 'ui.select', 'camelCaseToHuman', 'yaru22.angular-timeago', 'angularFileUpload', 'ngTextTruncate',
     'angular-send-feedback', 'ngAnimate', 'ngDisplayObject', 'ngCompareSideBySide', 'comparePrimitive',
-    'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'lformsWidget', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
+    'comparePrimitiveArray', 'compareObject', 'compareObjectArray', 'checklist-model', 'infinite-scroll', 'monospaced.elastic'])
     .config(['$logProvider', function ($logProvider) {
         $logProvider.debugEnabled(window.debugEnabled);
     }])
@@ -66,7 +66,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 inputType: '=?',
                 isAllowed: '&',
                 onOk: '&',
-                typeaheadSource: '='
+                typeaheadSource: '=',
+                linkSource: '@'
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: ["$scope", function ($scope) {
@@ -330,7 +331,7 @@ angular.module('systemModule').factory('SkipLogicUtil', [function () {
         tokens.push(t);
         str = str.substring(t.length).trim();
 
-        res = str.match(/^"([^"]+)"/);
+        res = str.match(/^"([^"]*)"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;
