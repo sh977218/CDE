@@ -227,9 +227,6 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             section.formElements.splice(index, 1);
             $scope.stageElt();
         };
-        $scope.addProperty = function (question) {
-            $scope.stageElt();
-        };
 
         $scope.moveElt = function (index, inc) {
             $scope.elt.formElements.splice(index + inc, 0, $scope.elt.formElements.splice(index, 1)[0]);

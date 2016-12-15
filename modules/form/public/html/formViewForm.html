@@ -25,7 +25,8 @@
                      is-allowed="canCurate" on-ok="stageElt()"></div>
             </div>
         </div>
-        <div class="row" ng-if="parent">
+        <div class="row"
+             ng-if="formElement.skipLogic && formElement.skipLogic.condition && formElement.skipLogic.condition.length > 0 && parent">
             <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
             <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
                  ng-class="{'has-error':formElement.skipLogic.skipLogicError}">
