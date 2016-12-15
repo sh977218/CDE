@@ -15,12 +15,9 @@
                         <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
                         <s ng-bind="question.question.cde.name"></s>
                     </span>
-                    <span ng-if="!question.hideLabel" ng-bind-html="question.label | placeHoldEmpty"
-                          id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
                     <div ng-if="question.label || question.edit" class="row">
-                        <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
                         <div class="col-sm-7" id="dd_question_title_{{$index}}">
-                            <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
+                            <i ng-show="canCurate && question.edit" class="fa fa-pencil" title="Change question label"
                                ng-click="openNameSelect(question,section)"></i>
                             {{question.label | placeHoldEmpty}}
                         </div>
@@ -37,14 +34,15 @@
                     <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
                 </div>
                 <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
-                    <i class="glyphicon glyphicon-remove hand-cursor pull-right"
+                    <i class="fa fa-times hand-cursor pull-right"
                        ng-click="removeQuestion(parent, $index)"
                        title="Remove question" id="remove_q_{{$index}}"></i>
+                    <i class="fa fa-pencil hand-cursor pull-right" title="edit question"
+                       id="edit_question_{{$index}}"
+                       ng-click="question.edit = !question.edit;"></i>
                 </div>
             </div>
         </div>
-        <i class="fa fa-ellipsis-h hand-cursor pull-right" title="edit question" id="edit_question_{{$index}}"
-           ng-click="question.edit = !question.edit;"></i>
         <div class="row questionAccordionContent">
             <div class="col-sm-12">
                 <div ng-if="question.instructions.value || question.edit" class="row">
@@ -53,14 +51,15 @@
                         <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
                              model="question.instructions.value"
                              def-format="question.instructions.valueFormat"
-                             is-allowed="canCurate" on-ok="stageElt()">
+                             is-allowed="canCurate && question.edit" on-ok="stageElt()">
                         </div>
                     </div>
                 </div>
                 <div ng-if="question.question.required || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Required:</div>
                     <div class="col-sm-7" id="dd_question_required_{{$index}}">
-                        <input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate"
+                        <input type="checkbox" ng-model="question.question.required"
+                               ng-disabled="!(canCurate && question.edit)"
                                ng-click="stageElt()"/>
                     </div>
                 </div>
@@ -70,7 +69,7 @@
                         <span ng-bind="question.question.scoreFormula"></span>
                     </div>
                 </div>
-                <div ng-if="question.cardinality || question.edit" class="row">
+                <div ng-if="question.cardinality.min !== 1 && question.cardinality.max !== 1 || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_q_card_{{$index}}">
                         <div ng-show="editCardMode">
@@ -85,7 +84,7 @@
                             </button>
                         </div>
                         <div ng-hide="editCardMode">
-                            <i ng-show="canCurate" class="fa fa-edit"
+                            <i ng-show="canCurate && question.edit" class="fa fa-edit"
                                ng-click="editCardMode = true; orig = question.cardinality"
                                id="editQuestion"></i> {{getCardinalityLabel(question.cardinality)}}
                         </div>
@@ -96,7 +95,7 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}"
                          ng-class="{'has-error':question.skipLogic.validationError}">
-                        <input ng-disabled="!(section.formElements.length > 1) || !canCurate"
+                        <input ng-disabled="!(section.formElements.length > 1) || !canCurate "
                                type="text" ng-model="question.skipLogic.condition"
                                class="form-control skipLogicCondition" ng-trim="false"
                                ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
@@ -107,13 +106,13 @@
                         <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
                 </div>
-                <div ng-if="question.question.datatype || question.edit" class="row">
+                <div ng-if="question.question.datatype" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
                     <div class="col-sm-7" id="dd_datatype_{{$index}}">
                         {{question.question.datatype | placeHoldEmpty }}
                     </div>
                 </div>
-                <div ng-if="question.question.datatype ==='Number' || question.edit">
+                <div ng-if="question.question.datatype ==='Number'">
                     <div class="row">
                         <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
                         <div class="col-sm-7" id="dd_minimal_{{$index}}">
@@ -127,7 +126,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="question.question.multiselect && question.question.datatype === 'Value List' || question.edit"
+                <div ng-if="question.question.multiselect && question.question.datatype === 'Value List'"
                      class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
                     <div class="col-sm-7" id="dd_question_multi_{{$index}}">
@@ -135,17 +134,17 @@
                                ng-click="stageElt()"/>
                     </div>
                 </div>
-                <div ng-if="question.question.uoms.length > 0 || question.edit" class="row">
+                <div ng-if="question.question.uoms.length > 0" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Units of Measure:</div>
                     <div class="col-sm-7" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
                         <div ng-switch-when="true">
                             <span ng-repeat="uom in question.question.uoms">
                                 <div id="q_uom_list_{{$index}}" inline-edit model="question.question.uoms[$index]"
-                                     is-allowed="canCurate" on-ok="checkUom(question, $index)"></div>
+                                     is-allowed="canCurate && question.edit" on-ok="checkUom(question, $index)"></div>
                             </span>
                         </div>
                         <div ng-switch-default>N/A</div>
-                        <button ng-show="canAddUom(question)" class="btn btn-default btn-xs"
+                        <button ng-show="canAddUom(question) && question.edit" class="btn btn-default btn-xs"
                                 ng-click="addUom(question)"><i class="fa fa-plus"></i> Add
                         </button>
                     </div>
@@ -179,8 +178,8 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
                     <div class="col-sm-7">
                         <ui-select multiple ng-model="question.question.answers" theme="select2" search-enabled=false
-                                   ng-disabled="!canCurate" style="min-width: 125px" on-remove="stageElt()"
-                                   on-select="stageElt()"append-to-body="true">
+                                   ng-disabled="!(canCurate && question.edit)" style="min-width: 125px"
+                                   on-remove="stageElt()" on-select="stageElt()" append-to-body="true">
                             <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}
                             </ui-select-match>
                             <ui-select-choices
