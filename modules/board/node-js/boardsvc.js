@@ -1,13 +1,15 @@
-var mongo_data = require('./../../cde/node-js/mongo-cde'),
-    mongo_form = require('../../form/node-js/mongo-form'),
-    mongo_board = require('../../board/node-js/mongo-board')
-    ;
+var mongo_board = require('./mongo-board');
 
-exports.pinCdeToBoard = function(req, res) {
+var propMapping = {
+    'cde': {id: "deTinyId", name: "deName"},
+    'form': {id: "formTinyId", name: "formName"}
+};
+
+exports.pinToBoard = function(req, res, dao) {
     var tinyId = req.params.tinyId;
     var boardId = req.params.boardId;
 
-    mongo_data.eltByTinyId(tinyId, function(err, de){
+    dao.eltByTinyId(tinyId, function(err, elt){
         mongo_board.boardById(boardId, function(err, board) {
             if (err) return res.send("Board cannot be found.");
             if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
@@ -15,63 +17,34 @@ exports.pinCdeToBoard = function(req, res) {
             } else {
                 var pin = {
                     pinnedDate: Date.now()
-                    , deTinyId: tinyId
-                    , deName: de.naming[0].designation
                 };
+                pin[propMapping[dao.type].id] = tinyId;
+                pin[propMapping[dao.type].name] = elt.naming[0].designation;
                 for (var i = 0 ; i < board.pins.length; i++) {
-                    if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(tinyId)) {
+                    if (JSON.stringify(board.pins[i][propMapping[dao.type].id]) === JSON.stringify(tinyId)) {
                         res.statusCode = 202;
                         return res.send("Already added to the board.");
                     }
                 }
                 board.pins.push(pin);
-                mongo_data.save(board, function() {
+                board.save(function() {
                     return res.send("Added to Board");
                 });
             }
         });
     });
 };
-exports.pinFormToBoard = function(req, res) {
+
+exports.removePinFromBoard = function(req, res, dao) {
+    var boardId = req.params.boardId;
     var tinyId = req.params.tinyId;
-    var boardId = req.params.boardId;
-
-    mongo_form.eltByTinyId(tinyId, function(err, form){
-        mongo_board.boardById(boardId, function(err, board) {
-            if (err) return res.send("Board cannot be found.");
-            if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
-                return res.send("You must own a board to edit it.");
-            } else {
-                var pin = {
-                    pinnedDate: Date.now()
-                    , formTinyId: tinyId
-                    , formName: form.naming[0].designation
-                };
-                for (var i = 0 ; i < board.pins.length; i++) {
-                    if (JSON.stringify(board.pins[i].formTinyId) === JSON.stringify(tinyId)) {
-                        res.statusCode = 202;
-                        return res.send("Already added to the board.");
-                    }
-                }
-                board.pins.push(pin);
-                mongo_data.save(board, function() {
-                    return res.send("Added to Board");
-                });
-            }
-        });
-    });
-};
-
-exports.removePinFromBoard = function(req, res) {
-    var boardId = req.params.boardId;
-    var deTinyId = req.params.deTinyId;
     mongo_board.boardById(boardId, function(err, board) {
         if (JSON.stringify(board.owner.userId) !== JSON.stringify(req.user._id)) {
             return res.send("You must own a board to edit it.");
         } else {
             var modified;
             for (var i = 0; i < board.pins.length; i++) {
-                if (JSON.stringify(board.pins[i].deTinyId) === JSON.stringify(deTinyId)) {
+                if (JSON.stringify(board.pins[i][propMapping[dao.type].id]) === JSON.stringify(tinyId)) {
                     board.pins.splice(i, 1);
                     modified = true;
                 }
@@ -105,7 +78,7 @@ exports.pinAllToBoard = function(req, cdes, res) {
                 }
                 board.pins.push(pin);
             });
-            mongo_data.save(board, function() {
+            board.save(function() {
                 return res.send("Added to Board");
             });
         }
