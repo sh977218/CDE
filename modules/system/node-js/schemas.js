@@ -346,6 +346,7 @@ schemas.referenceDocumentSchema = {
     providerOrg: String,
     title: String,
     languageCode: String,
+    source: String,
     _id: false
 };
 schemas.dataSetSchema = {
