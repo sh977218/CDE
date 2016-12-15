@@ -1,12 +1,21 @@
-angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "userResource", function($scope)
+angular.module('cdeModule').controller('LinkedFormsCtrl', ['$scope', "FormQuickBoard", "PinModal", function($scope, QuickBoard, PinModal)
 {
+
     $scope.module = "form";
+    $scope.quickBoard = QuickBoard;
 
     $scope.searchSettings.q = '"' + $scope.elt.tinyId + '"';
 
     $scope.$on('loadLinkedForms', function() {
         $scope.reload("form");
     });
+
+    $scope.PinModal = PinModal.new('form');
+
+    $scope.includeInAccordion = [
+        "/cde/public/html/accordion/pinAccordionActions.html",
+        "/system/public/html/accordion/addToQuickBoardActions.html"
+    ];
 
     $scope.getFormText = function() {
         if (!$scope.forms || $scope.forms.length === 0) {return "There are no forms that use this CDE.";}
