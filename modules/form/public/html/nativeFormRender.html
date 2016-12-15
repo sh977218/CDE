@@ -1,30 +1,37 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
     <div style="margin: 8px 0;">
         <span class="form-inline">
-            <div style="display: inline-block" class="form-group">
+            <span class="form-group">
                 <label for="select_display_profile"><a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile: </a></label>
                 <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
                         id="select_display_profile" class="form-control"></select>
-            </div>
+            </span>
+            <span class="form-group">
+                <label for="select_display_type">Display Type: </label>
+                <select ng-model="nativeRenderType" ng-model-options="{ getterSetter: true }"
+                        ng-options="nativeRenderTypesText[p] for p in nativeRenderTypes"
+                        id="select_display_type" class="form-control mb3"></select>
+            </span>
+
         </span>
 
         <span class="pull-right">
+            <span style="margin-right: -10px">Render with: </span>
+            <button class="btn btn-default" id="button_print_follow"
+                    data-url="/form/public/html/nativeRenderWithFollowUp.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</button>
             <button class="btn btn-default" id="button_lforms"
-                    data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
-                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                Render with LForms
-            </button>
-
+                    data-url="/form/public/html/lformsRender.html?tinyId={{::elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">LForms</button>
             <button class="btn btn-default" id="button_sdc"
-                    data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                Render with SDC Profile
-            </button>
+                    data-url="/form/{{::elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC Profile</button>
 
             (Provided by
             <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
             <a href="http://wiki.siframework.org/Structured+Data+Capture+Initiative" target="_blank">ONC</a>)
         </span>
+        <div class="clearfix"></div>
     </div>
 
     <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
@@ -36,8 +43,12 @@
     <h2>{{elt.naming[0].designation}}</h2>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
-        <div ng-include="'/form/public/html/formRenderSection.html'"
+        <div ng-if="nativeRenderType === nativeRenderTypes.SHOW_IF"
+             ng-include="'/form/public/html/formRenderSection.html'"
              ng-init="formElements = []; section = elt;"></div>
+        <div ng-if="nativeRenderType === nativeRenderTypes.FOLLOW_UP"
+             ng-include="'/form/public/html/formRenderSection.html'"
+             ng-init="formElements = []; section = followForm;"></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">

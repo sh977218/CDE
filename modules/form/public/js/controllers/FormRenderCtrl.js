@@ -178,6 +178,13 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         } else return false;
     };
 
+    $scope.evaluateSkipLogicAndClear = function (rule, formElements, question) {
+        var skipLogicResult = $scope.evaluateSkipLogic(rule, formElements, question);
+
+        if (!skipLogicResult) question.question.answer = undefined;
+        return skipLogicResult;
+    };
+
     $scope.canBeDisplayedAsMatrix = function (section) {
         var result = true;
         var answerHash;
@@ -208,6 +215,80 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
     $scope.isSectionDisplayed = function (section) {
         return section.label || section.formElements.some(function (elem) {return elem.elementType === "question";});
     };
+    $scope.hasLabel = function (question) {
+        return question.label && !question.hideLabel;
+    };
+    $scope.isOneLiner = function (question, numSubQuestions) {
+        return numSubQuestions === 1 && !$scope.hasLabel(question);
+    };
+
+    $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
+    $scope.nativeRenderTypes = {
+        SHOW_IF: 0,
+        FOLLOW_UP: 1,
+        GOTO_INSTRUCTIONS: 2
+    };
+    $scope.getNativeRenderType = function () {
+        return $scope.nativeRenderType;
+    };
+    $scope.setNativeRenderType = function (type) {
+        $scope.nativeRenderType = type;
+
+        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
+                $scope.followForm = angular.copy($scope.elt);
+                transformFormToInline($scope.followForm);
+        }
+    };
+
+    $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
+
+    function transformFormToInline(form) {
+        var prevQ = "";
+        var feSize = form.formElements.length;
+        for (var i = 0; i < feSize; i++ ) {
+            var fe = form.formElements[i];
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                transformFormToInline(fe);
+                if (fe.skipLogic) delete fe.skipLogic;
+                continue;
+            }
+            var qs = getShowIfQ(fe, prevQ);
+            if (qs.length > 0) {
+                parentQ = qs[0][0];
+                qs.forEach(function (match) {
+                    var answer = parentQ.question.answers.filter(function(a){ return a.permissibleValue === match[3]; });
+                    if (answer.length) answer = answer[0];
+                    if (answer) {
+                        if (!answer.subQuestions) answer.subQuestions = [];
+                        answer.subQuestions.push(fe);
+                    }
+                });
+                form.formElements.splice(i,1);
+                feSize--;
+                i--;
+                prevQ.push(fe);
+            } else {
+                prevQ = [fe];
+            }
+            if (fe.skipLogic) delete fe.skipLogic;
+        }
+    }
+
+    function getShowIfQ(q, prevQ) {
+        if (q.skipLogic && q.skipLogic.condition) {
+            var strPieces = q.skipLogic.condition.split('"');
+            var lStrPieces = strPieces.length;
+            var accumulate = [];
+            for (var i=0; i < lStrPieces; i++) {
+                var matchQ = prevQ.filter(function(q) { return q.label === strPieces[i]; });
+                if(matchQ.length) {
+                    accumulate.push([matchQ[0], strPieces[i], strPieces[i+1], strPieces[i+2]]);
+                }
+            }
+            return accumulate;
+        }
+        return [];
+    }
 
 }]);
 

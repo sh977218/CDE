@@ -1486,6 +1486,10 @@ input.ng-invalid {
     padding-top: 0;
 }
 
+.native-question {
+    page-break-inside: avoid;
+}
+
 .native-question-label:before {
     counter-increment: section;
     content: counter(section) ". ";

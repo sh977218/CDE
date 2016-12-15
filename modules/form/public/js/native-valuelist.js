@@ -1,7 +1,7 @@
 (function () {
     'use strict';
-    angular.module('cdeNativeValueList', [])
-        .directive("cdeNativeValueList", ["$compile", function ($compile) {
+    angular.module('nativeValuelist', [])
+        .directive("nativeValuelist", ["$compile", function ($compile) {
             return {
                 restrict: "AE",
                 templateUrl: '/form/public/html/nativeValueList.html',

@@ -11,22 +11,6 @@
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk" />
 
-	<!--[if lt IE 9]>
-	<script type="text/javascript">
-		window.location = "/supportedBrowsers";
-		document.createElement("inline-edit");
-		document.createElement("inline-area-edit");
-	</script>
-	<![endif]-->
-
-	<!--[if IE]><!-->
-	<style>
-		.ieFix {
-			margin-right: 5px !important;
-		}
-	</style>
-	<!--<![endif]-->
-
 	<!-- build:css /system/public/assets/css/styles.css -->
 	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
 
@@ -42,38 +26,24 @@
 	<link rel='stylesheet' href='/components/ng-grid/ng-grid.css' />
 	<link rel='stylesheet' href='/components/jquery-ui/themes/start/jquery-ui.min.css' />
 	<!-- endbower -->
-
-	<link rel='stylesheet' href='/components/angular-send-feedback/dist/angular-send-feedback.css'/>
-	<!-- endbuild -->
-
-	<%- include config.html %>
-
 </head>
 
-<body role="application" id="top">
+<body role="application" id="top" ng-app="printModule">
+<div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto" itemscope>
+    <div ng-if="elt" ng-controller="FormRenderCtrl">
+        <h2 class="ng-cloak">{{elt.naming[0].designation}}</h2>
 
-<div ng-controller="MainCtrl" itemscope>
+        <form name="sectionLabel" role="form" class="form-horizontal">
+            <div ng-if="followForm"
+                 ng-include="'/form/public/html/formRenderSection.html'"
+                 ng-init="formElements = []; section = followForm;">
+                <div ng-view>
+                    <h2 class="text-center mt20">Loading...</h2>
+                </div>
+            </div>
+        </form>
+		<!-- Main content area -->
 
-	<%- include googleAnalytics.html %>
-
-	<!-- Navigation bar -->
-	<%- include navigation.html %>
-
-	<!-- Main content area -->
-	<div ng-view>
-		<br><br><br><br><br><br>
-		<h2 class="text-center">Loading...</h2>
-		<br><br><br><br><br><br>
-	</div>
-
-	<!-- Alerts area -->
-	<%- include alert.html %>
-
-	<!-- Footer area -->
-	<%- include footer.html %>
-
-	<div ng-controller="FeedbackBtnCtrl">
-		<angular-feedback options="feedbackOptions"></angular-feedback>
 	</div>
 </div>
 
@@ -122,11 +92,8 @@
 <script src="/components/angular-elastic/elastic.js"></script>
 <!-- endbower -->
 
-<script src="/cde/public/assets/js/socket.io.js"></script>
-<script src="/cde/public/assets/js/diff_match_patch.js"></script>
 <script src="/cde/public/assets/js/match-media.js"></script>
 <script src="/cde/public/assets/js/scrollfix.js"></script>
-<script src="/cde/public/assets/js/FileSaver.js"></script>
 <script src="/system/public/js/ng-display-object.js"></script>
 <script src="/system/public/js/compare-primitive.js"></script>
 <script src="/system/public/js/compare-primitive-array.js"></script>
@@ -135,7 +102,6 @@
 <script src="/system/public/js/ng-compare-side-by-side.js"></script>
 <script src="/system/public/js/ng-text-truncate.js"></script>
 <script src="/article/public/js/articleConfig.js"></script>
-
 
 <script src="/board/public/js/angularTemplates.js"></script>
 <script src="/article/public/js/angularTemplates.js"></script>
@@ -267,15 +233,7 @@
 <script src="/form/public/js/controllers/UpdateCdeRefVersionCtrl.js"></script>
 <script src="/form/shared/formShared.js"></script>
 <script src="/form/public/js/controllers/FormCopyModalCtrl.js"></script>
-
-<!-- Board Controllers -->
-<script src="/board/public/js/controllers/ShareBoardCtrl.js"></script>
-<script src="/board/public/js/controllers/BoardViewCtrl.js"></script>
-<script src="/board/public/js/controllers/SelectBoardModalCtrl.js"></script>
-
-<script src="/system/public/js/bootstrapApp.js"></script>
 <!-- endbuild -->
-
 
 <script type="application/ld+json">
         {
@@ -304,6 +262,98 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
+</script>
+
+<script type="text/javascript">
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
+        .controller('PrintCtrl',
+            ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
+				'$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$q', 'Alert',
+				'Form', 'isAllowedModel',
+				function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
+						  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $q, Alert,
+						  Form, isAllowedModel) {
+                //TODO: Don't use the following methods. Use $scope.Alert instead.
+                $scope.addAlert = Alert.addAlert;
+                $scope.closeAlert = Alert.closeAlert;
+                $scope.alerts = Alert.mapAlerts();
+
+                $scope.Alert = Alert;
+
+                function fetchWholeForm(form, callback) {
+                    var maxDepth = 8;
+                    var depth = 0;
+                    var loopFormElements = function (form, cb) {
+                        depth++;
+                        if (form.formElements) {
+                            async.forEach(form.formElements, function (fe, doneOne) {
+                                if (fe.elementType === 'form') {
+                                    if (depth < maxDepth) {
+                                        $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
+                                            .then(function (result) {
+                                                fe.formElements = result.data.formElements;
+                                                loopFormElements(fe, function () {
+                                                    depth--;
+                                                    doneOne();
+                                                });
+                                            });
+                                    }
+                                    else doneOne();
+                                } else if (fe.elementType === 'section') {
+                                    loopFormElements(fe, function () {
+                                        doneOne();
+                                    });
+                                } else {
+                                    doneOne();
+                                }
+                            }, function doneAll() {
+                                cb();
+                            });
+                        }
+                        else {
+                            cb();
+                        }
+                    };
+                    loopFormElements(form, function () {
+                        callback(form);
+                    });
+                }
+
+                $scope.deferredEltLoaded = $q.defer();
+                var query = {formId: getUrlParameter("tinyId"), type: 'tinyId'};
+
+                Form.get(query, function (form) {
+                    var formCopy = angular.copy(form);
+                    fetchWholeForm(formCopy, function (wholeForm) {
+                        $scope.elt = wholeForm;
+                        if (exports.hasRole(userResource.user, "FormEditor")) {
+                            isAllowedModel.setCanCurate($scope);
+                        }
+                        $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
+                            return c.tinyId;
+                        });
+                        isAllowedModel.setDisplayStatusWarning($scope);
+                        //setDefaultValues();
+                        $scope.deferredEltLoaded.resolve();
+                    });
+                }, function () {
+                    $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
+                });
+            }]);
 </script>
 
 </body>

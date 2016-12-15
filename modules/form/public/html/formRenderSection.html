@@ -18,11 +18,10 @@
     <div ng-class="{'panel-body':isSectionDisplayed(section)}">
         <div ng-if="selection.selectedProfile.displayInstructions" class="row">
             <div class="col-md-12" ng-switch="section.instructions.valueFormat">
-            <span ng-switch-default class="text-muted">
-                <span ng-bind="section.instructions.value"></span></span>
-            <span ng-switch-when="html">
-                <span ng-bind-html="section.instructions.value"></span>
-            </span>
+                <span ng-switch-default class="text-muted">
+                    <span ng-bind="section.instructions.value"></span></span>
+                <span ng-switch-when="html">
+                    <span ng-bind-html="section.instructions.value"></span></span>
             </div>
         </div>
         <hr ng-if="displayInstruction"/>
@@ -32,7 +31,7 @@
             </div>
             <div ng-switch-default>
                 <div ng-repeat="formElement in section.formElements track by $index" class="row">
-                    <div ng-if="formElement.elementType === 'question'" class="col-md-12">
+                    <div ng-if="formElement.elementType === 'question'" class="col-md-12 native-question">
                         <div ng-include="'/form/public/html/formRenderQuestion.html'"
                              ng-init="formElements = section.formElements; question = formElement; question.question.answer = question.question.defaultAnswer"></div>
                     </div>
