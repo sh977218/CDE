@@ -1,4 +1,4 @@
-<div ng-repeat="elt in forms track by elt.tinyId">
+<div ng-repeat="(eltIndex, elt) in forms track by elt.tinyId">
 
     <div ng-if="$index === cutoffIndex" style="margin-top:40px">
         <h3>More results</h3>
@@ -10,13 +10,6 @@
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"
                id="linkToElt_{{$index}}"></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
-            <a href tabindex="0" class="nonLinkAnchor" ng-click="interruptEvent($event);PinModal.openPinModal(elt)">
-                <i id="pinToBoard_{{$index}}" class="fa fa-thumb-tack hand-cursor" title="Attach to Board"
-                   role="link"> </i></a>
-            <a href tabindex="0" class="nonLinkAnchor" ng-if="formQuickBoard.canAddElt(elt)"
-               ng-click="formQuickBoard.add(elt)">
-                <i class="fa fa-plus-square-o hand-cursor" title="Add to Quick Board" id="addToCompare_{{$index}}"
-                   role="link"></i></a>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
                 <span ng-bind-html="elt.highlight.matchedBy"></span></strong></small>
