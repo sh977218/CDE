@@ -36,8 +36,7 @@
     <h2>{{elt.naming[0].designation}}</h2>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
-        <div ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElements = []; "></div>
+        <div ng-include="'/form/public/html/formRenderSection.html'"></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">

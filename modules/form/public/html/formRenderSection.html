@@ -1,4 +1,4 @@
-<div ng-show="evaluateSkipLogic(formElement, formElements)"
+<div ng-show="evaluateSkipLogic(formElement.skipLogic.condition, formElements, formElement)"
      ng-class="[{'panel panel-default':isSectionDisplayed(formElement)}, 'native-section']" id="formRenderSection_{{formElement.label}}">
     <div ng-class="{'panel-heading':isSectionDisplayed(formElement)}">
         <div class="row">
@@ -34,7 +34,7 @@
                 <div ng-repeat="formElement in formElement.formElements track by $index" class="row">
                     <div ng-if="formElement.elementType === 'question'" class="col-md-12">
                         <div ng-include="'/form/public/html/formRenderQuestion.html'"
-                             ng-init="formElements = formElement.formElements;"></div>
+                             ng-init="formElements = $parent.$parent.formElement.formElements;"></div>
                     </div>
                     <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'" class="col-md-12"
                          ng-include="'/form/public/html/formRenderSection.html'"
