@@ -56,7 +56,7 @@ exports.createIndexJson = {
                 }
                 , "tinyId": {"type": "string", "index": "not_analyzed"}
                 , "updated": {"type": "date", "index": "no"}
-                , "updatedBy": {properties: {"username": {"type": "string", "index": "no"}}}
+                , "updatedBy": {properties: {"username": {"type": "string"}}}
                 , "changeNote": {"type": "string", "index": "no"}
                 , "attachments": {
                     properties: {

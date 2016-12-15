@@ -14,7 +14,7 @@ public class MyForm {
     private String url = "";
     private String crfModuleGuideline = "";
     private String description = "";
-    private boolean copyRight = false;
+    private boolean copyright = false;
     private String downloadLink = "";
     private String formId = "";
     private ArrayList<Cde> cdes = new ArrayList<Cde>();
@@ -49,6 +49,7 @@ public class MyForm {
         diseaseNameSet.add("Spinal Muscular Atrophy");
         diseaseNameSet.add("Stroke");
         diseaseNameSet.add("Traumatic Brain Injury");
+        diseaseNameSet.add("Chiari I Malformation");
 
         diseaseNameMap.put("Amyotrophic Lateral Sclerosis", "Amyotrophic Lateral Sclerosis");
         diseaseNameMap.put("Congenital Muscular Dystrophy", "Congenital Muscular Dystrophy");
@@ -69,6 +70,7 @@ public class MyForm {
         diseaseNameMap.put("Spinal Muscular Atrophy", "Spinal Muscular Atrophy");
         diseaseNameMap.put("Stroke", "Stroke");
         diseaseNameMap.put("Traumatic Brain Injury", "Traumatic Brain Injury");
+        diseaseNameMap.put("Chiari I Malformation", "Chiari I Malformation");
     }
 
     public MyForm() {
@@ -122,12 +124,12 @@ public class MyForm {
         this.description = description;
     }
 
-    public boolean isCopyRight() {
-        return copyRight;
+    public boolean isCopyright() {
+        return copyright;
     }
 
-    public void setCopyRight(boolean copyRight) {
-        this.copyRight = copyRight;
+    public void setCopyright(boolean copyright) {
+        this.copyright = copyright;
     }
 
     public String getDownloadLink() {
@@ -228,7 +230,7 @@ public class MyForm {
                 ", url='" + url + '\'' +
                 ", crfModuleGuideline='" + crfModuleGuideline + '\'' +
                 ", description='" + description + '\'' +
-                ", copyRight=" + copyRight +
+                ", copyright=" + copyright +
                 ", downloadLink='" + downloadLink + '\'' +
                 ", formId='" + formId + '\'' +
                 ", cdes=" + cdes +
