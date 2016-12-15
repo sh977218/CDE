@@ -78,9 +78,15 @@ angular.module('cdeModule').controller('BoardViewCtrl',
             };
 
             $scope.unpin = function (pin) {
-                $http['delete']("/pincde/" + pin.deTinyId + "/" + $scope.board._id).then(function () {
+                var url;
+                if (pin.deTinyId) {
+                    url = "/pin/cde/" + pin.deTinyId + "/" + $scope.board._id;
+                } else if (pin.formTinyId) {
+                    url = "/pin/form/" + pin.formTinyId + "/" + $scope.board._id;
+                }
+                $http['delete'](url).then(function () {
                     $scope.reload();
-                    Alert.addAlert("success", "CDE Unpinned.");
+                    Alert.addAlert("success", "Unpinned.");
                 });
             };
 

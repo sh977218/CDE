@@ -53,7 +53,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Saved");
         closeAlert();
         setLowStatusesVisible();
-        waitForESUpdate();
         try {
             goToEltByName(eltName);
         } catch (TimeoutException e) {

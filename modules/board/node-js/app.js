@@ -15,6 +15,7 @@ var elastic = require('../../cde/node-js/elastic')
     , email = require('../../system/node-js/email')
     , adminItemSvc = require('../../system/node-js/adminItemSvc.js')
     , dbLogger = require('../../system/node-js/dbLogger.js')
+    , boardsvc = require('./boardsvc')
     ;
 
 exports.init = function (app, daoManager) {
@@ -30,6 +31,22 @@ exports.init = function (app, daoManager) {
         mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
         });
+    });
+
+    app.delete('/pin/:dao/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            boardsvc.removePinFromBoard(req, res, daoManager.getDao(req.params.dao));
+        } else {
+            res.send("Please login first.");
+        }
+    });
+
+    app.put('/pin/:dao/:tinyId/:boardId', function (req, res) {
+        if (req.isAuthenticated()) {
+            boardsvc.pinToBoard(req, res, daoManager.getDao(req.params.dao));
+        } else {
+            res.send("Please login first.");
+        }
     });
 
     function boardMove(req, res, moveFunc) {
