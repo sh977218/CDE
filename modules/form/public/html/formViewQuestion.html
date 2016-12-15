@@ -1,5 +1,5 @@
 <div uib-accordion close-others="false" ng-class="accordionListStyle" id="formQuestion_{{question.label}}">
-    <div uib-accordion-group is-open="true">
+    <div uib-accordion-group is-open="true" is-disabled="true">
         <div uib-accordion-heading>
             <div class="row" ng-class="{'bg-warning': question.question.cde.outdated}"
                  ng-click="question.updatedSkipLogic = false">
@@ -17,6 +17,14 @@
                     </span>
                     <span ng-if="!question.hideLabel" ng-bind-html="question.label | placeHoldEmpty"
                           id="question_accordion_{{sectionIndex}}_{{questionIndex}}" class="hand-cursor"></span>
+                    <div ng-if="question.label || question.edit" class="row">
+                        <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
+                        <div class="col-sm-7" id="dd_question_title_{{$index}}">
+                            <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
+                               ng-click="openNameSelect(question,section)"></i>
+                            {{question.label | placeHoldEmpty}}
+                        </div>
+                    </div>
                     <span ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
                         <small>(part of score)</small>
                     </span>
@@ -39,14 +47,6 @@
            ng-click="question.edit = !question.edit;"></i>
         <div class="row questionAccordionContent">
             <div class="col-sm-12">
-                <div ng-if="question.label || question.edit" class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
-                    <div class="col-sm-7" id="dd_question_title_{{$index}}">
-                        <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
-                           ng-click="openNameSelect(question,section)"></i>
-                        {{question.label | placeHoldEmpty}}
-                    </div>
-                </div>
                 <div ng-if="question.instructions.value || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
