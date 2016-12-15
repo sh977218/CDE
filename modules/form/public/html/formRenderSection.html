@@ -38,7 +38,7 @@
                     </div>
                     <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'" class="col-md-12"
                          ng-include="'/form/public/html/formRenderSection.html'"
-                         ng-init="formElements = formElement.formElements; ">
+                         ng-init="formElements = $parent.$parent.formElement.formElements; ">
                     </div>
                 </div>
             </div>
