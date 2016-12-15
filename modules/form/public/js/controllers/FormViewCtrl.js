@@ -232,8 +232,10 @@ angular.module('formModule').controller
                         loopFormElements(fe, function () {
                             doneOne();
                         });
-                    } else {
+                    } else if (fe.elementType === 'question') {
                         doneOne();
+                    } else {
+                        $scope.addAlert("warning", "Unknown formElement.elementType" + fe.elementType);
                     }
                 }, function doneAll() {
                     cb();
@@ -577,21 +579,5 @@ angular.module('formModule').controller
             }
         });
     };
-
-        $scope.allProperties = ['uoms', 'required', 'editable', 'multiselect', 'answers', 'defaultAnswer'];
-        $scope.addProperty = function (question, event) {
-            /*
-             interruptEvent(event);
-             event.stopPropagation();
-             */
-            Object.keys(question).forEach(function (k) {
-                if (question[k] && angular.equals({}, question[k])) {
-                    question[k].show = true;
-                }
-            });
-
-         var dropdown =    Object.keys(question).filter(function(o){return o.show});
-            $scope.stageElt();
-        };
 
 }]);

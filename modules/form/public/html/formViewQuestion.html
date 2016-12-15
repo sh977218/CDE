@@ -35,12 +35,11 @@
                 </div>
             </div>
         </div>
-        <i class="glyphicon glyphicon-plus hand-cursor pull-right"
-           ng-click="addProperty(question,$event)"
-           title="Remove question" id="addProperty_q_{{$index}}"></i>
+        <i class="fa fa-ellipsis-h hand-cursor pull-right" title="edit question" id="edit_question_{{$index}}"
+           ng-click="question.edit = !question.edit;"></i>
         <div class="row questionAccordionContent">
             <div class="col-sm-12">
-                <div ng-if="question.label" class="row">
+                <div ng-if="question.label || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
                     <div class="col-sm-7" id="dd_question_title_{{$index}}">
                         <i ng-show="canCurate" class="fa fa-pencil" title="Change question label"
@@ -48,7 +47,7 @@
                         {{question.label | placeHoldEmpty}}
                     </div>
                 </div>
-                <div ng-if="question.instructions.value" class="row">
+                <div ng-if="question.instructions.value || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
                     <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
                         <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
@@ -58,20 +57,20 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="question.question.required" class="row">
+                <div ng-if="question.question.required || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Required:</div>
                     <div class="col-sm-7" id="dd_question_required_{{$index}}">
                         <input type="checkbox" ng-model="question.question.required" ng-disabled="!canCurate"
                                ng-click="stageElt()"/>
                     </div>
                 </div>
-                <div ng-if="question.question.scoreFormula" class="row" ng-if="isScore(question)">
+                <div ng-if="question.question.scoreFormula || question.edit" class="row" ng-if="isScore(question)">
                     <div class="col-sm-2 questionSectionLabel text-right">Score:</div>
                     <div class="col-sm-7" id="dd_question_score_{{$index}}">
                         <span ng-bind="question.question.scoreFormula"></span>
                     </div>
                 </div>
-                <div ng-if="question.cardinality" class="row">
+                <div ng-if="question.cardinality || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                     <div class="col-sm-7" id="dd_q_card_{{$index}}">
                         <div ng-show="editCardMode">
@@ -93,7 +92,7 @@
                     </div>
                 </div>
                 <div class="row"
-                     ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent || question.show">
+                     ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent || question.edit">
                     <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                     <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}"
                          ng-class="{'has-error':question.skipLogic.validationError}">
@@ -108,13 +107,13 @@
                         <span ng-bind="question.skipLogic.validationError"></span>
                     </div>
                 </div>
-                <div ng-if="question.question.datatype" class="row">
+                <div ng-if="question.question.datatype || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
                     <div class="col-sm-7" id="dd_datatype_{{$index}}">
                         {{question.question.datatype | placeHoldEmpty }}
                     </div>
                 </div>
-                <div ng-if="question.question.datatype ==='Number'">
+                <div ng-if="question.question.datatype ==='Number' || question.edit">
                     <div class="row">
                         <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
                         <div class="col-sm-7" id="dd_minimal_{{$index}}">
@@ -128,14 +127,15 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="question.question.multiselect && question.question.datatype === 'Value List'" class="row">
+                <div ng-if="question.question.multiselect && question.question.datatype === 'Value List' || question.edit"
+                     class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>
                     <div class="col-sm-7" id="dd_question_multi_{{$index}}">
                         <input type="checkbox" ng-model="question.question.multiselect" ng-disabled="!canCurate"
                                ng-click="stageElt()"/>
                     </div>
                 </div>
-                <div ng-if="question.question.uoms.length > 0 " class="row">
+                <div ng-if="question.question.uoms.length > 0 || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Units of Measure:</div>
                     <div class="col-sm-7" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
                         <div ng-switch-when="true">
@@ -150,7 +150,7 @@
                         </button>
                     </div>
                 </div>
-                <div ng-if="question.question.defaultAnswer" class="row">
+                <div ng-if="question.question.defaultAnswer || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
                     <div class="col-sm-7" ng-switch="question.question.datatype === 'Value List'"
                          id="dd_q_defaultAnswer_{{$index}}">
@@ -175,7 +175,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="row answerList" ng-if="question.question.datatype === 'Value List'">
+                <div class="row answerList" ng-if="question.question.datatype === 'Value List' || question.edit">
                     <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
                     <div class="col-sm-7">
                         <ui-select multiple ng-model="question.question.answers" theme="select2" search-enabled=false
