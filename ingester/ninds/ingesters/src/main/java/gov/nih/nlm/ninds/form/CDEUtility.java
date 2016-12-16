@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +17,17 @@ public class CDEUtility {
 
     public void checkDataQuality(MongoOperations mongoOperation, String url) {
         List dataTypeList = mongoOperation.getCollection("ninds").distinct("cdes.dataType");
-        if (dataTypeList.size() > 4) {
+        if (dataTypeList.size() > Consts.maxDatatypeSize) {
             System.out.println("data type is not good. size: " + dataTypeList.size() + " url:" + url);
             System.exit(1);
         }
         List inputRestrictionsList = mongoOperation.getCollection("ninds").distinct("cdes.inputRestrictions");
-        if (inputRestrictionsList.size() > 3) {
+        if (inputRestrictionsList.size() > Consts.maxInputRestrictionsSize) {
             System.out.println("inputRestrictionsList is not good. size: " + inputRestrictionsList.size() + " url:" + url);
             System.exit(1);
         }
         List distinctDiseaseNameList = mongoOperation.getCollection("ninds").distinct("diseaseName");
-        if (distinctDiseaseNameList.size() > 19) {
+        if (distinctDiseaseNameList.size() > Consts.diseaseNum) {
             System.out.println("distinct diseaseName is not good. size: " + distinctDiseaseNameList.size() + " url:" + url);
             System.exit(1);
         }
@@ -51,7 +52,6 @@ public class CDEUtility {
     }
 
     public String cleanFormName(String s) {
-        //.replace(" - Paper version", " Paper version")
         String result = s.replace("\"", " ").replace("©", "").replace("™", "").trim();
         String[] badStrings = {
                 "For additional information please visit NINDS-Coriell",
@@ -85,109 +85,28 @@ public class CDEUtility {
 
     public void getCdesList(WebDriver driver, MyForm form) {
         String selector = "//tbody[tr/td/div[text() = 'CDE ID']]/tr";
+
         List<WebElement> trs = driver.findElements(By.xpath(selector));
+
+        List<WebElement> headerTds = trs.get(1).findElements(By.xpath("td"));
+        List<String> headers = new ArrayList();
+        for (WebElement hTd : headerTds) {
+            headers.add(hTd.getText().replace("\"", " ").trim());
+        }
+
         for (int i = 2; i < trs.size(); i++) {
-            WebElement tr = trs.get(i);
-            List<WebElement> tds = tr.findElements(By.cssSelector("td"));
-            int index = 1;
             Cde cde = new Cde();
-            int noise = 0;
-            for (WebElement td : tds) {
-                String text = td.getText().replace("\"", " ").trim();
-                if (index == 1) {
-                    cde.cdeId = text;
+            WebElement tr = trs.get(i);
+            List<WebElement> tds = tr.findElements(By.xpath("td"));
+            for (int j = 0; j < headers.size(); j++) {
+                String text = tds.get(j).getText().replace("\"", " ").trim();
+                try {
+                    String cdeField = Consts.fieldPropertyMap.get(headers.get(j));
+                    Field field = cde.getClass().getDeclaredField(cdeField);
+                    field.set(cde, text);
+                } catch (Exception e) {
+                    // do something here.
                 }
-                if (index == 2) {
-                    cde.cdeName = text;
-                }
-                if (index == 3) {
-                    cde.variableName = text;
-                }
-                if (index == 4) {
-                    cde.definitionDescription = text;
-                }
-                if (index == 5) {
-                    cde.questionText = text;
-                }
-                if (index == 6) {
-                    cde.permissibleValue = text;
-                }
-                if (index == 7) {
-                    cde.permissibleDescription = text;
-                }
-                if (index == 8) {
-                    cde.dataType = text;
-                }
-                if (index == 9) {
-                    cde.instruction = text;
-                }
-                if (index == 10) {
-                    cde.reference = text;
-                }
-                if (index == 11) {
-                    cde.population = text;
-                }
-                if (index == 12) {
-                    cde.classification = text;
-                }
-                if (index == 13) {
-                    cde.versionNum = text;
-                }
-                if (index == 14) {
-                    cde.versionDate = text;
-                }
-                if (index == 15) {
-                    cde.aliasesForVariableName = text;
-                }
-                if (index == 16) {
-                    cde.crfModuleGuideline = text;
-                }
-                if (index == 17) {
-                    List<WebElement> table = td.findElements(By.cssSelector("table"));
-                    if (table.size() > 0) {
-                        cde.copyRight = "true";
-                        noise = 1;
-                    }
-                }
-                if (index == 18 + noise) {
-                    cde.subDomain = text;
-                    form.setSubDomainName(text);
-                }
-                if (index == 19 + noise) {
-                    cde.domain = text;
-                    form.setDomainName(text);
-                }
-                if (index == 20 + noise) {
-                    cde.previousTitle = text;
-                }
-                if (index == 21 + noise) {
-                    cde.size = text;
-                }
-                if (index == 22 + noise) {
-                    cde.inputRestrictions = text;
-                }
-                if (index == 23 + noise) {
-                    cde.minValue = text;
-                }
-                if (index == 24 + noise) {
-                    cde.maxValue = text;
-                }
-                if (index == 25 + noise) {
-                    cde.measurementType = text;
-                }
-                if (index == 26 + noise) {
-                    cde.loincId = text;
-                }
-                if (index == 27 + noise) {
-                    cde.snomed = text;
-                }
-                if (index == 28 + noise) {
-                    cde.cadsrId = text;
-                }
-                if (index == 29 + noise) {
-                    cde.cdiscId = text;
-                }
-                index++;
             }
             form.getCdes().add(cde);
         }

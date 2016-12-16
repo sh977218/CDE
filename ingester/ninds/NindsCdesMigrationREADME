@@ -12,7 +12,7 @@ mongorestore  --host=qvlbmongodb02 -d migration -c dataelements dataelements.bso
 3. export NODE_ENV=qa-live
 
 4. run updateCde.js as
-node ingester/updateCdes.js
+node ingester/updateNindsCdes.js
 
 5 verify the report:
 report:

@@ -9,20 +9,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NindsFormLoader implements Runnable {
     MongoOperations mongoOperation;
-    Map<String, String> diseaseMap = new HashMap<String, String>();
+    Map<String, String> diseaseMap = Consts.diseaseMap;
     String url = "https://commondataelements.ninds.nih.gov/CRF.aspx";
     WebDriver driver;
     WebDriver classifDriver;
@@ -31,13 +30,13 @@ public class NindsFormLoader implements Runnable {
     int pageEnd;
     MyLog log = new MyLog();
     CDEUtility cdeUtility = new CDEUtility();
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
 
-    public NindsFormLoader(int ps, int pe, MongoOperations mongoOperation, Map diseaseMap) throws IOException, AWTException {
+    public NindsFormLoader(int pStart, int pEnd) throws IOException, AWTException {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
-        this.pageStart = ps;
-        this.pageEnd = pe;
-        this.mongoOperation = mongoOperation;
-        this.diseaseMap = diseaseMap;
+        this.pageStart = pStart;
+        this.pageEnd = pEnd;
+        this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
         this.log.setPageStart(this.pageStart);
         this.log.setPageEnd(this.pageEnd);
     }
@@ -45,7 +44,9 @@ public class NindsFormLoader implements Runnable {
     @Override
     public void run() {
         this.driver = new ChromeDriver();
+        this.driver.manage().window().maximize();
         this.classifDriver = new ChromeDriver();
+        this.classifDriver.manage().window().maximize();
         this.wait = new WebDriverWait(driver, 120);
         long startTime = System.currentTimeMillis();
         goToNindsSiteAndGoToPageOf(pageStart);
@@ -65,7 +66,7 @@ public class NindsFormLoader implements Runnable {
 
     private void goToNindsSiteAndGoToPageOf(int pageStart) {
         driver.get(url);
-        textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS CDE Project Officer, Joanne Odenkirchen, MPH.");
+        textPresent("If you have difficulty accessing either the proprietary instruments/scales or the external links, please contact the NINDS");
         hangon(10);
         Select pageSizeSelect = new Select(findElement(By.id("ddlPageSize")));
         pageSizeSelect.selectByVisibleText("100");
@@ -74,37 +75,38 @@ public class NindsFormLoader implements Runnable {
         hangon(5);
         findElement(By.id("ContentPlaceHolder1_btnSearch")).click();
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(By.id("ContentPlaceHolder1_btnClear")));
-        textPresent("2605 items found.");
+        textPresent("2712 items found.");
         if (pageStart > 15) {
             hangon(10);
             findElement(By.id("ContentPlaceHolder1_lbtnLast")).click();
-            textPresent("Page: 27 of 27");
+            textPresent("Page: 28 of 28");
             goToPageFromLast(pageStart);
         } else {
             for (int i = 1; i < pageStart; i++) {
                 hangon(10);
                 findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
-                textPresent("Page: " + i + " of 27");
+                textPresent("Page: " + i + " of 28");
             }
         }
     }
 
     private void goToPageFromLast(int pageStart) {
-        for (int n = 27; n > pageStart; n--) {
+        for (int n = 28; n > pageStart; n--) {
             findElement(By.id("ContentPlaceHolder1_lbtnPrev")).click();
             int num = n - 1;
-            String s = "Page: " + num + " of 27";
+            String s = "Page: " + num + " of 28";
             textPresent(s);
         }
     }
 
     private void findAndSaveToForms(int pageStart, int pageEnd) {
         System.out.println("running page from " + pageStart + " to " + pageEnd);
-        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 27";
+        String textToBePresent = "Page: " + String.valueOf(pageStart) + " of 28";
         textPresent(textToBePresent);
+        hangon(5);
         List<WebElement> trs = driver.findElements(By.xpath("//*[@id='ContentPlaceHolder1_dgCRF']/tbody/tr"));
         for (int i = 1; i < trs.size(); i++) {
-            List<WebElement> tds = trs.get(i).findElements(By.cssSelector("td"));
+            List<WebElement> tds = trs.get(i).findElements(By.xpath("td"));
             MyForm form = new MyForm();
             form.setPage(pageStart);
             form.setRow(i);
@@ -122,9 +124,9 @@ public class NindsFormLoader implements Runnable {
                             form.setFormId(id.replace("NOC-", ""));
                         else
                             form.setFormId(downloadLink.split("CrfId=")[1]);
-                        List<WebElement> copyRightClass = td.findElements(By.className("copyright"));
-                        if (copyRightClass.size() > 0) {
-                            form.setCopyRight(true);
+                        List<WebElement> copyrightClass = td.findElements(By.className("copyright"));
+                        if (copyrightClass.size() > 0) {
+                            form.setCopyright(true);
                         }
                     }
                     form.setCrfModuleGuideline(cdeUtility.cleanFormName(text));
@@ -151,27 +153,8 @@ public class NindsFormLoader implements Runnable {
                 index++;
             }
             getDomainAndSubDomain(form);
-
-            Query searchDuplicatedFormQuery = new Query(Criteria.where("formId").is(form.getFormId())
-                    .and("crfModuleGuideline").is(form.getCrfModuleGuideline())
-                    .and("description").is(form.getDescription())
-                    .and("copyRight").is(form.isCopyRight())
-                    .and("downloadLink").is(form.getDownloadLink())
-                    .and("versionNum").is(form.getVersionNum())
-                    .and("versionDate").is(form.getVersionDate())
-                    .and("diseaseName").is(form.getDiseaseName())
-                    .and("subDiseaseName").is(form.getSubDiseaseName())
-                    .and("domainName").is(form.getDomainName())
-                    .and("subDomainName").is(form.getSubDomainName()));
-            MyForm existingForm = mongoOperation.findOne(searchDuplicatedFormQuery, MyForm.class);
-            if (existingForm != null) {
-                this.log.info.add("search with query: " + searchDuplicatedFormQuery.toString());
-                this.log.info.add("found existing form in migration: " + existingForm);
-                this.log.info.add("found form on web:" + form);
-            } else {
-                form.setCreateDate(new Date());
-                mongoOperation.save(form);
-            }
+            form.setCreateDate(new Date());
+            mongoOperation.save(form);
         }
         if (pageStart < pageEnd) {
             findElement(By.id("ContentPlaceHolder1_lbtnNext")).click();
@@ -182,11 +165,11 @@ public class NindsFormLoader implements Runnable {
 
 
     private void getDomainAndSubDomain(MyForm form) {
-        String crfModuleGuideline = form.getCrfModuleGuideline().trim();
+        String formId = form.getFormId().trim();
         classifDriver.get("https://commondataelements.ninds.nih.gov/" + diseaseMap.get(form.getDiseaseName()));
-        String subDomianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
-        String domianSelector = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::a[1]";
-        String domianSelector1 = "//*[normalize-space(text())=\"" + crfModuleGuideline + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
+        String subDomianSelector = "//*[@title=\"" + formId + "\"]/ancestor::tr/preceding-sibling::tr[th[@class=\"subrow\"]][1]";
+        String domianSelector = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::a[1]";
+        String domianSelector1 = "//*[@title=\"" + formId + "\"]/ancestor::table/preceding-sibling::h3[1]/a";
         List<WebElement> subDomains = classifDriver.findElements(By.xpath(subDomianSelector));
         if (subDomains.size() > 0)
             form.setSubDomainName(cdeUtility.cleanSubDomain(subDomains.get(0).getText().trim()));
@@ -239,7 +222,7 @@ public class NindsFormLoader implements Runnable {
         try {
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         } catch (Exception e) {
-            System.out.println("tried once fail. try another. pageStart :" + pageStart);
+            System.out.println("tried finding '" + text + "' once fail. try another. pageStart :" + pageStart);
             wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("BODY"), text));
         }
         return true;
