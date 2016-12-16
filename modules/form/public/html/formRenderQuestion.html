@@ -25,7 +25,7 @@
                         <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
                                datepicker-options="formElement.question.dateOptions" is-open="formElement.question.opened"
                                type="text" ng-required="formElement.question.required" alt-input-formats="['yyyy']"
-                               ng-model="formElement.question.answer"/>
+                               ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"/>
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default"
                                     ng-click="formElement.question.opened = true">
