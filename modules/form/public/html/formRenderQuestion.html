@@ -37,7 +37,9 @@
                         <input type="number" class="form-control" ng-required="formElement.question.required"
                                ng-model="formElement.question.answer" name="{{formElement.question.cde.tinyId}}"
                                min="{{formElement.question.datatypeNumber.minValue}}"
-                               max="{{formElement.question.datatypeNumber.maxValue}}"/>
+                               max="{{formElement.question.datatypeNumber.maxValue}}"
+                               ng-disabled="!formElement.question.editable"
+                        />
                         <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                                ng-repeat="uom in formElement.question.uoms">
                             <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"> {{uom}}
@@ -45,10 +47,11 @@
                     </div>
                     <div ng-switch-default ng-class="[{'input-group': formElement.question.uoms.length > 0}, 'native-box']">
                         <input type="text" class="form-control" ng-required="formElement.question.required"
-                               ng-model="formElement.question.answer" name=""/>
+                               ng-model="formElement.question.answer" name="" ng-disabled="!formElement.question.editable"/>
                         <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                                ng-repeat="uom in formElement.question.uoms">
-                            <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"> {{uom}}
+                            <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
+                                   ng-disabled="!formElement.question.editable"> {{uom}}
                         </label>
                     </div>
 
