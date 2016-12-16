@@ -2,7 +2,7 @@ var async = require('async'),
     NindsModel = require('./../createMigrationConnection').MigrationNindsModel,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    FormModel = require('./../createMigrationConnection').MigrationFormModel,
+    MigrationForm = require('./../createMigrationConnection').MigrationFormModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
@@ -136,8 +136,8 @@ function createForm(ninds) {
         createdBy: {username: 'batchloader'},
         created: importDate,
         imported: importDate,
-        isCopyrighted: ninds.get('copyRight'),
-        noRenderAllowed: ninds.get('copyRight'),
+        isCopyrighted: ninds.get('copyright'),
+        noRenderAllowed: ninds.get('copyright'),
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
         naming: naming,
@@ -148,7 +148,7 @@ function createForm(ninds) {
     };
 }
 function run() {
-    FormModel.remove({}, function () {
+    MigrationForm.remove({}, function () {
         var stream = NindsModel.find({}).stream();
         stream.on('data', function (ninds) {
             stream.pause();
@@ -156,7 +156,7 @@ function run() {
             var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '')
                 .trim();
             ninds.set('crfModuleGuideline', filterName);
-            FormModel.find({'ids.id': formId}, function (err, existingForms) {
+            MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
                 if (err) throw err;
                 if (existingForms.length === 0) {
                     var newForm = createForm(ninds);
@@ -203,7 +203,7 @@ function run() {
                         });
                     }, function doneAll() {
                         console.log('finished all cdes in form ' + formId);
-                        var newFormObj = new FormModel(newForm);
+                        var newFormObj = new MigrationForm(newForm);
                         newFormObj.save(function (err) {
                             if (err) {
                                 console.log(err);
