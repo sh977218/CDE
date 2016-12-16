@@ -1,35 +1,36 @@
-<div class="row">
-    <div ng-if="numSubQuestions || hasLabel(question)" class="col-xs-1"></div>
-    <fieldset ng-if="!question.question.multiselect" ng-class="[{'col-xs-11': numSubQuestions || hasLabel(question)}, {'col-xs-12':!(numSubQuestions || hasLabel(question))}]">
-        <div class="row">
-            <div ng-repeat="pv in answerlist" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
-                <label class="radio-inline">
-                    <input ng-model="question.question.answer"
-                           ng-required="question.question.required"
-                           type="radio"
-                           ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-                <div ng-if="pv.subQuestions"
-                     ng-repeat="question in pv.subQuestions"
-                     ng-include="'/form/public/html/formRenderQuestion.html'"
-                     ng-init="numSubQuestions = pv.subQuestions.length"></div>
-                <div class="clearfix" ng-if="$index%4==3"></div>
-            </div>
+<fieldset ng-if="!question.question.multiselect">
+    <div class="row">
+        <div ng-repeat="pv in answerlist" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
+            <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
+                   class="radio-inline">
+                <input ng-model="question.question.answer"
+                       ng-required="question.question.required"
+                       type="radio"
+                       ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
+            <div ng-if="pv.subQuestions"
+                 ng-repeat="question in pv.subQuestions"
+                 ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-init="numSubQuestions = pv.subQuestions.length"
+                 ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
+            <div class="clearfix" ng-if="$index%4==3"></div>
         </div>
-    </fieldset>
-    <div ng-if="question.question.multiselect" ng-class="[{'col-xs-11': numSubQuestions || hasLabel(question)}, {'col-xs-12':!(numSubQuestions || hasLabel(question))}]">
-        <div class="row">
-            <div ng-repeat="pv in question.question.answers" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
-                <label class="checkbox-inline">
-                    <input checklist-model="question.question.answer"
-                           ng-required="question.question.required"
-                           type="checkbox"
-                           checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-                <div ng-if="pv.subQuestions"
-                     ng-repeat="question in pv.subQuestions"
-                     ng-include="'/form/public/html/formRenderQuestion.html'"
-                     ng-init="numSubQuestions = pv.subQuestions.length"></div>
-                <div class="clearfix" ng-if="$index%4==3"></div>
-            </div>
+    </div>
+</fieldset>
+<div ng-if="question.question.multiselect">
+    <div class="row">
+        <div ng-repeat="pv in question.question.answers" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
+            <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
+                   class="checkbox-inline">
+                <input checklist-model="question.question.answer"
+                       ng-required="question.question.required"
+                       type="checkbox"
+                       checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
+            <div ng-if="pv.subQuestions"
+                 ng-repeat="question in pv.subQuestions"
+                 ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-init="numSubQuestions = pv.subQuestions.length"
+                 ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
+            <div class="clearfix" ng-if="$index%4==3"></div>
         </div>
     </div>
 </div>

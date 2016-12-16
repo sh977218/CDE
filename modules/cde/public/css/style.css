@@ -1499,6 +1499,18 @@ input.ng-invalid {
     margin-bottom: 5px;
 }
 
+div.row .native-question-oneline-l {
+    float: left;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+div.row .native-question-oneline-r {
+    overflow: hidden;
+    min-width: 50%;
+    margin-left: 7%;
+}
+
 .native-box {
     padding-left: 7%;
 }

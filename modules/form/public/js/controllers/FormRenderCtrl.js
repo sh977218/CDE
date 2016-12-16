@@ -219,7 +219,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         return question.label && !question.hideLabel;
     };
     $scope.isOneLiner = function (question, numSubQuestions) {
-        return numSubQuestions === 1 && !$scope.hasLabel(question);
+        return numSubQuestions &&
+            /*numSubQuestions === 1 &&*/
+            !$scope.hasLabel(question) &&
+            question.question.datatype !== 'Value List';
     };
 
     $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];

@@ -19,8 +19,8 @@
         <div ng-class="{'col-sm-12': !isOneLiner(question,numSubQuestions)}">
             <div ng-if="question.question.isScore">Score: <span ng-disabled="true" ng-bind="score(question)"></span></div>
             <div ng-if="!question.question.isScore" ng-switch="question.question.datatype"
-                 id="{{question.label}}_{{$index}}" ng-class="{'native-box':numSubQuestions && !isOneLiner(question,numSubQuestions)}">
-                <div ng-switch-when="Value List" native-valuelist></div>
+                 id="{{question.label}}_{{$index}}" ng-class="{'native-box': numSubQuestions && !isOneLiner(question,numSubQuestions)}">
+                <div ng-switch-when="Value List" native-valuelist ng-class="{'native-box': hasLabel(question)}"></div>
                 <div ng-switch-when="Date" ng-class="[input-group, {'native-box': !isOneLiner(question,numSubQuestions)}]">
                     <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
                            datepicker-options="question.question.dateOptions" is-open="question.question.opened"
