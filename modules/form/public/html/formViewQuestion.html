@@ -134,7 +134,7 @@
                                ng-click="stageElt()"/>
                     </div>
                 </div>
-                <div ng-if="question.question.uoms.length > 0" class="row">
+                <div ng-if="question.question.uoms.length > 0 || question.edit" class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Units of Measure:</div>
                     <div class="col-sm-7" ng-switch="question.question.uoms.length > 0" id="dd_q_uoms_{{$index}}">
                         <div ng-switch-when="true">
@@ -149,13 +149,14 @@
                         </button>
                     </div>
                 </div>
-                <div ng-if="question.question.defaultAnswer || question.edit" class="row">
+                <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0 || question.edit"
+                     class="row">
                     <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
                     <div class="col-sm-7" ng-switch="question.question.datatype === 'Value List'"
                          id="dd_q_defaultAnswer_{{$index}}">
                         <div ng-switch-when="true">
                             <select ng-model="question.question.defaultAnswer" id="q_default_answer_{{$index}}"
-                                    ng-disabled="!canCurate" ng-change="stageElt()"
+                                    ng-disabled="!(canCurate && question.edit)" ng-change="stageElt()"
                                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
                         </div>
                         <div ng-switch-default>
