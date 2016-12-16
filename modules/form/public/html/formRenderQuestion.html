@@ -1,4 +1,11 @@
 <div ng-show="evaluateSkipLogicAndClear(question.skipLogic.condition, formElements, question)">
+    <div ng-if="hasLabel(question)" class="row">
+        <div class="col-sm-12">
+            <label tabindex="0"
+                   ng-class="[{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}, {'native-box':numSubQuestions}]"
+                   ng-bind-html="question.label"></label>
+        </div>
+    </div>
     <div ng-if="selection.selectedProfile.displayInstructions" class="row">
         <div class="col-sm-12" ng-switch="question.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
@@ -6,13 +13,6 @@
             <span ng-switch-when="html">
                 <span ng-bind-html="question.instructions.value"></span>
             </span>
-        </div>
-    </div>
-    <div ng-if="hasLabel(question)" class="row">
-        <div class="col-sm-12">
-            <label tabindex="0"
-                   ng-class="[{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}, {'native-box':numSubQuestions}]"
-                   ng-bind-html="question.label"></label>
         </div>
     </div>
     <div ng-class="[{'row': !isOneLiner(question,numSubQuestions)}, 'native-question-answers']">

@@ -1576,3 +1576,20 @@ div.row .native-question-oneline-r {
     clear: both;
 }
 
+.panel,
+.panel-heading,
+.panel-body
+{
+    page-break-before: avoid;
+    page-break-inside: avoid;
+}
+
+@media print {
+    @page {
+        size: 330mm 427mm;
+        margin: 14mm;
+    }
+    .container {
+        width: 1170px;
+    }
+}

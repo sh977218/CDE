@@ -24,7 +24,7 @@
                     <span ng-bind-html="section.instructions.value"></span></span>
             </div>
         </div>
-        <hr ng-if="displayInstruction"/>
+        <hr ng-if="selection.selectedProfile.displayInstructions"/>
         <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(section)">
             <div ng-switch-when="true">
                 <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>
