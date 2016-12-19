@@ -203,6 +203,8 @@ function run() {
                                     question.datatypeText = existingCde.valueDomain.datatypeText;
                                 } else if (question.datatype === 'Number') {
                                     question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                } else if (question.datatype === 'Date') {
+                                    question.datatypeDate = existingCde.valueDomain.datatypeDate;
                                 } else {
                                     throw 'Unknown question.datatype: ' + question.datatype;
                                 }
