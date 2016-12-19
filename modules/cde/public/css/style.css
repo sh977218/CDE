@@ -1595,3 +1595,7 @@ div.row .native-question-oneline-r {
 table.table > tbody > tr > td {
     padding: 8px 8px 8px 0;
 }
+
+label.input-group-addon {
+    background-color: transparent;
+}

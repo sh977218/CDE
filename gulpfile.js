@@ -36,10 +36,23 @@ gulp.task('bower', function() {
 });
 
 gulp.task('lhc-wiredep', ['bower'], function() {
-    gulp.src("./modules/form/public/html/lformsRender.html")
+    return gulp.src("./modules/form/public/html/lformsRender.html")
         .pipe(wiredep({
             directory: "modules/components"
             , ignorePath: "../../.."
+        }))
+        .pipe(gulp.dest("./modules/form/public/html"));
+});
+
+gulp.task('nativefollow-wiredep', ['bower'], function() {
+    return gulp.src("./modules/form/public/html/nativeRenderWithFollowUp.html")
+        .pipe(wiredep({
+            directory: "modules/components",
+            exclude: ['/components/autocomplete-lhc', '/components/ngSmoothScroll',
+                '/components/lforms', '/components/oboe', '/components/traverse',
+                '/components/lodash', '/components/lforms-converter'
+            ],
+            ignorePath: "../../.."
         }))
         .pipe(gulp.dest("./modules/form/public/html"));
 });
@@ -57,7 +70,7 @@ gulp.task('wiredep', ['bower'], function() {
         .pipe(gulp.dest("./modules/system/views"));
 });
 
-gulp.task('copyCode', ['wiredep', 'lhc-wiredep'], function() {
+gulp.task('copyCode', ['wiredep', 'lhc-wiredep', 'nativefollow-wiredep'], function() {
     ['article', 'cde', 'form', 'processManager', 'system', 'batch', 'embedded', 'board'].forEach(function(module) {
         gulp.src('./modules/' + module + '/node-js/**/*')
             .pipe(gulp.dest(config.node.buildDir + "/modules/" + module + '/node-js/'));
