@@ -1,8 +1,9 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', '$window',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, $window) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
+
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -250,6 +251,20 @@ angular.module('formModule').controller
         });
     }
 
+    var setDefaultAnswer = function (section) {
+        section.formElements.forEach(function (fe) {
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                setDefaultAnswer(fe);
+            } else if (fe.elementType === 'question'){
+                if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer)) {
+                    fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
+                } else {
+                    fe.question.answer = fe.question.defaultAnswer
+                }
+            }
+        });
+    };
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             var formCopy = angular.copy(form);
@@ -271,6 +286,9 @@ angular.module('formModule').controller
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
+                $scope.formElements = [];
+                $scope.formElement = wholeForm;
+                setDefaultAnswer(wholeForm);
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

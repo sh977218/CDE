@@ -9,7 +9,7 @@
                     $scope.getLabel = function (pv) {
                         return pv ? (pv.valueMeaningName ? pv.valueMeaningName : pv.permissibleValue) : '';
                     };
-                    $scope.answerlist = $scope.question.question.answers;
+                    $scope.answerlist = $scope.formElement.question.answers;
                 }]
             };
         }])
