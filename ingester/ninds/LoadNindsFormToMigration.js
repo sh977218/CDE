@@ -7,6 +7,7 @@ var async = require('async'),
     ;
 
 var importDate = new Date().toJSON();
+var count = 0;
 
 function checkExistingNaming(existingNaming, ninds) {
     var crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
@@ -181,44 +182,51 @@ function run() {
                     async.forEachSeries(cdes, function (cde, doneOneCDE) {
                         var cdeId = cde.cdeId;
                         mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
-                            if (err) {
-                                console.log(err + ' cdeId: ' + cdeId);
-                                throw err;
+                            if (err) throw (err + ' cdeId: ' + cdeId);
+                            else {
+                                var question = {
+                                    cde: {
+                                        tinyId: existingCde.tinyId,
+                                        name: existingCde.naming[0].designation,
+                                        version: existingCde.version,
+                                        permissibleValues: existingCde.valueDomain.permissibleValues,
+                                        ids: existingCde.ids
+                                    },
+                                    datatype: existingCde.valueDomain.datatype,
+                                    uom: existingCde.valueDomain.uom,
+                                    answers: existingCde.valueDomain.permissibleValues
+                                };
+                                if (question.datatype === 'Value List') {
+                                    question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+                                }
+                                else if (question.datatype === 'Text') {
+                                    question.datatypeText = existingCde.valueDomain.datatypeText;
+                                } else if (question.datatype === 'Number') {
+                                    question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                } else {
+                                    throw 'Unknown question.datatype: ' + question.datatype;
+                                }
+                                var formElement = {
+                                    elementType: 'question',
+                                    instructions: {value: cde.instruction},
+                                    label: cde.questionText,
+                                    question: question,
+                                    formElements: []
+                                };
+                                newForm.formElements[0].formElements.push(formElement);
+                                doneOneCDE();
                             }
-                            var question = {
-                                cde: {
-                                    tinyId: existingCde.tinyId,
-                                    name: existingCde.naming[0].designation,
-                                    version: existingCde.version,
-                                    permissibleValues: existingCde.valueDomain.permissibleValues,
-                                    ids: existingCde.ids
-                                },
-                                datatype: existingCde.valueDomain.datatype,
-                                datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                                datatypeText: existingCde.valueDomain.datatypeText,
-                                uom: existingCde.valueDomain.uom,
-                                answers: existingCde.valueDomain.permissibleValues,
-                                multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected'
-                            };
-                            var formElement = {
-                                elementType: 'question',
-                                instructions: {value: cde.instruction},
-                                label: cde.questionText,
-                                question: question,
-                                formElements: []
-                            };
-                            newForm.formElements[0].formElements.push(formElement);
-                            doneOneCDE();
                         });
                     }, function doneAll() {
                         console.log('finished all cdes in form ' + formId);
                         var newFormObj = new MigrationForm(newForm);
                         newFormObj.save(function (err) {
-                            if (err) {
-                                console.log(err);
-                                throw err;
+                            if (err) throw err;
+                            else {
+                                count++;
+                                console.log('count: ' + count);
+                                stream.resume();
                             }
-                            stream.resume();
                         });
                     });
                 } else if (existingForms.length === 1) {
@@ -227,11 +235,8 @@ function run() {
                     existingForm.markModified("classification");
                     existingForm.markModified("formElements");
                     existingForm.save(function (err) {
-                        if (err) {
-                            console.log(err);
-                            throw err;
-                        }
-                        stream.resume();
+                        if (err) throw err;
+                        else stream.resume();
                     });
                 } else {
                     console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
@@ -242,8 +247,10 @@ function run() {
 
         stream.on('end', function (err) {
             if (err) throw err;
-            console.log('finished');
-            process.exit(0);
+            else {
+                console.log('finished');
+                process.exit(0);
+            }
         });
     });
 }

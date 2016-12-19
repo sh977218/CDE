@@ -32,7 +32,6 @@ Form.find({
                 }
             })
         }, function doneAllForms() {
-            console.log('formCount: ' + formCount);
             process.exit(1);
         })
     }

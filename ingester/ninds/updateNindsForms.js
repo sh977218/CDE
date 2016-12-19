@@ -2,7 +2,8 @@
  TODO
  this script does not update org
  */
-var MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
+var async = require('async'),
+    MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
     mongo_form = require('../../modules/form/node-js/mongo-form'),
     FormModel = mongo_form.Form,
     classificationShared = require('../../modules/system/shared/classificationShared'),
@@ -19,6 +20,7 @@ var lastEightHours = new Date();
 lastEightHours.setHours(new Date().getHours() - 8);
 var source = 'NINDS';
 var retired = 0;
+var retiredForm = [];
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy
@@ -136,33 +138,33 @@ function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDo
 }
 
 function streamOnClose() {
-    var retireStream = FormModel.find({
+    FormModel.find({
         'imported': {$lt: lastEightHours},
         'sources.sourceName': source,
         'classification.stewardOrg.name': source,
+        'updatedBy.username': {$not: /lizamos/},
         'archived': null
-    }).stream();
-    retireStream.on('error', function (err) {
-        console.log(err);
-        process.exit(1);
-    });
-    retireStream.on('close', function () {
-        console.log('retired:' + retired);
-    });
-    retireStream.on('data', function (f) {
-        retireStream.pause();
-        f.registrationState.registrationStatus = 'Retired';
-        f.registrationState.administrativeNote = "Not present in import from " + new Date();
-        f.save(function (error) {
-            if (error) throw error;
-            else {
-                retired++;
-                console.log('retired: ' + retired);
-                retireStream.resume();
-            }
-        })
-
-
+    }).exec(function (e, fs) {
+        if (e) throw e;
+        else {
+            async.forEach(fs, function (f, doneOneF) {
+                f.registrationState.registrationStatus = 'Retired';
+                f.registrationState.administrativeNote = "Not present in import from " + new Date();
+                f.save(function (error, o) {
+                    if (error) throw error;
+                    else {
+                        retired++;
+                        console.log('retired: ' + retired);
+                        retiredForm.push(o.tinyId);
+                        doneOneF();
+                    }
+                })
+            }, function doneAllFs() {
+                console.log('retiredForm: ' + retiredForm);
+                console.log(" changed: " + changed + " same: " + same + " created: " + created);
+                process.exit(1);
+            })
+        }
     })
 }
 
@@ -207,3 +209,6 @@ function run() {
 }
 
 run();
+setInterval(function () {
+    console.log(" changed: " + changed + " same: " + same + " created: " + created);
+}, 10000);
