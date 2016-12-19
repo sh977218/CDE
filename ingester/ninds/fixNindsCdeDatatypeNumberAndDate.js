@@ -11,7 +11,10 @@ stream.on('data', function (ninds) {
     stream.pause();
     if (ninds && ninds.get('cdes').length > 0) {
         async.forEachSeries(ninds.get('cdes'), function (cde, doneOneCde) {
-            if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
+            if (cde.inputRestrictions === 'Free-Form Entry' &&
+                ( cde.dataType === 'Numeric Values' ||
+                cde.dataType === 'Numeric values' ||
+                cde.dataType === 'Date or Date & Time' )) {
                 DataElement.find({
                     'sources.sourceName': 'NINDS',
                     archived: null, 'ids.id': cde.cdeId,
@@ -22,19 +25,19 @@ stream.on('data', function (ninds) {
                         throw ('Cannot find cde with id: ' + cde.cdeId);
                     } else if (existingCdes.length === 1) {
                         var existingCde = existingCdes[0];
-                        if (existingCde && existingCde.valueDomain.datatype === 'Number') {
-                            doneOneCde();
-                        } else {
+                        if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
                             existingCde.valueDomain.datatype = 'Number';
-                            existingCde.save(function (e) {
-                                if (e) throw e;
-                                else {
-                                    cdeCounter++;
-                                    console.log("cdeCounter: " + cdeCounter);
-                                    doneOneCde();
-                                }
-                            });
+                        } else if (cde.dataType === 'Date or Date & Time') {
+                            existingCde.valueDomain.datatypeDate = {format: ''};
                         }
+                        existingCde.save(function (e) {
+                            if (e) throw e;
+                            else {
+                                cdeCounter++;
+                                console.log("cdeCounter: " + cdeCounter);
+                                doneOneCde();
+                            }
+                        });
                     }
                     else throw(existingCdes.length + ' cdes found, ids.id:' + cde.cdeId);
                 });

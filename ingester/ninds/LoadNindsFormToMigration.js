@@ -189,15 +189,15 @@ function run() {
                                         tinyId: existingCde.tinyId,
                                         name: existingCde.naming[0].designation,
                                         version: existingCde.version,
-                                        permissibleValues: existingCde.valueDomain.permissibleValues,
                                         ids: existingCde.ids
                                     },
                                     datatype: existingCde.valueDomain.datatype,
-                                    uom: existingCde.valueDomain.uom,
-                                    answers: existingCde.valueDomain.permissibleValues
+                                    uom: existingCde.valueDomain.uom
                                 };
                                 if (question.datatype === 'Value List') {
+                                    question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
                                     question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+                                    question.answers = existingCde.valueDomain.permissibleValues;
                                 } else if (question.datatype === 'Text') {
                                     question.datatypeText = existingCde.valueDomain.datatypeText;
                                 } else if (question.datatype === 'Number') {
@@ -210,10 +210,15 @@ function run() {
                                 var formElement = {
                                     elementType: 'question',
                                     instructions: {value: cde.instruction},
-                                    label: cde.questionText,
                                     question: question,
                                     formElements: []
                                 };
+                                if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
+                                    formElement.label = existingCde.naming[0].designation;
+                                    formElement.hideLabel = true;
+                                } else {
+                                    formElement.label = cde.questionText;
+                                }
                                 newForm.formElements[0].formElements.push(formElement);
                                 doneOneCDE();
                             }
