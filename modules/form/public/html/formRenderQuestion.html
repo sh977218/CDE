@@ -21,7 +21,7 @@
             <div ng-if="!question.question.isScore" ng-switch="question.question.datatype"
                  id="{{question.label}}_{{$index}}" ng-class="{'native-box': numSubQuestions && !isOneLiner(question,numSubQuestions)}">
                 <div ng-switch-when="Value List" native-valuelist ng-class="{'native-box': hasLabel(question)}"></div>
-                <div ng-switch-when="Date" ng-class="[input-group, {'native-box': !isOneLiner(question,numSubQuestions)}]">
+                <div ng-switch-when="Date" ng-class="['input-group', {'native-box': hasLabel(question)}]">
                     <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
                            datepicker-options="question.question.dateOptions" is-open="question.question.opened"
                            type="text" ng-required="question.question.required" alt-input-formats="['yyyy']"
@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div ng-switch-when="Number"
-                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': !isOneLiner(question,numSubQuestions)}]">
+                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': hasLabel(question)}]">
                     <input type="number" class="form-control" ng-required="question.question.required"
                            ng-model="question.question.answer" name="{{question.question.cde.tinyId}}"
                            min="{{question.question.datatypeNumber.minValue}}"
@@ -44,7 +44,7 @@
                         <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}</label>
                 </div>
                 <div ng-switch-default
-                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': !isOneLiner(question,numSubQuestions)}]">
+                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': hasLabel(question)}]">
                     <input type="text" class="form-control" ng-required="question.question.required"
                            ng-model="question.question.answer" name=""/>
                     <label class="input-group-addon" ng-if="question.question.uoms.length > 0"

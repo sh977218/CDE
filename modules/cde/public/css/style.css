@@ -1486,6 +1486,12 @@ input.ng-invalid {
     padding-top: 0;
 }
 
+.native-section-header {
+    border-bottom: 1px solid #ddd;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
 .native-question {
     page-break-inside: avoid;
 }
@@ -1513,6 +1519,16 @@ div.row .native-question-oneline-r {
 
 .native-box {
     padding-left: 7%;
+}
+
+@media print {
+    @page {
+        size: 330mm 427mm;
+        margin: 14mm;
+    }
+    .container {
+        width: 1170px;
+    }
 }
 
 .overlay-lower-right {
@@ -1574,22 +1590,4 @@ div.row .native-question-oneline-r {
 
 .clear {
     clear: both;
-}
-
-.panel,
-.panel-heading,
-.panel-body
-{
-    page-break-before: avoid;
-    page-break-inside: avoid;
-}
-
-@media print {
-    @page {
-        size: 330mm 427mm;
-        margin: 14mm;
-    }
-    .container {
-        width: 1170px;
-    }
 }

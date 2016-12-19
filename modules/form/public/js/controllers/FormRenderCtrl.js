@@ -239,22 +239,25 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
 
         if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
                 $scope.followForm = angular.copy($scope.elt);
-                transformFormToInline($scope.followForm);
+                transformFormToInline($scope.followForm, []);
         }
     };
 
     $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
 
-    function transformFormToInline(form) {
+    function transformFormToInline(form, sectionList) {
         var prevQ = "";
         var feSize = form.formElements.length;
         for (var i = 0; i < feSize; i++ ) {
             var fe = form.formElements[i];
             if (fe.elementType === 'section' || fe.elementType === 'form') {
-                transformFormToInline(fe);
+                sectionList = sectionList.concat(fe.label);
+                transformFormToInline(fe, sectionList);
+                // fe.label = sectionList.join(" > ");
                 if (fe.skipLogic) delete fe.skipLogic;
                 continue;
             }
+            form.show = true;
             var qs = getShowIfQ(fe, prevQ);
             if (qs.length > 0) {
                 parentQ = qs[0][0];
@@ -273,6 +276,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
             } else {
                 prevQ = [fe];
             }
+            // after transform processing of questions
+            if (fe.question.uoms && fe.question.uoms.length === 1)
+                fe.question.answerUom = fe.question.uoms[0];
             if (fe.skipLogic) delete fe.skipLogic;
         }
     }
