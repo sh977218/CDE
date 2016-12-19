@@ -121,7 +121,14 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
-        if (((!realAnswer && typeof realAnswer !== 'number') || ("" + realAnswer).trim().length === 0)&& expectedAnswer === "") return true;
+        if (expectedAnswer === "")
+        {
+            if (realAnswerObj.question.datatype === 'Number') {
+                if (realAnswer === null || Number.isNaN(realAnswer)) return true;
+            } else {
+                if (!realAnswer || ("" + realAnswer).trim().length === 0) return true;
+            }
+        }
         else if (realAnswer) {
             if (realAnswerObj.question.datatype === 'Date') {
                 question.question.dateOptions = {};
