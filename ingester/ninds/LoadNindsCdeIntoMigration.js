@@ -273,6 +273,7 @@ function createCde(cde, ninds) {
             valueDomain.datatype = 'Date';
             valueDomain.datatypeDate = {format: 'MM/DD/YYYY'};
         } else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
+            valueDomain.datatype = 'Number';
             valueDomain.datatypeNumber = {
                 minValue: Number(cde.minValue),
                 maxValue: Number(cde.maxValue)

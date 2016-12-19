@@ -10,7 +10,7 @@ var async = require('async'),
 
 var importDate = new Date().toJSON();
 var source = 'NINDS';
-var username = 'BatchLoader';
+var username = 'batchloader';
 
 function removeClassificationTree(cde, org) {
     for (var i = 0; i < cde.classification.length; i++) {

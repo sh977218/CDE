@@ -198,15 +198,14 @@ function run() {
                                 };
                                 if (question.datatype === 'Value List') {
                                     question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
-                                }
-                                else if (question.datatype === 'Text') {
+                                } else if (question.datatype === 'Text') {
                                     question.datatypeText = existingCde.valueDomain.datatypeText;
                                 } else if (question.datatype === 'Number') {
                                     question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
                                 } else if (question.datatype === 'Date') {
                                     question.datatypeDate = existingCde.valueDomain.datatypeDate;
                                 } else {
-                                    throw 'Unknown question.datatype: ' + question.datatype;
+                                    throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
                                 }
                                 var formElement = {
                                     elementType: 'question',
