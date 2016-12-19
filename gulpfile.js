@@ -157,7 +157,8 @@ gulp.task('prepareVersion', ['copyCode'], function() {
 gulp.task('usemin', ['copyCode', 'angularTemplates'], function() {
     [
         {folder: "./modules/system/views/", filename: "index.ejs"},
-        {folder: "./modules/embedded/public/html/", filename: "index.html"}
+        {folder: "./modules/embedded/public/html/", filename: "index.html"},
+        {folder: "./modules/form/public/html/", filename: "nativeRenderWithFollowUp.html"}
     ].forEach(function (item) {
             return gulp.src(item.folder + item.filename)
                 .pipe(usemin({
