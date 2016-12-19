@@ -11,7 +11,7 @@
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk" />
 
-	<!-- build:css /system/public/assets/css/styles-printable.css -->
+	<!-- build:css /form/public/assets/css/styles-printable.css -->
 	<link href="/cde/public/css/style.css" rel="stylesheet" type="text/css" media="all"/>
 
 	<!-- bower:css -->
@@ -51,7 +51,7 @@
 </div>
 
 
-<!-- build:js /system/public/assets/js/vendor-printable.js -->
+<!-- build:js /form/public/assets/js/vendor-printable.js -->
 <!-- bower:js -->
 <script src="/components/jquery/jquery.js"></script>
 <script src="/components/angular/angular.js"></script>
@@ -218,6 +218,7 @@
 <script src="/form/public/js/formModule.js"></script>
 <script src="/form/public/js/resources.js"></script>
 <script src="/form/public/js/native-valuelist.js"></script>
+<script src="/form/public/js/printModule.js"></script>
 <script src="/form/public/js/controllers/FormCdeCtrl.js"></script>
 <script src="/form/public/js/controllers/FormListCtrl.js"></script>
 <script src="/form/public/js/controllers/FormDEListCtrl.js"></script>
@@ -265,98 +266,6 @@
           "description" : "NIH Common Data Elements Repository",
           "url" : "https://cde.nlm.nih.gov"
         }
-</script>
-
-<script type="text/javascript">
-    var getUrlParameter = function getUrlParameter(sParam) {
-        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-            sURLVariables = sPageURL.split('&'),
-            sParameterName,
-            i;
-
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : sParameterName[1];
-            }
-        }
-    };
-    angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
-        .controller('PrintCtrl',
-            ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-				'$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$q', 'Alert',
-				'Form', 'isAllowedModel',
-				function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-						  $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $q, Alert,
-						  Form, isAllowedModel) {
-                //TODO: Don't use the following methods. Use $scope.Alert instead.
-                $scope.addAlert = Alert.addAlert;
-                $scope.closeAlert = Alert.closeAlert;
-                $scope.alerts = Alert.mapAlerts();
-
-                $scope.Alert = Alert;
-
-                function fetchWholeForm(form, callback) {
-                    var maxDepth = 8;
-                    var depth = 0;
-                    var loopFormElements = function (form, cb) {
-                        depth++;
-                        if (form.formElements) {
-                            async.forEach(form.formElements, function (fe, doneOne) {
-                                if (fe.elementType === 'form') {
-                                    if (depth < maxDepth) {
-                                        $http.get('/formByTinyIdAndVersion/' + fe.inForm.form.tinyId + '/' + fe.inForm.form.version)
-                                            .then(function (result) {
-                                                fe.formElements = result.data.formElements;
-                                                loopFormElements(fe, function () {
-                                                    depth--;
-                                                    doneOne();
-                                                });
-                                            });
-                                    }
-                                    else doneOne();
-                                } else if (fe.elementType === 'section') {
-                                    loopFormElements(fe, function () {
-                                        doneOne();
-                                    });
-                                } else {
-                                    doneOne();
-                                }
-                            }, function doneAll() {
-                                cb();
-                            });
-                        }
-                        else {
-                            cb();
-                        }
-                    };
-                    loopFormElements(form, function () {
-                        callback(form);
-                    });
-                }
-
-                $scope.deferredEltLoaded = $q.defer();
-                var query = {formId: getUrlParameter("tinyId"), type: 'tinyId'};
-
-                Form.get(query, function (form) {
-                    var formCopy = angular.copy(form);
-                    fetchWholeForm(formCopy, function (wholeForm) {
-                        $scope.elt = wholeForm;
-                        if (exports.hasRole(userResource.user, "FormEditor")) {
-                            isAllowedModel.setCanCurate($scope);
-                        }
-                        $scope.formCdeIds = exports.getFormCdes($scope.elt).map(function (c) {
-                            return c.tinyId;
-                        });
-                        isAllowedModel.setDisplayStatusWarning($scope);
-                        //setDefaultValues();
-                        $scope.deferredEltLoaded.resolve();
-                    });
-                }, function () {
-                    $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
-                });
-            }]);
 </script>
 
 </body>
