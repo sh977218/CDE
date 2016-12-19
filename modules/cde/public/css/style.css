@@ -1592,6 +1592,6 @@ div.row .native-question-oneline-r {
     clear: both;
 }
 
-.table > tbody > tr > td {
+table.table > tbody > tr > td {
     padding: 8px 8px 8px 0;
 }
