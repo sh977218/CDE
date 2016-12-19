@@ -19,7 +19,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         if (numbering) clickElement(By.id("displayNumbering_" + index));
     }
 
-    @Test(priority = -1)
+    @Test
     public void displayProfiles() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("PROMIS SF v1.1 - Anger 5a");

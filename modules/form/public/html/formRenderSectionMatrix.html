@@ -2,11 +2,11 @@
     <thead>
     <tr>
         <th></th>
-        <th ng-repeat="a in section.formElements[0].question.answers" ng-bind="a.valueMeaningName"></th>
+        <th ng-repeat="a in formElement.formElements[0].question.answers" ng-bind="a.valueMeaningName"></th>
     </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="q in section.formElements">
+        <tr ng-repeat="q in formElement.formElements">
             <td>
                 <label ng-bind-html="q.label"
                        ng-class="{'native-question-label': selection.selectedProfile.displayNumbering }"></label>
