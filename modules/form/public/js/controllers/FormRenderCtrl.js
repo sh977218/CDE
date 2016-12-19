@@ -239,25 +239,22 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
 
         if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
                 $scope.followForm = angular.copy($scope.elt);
-                transformFormToInline($scope.followForm, []);
+                transformFormToInline($scope.followForm);
         }
     };
 
     $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
 
-    function transformFormToInline(form, sectionList) {
+    function transformFormToInline(form) {
         var prevQ = "";
         var feSize = form.formElements.length;
         for (var i = 0; i < feSize; i++ ) {
             var fe = form.formElements[i];
             if (fe.elementType === 'section' || fe.elementType === 'form') {
-                sectionList = sectionList.concat(fe.label);
-                transformFormToInline(fe, sectionList);
-                // fe.label = sectionList.join(" > ");
+                transformFormToInline(fe);
                 if (fe.skipLogic) delete fe.skipLogic;
                 continue;
             }
-            form.show = true;
             var qs = getShowIfQ(fe, prevQ);
             if (qs.length > 0) {
                 parentQ = qs[0][0];

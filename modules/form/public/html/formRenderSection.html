@@ -1,7 +1,7 @@
 <div ng-show="evaluateSkipLogic(section.skipLogic.condition, formElements,section)"
      class="native-section" id="formRenderSection_{{section.label}}">
 
-    <div ng-if="section.show" ng-class="{'native-section-header':isSectionDisplayed(section)}">
+    <div ng-if="section.label" ng-class="{'native-section-header':isSectionDisplayed(section)}">
         <div class="row">
             <div ng-class="{'col-sm-9':canRepeat(section)}" class="col-xs-12">
                 <h4 tabindex="0">{{section.label}}</h4>

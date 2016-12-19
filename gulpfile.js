@@ -102,7 +102,11 @@ gulp.task('copyCode', ['wiredep', 'lhc-wiredep'], function() {
     gulp.src('./ingester/**')
         .pipe(gulp.dest(config.node.buildDir + "/ingester/"));
 
-    gulp.src('./modules/form/public/html/lformsRender.html')
+    gulp.src(
+        [
+            './modules/form/public/html/lformsRender.html',
+            './modules/form/public/html/nativeRenderWithFollowUp.html'
+        ])
         .pipe(gulp.dest(config.node.buildDir + "/modules/form/public/html/"));
 
     gulp.src('./modules/form/public/assets/sdc/*')
