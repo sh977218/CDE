@@ -1,13 +1,12 @@
-var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    DataElement = mongo_cde.DataElement
+var mongo_form = require('../../modules/form/node-js/mongo-form'),
+    Form = mongo_form.Form
     ;
 
 let cdeCount = 0;
 
-var stream = DataElement.find({
+var stream = Form.find({
     archived: null,
-    'sources.sourceName': 'NINDS',
+    'stewardOrg.name': 'NINDS',
     "registrationState.registrationStatus": {$not: /Retired/}
 }).stream();
 stream.on('error', function (e) {
@@ -20,6 +19,7 @@ stream.on('close', function () {
 });
 stream.on('data', function (cde) {
     stream.pause();
+    cde.sources = [{sourceName: 'NINDS'}];
     cde.naming.forEach(function (n) {
         n.source = 'NINDS';
     });

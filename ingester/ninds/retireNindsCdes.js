@@ -30,7 +30,6 @@ function doStream() {
                 stream.resume();
             }
         })
-
     });
 }
 

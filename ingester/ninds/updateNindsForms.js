@@ -2,13 +2,11 @@
  TODO
  this script does not update org
  */
-var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel,
-    MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel,
-    OrgModel = require('../modules/system/node-js/mongo-data').Org,
-    mongo_form = require('../modules/form/node-js/mongo-form'),
+var MigrationFormModel = require('../createMigrationConnection').MigrationFormModel,
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
     FormModel = mongo_form.Form,
-    classificationShared = require('../modules/system/shared/classificationShared'),
-    updateShare = require('./updateShare')
+    classificationShared = require('../../modules/system/shared/classificationShared'),
+    updateShare = require('../updateShare')
     ;
 
 var importDate = new Date().toJSON();
@@ -17,8 +15,10 @@ var changed = 0;
 var created = 0;
 var createdForm = [];
 var same = 0;
-
+var lastEightHours = new Date();
+lastEightHours.setHours(new Date().getHours() - 8);
 var source = 'NINDS';
+var retired = 0;
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy
@@ -118,7 +118,12 @@ function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDo
         } else if (existingForms.length === 1) {
             console.log('\n------------------------------');
             console.log('found 1 form. processing form, tinyId ' + existingForms[0].tinyId);
-            processForm(migrationForm, existingForms[0], orgName, findFormDone);
+            if (existingForms[0].updatedBy.username === 'lizamos') {
+                console.log('updated by Liz, skip.');
+                findFormDone();
+            } else {
+                processForm(migrationForm, existingForms[0], orgName, findFormDone);
+            }
         } else {
             console.log('\n------------------------------');
             console.log('found ' + existingForms.length + ' forms. processing first form, tinyId ' + existingForms[0].tinyId);
@@ -131,36 +136,34 @@ function doMigrationFormModel(formId, migrationForm, source, orgName, findFormDo
 }
 
 function streamOnClose() {
-
-    // Retire Missing CDEs
-    FormModel.where({
-        imported: {$ne: importDate},
-        'stewardOrg.name': source
-    }).update({
-        "registrationState.registrationStatus": "Retired",
-        "registrationState.administrativeNote": "Not present in import from " + importDate
+    var retireStream = FormModel.find({
+        'imported': {$lt: lastEightHours},
+        'sources.sourceName': source,
+        'classification.stewardOrg.name': source,
+        'archived': null
+    }).stream();
+    retireStream.on('error', function (err) {
+        console.log(err);
+        process.exit(1);
     });
-
-    console.log("Nothing left to do, saving Org");
-    MigrationOrgModel.find().exec(function (err, orgs) {
-        if (err) console.log("Error Finding Migration Org " + err);
-        orgs.forEach(function (org) {
-            OrgModel.findOne({name: org.name}).exec(function (err, theOrg) {
-                if (err)  console.log("Error finding existing org " + err);
-                theOrg.classifications = org.classifications;
-                theOrg.save(function (err) {
-                    if (err) console.log("Error saving Org " + err);
-                    console.log(" changed: " + changed + " same: " + same + " created: " + created);
-                });
-            });
-        });
+    retireStream.on('close', function () {
+        console.log('retired:' + retired);
     });
+    retireStream.on('data', function (f) {
+        retireStream.pause();
+        f.registrationState.registrationStatus = 'Retired';
+        f.registrationState.administrativeNote = "Not present in import from " + new Date();
+        f.save(function (error) {
+            if (error) throw error;
+            else {
+                retired++;
+                console.log('retired: ' + retired);
+                retireStream.resume();
+            }
+        })
 
-    // give 5 secs for org to save.
-    setTimeout(function () {
-        console.log(createdForm);
-        process.exit(0);
-    }, 5000);
+
+    })
 }
 
 

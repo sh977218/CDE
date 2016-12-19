@@ -67,9 +67,16 @@ function createForm(ninds) {
         context: {
             contextName: "Health",
             acceptability: "preferred"
-        }
+        },
+        source: 'NINDS'
     };
     naming.push(formName);
+
+    var sources = [];
+    sources.push({
+        sourceName: 'NINDS',
+        updated: ninds.get('versionDate')
+    });
 
     var ids = [];
     var crfId = {
@@ -82,7 +89,8 @@ function createForm(ninds) {
 
     var referenceDocuments = [];
     var referenceDocument = {
-        uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : ''
+        uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : '',
+        source: 'NINDS'
     };
     if (referenceDocument.uri.length > 0) {
         referenceDocuments.push(referenceDocument);
@@ -134,6 +142,7 @@ function createForm(ninds) {
     return {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'batchloader'},
+        sources: sources,
         created: importDate,
         imported: importDate,
         isCopyrighted: ninds.get('copyright'),
