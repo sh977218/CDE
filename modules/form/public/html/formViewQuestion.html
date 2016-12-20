@@ -1,54 +1,52 @@
 <div class="panel panel-default">
     <div class="panel-heading overflowHidden" ng-class="{'bg-warning': question.question.cde.outdated}"
          ng-click="question.updatedSkipLogic = false">
-        <div class="col-xs-12">
-            <div ng-if="canCurate" class="ib left section-question-icon-div noRightPadding">
-                <i class="fa fa-arrows question-move-handle"></i>
-                <i ng-if="question.skipLogic.condition.length > 0" class="fa fa-cog"
-                   ng-class="{'fa-spin': question.updatedSkipLogic}"
-                   title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
+        <div ng-if="canCurate" class="ib left section-question-icon-div noRightPadding">
+            <i class="fa fa-arrows question-move-handle"></i>
+            <i ng-if="question.skipLogic.condition.length > 0" class="fa fa-cog"
+               ng-class="{'fa-spin': question.updatedSkipLogic}"
+               title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
+        </div>
+        <div class="ib left">
+            <div ng-if="question.question.isScore"><strong>Score: </strong></div>
+            <div ng-if="question.hideLabel">
+                <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
+                <s ng-bind="question.question.cde.name"></s>
             </div>
-            <div class="ib left">
-                <div ng-if="question.question.isScore"><strong>Score: </strong></div>
-                <div ng-if="question.hideLabel">
-                    <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
-                    <s ng-bind="question.question.cde.name"></s>
+            <div ng-if="!question.hideLabel || question.edit">
+                <div class="" id="dd_question_title_{{$index}}">
+                    <i ng-show="canCurate && question.edit" class="fa fa-pencil"
+                       title="Change question label"
+                       ng-click="openNameSelect(question,section)"></i>
+                    {{question.label | placeHoldEmpty}}
                 </div>
-                <div ng-if="question.label || question.edit">
-                    <div class="" id="dd_question_title_{{$index}}">
-                        <i ng-show="canCurate && question.edit" class="fa fa-pencil"
-                           title="Change question label"
-                           ng-click="openNameSelect(question,section)"></i>
-                        {{question.label | placeHoldEmpty}}
-                    </div>
-                </div>
-                <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="left text-info">
-                    <small>(part of score)</small>
-                </div>
-                <div ng-if="question.question.cde.outdated" class="left error-block"> (Outdated)
-                    <button id="question_update_{{sectionIndex}}_{{questionIndex}}"
-                            ng-click="updateCdeVersion(question);$event.preventDefault();$event.stopPropagation();">
-                        Update
-                    </button>
-                </div>
-                <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
             </div>
-            <div class="ib left">
-                <a target="_blank" title="View CDE {{question.question.cde.name}}"
-                   href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-                    <i class="fa fa-eye"></i>
-                </a>
+            <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="left text-info">
+                <small>(part of score)</small>
             </div>
-            <div class="ib left">{{getCardinalityLabel(question.cardinality)}}</div>
-            <div class="ib left">{{question.question.datatype}}</div>
-            <div ng-if="canCurate" class="pull-right section-question-icon-div">
-                <i class="fa fa-times hand-cursor pull-right"
-                   ng-click="removeQuestion(parent, $index)"
-                   title="Remove question" id="remove_q_{{$index}}"></i>
-                <i class="fa fa-pencil hand-cursor pull-right" title="edit question"
-                   id="edit_question_{{$index}}"
-                   ng-click="question.edit = !question.edit;"></i>
+            <div ng-if="question.question.cde.outdated" class="left error-block"> (Outdated)
+                <button id="question_update_{{sectionIndex}}_{{questionIndex}}"
+                        ng-click="updateCdeVersion(question);$event.preventDefault();$event.stopPropagation();">
+                    Update
+                </button>
             </div>
+            <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+        </div>
+        <div class="ib left">
+            <a target="_blank" title="View CDE {{question.question.cde.name}}"
+               href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
+                <i class="fa fa-eye"></i>
+            </a>
+        </div>
+        <div class="ib left">{{getCardinalityLabel(question)}}</div>
+        <div class="ib left">{{getDatatypeLabel(question)}}</div>
+        <div ng-if="canCurate" class="pull-right section-question-icon-div">
+            <i class="fa fa-times hand-cursor pull-right"
+               ng-click="removeQuestion(parent, $index)"
+               title="Remove question" id="remove_q_{{$index}}"></i>
+            <i class="fa fa-pencil hand-cursor pull-right" title="edit question"
+               id="edit_question_{{$index}}"
+               ng-click="question.edit = !question.edit;"></i>
         </div>
     </div>
     <div class="panel-body">

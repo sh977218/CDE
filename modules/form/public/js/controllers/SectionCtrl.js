@@ -7,7 +7,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                 {label: "0 or more", value: {min: 0, max: -1}},
                 {label: "0 or 1", value: {min: 0, max: 1}}
             ];
-        $scope.getCardinalityLabel = function (cardinality) {
+        $scope.getCardinalityLabel = function (question) {
+            var cardinality = question.cardinality;
             if (cardinality === undefined || cardinality.min === undefined || cardinality.max === undefined)
                 return "";
             return {
@@ -20,6 +21,28 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     "-1": "1 or more"
                 }
             }[cardinality.min][cardinality.max];
+        };
+        $scope.getDatatypeLabel = function (question) {
+            var datatype = question.question.datatype;
+            if (datatype === 'Number') {
+                var min = question.question.datatypeNumber ? question.question.datatypeNumber.minValue : '';
+                var max = question.question.datatypeNumber ? question.question.datatypeNumber.maxValue : '';
+                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
+                return "Number " + min + join + max;
+            }
+            else if (datatype === 'Date') {
+                var format = question.question.datatypeDate ? question.question.datatypeDate.format : '';
+                return "Date " + format;
+            }
+            else if (datatype === 'Text') {
+                var min = question.question.datatypeText ? question.question.datatypeText.minLength : '';
+                var max = question.question.datatypeText ? question.question.datatypeText.maxLength : '';
+                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
+                return "Text " + min + join + max;
+            }
+            else if (datatype === 'Value List')
+                return "Value List";
+            else return "Unknown datatype";
         };
 
         $scope.addSection = function () {
@@ -62,7 +85,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             }
         };
 
-        function convertCdeToQuestion(cde) {
+        function convertCdeToQuestion(cde, cb) {
             if (cde.valueDomain !== undefined) {
                 var question = {
                     elementType: "question",
@@ -81,36 +104,53 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                             permissibleValues: []
                         },
                         datatype: cde.valueDomain.datatype,
-                        datatypeNumber: cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {},
                         required: false,
                         uoms: cde.valueDomain.uom ? [cde.valueDomain.uom] : [],
                         answers: []
                     }
                 };
                 cde.naming.forEach(function (n) {
-                    if (n.context === 'Question Text')
-                        question.label = n.designation;
+                    if (n.context === 'Question Text') {
+                        if (!n.designation || (n.designation && n.designation.trim().length === 0)) {
+                            question.label = cde.naming[0].designation ? cde.naming[0].designation : '';
+                            question.hideLabel = true;
+                        } else {
+                            question.label = n.designation;
+                        }
+                    }
                 });
-                if (cde.valueDomain.permissibleValues.length > 0) {
-                    // elastic only store 10 pv, retrieve pv when have more than 9 pv.
-                    if (cde.valueDomain.permissibleValues.length > 9) {
-                        $http.get("/debytinyid/" + cde.tinyId + "/" + (cde.version?cde.version:"")).then(function (result) {
-                            result.data.valueDomain.permissibleValues.forEach(function (pv) {
+
+                if (question.question.datatype === 'Number') {
+                    question.question.datatypeNumber = cde.valueDomain.datatypeNumber ? cde.valueDomain.datatypeNumber : {};
+                } else if (question.question.datatype === 'Text') {
+                    question.question.datatypeText = cde.valueDomain.datatypeText ? cde.valueDomain.datatypeText : {};
+                } else if (question.question.datatype === 'Date') {
+                    question.question.datatypeDate = cde.valueDomain.datatypeDate ? cde.valueDomain.datatypeDate : {};
+                } else if (question.question.datatype === 'Value List') {
+                    if (cde.valueDomain.permissibleValues.length > 0) {
+                        // elastic only store 10 pv, retrieve pv when have more than 9 pv.
+                        if (cde.valueDomain.permissibleValues.length > 9) {
+                            $http.get("/debytinyid/" + cde.tinyId + "/" + (cde.version ? cde.version : "")).then(function (result) {
+                                result.data.valueDomain.permissibleValues.forEach(function (pv) {
+                                    question.question.answers.push(pv);
+                                    question.question.cde.permissibleValues.push(pv);
+                                });
+                                cb(question);
+                            });
+                        } else {
+                            cde.valueDomain.permissibleValues.forEach(function (pv) {
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
                             });
-                        });
-                    } else {
-                        cde.valueDomain.permissibleValues.forEach(function (pv) {
-                            question.question.answers.push(pv);
-                            question.question.cde.permissibleValues.push(pv);
-                        });
+                        }
                     }
+                } else {
+                    console.log('Unknown CDE datatype: ' + cde.valueDomain.datatype);
                 }
-                return question;
+                return cb(question);
             }
             else {
-                return {};
+                return cb({});
             }
         }
 
@@ -155,8 +195,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             receive: function (e, ui) {
                 var elt = ui.item.sortable.moved;
                 if (elt.valueDomain) {
-                    var question = convertCdeToQuestion(elt);
-                    ui.item.sortable.moved = question;
+                    convertCdeToQuestion(elt, function (question) {
+                        ui.item.sortable.moved = question;
+                    });
                 } else if (elt.naming) {
                     var inForm = convertFormToSection(elt);
                     ui.item.sortable.moved = inForm;
@@ -239,24 +280,26 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
 
         $scope.updateCdeVersion = function (question) {
             $http.get('/deByTinyId/' + question.question.cde.tinyId).success(function (result) {
-                var newQuestion = convertCdeToQuestion(result);
-                $modal.open({
-                    animation: false,
-                    templateUrl: '/form/public/html/updateCdeRefVersion.html',
-                    controller: 'UpdateCdeRefVersionCtrl',
-                    resolve: {
-                        newQuestion: function () {
-                            return newQuestion;
-                        },
-                        currentQuestion: function () {
-                            return question;
+                convertCdeToQuestion(result, function (newQuestion) {
+                    $modal.open({
+                        animation: false,
+                        templateUrl: '/form/public/html/updateCdeRefVersion.html',
+                        controller: 'UpdateCdeRefVersionCtrl',
+                        resolve: {
+                            newQuestion: function () {
+                                return newQuestion;
+                            },
+                            currentQuestion: function () {
+                                return question;
+                            }
                         }
-                    }
-                }).result.then(function(){
+                    }).result.then(function () {
                         question.question = newQuestion.question;
                         question.label = newQuestion.label;
                         $scope.stageElt();
+                    });
                 });
+
             });
         };
 

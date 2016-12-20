@@ -1,5 +1,5 @@
 <div ng-if="canCurate && question.edit">
-    <div class="row questionAccordionContent">
+    <div class="row">
         <div class="col-sm-12">
             <div ng-if="question.instructions.value" class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
@@ -40,7 +40,7 @@
                     <div ng-hide="editCardMode">
                         <i ng-show="canCurate && question.edit" class="fa fa-edit"
                            ng-click="editCardMode = true; orig = question.cardinality"
-                           id="editQuestion"></i> {{getCardinalityLabel(question.cardinality)}}
+                           id="editQuestion"></i> {{getCardinalityLabel(question)}}
                     </div>
                 </div>
             </div>
@@ -77,6 +77,20 @@
                     <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
                     <div class="col-sm-7" id="dd_maximal_{{$index}}">
                         {{question.question.datatypeNumber.maxValue | placeHoldEmpty }}
+                    </div>
+                </div>
+            </div>
+            <div ng-if="question.question.datatype ==='Text'">
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Min Length:</div>
+                    <div class="col-sm-7" id="dd_minimal_{{$index}}">
+                        {{question.question.datatypeText.minLength | placeHoldEmpty }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 questionSectionLabel text-right">Max Length:</div>
+                    <div class="col-sm-7" id="dd_maximal_{{$index}}">
+                        {{question.question.datatypeText.maxLength | placeHoldEmpty }}
                     </div>
                 </div>
             </div>
@@ -155,7 +169,7 @@
     </div>
 </div>
 <div ng-if="!( canCurate && question.edit)">
-    <div class="row questionAccordionContent">
+    <div class="row">
         <div class="col-sm-12">
             <div ng-if="question.instructions.value" class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
