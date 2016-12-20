@@ -30,13 +30,13 @@
             </div>
             <div ng-switch-default>
                 <div ng-repeat="formElement in formElement.formElements track by $index" class="row">
-                    <div ng-if="formElement.elementType === 'question'" class="col-sm-12 native-question">
-                        <div ng-include="'/form/public/html/formRenderQuestion.html'"
-                             ng-init="formElements = $parent.$parent.formElement.formElements;"></div>
+                    <div ng-if="formElement.elementType === 'question'" class="col-sm-12 native-question"
+                         ng-include="'/form/public/html/formRenderQuestion.html'"
+                         ng-init="formElements = $parent.$parent.formElement.formElements;">
                     </div>
                     <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'" class="col-sm-12"
                          ng-include="'/form/public/html/formRenderSection.html'"
-                         ng-init="formElements = $parent.$parent.formElement.formElements; ">
+                         ng-init="formElements = $parent.$parent.formElement.formElements;">
                     </div>
                 </div>
             </div>

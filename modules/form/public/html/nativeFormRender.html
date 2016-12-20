@@ -19,7 +19,7 @@
         <span class="pull-right">
             <span style="margin-right: -10px">Render with: </span>
             <button class="btn btn-default" id="button_print_follow"
-                    data-url="/form/public/html/nativeRenderWithFollowUp.html?tinyId={{elt.tinyId}}"
+                    data-url="/form/public/html/nativeRenderWithFollowUp.html?tinyId={{::elt.tinyId}}"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</button>
             <button class="btn btn-default" id="button_lforms"
                     data-url="/form/public/html/lformsRender.html?tinyId={{::elt.tinyId}}"
@@ -48,7 +48,7 @@
              ng-include="'/form/public/html/formRenderSection.html'"></div>
         <div ng-if="nativeRenderType === nativeRenderTypes.FOLLOW_UP"
              ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElements = followForm;"></div>
+             ng-init="formElement = followForm;"></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">

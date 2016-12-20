@@ -9,7 +9,7 @@
 		       ng-disabled="!formElement.question.editable"
                        ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
-                 ng-repeat="question in pv.subQuestions"
+                 ng-repeat="formElement in pv.subQuestions"
                  ng-include="'/form/public/html/formRenderQuestion.html'"
                  ng-init="numSubQuestions = pv.subQuestions.length"
                  ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
@@ -28,7 +28,7 @@
 		       ng-disabled="!formElement.question.editable"
                        checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
-                 ng-repeat="question in pv.subQuestions"
+                 ng-repeat="formElement in pv.subQuestions"
                  ng-include="'/form/public/html/formRenderQuestion.html'"
                  ng-init="numSubQuestions = pv.subQuestions.length"
                  ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>

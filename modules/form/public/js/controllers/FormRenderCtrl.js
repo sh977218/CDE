@@ -4,10 +4,35 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.displayInstruction = false;
 
+    $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
+    $scope.nativeRenderTypes = {
+        SHOW_IF: 0,
+        FOLLOW_UP: 1,
+        GOTO_INSTRUCTIONS: 2
+    };
+    $scope.getNativeRenderType = function () {
+        return $scope.nativeRenderType;
+    };
+    $scope.setNativeRenderType = function (type) {
+        if (type == undefined) type = 1;
+        $scope.nativeRenderType = type;
+
+        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
+            $scope.followForm = angular.copy($scope.elt);
+            transformFormToInline($scope.followForm);
+            $scope.formElement = $scope.followForm;
+        }
+        if ($scope.nativeRenderType === $scope.nativeRenderTypes.SHOW_IF)
+            $scope.formElement = $scope.elt;
+    };
+
     $scope.selection = {};
     var setSelectedProfile = function () {
         if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
             $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
+            $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
+        } else {
+            $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
         }
     };
 
@@ -216,27 +241,6 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             !$scope.hasLabel(question) &&
             question.question.datatype !== 'Value List';
     };
-
-    $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
-    $scope.nativeRenderTypes = {
-        SHOW_IF: 0,
-        FOLLOW_UP: 1,
-        GOTO_INSTRUCTIONS: 2
-    };
-    $scope.getNativeRenderType = function () {
-        return $scope.nativeRenderType;
-    };
-    $scope.setNativeRenderType = function (type) {
-        if (type == undefined) type = 1;
-        $scope.nativeRenderType = type;
-
-        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
-                $scope.followForm = angular.copy($scope.elt);
-                transformFormToInline($scope.followForm);
-        }
-    };
-
-    $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
 
     function transformFormToInline(form) {
         var prevQ = "";
