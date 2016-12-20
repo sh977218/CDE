@@ -1,36 +1,41 @@
 <div class="panel panel-default">
     <div class="panel-heading overflowHidden" ng-class="{'bg-warning': question.question.cde.outdated}"
          ng-click="question.updatedSkipLogic = false">
-        <div ng-if="canCurate" class="ib left section-question-icon-div noRightPadding">
+        <div ng-if="canCurate" class="ib left">
             <i class="fa fa-arrows question-move-handle"></i>
             <i ng-if="question.skipLogic.condition.length > 0" class="fa fa-cog"
                ng-class="{'fa-spin': question.updatedSkipLogic}"
                title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
         </div>
+        <div ng-if="question.question.isScore" class="ib left">
+            <strong>Score: </strong>
+        </div>
         <div class="ib left">
-            <div ng-if="question.question.isScore"><strong>Score: </strong></div>
-            <div ng-if="question.hideLabel">
-                <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
-                <s ng-bind="question.question.cde.name"></s>
-            </div>
-            <div ng-if="!question.hideLabel || question.edit">
-                <div class="" id="dd_question_title_{{$index}}">
-                    <i ng-show="canCurate && question.edit" class="fa fa-pencil"
-                       title="Change question label"
-                       ng-click="openNameSelect(question,section)"></i>
-                    {{question.label | placeHoldEmpty}}
+            <div ng-if="canCurate && question.edit" class="hand-cursor" ng-click="openNameSelect(question,section)"
+                 title="Click to change question label">
+                <div ng-if="question.hideLabel">
+                    <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
+                    <s ng-bind="question.question.cde.name"></s>
                 </div>
+                <div ng-if="!question.hideLabel">{{question.label | placeHoldEmpty}}</div>
+            </div>
+            <div ng-if="!(canCurate && question.edit)" title="{{question.label}}">
+                <div ng-if="question.hideLabel">
+                    <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
+                    <s ng-bind="question.question.cde.name"></s>
+                </div>
+                <div ng-if="!question.hideLabel">{{question.label | placeHoldEmpty}}</div>
             </div>
             <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="left text-info">
                 <small>(part of score)</small>
             </div>
-            <div ng-if="question.question.cde.outdated" class="left error-block"> (Outdated)
-                <button id="question_update_{{sectionIndex}}_{{questionIndex}}"
-                        ng-click="updateCdeVersion(question);$event.preventDefault();$event.stopPropagation();">
-                    Update
-                </button>
-            </div>
             <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
+        </div>
+        <div ng-if="question.question.cde.outdated" class="ib left error-block"> (Outdated)
+            <button class="btn btn-default btn-xs" id="question_update_{{sectionIndex}}_{{questionIndex}}"
+                    ng-click="updateCdeVersion(question);">
+                Update
+            </button>
         </div>
         <div class="ib left">
             <a target="_blank" title="{{question.question.cde.name}}"
@@ -40,16 +45,64 @@
         </div>
         <div class="ib left">{{getCardinalityLabel(question)}}</div>
         <div class="ib left">{{getDatatypeLabel(question)}}</div>
-        <div ng-if="canCurate" class="pull-right section-question-icon-div">
-            <i class="fa fa-times hand-cursor pull-right"
+        <div ng-if="canCurate" class="ib pull-right">
+            <i ng-if="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
+               id="edit_question_{{$index}}" ng-click="question.edit = true"></i>
+            <i ng-if="question.edit" class="fa fa-floppy-o hand-cursor" title="save edit question"
+               ng-click="question.edit = false;"></i>
+            <i class="fa fa-times hand-cursor"
                ng-click="removeQuestion(parent, $index)"
                title="Remove question" id="remove_q_{{$index}}"></i>
-            <i class="fa fa-pencil hand-cursor pull-right" title="edit question"
-               id="edit_question_{{$index}}"
-               ng-click="question.edit = !question.edit;"></i>
         </div>
     </div>
     <div class="panel-body">
-        <div class="col-xs-12" ng-include="'/form/public/html/formQuestionTemplate.html'"></div>
+        <div class="col-xs-12" ng-if="canCurate && question.edit"
+             ng-include="'/form/public/html/formQuestionTemplate.html'"></div>
+        <div class="col-xs-12" ng-if="!(canCurate && question.edit)">
+            <div ng-if="question.instructions.value" class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
+                <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
+                    <div ng-if="question.instructions.valueFormat === 'html'"
+                         ng-bind-html="question.instructions.value"></div>
+                    <div ng-if="question.instructions.valueFormat !== 'html'"
+                         ng-bind="question.instructions.value"></div>
+                </div>
+            </div>
+            <div ng-if="question.question.required" class="row">
+                This question is required.
+            </div>
+            <div ng-if="question.question.editable === false" class="row">
+                This question is not editable.
+            </div>
+            <div ng-if="question.question.multiselect" class="row">
+                This question is Multiple Selections.
+            </div>
+            <div class="row"
+                 ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent">
+                <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+                <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">{{question.skipLogic.condition}}</div>
+            </div>
+            <div class="row">
+                {{getDatatypeDetails(question)}}
+            </div>
+            <div ng-if="question.question.uoms.length > 0" class="row">
+                Units of Measure: <span ng-repeat="uom in question.question.uoms">{{uom}}</span>
+            </div>
+            <div class="row" ng-if="question.question.answers && question.question.answers.length > 0">
+                Answer List:
+                <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="true">
+                    <ui-select-match>{{$item.valueMeaningName}}</ui-select-match>
+                    <ui-select-choices repeat="pv in question.question.cde.permissibleValues">
+                        {{pv.valueMeaningName}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row">
+                {{question.question.defaultAnswer}}
+            </div>
+            <div ng-if="question.question.scoreFormula && isScore(question)" class="row">
+                Score: {{question.question.scoreFormula}}
+            </div>
+        </div>
     </div>
 </div>

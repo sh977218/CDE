@@ -50,6 +50,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     return "Number between " + min + " and " + max + "";
                 }
                 return "";
+            } else if (datatype === 'Date') {
+                return question.question.datatypeDate && question.question.datatypeDate.format.length > 0 ? "Date format: " + question.question.datatypeDate.format : "";
             }
         };
 
@@ -57,15 +59,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             var datatype = question.question.datatype;
             if (datatype === 'Number') {
                 return "(Number)";
-            }
-            else if (datatype === 'Date') {
-                var format = question.question.datatypeDate ? question.question.datatypeDate.format : '';
-                return "Date " + format;
-            }
-            else if (datatype === 'Value List') {
-                return "";
-            }
-            else return "";
+            } else if (datatype === 'Date') {
+                return "(Date)";
+            } else return "";
         };
 
         $scope.addSection = function () {
