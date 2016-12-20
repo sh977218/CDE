@@ -178,19 +178,10 @@
                     <span ng-bind="question.question.scoreFormula"></span>
                 </div>
             </div>
-            <div ng-if="question.cardinality.min && question.cardinality.max && question.cardinality.min !== 0 && question.cardinality.max !== 0"
-                 class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-                <div class="col-sm-7" id="dd_q_card_{{$index}}">{{getCardinalityLabel(question.cardinality)}}</div>
-            </div>
             <div class="row"
                  ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent">
                 <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                 <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">{{question.skipLogic.condition}}</div>
-            </div>
-            <div ng-if="question.question.datatype" class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Datatype:</div>
-                <div class="col-sm-7" id="dd_datatype_{{$index}}">{{question.question.datatype | placeHoldEmpty }}</div>
             </div>
             <div ng-if="question.question.datatype ==='Number'">
                 <div class="row">
@@ -253,25 +244,12 @@
                            ng-click="stageElt()"/>
                 </div>
             </div>
-            <div ng-if="question.question.cde" class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">CDE:</div>
-                <div class="col-sm-7" id="dd_d_cde_{{$index}}">
-                    <a href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}"
-                       target="_blank"><i class="fa fa-eye"></i>
-                        <span id="dd_question_cde_name_{{$index}}">{{question.question.cde.name}}</span>
-                    </a>
-                </div>
-            </div>
-            <div class="row answerList" ng-if="question.question.datatype === 'Value List' || question.edit">
+            <div class="row answerList" ng-if="question.question.datatype === 'Value List'">
                 <div class="col-sm-2 questionSectionLabel text-right">Answer List:</div>
                 <div class="col-sm-7">
-                    <ui-select multiple ng-model="question.question.answers" theme="select2" search-enabled=false
-                               ng-disabled="!(canCurate && question.edit)" style="min-width: 125px"
-                               on-remove="stageElt()" on-select="stageElt()" append-to-body="true">
-                        <ui-select-match placeholder="Select answers...">{{$item.valueMeaningName}}
-                        </ui-select-match>
-                        <ui-select-choices
-                                repeat="pv in question.question.cde.permissibleValues | filter:$select.search track by pv.valueMeaningName">
+                    <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="true">
+                        <ui-select-match>{{$item.valueMeaningName}}</ui-select-match>
+                        <ui-select-choices repeat="pv in question.question.cde.permissibleValues">
                             {{pv.valueMeaningName}}
                         </ui-select-choices>
                     </ui-select>
