@@ -17,32 +17,55 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     "-1": "0 or more"
                 },
                 "1": {
-                    "1": "Exactly 1",
+                    "1": "",
                     "-1": "1 or more"
                 }
             }[cardinality.min][cardinality.max];
         };
+
+
+        $scope.getDatatypeDetails = function (question) {
+            var datatype = question.question.datatype;
+            if (datatype === 'Text') {
+                var min = question.question.datatypeText ? question.question.datatypeText.minLength : '';
+                var max = question.question.datatypeText ? question.question.datatypeText.maxLength : '';
+                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
+                if (min && !max) {
+                    return "nimNoMax"
+                } else if (max && !min) {
+                    return "Text Input with maximum " + max + " characters";
+                } else if (min && max) {
+                    return "Text Input from " + min + " to " + max + " characters";
+                }
+                return "";
+                //return "Text " + min + join + max;
+            } else if (datatype === 'Number') {
+                var min = question.question.datatypeNumber ? question.question.datatypeNumber.minValue : '';
+                var max = question.question.datatypeNumber ? question.question.datatypeNumber.maxValue : '';
+                if (min && !max) {
+                    return "nimNoMax"
+                } else if (max && !min) {
+                    return "Number lesser than " + max;
+                } else if (min && max) {
+                    return "Number between " + min + " and " + max + "";
+                }
+                return "";
+            }
+        };
+
         $scope.getDatatypeLabel = function (question) {
             var datatype = question.question.datatype;
             if (datatype === 'Number') {
-                var min = question.question.datatypeNumber ? question.question.datatypeNumber.minValue : '';
-                var max = question.question.datatypeNumber ? question.question.datatypeNumber.maxValue : '';
-                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
-                return "Number " + min + join + max;
+                return "(Number)";
             }
             else if (datatype === 'Date') {
                 var format = question.question.datatypeDate ? question.question.datatypeDate.format : '';
                 return "Date " + format;
             }
-            else if (datatype === 'Text') {
-                var min = question.question.datatypeText ? question.question.datatypeText.minLength : '';
-                var max = question.question.datatypeText ? question.question.datatypeText.maxLength : '';
-                var join = !isNaN(min) && !isNaN(max) && min < max ? ' to ' : ' ';
-                return "Text " + min + join + max;
+            else if (datatype === 'Value List') {
+                return "";
             }
-            else if (datatype === 'Value List')
-                return "Value List";
-            else return "Unknown datatype";
+            else return "";
         };
 
         $scope.addSection = function () {

@@ -33,9 +33,9 @@
             <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
         </div>
         <div class="ib left">
-            <a target="_blank" title="View CDE {{question.question.cde.name}}"
+            <a target="_blank" title="{{question.question.cde.name}}"
                href="/#/deview?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-                <i class="fa fa-eye"></i>
+                <i class="fa fa-eye"></i> View CDE
             </a>
         </div>
         <div class="ib left">{{getCardinalityLabel(question)}}</div>

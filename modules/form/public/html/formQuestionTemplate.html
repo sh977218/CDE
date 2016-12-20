@@ -197,20 +197,10 @@
                 <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
                 <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">{{question.skipLogic.condition}}</div>
             </div>
-            <div ng-if="question.question.datatype ==='Number'">
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Min Value:</div>
-                    <div class="col-sm-7" id="dd_minimal_{{$index}}">{{question.question.datatypeNumber.minValue |
-                        placeHoldEmpty }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Max Value:</div>
-                    <div class="col-sm-7" id="dd_maximal_{{$index}}">
-                        {{question.question.datatypeNumber.maxValue | placeHoldEmpty }}
-                    </div>
-                </div>
+            <div class="row">
+                {{getDatatypeDetails(question)}}
             </div>
+
             <div ng-if="question.question.multiselect && question.question.datatype === 'Value List'"
                  class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Multiple Selections:</div>

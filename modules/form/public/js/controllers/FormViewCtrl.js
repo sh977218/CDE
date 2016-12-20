@@ -236,7 +236,7 @@ angular.module('formModule').controller
                     } else if (fe.elementType === 'question') {
                         doneOne();
                     } else {
-                        $scope.addAlert("warning", "Unknown formElement.elementType" + fe.elementType);
+                        Alert.addAlert("warning", "Unknown formElement.elementType" + fe.elementType);
                     }
                 }, function doneAll() {
                     cb();
