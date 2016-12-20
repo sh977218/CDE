@@ -238,8 +238,7 @@ angular.module('systemModule').controller('ListCtrl',
 
         Elastic.generalSearchQuery(settings, type, function (err, result, corrected) {
             if (corrected && $scope.searchSettings.q) $scope.currentSearchTerm = $scope.searchSettings.q.replace(/[^\w\s]/gi, '');
-            //
-            $window.scrollTo(0, 0);
+            //$window.scrollTo(0, 0);
             if (err) {
                 $scope.accordionListStyle = "";
                 $scope.addAlert("danger", "There was a problem with your query");
@@ -272,7 +271,9 @@ angular.module('systemModule').controller('ListCtrl',
             }
 
             $scope[type + 's'].forEach(function (elt) {
-                elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                OrgHelpers.deferred.promise.then(function() {
+                    elt.usedBy = OrgHelpers.getUsedBy(elt, userResource.user);
+                });
             });
             $scope.accordionListStyle = "";
             $scope.openCloseAll($scope[type + 's'], "list");

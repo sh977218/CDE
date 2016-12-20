@@ -45,11 +45,10 @@
 
     <form name="sectionLabel" role="form" class="form-horizontal">
         <div ng-if="nativeRenderType === nativeRenderTypes.SHOW_IF"
-             ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElements = []; section = elt;"></div>
+             ng-include="'/form/public/html/formRenderSection.html'"></div>
         <div ng-if="nativeRenderType === nativeRenderTypes.FOLLOW_UP"
              ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElements = []; section = followForm;"></div>
+             ng-init="formElements = followForm;"></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">

@@ -13,6 +13,7 @@ public class EltIdMaps {
         eltMap.put("Biomarker Outcome Characteristics java.lang.String", "-dPmPekTRsb");
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
+        eltMap.put("ConceptCDE", "mkBls_Z0M");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
@@ -60,6 +61,7 @@ public class EltIdMaps {
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
 
         // Forms
+        eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
         eltMap.put("Functional Imaging", "my7XySBtg");
@@ -69,6 +71,7 @@ public class EltIdMaps {
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
+        eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
@@ -88,6 +91,7 @@ public class EltIdMaps {
         eltMap.put("Bipolar Disorder", "55f198c8541fd83c2166cbe2");
         eltMap.put("Chronic Lower-Back Pain", "55f197d6541fd83c2166cbc9");
         eltMap.put("Classify Board", "56e6d3c4439b3598287b5769");
+        eltMap.put("Cerebral Palsy", "55f1974a541fd83c2166cbbe");
         eltMap.put("Double Pin Board", "5750470189949d54384ee625");
         eltMap.put("Form Board", "5751ee614184ddb440886745");
         eltMap.put("Gliobastroma Multiform", "55f19768541fd83c2166cbc4");

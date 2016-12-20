@@ -47,7 +47,6 @@ function QuickBoardObj(type, $http, OrgHelpers, userResource, localStorageServic
         },
         canAddElt: function (elt) {
             if (elt !== undefined) {
-
                 var tinyIds = this.elts.map(function (_elt) {
                     return _elt.tinyId;
                 });

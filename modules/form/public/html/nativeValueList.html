@@ -1,11 +1,12 @@
-<fieldset ng-if="!question.question.multiselect">
+<fieldset ng-if="!formElement.question.multiselect">
     <div class="row">
         <div ng-repeat="pv in answerlist" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
             <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
                    class="radio-inline">
-                <input ng-model="question.question.answer"
-                       ng-required="question.question.required"
+                <input ng-model="formElement.question.answer"
+                       ng-required="formElement.question.required"
                        type="radio"
+		       ng-disabled="!formElement.question.editable"
                        ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
                  ng-repeat="question in pv.subQuestions"
@@ -16,14 +17,15 @@
         </div>
     </div>
 </fieldset>
-<div ng-if="question.question.multiselect">
+<div ng-if="formElement.question.multiselect">
     <div class="row">
-        <div ng-repeat="pv in question.question.answers" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
+        <div ng-repeat="pv in formElement.question.answers" ng-class="[{'col-sm-3': !pv.subQuestions}, 'col-xs-12']">
             <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
                    class="checkbox-inline">
-                <input checklist-model="question.question.answer"
-                       ng-required="question.question.required"
+                <input checklist-model="formElement.question.answer"
+                       ng-required="formElement.question.required"
                        type="checkbox"
+		       ng-disabled="!formElement.question.editable"
                        checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
                  ng-repeat="question in pv.subQuestions"

@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$routeParams',
-    function ($scope, $http, $routeParams)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope',
+    function ($scope)
 {
 
     $scope.displayInstruction = false;
@@ -11,25 +11,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         }
     };
 
-    var reload = function (id) {
-        $http.get('/form/' + id).then(function (result) {
-            $scope.elt = result.data;
-            delete $scope.elt.attachments;
-            delete $scope.elt.classification;
-            delete $scope.elt.comments;
-            delete $scope.elt.created;
-            delete $scope.elt.createdBy;
-            delete $scope.elt.history;
-            delete $scope.elt.properties;
-            delete $scope.elt.registrationState;
-            delete $scope.elt.stewardOrg;
-            setSelectedProfile();
-        });
-    };
-
-    if ($routeParams.id) {
-        reload($routeParams);
-    }
+    $scope.$on('eltReloaded', function () {
+        setSelectedProfile();
+    });
     setSelectedProfile();
 
     var removeAnswers = function (formElt) {
@@ -111,9 +95,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         }
     };
 
-    $scope.evaluateSkipLogic = function (rule, formElements, question) {
-        if (!rule) return true;
-        rule = rule.trim();
+    $scope.evaluateSkipLogic = function (condition, formElements, question) {
+        if (!condition) return true;
+        var rule = condition.trim();
         if (rule.indexOf("AND") > -1) {
             return $scope.evaluateSkipLogic(/.+AND/.exec(rule)[0].slice(0, -4), formElements, question) &&
                 $scope.evaluateSkipLogic(/AND.+/.exec(rule)[0].substr(4), formElements, question);
@@ -137,7 +121,15 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
-        if (realAnswer) {
+        if (expectedAnswer === "")
+        {
+            if (realAnswerObj.question.datatype === 'Number') {
+                if (realAnswer === null || Number.isNaN(realAnswer)) return true;
+            } else {
+                if (!realAnswer || ("" + realAnswer).trim().length === 0) return true;
+            }
+        }
+        else if (realAnswer) {
             if (realAnswerObj.question.datatype === 'Date') {
                 question.question.dateOptions = {};
                 if (operator === '=') {
@@ -173,7 +165,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
                 }
                 else return false;
             } else {
-                return true;
+                return realAnswer === expectedAnswer;
             }
         } else return false;
     };

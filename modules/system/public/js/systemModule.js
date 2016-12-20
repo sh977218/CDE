@@ -66,7 +66,8 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                 inputType: '=?',
                 isAllowed: '&',
                 onOk: '&',
-                typeaheadSource: '='
+                typeaheadSource: '=',
+                linkSource: '@'
             },
             templateUrl: '/system/public/html/systemTemplate/inlineEdit.html',
             controller: ["$scope", function ($scope) {
@@ -330,7 +331,7 @@ angular.module('systemModule').factory('SkipLogicUtil', [function () {
         tokens.push(t);
         str = str.substring(t.length).trim();
 
-        res = str.match(/^"([^"]+)"/);
+        res = str.match(/^"([^"]*)"/);
         if (!res) {
             tokens.unmatched = str;
             return tokens;

@@ -1,8 +1,9 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', '$window',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, $window) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
+
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
     $scope.addMode = undefined;
@@ -248,6 +249,20 @@ angular.module('formModule').controller
         });
     }
 
+    var setDefaultAnswer = function (section) {
+        section.formElements.forEach(function (fe) {
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                setDefaultAnswer(fe);
+            } else if (fe.elementType === 'question'){
+                if (fe.question.datatype === 'Number' && !Number.isNaN(fe.question.defaultAnswer)) {
+                    fe.question.answer = Number.parseFloat(fe.question.defaultAnswer);
+                } else {
+                    fe.question.answer = fe.question.defaultAnswer
+                }
+            }
+        });
+    };
+
     $scope.reload = function () {
         Form.get(query, function (form) {
             var formCopy = angular.copy(form);
@@ -269,6 +284,9 @@ angular.module('formModule').controller
                         $scope.tabs[route.tab].active = true;
                     }, 0);
                 }
+                $scope.formElements = [];
+                $scope.formElement = wholeForm;
+                setDefaultAnswer(wholeForm);
             });
         }, function () {
             $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
@@ -357,7 +375,7 @@ angular.module('formModule').controller
         } else {
             var filteredQuestion = filteredQuestions[0];
             if (filteredQuestion.question.datatype === 'Value List') {
-                if (filteredQuestion.question.answers.map(function (a) {
+                if (tokens[2].length > 0 && filteredQuestion.question.answers.map(function (a) {
                         return questionSanitizer(a.permissibleValue);
                     }).indexOf(tokens[2]) < 0) {
                     return '"' + tokens[2] + '" is not a valid answer for "' + filteredQuestion.label + '"';
@@ -375,7 +393,7 @@ angular.module('formModule').controller
                         return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
-                if ( new Date(tokens[2]).toString() === 'Invalid Date')
+                if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
                     return '"' + tokens[2] + '" is not a valid date for "' + filteredQuestion.label + '".';
             }
         }
@@ -389,7 +407,7 @@ angular.module('formModule').controller
             skipLogic.condition = preSkipLogicSelect + $item;
         }
         $timeout(function() {
-            var logic = skipLogic.condition;
+            var logic = skipLogic.condition.trim();
             var tokens = SkipLogicUtil.tokenSplitter(logic);
             delete skipLogic.validationError;
             if (tokens.unmatched) {
@@ -397,6 +415,7 @@ angular.module('formModule').controller
                 return skipLogic.validationError = "Unexpected token: " + tokens.unmatched;
             }
             if (!logic || logic.length === 0) {
+                $scope.stageElt($scope.elt);
                 return;
             }
             if ((tokens.length - 3) % 4 !== 0) {

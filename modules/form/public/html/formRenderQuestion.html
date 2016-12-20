@@ -1,60 +1,63 @@
-<div ng-show="evaluateSkipLogicAndClear(question.skipLogic.condition, formElements, question)">
-    <div ng-if="hasLabel(question)" class="row">
+<div ng-show="evaluateSkipLogicAndClear(formElement.skipLogic.condition, formElements, formElement)">
+    <div ng-if="hasLabel(formElement)" class="row">
         <div class="col-sm-12">
             <label tabindex="0"
                    ng-class="[{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}, {'native-box':numSubQuestions}]"
-                   ng-bind-html="question.label"></label>
+                   ng-bind-html="formElement.label"></label>
         </div>
     </div>
     <div ng-if="selection.selectedProfile.displayInstructions" class="row">
-        <div class="col-sm-12" ng-switch="question.instructions.valueFormat">
+        <div class="col-sm-12" ng-switch="formElement.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
-                <span ng-bind="question.instructions.value"></span></span>
+                <span ng-bind="formElement.instructions.value"></span></span>
             <span ng-switch-when="html">
-                <span ng-bind-html="question.instructions.value"></span>
+                <span ng-bind-html="formElement.instructions.value"></span>
             </span>
         </div>
     </div>
-    <div ng-class="[{'row': !isOneLiner(question,numSubQuestions)}, 'native-question-answers']">
-        <div ng-class="{'col-sm-12': !isOneLiner(question,numSubQuestions)}">
-            <div ng-if="question.question.isScore">Score: <span ng-disabled="true" ng-bind="score(question)"></span></div>
-            <div ng-if="!question.question.isScore" ng-switch="question.question.datatype"
-                 id="{{question.label}}_{{$index}}" ng-class="{'native-box': numSubQuestions && !isOneLiner(question,numSubQuestions)}">
-                <div ng-switch-when="Value List" native-valuelist ng-class="{'native-box': hasLabel(question)}"></div>
-                <div ng-switch-when="Date" ng-class="['input-group', {'native-box': hasLabel(question)}]">
+    <div ng-class="[{'row': !isOneLiner(formElement,numSubQuestions)}, 'native-question-answers']">
+        <div ng-class="{'col-sm-12': !isOneLiner(formElement,numSubQuestions)}">
+            <div ng-if="formElement.question.isScore">Score: <span ng-disabled="true" ng-bind="score(formElement)"></span></div>
+            <div ng-if="!formElement.question.isScore" ng-switch="formElement.question.datatype"
+                 id="{{formElement.label}}_{{$index}}" ng-class="{'native-box': numSubQuestions && !isOneLiner(formElement,numSubQuestions)}">
+                <div ng-switch-when="Value List" native-valuelist ng-class="{'native-box': hasLabel(formElement)}"></div>
+                <div ng-switch-when="Date" ng-class="['input-group', {'native-box': hasLabel(formElement)}]">
                     <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
-                           datepicker-options="question.question.dateOptions" is-open="question.question.opened"
-                           type="text" ng-required="question.question.required" alt-input-formats="['yyyy']"
-                           ng-model="question.question.answer"/>
+                           datepicker-options="formElement.question.dateOptions" is-open="formElement.question.opened"
+                           type="text" ng-required="formElement.question.required" alt-input-formats="['yyyy']"
+                           ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"/>
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default"
-                                ng-click="question.question.opened = true">
+                                ng-click="formElement.question.opened = true">
                             <i class="glyphicon glyphicon-calendar"></i>
                         </button>
                     </div>
                 </div>
                 <div ng-switch-when="Number"
-                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': hasLabel(question)}]">
-                    <input type="number" class="form-control" ng-required="question.question.required"
-                           ng-model="question.question.answer" name="{{question.question.cde.tinyId}}"
-                           min="{{question.question.datatypeNumber.minValue}}"
-                           max="{{question.question.datatypeNumber.maxValue}}"/>
-                    <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
-                           ng-repeat="uom in question.question.uoms">
-                        <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}</label>
+                     ng-class="[{'input-group': formElement.question.uoms.length > 0}, {'native-box': hasLabel(formElement)}]">
+                    <input type="number" class="form-control" ng-required="formElement.question.required"
+                           ng-model="formElement.question.answer" name="{{formElement.question.cde.tinyId}}"
+                           min="{{formElement.question.datatypeNumber.minValue}}"
+                           max="{{formElement.question.datatypeNumber.maxValue}}"
+                           ng-disabled="!formElement.question.editable"
+                    />
+                    <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
+                           ng-repeat="uom in formElement.question.uoms">
+                        <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"> {{uom}}</label>
                 </div>
                 <div ng-switch-default
-                     ng-class="[{'input-group': question.question.uoms.length > 0}, {'native-box': hasLabel(question)}]">
-                    <input type="text" class="form-control" ng-required="question.question.required"
-                           ng-model="question.question.answer" name=""/>
-                    <label class="input-group-addon" ng-if="question.question.uoms.length > 0"
-                           ng-repeat="uom in question.question.uoms">
-                        <input type="radio" ng-model="question.question.answerUom" ng-value="uom"> {{uom}}</label>
+                     ng-class="[{'input-group': formElement.question.uoms.length > 0}, {'native-box': hasLabel(formElement)}]">
+                    <input type="text" class="form-control" ng-required="formElement.question.required"
+                           ng-model="formElement.question.answer" name="" ng-disabled="!formElement.question.editable"/>
+                    <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
+                           ng-repeat="uom in formElement.question.uoms">
+                        <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
+                               ng-disabled="!formElement.question.editable"> {{uom}}</label>
                 </div>
 
                 <div>
-                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.min">Value is below min.</span>
-                    <span ng-show="sectionLabel[question.question.cde.tinyId].$error.max">Value is above max.</span>
+                    <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.min">Value is below min.</span>
+                    <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.max">Value is above max.</span>
                 </div>
             </div>
         </div>
