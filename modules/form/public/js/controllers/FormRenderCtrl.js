@@ -25,6 +25,14 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         if ($scope.nativeRenderType === $scope.nativeRenderTypes.SHOW_IF)
             $scope.formElement = $scope.elt;
     };
+    $scope.getElt = function () {
+        switch ($scope.nativeRenderType) {
+            case $scope.nativeRenderTypes.SHOW_IF:
+                return $scope.elt;
+            case $scope.nativeRenderTypes.FOLLOW_UP:
+                return $scope.followForm;
+        }
+    }
 
     $scope.selection = {};
     var setSelectedProfile = function () {
@@ -74,7 +82,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 formElt.formElements.forEach(doFormElement);
             }
         };
-        $scope.elt.formElements.forEach(doFormElement);
+        $scope.getElt().formElements.forEach(doFormElement);
         return result;
     };
 

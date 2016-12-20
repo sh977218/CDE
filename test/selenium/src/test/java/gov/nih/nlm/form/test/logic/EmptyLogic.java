@@ -9,6 +9,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
     @Test
     public void emptyLogic() {
         goToFormByName("Empty Logic");
+        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
 
         // Dates
         textPresent("Data unknown indicator");
