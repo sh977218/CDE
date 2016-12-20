@@ -136,6 +136,7 @@ exports.formJson = {
         , context: {contextName: String}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
+        , displayType: {type: Number}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

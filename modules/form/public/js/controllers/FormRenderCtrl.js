@@ -235,6 +235,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', '$
         return $scope.nativeRenderType;
     };
     $scope.setNativeRenderType = function (type) {
+        if (type == undefined) type = 1;
         $scope.nativeRenderType = type;
 
         if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {

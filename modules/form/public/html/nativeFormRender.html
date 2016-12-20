@@ -4,13 +4,14 @@
             <span class="form-group">
                 <label for="select_display_profile"><a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile: </a></label>
                 <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
+                        ng-change="setNativeRenderType(selection.selectedProfile.displayType)"
                         id="select_display_profile" class="form-control"></select>
             </span>
-            <span class="form-group">
-                <label for="select_display_type">Display Type: </label>
-                <select ng-model="nativeRenderType" ng-model-options="{ getterSetter: true }"
-                        ng-options="nativeRenderTypesText[p] for p in nativeRenderTypes"
-                        id="select_display_type" class="form-control mb3"></select>
+            <span>
+                <label>Show Skip Logic:
+                    <input type="checkbox"  ng-model="nativeRenderType"
+                           ng-true-value="0" ng-false-value="1" ng-change="setNativeRenderType(nativeRenderType)">
+                </label>
             </span>
 
         </span>

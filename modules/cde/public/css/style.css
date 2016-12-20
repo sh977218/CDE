@@ -1486,6 +1486,14 @@ input.ng-invalid {
     padding-top: 0;
 }
 
+table.table > tbody > tr > td {
+    padding: 8px 8px 8px 0;
+}
+
+label.input-group-addon {
+    background-color: transparent;
+}
+
 .native-section-header {
     border-bottom: 1px solid #ddd;
     margin-top: 20px;
@@ -1521,6 +1529,10 @@ div.row .native-question-oneline-r {
     padding-left: 7%;
 }
 
+.radio-inline {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 @media print {
     @page {
         size: 330mm 427mm;
@@ -1590,12 +1602,4 @@ div.row .native-question-oneline-r {
 
 .clear {
     clear: both;
-}
-
-table.table > tbody > tr > td {
-    padding: 8px 8px 8px 0;
-}
-
-label.input-group-addon {
-    background-color: transparent;
 }
