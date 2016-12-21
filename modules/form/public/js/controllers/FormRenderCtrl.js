@@ -17,9 +17,12 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         if (type == undefined) type = 1;
         $scope.nativeRenderType = type;
 
-        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP && (!$scope.followForm || $scope.elt.unsaved)) {
-            $scope.followForm = angular.copy($scope.elt);
-            transformFormToInline($scope.followForm);
+        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP) {
+            if (!$scope.followForm || $scope.elt.unsaved) {
+                $scope.formElement = undefined;
+                $scope.followForm = angular.copy($scope.elt);
+                transformFormToInline($scope.followForm);
+            }
             $scope.formElement = $scope.followForm;
         }
         if ($scope.nativeRenderType === $scope.nativeRenderTypes.SHOW_IF)
@@ -32,7 +35,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             case $scope.nativeRenderTypes.FOLLOW_UP:
                 return $scope.followForm;
         }
-    }
+    };
 
     $scope.selection = {};
     var setSelectedProfile = function () {
@@ -41,6 +44,12 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
         } else {
             $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
+            $scope.selection.selectedProfile = {
+                name: "Default Config",
+                displayInstructions: true,
+                displayNumbering: true,
+                sectionsAsMatrix: true
+            };
         }
     };
 
@@ -68,7 +77,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     };
 
     $scope.canRepeat = function (formElt) {
-        return formElt.cardinality === {min:0,max:-1} || formElt.cardinality === {min:1,max:-1};
+        return formElt.cardinality === {min: 0, max: -1} || formElt.cardinality === {min: 1, max: -1};
     };
 
     var findQuestionByTinyId = function (tinyId) {
@@ -139,9 +148,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             return ($scope.evaluateSkipLogic(/.+OR/.exec(rule)[0].slice(0, -3), formElements, question) ||
             $scope.evaluateSkipLogic(/OR.+/.exec(rule)[0].substr(3), formElements, question))
         }
-        var ruleArr = rule.split(/[>|<|=|<=|>=]/);
+        var ruleArr = rule.split(/>=|<=|=|>|</);
         var questionLabel = ruleArr[0].replace(/"/g, "").trim();
-        var operatorArr = /=|<|>|>=|<=/.exec(rule);
+        var operatorArr = />=|<=|=|>|</.exec(rule);
         if (!operatorArr) {
             $scope.skipLogicError = "SkipLogic is incorrect. " + rule;
             return true;
@@ -154,8 +163,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         });
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
-        if (expectedAnswer === "")
-        {
+        if (expectedAnswer === "") {
             if (realAnswerObj.question.datatype === 'Number') {
                 if (realAnswer === null || Number.isNaN(realAnswer)) return true;
             } else {
@@ -165,21 +173,11 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         else if (realAnswer) {
             if (realAnswerObj.question.datatype === 'Date') {
                 question.question.dateOptions = {};
-                if (operator === '=') {
-                    return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
-                }
-                if (operator === '<') {
-                    return new Date(realAnswer) < new Date(expectedAnswer);
-                }
-                if (operator === '>') {
-                    return new Date(realAnswer) > new Date(expectedAnswer);
-                }
-                if (operator === '<=') {
-                    return new Date(realAnswer) <= new Date(expectedAnswer);
-                }
-                if (operator === '>=') {
-                    return new Date(realAnswer) >= new Date(expectedAnswer);
-                }
+                if (operator === '=') return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
+                if (operator === '<') return new Date(realAnswer) < new Date(expectedAnswer);
+                if (operator === '>') return new Date(realAnswer) > new Date(expectedAnswer);
+                if (operator === '<=') return new Date(realAnswer) <= new Date(expectedAnswer);
+                if (operator === '>=') return new Date(realAnswer) >= new Date(expectedAnswer);
             } else if (realAnswerObj.question.datatype === 'Number') {
                 if (operator === '=') return realAnswer === parseInt(expectedAnswer);
                 if (operator === '<') return realAnswer < parseInt(expectedAnswer);
@@ -189,7 +187,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             } else if (realAnswerObj.question.datatype === 'Text') {
                 if (operator === '=') return realAnswer === expectedAnswer;
                 else return false;
-            } else if (realAnswerObj.question.datatype === 'Value List' ) {
+            } else if (realAnswerObj.question.datatype === 'Value List') {
                 if (operator === '=') {
                     if (Array.isArray(realAnswer))
                         return realAnswer.indexOf(expectedAnswer) > -1;
@@ -234,11 +232,16 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 }
             }
         });
+        if (section.forbidMatrix)
+            return false;
         return result;
     };
 
     $scope.isSectionDisplayed = function (section) {
-        return section.label || section.formElements.some(function (elem) {return elem.elementType === "question";});
+        return section.label ||
+            section.formElements.some(function (elem) {
+                return elem.elementType === "question";
+            });
     };
     $scope.hasLabel = function (question) {
         return question.label && !question.hideLabel;
@@ -252,48 +255,81 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     function transformFormToInline(form) {
         var prevQ = "";
+        var transformed = false;
         var feSize = form.formElements.length;
-        for (var i = 0; i < feSize; i++ ) {
+        for (var i = 0; i < feSize; i++) {
             var fe = form.formElements[i];
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                transformFormToInline(fe);
-                if (fe.skipLogic) delete fe.skipLogic;
-                continue;
-            }
             var qs = getShowIfQ(fe, prevQ);
             if (qs.length > 0) {
+                var substituted = false;
                 parentQ = qs[0][0];
                 qs.forEach(function (match) {
-                    var answer = parentQ.question.answers.filter(function(a){ return a.permissibleValue === match[3]; });
-                    if (answer.length) answer = answer[0];
-                    if (answer) {
-                        if (!answer.subQuestions) answer.subQuestions = [];
-                        answer.subQuestions.push(fe);
+                    var answer;
+                    if (parentQ.question.datatype === 'Value List') {
+                        answer = parentQ.question.answers.filter(function (a) {
+                            return a.permissibleValue === match[3];
+                        });
+                        if (answer.length) answer = answer[0];
+                        if (answer) {
+                            if (!answer.subQuestions) answer.subQuestions = [];
+                            answer.subQuestions.push(fe);
+                            substituted = true;
+                        }
+                    } else {
+                        if (!parentQ.question.answers) parentQ.question.answers = [];
+                        parentQ.question.answers.push({
+                            permissibleValue: match[3],
+                            codeSystemName: match[2],
+                            valueMeaningCode: 'nonvaluelist',
+                            subQuestions: [fe]
+                        });
+                        substituted = true;
                     }
                 });
-                form.formElements.splice(i,1);
-                feSize--;
-                i--;
+                if (substituted) {
+                    form.formElements.splice(i, 1);
+                    feSize--;
+                    i--;
+                    transformed = true;
+                }
                 prevQ.push(fe);
             } else {
                 prevQ = [fe];
+            }
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                if (transformFormToInline(fe))
+                    fe.forbidMatrix = true;
+                if (fe.skipLogic) delete fe.skipLogic;
+                continue;
             }
             // after transform processing of questions
             if (fe.question.uoms && fe.question.uoms.length === 1)
                 fe.question.answerUom = fe.question.uoms[0];
             if (fe.skipLogic) delete fe.skipLogic;
         }
+        return transformed;
     }
 
     function getShowIfQ(q, prevQ) {
         if (q.skipLogic && q.skipLogic.condition) {
             var strPieces = q.skipLogic.condition.split('"');
+            if (strPieces[0] === '') strPieces.shift();
+            if (strPieces[strPieces.length - 1] === '') strPieces.pop();
             var lStrPieces = strPieces.length;
             var accumulate = [];
-            for (var i=0; i < lStrPieces; i++) {
-                var matchQ = prevQ.filter(function(q) { return q.label === strPieces[i]; });
-                if(matchQ.length) {
-                    accumulate.push([matchQ[0], strPieces[i], strPieces[i+1], strPieces[i+2]]);
+            for (var i = 0; i < lStrPieces; i++) {
+                var matchQ = prevQ.filter(function (q) {
+                    return q.label === strPieces[i];
+                });
+                if (matchQ.length) {
+                    var operator = strPieces[i + 1].trim();
+                    var compValue = strPieces[i + 2];
+                    var operatorWithNumber = operator.split(' ');
+                    if (operatorWithNumber.length > 1) {
+                        operator = operatorWithNumber[0];
+                        compValue = operatorWithNumber[1];
+                    }
+                    accumulate.push([matchQ[0], strPieces[i], operator, compValue]);
                 }
             }
             return accumulate;

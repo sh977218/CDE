@@ -6,11 +6,11 @@
                 <input ng-model="formElement.question.answer"
                        ng-required="formElement.question.required"
                        type="radio"
-		       ng-disabled="!formElement.question.editable"
+                       ng-disabled="!formElement.question.editable"
                        ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
                  ng-repeat="formElement in pv.subQuestions"
-                 ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-include="'/form/public/html/formRenderSubQuestion.html'"
                  ng-init="numSubQuestions = pv.subQuestions.length"
                  ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
             <div class="clearfix" ng-if="$index%4==3"></div>
@@ -25,11 +25,11 @@
                 <input checklist-model="formElement.question.answer"
                        ng-required="formElement.question.required"
                        type="checkbox"
-		       ng-disabled="!formElement.question.editable"
+                       ng-disabled="!formElement.question.editable"
                        checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
             <div ng-if="pv.subQuestions"
                  ng-repeat="formElement in pv.subQuestions"
-                 ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-include="'/form/public/html/formRenderSubQuestion.html'"
                  ng-init="numSubQuestions = pv.subQuestions.length"
                  ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
             <div class="clearfix" ng-if="$index%4==3"></div>

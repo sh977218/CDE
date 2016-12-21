@@ -1,9 +1,15 @@
 <div ng-show="evaluateSkipLogicAndClear(formElement.skipLogic.condition, formElements, formElement)">
     <div ng-if="hasLabel(formElement)" class="row">
         <div class="col-sm-12">
-            <label tabindex="0"
-                   ng-class="[{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}, {'native-box':numSubQuestions}]"
-                   ng-bind-html="formElement.label"></label>
+            <label ng-class="[{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}, {'native-box':numSubQuestions}]">
+                <span ng-if="pv.valueMeaningCode === 'nonvaluelist'">If
+                    <span ng-if="pv.codeSystemName === '='">is</span>
+                    <span ng-if="pv.codeSystemName === '>'">more than</span>
+                    <span ng-if="pv.codeSystemName === '<'">less than</span>
+                    {{::pv.permissibleValue}}<span ng-if="pv.codeSystemName === '>='"> or more</span><span ng-if="pv.codeSystemName === '<='"> or less</span>:
+                </span>
+                <span tabindex="0" style="" ng-bind-html="formElement.label"></span>
+            </label>
         </div>
     </div>
     <div ng-if="selection.selectedProfile.displayInstructions" class="row">
@@ -32,6 +38,11 @@
                             <i class="glyphicon glyphicon-calendar"></i>
                         </button>
                     </div>
+                    <div ng-repeat="pv in formElement.question.answers">
+                        <div ng-repeat="formElement in pv.subQuestions"
+                             ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
+                             ng-include="'/form/public/html/formRenderSubQuestion.html'"
+                             ng-init="numSubQuestions = pv.subQuestions.length"></div></div>
                 </div>
                 <div ng-switch-when="Number"
                      ng-class="[{'input-group': formElement.question.uoms.length > 0}, {'native-box': hasLabel(formElement)}]">
@@ -44,6 +55,11 @@
                     <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                            ng-repeat="uom in formElement.question.uoms">
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"> {{uom}}</label>
+                    <div ng-repeat="pv in formElement.question.answers">
+                         <div ng-repeat="formElement in pv.subQuestions"
+                              ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
+                              ng-include="'/form/public/html/formRenderSubQuestion.html'"
+                              ng-init="numSubQuestions = pv.subQuestions.length"></div></div>
                 </div>
                 <div ng-switch-default
                      ng-class="[{'input-group': formElement.question.uoms.length > 0}, {'native-box': hasLabel(formElement)}]">
@@ -53,6 +69,11 @@
                            ng-repeat="uom in formElement.question.uoms">
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
                                ng-disabled="!formElement.question.editable"> {{uom}}</label>
+                    <div ng-repeat="pv in formElement.question.answers">
+                        <div ng-repeat="formElement in pv.subQuestions"
+                             ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
+                             ng-include="'/form/public/html/formRenderSubQuestion.html'"
+                             ng-init="numSubQuestions = pv.subQuestions.length"></div></div>
                 </div>
 
                 <div>

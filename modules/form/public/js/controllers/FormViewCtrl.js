@@ -9,6 +9,7 @@ angular.module('formModule').controller
     $scope.addMode = undefined;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
+    $scope.formLoading = true;
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
@@ -264,10 +265,12 @@ angular.module('formModule').controller
     };
 
     $scope.reload = function () {
+        $scope.formLoading = true;
         Form.get(query, function (form) {
             var formCopy = angular.copy(form);
             fetchWholeForm(formCopy, function (wholeForm) {
                 $scope.elt = wholeForm;
+                $scope.formLoading = false;
                 if (exports.hasRole(userResource.user, "FormEditor")) {
                     isAllowedModel.setCanCurate($scope);
                 }

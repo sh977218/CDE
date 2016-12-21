@@ -1,7 +1,7 @@
 <div ng-show="evaluateSkipLogic(formElement.skipLogic.condition, formElements,formElement)"
      class="native-section" id="formRenderSection_{{formElement.label}}">
 
-    <div ng-if="formElement.label" ng-class="{'native-section-header':isSectionDisplayed(formElement)}">
+    <div ng-if="formElement.label" ng-class="{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
         <div class="row">
             <div ng-class="{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
                 <h4 tabindex="0">{{formElement.label}}</h4>
@@ -23,22 +23,20 @@
         </div>
     </div>
 
-    <div>
-        <div ng-switch="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)">
-            <div ng-switch-when="true">
-                <div ng-include="'/form/public/html/formRenderSectionMatrix.html'"/>
+
+    <div ng-if="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
+         ng-include="'/form/public/html/formRenderSectionMatrix.html'"></div>
+    <div ng-if="!(selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
+        <div ng-repeat="formElement in formElement.formElements track by $index"
+             ng-class="{'keep-with-previous keep-together':$index===0}" class="row">
+            <div ng-if="formElement.elementType === 'question'" class="col-sm-12 native-question"
+                 ng-include="'/form/public/html/formRenderQuestion.html'"
+                 ng-init="formElements = $parent.$parent.formElement.formElements;">
             </div>
-            <div ng-switch-default>
-                <div ng-repeat="formElement in formElement.formElements track by $index" class="row">
-                    <div ng-if="formElement.elementType === 'question'" class="col-sm-12 native-question"
-                         ng-include="'/form/public/html/formRenderQuestion.html'"
-                         ng-init="formElements = $parent.$parent.formElement.formElements;">
-                    </div>
-                    <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'" class="col-sm-12"
-                         ng-include="'/form/public/html/formRenderSection.html'"
-                         ng-init="formElements = $parent.$parent.formElement.formElements;">
-                    </div>
-                </div>
+            <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
+                 class="col-sm-12"
+                 ng-include="'/form/public/html/formRenderSection.html'"
+                 ng-init="formElements = $parent.$parent.formElement.formElements;">
             </div>
         </div>
     </div>

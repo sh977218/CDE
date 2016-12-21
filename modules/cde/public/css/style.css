@@ -1533,13 +1533,25 @@ div.row .native-question-oneline-r {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
 @media print {
     @page {
         size: 330mm 427mm;
         margin: 14mm;
     }
+
     .container {
         width: 1170px;
+    }
+
+    .keep-with-previous {
+        page-break-before: avoid;
+        break-before: avoid;
+    }
+
+    .keep-together {
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
 }
 

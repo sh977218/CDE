@@ -3,7 +3,10 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
 
     $scope.addProfile = function() {
         var newProfile = {
-            name: "New Profile"
+            name: "New Profile",
+            displayInstructions: true,
+            displayNumbering: true,
+            sectionsAsMatrix: true
         };
         var elt = $scope.elt;
         if (!elt.displayProfiles) elt.displayProfiles = [newProfile];

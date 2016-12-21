@@ -38,8 +38,7 @@
     <div ng-if="elt.unsaved" class="mt10 alert alert-warning">
         <span class="fa fa-warning" aria-hidden="true"></span>
         <span class="sr-only">Warning:</span>
-        Save form to update rendering
-    </div>
+        Save form to update rendering</div>
 
     <h2>{{elt.naming[0].designation}}</h2>
 
@@ -47,8 +46,7 @@
         <div ng-if="nativeRenderType === nativeRenderTypes.SHOW_IF"
              ng-include="'/form/public/html/formRenderSection.html'"></div>
         <div ng-if="nativeRenderType === nativeRenderTypes.FOLLOW_UP"
-             ng-include="'/form/public/html/formRenderSection.html'"
-             ng-init="formElement = followForm;"></div>
+             ng-include="'/form/public/html/formRenderSection.html'"></div>
     </form>
 
     <uib-alert type="danger" ng-if="skipLogicError.length > 0">

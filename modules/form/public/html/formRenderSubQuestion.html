@@ -1,0 +1,8 @@
+<div ng-if="formElement.elementType === 'question'"
+     ng-include="'/form/public/html/formRenderQuestion.html'"
+     ng-init="formElements = $parent.$parent.formElement.formElements;">
+</div>
+<div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
+     ng-include="'/form/public/html/formRenderSection.html'"
+     ng-init="formElements = $parent.$parent.formElement.formElements;">
+</div>
