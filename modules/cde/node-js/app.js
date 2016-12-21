@@ -109,11 +109,6 @@ exports.init = function (app, daoManager) {
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
         mongo_cde.byId(req.params.id, new CdeServe(req, res).serveCde);
-        //cdesvc.show(req, res, function (result) {
-        //    if (!result) res.status(404).send();
-        //    var cde = cdesvc.hideProprietaryCodes(result, req.user);
-        //    res.send(cde);
-        //});
     });
 
 
