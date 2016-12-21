@@ -16,6 +16,7 @@ public class EltIdMaps {
         eltMap.put("ConceptCDE", "mkBls_Z0M");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
+        eltMap.put("ExportLatest", "XkZpBf60zJ");
         eltMap.put("FAD Total score value", "fp-oYN6A-SJ");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H-tWNZ");
         eltMap.put("Form Element End Date", "UwnYawNOWYw");
