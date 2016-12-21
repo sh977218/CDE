@@ -17,7 +17,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     "-1": "0 or more"
                 },
                 "1": {
-                    "1": "",
+                    "1": false,
                     "-1": "1 or more"
                 }
             }[cardinality.min][cardinality.max];
@@ -242,15 +242,7 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                     }
                 }
             });
-            modalInstance.result.then(function (selectedName) {
-                if (selectedName === question.label)
-                    return;
-                if (selectedName.length > 0) {
-                    question.label = selectedName;
-                    question.hideLabel = false;
-                } else {
-                    question.hideLabel = true;
-                }
+            modalInstance.result.then(function () {
                 $scope.stageElt();
             });
         };

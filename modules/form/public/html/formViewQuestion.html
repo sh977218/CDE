@@ -11,22 +11,16 @@
             <strong>Score: </strong>
         </div>
         <div class="ib left">
-            <div ng-if="canCurate && question.edit" class="hand-cursor" ng-click="openNameSelect(question,section)"
-                 title="Click to change question label">
+            <div title="{{question.label}}">
                 <div ng-if="question.hideLabel">
                     <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
                     <s ng-bind="question.question.cde.name"></s>
                 </div>
                 <div ng-if="!question.hideLabel">{{question.label | placeHoldEmpty}}</div>
             </div>
-            <div ng-if="!(canCurate && question.edit)" title="{{question.label}}">
-                <div ng-if="question.hideLabel">
-                    <i class="fa fa-question-circle" uib-tooltip="This question has no label"></i>
-                    <s ng-bind="question.question.cde.name"></s>
-                </div>
-                <div ng-if="!question.hideLabel">{{question.label | placeHoldEmpty}}</div>
-            </div>
-            <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="left text-info">
+        </div>
+        <div class="ib left">
+            <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
                 <small>(part of score)</small>
             </div>
             <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
@@ -43,30 +37,31 @@
                 <i class="fa fa-eye"></i> View CDE
             </a>
         </div>
-        <div class="ib left">{{getCardinalityLabel(question)}}</div>
         <div class="ib left">{{getDatatypeLabel(question)}}</div>
         <div ng-if="canCurate" class="ib pull-right">
             <i ng-if="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
                id="edit_question_{{$index}}" ng-click="question.edit = true"></i>
-            <i ng-if="question.edit" class="fa fa-floppy-o hand-cursor" title="save edit question"
+            <i ng-if="question.edit" class="fa fa-check hand-cursor" title="save edit question"
                ng-click="question.edit = false;"></i>
-            <i class="fa fa-times hand-cursor"
+            <i class="fa fa-trash-o hand-cursor"
                ng-click="removeQuestion(parent, $index)"
                title="Remove question" id="remove_q_{{$index}}"></i>
         </div>
     </div>
     <div class="panel-body">
         <div class="col-xs-12" ng-if="canCurate && question.edit"
-             ng-include="'/form/public/html/formQuestionTemplate.html'"></div>
+             ng-include="'/form/public/html/formQuestionEdit.html'"></div>
         <div class="col-xs-12" ng-if="!(canCurate && question.edit)">
             <div ng-if="question.instructions.value" class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-                <div class="col-sm-7" id="dd_question_instructions_{{$index}}">
-                    <div ng-if="question.instructions.valueFormat === 'html'"
-                         ng-bind-html="question.instructions.value"></div>
-                    <div ng-if="question.instructions.valueFormat !== 'html'"
-                         ng-bind="question.instructions.value"></div>
-                </div>
+                <span ng-if="question.instructions.valueFormat === 'html'"
+                      ng-bind-html="question.instructions.value"></span>
+                <span ng-if="question.instructions.valueFormat !== 'html'" ng-bind="question.instructions.value"></span>
+            </div>
+            <div ng-if="getCardinalityLabel(question)" class="row">
+                Repeats: {{getCardinalityLabel(question)}} times
+            </div>
+            <div ng-if="isScore(question)" class="row">
+                Score: <span ng-bind="question.question.scoreFormula"></span>
             </div>
             <div ng-if="question.question.required" class="row">
                 This question is required.
@@ -74,19 +69,21 @@
             <div ng-if="question.question.editable === false" class="row">
                 This question is not editable.
             </div>
-            <div ng-if="question.question.multiselect" class="row">
-                This question is Multiple Selections.
-            </div>
             <div class="row"
                  ng-if="question.skipLogic && question.skipLogic.condition && question.skipLogic.condition.length > 0 && parent">
-                <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-                <div class="col-sm-7" id="dd_q_skipLogic_{{$index}}">{{question.skipLogic.condition}}</div>
+                Show if: {{question.skipLogic.condition}}
             </div>
             <div class="row">
                 {{getDatatypeDetails(question)}}
             </div>
             <div ng-if="question.question.uoms.length > 0" class="row">
-                Units of Measure: <span ng-repeat="uom in question.question.uoms">{{uom}}</span>
+                Units of Measure:
+                <ui-select multiple ng-model="question.question.uoms" theme="select2" ng-disabled="true">
+                    <ui-select-match>{{$item}}</ui-select-match>
+                    <ui-select-choices repeat="uom in question.question.uom">
+                        {{uom}}
+                    </ui-select-choices>
+                </ui-select>
             </div>
             <div class="row" ng-if="question.question.answers && question.question.answers.length > 0">
                 Answer List:
@@ -96,12 +93,10 @@
                         {{pv.valueMeaningName}}
                     </ui-select-choices>
                 </ui-select>
+                {{question.question.multiselect?'(Multiple choices)':''}}
             </div>
             <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row">
-                {{question.question.defaultAnswer}}
-            </div>
-            <div ng-if="question.question.scoreFormula && isScore(question)" class="row">
-                Score: {{question.question.scoreFormula}}
+                Default Answer: {{question.question.defaultAnswer}}
             </div>
         </div>
     </div>
