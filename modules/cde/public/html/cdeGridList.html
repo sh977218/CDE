@@ -3,8 +3,7 @@
         <thead>
         <tr>
             <th ng-if="searchViewSettings.tableViewFields.name" class="name">Name</th>
-            <th class="naming">Question Texts</th>
-            <!--<th ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">Question Texts</th>-->
+            <th ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">Question Texts</th>
             <th ng-if="searchViewSettings.tableViewFields.naming" class="naming">Other Names</th>
             <th ng-if="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues">Permissible Values</th>
             <th ng-if="searchViewSettings.tableViewFields.nbOfPVs" class="nbOfPVs">Nb of PVs</th>
@@ -26,8 +25,7 @@
                         {{c.naming[0].designation}}
                     </a>
                 </td>
-                <!--<td ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">-->
-                <td class="naming">
+                <td ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">
                     <ul>
                         <li ng-repeat="name in getQuestionTexts(c) | limitTo: maxLines" ng-show="name.designation">
                             {{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
@@ -36,8 +34,9 @@
                 </td>
                 <td ng-if="searchViewSettings.tableViewFields.naming" class="naming">
                     <ul>
-                        <li ng-repeat="name in c.naming | limitTo: maxLines" ng-show="name.designation">{{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
-                        <li class="lastItem" ng-show="c.naming.length > maxLines">...</li>
+                        <li ng-repeat="name in getOtherNames(c) | limitTo: maxLines" ng-show="name.designation">
+                            {{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
+                        <li class="lastItem" ng-show="getOtherNames(c) > maxLines">...</li>
                     </ul>
                 </td>
                 <td ng-if="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues multiline-ellipsis">
