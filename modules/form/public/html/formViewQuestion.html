@@ -23,6 +23,8 @@
             <div ng-if="inScoreCdes.indexOf(question.question.cde.tinyId) > -1" class="text-info">
                 <small>(part of score)</small>
             </div>
+        </div>
+        <div class="ib left">
             <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
         </div>
         <div ng-if="question.question.cde.outdated" class="ib left error-block"> (Outdated)

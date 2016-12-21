@@ -57,7 +57,7 @@
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions dragSections"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
             <div ng-repeat="(questionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit"
-                 id="question_{{$index}}">
+                 id="question_{{questionIndex}}">
                 <div ng-if="formElement.elementType === 'question'"
                      ng-include="'/form/public/html/formViewQuestion.html'"
                      ng-init="parent = section; question = formElement;"></div>
