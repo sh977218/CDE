@@ -3,6 +3,8 @@
         <thead>
         <tr>
             <th ng-if="searchViewSettings.tableViewFields.name" class="name">Name</th>
+            <th class="naming">Question Texts</th>
+            <!--<th ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">Question Texts</th>-->
             <th ng-if="searchViewSettings.tableViewFields.naming" class="naming">Other Names</th>
             <th ng-if="searchViewSettings.tableViewFields.permissibleValues" class="permissibleValues">Permissible Values</th>
             <th ng-if="searchViewSettings.tableViewFields.nbOfPVs" class="nbOfPVs">Nb of PVs</th>
@@ -20,9 +22,17 @@
         <tbody>
             <tr ng-repeat="c in cdes">
                 <td ng-if="searchViewSettings.tableViewFields.name" class="name">
-                    <a href="/#/deview/?tinyId={{c.tinyId}}">
+                    <a href="/deview/?tinyId={{c.tinyId}}">
                         {{c.naming[0].designation}}
                     </a>
+                </td>
+                <!--<td ng-if="searchViewSettings.tableViewFields.questionTexts" class="naming">-->
+                <td class="naming">
+                    <ul>
+                        <li ng-repeat="name in getQuestionTexts(c) | limitTo: maxLines" ng-show="name.designation">
+                            {{name.designation | limitTo: lineLength}} <span ng-show="name.designation.length>lineLength">...</span></li>
+                        <li class="lastItem" ng-show="getQuestionTexts(c).length > maxLines">...</li>
+                    </ul>
                 </td>
                 <td ng-if="searchViewSettings.tableViewFields.naming" class="naming">
                     <ul>
