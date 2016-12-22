@@ -51,28 +51,34 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void addSection(String title, String card) {
-        int nbOfSections = driver.findElements(By.xpath("//div[starts-with(@id, 'section_view')]")).size();
+        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
         scrollToTop();
         clickElement(By.id("description_tab"));
-        clickElement(By.id("addSection"));
+        clickElement(By.id("addSectionBottom"));
 
-        String section_title_path = "//div[@id='section_title_" + nbOfSections + "']";
-        clickElement(By.xpath(section_title_path + "//i"));
-        findElement(By.xpath(section_title_path + "//input")).clear();
-        findElement(By.xpath(section_title_path + "//input")).sendKeys(title);
-        clickElement(By.xpath(section_title_path + "//button[contains(text(),'Confirm')]"));
+        String sectionId = "section_" + nbOfSections;
+        startEditQuestionSectionById(sectionId);
+        clickElement(By.id("//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//i"));
+        String sectionInput = "//div[@id='" + sectionId + "']//div[contains(@class,'section_title')]//input";
+        findElement(By.xpath(sectionInput)).clear();
+        findElement(By.xpath(sectionInput)).sendKeys(title);
+        clickElement(By.xpath("//*[@id=" + sectionId + "]/div/div[1]/div[1]/div[2]/span/form/button[1]"));
 
         if (card != null) {
             clickElement(By.xpath("//i[@id='edit_section_card_" + nbOfSections + "']"));
-            new Select(findElement(By.xpath("//select[@id='select_section_card_" + nbOfSections + "']"))).selectByVisibleText(card);
-            clickElement(By.xpath("//div[@id='dd_card_" + nbOfSections + "']//button[@id='confirmCard']"));
+            new Select(findElement(By.xpath("//*[@id=" + sectionId + "]/div/div[1]/div[2]/div[5]/div[2]/select"))).selectByVisibleText(card);
         }
 
+        saveEditQuestionSectionById(sectionId);
         //  for some reason, the click to save sometimes does not open save. Maybe the click is being swallowed by the closing select above.
         hangon(1);
     }
 
-    void startEditQuestionById(String id) {
+    void startEditQuestionSectionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+    }
+
+    void saveEditQuestionSectionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
     }
 }

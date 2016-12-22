@@ -1,4 +1,4 @@
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+<button id="addSectionTop" ng-click="addSection('top')" class="btn btn-default" ng-show="canCurate">
     <i class="fa fa-plus"></i> Add Section
 </button>
 <button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0"
@@ -46,7 +46,7 @@
 </div>
 
 </div>
-<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+<button id="addSectionBottom" ng-click="addSection('bot')" class="btn btn-default" ng-show="canCurate">
     <i class="fa fa-plus"></i> Add Section
 </button>
 

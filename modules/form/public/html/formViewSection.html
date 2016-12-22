@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default section_view">
     <div class="panel-heading">
         <div class="row" ng-click="section.updatedSkipLogic = false">
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
@@ -7,7 +7,7 @@
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
             </div>
-            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit
+            <div class="col-sm-9 questionSectionTitle section_title" inline-edit
                  model="section.label" is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
             <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
                 <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
@@ -45,7 +45,7 @@
             <div class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                 <div class="col-sm-2">
-                    <select class="form-control" ng-disabled="!(canCurate && section.edit)"
+                    <select class="form-control section_cardinality" ng-disabled="!(canCurate && section.edit)"
                             ng-model="section.cardinality" ng-change="stageElt()"
                             ng-options="item.value as item.label for item in cardinalityOptions">
                     </select>

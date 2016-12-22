@@ -64,18 +64,30 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
             } else return "";
         };
 
-        $scope.addSection = function () {
+        $scope.addSection = function (po) {
             if (!$scope.elt.formElements) {
                 $scope.elt.formElements = [];
             }
-            $scope.elt.formElements.push({
-                label: "New Section",
-                cardinality: {min: 1, max: 1},
-                section: {},
-                skipLogic: {condition: ''},
-                formElements: [],
-                elementType: "section"
-            });
+            if (po === 'top') {
+                $scope.elt.formElements.unshift({
+                    label: "New Section",
+                    cardinality: {min: 1, max: 1},
+                    section: {},
+                    skipLogic: {condition: ''},
+                    formElements: [],
+                    elementType: "section"
+                });
+
+            } else {
+                $scope.elt.formElements.push({
+                    label: "New Section",
+                    cardinality: {min: 1, max: 1},
+                    section: {},
+                    skipLogic: {condition: ''},
+                    formElements: [],
+                    elementType: "section"
+                });
+            }
             $scope.stageElt();
         };
 
