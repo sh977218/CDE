@@ -8,11 +8,7 @@
                        type="radio"
                        ng-disabled="!formElement.question.editable"
                        ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions"
-                 ng-repeat="formElement in pv.subQuestions"
-                 ng-include="'/form/public/html/formRenderSubQuestion.html'"
-                 ng-init="numSubQuestions = pv.subQuestions.length"
-                 ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
+            <div ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
             <div class="clearfix" ng-if="$index%4==3"></div>
         </div>
     </div>
@@ -27,11 +23,7 @@
                        type="checkbox"
                        ng-disabled="!formElement.question.editable"
                        checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions"
-                 ng-repeat="formElement in pv.subQuestions"
-                 ng-include="'/form/public/html/formRenderSubQuestion.html'"
-                 ng-init="numSubQuestions = pv.subQuestions.length"
-                 ng-class="{'native-question-oneline-r': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"></div>
+            <div ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
             <div class="clearfix" ng-if="$index%4==3"></div>
         </div>
     </div>

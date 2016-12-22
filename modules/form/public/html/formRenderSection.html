@@ -4,7 +4,7 @@
     <div ng-if="formElement.label" ng-class="{'native-section-header':isSectionDisplayed(formElement)}" class="keep-together">
         <div class="row">
             <div ng-class="{'col-sm-9':canRepeat(formElement)}" class="col-xs-12">
-                <h4 tabindex="0">{{formElement.label}}</h4>
+                <h4>{{formElement.label}}</h4>
             </div>
             <div class="col-sm-3" ng-if="canRepeat(formElement)">
                 <button class="btn btn-default fa fa-plus"

@@ -157,10 +157,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         }
         var operator = operatorArr[0];
         var expectedAnswer = ruleArr[1].replace(/"/g, "").trim();
-        var realAnswerArr = formElements.filter(function (element) {
-            if (element.elementType != 'question') return false;
-            else return element.label == questionLabel;
-        });
+        var realAnswerArr = getQuestions(formElements, questionLabel);
         var realAnswerObj = realAnswerArr[0];
         var realAnswer = realAnswerObj ? realAnswerObj.question.answer : undefined;
         if (expectedAnswer === "") {
@@ -253,6 +250,18 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             question.question.datatype !== 'Value List';
     };
 
+    function getQuestions(fe, qLabel) {
+        var result = [];
+        fe.forEach(function (element) {
+            if (element.elementType != 'question')
+                result = result.concat(getQuestions(element.formElements, qLabel));
+            else
+                if (element.label == qLabel)
+                    result = result.concat(element);
+        });
+        return result;
+    }
+
     function transformFormToInline(form) {
         var prevQ = "";
         var transformed = false;
@@ -277,12 +286,21 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                         }
                     } else {
                         if (!parentQ.question.answers) parentQ.question.answers = [];
-                        parentQ.question.answers.push({
-                            permissibleValue: match[3],
-                            codeSystemName: match[2],
-                            valueMeaningCode: 'nonvaluelist',
-                            subQuestions: [fe]
+                        var existingLogic = parentQ.question.answers.filter(function(el) {
+                            return el.valueMeaningCode === 'nonvaluelist' &&
+                                el.subQuestions.length === 1 && el.subQuestions[0] === fe;
                         });
+                        if (existingLogic.length > 0) {
+                            var existingSubQ = existingLogic[0];
+                            existingSubQ.permissibleValue = existingSubQ.permissibleValue + ' or ' +
+                                createRelativeText([match[3]],match[2]);
+                        } else {
+                            parentQ.question.answers.push({
+                                permissibleValue: createRelativeText([match[3]], match[2]),
+                                valueMeaningCode: 'nonvaluelist',
+                                subQuestions: [fe]
+                            });
+                        }
                         substituted = true;
                     }
                 });
@@ -335,6 +353,21 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             return accumulate;
         }
         return [];
+    }
+
+    function createRelativeText(values, oper) {
+        switch (oper) {
+            case '=':
+                return 'is ' + values.join(' or ');
+            case '>':
+                return 'more than' + Math.min.apply(null, values);
+            case '<':
+                return 'less than' + Math.max.apply(null, values);
+            case '>=':
+                return Math.min.apply(null, values) + ' or more';
+            case '<=':
+                return Math.max.apply(null, values) + ' or less';
+        }
     }
 
 }]);
