@@ -175,7 +175,6 @@ exports.init = function (app, daoManager) {
                     return board.type === 'cde' ? p.deTinyId : p.formTinyId;
                 });
                 daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
-                //daoManager.getDao(board.type).byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
                         elts = elts.map(function (oneCde) {
