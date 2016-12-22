@@ -73,51 +73,50 @@ exports.init = function (app, daoManager) {
         adminItemSvc.forkRoot(req, res, mongo_cde);
     });
 
-    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        cdesvc.show(req, res, function (result) {
-            if (!result) res.status(404).send();
-            var cde = cdesvc.hideProprietaryCodes(result, req.user);
-            res.send(cde);
-        });
-    });
-
     app.get('/deExists/:tinyId/:version', exportShared.nocacheMiddleware, function (req, res) {
         mongo_cde.exists({tinyId: req.params.tinyId, version: req.params.version}, function (err, result) {
             res.send(result);
         });
     });
 
-    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
-        function sendNativeJson(cde, res) {
-            res.send(cde);
-        }
-
-        function sendNativeXml(cde, res) {
+    function CdeServe(req, res) {
+        var _this = this;
+        this.req = req;
+        this.res = res;
+        this.sendNativeXml = function (cde, res) {
             res.setHeader("Content-Type", "application/xml");
             var exportCde = cde.toObject();
             exportCde = exportShared.stripBsonIds(exportCde);
             res.send(js2xml("dataElement", exportCde));
-        }
-
-        var serveCde = function (err, cde) {
+        };
+        this.serveCde = function (err, cde) {
             if (!cde) return res.status(404).send();
             cde = cdesvc.hideProprietaryCodes(cde, req.user);
-            if (!req.query.type) sendNativeJson(cde, res);
-            else if (req.query.type === 'json') sendNativeJson(cde, res);
-            else if (req.query.type === 'xml') sendNativeXml(cde, res);
+            if (!req.query.type) res.send(cde);
+            else if (req.query.type === 'json') _this.sendNativeJson(cde, res);
+            else if (req.query.type === 'xml') _this.sendNativeXml(cde, res);
             else return res.status(404).send("Cannot recognize export type.");
 
             if (req.isAuthenticated()) {
                 mongo_cde.addToViewHistory(cde, req.user);
             }
             mongo_cde.incDeView(cde);
-        };
+        }
+    }
+
+    app.get('/dataelement/:id', exportShared.nocacheMiddleware, function (req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+        mongo_cde.byId(req.params.id, new CdeServe(req, res).serveCde);
+    });
+
+
+    app.get('/debytinyid/:tinyId/:version?', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.params.version) {
-            mongo_cde.eltByTinyId(req.params.tinyId, serveCde);
+            mongo_cde.eltByTinyId(req.params.tinyId,  new CdeServe(req, res).serveCde);
         } else {
-            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version, serveCde);
+            mongo_cde.byTinyIdAndVersion(req.params.tinyId, req.params.version,  new CdeServe(req, res).serveCde);
         }
     });
 

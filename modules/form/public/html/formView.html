@@ -40,26 +40,26 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li ng-if="user._id">
-                        <a id='nihJson' ng-href="form/{{elt.tinyId}}" target="_blank">JSON File, NIH/CDE Schema</a>
+                        <a id='nihJson' ng-href="form/{{elt._id}}" target="_blank">JSON File, NIH/CDE Schema</a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='odmExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=odm" target="_blank">XML File,
+                        <a id='odmExport' ng-href="form/{{elt._id}}?type=xml&subtype=odm" target="_blank">XML File,
                             ODM Schema</a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='sdcExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc" target="_blank">
+                        <a id='sdcExport' ng-href="form/{{elt._id}}?type=xml&subtype=sdc" target="_blank">
                             XML File, SDC Schema</a>
                     </li>
                     <li ng-if="user._id && !isIe()">
-                        <a id='sdcHtmlExport' ng-href="form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
+                        <a id='sdcHtmlExport' ng-href="form/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml" target="_blank">
                             XML File, SDC Schema with XSL Transform</a>
                     </li>
                     <li ng-if="user._id">
-                        <a id='nihXml' ng-href="form/{{elt.tinyId}}?type=xml" target="_blank">XML File, NIH/CDE
+                        <a id='nihXml' ng-href="form/{{elt._id}}?type=xml" target="_blank">XML File, NIH/CDE
                             Schema</a>
                     </li>
                     <li ng-if="user._id && enableBeta">
-                        <a id='nihRedCap' ng-href="form/{{elt.tinyId}}?type=REDCap" target="_blank">
+                        <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank">
                             REDCap <sup class="betaFeature">beta</sup></a>
                     </li>
                     <li ng-if="!user._id"><a href="login">Please login to export forms.</a></li>
