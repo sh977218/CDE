@@ -51,18 +51,19 @@ exports.init = function (app, daoManager) {
 
     function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            var index;
-            if (board.get('pins').find(function (p, i) {
+            var index = -1;
+            board.get('pins').find(function (p, i) {
                     index = i;
                     return p.get('deTinyId') === req.body.tinyId;
-                })) {
+                });
+            if (index !== -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
                     else res.send();
                 });
             } else {
-                res.send();
+                res.status(400).send("Nothing to move");
             }
         });
     }
@@ -156,8 +157,7 @@ exports.init = function (app, daoManager) {
                             }
                         }, function (err) {
                             if (err) {
-                                res.status(500).send();
-                                return;
+                                return res.status(500).send();
                             }
                         });
                     }
@@ -174,7 +174,8 @@ exports.init = function (app, daoManager) {
                 var idList = board.pins.map(function (p) {
                     return board.type === 'cde' ? p.deTinyId : p.formTinyId;
                 });
-                daoManager.getDao(board.type).byTinyIdList(idList, function (err, elts) {
+                daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
+                //daoManager.getDao(board.type).byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
                         elts = elts.map(function (oneCde) {

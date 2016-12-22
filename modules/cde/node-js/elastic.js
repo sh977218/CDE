@@ -240,7 +240,7 @@ exports.DataElementDistinct = function (field, cb) {
             logging.errorLogger.error("Error DataElementDistinct", {
                 origin: "cde.elastic.DataElementDistinct",
                 stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "respone" + JSON.stringify(response)
+                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
             var list = response.aggregations.aggregationsName.buckets.map(function (b) {

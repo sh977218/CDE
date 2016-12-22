@@ -30,3 +30,28 @@ exports.updateOrInsert = function(elt) {
         }
     });
 };
+
+exports.byTinyIdList = function (idList, cb) {
+    esClient.search({
+        index: config.elastic.formIndex.name,
+        type: "form",
+        body: {
+            "query": {
+                "ids" : {
+                    "values" : idList
+                }
+            }
+        }
+    }, function (error, response) {
+        if (error) {
+            logging.errorLogger.error("Error DataElementDistinct", {
+                origin: "cde.elastic.getByTinyIdList",
+                stack: new Error().stack,
+                details: "Error " + error + "response" + JSON.stringify(response)
+            });
+            cb(err);
+        } else {
+            cb(null, response.hits.hits.map(h=>h._source));
+        }
+    });
+};
