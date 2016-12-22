@@ -45,7 +45,7 @@ exports.byTinyIdList = function (idList, cb) {
     }, function (error, response) {
         if (error) {
             logging.errorLogger.error("Error DataElementDistinct", {
-                origin: "cde.elastic.getByTinyIdList",
+                origin: "form.elastic.getByTinyIdList",
                 stack: new Error().stack,
                 details: "Error " + error + "response" + JSON.stringify(response)
             });
