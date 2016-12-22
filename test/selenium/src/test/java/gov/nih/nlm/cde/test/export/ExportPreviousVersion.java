@@ -15,8 +15,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         clickElement(By.id("export"));
 
         // Current version
-        Assert.assertEquals(findElement(By.id("jsonExport")).getAttribute("href"), "dataelement/585adda729f8ae801d0f045a");
-        Assert.assertEquals(findElement(By.id("xmlExport")).getAttribute("href"), "dataelement/585adda729f8ae801d0f045a?type=xml");
+        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataelement/585adda729f8ae801d0f045a"));
+        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataelement/585adda729f8ae801d0f045a?type=xml"));
         Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
         Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("<designation>This name will be removed</designation>"));
 
@@ -28,13 +28,12 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         clickElement(By.id("export"));
 
         // Current version
-        Assert.assertEquals(findElement(By.id("jsonExport")).getAttribute("href"), "dataelement/585adda229f8ae801d0f0456");
-        Assert.assertEquals(findElement(By.id("xmlExport")).getAttribute("href"), "dataelement/585adda229f8ae801d0f0456?type=xml");
+        Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456"));
+        Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456?type=xml"));
         Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456").asString().contains("designation: \"This name will be removed\""));
         Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
         switchTabAndClose(0);
-
     }
 
 }
