@@ -40,14 +40,12 @@
             </a>
         </div>
         <div class="ib left">{{getDatatypeLabel(question)}}</div>
-        <div ng-if="canCurate" class="ib pull-right">
+        <div ng-if="canCurate" class="ib pull-right editIconDiv">
             <i ng-if="!question.edit" class="fa fa-pencil hand-cursor" title="edit question"
-               id="edit_question_{{$index}}" ng-click="question.edit = true"></i>
+               ng-click="question.edit = true"></i>
             <i ng-if="question.edit" class="fa fa-check hand-cursor" title="save edit question"
                ng-click="question.edit = false;"></i>
-            <i class="fa fa-trash-o hand-cursor"
-               ng-click="removeQuestion(parent, $index)"
-               title="Remove question" id="remove_q_{{$index}}"></i>
+            <i class="fa fa-trash-o hand-cursor" ng-click="removeQuestion(parent, $index)" title="Remove question"></i>
         </div>
     </div>
     <div class="panel-body">

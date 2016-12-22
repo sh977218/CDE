@@ -72,4 +72,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         hangon(1);
     }
 
+    void startEditQuestionById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+    }
 }
