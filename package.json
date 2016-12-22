@@ -54,7 +54,7 @@
     "streamifier": "0.1.1",
     "js2xmlparser": "1.0.0",
     "jxon": "2.0.0-beta.2",
-    "xsd-schema-validator": "0.3.1",
+    "xsd-schema-validator": "0.5.0",
     "csv": "0.4.6",
     "byline": "4.2.1",
     "archiver": "git://github.com/ludetc/node-archiver.git#360649a2886e9a3b28c38625227a10484de84d60",
