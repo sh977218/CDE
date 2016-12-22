@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,9 +28,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
 
-        Assert.assertEquals("0 or more", findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[2]/div[4]/div[2]/select")).getText());
-        Assert.assertEquals("1 or more", findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[2]/div[4]/div[2]/select")).getText());
-        Assert.assertEquals("Exactly 1", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[2]/div[4]/div[2]/select")).getText());
+        Assert.assertEquals("0 or more", new Select(findElement(By.xpath("//*[@id='section_0']//select[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
+        Assert.assertEquals("1 or more", new Select(findElement(By.xpath("//*[@id='section_1]//select[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
+        Assert.assertEquals("Exactly 1", new Select(findElement(By.xpath("//*[@id='section_2']//select[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
     }
 
 }

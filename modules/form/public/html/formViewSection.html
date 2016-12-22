@@ -8,14 +8,13 @@
                    title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
             </div>
             <div class="col-sm-9 questionSectionTitle section_title" inline-edit
-                 model="section.label" is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
-            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
+                 model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div>
+            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div editIconDiv">
                 <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
-                   id="edit_section_{{$index}}" ng-click="section.edit = true"></i>
+                   ng-click="section.edit = true"></i>
                 <i ng-if="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
                    ng-click="section.edit = false;"></i>
-                <i class="fa fa-trash-o hand-cursor" title="Remove Section" id="removeElt-{{$index}}"
-                   ng-click="removeElt(parent, $index)"></i>
+                <i class="fa fa-trash-o hand-cursor" title="Remove Section" ng-click="removeElt(parent, $index)"></i>
             </div>
         </div>
         <div class="row">
@@ -45,9 +44,12 @@
             <div class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
                 <div class="col-sm-2">
-                    <select class="form-control section_cardinality" ng-disabled="!(canCurate && section.edit)"
+                    <span class="section_cardinality" ng-if="!(canCurate && section.edit)">
+                        {{getCardinalityLabel(section)}}
+                    </span>
+                    <select class="form-control section_cardinality" ng-if="canCurate && section.edit"
                             ng-model="section.cardinality" ng-change="stageElt()"
-                            ng-options="item.value as item.label for item in cardinalityOptions">
+                            ng-options="item.value as item.label for item in cardinalityOptions track by item.value">
                     </select>
                 </div>
             </div>
