@@ -177,9 +177,6 @@ exports.init = function (app, daoManager) {
                 daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
-                        elts = elts.map(function (oneCde) {
-                            return exportShared.stripBsonIds(oneCde.toObject());
-                        });
                         if (board.type === 'cde') {
                             elts = cdesvc.hideProprietaryCodes(elts, req.user);
                         }

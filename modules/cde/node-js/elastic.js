@@ -479,12 +479,12 @@ exports.byTinyIdList = function (idList, cb) {
         }
     }, function (error, response) {
         if (error) {
-            logging.errorLogger.error("Error DataElementDistinct", {
-                origin: "cde.elastic.getByTinyIdList",
+            logging.errorLogger.error("Error getByTinyIdList", {
+                origin: "cde.elastic.byTinyIdList",
                 stack: new Error().stack,
                 details: "Error " + error + "response" + JSON.stringify(response)
             });
-            cb(err);
+            cb(error);
         } else {
             cb(null, response.hits.hits.map(h=>h._source));
         }
