@@ -85,7 +85,7 @@
                     </ui-select-choices>
                 </ui-select>
             </div>
-            <div class="row" ng-if="question.question.answers && question.question.answers.length > 0">
+            <div class="row answerList" ng-if="question.question.answers && question.question.answers.length > 0">
                 Answer List:
                 <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="true">
                     <ui-select-match>{{$item.valueMeaningName}}</ui-select-match>

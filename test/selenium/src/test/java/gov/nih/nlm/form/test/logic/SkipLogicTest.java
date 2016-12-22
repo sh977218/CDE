@@ -3,7 +3,6 @@ package gov.nih.nlm.form.test.logic;
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -28,36 +27,32 @@ public class SkipLogicTest extends BaseFormTest {
         mustBeLoggedOut();
         String formName = "PROMIS SF v1.0-Fatigue 8a";
         goToFormByName(formName);
-        String inputXpath = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
+        String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         clickElement(By.id("description_tab"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.id("question_accordion_3_2"));
-        scrollToViewById("question_accordion_3_3");
-        textPresent("Sometimes");
-        Assert.assertEquals(findElement(By.xpath(inputXpath)).getAttribute("disabled"), "true");
+        textPresent("Never Rarely Sometimes Often Always", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        clickElement(By.id("question_accordion_3_2"));
-        textPresent("Sometimes");
+        textPresent("Never Rarely Sometimes Often Always", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
 
-        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1,
-                true, "Unexpected number of tokens in expression 1");
+        startEditQuestionSectionById("question_3_2");
+        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true, "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
-        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2,
-                2, true, "Unexpected number of tokens in expression 5");
+        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
         editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
+        saveEditQuestionSectionById("question_3_2");
         saveForm();
-        goToFormByName(formName);
 
+        goToFormByName(formName);
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
@@ -85,14 +80,11 @@ public class SkipLogicTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
         textPresent("Macula volume (OD)");
-        clickElement(By.id("question_accordion_0_2"));
-        scrollToViewById("question_accordion_0_2");
-        textPresent("Optical coherence tomography (OCT) oculus dexter (OD) macula volume measurement");
 
-        String inputXpath1 = "//*[@id='dd_q_skipLogic_2']/div/input[2]";
+        startEditQuestionSectionById("question_0_2");
+        String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0_2");
 
-        editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2,
-                true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2, true, "Unexpected number of tokens in expression 1");
         editSkipLogic(inputXpath1, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath1, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
@@ -112,6 +104,8 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.id("question_accordion_0_4"));
         textPresent("Optical coherence tomography retinal nerve fiber layer thickness laterality type");
         findElement(By.xpath("//*[@id='dd_q_skipLogic_4']/div/input[2]")).sendKeys("\"Indicate date of reference scan\"<\"10/11/2016\"");
+
+        saveEditQuestionSectionById("question_0_2");
         saveForm();
 
         goToFormByName(formName);

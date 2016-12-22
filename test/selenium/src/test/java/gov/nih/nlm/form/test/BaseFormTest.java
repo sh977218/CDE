@@ -74,11 +74,16 @@ public class BaseFormTest extends NlmCdeBaseTest {
         hangon(1);
     }
 
-    void startEditQuestionSectionById(String id) {
+    public void startEditQuestionSectionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
     }
 
-    void saveEditQuestionSectionById(String id) {
+    public void saveEditQuestionSectionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
     }
+
+    public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
+        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//textarea[2]";
+    }
+
 }

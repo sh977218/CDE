@@ -34,7 +34,7 @@
     </div>
     <div class="row" ng-if="parent">
         <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-        <div class="col-sm-10" ng-class="{'has-error':question.skipLogic.validationError}">
+        <div class="col-sm-10 skipLogicEditTextarea" ng-class="{'has-error':question.skipLogic.validationError}">
             <textarea type="text" ng-model="question.skipLogic.condition"
                       class="form-control skipLogicCondition" ng-trim="false"
                       ng-change="validateSkipLogic(question.skipLogic,section.formElements)"
