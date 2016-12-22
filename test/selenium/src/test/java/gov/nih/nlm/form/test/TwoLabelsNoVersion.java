@@ -1,23 +1,21 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class TwoLabelsNoVersion extends NlmCdeBaseTest {
+public class TwoLabelsNoVersion extends BaseFormTest {
 
     @Test
     public void twoLabelsNoVersion() {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName("NoVersionCdeFormTest");
-        findElement(By.linkText("Form Description")).click();
-        findElement(By.id("question_accordion_0_0")).click();
-        findElement(By.cssSelector("#dd_question_title_0 i")).click();
-        hangon(1);
-        findElement(By.cssSelector("#q_select_name_1 button")).click();
+        clickElement(By.linkText("Form Description"));
+        startEditQuestionSectionById("question_0_0");
+        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
+        textPresent("No Label");
+        clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();
-        textPresent("Second name for label", By.id("dd_question_title_0"));
+        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//div[@class='questionLabel']"));
         clickElement(By.id("discardChanges"));
     }
 

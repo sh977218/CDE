@@ -30,10 +30,6 @@ public class QuestionTest extends BaseFormTest {
                 WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
 
                 Assert.assertTrue(sourceElt.isDisplayed());
-
-//                scrollTo(targetElt.getLocation().getY());
-//                hangon(1);
-
                 (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
                 textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
                 i = 10;

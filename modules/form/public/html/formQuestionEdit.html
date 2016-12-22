@@ -1,15 +1,11 @@
 <div class="col-sm-12">
     <div class="row">
         <div class="col-sm-2 questionSectionLabel text-right">Label:</div>
-        <div ng-if="!question.hideLabel" class="col-sm-7">
-            <i class="fa fa-pencil" title="Change question label"
+        <div class="col-sm-7">
+            <i class="fa fa-pencil changeQuestionLabelIcon" title="Change question label"
                ng-click="openNameSelect(question,section)"></i>
-            {{question.label | placeHoldEmpty}}
-        </div>
-        <div ng-if="question.hideLabel" class="col-sm-7">
-            <i class="fa fa-pencil" title="Change question label"
-               ng-click="openNameSelect(question,section)"></i>
-            (No label)
+            <span ng-if="!question.hideLabel">{{question.label}}</span>
+            <span ng-if="question.hideLabel">(No label)</span>
         </div>
     </div>
     <div class="row">
@@ -120,16 +116,16 @@
         <div ng-if="question.question.datatype === 'Value List'" class="col-sm-7">
             <select class="form-control" ng-model="question.question.defaultAnswer" ng-change="stageElt()"
                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
-            </div>
+        </div>
         <div ng-if="question.question.datatype !== 'Value List'" class="col-sm-7">
             <div inline-edit model="question.question.defaultAnswer" is-allowed="true" on-ok="stageElt()"></div>
-            </div>
         </div>
+    </div>
     <div ng-if="question.question.defaultAnswer" class="row">
         <div class="col-sm-2 questionSectionLabel text-right">Editable:</div>
         <div class="col-sm-7">
             <input type="checkbox" ng-model="question.question.editable" ng-click="stageElt()"/>
         </div>
-        </div>
     </div>
+</div>
 </div>

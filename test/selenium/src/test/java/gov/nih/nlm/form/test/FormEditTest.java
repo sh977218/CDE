@@ -13,7 +13,8 @@ public class FormEditTest extends BaseFormTest {
         goToFormByName(formName);
         textPresent("Some CDEs in this form have newer version");
         clickElement(By.id("description_tab"));
-        textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count (Outdated)");
+        textPresent("Cytogenetics Karyotype Mutation Abnormality Cell Count\n" +
+                "   (Outdated)");
     }
 
     @Test

@@ -11,7 +11,6 @@ public class QuestionDefaultValue extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("description_tab"));
-        clickElement(By.id("question_accordion_0_0"));
         new Select(driver.findElement(By.id("q_default_answer_0"))).selectByVisibleText("Brother");
 
         clickElement(By.id("question_accordion_0_1"));
