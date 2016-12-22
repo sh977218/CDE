@@ -27,10 +27,10 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
 
         clickElement(By.id("export"));
 
-        // Current version
+        // Previous version
         Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456"));
         Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("dataelement/585adda229f8ae801d0f0456?type=xml"));
-        Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456").asString().contains("designation: \"This name will be removed\""));
+        Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
         Assert.assertTrue(get(baseUrl + "/dataelement/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
         switchTabAndClose(0);
