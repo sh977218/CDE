@@ -28,7 +28,7 @@
             <span ng-if="question.incompleteRule" class="error-block"> (Incomplete Rule)</span>
         </div>
         <div ng-if="question.question.cde.outdated" class="ib left error-block"> (Outdated)
-            <button class="btn btn-default btn-xs" id="question_update_{{sectionIndex}}_{{questionIndex}}"
+            <button class="btn btn-default btn-xs updateQuestionBtn"
                     ng-click="updateCdeVersion(question);">
                 Update
             </button>
