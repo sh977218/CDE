@@ -1,5 +1,5 @@
 <div class="navbar-fixed-bottom">
     <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
-        <span ng-bind-html="alert.msg"></span>
+        {{alert.msg}}
     </uib-alert>
 </div>
