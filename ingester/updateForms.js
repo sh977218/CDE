@@ -18,7 +18,7 @@ var created = 0;
 var createdForm = [];
 var same = 0;
 
-var source = 'caDSR';
+var source = 'NINDS';
 
 function processForm(migrationForm, existingForm, orgName, processFormCb) {
     // deep copy
@@ -39,13 +39,13 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
         });
     } else if (deepDiff.length > 0) {
         newForm.naming = migrationForm.naming;
+        newForm.sources = migrationForm.sources;
         newForm.version = migrationForm.version;
         newForm.changeNote = "Bulk update from source";
         newForm.imported = importDate;
         newForm.referenceDocuments = migrationForm.referenceDocuments;
         newForm.formElements = migrationForm.formElements;
-        updateShare.removePropertiesOfSource(newForm.properties, migrationForm.source);
-        newForm.properties = newForm.properties.concat(migrationForm.properties);
+        newForm.properties = newForm.properties;
 
         updateShare.removeClassificationTree(newForm, orgName);
         if (migrationForm.classification[0]) newForm.classification.push(migrationForm.classification[0]);
@@ -170,7 +170,6 @@ function run() {
         migStream.pause();
         classificationShared.sortClassification(migrationForm);
         var orgName = migrationForm.stewardOrg.name;
-        var source = migrationForm.source;
         var formIdCounter = 0;
         var formId;
         var version;
