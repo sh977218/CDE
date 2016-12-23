@@ -20,33 +20,31 @@ public class FormEditTest extends BaseFormTest {
 
     private void editSection() {
         String newSectionName = "New Main Section";
-        clickElement(By.xpath("//*[@id='section_title_0']/span/span/i"));
-        textPresent("Confirm");
-        findElement(By.xpath("//*[@id='section_title_0']/span/form/input")).clear();
-        findElement(By.xpath("//*[@id='section_title_0']/span/form/input")).sendKeys(newSectionName);
-        clickElement(By.xpath("//*[@id='section_title_0']/span/form/button[1]"));
+        startEditQuestionSectionById("section_0");
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//input")).clear();
+        findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
         textPresent(newSectionName, By.xpath("//*[@id='section_title_0']/span/span"));
 
         String newSectionInstruction = "New Section Instruction";
-        clickElement(By.xpath("//*[@id='dd_section_instructions_0']//i"));
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='dd_section_instructions_0']//textarea")).clear();
-        findElement(By.xpath("//*[@id='dd_section_instructions_0']//textarea")).sendKeys(newSectionInstruction);
-        clickElement(By.xpath("//*[@id='dd_section_instructions_0']//button[contains(text(),'Confirm')]"));
+        findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newSectionInstruction, By.xpath("//*[@id='dd_section_instructions_0']/div/div/div/span"));
+        textPresent(newSectionInstruction, By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//div/span"));
 
         String newCardinality = "Exactly 1";
         clickElement(By.xpath("//*[@id='dd_card_0']//i"));
         textPresent("Confirm");
-        new Select(findElement(By.xpath("//select[@id='select_section_card_0']"))).selectByVisibleText(newCardinality);
-        textPresent(newCardinality);
-        clickElement(By.xpath("//*[@id='dd_card_0']//button[1]"));
-        textNotPresent("Confirm");
-        textPresent(newCardinality, By.xpath("//*[@id='dd_card_0']/div[2]"));
+        new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"))).selectByVisibleText(newCardinality);
+        saveEditQuestionSectionById("section_0");
+        textPresent(newCardinality, By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
     }
 
     private void editQuestion() {
