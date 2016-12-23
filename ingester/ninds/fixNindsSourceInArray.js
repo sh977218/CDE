@@ -1,40 +1,38 @@
 var async = require('async'),
-    mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
-    DataElement = mongo_cde.DataElement
+    mongo_form = require('../../modules/form/node-js/mongo-form'),
+    Form = mongo_form.Form
     ;
 
-let cdeCount = 0;
+var formCount = 0;
 
-var stream = DataElement.find({
+Form.find({
     archived: null,
-    'sources.sourceName': 'NINDS',
+    'stewardOrg.name': 'NINDS',
     "registrationState.registrationStatus": {$not: /Retired/}
-}).stream();
-stream.on('error', function (e) {
-    console.log(e);
-    process.exit(1);
-});
-stream.on('close', function () {
-    console.log('cdeCount: ' + cdeCount);
-    process.exit(1);
-});
-stream.on('data', function (cde) {
-    stream.pause();
-    cde.naming.forEach(function (n) {
-        n.source = 'NINDS';
-    });
-    cde.properties.forEach(function (p) {
-        p.source = 'NINDS';
-    });
-    cde.referenceDocuments.forEach(function (r) {
-        r.source = 'NINDS';
-    });
-    cde.save(function (e) {
-        if (e) process.exit(1);
-        else {
-            cdeCount++;
-            console.log('cdeCount: ' + cdeCount);
-            stream.resume();
-        }
-    })
+}).exec(function (e, forms) {
+    if (e) throw e;
+    else {
+        async.forEach(forms, function (form, doneOneForm) {
+            form.sources = [{sourceName: 'NINDS'}];
+            form.naming.forEach(function (n) {
+                n.source = 'NINDS';
+            });
+            form.properties.forEach(function (p) {
+                p.source = 'NINDS';
+            });
+            form.referenceDocuments.forEach(function (r) {
+                r.source = 'NINDS';
+            });
+            form.save(function (err) {
+                if (err) throw err;
+                else {
+                    formCount++;
+                    console.log('formCount: ' + formCount);
+                    doneOneForm();
+                }
+            })
+        }, function doneAllForms() {
+            process.exit(1);
+        })
+    }
 });

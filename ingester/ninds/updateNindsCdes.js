@@ -10,7 +10,7 @@ var async = require('async'),
 
 var importDate = new Date().toJSON();
 var source = 'NINDS';
-var username = 'BatchLoader';
+var username = 'batchloader';
 
 function removeClassificationTree(cde, org) {
     for (var i = 0; i < cde.classification.length; i++) {
@@ -25,6 +25,9 @@ var changed = 0;
 var created = 0;
 var createdCDE = [];
 var same = 0;
+var lastEightHours = new Date();
+lastEightHours.setHours(new Date().getHours() - 8);
+var retired = 0;
 
 
 function wipeUseless(toWipeCde) {
@@ -216,41 +219,53 @@ function streamOnData(migrationCde) {
         process.exit(1);
     }
 }
-
 function streamOnClose() {
     // Retire Missing CDEs
-    DataElement.update({
-        imported: {$ne: importDate},
-        'sources.sourceName': source
-    }, {
-        "registrationState.registrationStatus": "Retired",
-        "registrationState.administrativeNote": "Not present in import from " + importDate
-    }, function (err) {
-        if (err) {
-            throw err;
-            process.exit(1);
-        }
-        console.log("Nothing left to do, saving Org");
-        MigrationOrg.find().exec(function (err, orgs) {
-            if (err) console.log("Error Finding Migration Org " + err);
-            orgs.forEach(function (org) {
-                Org.findOne({name: org.name}).exec(function (err, theOrg) {
-                    if (err)  console.log("Error finding existing org " + err);
-                    theOrg.classifications = org.classifications;
-                    theOrg.save(function (err) {
-                        if (err) console.log("Error saving Org " + err);
+    DataElement.find({
+        'imported': {$lt: lastEightHours},
+        'sources.sourceName': source,
+        'classification.stewardOrg.name': 'NINDS',
+        'archived': null
+    }).exec(function (retiredCdeError, retireCdes) {
+        if (retiredCdeError) throw retiredCdeError;
+        else {
+            console.log('retiredCdes: ' + retireCdes.length);
+            async.forEachSeries(retireCdes, function (retireCde, doneOneRetireCde) {
+                retireCde.registrationState.registrationStatus = 'Retired';
+                retireCde.registrationState.administrativeNote = "Not present in import from " + importDate;
+                retireCde.save(function (error) {
+                    if (error) throw error;
+                    else {
+                        retired++;
+                        doneOneRetireCde();
+                    }
+                })
+            }, function doneAllRetireCdes() {
+                console.log("Nothing left to do, saving Org");
+                MigrationOrg.find().exec(function (findMigOrgError, orgs) {
+                    if (findMigOrgError) throw findMigOrgError;
+                    async.forEachSeries(orgs, function (org, doneOneOrg) {
+                        Org.findOne({name: org.name}).exec(function (findOrgError, theOrg) {
+                            if (findOrgError) throw findOrgError;
+                            else {
+                                theOrg.classifications = org.classifications;
+                                theOrg.save(function (saveOrgError) {
+                                    if (saveOrgError) throw saveOrgError;
+                                    else doneOneOrg();
+                                });
+                            }
+                        });
+                    }, function doneAllOrgs() {
+                        //logger.info('createdCDE: ' + JSON.stringify(createdCDE));
                         console.log(" changed: " + changed + " same: " + same + " created: " + created);
+                        process.exit(0);
                     });
                 });
             });
-        });
+        }
     });
-    // give 5 secs for org to save.
-    setTimeout(function () {
-        console.log(" changed: " + changed + " same: " + same + " created: " + created);
-        process.exit(0);
-    }, 5000);
 }
+
 function doStream() {
     migStream = MigrationDataElement.find().stream();
     migStream.on('data', streamOnData);
