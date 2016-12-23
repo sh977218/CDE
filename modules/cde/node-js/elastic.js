@@ -475,7 +475,8 @@ exports.byTinyIdList = function (idList, cb) {
                 "ids" : {
                     "values" : idList
                 }
-            }
+            },
+            "size": 20
         }
     }, function (error, response) {
         if (error) {
