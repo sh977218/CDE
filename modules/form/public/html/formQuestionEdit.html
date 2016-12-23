@@ -114,10 +114,10 @@
     <div class="row">
         <div class="col-sm-2 questionSectionLabel text-right">Default Answer:</div>
         <div ng-if="question.question.datatype === 'Value List'" class="col-sm-7">
-            <select class="form-control" ng-model="question.question.defaultAnswer" ng-change="stageElt()"
+            <select class="form-control defaultAnswer" ng-model="question.question.defaultAnswer" ng-change="stageElt()"
                     ng-options="pv.permissibleValue as pv.valueMeaningName | limitTo: 50 for pv in question.question.answers"></select>
         </div>
-        <div ng-if="question.question.datatype !== 'Value List'" class="col-sm-7">
+        <div ng-if="question.question.datatype !== 'Value List'" class="col-sm-7 defaultAnswer">
             <div inline-edit model="question.question.defaultAnswer" is-allowed="true" on-ok="stageElt()"></div>
         </div>
     </div>
