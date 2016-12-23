@@ -121,7 +121,7 @@ angular.module('resourcesSystem', ['ngResource'])
         var viewHistoryResource = this;
         this.deferred = $q.defer();
 
-        $http.get('/viewingHistory/:start').then(function (response) {
+        $http.get('/viewingHistory').then(function (response) {
             viewHistoryResource.deferred.resolve(response.data);
         });
         this.getPromise = function () {
