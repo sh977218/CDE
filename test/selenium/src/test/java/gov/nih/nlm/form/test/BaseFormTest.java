@@ -72,6 +72,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void startEditQuestionSectionById(String id) {
         try {
+            scrollToViewById(id);
             clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {

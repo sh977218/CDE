@@ -3,7 +3,7 @@
          ng-click="question.updatedSkipLogic = false">
         <div ng-if="canCurate" class="ib left">
             <i class="fa fa-arrows question-move-handle"></i>
-            <i ng-if="question.skipLogic.condition.length > 0" class="fa fa-cog"
+            <i ng-if="question.skipLogic.condition.length > 0" class="fa fa-cog updatedSkipLogicIcon"
                ng-class="{'fa-spin': question.updatedSkipLogic}"
                title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}"></i>
         </div>

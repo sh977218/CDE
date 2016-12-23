@@ -146,21 +146,14 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='Did participant subject discontinue intervention before planned end of study?_2']//label[text()[contains(., 'No')]]"));
         textPresent("Reason for premature intervention discontinuation");
         clickElement(By.id("description_tab"));
-        textPresent("Show Question Search Area");
-        clickElement(By.id("question_accordion_0_0"));
-        scrollToViewById("dd_question_title_0");
-        clickElement(By.xpath("//*[@id='dd_question_title_0']//i"));
+
+        startEditQuestionSectionById("question_0_0");
+        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Some show if rules reference this label. They will be updated.");
         clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
-
-        String cssClass = findElement(By.xpath("//*[@id='question_4']//h4/a/span/div/div/i[contains(@class,'fa-cog')]")).getAttribute("class");
+        String cssClass = findElement(By.xpath("//*[@id='question_0_4']//i[contains(@class,'updatedSkipLogicIcon')]")).getAttribute("class");
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
-
-        clickElement(By.id("question_accordion_0_2"));
-        scrollToViewById("dd_question_title_2");
-        clickElement(By.xpath("//*[@id='dd_question_title_2']//i"));
-        textPresent("Some show if rules reference this label. They will be updated.");
-        clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
+        saveEditQuestionSectionById("question_0_0");
 
         saveForm();
         goToFormByName(formName);
