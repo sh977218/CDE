@@ -15,12 +15,13 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Identifiers");
 
         clickElement(By.id("cde_gridView"));
-        textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
+        textPresent("Question Texts");
         textPresent("Used by");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
+        textPresent("Other Names");
         textNotPresent("NLM ID");
 
         findElement(By.id("searchSettings")).click();
@@ -30,6 +31,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         clickElement(By.id("tinyId"));
         clickElement(By.id("registrationStatus"));
         clickElement(By.id("administrativeStatus"));
+        clickElement(By.id("naming"));
         hangon(1);
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved");

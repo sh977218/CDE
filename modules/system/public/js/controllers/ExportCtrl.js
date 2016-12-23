@@ -1,4 +1,5 @@
-angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http', 'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window',
+angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'SearchSettings', '$http',
+    'RegStatusValidator', 'userResource', '$uibModal', '$httpParamSerializer', '$window',
     function ($scope, Elastic, SearchSettings, $http, RegStatusValidator, userResource, $modal, $httpParamSerializer, $window) {
         $scope.feedbackClass = ["fa-download"];
         $scope.csvDownloadState = "none";
@@ -12,11 +13,13 @@ angular.module('systemModule').controller('ExportCtrl', ['$scope', 'Elastic', 'S
             try {
                 !!new Blob; //jshint ignore:line
             } catch (e) {
-                return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.");
+                return $scope.addAlert("danger", "Export feature is not supported in this browser. Please try " +
+                    "Google Chrome or Mozilla FireFox.");
             }
             $scope.feedbackClass = ['fa-spinner', 'fa-pulse'];
             if (type !== 'validationRules') $scope.addAlert("warning", "Your export is being generated, please wait.");
-            Elastic.getExport(Elastic.buildElasticQuerySettings(exportSettings.searchSettings), $scope.module?$scope.module:'cde', function (err, result) {
+            Elastic.getExport(Elastic.buildElasticQuerySettings(exportSettings.searchSettings), $scope.module?$scope.module:'cde',
+                function (err, result) {
                 if (err) return $scope.addAlert("danger", "The server is busy processing similar request, please try again in a minute.");
                 var exporters =
                 {
