@@ -18,7 +18,7 @@ public class FormScoreTest extends BaseFormTest {
         goToFormByName(formName);
 
         clickElement(By.id("description_tab"));
-        addSection("Score Section", "0 or more");
+        addSection("Score Section", "0 or more", "bottom");
 
         startAddingQuestions();
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);

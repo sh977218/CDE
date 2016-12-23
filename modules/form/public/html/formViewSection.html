@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <div class="row" ng-click="section.updatedSkipLogic = false">
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
-                <i class="fa fa-arrows fa-lg"></i>
+                <i class="fa fa-arrows fa-lg question-move-handle"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
@@ -56,6 +56,7 @@
         </div>
     </div>
     <div class="panel-body">
+        <div id="section_drop_area_child" class="dragQuestions dragSection"></div>
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions dragSections"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
             <div ng-repeat="(sectionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit">

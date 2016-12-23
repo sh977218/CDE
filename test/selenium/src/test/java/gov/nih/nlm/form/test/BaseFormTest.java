@@ -51,10 +51,15 @@ public class BaseFormTest extends NlmCdeBaseTest {
         showSearchFilters();
     }
 
-    public void addSection(String title, String card) {
-        int nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
+    public void addSection(String title, String card, String position) {
         clickElement(By.id("description_tab"));
-        clickElement(By.id("addSectionBottom"));
+        int nbOfSections = 0;
+        if (position.equalsIgnoreCase("buttom")) {
+            nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
+            clickElement(By.id("addSectionBottom"));
+        } else {
+            clickElement(By.id("addSectionTop"));
+        }
 
         String sectionId = "section_" + nbOfSections;
         scrollToViewById(sectionId);
