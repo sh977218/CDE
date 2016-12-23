@@ -16,6 +16,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         saveEditQuestionSectionById("question_0_0");
 
         startEditQuestionSectionById("question_0_1");
+        clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//i[contains(@class,'fa-edit')]"));
         findElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//input")).sendKeys("A default answer!");
         clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
         saveEditQuestionSectionById("question_0_1");
@@ -23,8 +24,8 @@ public class QuestionDefaultValue extends BaseFormTest {
         saveForm();
 
         goToFormByName("History Data Source and Reliability");
-        textPresent("Default Answer: Brother", By.xpath("//*[@id='question_0_0']"));
-        textPresent("Default Answer: A default answer!", By.xpath("//*[@id='question_0_1']"));
+        textPresent("Default Answer: Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
+        textPresent("Default Answer: A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
 
     }
 

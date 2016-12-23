@@ -91,7 +91,7 @@
                 </ui-select>
                 {{question.question.multiselect?'(Multiple choices)':''}}
             </div>
-            <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row">
+            <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row defaultAnswer">
                 Default Answer: {{question.question.defaultAnswer}}
             </div>
         </div>
