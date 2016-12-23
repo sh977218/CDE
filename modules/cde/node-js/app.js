@@ -204,13 +204,6 @@ exports.init = function (app, daoManager) {
         });
     }
 
-
-    app.get('/userTotalSpace/:uname', function (req, res) {
-        return mongo_cde.userTotalSpace(req.params.uname, function (space) {
-            return res.send({username: req.params.uname, totalSize: space});
-        });
-    });
-
     app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         elastic.morelike(req.params.tinyId, function (result) {
             result.cdes = cdesvc.hideProprietaryCodes(result.cdes, req.user);
