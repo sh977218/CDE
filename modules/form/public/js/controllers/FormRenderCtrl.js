@@ -5,11 +5,11 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     $scope.displayInstruction = false;
 
     $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
-    $scope.nativeRenderTypes = {
+    $scope.nativeRenderTypes = Object.freeze({
         SHOW_IF: 0,
         FOLLOW_UP: 1,
         GOTO_INSTRUCTIONS: 2
-    };
+    });
     $scope.getNativeRenderType = function () {
         return $scope.nativeRenderType;
     };
