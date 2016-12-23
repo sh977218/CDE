@@ -138,7 +138,6 @@
     "tempDir": "/tmp/",
     "extractDir": ".."
   },
-  "pmNodeProcess": null,
   "pmRunOnStartup": ["/usr/nlm/cde/apps/kibana/current/bin/kibana"],
   "multer": {"inMemory": true},
   "oauth": {
@@ -156,4 +155,5 @@
   , "captchaCode" : "Override actual here."
   , "siteKey" : "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV"
   , "useCaptcha" : true
+  , "sessionKey":  "Kfji76R"
 }
