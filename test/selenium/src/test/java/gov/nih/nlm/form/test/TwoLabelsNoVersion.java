@@ -15,7 +15,7 @@ public class TwoLabelsNoVersion extends BaseFormTest {
         textPresent("No Label");
         clickElement(By.cssSelector("#q_select_name_1 button"));
         modalGone();
-        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//div[@class='questionLabel']"));
+        textPresent("Second name for label", By.xpath("//*[@id='question_0_0']//div[contains(@class,'questionLabel')]"));
         clickElement(By.id("discardChanges"));
     }
 
