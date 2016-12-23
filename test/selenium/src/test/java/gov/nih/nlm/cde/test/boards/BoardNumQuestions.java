@@ -6,7 +6,7 @@ public class BoardNumQuestions extends BoardTest {
 
     @Test
     public void boardNumQuestions() {
-        mustBeLoggedInAs("testUser", password);
+        mustBeLoggedInAs("testuser", password);
         goToBoard("Num Of Questions Board");
         textPresent("22 Questions");
     }
