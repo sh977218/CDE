@@ -45,10 +45,10 @@
                         <input type="checkbox" ng-model="profile.displayNumbering" ng-disabled="!canCurate"
                                id="displayNumbering_{{$index}}" ng-click="stageElt()">
                     </dd>
-                    <dt tabindex="0">Display Skip Logic: </dt>
+                    <dt tabindex="0">Display Printable Logic: </dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayType" ng-disabled="!canCurate"
-                               ng-true-value="0" ng-false-value="1"
+                               ng-true-value="1" ng-false-value="0"
                                id="displayType_{{$index}}" ng-click="stageElt()">
                     </dd>
                 </dl>

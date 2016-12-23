@@ -2,8 +2,8 @@
      class="text-center mt20">Rendering has been disabled for this form.</div>
 <div ng-if="formLoading">
     <h1 class="text-center pt60 pb40"><i class="fa fa-spinner fa-pulse"></i> Loading...</h1></div>
-<div ng-if="!elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
+<div ng-if="!formLoading && !elt.noRenderAllowed && !(elt.formElements.length > 0)" id="warningNoCde"
      class="text-center mt20">This form has no content. There is nothing to preview.</div>
 
-<div ng-if="!elt.noRenderAllowed && elt.formElements.length > 0"
+<div ng-if="!formLoading && !elt.noRenderAllowed && elt.formElements.length > 0"
      ng-include="'/form/public/html/nativeFormRender.html'"></div>

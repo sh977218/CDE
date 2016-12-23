@@ -48,6 +48,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formGeneralDetail.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $timeout($scope.$broadcast('tabGeneral'), 0);
             },
             show: true
         },
@@ -289,6 +290,7 @@ angular.module('formModule').controller
                 }
                 $scope.formElements = [];
                 $scope.formElement = wholeForm;
+                $scope.$broadcast('eltReloaded');
                 setDefaultAnswer(wholeForm);
             });
         }, function () {
@@ -563,7 +565,6 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
-            $scope.$broadcast('eltReloaded');
             $scope.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);

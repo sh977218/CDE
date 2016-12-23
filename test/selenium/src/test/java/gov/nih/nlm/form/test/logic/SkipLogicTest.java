@@ -14,7 +14,11 @@ public class SkipLogicTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+
+        textPresent("Female Patient Screening", By.xpath("//div[label[text()='Female Gender']]"));
+        textPresent("Breast Carcinoma Estrogen Receptor Status", By.xpath("//div[label[text()='Female Gender']]//table"));
+
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Female Patient Screening");
         textNotPresent("Breast Carcinoma Estrogen Receptor Status");
         findElement(By.xpath("//div[div/label/span[text()='Frontal Systems Behavior Scale (FrSBE) - Disinhibition " +
@@ -46,19 +50,22 @@ public class SkipLogicTest extends BaseFormTest {
 
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1,
                 true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
         editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2,
                 2, true, "Unexpected number of tokens in expression 5");
-        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 6");
+        editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
         saveForm();
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?",
+                By.xpath("//div[div/div/label/span[text()='To what degree did your fatigue interfere with your physical functioning?']]//label/span[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));
@@ -94,7 +101,7 @@ public class SkipLogicTest extends BaseFormTest {
 
         editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2,
                 true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath1, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath1, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath1, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
         String correctSkipLogicString = "\"Indicate date of reference scan\"=\"10/11/2016\"";
@@ -116,7 +123,16 @@ public class SkipLogicTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+        textPresent("If 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Macula volume (OD)']]/span[text()='If 10/11/2016:']"));
+        textPresent("If more than 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Macula volume (OS)']]/span[text()='If more than 10/11/2016:']"));
+        textPresent("If less than 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Laterality Type']]/span[text()='If less than 10/11/2016:']"));
+        findElement(By.id("Macula volume (OS)_0"));
+        textPresent("left eye");
+
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textPresent("Display Profile");
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");
@@ -147,7 +163,7 @@ public class SkipLogicTest extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
@@ -173,7 +189,7 @@ public class SkipLogicTest extends BaseFormTest {
 
         saveForm();
         goToFormByName(formName);
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");

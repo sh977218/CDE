@@ -54,9 +54,13 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     };
 
     $scope.$on('eltReloaded', function () {
+        delete $scope.followForm;
         setSelectedProfile();
     });
     setSelectedProfile();
+    $scope.$on('tabGeneral', function () {
+       $scope.setNativeRenderType($scope.getNativeRenderType());
+    });
 
     var removeAnswers = function (formElt) {
         if (formElt.question) delete formElt.question.answer;
@@ -355,19 +359,31 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         return [];
     }
 
-    function createRelativeText(values, oper) {
+    function createRelativeText(v, oper) {
+        var values = angular.copy(v);
+        values.forEach(function (e, i, a) {
+           if (e === '') a[i] = 'empty';
+        });
         switch (oper) {
             case '=':
-                return 'is ' + values.join(' or ');
+                return values.join(' or ');
             case '>':
-                return 'more than' + Math.min.apply(null, values);
+                return 'more than ' + min(values);
             case '<':
-                return 'less than' + Math.max.apply(null, values);
+                return 'less than ' + max(values);
             case '>=':
-                return Math.min.apply(null, values) + ' or more';
+                return min(values) + ' or more';
             case '<=':
-                return Math.max.apply(null, values) + ' or less';
+                return max(values) + ' or less';
         }
+    }
+
+    function max(values) {
+        return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
+    }
+
+    function min(values) {
+        return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
 }]);

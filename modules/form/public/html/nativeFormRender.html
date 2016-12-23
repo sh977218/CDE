@@ -1,23 +1,23 @@
 <div class="container-fluid" ng-controller="FormRenderCtrl">
-    <div style="margin: 8px 0;">
+    <div style="margin: 8px 0 20px;">
         <span class="form-inline">
             <span class="form-group">
                 <label for="select_display_profile"><a ng-click="tabs.displayProfiles.select('displayProfiles');tabs.more.select();">Display Profile: </a></label>
                 <select ng-model="selection.selectedProfile" ng-options="p.name for p in elt.displayProfiles"
                         ng-change="setNativeRenderType(selection.selectedProfile.displayType)"
-                        id="select_display_profile" class="form-control"></select>
+                        id="select_display_profile" class="form-control mb3"></select>
             </span>
             <span>
-                <label>Show Skip Logic:
+                <label style="margin-top: 3px;">Printable Logic:
                     <input type="checkbox"  ng-model="nativeRenderType"
-                           ng-true-value="0" ng-false-value="1" ng-change="setNativeRenderType(nativeRenderType)">
+                           ng-true-value="1" ng-false-value="0" ng-change="setNativeRenderType(nativeRenderType)">
                 </label>
             </span>
 
         </span>
 
         <span class="pull-right">
-            <span style="margin-right: -10px">Render with: </span>
+            <span style="margin-right: -10px">New Tab: </span>
             <button class="btn btn-default" id="button_print_follow"
                     data-url="/form/public/html/nativeRenderWithFollowUp.html?tinyId={{::elt.tinyId}}"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">Printable</button>
@@ -27,12 +27,14 @@
             <button class="btn btn-default" id="button_sdc"
                     data-url="/form/{{::elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">SDC Profile</button>
-
-            (Provided by
-            <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
-            <a href="http://wiki.siframework.org/Structured+Data+Capture+Initiative" target="_blank">ONC</a>)
         </span>
         <div class="clearfix"></div>
+        <div>
+            <div class="pull-right">(Provided by
+                <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank">LHNCBC</a> and
+                <a href="http://wiki.siframework.org/Structured+Data+Capture+Initiative" target="_blank">ONC</a>)</div>
+        </div>
+
     </div>
 
     <div ng-if="elt.unsaved" class="mt10 alert alert-warning">

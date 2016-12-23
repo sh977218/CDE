@@ -9,7 +9,7 @@ public class MultiselectLogic extends NlmCdeBaseTest {
     @Test
     public void multiselectLogic() {
         goToFormByName("MultiSelect Logic");
-        clickElement(By.xpath("//label[contains(., 'Show Skip Logic:')]"));
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Own home with self care");
         textNotPresent("Slight ataxia (slowness or unsteady turning)");
         clickElement(By.xpath("//label[normalize-space(.)='Medicare']/input"));

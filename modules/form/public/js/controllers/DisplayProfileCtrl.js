@@ -6,7 +6,8 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             name: "New Profile",
             displayInstructions: true,
             displayNumbering: true,
-            sectionsAsMatrix: true
+            sectionsAsMatrix: true,
+            displayType: 1
         };
         var elt = $scope.elt;
         if (!elt.displayProfiles) elt.displayProfiles = [newProfile];
