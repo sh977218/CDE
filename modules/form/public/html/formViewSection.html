@@ -69,7 +69,7 @@
                      ng-include="'/form/public/html/formViewForm.html'"
                      ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
             </div>
-            <div ng-if="section.formElements.length > nbOfEltsLimit">
+            <div ng-if="section.formElements.length > nbOfEltsLimit" id="scrollMore">
                 <i class="fa fa-2x">Scroll down to see more ...</i>
             </div>
         </div>
