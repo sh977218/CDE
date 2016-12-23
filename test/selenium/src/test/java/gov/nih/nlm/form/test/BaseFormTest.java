@@ -71,13 +71,23 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void startEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        try {
+            clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        } catch (Exception e) {
+            clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
+        }
     }
 
     public void saveEditQuestionSectionById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        try {
+            clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        } catch (Exception e) {
+            clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-check')]"));
+            Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-pencil"));
+        }
     }
 
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
