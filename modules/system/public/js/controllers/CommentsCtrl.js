@@ -1,6 +1,6 @@
 angular.module('systemModule').controller('CommentsCtrl',
-    ['$scope', '$http', '$timeout', 'userResource', 'Alert', '$timeout',
-        function ($scope, $http, $timeout, userResource, Alert, $timeout) {
+    ['$scope', '$http', '$timeout', 'userResource', 'Alert',
+        function ($scope, $http, $timeout, userResource, Alert) {
 
             $scope.allOnlineUsers = {};
 
@@ -114,7 +114,7 @@ angular.module('systemModule').controller('CommentsCtrl',
                     commentId: commentId,
                     eltName: $scope.getEltName(),
                     reply: reply
-                }).then(function (res) {
+                }).then(function () {
                     $scope.tempReplies[commentId] = '';
                     loadComments();
                 });
