@@ -32,9 +32,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected = {
-                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",",
-                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - hygiene bed scale\",\"Turning in bed and adjusting bed clothes\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09897 v3; NINDS Variable Name: UPDRSHygBedScale\","
+                "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09971 v3; NINDS Variable Name: MDSUPDRSLiteHeadStndngScore\"",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\""
         };
 
         try {
@@ -52,6 +52,7 @@ public class ExportTest extends NlmCdeBaseTest {
         }
         clickElement(By.id("searchSettings"));
         clickElement(By.id("uom"));
+        clickElement(By.id("naming"));
         clickElement(By.id("administrativeStatus"));
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
@@ -72,9 +73,9 @@ public class ExportTest extends NlmCdeBaseTest {
         closeAlert();
 
         String[] expected2 = {
-                "Name, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",
-                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - right foot toe tap score\",\"TOE TAPPING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C10003 v3; NINDS Variable Name: RteFtToeTppngScore\",\"NINDS\",\"\",",
-                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\",\"NINDS\",\"\","
+                "Name, Question Texts, Other Names, Value Type, Permissible Values, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, Identifiers, Source, Updated",
+                "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09971 v3; NINDS Variable Name: MDSUPDRSLiteHeadStndngScore\",\"NINDS\",\"\"",
+                "\"Unified Parkinson's Disease Rating Scale (UPDRS) - right hand movements scale\",\"\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"\",\"NINDS: C09909 v3; NINDS Variable Name: UPDRSRtHndMovScale\",\"NINDS\",\"\""
         };
 
         try {

@@ -6,18 +6,15 @@ import org.testng.annotations.Test;
 
 public class FormTableView extends BaseFormTest {
 
-    private void seeTableForms(){
-        goHome();
-        findElement(By.id("menu_forms_link")).click();
-        findElement(By.id("browseOrg-TEST")).click();
-        findElement(By.id("form_gridView")).click();
-    }
-
     @Test
     public void seeFormSource() {
         mustBeLoggedOut();
-        seeTableForms();
-        textPresent("Other Names");
+
+        findElement(By.id("menu_forms_link")).click();
+        findElement(By.id("browseOrg-TEST")).click();
+        findElement(By.id("form_gridView")).click();
+
+        textNotPresent("Other Names");
         textPresent("Steward");
         textPresent("Used by");
         textPresent("Identifiers");
@@ -39,9 +36,8 @@ public class FormTableView extends BaseFormTest {
         clickElement(By.id("numQuestions"));
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
-        seeTableForms();
 
-        textNotPresent("Other Names");
+        textPresent("Other Names");
         textNotPresent("Steward");
         textNotPresent("Used by");
         textNotPresent("Identifiers");
