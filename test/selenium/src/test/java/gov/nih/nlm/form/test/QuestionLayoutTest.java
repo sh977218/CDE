@@ -32,9 +32,9 @@ public class QuestionLayoutTest extends BaseFormTest {
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
 
-        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
-        textNotPresent(sec2);
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
+        textNotPresent(sec2);
+        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");
