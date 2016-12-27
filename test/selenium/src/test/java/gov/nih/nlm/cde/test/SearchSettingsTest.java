@@ -21,7 +21,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Used by");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
-        textPresent("Other Names");
+        textNotPresent("Other Names");
         textNotPresent("NLM ID");
 
         findElement(By.id("searchSettings")).click();

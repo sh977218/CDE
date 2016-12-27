@@ -29,7 +29,7 @@ public class CreateFormBoard extends BoardTest {
         textPresent("All Elements classified.");
         closeAlert();
         clickElement(By.id("form_gridView"));
-        textPresent("Other Names");
+        textPresent("Steward");
         textPresent("Registration Status");
         
         switchTabAndClose(0);
