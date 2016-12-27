@@ -31,6 +31,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
         saveForm();
 
         goToFormByName(formName);
+        clickElement(By.id("description_tab"));
         textPresent("Number between 25 and 239", By.xpath("//*[@id='question_0_0']//*[contains(@class,'datatype')]"));
     }
 }
