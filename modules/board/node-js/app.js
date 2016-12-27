@@ -21,12 +21,6 @@ var elastic = require('../../cde/node-js/elastic')
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
 
-    app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_board.boardsByUserId(req.params.userId, function (result) {
-            res.send(result);
-        });
-    });
-
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
