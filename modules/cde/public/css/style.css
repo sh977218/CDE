@@ -1189,6 +1189,12 @@ div + .questionPlaceholder {
     }
 }
 
+@media (min-width: 768px) {
+    div .col-sm-2-4 {
+        width: 20%;
+    }
+}
+
 @media (min-width: 769px) and (max-width: 992px) {
     .btn-responsive {
         padding: 4px 9px !important;
@@ -1527,10 +1533,6 @@ div.row .native-question-oneline-r {
 
 .native-box {
     padding-left: 7%;
-}
-
-div .col-sm-2-4 {
-    width: 20%;
 }
 
 .radio-inline {
