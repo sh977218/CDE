@@ -38,8 +38,7 @@
 
         <form name="sectionLabel" role="form" class="form-horizontal">
             <div ng-if="followForm"
-                 ng-include="'/form/public/html/formRenderSection.html'"
-                 ng-init="formElements = []; formElement = followForm;">
+                 ng-include="'/form/public/html/formRenderSection.html'">
                 <div ng-view>
                     <h2 class="text-center mt20">Loading...</h2>
                 </div>

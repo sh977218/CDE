@@ -82,6 +82,8 @@ angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'artic
                         isAllowedModel.setDisplayStatusWarning($scope);
                         //setDefaultValues();
                         $scope.deferredEltLoaded.resolve();
+                        $scope.formElements = [];
+                        $scope.formElement = wholeForm;
                     });
                 }, function () {
                     $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");

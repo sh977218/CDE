@@ -301,7 +301,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                         } else {
                             parentQ.question.answers.push({
                                 permissibleValue: createRelativeText([match[3]], match[2]),
-                                valueMeaningCode: 'nonvaluelist',
+                                nonValuelist: true,
                                 subQuestions: [fe]
                             });
                         }
