@@ -3,25 +3,21 @@
     <fieldset ng-if="!formElement.question.multiselect" class="col-xs-11">
         <div class="row">
             <div ng-repeat="pv in answerlist">
-                <label class="col-sm-3 col-xs-12 radio-inline">
+                <label ng-class="classColumns()" class="col-xs-12 radio-inline">
                     <input ng-model="formElement.question.answer" ng-required="formElement.question.required"
-                           type="radio" ng-value="pv.permissibleValue" ng-disabled="!formElement.question.editable"/>
-                    {{getLabel(pv)}}
-                </label>
-                <div class="clearfix" ng-if="$index%4==3"></div>
+                           type="radio" ng-value="pv.permissibleValue" ng-disabled="!formElement.question.editable"/>{{getLabel(pv)}}</label>
+                <div class="clearfix" ng-if="$index%selection.selectedProfile.numberOfColumns==selection.selectedProfile.numberOfColumns-1"></div>
             </div>
         </div>
     </fieldset>
     <div ng-if="formElement.question.multiselect" class="col-xs-11">
         <div class="row">
             <div ng-repeat="pv in formElement.question.answers">
-                <label class="col-sm-3 col-xs-12 checkbox-inline">
+                <label ng-class="classColumns()" class=" col-xs-12 checkbox-inline">
                     <input checklist-model="formElement.question.answer"
                            ng-required="formElement.question.required"
-                           type="checkbox" checklist-value="pv.permissibleValue"/>
-                    {{getLabel(pv)}}
-                </label>
-                <div class="clearfix" ng-if="$index%4==3"></div>
+                           type="checkbox" checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
+                <div class="clearfix" ng-if="$index%selection.selectedProfile.numberOfColumns==selection.selectedProfile.numberOfColumns-1"></div>
             </div>
         </div>
     </div>

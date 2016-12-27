@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class DisplayProfilesTest extends BaseFormTest {
 
-    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering) {
+    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, int numberOfColumns) {
         findElement(By.id("addDisplayProfile")).click();
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
@@ -17,6 +17,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (instructions) clickElement(By.id("displayInstructions_" + index));
         if (numbering) clickElement(By.id("displayNumbering_" + index));
+        clickElement(By.id("nc_" + index + "_" + numberOfColumns));
     }
 
     @Test
@@ -26,9 +27,9 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
 
         clickElement(By.partialLinkText("Display Profile:"));
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false);
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true, 4);
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false, 4);
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, 5);
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
@@ -57,6 +58,10 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("3");
         textPresent("4");
         textPresent("5");
+        Assert.assertEquals(
+                findElement(By.xpath("//div[div/div/label[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
+                findElement(By.xpath("//div[div/div/label[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
+        );
 
         showAllTabs();
         clickElement(By.id("displayProfiles_tab"));

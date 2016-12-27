@@ -4,6 +4,23 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.displayInstruction = false;
 
+    $scope.classColumns = function () {
+        switch ($scope.selection.selectedProfile.numberOfColumns) {
+            case 2:
+                return 'col-sm-6';
+            case 3:
+                return 'col-sm-4';
+            case 4:
+                return 'col-sm-3';
+            case 5:
+                return 'col-sm-2-4';
+            case 6:
+                return 'col-sm-2';
+            default:
+                return '';
+        }
+    };
+
     $scope.selection = {};
     var setSelectedProfile = function () {
         if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {

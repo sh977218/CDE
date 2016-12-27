@@ -1499,6 +1499,10 @@ input.ng-invalid {
     padding-left: 7%;
 }
 
+div .col-sm-2-4 {
+    width: 20%;
+}
+
 .overlay-lower-right {
     position: relative;
     width: 5px;
