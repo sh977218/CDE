@@ -36,7 +36,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
             textPresent("has already been used");
         }
         findElement(By.name("version")).sendKeys("1");
-        hangon(2);
         textNotPresent("This version number has already been used.");
         clickElement(By.id("confirmNewVersion"));
         textPresent("Saved.");
