@@ -24,12 +24,13 @@ public class SkipLogicTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
+        scrollToViewById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
-        textPresent("Never", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
-        textPresent("Rarely", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
-        textPresent("Sometimes", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
-        textPresent("Often", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
-        textPresent("Always", By.xpath("//*[@id='question_3_2']//[contains(@class,'answerList')]"));
+        textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Rarely", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Sometimes", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Often", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
+        textPresent("Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
 
         startEditQuestionSectionById("question_3_2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true, "Unexpected number of tokens in expression 1");
