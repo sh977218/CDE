@@ -48,7 +48,7 @@
         <div class="col-xs-12" ng-if="canCurate && question.edit"
              ng-include="'/form/public/html/formQuestionEdit.html'"></div>
         <div class="col-xs-12" ng-if="!(canCurate && question.edit)">
-            <div ng-if="question.instructions.value" class="row">
+            <div ng-if="question.instructions.value" class="row questionInstruction">
                 <span ng-if="question.instructions.valueFormat === 'html'"
                       ng-bind-html="question.instructions.value"></span>
                 <span ng-if="question.instructions.valueFormat !== 'html'" ng-bind="question.instructions.value"></span>
@@ -72,7 +72,7 @@
             <div class="row datatype">
                 {{getDatatypeDetails(question)}}
             </div>
-            <div ng-if="question.question.uoms.length > 0" class="row">
+            <div ng-if="question.question.uoms.length > 0" class="row questionUom">
                 Units of Measure:
                 <ui-select multiple ng-model="question.question.uoms" theme="select2" ng-disabled="true">
                     <ui-select-match>{{$item}}</ui-select-match>

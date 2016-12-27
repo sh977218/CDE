@@ -26,7 +26,7 @@ public class FormEditTest extends BaseFormTest {
         findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//input")).sendKeys(newSectionName);
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newSectionName, By.xpath("//*[@id='section_title_0']/span/span"));
+        textPresent(newSectionName, By.xpath("//*[@id='section_0']//*[contains(@class,'section_title')]"));
 
         String newSectionInstruction = "New Section Instruction";
         clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//i[contains(@class,'fa-edit')]"));
@@ -40,44 +40,42 @@ public class FormEditTest extends BaseFormTest {
         textPresent(newSectionInstruction, By.xpath("//*[@id='section_0']//*[contains(@class,'section_instruction')]//div/span"));
 
         String newCardinality = "Exactly 1";
-        clickElement(By.xpath("//*[@id='dd_card_0']//i"));
-        textPresent("Confirm");
-        new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"))).selectByVisibleText(newCardinality);
+        new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newCardinality);
         saveEditQuestionSectionById("section_0");
-        textPresent(newCardinality, By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
+        textNotPresent(newCardinality, By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
     }
 
     private void editQuestion() {
-        clickElement(By.xpath("//*[@id='question_0']//h4"));
-        textPresent("Value List");
-        scrollTo(findElement(By.xpath("//*[@id='question_0']")).getLocation().getY());
-
-        clickElement(By.xpath("//*[@id='dd_question_title_0']/i"));
+        scrollToViewById("question_0_0");
+        startEditQuestionSectionById("question_0_0");
+        clickElement(By.xpath("//*[@id='question_0_0']//i[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.xpath("//*[@id='q_select_name_1']/div/button"));
-        textPresent("Data unknown text", By.xpath("//*[@id='dd_question_title_0']"));
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='dd_question_instructions_0']//i"));
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//i[contains(@class,'fa-edit')]"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
-        findElement(By.xpath("//*[@id='dd_question_instructions_0']//textarea")).clear();
-        findElement(By.xpath("//*[@id='dd_question_instructions_0']//textarea")).sendKeys(newQuestionInstruction);
-        clickElement(By.xpath("//*[@id='dd_question_instructions_0']//button[contains(text(),'Confirm')]"));
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//textarea")).sendKeys(newQuestionInstruction);
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'editQuestionInstructionIcon')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newQuestionInstruction, By.xpath("//*[@id='dd_question_instructions_0']/div/div/div/span/span"));
 
         String newQuestionUnitsOfMeasure = "New Units of Measure";
-        clickElement(By.xpath("//*[@id='dd_q_uoms_0']/button"));
+        clickElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'addUomBtn')]"));
         textPresent("Please specify");
         clickElement(By.xpath("//*[@id='q_uom_list_0']/span/span/i"));
         textPresent("Confirm");
         findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).clear();
         findElement(By.xpath("//*[@id='q_uom_list_0']/span/form/input")).sendKeys(newQuestionUnitsOfMeasure);
-        clickElement(By.xpath("//*[@id='q_uom_list_0']/span/form/button[1]"));
+        clickElement(By.xpath("//*[@id='q_uom_list_0']/span/form/button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newQuestionUnitsOfMeasure, By.xpath("//*[@id='q_uom_list_0']/span/span"));
+
+        saveEditQuestionSectionById("question_0_0");
+        textPresent("Data unknown text", By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionLabel')]"));
+        textPresent(newQuestionUnitsOfMeasure, By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionUom')]"));
+        textPresent(newQuestionInstruction, By.xpath("//*[@id='question_0_0']//*[contains(@class,'questionInstruction')]"));
 
     }
 }

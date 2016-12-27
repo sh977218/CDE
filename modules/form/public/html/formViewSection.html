@@ -43,11 +43,9 @@
 
             <div class="row">
                 <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-                <div class="col-sm-2 ">
-                    <span class="section_cardinality">
-                        <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
-                    </span>
-                    <select class="form-control section_cardinality" ng-if="canCurate && section.edit"
+                <div class="col-sm-2 section_cardinality">
+                    <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
+                    <select class="form-control" ng-if="canCurate && section.edit"
                             ng-model="section.cardinality" ng-change="stageElt()"
                             ng-options="item.value as item.label for item in cardinalityOptions">
                     </select>

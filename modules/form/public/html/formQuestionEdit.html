@@ -10,7 +10,7 @@
     </div>
     <div class="row">
         <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-        <div class="col-sm-10" ng-if="question.edit">
+        <div class="col-sm-10 editQuestionInstructionIcon" ng-if="question.edit">
             <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
                  model="question.instructions.value"
                  def-format="question.instructions.valueFormat"
@@ -53,7 +53,7 @@
                           is-allowed="true" on-ok="checkUom(question, $index)"></span>
             </div>
             <div ng-if="!(question.question.uoms.length > 0)">N/A</div>
-            <button ng-if="canAddUom(question)" class="btn btn-default btn-xs"
+            <button ng-if="canAddUom(question)" class="btn btn-default btn-xs addUomBtn"
                     ng-click="addUom(question)"><i class="fa fa-plus"></i> Add
             </button>
         </div>
