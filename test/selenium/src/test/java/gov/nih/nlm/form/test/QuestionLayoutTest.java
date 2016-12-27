@@ -13,7 +13,7 @@ public class QuestionLayoutTest extends BaseFormTest {
         String sec1 = "first section";
         String sec2 = "second section";
 
-        addSection(sec1, "0 or more", "bottom");
+        addSection(sec1, "0 or more", "top");
         addSection(sec2, "0 or more", "bottom");
 
         textPresent(sec1);
@@ -32,9 +32,9 @@ public class QuestionLayoutTest extends BaseFormTest {
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
 
-        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
-        textNotPresent(sec2);
         clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
+        textNotPresent(sec2);
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");
