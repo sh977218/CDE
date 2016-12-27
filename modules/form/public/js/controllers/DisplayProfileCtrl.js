@@ -7,7 +7,7 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             displayInstructions: true,
             displayNumbering: true,
             sectionsAsMatrix: true,
-            displayType: 1
+            displayType: 'Follow-up'
         };
         var elt = $scope.elt;
         if (!elt.displayProfiles) elt.displayProfiles = [newProfile];

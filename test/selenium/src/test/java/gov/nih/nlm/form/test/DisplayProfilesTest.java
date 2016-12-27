@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class DisplayProfilesTest extends BaseFormTest {
 
-    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, boolean dispType) {
+    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, String dispType) {
         findElement(By.id("addDisplayProfile")).click();
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
@@ -17,7 +17,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if (!dispType) clickElement(By.id("displayType_" + index));
+        if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
     }
 
     @Test
@@ -27,9 +27,9 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
 
         clickElement(By.partialLinkText("Display Profile:"));
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true, true);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false, false);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, false);
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up");
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic");
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Dynamic");
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");

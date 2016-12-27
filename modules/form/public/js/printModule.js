@@ -14,12 +14,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
     .controller('PrintCtrl',
-        ['$scope', '$uibModal', 'userResource', '$http', '$location', '$anchorScroll', '$timeout', '$cacheFactory',
-            '$interval', '$window', 'screenSize', 'OrgHelpers', 'QuickBoard', 'FormQuickBoard', '$q', 'Alert',
-            'Form', 'isAllowedModel',
-            function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
-                      $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $q, Alert,
-                      Form, isAllowedModel) {
+        ['$scope', '$http', '$q', 'Form', 'userResource', 'isAllowedModel',
+            function ($scope, $http, $q, Form, userResource, isAllowedModel) {
 
                 function fetchWholeForm(form, callback) {
                     var maxDepth = 8;
