@@ -3,5 +3,5 @@ exports.map = {
     'eyeGENE': {stewardOrgName: 'NLM', classificationOrgName: 'eyeGENE', classification: []},
     'Newborn Screening': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['Newborn Screening']},
     'ONC': {stewardOrgName: 'NLM', classificationOrgName: 'ONC', classification: []},
-    'PHQ9': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: []}
+    'PHQ9': {stewardOrgName: 'NLM', classificationOrgName: 'NLM', classification: ['PHQ9']}
 };

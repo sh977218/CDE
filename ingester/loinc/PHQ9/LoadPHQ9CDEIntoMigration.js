@@ -41,7 +41,7 @@ function run() {
         function (cb) {
             MigrationLoincModel.find({
                 compoundForm: null,
-                orgName: orgInfo['classificationOrgName']
+                orgName: orgName
             }).exec(function (findCdeError, Cdes) {
                 if (findCdeError) throw findCdeError;
                 console.log('Total # Cde: ' + Cdes.length);

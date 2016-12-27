@@ -111,6 +111,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         });
     } else if (deepDiff.length > 0) {
         newDe.naming = migrationCde.naming;
+        newDe.sources = migrationCde.sources;
         newDe.version = migrationCde.version;
         newDe.changeNote = "Bulk update from source";
         newDe.imported = today;
@@ -121,8 +122,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
-        newDe.properties = updateShare.removePropertiesOfSource(newDe.properties, migrationCde.source);
-        newDe.properties = newDe.properties.concat(migrationCde.properties);
+        newDe.properties = migrationCde.properties;
 
         removeClassificationTree(newDe);
         if (migrationCde.classification[0]) {
