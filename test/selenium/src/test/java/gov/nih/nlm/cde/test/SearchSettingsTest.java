@@ -58,7 +58,8 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("cde_gridView"));
-        textPresent("Other Names");
+        textPresent("Question Texts");
+        textNotPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Used by");
