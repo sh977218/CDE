@@ -136,6 +136,7 @@ exports.formJson = {
         , context: {contextName: String}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
+        , displayType: {type: Number}
         , numberOfColumns: {type: Number}
         , _id: false
     }]
