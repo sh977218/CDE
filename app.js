@@ -64,7 +64,7 @@ app.use(methodOverride());
 app.use(cookieParser());
 var expressSettings = {
     store: mongo_data_system.sessionStore,
-    secret: "Kfji76R",
+    secret: config.sessionKey,
     proxy: config.proxy,
     resave: false,
     saveUninitialized: false,
