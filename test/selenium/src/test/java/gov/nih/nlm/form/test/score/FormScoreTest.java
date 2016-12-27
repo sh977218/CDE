@@ -34,7 +34,7 @@ public class FormScoreTest extends BaseFormTest {
         textNotPresent("id: cu-0EyndDn2");
         textPresent("id: 5h29ApPjjzE");
         textPresent("id: h7pThcFJv2r");
-        textPresent("(Incomplete Rule)", By.id("question_0_0"));
+        textPresent("(Incomplete Rule)", By.id("question_0_1"));
 
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
         questionTest.addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
@@ -42,7 +42,7 @@ public class FormScoreTest extends BaseFormTest {
         textNotPresent("id: cu-0EyndDn2");
         textNotPresent("id: 5h29ApPjjzE");
         textNotPresent("id: h7pThcFJv2r");
-        textNotPresent("Incomplete Rule", By.id("question_0_0"));
+        textNotPresent("Incomplete Rule", By.id("question_0_2"));
 
         clickElement(By.id("resetSearch"));
         textPresent("ALS Severity Score (ALSSS) - swallow score (part of score)");
