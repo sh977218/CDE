@@ -4,7 +4,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.displayInstruction = false;
 
-    $scope.classColumns = function () {
+    $scope.classColumns = function (flag) {
+        if (!flag) return '';
         switch ($scope.selection.selectedProfile.numberOfColumns) {
             case 2:
                 return 'col-sm-6';
@@ -18,6 +19,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 return 'col-sm-2';
             default:
                 return '';
+        }
     };
 
     $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
@@ -64,7 +66,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 name: "Default Config",
                 displayInstructions: true,
                 displayNumbering: true,
-                sectionsAsMatrix: true
+                sectionsAsMatrix: true,
+                numberOfColumns: 4
             };
         }
     };
@@ -268,6 +271,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             /*numSubQuestions === 1 &&*/
             !$scope.hasLabel(question) &&
             question.question.datatype !== 'Value List';
+    };
+    $scope.isFirstInRow = function (index) {
+        return index % $scope.selection.selectedProfile.numberOfColumns == 0;
     };
 
     function getQuestions(fe, qLabel) {
