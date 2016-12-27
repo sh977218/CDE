@@ -20,12 +20,6 @@ angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'artic
             function ($scope, $modal, userResource, $http, $location, $anchorScroll, $timeout, $cacheFactory,
                       $interval, $window, screenSize, OrgHelpers, QuickBoard, FormQuickBoard, $q, Alert,
                       Form, isAllowedModel) {
-                //TODO: Don't use the following methods. Use $scope.Alert instead.
-                $scope.addAlert = Alert.addAlert;
-                $scope.closeAlert = Alert.closeAlert;
-                $scope.alerts = Alert.mapAlerts();
-
-                $scope.Alert = Alert;
 
                 function fetchWholeForm(form, callback) {
                     var maxDepth = 8;

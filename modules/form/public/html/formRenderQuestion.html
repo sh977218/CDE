@@ -3,7 +3,7 @@
         <div class="col-sm-12">
             <label ng-class="{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}">
                 <span ng-if="pv.nonValuelist">If {{::pv.permissibleValue}}:</span>
-                <span style="" ng-bind-html="formElement.label"></span>
+                <span style="" ng-bind="formElement.label"></span>
             </label>
         </div>
     </div>

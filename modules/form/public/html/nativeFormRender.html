@@ -10,7 +10,7 @@
             <span>
                 <label style="margin-top: 3px;">Printable Logic:
                     <input type="checkbox"  ng-model="nativeRenderType"
-                           ng-true-value="1" ng-false-value="0" ng-change="setNativeRenderType(nativeRenderType)">
+                           ng-true-value="'Follow-up'" ng-false-value="'Dynamic'" ng-change="setNativeRenderType(nativeRenderType)">
                 </label>
             </span>
 
@@ -45,9 +45,9 @@
     <h2>{{elt.naming[0].designation}}</h2>
 
     <form name="sectionLabel" role="form" class="form-horizontal">
-        <div ng-if="nativeRenderType === nativeRenderTypes.SHOW_IF"
+        <div ng-if="nativeRenderType === SHOW_IF"
              ng-include="'/form/public/html/formRenderSection.html'"></div>
-        <div ng-if="nativeRenderType === nativeRenderTypes.FOLLOW_UP"
+        <div ng-if="nativeRenderType === FOLLOW_UP"
              ng-include="'/form/public/html/formRenderSection.html'"></div>
     </form>
 
