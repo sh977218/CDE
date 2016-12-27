@@ -2,11 +2,12 @@ var async = require('async'),
     NindsModel = require('./../createMigrationConnection').MigrationNindsModel,
     mongo_cde = require('../../modules/cde/node-js/mongo-cde'),
     mongo_data = require('../../modules/system/node-js/mongo-data'),
-    FormModel = require('./../createMigrationConnection').MigrationFormModel,
+    MigrationForm = require('./../createMigrationConnection').MigrationFormModel,
     classificationShared = require('../../modules/system/shared/classificationShared')
     ;
 
 var importDate = new Date().toJSON();
+var count = 0;
 
 function checkExistingNaming(existingNaming, ninds) {
     var crfModuleGuideline = ninds.get('crfModuleGuideline').trim();
@@ -67,9 +68,16 @@ function createForm(ninds) {
         context: {
             contextName: "Health",
             acceptability: "preferred"
-        }
+        },
+        source: 'NINDS'
     };
     naming.push(formName);
+
+    var sources = [];
+    sources.push({
+        sourceName: 'NINDS',
+        updated: ninds.get('versionDate')
+    });
 
     var ids = [];
     var crfId = {
@@ -82,7 +90,8 @@ function createForm(ninds) {
 
     var referenceDocuments = [];
     var referenceDocument = {
-        uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : ''
+        uri: (ninds.get('downloadLink').indexOf('http://') !== -1 || ninds.get('downloadLink').indexOf('https://') !== -1) ? ninds.get('downloadLink') : '',
+        source: 'NINDS'
     };
     if (referenceDocument.uri.length > 0) {
         referenceDocuments.push(referenceDocument);
@@ -134,10 +143,11 @@ function createForm(ninds) {
     return {
         tinyId: mongo_data.generateTinyId(),
         createdBy: {username: 'batchloader'},
+        sources: sources,
         created: importDate,
         imported: importDate,
-        isCopyrighted: ninds.get('copyRight'),
-        noRenderAllowed: ninds.get('copyRight'),
+        isCopyrighted: ninds.get('copyright'),
+        noRenderAllowed: ninds.get('copyright'),
         stewardOrg: {name: 'NINDS'},
         registrationState: {registrationStatus: "Qualified"},
         naming: naming,
@@ -148,7 +158,7 @@ function createForm(ninds) {
     };
 }
 function run() {
-    FormModel.remove({}, function () {
+    MigrationForm.remove({}, function () {
         var stream = NindsModel.find({}).stream();
         stream.on('data', function (ninds) {
             stream.pause();
@@ -156,7 +166,7 @@ function run() {
             var filterName = ninds.get('crfModuleGuideline').replace('\nInternational Spinal Cord Society (ISCOS)', '')
                 .trim();
             ninds.set('crfModuleGuideline', filterName);
-            FormModel.find({'ids.id': formId}, function (err, existingForms) {
+            MigrationForm.find({'ids.id': formId}, function (err, existingForms) {
                 if (err) throw err;
                 if (existingForms.length === 0) {
                     var newForm = createForm(ninds);
@@ -172,44 +182,57 @@ function run() {
                     async.forEachSeries(cdes, function (cde, doneOneCDE) {
                         var cdeId = cde.cdeId;
                         mongo_cde.byOtherIdAndNotRetired('NINDS', cdeId, function (err, existingCde) {
-                            if (err) {
-                                console.log(err + ' cdeId: ' + cdeId);
-                                throw err;
+                            if (err) throw (err + ' cdeId: ' + cdeId);
+                            else {
+                                var question = {
+                                    cde: {
+                                        tinyId: existingCde.tinyId,
+                                        name: existingCde.naming[0].designation,
+                                        version: existingCde.version,
+                                        ids: existingCde.ids
+                                    },
+                                    datatype: existingCde.valueDomain.datatype,
+                                    uom: existingCde.valueDomain.uom
+                                };
+                                if (question.datatype === 'Value List') {
+                                    question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
+                                    question.multiselect = cde.inputRestrictions === 'Multiple Pre-Defined Values Selected';
+                                    question.answers = existingCde.valueDomain.permissibleValues;
+                                } else if (question.datatype === 'Text') {
+                                    question.datatypeText = existingCde.valueDomain.datatypeText;
+                                } else if (question.datatype === 'Number') {
+                                    question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+                                } else if (question.datatype === 'Date') {
+                                    question.datatypeDate = existingCde.valueDomain.datatypeDate;
+                                } else {
+                                    throw 'Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id;
+                                }
+                                var formElement = {
+                                    elementType: 'question',
+                                    instructions: {value: cde.instruction},
+                                    question: question,
+                                    formElements: []
+                                };
+                                if (cde.questionText === 'N/A' || cde.questionText.trim().length === 0) {
+                                    formElement.label = existingCde.naming[0].designation;
+                                    formElement.hideLabel = true;
+                                } else {
+                                    formElement.label = cde.questionText;
+                                }
+                                newForm.formElements[0].formElements.push(formElement);
+                                doneOneCDE();
                             }
-                            var question = {
-                                cde: {
-                                    tinyId: existingCde.tinyId,
-                                    name: existingCde.naming[0].designation,
-                                    version: existingCde.version,
-                                    permissibleValues: existingCde.valueDomain.permissibleValues,
-                                    ids: existingCde.ids
-                                },
-                                datatype: existingCde.valueDomain.datatype,
-                                datatypeNumber: existingCde.valueDomain.datatypeNumber,
-                                datatypeText: existingCde.valueDomain.datatypeText,
-                                uom: existingCde.valueDomain.uom,
-                                answers: existingCde.valueDomain.permissibleValues,
-                                multiselect: cde.inputRestrictions === 'Multiple Pre-Defined Values Selected'
-                            };
-                            var formElement = {
-                                elementType: 'question',
-                                instructions: {value: cde.instruction},
-                                label: cde.questionText,
-                                question: question,
-                                formElements: []
-                            };
-                            newForm.formElements[0].formElements.push(formElement);
-                            doneOneCDE();
                         });
                     }, function doneAll() {
                         console.log('finished all cdes in form ' + formId);
-                        var newFormObj = new FormModel(newForm);
+                        var newFormObj = new MigrationForm(newForm);
                         newFormObj.save(function (err) {
-                            if (err) {
-                                console.log(err);
-                                throw err;
+                            if (err) throw err;
+                            else {
+                                count++;
+                                console.log('count: ' + count);
+                                stream.resume();
                             }
-                            stream.resume();
                         });
                     });
                 } else if (existingForms.length === 1) {
@@ -218,11 +241,8 @@ function run() {
                     existingForm.markModified("classification");
                     existingForm.markModified("formElements");
                     existingForm.save(function (err) {
-                        if (err) {
-                            console.log(err);
-                            throw err;
-                        }
-                        stream.resume();
+                        if (err) throw err;
+                        else stream.resume();
                     });
                 } else {
                     console.log(existingForms.length + ' forms found, ids.id:' + ninds.formId);
@@ -233,8 +253,10 @@ function run() {
 
         stream.on('end', function (err) {
             if (err) throw err;
-            console.log('finished');
-            process.exit(0);
+            else {
+                console.log('finished');
+                process.exit(0);
+            }
         });
     });
 }
