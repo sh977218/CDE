@@ -40,6 +40,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 $scope.formElement = undefined;
                 $scope.followForm = angular.copy($scope.elt);
                 transformFormToInline($scope.followForm);
+                preprocessValueLists($scope.followForm.formElements);
             }
             $scope.formElement = $scope.followForm;
         }
@@ -406,6 +407,34 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     function min(values) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
+    }
+
+    function preprocessValueLists(formElements) {
+        formElements.forEach(function (fe,i,a) {
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                preprocessValueLists(fe.formElements);
+                return;
+            }
+            if (fe.question.datatype === 'Value List') {
+                var index = -1;
+                fe.question.answers.forEach(function (v,i,a) {
+                    if (hasOwnRow(v)) {
+                        v.index = index = -1;
+                    } else {
+                        if (index === -1 && (i+1 < a.length && hasOwnRow(a[i+1]) || i+1 === a.length))
+                            v.index = index = -1;
+                        else
+                            v.index = ++index;
+                    }
+                    if (v.subQuestions)
+                        preprocessValueLists(v.subQuestions)
+                });
+            }
+        });
+    }
+
+    function hasOwnRow(e) {
+        if (e.subQuestions) return true;
     }
 
 }]);
