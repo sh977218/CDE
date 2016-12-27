@@ -188,7 +188,7 @@ function createCde(cde, ninds) {
         },
         source: 'NINDS'
     }];
-    if (cde.questionText !== 'N/A')
+    if (cde.questionText !== 'N/A' && cde.questionText.trim().length > 0)
         naming.push({
             designation: cde.questionText,
             languageCode: "EN-US",
@@ -271,8 +271,8 @@ function createCde(cde, ninds) {
             valueDomain.datatypeText = {maxLength: Number(cde.size)};
         } else if (cde.dataType === 'Date or Date & Time') {
             valueDomain.datatype = 'Date';
-            valueDomain.datatypeDate = {format: 'MM/DD/YYYY'};
         } else if (cde.dataType === 'Numeric Values' || cde.dataType === 'Numeric values') {
+            valueDomain.datatype = 'Number';
             valueDomain.datatypeNumber = {
                 minValue: Number(cde.minValue),
                 maxValue: Number(cde.maxValue)
