@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -99,5 +100,18 @@ public class BaseFormTest extends NlmCdeBaseTest {
     public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
         return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//textarea[2]";
     }
+
+
+    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
+                              boolean displayError, String errorMessage) {
+        findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
+        textPresent(textToBePresent, By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
+        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
+        Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
+        clickElement(By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
+        if (displayError) textPresent(errorMessage);
+        else textNotPresent(errorMessage);
+    }
+
 
 }

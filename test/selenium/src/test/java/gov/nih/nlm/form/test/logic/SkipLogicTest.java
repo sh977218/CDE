@@ -2,8 +2,6 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class SkipLogicTest extends BaseFormTest {
@@ -46,18 +44,5 @@ public class SkipLogicTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'Not at all')]]"));
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
     }
-
-
-    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
-                              boolean displayError, String errorMessage) {
-        findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        textPresent(textToBePresent, By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
-        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'typeahead-')]/a)")).size();
-        Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
-        clickElement(By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
-        if (displayError) textPresent(errorMessage);
-        else textNotPresent(errorMessage);
-    }
-
 
 }
