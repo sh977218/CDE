@@ -4,10 +4,10 @@ import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class SkipLogicTest1 extends BaseFormTest {
+public class SinglePermissibleValue extends BaseFormTest {
 
     @Test
-    public void singlePermissibleValue() {
+    public void singlePermissibleValueTest() {
         mustBeLoggedInAs(testAdmin_username, password);
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
