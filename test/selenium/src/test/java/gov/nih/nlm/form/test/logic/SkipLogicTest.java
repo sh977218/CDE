@@ -14,6 +14,7 @@ public class SkipLogicTest extends BaseFormTest {
         String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         clickElement(By.id("description_tab"));
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
+        scrollToViewById("question_3_2");
         textPresent("Never Rarely Sometimes Often Always", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
 
         mustBeLoggedInAs(nlm_username, nlm_password);
