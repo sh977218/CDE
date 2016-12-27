@@ -24,6 +24,7 @@ public class QuestionDefaultValue extends BaseFormTest {
         saveForm();
 
         goToFormByName("History Data Source and Reliability");
+        clickElement(By.id("description_tab"));
         textPresent("Default Answer: Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
         textPresent("Default Answer: A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
 
