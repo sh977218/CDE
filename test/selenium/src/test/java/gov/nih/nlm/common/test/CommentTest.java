@@ -63,7 +63,9 @@ public abstract class CommentTest extends CommonTest {
         scrollToViewById("replyBtn_0");
         clickElement(By.id("replyBtn_0"));
 
+        hangon(1);
         clickElement(By.id("replyTextarea_1"));
+        hangon(1);
         findElement(By.id("replyTextarea_1")).sendKeys("Reply to another comment about Naming");
         hangon(1);
         scrollToViewById("replyBtn_1");
