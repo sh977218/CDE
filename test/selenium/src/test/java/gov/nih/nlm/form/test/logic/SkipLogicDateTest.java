@@ -18,7 +18,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0_2");
 
         editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2, true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath1, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath1, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath1, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
         String correctSkipLogicString = "\"Indicate date of reference scan\"=\"10/11/2016\"";
@@ -41,6 +41,16 @@ public class SkipLogicDateTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
+        textPresent("If 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Macula volume (OD)']]/span[text()='If 10/11/2016:']"));
+        textPresent("If more than 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Macula volume (OS)']]/span[text()='If more than 10/11/2016:']"));
+        textPresent("If less than 10/11/2016:",
+                By.xpath("//div[div/div/label/span[text()='Indicate date of reference scan']]//label[span[text()='Laterality Type']]/span[text()='If less than 10/11/2016:']"));
+        findElement(By.id("Macula volume (OS)_0"));
+        textPresent("left eye");
+
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textPresent("Display Profile");
         textNotPresent("Macula volume (OD)");
         textNotPresent("Macula volume (OS)");

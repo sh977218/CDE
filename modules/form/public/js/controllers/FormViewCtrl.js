@@ -9,6 +9,7 @@ angular.module('formModule').controller
     $scope.addMode = undefined;
     $scope.openCdeInNewTab = true;
     $scope.classifSubEltPage = '/system/public/html/classif-sub-elements.html';
+    $scope.formLoading = true;
     $scope.formLocalRender = window.formLocalRender;
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
@@ -47,6 +48,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formGeneralDetail.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+                $timeout($scope.$broadcast('tabGeneral'), 0);
             },
             show: true
         },
@@ -266,10 +268,12 @@ angular.module('formModule').controller
     };
 
     $scope.reload = function () {
+        $scope.formLoading = true;
         Form.get(query, function (form) {
             var formCopy = angular.copy(form);
             fetchWholeForm(formCopy, function (wholeForm) {
                 $scope.elt = wholeForm;
+                $scope.formLoading = false;
                 if (exports.hasRole(userResource.user, "FormEditor")) {
                     isAllowedModel.setCanCurate($scope);
                 }
@@ -288,6 +292,7 @@ angular.module('formModule').controller
                 }
                 $scope.formElements = [];
                 $scope.formElement = wholeForm;
+                $scope.$broadcast('eltReloaded');
                 setDefaultAnswer(wholeForm);
             });
         }, function () {
@@ -391,8 +396,8 @@ angular.module('formModule').controller
                     var min = filteredQuestion.question.datatypeNumber.minValue;
                     if (min != undefined && answerNumber < min)
                         return '"' + tokens[2] + '" is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    if (max != undefined && answerNumber > min)
-                        return '"' + tokens[2] + '" is bigger than a minimal answer for "' + filteredQuestion.label + '"';
+                    if (max != undefined && answerNumber > max)
+                        return '"' + tokens[2] + '" is bigger than a maximal answer for "' + filteredQuestion.label + '"';
                 }
             } else if (filteredQuestion.question.datatype === 'Date') {
                 if (tokens[2].length > 0 && new Date(tokens[2]).toString() === 'Invalid Date')
@@ -456,7 +461,7 @@ angular.module('formModule').controller
                  return '"' + questionSanitizer(q.label) + '" ';
              });
          } else if (tokens.length % 4 === 1) {
-             options = ["=", "<", ">"];
+             options = ["=", "<", ">", ">=", "<="];
          } else if (tokens.length % 4 === 2) {
              options = getAnswer(previousQuestions, tokens[tokens.length - 2]);
          } else if (tokens.length % 4 === 3) {
@@ -562,7 +567,6 @@ angular.module('formModule').controller
     $scope.save = function () {
         $scope.elt.$save({}, function () {
             $scope.reload();
-            $scope.$broadcast('eltReloaded');
             $scope.addAlert("success", "Saved.");
         }, function (err) {
             $log.error("Unable to save form. " + $scope.elt.tinyId);

@@ -34,19 +34,22 @@ public class EditSkipLogic extends BaseFormTest {
 
         startEditQuestionSectionById("question_3_2");
         editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 2");
         editSkipLogic(inputXpath, "\"1\"", 5, 1, false, "Unexpected number of tokens in expression 2");
 
         editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
         editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2, true, "Unexpected number of tokens in expression 5");
-        editSkipLogic(inputXpath, "=", 3, 1, true, "Unexpected number of tokens in expression 6");
+        editSkipLogic(inputXpath, "=", 5, 1, true, "Unexpected number of tokens in expression 6");
         editSkipLogic(inputXpath, "\"2\"", 5, 2, false, "Unexpected number of tokens in expression 2");
 
         saveEditQuestionSectionById("question_3_2");
         saveForm();
 
         goToFormByName(formName);
+        textPresent("How often did you have to push yourself to get things done because of your fatigue?", By.xpath("//div[div/div/label/span[text()='To what degree did your fatigue interfere with your physical functioning?']]//label/span[text()='How often did you have to push yourself to get things done because of your fatigue?']"));
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
+
         textNotPresent("How often did you have to push yourself to get things done because of your fatigue?");
         clickElement(By.xpath("//*[@id='How much were you bothered by your fatigue on average?_0']//*[text()[contains(., 'Not at all')]]"));
         clickElement(By.xpath("//*[@id='To what degree did your fatigue interfere with your physical functioning?_1']//*[text()[contains(., 'A little bit')]]"));

@@ -12,6 +12,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         String formName = "Study Discontinuation/Completion";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date_0']//button"));
         findElement(By.xpath("//*[@id='Off study date_0']//input")).sendKeys("10/15/2016");
@@ -30,6 +31,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
 
         saveForm();
         goToFormByName(formName);
+        clickElement(By.xpath("//label[contains(., 'Printable Logic:')]"));
         textNotPresent("Reason for premature intervention discontinuation");
         clickElement(By.xpath("//*[@id='Off study date and time_0']//button"));
         findElement(By.xpath("//*[@id='Off study date and time_0']//input")).sendKeys("10/15/2016");
