@@ -45,6 +45,12 @@
                         <input type="checkbox" ng-model="profile.displayNumbering" ng-disabled="!canCurate"
                                id="displayNumbering_{{$index}}" ng-click="stageElt()">
                     </dd>
+                    <dt tabindex="0">Display Printable Logic: </dt>
+                    <dd>
+                        <input type="checkbox" ng-model="profile.displayType" ng-disabled="!canCurate"
+                               ng-true-value="'Follow-up'" ng-false-value="'Dynamic'"
+                               id="displayType_{{$index}}" ng-click="stageElt()">
+                    </dd>
                 </dl>
             </div>
         </div>

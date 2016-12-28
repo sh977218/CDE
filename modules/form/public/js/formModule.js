@@ -1,4 +1,4 @@
-angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates', 'cdeNativeValueList']).config(
+angular.module('formModule', ['resourcesForm', 'ngRoute', 'formTemplates', 'nativeValuelist']).config(
     ["$routeProvider", function($routeProvider)
 {
     $routeProvider.
