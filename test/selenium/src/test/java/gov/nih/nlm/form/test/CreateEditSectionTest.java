@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -28,9 +27,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
 
-        Assert.assertNotEquals("Exactly 1", new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
-        Assert.assertEquals("1 or more", new Select(findElement(By.xpath("//*[@id='section_1]//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
-        Assert.assertNotEquals("0 or more", new Select(findElement(By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
+        textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
+        textPresent("1 or more", By.xpath("//*[@id='section_1]//*[contains(@class,'section_cardinality')]"));
+        textPresent("0 or more", By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]"));
     }
 
 }
