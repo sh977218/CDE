@@ -7,16 +7,17 @@ import org.testng.annotations.Test;
 
 public class DisplayProfilesTest extends BaseFormTest {
 
-    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering) {
+    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, String dispType) {
         findElement(By.id("addDisplayProfile")).click();
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//button[contains(@class, 'fa-check')]"));
-        if (matrix) clickElement(By.id("displayAsMatrix_" + index));
+        if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
         if (displayValues) clickElement(By.id("displayValues_" + index));
-        if (instructions) clickElement(By.id("displayInstructions_" + index));
-        if (numbering) clickElement(By.id("displayNumbering_" + index));
+        if (!instructions) clickElement(By.id("displayInstructions_" + index));
+        if (!numbering) clickElement(By.id("displayNumbering_" + index));
+        if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
     }
 
     @Test
@@ -26,22 +27,21 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
 
         clickElement(By.partialLinkText("Display Profile:"));
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false);
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up");
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic");
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Dynamic");
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
         textPresent("Display Profile:");
-
-        Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
-        assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textPresent("1");
         textPresent("2");
         textPresent("3");
         textPresent("4");
         textPresent("5");
+        Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
+        assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
         hangon(1);
