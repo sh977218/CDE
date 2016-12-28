@@ -136,6 +136,7 @@ exports.formJson = {
         , context: {contextName: String}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
+        , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
