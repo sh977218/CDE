@@ -28,9 +28,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
 
-        Assert.assertNotEquals("Exactly 1", new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
-        Assert.assertEquals("1 or more", new Select(findElement(By.xpath("//*[@id='section_1]//*[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
-        Assert.assertNotEquals("0 or more", new Select(findElement(By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]"))).getFirstSelectedOption());
+        Assert.assertNotEquals("Exactly 1", new Select(findElement(By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
+        Assert.assertEquals("1 or more", new Select(findElement(By.xpath("//*[@id='section_1]//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
+        Assert.assertNotEquals("0 or more", new Select(findElement(By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]/select"))).getFirstSelectedOption());
     }
 
 }
