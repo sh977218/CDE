@@ -11,22 +11,27 @@ public class QuestionDefaultValue extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("History Data Source and Reliability");
         clickElement(By.id("description_tab"));
-        clickElement(By.id("question_accordion_0_0"));
-        new Select(driver.findElement(By.id("q_default_answer_0"))).selectByVisibleText("Brother");
+        startEditQuestionSectionById("question_0_0");
+        new Select(driver.findElement(By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"))).selectByVisibleText("Brother");
+        saveEditQuestionSectionById("question_0_0");
 
-        clickElement(By.id("question_accordion_0_1"));
-        clickElement(By.cssSelector("#q_defaultAnswer_text_1 i"));
+        startEditQuestionSectionById("question_0_1");
+        clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//i[contains(@class,'fa-edit')]"));
+        findElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//input")).sendKeys("A default answer!");
+        clickElement(By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
+        saveEditQuestionSectionById("question_0_1");
 
-        findElement(By.cssSelector("#q_defaultAnswer_text_1 input")).sendKeys("A default answer!");
-        clickElement(By.cssSelector("#q_defaultAnswer_text_1 .fa-check"));
         saveForm();
 
         goToFormByName("History Data Source and Reliability");
-
         // this find ensures option Brother is selected.
         findElement(By.xpath("//div[div/div/label/span[text()='From whom/ what were the medical history data obtained']]//label[contains(.,'Brother')]"))
                 .findElement(By.cssSelector("input:checked"));
-        
+
+        clickElement(By.id("description_tab"));
+        textPresent("Default Answer: Brother", By.xpath("//*[@id='question_0_0']//*[contains(@class,'defaultAnswer')]"));
+        textPresent("Default Answer: A default answer!", By.xpath("//*[@id='question_0_1']//*[contains(@class,'defaultAnswer')]"));
+
     }
 
 }

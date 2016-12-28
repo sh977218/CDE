@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default form_view">
     <div class="panel-heading">
         <div class="row" ng-click="section.updatedSkipLogic = false">
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
@@ -25,7 +25,8 @@
                      is-allowed="canCurate" on-ok="stageElt()"></div>
             </div>
         </div>
-        <div class="row" ng-if="parent">
+        <div class="row"
+             ng-if="formElement.skipLogic && formElement.skipLogic.condition && formElement.skipLogic.condition.length > 0 && parent">
             <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
             <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
                  ng-class="{'has-error':formElement.skipLogic.skipLogicError}">
@@ -58,7 +59,7 @@
                 <div ng-hide="editCardMode">
                     <i ng-show="canCurate" class="fa fa-edit"
                        ng-click="editCardMode = true; orig = formElement.cardinality"
-                       id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(formElement.cardinality)}}
+                       id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(formElement)}}
                 </div>
             </div>
         </div>

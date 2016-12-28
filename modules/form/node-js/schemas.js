@@ -23,6 +23,8 @@ var questionSchema = {
         , maxLength: Number
         , regex: String
         , rule: String
+    }, datatypeDate: {
+        format: String
     }
     , uoms: [String]
     , required: {type: Boolean, default: false}

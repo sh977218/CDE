@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.testng.annotations.Test;
 
 public class QuestionLayoutTest extends BaseFormTest {
@@ -14,8 +13,8 @@ public class QuestionLayoutTest extends BaseFormTest {
         String sec1 = "first section";
         String sec2 = "second section";
 
-        addSection(sec1, "0 or more");
-        addSection(sec2, "0 or more");
+        addSection(sec1, "0 or more", "top");
+        addSection(sec2, "0 or more", "bottom");
 
         textPresent(sec1);
         textPresent(sec2);
@@ -33,18 +32,20 @@ public class QuestionLayoutTest extends BaseFormTest {
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
 
-        clickElement(By.id("removeElt-1"));
+        clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
         textNotPresent(sec2);
-        clickElement(By.id("removeElt-0"));
+        clickElement(By.xpath("//*[@id='section_0']//*[contains(@class,'editIconDiv')]//i[contains(@class,'fa-trash-o')]"));
         textNotPresent(sec1);
 
         textPresent("There is no content yet.");
 
         String sec3 = "third section";
-        addSection(sec3, "0 or more");
+        addSection(sec3, "0 or more", "bottom");
 
         textNotPresent("Show Filters");
         textNotPresent("results for");
+
+        saveForm();
     }
 
 }
