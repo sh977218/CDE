@@ -3,7 +3,9 @@ package gov.nih.nlm.cde.test.admin;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddsContextKey extends NlmCdeBaseTest {
@@ -25,7 +27,11 @@ public class AdminAddsContextKey extends NlmCdeBaseTest {
         clickElement(By.id("addNamePair"));
         textPresent("Contexts are managed in Org Management > List Management");
         clickElement(By.id("newContext"));
-        textPresent("canYouSeeThis");
+        try {
+            findElement(By.xpath("//option[@value='canYouSeeThis']"));
+        } catch (TimeoutException e) {
+            Assert.fail("Failed to find canYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
+        }
 
         clickElement(By.id("cancelCreate"));
         clickElement(By.id("username_link"));
