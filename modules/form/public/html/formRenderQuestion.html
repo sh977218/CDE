@@ -1,6 +1,14 @@
-<div ng-show="evaluateSkipLogic(formElement.skipLogic.condition, formElements, formElement)">
+<div ng-show="evaluateSkipLogicAndClear(formElement.skipLogic.condition, formElements, formElement)">
+    <div ng-if="hasLabel(formElement)" class="row">
+        <div class="col-sm-12">
+            <label ng-class="{'native-question-label': !numSubQuestions && selection.selectedProfile.displayNumbering}">
+                <span ng-if="pv.nonValuelist">If {{::pv.permissibleValue}}:</span>
+                <span style="" ng-bind="formElement.label"></span>
+            </label>
+        </div>
+    </div>
     <div ng-if="selection.selectedProfile.displayInstructions" class="row">
-        <div class="col-md-12" ng-switch="formElement.instructions.valueFormat">
+        <div class="col-sm-12" ng-switch="formElement.instructions.valueFormat">
             <span ng-switch-default class="text-muted">
                 <span ng-bind="formElement.instructions.value"></span></span>
             <span ng-switch-when="html">
@@ -8,22 +16,17 @@
             </span>
         </div>
     </div>
-    <div class="row" ng-if="formElement.label">
-        <div class="col-md-12">
-            <label tabindex="0" ng-class="{'native-question-label': selection.selectedProfile.displayNumbering }" ng-bind-html="formElement.label"></label>
-        </div>
-    </div>
-    <div class="row native-question-answers">
-        <div class="col-md-12">
-            <div ng-switch="formElement.question.isScore">
-                <div ng-switch-when="true">
-                    Score: <span ng-disabled="true" ng-bind="score(formElement)"></span>
-                </div>
-                <div ng-switch-default ng-switch="formElement.question.datatype" id="{{formElement.label}}_{{$index}}">
-                    <div ng-switch-when="Value List" cde-native-value-list></div>
-                    <div ng-switch-when="Date" class="input-group native-box">
+    <div ng-class="[{'row': !isOneLiner(formElement,numSubQuestions)}, 'native-question-answers']">
+        <div ng-class="{'col-sm-12': !isOneLiner(formElement,numSubQuestions)}">
+            <div ng-if="formElement.question.isScore">Score: <span ng-disabled="true" ng-bind="score(formElement)"></span></div>
+            <div ng-if="!formElement.question.isScore" ng-switch="formElement.question.datatype"
+                 id="{{formElement.label}}_{{$index}}" ng-class="{'native-box': hasLabel(formElement)}">
+                <div ng-switch-when="Value List" native-valuelist ></div>
+                <div ng-switch-when="Date">
+                    <div class="input-group">
                         <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
-                               datepicker-options="formElement.question.dateOptions" is-open="formElement.question.opened"
+                               datepicker-options="formElement.question.dateOptions"
+                               is-open="formElement.question.opened"
                                type="text" ng-required="formElement.question.required" alt-input-formats="['yyyy']"
                                ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"/>
                         <div class="input-group-btn">
@@ -33,7 +36,11 @@
                             </button>
                         </div>
                     </div>
-                    <div ng-switch-when="Number" ng-class="[{'input-group': formElement.question.uoms.length > 0}, 'native-box']">
+                    <div ng-repeat="pv in formElement.question.answers"
+                         ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+                </div>
+                <div ng-switch-when="Number">
+                    <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="number" class="form-control" ng-required="formElement.question.required"
                                ng-model="formElement.question.answer" name="{{formElement.question.cde.tinyId}}"
                                min="{{formElement.question.datatypeNumber.minValue}}"
@@ -42,23 +49,29 @@
                         />
                         <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                                ng-repeat="uom in formElement.question.uoms">
-                            <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"> {{uom}}
-                        </label>
+                            <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom">
+                            {{uom}}</label>
                     </div>
-                    <div ng-switch-default ng-class="[{'input-group': formElement.question.uoms.length > 0}, 'native-box']">
+                    <div ng-repeat="pv in formElement.question.answers"
+                         ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+                </div>
+                <div ng-switch-default>
+                    <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
                         <input type="text" class="form-control" ng-required="formElement.question.required"
-                               ng-model="formElement.question.answer" name="" ng-disabled="!formElement.question.editable"/>
+                               ng-model="formElement.question.answer" name=""
+                               ng-disabled="!formElement.question.editable"/>
                         <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                                ng-repeat="uom in formElement.question.uoms">
                             <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
-                                   ng-disabled="!formElement.question.editable"> {{uom}}
-                        </label>
+                                   ng-disabled="!formElement.question.editable"> {{uom}}</label>
                     </div>
+                    <div ng-repeat="pv in formElement.question.answers"
+                         ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+                </div>
 
-                    <div>
-                        <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.min">Value is below min.</span>
-                        <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.max">Value is above max.</span>
-                    </div>
+                <div>
+                    <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.min">Value is below min.</span>
+                    <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.max">Value is above max.</span>
                 </div>
             </div>
         </div>
