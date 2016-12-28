@@ -154,8 +154,7 @@ exports.init = function (app, daoManager) {
                                 "users.$.lastViewed": new Date()
                             }
                         }, function (err) {
-                            if (err) res.status(500);
-                            res.send();
+                            if (err) return res.status(500).send();
                         });
                     }
                     if (!req.isAuthenticated() ||
