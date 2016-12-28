@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,66 +14,22 @@ public class CreateEditSectionTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
 
-        addSection("Section 1", "0 or more");
-        addSection("Section 2", "1 or more");
-        addSection("Section 3", null);
-
-        Assert.assertEquals("Section 1", findElement(By.id("section_title_0")).getText());
-        Assert.assertEquals("Section 2", findElement(By.id("section_title_1")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("section_title_2")).getText());
-
-        Assert.assertEquals("0 or more", findElement(By.id("dd_card_0")).getText());
-        Assert.assertEquals("1 or more", findElement(By.id("dd_card_1")).getText());
-        Assert.assertEquals("Exactly 1", findElement(By.id("dd_card_2")).getText());
+        addSection("Section 1", null, "top");
+        addSection("Section 2", "1 or more", "bottom");
+        addSection("Section 3", "0 or more", "bottom");
 
         saveForm();
-        scrollToTop();
+
+        goToFormByName(formName);
         clickElement(By.id("description_tab"));
+        Assert.assertEquals("Section 1", findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]")).getText());
+        Assert.assertEquals("Section 2", findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]")).getText());
+        Assert.assertEquals("Section 3", findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]")).getText());
 
-        clickElement(By.id("moveEltUp-1"));
-        hangon(1);
-        clickElement(By.id("moveEltDown-1"));
-        hangon(1);
 
-        Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
-        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
-
-        saveForm();
-        clickElement(By.id("description_tab"));
-
-        Assert.assertEquals("Section 2", findElement(By.id("section_title_0")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
-        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
-
-        clickElement(By.xpath("//div[@id='section_title_0']//i"));
-        findElement(By.xpath("//div[@id='section_title_0']//input")).sendKeys(" - New");
-        clickElement(By.xpath("//div[@id='section_title_0']//button[contains(text(),'Confirm')]"));
-
-        clickElement(By.xpath("//div[@id='dd_card_1']//i"));
-        new Select(findElement(By.xpath("//div[@id='dd_card_1']//select"))).selectByVisibleText("0 or 1");
-        clickElement(By.xpath("//div[@id='dd_card_1']//button[@id='confirmCard']"));
-
-        clickElement(By.xpath("//div[@id='section_title_2']//i"));
-        findElement(By.xpath("//div[@id='section_title_2']//input")).sendKeys(" - New");
-        clickElement(By.xpath("//div[@id='section_title_2']//button[text() = ' Discard']"));
-
-        saveForm();
-        clickElement(By.id("description_tab"));
-
-        Assert.assertEquals("Section 2 - New", findElement(By.id("section_title_0")).getText());
-        Assert.assertEquals("Section 3", findElement(By.id("section_title_1")).getText());
-        Assert.assertEquals("Section 1", findElement(By.id("section_title_2")).getText());
-
-        Assert.assertEquals("1 or more", findElement(By.id("dd_card_0")).getText());
-        Assert.assertEquals("0 or 1", findElement(By.id("dd_card_1")).getText());
-        Assert.assertEquals("0 or more", findElement(By.id("dd_card_2")).getText());
-
-        clickElement(By.id("removeElt-1"));
-        saveForm();
-        clickElement(By.id("description_tab"));
-
-        Assert.assertEquals("Section 1", findElement(By.id("section_title_1")).getText());
+        textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
+        textPresent("1 or more", By.xpath("//*[@id='section_1']//*[contains(@class,'section_cardinality')]"));
+        textPresent("0 or more", By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]"));
     }
 
 }

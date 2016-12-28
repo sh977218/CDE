@@ -30,10 +30,6 @@ public class QuestionTest extends BaseFormTest {
                 WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumber));
 
                 Assert.assertTrue(sourceElt.isDisplayed());
-
-//                scrollTo(targetElt.getLocation().getY());
-//                hangon(1);
-
                 (new Actions(driver)).dragAndDrop(sourceElt, targetElt).perform();
                 textPresent(cdeName, By.id("section_drop_area_" + sectionNumber));
                 i = 10;
@@ -47,8 +43,9 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addSectionToSection(int sectionNumFrom, int sectionNumTo) {
-        WebElement sourceElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//i[contains(@class,'fa fa-arrows')]"));
-        String sourceStr = findElement(By.xpath("//*[@id='section_view_" + sectionNumFrom + "']/div//div[contains(@id,'section_title')]")).getText();
+
+        WebElement sourceElt = findElement(By.xpath("//*[@id='section_" + sectionNumFrom + "']//*[contains(@class,'section_view')]//i[contains(@class,'fa fa-arrows')]"));
+        String sourceStr = findElement(By.xpath("//*[@id='section_" + sectionNumFrom + "']//*[contains(@class,'section_view')]//i[contains(@class,'fa fa-arrows')]")).getText();
 
         WebElement targetElt = findElement(By.id("section_drop_area_" + sectionNumTo));
 
@@ -73,7 +70,8 @@ public class QuestionTest extends BaseFormTest {
         textPresent(cdeName, By.id("acc_link_0"));
 
         WebElement sourceElt = findElement(By.cssSelector("#accordionList .question-move-handle"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_view_" + sectionNumber + "']/div//i"));
+        WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']/div/div[contains(@class,'panel-body')]/div[@id='section_drop_area_child']"));
+
         Assert.assertTrue(sourceElt.isDisplayed());
 
         String jsScroll = "var y = $(\"#section_drop_area_" + sectionNumber + "\").position().top;\n" +

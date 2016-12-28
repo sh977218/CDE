@@ -1,4 +1,4 @@
-<button id="addSection" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+<button id="addSectionTop" ng-click="addSectionTop()" class="btn btn-default" ng-show="canCurate">
     <i class="fa fa-plus"></i> Add Section
 </button>
 <button id="startAddingQuestions" ng-show="canCurate && elt.formElements.length > 0"
@@ -30,20 +30,23 @@
     </span>
 </div>
 <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragSections" id="sectionsDiv">
-    <div ng-repeat="(sectionIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
-        <div ng-if="formElement.elementType === 'question'" ng-include="'/form/public/html/formViewQuestion.html'"
-             ng-init="question = formElement; parent = elt;"></div>
-        <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
-             ng-init="parent = elt; section = formElement; "></div>
-        <div ng-if="formElement.elementType === 'form'"
+    <div ng-repeat="(formElementIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
+        <div ng-if="formElement.elementType === 'question'" id=question_{{formElementIndex}}"
+             ng-include="'/form/public/html/formViewQuestion.html'"
+             ng-init="question = formElement; parent = elt; preId = formElementIndex"></div>
+        <div ng-if="formElement.elementType === 'section'" id="section_{{formElementIndex}}"
+             ng-include="'/form/public/html/formViewSection.html'"
+             ng-init="parent = elt; section = formElement; preId = formElementIndex">
+        </div>
+        <div ng-if="formElement.elementType === 'form'" id="form_{{formElementIndex}}"
              ng-include="'/form/public/html/formViewForm.html'"
-             ng-init="parent = elt; section = formElement; ">
+             ng-init="parent = elt; section = formElement; preId = formElementIndex">
         </div>
     </div>
 </div>
 
 </div>
-<button id="addSectionBottom" ng-click="addSection()" class="btn btn-default" ng-show="canCurate">
+<button id="addSectionBottom" ng-click="addSectionBottom()" class="btn btn-default" ng-show="canCurate">
     <i class="fa fa-plus"></i> Add Section
 </button>
 
