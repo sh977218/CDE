@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class DisplayProfilesTest extends BaseFormTest {
 
-    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, boolean dispType, int numberOfColumns) {
+    private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, String dispType, int numberOfColumns) {
         findElement(By.id("addDisplayProfile")).click();
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
@@ -17,7 +17,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if (!dispType) clickElement(By.id("displayType_" + index));
+        if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
         clickElement(By.id("nc_" + index + "_" + numberOfColumns));
     }
 
@@ -28,9 +28,9 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
 
         clickElement(By.partialLinkText("Display Profile:"));
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true, true, 4);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false, false, 4);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, false, 5);
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 4);
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 4);
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Dynamic", 5);
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");

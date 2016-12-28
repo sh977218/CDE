@@ -7,7 +7,7 @@ angular.module('formModule').controller('DisplayProfileCtrl', ['$scope', functio
             displayInstructions: true,
             displayNumbering: true,
             sectionsAsMatrix: true,
-            displayType: 1,
+            displayType: 'Follow-up'
             numberOfColumns: 4
         };
         var elt = $scope.elt;

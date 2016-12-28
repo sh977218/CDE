@@ -22,20 +22,13 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         }
     };
 
-    $scope.nativeRenderTypesText = ['Dynamic', 'Follow-up', 'Instructions'];
-    $scope.nativeRenderTypes = Object.freeze({
-        SHOW_IF: 0,
-        FOLLOW_UP: 1,
-        GOTO_INSTRUCTIONS: 2
-    });
-    $scope.getNativeRenderType = function () {
-        return $scope.nativeRenderType;
-    };
+    $scope.SHOW_IF = 'Dynamic';
+    $scope.FOLLOW_UP = 'Follow-up';
     $scope.setNativeRenderType = function (type) {
-        if (type == undefined) type = 1;
+        if (type == undefined) type = $scope.FOLLOW_UP;
         $scope.nativeRenderType = type;
 
-        if ($scope.nativeRenderType === $scope.nativeRenderTypes.FOLLOW_UP) {
+        if ($scope.nativeRenderType === $scope.FOLLOW_UP) {
             if (!$scope.followForm || $scope.elt.unsaved) {
                 $scope.formElement = undefined;
                 $scope.followForm = angular.copy($scope.elt);
@@ -44,14 +37,14 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             }
             $scope.formElement = $scope.followForm;
         }
-        if ($scope.nativeRenderType === $scope.nativeRenderTypes.SHOW_IF)
+        if ($scope.nativeRenderType === $scope.SHOW_IF)
             $scope.formElement = $scope.elt;
     };
     $scope.getElt = function () {
         switch ($scope.nativeRenderType) {
-            case $scope.nativeRenderTypes.SHOW_IF:
+            case $scope.SHOW_IF:
                 return $scope.elt;
-            case $scope.nativeRenderTypes.FOLLOW_UP:
+            case $scope.FOLLOW_UP:
                 return $scope.followForm;
         }
     };
@@ -62,7 +55,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
             $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
         } else {
-            $scope.setNativeRenderType($scope.nativeRenderTypes.FOLLOW_UP);
+            $scope.setNativeRenderType($scope.FOLLOW_UP);
             $scope.selection.selectedProfile = {
                 name: "Default Config",
                 displayInstructions: true,
@@ -79,7 +72,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     });
     setSelectedProfile();
     $scope.$on('tabGeneral', function () {
-       $scope.setNativeRenderType($scope.getNativeRenderType());
+       $scope.setNativeRenderType($scope.nativeRenderType);
     });
 
     var removeAnswers = function (formElt) {
@@ -360,9 +353,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             var strPieces = q.skipLogic.condition.split('"');
             if (strPieces[0] === '') strPieces.shift();
             if (strPieces[strPieces.length - 1] === '') strPieces.pop();
-            var lStrPieces = strPieces.length;
             var accumulate = [];
-            for (var i = 0; i < lStrPieces; i++) {
+            strPieces.forEach(function(e,i,strPieces) {
                 var matchQ = prevQ.filter(function (q) {
                     return q.label === strPieces[i];
                 });
@@ -376,7 +368,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                     }
                     accumulate.push([matchQ[0], strPieces[i], operator, compValue]);
                 }
-            }
+            });
             return accumulate;
         }
         return [];

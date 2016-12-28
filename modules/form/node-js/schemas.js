@@ -136,7 +136,7 @@ exports.formJson = {
         , context: {contextName: String}
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
-        , displayType: {type: Number}
+        , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
         , numberOfColumns: {type: Number}
         , _id: false
     }]
