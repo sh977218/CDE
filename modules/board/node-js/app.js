@@ -83,7 +83,6 @@ exports.init = function (app, daoManager) {
         });
     });
 
-
     app.delete('/board/:boardId', function (req, res) {
         authorization.boardOwnership(req, res, req.params.boardId, function (board) {
             board.remove(function (err) {
@@ -155,10 +154,8 @@ exports.init = function (app, daoManager) {
                                 "users.$.lastViewed": new Date()
                             }
                         }, function (err) {
-                            if (err) {
-                                res.status(500).send();
-                                return;
-                            }
+                            if (err) res.status(500);
+                            res.send();
                         });
                     }
                     if (!req.isAuthenticated() ||

@@ -20,7 +20,7 @@ public class FormTableView extends BaseFormTest {
         textPresent("Identifiers");
         textPresent("Questions");
 
-        textPresent("Alternate Name for a Table View Form!");
+        textNotPresent("Alternate Name for a Table View Form!");
         textPresent("TESTOrg");
         textPresent("goodForTablesForm");
 
@@ -43,7 +43,7 @@ public class FormTableView extends BaseFormTest {
         textNotPresent("Identifiers");
         textNotPresent("Questions", By.cssSelector("thead"));
 
-        textNotPresent("Alternate Name for a Table View Form!");
+        textPresent("Alternate Name for a Table View Form!");
         textNotPresent("TESTOrg");
         textNotPresent("goodForTablesForm");
         textPresent("To be deleted");
