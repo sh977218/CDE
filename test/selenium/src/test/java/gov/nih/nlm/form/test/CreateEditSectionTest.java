@@ -28,7 +28,7 @@ public class CreateEditSectionTest extends BaseFormTest {
 
 
         textNotPresent("Exactly 1", By.xpath("//*[@id='section_0']//*[contains(@class,'section_cardinality')]"));
-        textPresent("1 or more", By.xpath("//*[@id='section_1]//*[contains(@class,'section_cardinality')]"));
+        textPresent("1 or more", By.xpath("//*[@id='section_1']//*[contains(@class,'section_cardinality')]"));
         textPresent("0 or more", By.xpath("//*[@id='section_2']//*[contains(@class,'section_cardinality')]"));
     }
 
