@@ -108,7 +108,8 @@ users.forEach(function(u) {
         , "lowestRegistrationStatus": "Incomplete"
         , "tableViewFields": {
             "name": true,
-            "naming": true,
+            "questionTexts": true,
+            "naming": false,
             "permissibleValues": true,
             "uom": false,
             "stewardOrg": true,
