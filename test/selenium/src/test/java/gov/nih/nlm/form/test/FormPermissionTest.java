@@ -18,7 +18,7 @@ public class FormPermissionTest extends BaseFormTest {
         findElement(By.linkText("Form Description")).click();
 
         String sec1 = "test permission section";
-        sectionTest.addSection(sec1, "0 or more");
+        sectionTest.addSection(sec1, "0 or more","bottom");
         textPresent(sec1);
         saveForm();
 

@@ -17,7 +17,8 @@ angular.module('ElasticSearchResource')
                 , "lowestRegistrationStatus": "Qualified"
                 , "tableViewFields": {
                     "name": true,
-                    "naming": true,
+                    "naming": false,
+                    "questionTexts": true,
                     "permissibleValues": true,
                     "nbOfPVs": true,
                     "uom": false,

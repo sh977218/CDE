@@ -29,6 +29,7 @@ public class EltIdMaps {
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");
         eltMap.put("Lower limb tone findings result", "Rv51YEvZyMJ");
         eltMap.put("Malignant Neoplasm Metastatic Involvement Anatomic", "cyPNj-m8r1V");
+        eltMap.put("McGill Quality of Life Questionnaire (MQOL) - troublesome physical symptom problem score", "QXpcS9boYtk");
         eltMap.put("Medication affecting cardiovascular function type exam day indicator", "xug6J6R8fkf");
         eltMap.put("Mediastinal Lymph Node Physical Examination Specify", "64YoxVrtASF");
         eltMap.put("Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2", "y2Z-uqAo_3j");
@@ -76,6 +77,7 @@ public class EltIdMaps {
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
         eltMap.put("PROMIS SF v1.0-Fatigue 8a", "QyTY42OFIg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 8a", "7JrNn_FIx");
+        eltMap.put("PROMIS SF v1.0 - Applied Cog Abilities 4a", "Q1Ogr2OtIe");
         eltMap.put("PROMIS Bank v1.2 - Physical Function", "Xko4nuKLg");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");

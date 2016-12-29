@@ -37,10 +37,15 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
 
             $scope.okSelect = function (naming) {
                 if (!naming) {
-                    return $modalInstance.close("");
+                    question.label = "";
+                    question.hideLabel = true;
                 }
-                checkAndUpdateLabel(section, true, naming.designation);
-                $modalInstance.close(naming.designation);
+                else {
+                    checkAndUpdateLabel(section, true, naming.designation);
+                    question.label = naming.designation;
+                    question.hideLabel = false;
+                }
+                $modalInstance.close();
             };
         }
     ]);

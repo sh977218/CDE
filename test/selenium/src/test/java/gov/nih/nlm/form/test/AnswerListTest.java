@@ -18,17 +18,17 @@ public class AnswerListTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
 
-        clickElement(By.id("question_accordion_0_0"));
-        textPresent("Multiple Selections:");
-        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
+        textNotPresent("Multiple Selections:");
+        startEditQuestionSectionById("question_0_0");
+        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "Female Gender");
         Assert.assertEquals(lis.get(1).getText(), "Male Gender");
         Assert.assertEquals(lis.get(2).getText(), "Unknown");
 
-        clickElement(By.xpath("//div[@id='question_0']//ul[@class='select2-choices']//li[1]/a"));
+        clickElement(By.xpath("//div[@id='question_0_0']//ul[@class='select2-choices']//li[1]/a"));
         textNotPresent("Female Gender");
-        lis = driver.findElements(By.xpath("//div[@id = 'question_0']//ul[@class='select2-choices']//li/span/span"));
+        lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//ul[@class='select2-choices']//li/span/span"));
         Assert.assertEquals(lis.size(), 2);
         Assert.assertEquals("Male Gender", lis.get(0).getText());
         Assert.assertEquals("Unknown", lis.get(1).getText());
@@ -37,15 +37,14 @@ public class AnswerListTest extends BaseFormTest {
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        clickElement(By.id("question_accordion_0_0"));
         textNotPresent("Female Gender");
+        startEditQuestionSectionById("question_0_0");
         clickElement(By.xpath("//input[@ng-click='$select.activate()']"));
         clickElement(By.xpath("//span[contains(text(), 'Female Gender')]"));
         saveForm();
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        clickElement(By.id("question_accordion_0_0"));
         textPresent("Female Gender");
     }
 

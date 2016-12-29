@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class QuickboardButtons extends NlmCdeBaseTest{
+
     @Test
     public void quickBoardButtons() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
@@ -12,8 +13,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
         textPresent("Quick Board (2)");
         goToQuickBoardByModule("cde");
         textPresent("Prostate Cancer American Joint Committee");
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
+        textPresent("Fluorescence in situ");
         clickElement(By.id("qb_cde_compare"));
         textPresent("Prostate Cancer pN0 TNM Finding");
         textPresent("Prostate Tumor Pathologic N Stage");
