@@ -77,11 +77,12 @@ angular.module('systemModule', ['ElasticSearchResource', 'resourcesSystem',
                     $scope.editMode = false;
                 };
                 $scope.save = function () {
-                    $scope.model = angular.copy($scope.value);
+                    $scope.model = angular.copy(this.value);
                     $scope.editMode = false;
                     $timeout($scope.onOk, 0);
                 };
                 $scope.edit = function () {
+                    $scope.value = $scope.model;
                     $scope.editMode = true;
                 };
             }]

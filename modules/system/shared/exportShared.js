@@ -1,7 +1,7 @@
 if (typeof(exports) === "undefined") exports = {};
 
 exports.exportHeader = {
-    cdeHeader: "Name, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n",
+    cdeHeader: "Name, Question Texts, Other Names, Value Domain, Permissible Values, Identifiers, Steward, Registration Status, Administrative Status, Used By\n",
     redCapHeader: 'Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation\n'
 };
 
@@ -9,6 +9,9 @@ exports.exportHeader = {
 exports.getCdeCsvHeader = function (settings) {
     var cdeHeader = "Name";
 
+    if (settings.questionTexts) {
+        cdeHeader += ", Question Texts";
+    }
     if (settings.naming) {
         cdeHeader += ", Other Names";
     }
@@ -70,8 +73,21 @@ exports.projectCdeForExport = function (ele, settings) {
     var cde = {
         name: ele.naming[0].designation
     };
+    if (settings.questionTexts) {
+        cde.otherNames = ele.naming.filter(function (n) {
+            return n.context && n.context.contextName &&
+                n.context.contextName.indexOf("Question Text", n.context.contextName.length - "Question Text".length) !== -1;
+        }).map(function (n) {
+            return n.designation;
+        }).filter(function (n) {
+            return n;
+        });
+    }
     if (settings.naming) {
-        cde.otherNames = ele.naming.slice(1).map(function (n) {
+        cde.otherNames = ele.naming.slice(1).filter(function (n) {
+            return n.context && n.context.contextName &&
+                n.context.contextName.indexOf("Question Text", n.context.contextName.length - "Question Text".length) === -1;
+        }).map(function (n) {
             return n.designation;
         }).filter(function (n) {
             return n;

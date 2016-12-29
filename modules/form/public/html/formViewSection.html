@@ -1,101 +1,74 @@
-<div class="panel panel-default section_view" id="section_view_{{$index}}">
+<div class="panel panel-default section_view">
     <div class="panel-heading">
         <div class="row" ng-click="section.updatedSkipLogic = false">
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
-                <i class="fa fa-arrows fa-lg"></i>
+                <i class="fa fa-arrows fa-lg question-move-handle"></i>
                 <i ng-if="section.skipLogic.condition.length > 0" class="fa fa-cog"
                    ng-class="{'fa-spin': section.updatedSkipLogic}"
                    title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}"></i>
             </div>
-            <div class="col-sm-9 questionSectionTitle" id="section_title_{{$index}}" inline-edit
-                 model="section.label" is-allowed="canCurate" on-ok="stageElt()"></div>
-            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div">
-                <i class="glyphicon glyphicon-remove hand-cursor" ng-click="removeElt(parent, $index)"
-                   title="Remove Section" id="removeElt-{{$index}}"></i>
+            <div class="col-sm-9 questionSectionTitle section_title" inline-edit
+                 model="section.label" is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
+            <div ng-if="canCurate" class="col-sm-1 pull-right section-question-icon-div editIconDiv">
+                <i ng-if="!section.edit" class="fa fa-pencil hand-cursor" title="Edit section"
+                   ng-click="section.edit = true"></i>
+                <i ng-if="section.edit" class="fa fa-check hand-cursor" title="Save edit section"
+                   ng-click="section.edit = false;"></i>
+                <i class="fa fa-trash-o hand-cursor" title="Remove Section" ng-click="removeElt(parent, $index)"></i>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-                    <div class="col-sm-7" id="dd_section_instructions_{{$index}}">
-                        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
-                             model="section.instructions.value" def-format="section.instructions.valueFormat"
-                             is-allowed="canCurate" on-ok="stageElt()"></div>
-                    </div>
+            <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
+            <div class="col-sm-7 section_instruction" ng-if="canCurate && section.edit">
+                <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
+                     model="section.instructions.value" def-format="section.instructions.valueFormat"
+                     is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
+            </div>
+            <div class="clear"></div>
+            <div class="row" ng-if="parent">
+                <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+                <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
+                     ng-class="{'has-error':section.skipLogic.skipLogicError}">
+                    <input ng-disabled="!(parent.formElements.length > 1 && canCurate && section.edit)"
+                           type="text" ng-model="section.skipLogic.condition"
+                           class="form-control skipLogicCondition" ng-trim="false"
+                           ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
+                           uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
+                           typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                           typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
+                           typeahead-append-to-body="true"/>
+                    <span ng-bind="section.skipLogic.skipLogicError"></span>
                 </div>
-                <div class="row" ng-if="parent">
-                    <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-                    <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
-                         ng-class="{'has-error':section.skipLogic.skipLogicError}">
-                        <input ng-disabled="!(parent.formElements.length > 1) || !canCurate"
-                               type="text" ng-model="section.skipLogic.condition"
-                               class="form-control skipLogicCondition" ng-trim="false"
-                               ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
-                               uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
-                               typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
-                               typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
-                               typeahead-append-to-body="true"/>
-                        <span ng-bind="section.skipLogic.skipLogicError"></span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-                    <div class="col-sm-7" id="dd_card_{{$index}}">
-                        <div ng-show="editCardMode">
-                            <select ng-model="section.cardinality" id="select_section_card_{{$index}}"
-                                    ng-options="item.value as item.label for item in cardinalityOptions">
-                            </select>
-                            <br/>
-                            <button class="fa fa-check" ng-click="editCardMode = false; stageElt()" id="confirmCard">
-                                Confirm
-                            </button>
-                            <button class="fa fa-times" ng-click="editCardMode = false; section.cardinality = orig">
-                                Discard
-                            </button>
-                        </div>
-                        <div ng-hide="editCardMode">
-                            <i ng-show="canCurate" class="fa fa-edit"
-                               ng-click="editCardMode = true; orig = section.cardinality"
-                               id="edit_section_card_{{$index}}"></i> {{getCardinalityLabel(section.cardinality)}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2 questionSectionLabel text-right">Move:</div>
-                    <div class="col-sm-7" ng-hide="$first && $last">
-                        <div ng-show="canCurate">
-                            <i ng-click="moveElt($index, -1)" class="fa fa-arrow-up" id="moveEltUp-{{$index}}"
-                               ng-hide="$first"></i>
-                            <i ng-click="moveElt($index, 1)" class="fa fa-arrow-down" id="moveEltDown-{{$index}}"
-                               ng-hide="$last"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" ng-show="canCurate">
-                    <div class="col-sm-2 questionSectionLabel text-right">Delete:</div>
-                    <div class="col-sm-7">
-                        <i ng-click="removeElt(elt, $index)" class="fa fa-trash-o"
-                           id="removeElt-{{$index}}"></i>
-                    </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
+                <div class="col-sm-2 section_cardinality">
+                    <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
+                    <select class="form-control" ng-if="canCurate && section.edit"
+                            ng-model="section.cardinality" ng-change="stageElt()"
+                            ng-options="item.value as item.label for item in cardinalityOptions">
+                    </select>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel-body">
+        <div id="section_drop_area_child" class="dragQuestions dragSection"></div>
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions dragSections"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
-            <div ng-repeat="(questionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit"
-                 id="question_{{$index}}">
-                <div ng-if="formElement.elementType === 'question'"
+            <div ng-repeat="(sectionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit">
+                <div ng-if="formElement.elementType === 'question'" id="question_{{preId}}_{{sectionIndex}}"
                      ng-include="'/form/public/html/formViewQuestion.html'"
                      ng-init="parent = section; question = formElement;"></div>
-                <div ng-if="formElement.elementType === 'section'" ng-include="'/form/public/html/formViewSection.html'"
-                     ng-init="parent = section; section = formElement;isSubSection = true;"></div>
-                <div ng-if="formElement.elementType === 'form'" ng-include="'/form/public/html/formViewForm.html'"
-                     ng-init="parent = section; section = formElement;isSubSection = true;"></div>
+                <div ng-if="formElement.elementType === 'section'" id="section_{{preId}}"
+                     ng-include="'/form/public/html/formViewSection.html'"
+                     ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
+                <div ng-if="formElement.elementType === 'form'" id="{{preId}}_{{formElementIndex}}"
+                     ng-include="'/form/public/html/formViewForm.html'"
+                     ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
             </div>
-            <div ng-if="section.formElements.length > nbOfEltsLimit">
+            <div ng-if="section.formElements.length > nbOfEltsLimit" id="scrollMore">
                 <i class="fa fa-2x">Scroll down to see more ...</i>
             </div>
         </div>

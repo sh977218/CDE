@@ -441,12 +441,6 @@ dl.dl-horizontal dd {
     overflow: visible;
 }
 
-.questionAccordionContent {
-    max-height: 500px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
 .section-question-icon-div {
     width: auto !important;
 }

@@ -150,6 +150,7 @@ schemas.userSchema = new mongoose.Schema({
         , tableViewFields: {
             name: Boolean
             , naming: Boolean
+            , questionTexts: Boolean
             , permissibleValues: Boolean
             , uom: Boolean
             , stewardOrg: Boolean

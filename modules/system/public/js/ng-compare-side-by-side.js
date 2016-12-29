@@ -6,12 +6,14 @@
                 return {
                     restrict: "AE",
                     scope: {
-                        left: '=ngCompareSideBySideLeft',
-                        right: '=ngCompareSideBySideRight',
+                        _left: '<ngCompareSideBySideLeft',
+                        _right: '<ngCompareSideBySideRight',
                         options: '=ngCompareSideBySideOptions'
                     },
                     templateUrl: '/system/public/html/ngCompareTemplate/compareSwitchTemplate.html',
                     link: function ($scope) {
+                        $scope.left = angular.copy($scope._left);
+                        $scope.right = angular.copy($scope._right);
                         if (!$scope.left && !$scope.right) {
                             $scope.err = {error: true, errorMessage: "left and right are null"};
                         } else {
