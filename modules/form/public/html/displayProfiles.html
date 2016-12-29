@@ -1,77 +1,75 @@
 <div ng-controller="DisplayProfileCtrl">
     <h4>Display Profiles</h4>
-    <div ng-repeat="profile in elt.displayProfiles">
-        <div class="row">
-            <div class="col-md-1 text-right" ng-if="canCurate">
-                <div class="row">
+    <div ng-repeat="profile in elt.displayProfiles" class="hr">
+        <div class="text-right" ng-if="canCurate">
                 <span ng-show="showDelete">Confirm Delete
                     <a class="fa fa-check" ng-click="showDelete = false; removeDisplayProfile($index)"
                        id="confirmRemoveDisplayProfile-{{$index}}" title="OK" href=""></a>
                     <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
                 </span>
-                    <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                       id="removeDisplayProfile-{{$index}}" title="Remove" href=""></a>
-                </div>
-            </div>
-            <div class="col-md-11">
+                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+                   id="removeDisplayProfile-{{$index}}" title="Remove" href=""></a>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
                 <dl class="dl-horizontal">
-                    <dt tabindex="0">Name:</dt>
-                    <dd tabindex="0">
+                    <dt>Name:</dt>
+                    <dd>
                         <div inline-edit id="profileNameEdit_{{$index}}" model="profile.name" is-allowed="canCurate"
                              on-ok="stageElt()"></div>
                     </dd>
-                    <dt tabindex="0">Context:</dt>
-                    <dd tabindex="0" id="dd_profile_ctx">
+                    <dt>Context:</dt>
+                    <dd id="dd_profile_ctx">
                         <div inline-edit id="profileCtxEdit" model="profile.context.contextName" is-allowed="canCurate"
                              on-ok="stageElt()"></div>
                     </dd>
-                    <dt tabindex="0">Sections as matrices:</dt>
-                    <dd tabindex="0">
+                    <dt>Sections as matrices:</dt>
+                    <dd>
                         <input type="checkbox" ng-model="profile.sectionsAsMatrix" ng-disabled="!canCurate"
                                id="displayAsMatrix_{{$index}}" ng-click="stageElt()"/>
                     </dd>
-                    <dt tabindex="0">Display answer values:</dt>
-                    <dd tabindex="0">
+                    <dt>Display answer values:</dt>
+                    <dd>
                         <input type="checkbox" ng-model="profile.displayValues" ng-disabled="!canCurate"
                                id="displayValues_{{$index}}" ng-click="stageElt()"/>
                     </dd>
-                    <dt tabindex="0">Display Instructions:</dt>
+                    <dt>Display Instructions:</dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayInstructions" ng-disabled="!canCurate"
                                id="displayInstructions_{{$index}}" ng-click="stageElt()">
                     </dd>
-                    <dt tabindex="0">Display Question Numbers:</dt>
+                    <dt>Display Question Numbers:</dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayNumbering" ng-disabled="!canCurate"
                                id="displayNumbering_{{$index}}" ng-click="stageElt()">
                     </dd>
-                    <dt tabindex="0">Display Printable Logic: </dt>
+                    <dt>Display Printable Logic: </dt>
                     <dd>
                         <input type="checkbox" ng-model="profile.displayType" ng-disabled="!canCurate"
                                ng-true-value="'Follow-up'" ng-false-value="'Dynamic'"
-                               id="displayType_{{$index}}" ng-click="stageElt()">
+                               id="displayType_{{$index}}" ng-click="stageElt();updateRender();">
 		            </dd>
-                    <dt tabindex="0">Number of Columns:</dt>
+                    <dt>Number of Columns:</dt>
                     <dd>
-                        <fieldset>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="1"
-                                          id="nc_{{$index}}_1" ng-click="stageElt()">1 </label>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="2"
-                                          id="nc_{{$index}}_2" ng-click="stageElt()">2 </label>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="3"
-                                          id="nc_{{$index}}_3" ng-click="stageElt()">3 </label>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="4"
-                                          id="nc_{{$index}}_4" ng-click="stageElt()">4 </label>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="5"
-                                          id="nc_{{$index}}_5" ng-click="stageElt()">5 </label>
-                            <label><input type="radio" ng-model="profile.numberOfColumns" ng-value="6"
-                                          id="nc_{{$index}}_6" ng-click="stageElt()">6 </label>
-                        </fieldset>
+                        <div sliderrunjquery="profile.numberOfColumns" class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;">
+                            <div tabindex="0" class="ui-slider-handle"></div>
+                        </div>
                     </dd>
                 </dl>
             </div>
+            <div class="col-md-7 col-xs-12" ng-controller="DisplayProfileDataCtrl" style="border: dashed 1px;zoom:60%;" >
+                <form name="sectionLabel" role="form" class="form-horizontal">
+                    <div ng-controller="FormRenderCtrl" >
+                        <div ng-if="nativeRenderType === SHOW_IF"
+                             ng-include="'/form/public/html/formRenderSection.html'"
+                             ng-init="selection.selectedProfile = profile"></div>
+                        <div ng-if="nativeRenderType === FOLLOW_UP"
+                             ng-include="'/form/public/html/formRenderSection.html'"
+                             ng-init="selection.selectedProfile = profile"></div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <hr/>
     </div>
     <button ng-show="canCurate" class="btn btn-small btn-default" value="add" ng-click="addProfile()"
             id="addDisplayProfile"><i class="fa fa-plus"> </i> Add Profile

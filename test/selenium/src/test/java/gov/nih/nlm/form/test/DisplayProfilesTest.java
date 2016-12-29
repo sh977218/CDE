@@ -1,6 +1,8 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -18,7 +20,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
         if (!"Follow-up".equals(dispType)) clickElement(By.id("displayType_" + index));
-        clickElement(By.id("nc_" + index + "_" + numberOfColumns));
+
+        WebElement slider = findElement(By.id("nc_" + index));
+        Actions slide = new Actions(driver);
+        int width = slider.getSize().getWidth()/6;
+        slide.moveToElement(slider, width*(numberOfColumns-1)+width/2, slider.getSize().getHeight()/2).click().build().perform();
     }
 
     @Test
@@ -28,8 +34,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("In the past 7 days");
 
         clickElement(By.partialLinkText("Display Profile:"));
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 4);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 4);
+        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1);
+        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Dynamic", 5);
         saveForm();
 
@@ -59,8 +65,8 @@ public class DisplayProfilesTest extends BaseFormTest {
         textPresent("4");
         textPresent("5");
         Assert.assertEquals(
-                findElement(By.xpath("//div[div/div/label[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
-                findElement(By.xpath("//div[div/div/label[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
+                findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
+                findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
         );
 
         showAllTabs();
