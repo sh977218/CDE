@@ -166,6 +166,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                         if (cde.valueDomain.permissibleValues.length > 9) {
                             $http.get("/debytinyid/" + cde.tinyId + "/" + (cde.version ? cde.version : "")).then(function (result) {
                                 result.data.valueDomain.permissibleValues.forEach(function (pv) {
+                                    if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
+                                        pv.valueMeaningName = pv.permissibleValue;
+                                    }
                                     question.question.answers.push(pv);
                                     question.question.cde.permissibleValues.push(pv);
                                 });
@@ -173,6 +176,9 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
                             });
                         } else {
                             cde.valueDomain.permissibleValues.forEach(function (pv) {
+                                if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
+                                    pv.valueMeaningName = pv.permissibleValue;
+                                }
                                 question.question.answers.push(pv);
                                 question.question.cde.permissibleValues.push(pv);
                             });
