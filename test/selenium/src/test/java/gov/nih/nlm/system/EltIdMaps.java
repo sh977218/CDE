@@ -72,6 +72,7 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
