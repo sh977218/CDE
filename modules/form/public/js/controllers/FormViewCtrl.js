@@ -235,8 +235,10 @@ angular.module('formModule').controller
                         loopFormElements(fe, function () {
                             doneOne();
                         });
-                    } else {
+                    } else if (fe.elementType === 'question') {
                         doneOne();
+                    } else {
+                        Alert.addAlert("warning", "Unknown formElement.elementType" + fe.elementType);
                     }
                 }, function doneAll() {
                     cb();

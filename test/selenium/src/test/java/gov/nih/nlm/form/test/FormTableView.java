@@ -6,24 +6,21 @@ import org.testng.annotations.Test;
 
 public class FormTableView extends BaseFormTest {
 
-    private void seeTableForms(){
-        goHome();
-        findElement(By.id("menu_forms_link")).click();
-        findElement(By.id("browseOrg-TEST")).click();
-        findElement(By.id("form_gridView")).click();
-    }
-
     @Test
     public void seeFormSource() {
         mustBeLoggedOut();
-        seeTableForms();
-        textPresent("Other Names");
+
+        findElement(By.id("menu_forms_link")).click();
+        findElement(By.id("browseOrg-TEST")).click();
+        findElement(By.id("form_gridView")).click();
+
+        textNotPresent("Other Names");
         textPresent("Steward");
         textPresent("Used by");
         textPresent("Identifiers");
         textPresent("Questions");
 
-        textPresent("Alternate Name for a Table View Form!");
+        textNotPresent("Alternate Name for a Table View Form!");
         textPresent("TESTOrg");
         textPresent("goodForTablesForm");
 
@@ -39,15 +36,14 @@ public class FormTableView extends BaseFormTest {
         clickElement(By.id("numQuestions"));
         clickElement(By.id("saveSettings"));
         textPresent("Settings saved!");
-        seeTableForms();
 
-        textNotPresent("Other Names");
+        textPresent("Other Names");
         textNotPresent("Steward");
         textNotPresent("Used by");
         textNotPresent("Identifiers");
         textNotPresent("Questions", By.cssSelector("thead"));
 
-        textNotPresent("Alternate Name for a Table View Form!");
+        textPresent("Alternate Name for a Table View Form!");
         textNotPresent("TESTOrg");
         textNotPresent("goodForTablesForm");
         textPresent("To be deleted");

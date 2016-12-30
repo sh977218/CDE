@@ -1,6 +1,4 @@
-angular.module('cdeModule').controller('CompareCtrl',
-    ['$scope', 'QuickBoard',
-        function ($scope, QuickBoard) {
+angular.module('cdeModule').controller('CompareCtrl', ['$scope', 'QuickBoard', function ($scope, QuickBoard) {
             $scope.compareView = true;
             $scope.pvLimit = 30;
 

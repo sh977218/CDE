@@ -2,7 +2,9 @@ package gov.nih.nlm.cde.test.admin;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AdminAddsPropertyKey extends NlmCdeBaseTest {
@@ -24,7 +26,13 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
-        textPresent("doYouSeeThis");
+
+        try {
+            findElement(By.xpath("//option[@value='doYouSeeThis']"));
+        } catch (TimeoutException e) {
+            Assert.fail("Failed to find doYouSeeThis. Actual HTML: " + findElement(By.id("newContext")).getAttribute("outerHTML"));
+        }
+
         clickElement(By.id("cancelCreate"));
 
         clickElement(By.id("username_link"));

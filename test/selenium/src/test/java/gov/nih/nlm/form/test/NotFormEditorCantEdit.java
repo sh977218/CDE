@@ -12,8 +12,7 @@ public class NotFormEditorCantEdit extends NlmCdeBaseTest {
         mustBeLoggedInAs("ctepOnlyCurator", password);
         goToFormByName("Traumatic Brain Injury - Adverse Events");
         clickElement(By.id("description_tab"));
-        hangon(1);
-        Assert.assertFalse(driver.findElement(By.id("addSection")).isDisplayed());
+        Assert.assertEquals(driver.findElements(By.id("addSection")).size(), 0);
     }
 
 

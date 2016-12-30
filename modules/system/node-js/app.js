@@ -367,26 +367,23 @@ exports.init = function (app) {
             res.status(401).send();
         }
     });
-
-    app.get('/user/me', exportShared.nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send("Not logged in.");
-        } else {
-            mongo_data_system.userById(req.user._id, function (err, user) {
-                res.send(user);
-            });
-        }
-    });
+    
     app.get('/user/:search', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("Not logged in.");
         } else if (!req.params.search) {
             res.send("search is empty.");
         } else {
-            mongo_data_system.usersByName(req.params.search, function (err, users) {
-                if (err) res.send(500);
-                else res.send(users);
-            });
+            if (req.params.search === 'me') {
+                mongo_data_system.userById(req.user._id, function (err, user) {
+                    res.send(user);
+                });
+            } else {
+                mongo_data_system.usersByName(req.params.search, function (err, users) {
+                    if (err) res.status(500);
+                    else res.send(users);
+                });
+            }
         }
     });
 

@@ -11,7 +11,7 @@ public class AddReviewerToBoardTest extends BoardTest {
         clickElement(By.id("newUser_change"));
         textPresent("can review");
         clickElement(By.id("newUser_role_" + role));
-        String icon = role == "viewer" ? "fa-eye" : "fa-search-plus";
+        String icon = role.equals("viewer") ? "fa-eye" : "fa-search-plus";
         Assert.assertEquals(findElement(By.id("newUser_role")).getAttribute("class").contains(icon), true);
         clickElement(By.id("addUserBtn"));
     }

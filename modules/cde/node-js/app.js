@@ -124,11 +124,11 @@ exports.init = function (app, daoManager) {
 
     app.post('/dataelement', cdesvc.save);
 
-    app.get('/viewingHistory/:start', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/viewingHistory', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send("You must be logged in to do that");
         } else {
-            var splicedArray = req.user.viewHistory.splice(req.params.start, 10);
+            var splicedArray = req.user.viewHistory.splice(0, 10);
             var idList = [];
             for (var i = 0; i < splicedArray.length; i++) {
                 if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
