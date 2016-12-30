@@ -72,6 +72,7 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("PhenX Form RedCAP Export", "XJ_vOJ9iZ");
@@ -99,6 +100,7 @@ public class EltIdMaps {
         eltMap.put("Form Board", "5751ee614184ddb440886745");
         eltMap.put("Gliobastroma Multiform", "55f19768541fd83c2166cbc4");
         eltMap.put("Hypertension", "55f19808541fd83c2166cbcf");
+        eltMap.put("Num Of Questions Board", "585c2ced523c738c23ed8e0b");
         eltMap.put("Pin All CDEs From Form", "574ef30bb8d73fd82a7ac6b2");
         eltMap.put("Pin All Less Than 20 Test Board", "5750432731f3ccb83b82896c");
         eltMap.put("Pin All More Than 20 Test Board", "5750434631f3ccb83b82896f");

@@ -20,6 +20,8 @@ schemas.formSchema.pre('save', function (next) {
     next();
 });
 
+exports.elastic = elastic;
+
 exports.getPrimaryName = function (elt) {
     return elt.naming[0].designation;
 };

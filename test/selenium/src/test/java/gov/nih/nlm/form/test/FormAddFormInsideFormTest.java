@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,6 +11,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
     QuestionTest questionTest = new QuestionTest();
 
     @Test
+    @RecordVideo
     public void addFormInsideFormTest() {
         String formName = "Study Drug Compliance";
         mustBeLoggedInAs(ninds_username, password);

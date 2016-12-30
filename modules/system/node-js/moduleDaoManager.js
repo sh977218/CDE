@@ -1,4 +1,3 @@
-
 var daoList = [];
 var allDaos = {};
 
