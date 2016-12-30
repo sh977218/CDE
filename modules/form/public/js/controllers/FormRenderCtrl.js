@@ -6,6 +6,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.classColumns = function (flag) {
         if (!flag) return '';
+        if (!$scope.selection.selectedProfile || !$scope.selection.selectedProfile.numberOfColumns) return '';
         switch ($scope.selection.selectedProfile.numberOfColumns) {
             case 2:
                 return 'col-sm-6';

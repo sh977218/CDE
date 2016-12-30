@@ -1,6 +1,7 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
@@ -36,17 +37,28 @@ public class DisplayProfilesTest extends BaseFormTest {
         clickElement(By.partialLinkText("Display Profile:"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1);
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Dynamic", 5);
+        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1);
+        createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
+        textPresent("1", By.xpath("//*[@id='profile_0']//table/tbody/tr[1]/td[6]/span"));
+        Assert.assertTrue(
+                findElement(By.xpath("//*[@id='profile_2']//*[@id='Education level USA type_1']//*[text()='1st Grade']")).getLocation().y + 8 <
+                        findElement(By.xpath("//*[@id='profile_2']//*[@id='Education level USA type_1']//*[text()='2nd Grade']")).getLocation().y
+        );
+        Assert.assertEquals(
+                findElement(By.xpath("//*[@id='profile_3']//div[div/div/label/span[text()='Education level USA type']]//*[text()='1st Grade']")).getLocation().y,
+                findElement(By.xpath("//*[@id='profile_3']//div[div/div/label/span[text()='Education level USA type']]//*[text()='5th Grade']")).getLocation().y
+        );
         saveForm();
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
         textPresent("Display Profile:");
-        textPresent("1");
-        textPresent("2");
-        textPresent("3");
-        textPresent("4");
-        textPresent("5");
+        textPresent("1", By.xpath("//table"));
+        textPresent("2", By.xpath("//table"));
+        textPresent("3", By.xpath("//table"));
+        textPresent("4", By.xpath("//table"));
+        textPresent("5", By.xpath("//table"));
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
 
@@ -54,16 +66,19 @@ public class DisplayProfilesTest extends BaseFormTest {
         hangon(1);
         Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
+        textNotPresent("1", By.xpath("//table"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
         assertNoElt(By.xpath("//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        textPresent("1");
-        textPresent("2");
-        textPresent("3");
-        textPresent("4");
-        textPresent("5");
+        Assert.assertTrue(
+                findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Never')]]")).getLocation().y + 8 <
+                        findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Rarely')]]")).getLocation().y
+        );
+
+        new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
+        hangon(1);
         Assert.assertEquals(
                 findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
                 findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
@@ -72,7 +87,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         showAllTabs();
         clickElement(By.id("displayProfiles_tab"));
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             clickElement(By.id("removeDisplayProfile-0"));
             clickElement(By.id("confirmRemoveDisplayProfile-0"));
         }

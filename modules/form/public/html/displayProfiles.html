@@ -1,14 +1,14 @@
 <div ng-controller="DisplayProfileCtrl">
     <h4>Display Profiles</h4>
-    <div ng-repeat="profile in elt.displayProfiles" class="hr">
+    <div ng-repeat="profile in elt.displayProfiles" class="hr" id="profile_{{$index}}">
         <div class="text-right" ng-if="canCurate">
-                <span ng-show="showDelete">Confirm Delete
-                    <a class="fa fa-check" ng-click="showDelete = false; removeDisplayProfile($index)"
-                       id="confirmRemoveDisplayProfile-{{$index}}" title="OK" href=""></a>
-                    <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
-                </span>
-                <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
-                   id="removeDisplayProfile-{{$index}}" title="Remove" href=""></a>
+            <span ng-show="showDelete">Confirm Delete
+                <a class="fa fa-check" ng-click="showDelete = false; removeDisplayProfile($index)"
+                   id="confirmRemoveDisplayProfile-{{$index}}" title="OK" href=""></a>
+                <a class="fa fa-times" ng-click="showDelete = false" title="Cancel" href=""></a>
+            </span>
+            <a ng-click="showDelete = true" ng-hide="showDelete" class="fa fa-trash-o"
+               id="removeDisplayProfile-{{$index}}" title="Remove" href=""></a>
         </div>
         <div class="row">
             <div class="col-md-5 col-xs-12">
