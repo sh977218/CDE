@@ -51,7 +51,9 @@
 		            </dd>
                     <dt>Number of Columns:</dt>
                     <dd>
-                        <div jq-slider="profile.numberOfColumns" jq-slider-onslide="$scope.stageElt();$scope.updateRender();" class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;">
+                        <div class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;"
+                             jq-slider="profile.numberOfColumns" jq-slider-onslide="$scope.stageElt();$scope.updateRender();"
+                             jq-slider-min="1" jq-slider-max="6" jq-slider-step="1">
                             <div tabindex="0" class="ui-slider-handle"></div>
                         </div>
                     </dd>

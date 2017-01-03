@@ -21,19 +21,17 @@ angular.module('formModule').directive("jqSlider", ["$compile", "$timeout", "$pa
             $timeout(function () {
                 $(function () {
                     var handle = $(element).find(".ui-slider-handle");
-                    var getter = $parse(attrs.jqSlider);
-                    var setter = getter.assign;
                     $(element).slider({
-                        value: getter($scope),
-                        min: 1,
-                        max: 6,
-                        step: 1,
+                        value: $parse(attrs.jqSlider)($scope),
+                        min: $parse(attrs.jqSliderMin)($scope),
+                        max: $parse(attrs.jqSliderMax)($scope),
+                        step: $parse(attrs.jqSliderStep)($scope),
                         create: function () {
                             handle.text($(this).slider("value"));
                         },
                         slide: function (event, ui) { // jshint ignore:line
                             handle.text(ui.value);
-                            setter($scope, ui.value);
+                            $parse(attrs.jqSlider).assign($scope, ui.value);
                             $scope.$apply($parse(attrs.jqSliderOnslide)($scope));
                         }
                     });
