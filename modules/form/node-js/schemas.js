@@ -139,7 +139,7 @@ exports.formJson = {
         , displayInstructions: {type: Boolean}
         , displayNumbering: {type: Boolean}
         , displayType: {type: String, enum: ['Dynamic', 'Follow-up']}
-        , numberOfColumns: {type: Number}
+        , numberOfColumns: {type: Number, min: 1, max: 6}
         , _id: false
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]

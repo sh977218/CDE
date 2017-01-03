@@ -254,33 +254,3 @@ angular.module('formModule').controller('DisplayProfileDataCtrl', ['$scope', fun
         ]
     };
 }]);
-
-angular.module('formModule').directive("sliderrunjquery", ["$compile", "$timeout", "$parse", function ($compile, $timeout, $parse) {
-    return {
-        link: function ($scope, element, attrs) {
-            $timeout(function () {
-                $(function () {
-                    var handle = $(element).find(".ui-slider-handle");
-                    var getter = $parse(attrs.sliderrunjquery);
-                    var setter = getter.assign;
-                    $(element).slider({
-                        value: getter($scope),
-                        min: 1,
-                        max: 6,
-                        step: 1,
-                        create: function () {
-                            handle.text($(this).slider("value"));
-                        },
-                        slide: function (event, ui) { // jshint ignore:line
-                            handle.text(ui.value);
-                            setter($scope, ui.value);
-                            $scope.stageElt();
-                            $scope.updateRender();
-                            $scope.$apply();
-                        }
-                    });
-                });
-            }, 0, false);
-        }
-    };
-}]);

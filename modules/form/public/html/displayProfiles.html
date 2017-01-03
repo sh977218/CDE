@@ -51,7 +51,7 @@
 		            </dd>
                     <dt>Number of Columns:</dt>
                     <dd>
-                        <div sliderrunjquery="profile.numberOfColumns" class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;">
+                        <div jq-slider="profile.numberOfColumns" jq-slider-onslide="$scope.stageElt();$scope.updateRender();" class="slider" id="nc_{{$index}}" style="width: 150px; top: 5px;">
                             <div tabindex="0" class="ui-slider-handle"></div>
                         </div>
                     </dd>

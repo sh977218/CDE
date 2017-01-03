@@ -424,6 +424,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     function hasOwnRow(e) {
         if (e.subQuestions) return true;
+        return false;
     }
 
 }]);
