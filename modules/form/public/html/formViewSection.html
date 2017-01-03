@@ -1,4 +1,4 @@
-<div class="panel panel-default section_view">
+<div class="panel panel-default section_view" ng-controller="FormViewSectionCtrl">
     <div class="panel-heading">
         <div class="row" ng-click="section.updatedSkipLogic = false">
             <div ng-if="canCurate" class="col-sm-1 section-question-icon-div noRightPadding">
@@ -57,16 +57,19 @@
         <div id="section_drop_area_child" class="dragQuestions dragSection"></div>
         <div ui-sortable="sortableOptions" ng-model="section.formElements" class="dragQuestions dragSections"
              id="{{!isSubSection?'section_drop_area_'+$index:'section_drop_area_child'}}">
-            <div ng-repeat="(sectionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit">
-                <div ng-if="formElement.elementType === 'question'" id="question_{{preId}}_{{sectionIndex}}"
-                     ng-include="'/form/public/html/formViewQuestion.html'"
-                     ng-init="parent = section; question = formElement;"></div>
-                <div ng-if="formElement.elementType === 'section'" id="section_{{preId}}"
-                     ng-include="'/form/public/html/formViewSection.html'"
-                     ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
-                <div ng-if="formElement.elementType === 'form'" id="{{preId}}_{{formElementIndex}}"
-                     ng-include="'/form/public/html/formViewForm.html'"
-                     ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
+            <div infinite-scroll="raiseLimit(section.formElements)" infinite-scroll-distance="0"
+                 infinite-scroll-container="$document.find('#'+!isSubSection?'section_drop_area_'+$index:'section_drop_area_child')">
+                <div ng-repeat="(sectionIndex, formElement) in section.formElements | limitTo: nbOfEltsLimit">
+                    <div ng-if="formElement.elementType === 'question'" id="question_{{preId}}_{{sectionIndex}}"
+                         ng-include="'/form/public/html/formViewQuestion.html'"
+                         ng-init="parent = section; question = formElement;"></div>
+                    <div ng-if="formElement.elementType === 'section'" id="section_{{preId}}"
+                         ng-include="'/form/public/html/formViewSection.html'"
+                         ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
+                    <div ng-if="formElement.elementType === 'form'" id="{{preId}}_{{formElementIndex}}"
+                         ng-include="'/form/public/html/formViewForm.html'"
+                         ng-init="parent = section; section = formElement;isSubSection = true; preId = preId + '_'+ sectionIndex"></div>
+                </div>
             </div>
             <div ng-if="section.formElements.length > nbOfEltsLimit" id="scrollMore">
                 <i class="fa fa-2x">Scroll down to see more ...</i>

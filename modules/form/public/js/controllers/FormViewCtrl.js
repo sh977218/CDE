@@ -57,7 +57,7 @@ angular.module('formModule').controller
             includes: ['/form/public/html/formDescription.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-                $scope.nbOfEltsLimit = 5;
+                $scope.nbOfEltsLimit = 1;
             },
             show: true
         },
@@ -204,10 +204,10 @@ angular.module('formModule').controller
         return [].find === undefined;
     };
 
-    $scope.raiseLimit = function() {
-        if ($scope.formCdeIds) {
-            if ($scope.nbOfEltsLimit < $scope.formCdeIds.length) {
-                $scope.nbOfEltsLimit += 5;
+    $scope.raiseLimit = function(formElements) {
+        if (formElements) {
+            if ($scope.nbOfEltsLimit < formElements.length) {
+                $scope.nbOfEltsLimit += 1;
             }
         }
     };
