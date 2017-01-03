@@ -21,12 +21,6 @@ var elastic = require('../../cde/node-js/elastic')
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_board);
 
-    app.get('/boards/:userId', exportShared.nocacheMiddleware, function (req, res) {
-        mongo_board.boardsByUserId(req.params.userId, function (result) {
-            res.send(result);
-        });
-    });
-
     app.get('/deBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
         mongo_board.publicBoardsByDeTinyId(req.params.tinyId, function (result) {
             res.send(result);
@@ -51,18 +45,19 @@ exports.init = function (app, daoManager) {
 
     function boardMove(req, res, moveFunc) {
         authorization.boardOwnership(req, res, req.body.boardId, function (board) {
-            var index;
-            if (board.get('pins').find(function (p, i) {
+            var index = -1;
+            board.get('pins').find(function (p, i) {
                     index = i;
                     return p.get('deTinyId') === req.body.tinyId;
-                })) {
+                });
+            if (index !== -1) {
                 moveFunc(board, index);
                 board.save(function (err) {
                     if (err) res.status(500).send();
                     else res.send();
                 });
             } else {
-                res.send();
+                res.status(400).send("Nothing to move");
             }
         });
     }
@@ -169,13 +164,10 @@ exports.init = function (app, daoManager) {
                 delete board._doc.owner.userId;
                 var idList = board.pins.map(function (p) {
                     return board.type === 'cde' ? p.deTinyId : p.formTinyId;
-                });
-                daoManager.getDao(board.type).byTinyIdList(idList, function (err, elts) {
+                }).filter(p=>p);
+                daoManager.getDao(board.type).elastic.byTinyIdList(idList, function (err, elts) {
                     if (req.query.type === "xml") {
                         res.setHeader("Content-Type", "application/xml");
-                        elts = elts.map(function (oneCde) {
-                            return exportShared.stripBsonIds(oneCde.toObject());
-                        });
                         if (board.type === 'cde') {
                             elts = cdesvc.hideProprietaryCodes(elts, req.user);
                         }

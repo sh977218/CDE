@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.common.test;
+package gov.nih.nlm.cde.test.attachments;
 
 import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.By;
