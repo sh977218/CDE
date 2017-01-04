@@ -1,5 +1,5 @@
 <div>
-    <div ng-hide="editMode" ng-switch="defFormat">
+    <div ng-hide="editMode" ng-switch="defFormat" class="wordwrap">
         <i tabindex="0" title="Edit" role="link" ng-show="isAllowed()" class="fa fa-edit"
            ng-click="clickEdit()"></i>
         <span ng-switch-default><span ng-bind="model" ng-text-truncate="model" ng-tt-threshold="500"></span></span>
