@@ -208,6 +208,8 @@ angular.module('formModule').controller
         if (formElements) {
             if ($scope.nbOfEltsLimit < formElements.length) {
                 $scope.nbOfEltsLimit += 1;
+            } else {
+                $scope.nbOfEltsLimit = Infinity;
             }
         }
     };
