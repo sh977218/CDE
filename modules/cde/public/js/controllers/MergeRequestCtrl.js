@@ -15,7 +15,8 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
         }).result.then(function (dat) {
             if (dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
                 MergeRequest.create(dat, function () {
-                    if (!dat.mergeRequest.source.object.registrationState) dat.mergeRequest.source.object.registrationState = {};
+                    if (!dat.mergeRequest.source.object.registrationState)
+                        dat.mergeRequest.source.object.registrationState = {};
                     dat.mergeRequest.source.object.registrationState.administrativeStatus = "Retire Candidate";
                     dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
                     DataElement.save(dat.mergeRequest.source.object, function (cde) {
@@ -54,12 +55,13 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     $scope.showVersioning = function(mergeRequest, callback) {
         var modalInstance = $modal.open({
             animation: false,
-            templateUrl: '/system/public/html/saveModal.html'
-            , controller: 'MergeApproveModalCtrl'
-            , resolve: {
+            templateUrl: '/system/public/html/saveModal.html',
+            controller: 'MergeApproveModalCtrl',
+            resolve: {
                 elt: function() {
                     return mergeRequest.destination.object;
-                }, user: function() {
+                },
+                user: function() {
                     return userResource.user;
                 }
             }

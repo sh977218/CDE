@@ -3,14 +3,18 @@ angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalIn
     $scope.source = cdeSource.data;
     $scope.target = cdeTarget.data;
     $scope.mergeRequest = {
-        source: {tinyId: $scope.source.tinyId, object: $scope.source}
-        , destination: {tinyId: $scope.target.tinyId, object: $scope.target}
-        , mergeFields: {
-            classifications: true
-            , ids: false
-            , naming: false
-            , properties: false            
-            , attachments: false
+        source: {tinyId: $scope.source.tinyId, object: $scope.source},
+        destination: {tinyId: $scope.target.tinyId, object: $scope.target},
+        mergeFields: {
+            classifications: true,
+            ids: false,
+            naming: false,
+            properties: false,
+            attachments: false,
+            sources: false,
+            referenceDocuments: false,
+            dataSets: false,
+            derivationRules: false
         }
     };
     $scope.cancel = function() {
