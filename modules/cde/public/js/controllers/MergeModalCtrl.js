@@ -1,5 +1,5 @@
 angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalInstance', 'cdeSource', 'cdeTarget', 'userResource',
-    function($scope, $modalInstance, cdeSource, cdeTarget, userResource) {
+    function ($scope, $modalInstance, cdeSource, cdeTarget, UserResource) {
     $scope.source = cdeSource.data;
     $scope.target = cdeTarget.data;
     $scope.mergeRequest = {
@@ -21,7 +21,12 @@ angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalIn
         $modalInstance.dismiss('cancel');
     };  
     $scope.sendMergeRequest = function() {
-        $modalInstance.close({mergeRequest:$scope.mergeRequest, recipient: $scope.target.stewardOrg.name, author: user.username, approval: $scope.approvalNecessary()});
+        $modalInstance.close({
+            mergeRequest: $scope.mergeRequest,
+            recipient: $scope.target.stewardOrg.name,
+            author: UserResource.user.username,
+            approval: $scope.approvalNecessary()
+        });
     };
     $scope.showApprovalAlert = function() {
         return $scope.approvalNecessary().fieldsRequireApproval && !$scope.approvalNecessary().ownDestinationCde;
@@ -36,8 +41,7 @@ angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalIn
             || $scope.mergeRequest.mergeFields.referenceDocuments
             || $scope.mergeRequest.mergeFields.dataSets
             || $scope.mergeRequest.mergeFields.derivationRules,
-            ownDestinationCde:
-            userResource.user.orgAdmin.concat(userResource.user.orgCurator).indexOf($scope.mergeRequest.destination.object.stewardOrg.name) > -1
+            ownDestinationCde: UserResource.user.orgAdmin.concat(UserResource.user.orgCurator).indexOf($scope.mergeRequest.destination.object.stewardOrg.name) > -1
         };
     };
 }
