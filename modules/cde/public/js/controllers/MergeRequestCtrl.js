@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('MergeRequestCtrl',
-    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource',
-        function($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel',
+        function($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel ) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         $modal.open({
@@ -9,8 +9,7 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
             controller: 'MergeModalCtrl',
             resolve: {
                 cdeSource: function() {return $http.get('/deByTinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);},
-                cdeTarget: function() {return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);},
-                user: function() {return userResource.user;}
+                cdeTarget: function() {return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);}
             }
         }).result.then(function (dat) {
             if (dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
@@ -60,9 +59,6 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
             resolve: {
                 elt: function() {
                     return mergeRequest.destination.object;
-                },
-                user: function() {
-                    return userResource.user;
                 }
             }
         });              
