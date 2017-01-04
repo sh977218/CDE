@@ -412,7 +412,7 @@ exports.init = function (app, daoManager) {
 
         var date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {
-            res.send(elts);
+            res.send(elts.map(function (e) { return {tinyId: e._id}}));
         });
     });
 

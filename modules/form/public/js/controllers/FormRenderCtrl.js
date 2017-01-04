@@ -4,6 +4,25 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.displayInstruction = false;
 
+    $scope.classColumns = function (flag) {
+        if (!flag) return '';
+        if (!$scope.selection.selectedProfile || !$scope.selection.selectedProfile.numberOfColumns) return '';
+        switch ($scope.selection.selectedProfile.numberOfColumns) {
+            case 2:
+                return 'col-sm-6';
+            case 3:
+                return 'col-sm-4';
+            case 4:
+                return 'col-sm-3';
+            case 5:
+                return 'col-sm-2-4';
+            case 6:
+                return 'col-sm-2';
+            default:
+                return '';
+        }
+    };
+
     $scope.SHOW_IF = 'Dynamic';
     $scope.FOLLOW_UP = 'Follow-up';
     $scope.setNativeRenderType = function (type) {
@@ -15,6 +34,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 $scope.formElement = undefined;
                 $scope.followForm = angular.copy($scope.elt);
                 transformFormToInline($scope.followForm);
+                preprocessValueLists($scope.followForm.formElements);
             }
             $scope.formElement = $scope.followForm;
         }
@@ -32,18 +52,19 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     $scope.selection = {};
     var setSelectedProfile = function () {
-        if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0) {
+        if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0 &&
+            $scope.elt.displayProfiles.indexOf($scope.selection.selectedProfile) === -1)
             $scope.selection.selectedProfile = $scope.elt.displayProfiles[0];
-            $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
-        } else {
-            $scope.setNativeRenderType($scope.FOLLOW_UP);
+        if (!$scope.selection.selectedProfile)
             $scope.selection.selectedProfile = {
                 name: "Default Config",
                 displayInstructions: true,
                 displayNumbering: true,
-                sectionsAsMatrix: true
+                sectionsAsMatrix: true,
+                displayType: 'Follow-up',
+                numberOfColumns: 4
             };
-        }
+        $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
     };
 
     $scope.$on('eltReloaded', function () {
@@ -52,7 +73,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     });
     setSelectedProfile();
     $scope.$on('tabGeneral', function () {
-       $scope.setNativeRenderType($scope.nativeRenderType);
+        setSelectedProfile();
     });
 
     var removeAnswers = function (formElt) {
@@ -246,6 +267,9 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
             !$scope.hasLabel(question) &&
             question.question.datatype !== 'Value List';
     };
+    $scope.isFirstInRow = function (index) {
+        return index % $scope.selection.selectedProfile.numberOfColumns == 0;
+    };
 
     function getQuestions(fe, qLabel) {
         var result = [];
@@ -376,6 +400,31 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
 
     function min(values) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
+    }
+
+    function preprocessValueLists(formElements) {
+        formElements.forEach(function (fe,i,a) {
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                preprocessValueLists(fe.formElements);
+                return;
+            }
+            if (fe.question && fe.question.answers) {
+                var index = -1;
+                fe.question.answers.forEach(function (v,i,a) {
+                    if (hasOwnRow(v) || index === -1 && (i+1 < a.length && hasOwnRow(a[i+1]) || i+1 === a.length))
+                        v.index = index = -1;
+                    else
+                        v.index = ++index;
+                    if (v.subQuestions)
+                        preprocessValueLists(v.subQuestions)
+                });
+            }
+        });
+    }
+
+    function hasOwnRow(e) {
+        if (e.subQuestions) return true;
+        return false;
     }
 
 }]);

@@ -13,28 +13,23 @@
                         ng-click="removeSection($index)">Remove</button>
             </div>
         </div>
-        <div class="row" ng-if="selection.selectedProfile.displayInstructions && formElement.instructions.value">
-            <div class="col-sm-12" ng-switch="formElement.instructions.valueFormat">
-                <span ng-switch-default class="text-muted">
-                    <span ng-bind="formElement.instructions.value"></span></span>
-                <span ng-switch-when="html">
-                    <span ng-bind-html="formElement.instructions.value"></span></span>
-            </div>
-        </div>
     </div>
-
+    <div ng-if="selection.selectedProfile.displayInstructions && formElement.instructions.value"
+         class="native-instructions" ng-switch="formElement.instructions.valueFormat">
+        <span ng-switch-default class="text-muted"><span ng-bind="formElement.instructions.value"></span></span>
+        <span ng-switch-when="html"><span ng-bind-html="formElement.instructions.value"></span></span>
+    </div>
 
     <div ng-if="selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement)"
          ng-include="'/form/public/html/formRenderSectionMatrix.html'"></div>
     <div ng-if="!(selection.selectedProfile.sectionsAsMatrix && canBeDisplayedAsMatrix(formElement))">
         <div ng-repeat="formElement in formElement.formElements track by $index"
-             ng-class="{'keep-with-previous keep-together':$index===0}" class="row">
-            <div ng-if="formElement.elementType === 'question'" class="col-sm-12 native-question"
+             ng-class="{'keep-with-previous keep-together':$index===0}">
+            <div ng-if="formElement.elementType === 'question'" class="native-question"
                  ng-include="'/form/public/html/formRenderQuestion.html'"
                  ng-init="formElements = $parent.$parent.formElement.formElements;">
             </div>
             <div ng-if="formElement.elementType === 'section' || formElement.elementType === 'form'"
-                 class="col-sm-12"
                  ng-include="'/form/public/html/formRenderSection.html'"
                  ng-init="formElements = $parent.$parent.formElement.formElements;">
             </div>
