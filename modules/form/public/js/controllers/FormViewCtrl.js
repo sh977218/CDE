@@ -602,4 +602,16 @@ angular.module('formModule').controller
         });
     };
 
+
+    $scope.prepareGoogleSpreadsheetExport = function () {
+        $modal.open({
+            animation: false,
+            templateUrl: '/form/public/html/googleSpreadsheetExportModal.html',
+            controller: 'GoogleSpreadsheetExportCtrl',
+            resolve: {
+                elt: function() {return $scope.elt;}
+            }
+        })
+    };
+
 }]);

@@ -7,7 +7,8 @@ var mongo_data_form = require('./mongo-form'),
     redCap = require('./redCapForm'),
     archiver = require('archiver'),
     async = require('async'),
-    authorization = require('../../system/node-js/authorization')
+    authorization = require('../../system/node-js/authorization'),
+    fs = require("fs");
     ;
 
 exports.findForms = function (req, res) {
@@ -87,6 +88,12 @@ function wipeRenderDisallowed (form, req, cb) {
     }
 }
 
+function getFormForGoogleSpreadsheet (form, res) {
+    fs.readFile("modules/form/public/html/nativeRenderWithFollowUp.html", "UTF-8", function (err, data) {
+        res.send(data.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>"));
+    });
+}
+
 exports.formById = function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -105,6 +112,7 @@ exports.formById = function (req, res) {
             }
             else if (req.query.type === 'xml' && req.query.subtype === 'sdc') getFormSdc(form, req, res);
             else if (req.query.type === 'xml') getFormPlainXml(form, req, res);
+            else if (req.query.type === 'googleSpreadsheet') getFormForGoogleSpreadsheet (form, res);
             else if (req.query.type && req.query.type.toLowerCase() === 'redcap') getFormRedCap(form.toObject(), res);
             else getFormJson(form, req, res);
         });

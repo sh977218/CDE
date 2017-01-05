@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <h3>Export to a Google Spreadsheet</h3>
+</div>
+<div class="modal-body">
+    <p class="text-info">This export will generate a published version of this form that will submit data to
+        one of your Google Spreadsheets. Note that the NIH CDE Repository will not have access to your spreadsheet.
+        We will never be able to recover, view or fix your spreadsheet.
+    </p>
+    <p>
+        To get started, please follow these steps:
+        <ol>
+            <li>Be sure to have a Google account, and be logged in with the account you want to use.</li>
+            <li>Make a copy of <a href="https://docs.google.com/spreadsheets/d/1sHb0298PFAWiPzQG_oQ-HJiSDHaYOnMcHA1jAwneJ5w/edit?usp=sharing">
+                this template spreadsheet</a>. This is the spreadsheet where data will be captured.
+                Go <a href="https://docs.google.com/spreadsheets/d/1sHb0298PFAWiPzQG_oQ-HJiSDHaYOnMcHA1jAwneJ5w/edit?usp=sharing">
+                    here</a>, select <b>File > Make a Copy</b>. You may name the spreadsheet anything you like.
+            </li>
+            <li>
+                Open your spreadsheet's script. In your spreadsheet, go to <b>Tools > Script Editor.</b> <br>
+            </li>
+            <li>
+                Publish your script. This will allow data submission into your script. With the script open, select
+                <b>Publish > Deploy as web app</b>.
+                <br>
+                Under <b>"Who has access to the app"</b>, if you plan to submit all the data yourself, you can choose <b>"only myself"</b>. <br>
+                If you intend for anyone with a google account to be able to submit data, then select "Anyone".<br>
+                "Anyone, even anonymous" will not be supported. Do not select this option. <br>
+                You will be prompted to allow google to publish data to that sheet. You must accept this to continue.
+            </li>
+            <li>
+                <form name="createGoogleSpreadsheetForm">
+                    Google will now give you a URL, called "Current web app URL". <label>Copy paste this URL here:
+                    <input type="url" ng-model="googleUrl" required></label>
+                    <span ng-show="createGoogleSpreadsheetForm.$invalid">Not a valid URL.</span>
+                </form>
+            </li>
+            <li>Cick "Publish my form" below and write down the final URL. This is the url you will open to start recording your data.</li>
+        </ol>
+
+    </p>
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancelCopy()" id="cancelExport">Cancel</button>
+    <button class="btn btn-success" ng-click="publishForGoogleSpreadsheet()" id="goExport"
+            ng-disabled="createGoogleSpreadsheetForm.$invalid">Publish my form.</button>
+</div>
