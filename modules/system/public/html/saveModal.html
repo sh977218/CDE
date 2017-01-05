@@ -23,8 +23,8 @@
 </div>
 <div class="modal-footer">
     <button class="btn cancel" ng-click="$dismiss('cancel')" id="cancelSaveModal" type="button">Cancel</button>
-    <button class="btn btn-warning" ng-click="$close()"
-            ng-disabled="saveForm.version.$invalid  && !saveForm.overrideVersion.$viewValue"
-            id="{{'confirmNewVersion'}}">Save</button>
+    <button class="btn btn-warning" ng-click="$close()" id="{{'confirmNewVersion'}}"
+            ng-disabled="saveForm.version.$invalid  && !saveForm.overrideVersion.$viewValue">Save
+    </button>
 </div>
 </form>
