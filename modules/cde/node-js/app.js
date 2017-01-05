@@ -289,13 +289,16 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/retireCde', function (req, res) {
+        var mergedCde = req.body.merge;
         req.params.type = "received";
-        mongo_cde.byId(req.body._id, function (err, cde) {
+        mongo_cde.byId(req.body.cde._id, function (err, cde) {
             if (err) res.status(404).send(err);
             // TODO JSHint: Thanks, looks like we wanted this rule but messed it up. Do we want the rule?
             //if (!cde.registrationState.administrativeStatus === "Retire Candidate")
             //    return res.status(409).send("CDE is not a Retire Candidate");
             cde.registrationState.registrationStatus = "Retired";
+            if (mergedCde && mergedCde.tinyId)
+                cde.changeNote = "Merged to tinyId " + mergedCde.tinyId;
             delete cde.registrationState.administrativeStatus;
             cde.save(function () {
                 res.end();
