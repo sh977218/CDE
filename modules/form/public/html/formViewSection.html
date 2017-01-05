@@ -19,37 +19,35 @@
         </div>
         <div class="row">
             <div class="col-sm-2 questionSectionLabel text-right">Instructions:</div>
-            <div class="col-sm-7 section_instruction" ng-if="canCurate && section.edit">
+            <div class="col-sm-7 section_instruction">
                 <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility"
                      model="section.instructions.value" def-format="section.instructions.valueFormat"
                      is-allowed="canCurate && section.edit" on-ok="stageElt()"></div>
             </div>
-            <div class="clear"></div>
-            <div class="row" ng-if="parent">
-                <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
-                <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
-                     ng-class="{'has-error':section.skipLogic.skipLogicError}">
-                    <input ng-disabled="!(parent.formElements.length > 1 && canCurate && section.edit)"
-                           type="text" ng-model="section.skipLogic.condition"
-                           class="form-control skipLogicCondition" ng-trim="false"
-                           ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
-                           uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
-                           typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
-                           typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
-                           typeahead-append-to-body="true"/>
-                    <span ng-bind="section.skipLogic.skipLogicError"></span>
-                </div>
+        </div>
+        <div class="row" ng-if="parent">
+            <div class="col-sm-2 questionSectionLabel text-right">Show if:</div>
+            <div class="col-sm-7" id="dd_s_skipLogic_{{$index}}"
+                 ng-class="{'has-error':section.skipLogic.skipLogicError}">
+                <input ng-disabled="!(parent.formElements.length > 1 && canCurate && section.edit)"
+                       type="text" ng-model="section.skipLogic.condition"
+                       class="form-control skipLogicCondition" ng-trim="false"
+                       ng-change="validateSkipLogic(section.skipLogic,parent.formElements)"
+                       uib-typeahead="opt for opt in getCurrentOptions($viewValue, parent.formElements, section, $parent.$index) | filter:tokens.unmatched"
+                       typeahead-min-length="0" typeahead-focus-first="false" typeahead-show-hint="true"
+                       typeahead-on-select="validateSkipLogic(section.skipLogic, parent.formElements, $item)"
+                       typeahead-append-to-body="true"/>
+                <span ng-bind="section.skipLogic.skipLogicError"></span>
             </div>
-
-            <div class="row">
-                <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
-                <div class="col-sm-2 section_cardinality">
-                    <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
-                    <select class="form-control" ng-if="canCurate && section.edit"
-                            ng-model="section.cardinality" ng-change="stageElt()"
-                            ng-options="item.value as item.label for item in cardinalityOptions">
-                    </select>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 questionSectionLabel text-right">Cardinality:</div>
+            <div class="col-sm-2 section_cardinality">
+                <span ng-if="!(canCurate && section.edit) && getCardinalityLabel(section)">{{getCardinalityLabel(section)}}</span>
+                <select class="form-control" ng-if="canCurate && section.edit"
+                        ng-model="section.cardinality" ng-change="stageElt()"
+                        ng-options="item.value as item.label for item in cardinalityOptions">
+                </select>
             </div>
         </div>
     </div>

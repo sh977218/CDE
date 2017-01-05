@@ -29,8 +29,6 @@
                         </button>
                     </div>
                 </div>
-                <div ng-repeat="pv in formElement.question.answers"
-                     ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
             </div>
             <div ng-switch-when="Number">
                 <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
@@ -45,8 +43,6 @@
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom">
                         {{uom}}</label>
                 </div>
-                <div ng-repeat="pv in formElement.question.answers"
-                     ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
             </div>
             <div ng-switch-default>
                 <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
@@ -58,9 +54,9 @@
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
                                ng-disabled="!formElement.question.editable"> {{uom}}</label>
                 </div>
-                <div ng-repeat="pv in formElement.question.answers"
-                     ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
             </div>
+            <div ng-repeat="pv in formElement.question.answers"
+                 ng-if="pv.subQuestions" ng-init="subQNonValuelist = true" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
 
             <div>
                 <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.min">Value is below min.</span>
