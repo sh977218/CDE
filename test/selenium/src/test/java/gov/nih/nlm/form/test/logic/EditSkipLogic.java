@@ -13,7 +13,7 @@ public class EditSkipLogic extends BaseFormTest {
         goToFormByName(formName);
         String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3_2");
         clickElement(By.id("description_tab"));
-        scrollToViewById("question_3_2");
+        scrollToInfiniteById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
         textPresent("Rarely", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
@@ -24,7 +24,7 @@ public class EditSkipLogic extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        scrollToViewById("question_3_2");
+        scrollToInfiniteById("question_3_2");
         textPresent("How often did you have to push yourself to get things done because of your fatigue?");
         textPresent("Never", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));
         textPresent("Rarely", By.xpath("//*[@id='question_3_2']//*[contains(@class,'answerList')]"));

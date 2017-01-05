@@ -646,21 +646,7 @@ public class NlmCdeBaseTest {
 
     protected void scrollToViewById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        for (int i = 0; i < 100; i++) {
-            try {
-                driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-                driver.findElement(By.id(id));
-                driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
-                break;
-            } catch (org.openqa.selenium.NoSuchElementException e) {}
-            try {
-                driver.findElement(By.id("scrollMore"));
-                je.executeScript("document.getElementById('scrollMore').scrollIntoView(true);");
-            } catch (org.openqa.selenium.NoSuchElementException e) {
-                break;
-            }
-        }
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(id)));
+        findElement(By.id(id));
         je.executeScript("document.getElementById('" + id + "').scrollIntoView(true);");
     }
 
