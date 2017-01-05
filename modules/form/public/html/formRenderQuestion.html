@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div ng-repeat="pv in formElement.question.answers"
-                 ng-if="pv.subQuestions" ng-init="subQNonValuelist = true" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+                 ng-if="pv.subQuestions" ng-init="subQNonValuelist=true" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
 
             <div>
                 <span ng-show="sectionLabel[formElement.question.cde.tinyId].$error.min">Value is below min.</span>
