@@ -1,6 +1,6 @@
 angular.module('cdeModule').controller('MergeRequestCtrl',
-    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel', 'userResource',
-        function($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel, userResource) {
+    ['$scope', '$uibModal', '$location', '$http', 'MergeRequest', 'DataElement', 'MergeCdes', 'isAllowedModel',
+        function($scope, $modal, $location, $http, MergeRequest, DataElement, MergeCdes, isAllowedModel ) {
     $scope.openMergeModal = function(retiredIndex) {
         $scope.retiredIndex = retiredIndex;
         $modal.open({
@@ -9,13 +9,13 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
             controller: 'MergeModalCtrl',
             resolve: {
                 cdeSource: function() {return $http.get('/deByTinyId/' + $scope.cdes[$scope.retiredIndex].tinyId);},
-                cdeTarget: function() {return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);},
-                user: function() {return userResource.user;}
+                cdeTarget: function() {return $http.get('/deByTinyId/' + $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId);}
             }
         }).result.then(function (dat) {
             if (dat.approval.fieldsRequireApproval && !dat.approval.ownDestinationCde) {
                 MergeRequest.create(dat, function () {
-                    if (!dat.mergeRequest.source.object.registrationState) dat.mergeRequest.source.object.registrationState = {};
+                    if (!dat.mergeRequest.source.object.registrationState)
+                        dat.mergeRequest.source.object.registrationState = {};
                     dat.mergeRequest.source.object.registrationState.administrativeStatus = "Retire Candidate";
                     dat.mergeRequest.source.object.registrationState.replacedBy = {tinyId: $scope.cdes[($scope.retiredIndex + 1) % 2].tinyId};
                     DataElement.save(dat.mergeRequest.source.object, function (cde) {
@@ -54,13 +54,11 @@ angular.module('cdeModule').controller('MergeRequestCtrl',
     $scope.showVersioning = function(mergeRequest, callback) {
         var modalInstance = $modal.open({
             animation: false,
-            templateUrl: '/system/public/html/saveModal.html'
-            , controller: 'MergeApproveModalCtrl'
-            , resolve: {
+            templateUrl: '/system/public/html/saveModal.html',
+            controller: 'MergeApproveModalCtrl',
+            resolve: {
                 elt: function() {
                     return mergeRequest.destination.object;
-                }, user: function() {
-                    return userResource.user;
                 }
             }
         });              
