@@ -239,12 +239,35 @@ exports.userTotalSpace = function(Model, name, callback) {
     });
 };
 
+exports.addFile = function (file, cb) {
+    gfs.findOne({md5: file.md5}, function (err, f) {
+        if (!f) {
+            var streamDescription = {
+                filename: file.filename
+                , mode: 'w'
+                , content_type: "text/javascript"
+            };
+
+            var writestream = gfs.createWriteStream(streamDescription);
+
+            writestream.on('close', function (newFile) {
+                cb(null, newFile);
+            });
+            writestream.on('error', cb);
+
+            file.stream.pipe(writestream);
+        } else {
+            cb(err, f);
+        }
+    });
+};
+
 exports.addAttachment = function(file, user, comment, elt, cb) {
 
     var linkAttachmentToAdminItem = function(attachment, elt, newFileCreated, cb) {
         elt.attachments.push(attachment);
         elt.save(function(err) {
-            if (cb) cb(attachment, newFileCreated,err);
+            if (cb) cb(attachment, newFileCreated, err);
         });
     };
 
@@ -329,7 +352,9 @@ exports.getFile = function(user, id, res) {
         }
         gfs.findOne({ _id: id}, function (err, file) {
             res.contentType(file.contentType);
-            if (file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer")) gfs.createReadStream({ _id: id }).pipe(res);
+            console.log("contentType: " + file.contentType);
+            if (!file.metadata || !file.metadata.status || file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer"))
+                gfs.createReadStream({ _id: id }).pipe(res);
             else res.status(403).send("This file has not been approved yet.");
         });
 

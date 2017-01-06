@@ -8,8 +8,10 @@ var mongo_data_form = require('./mongo-form'),
     archiver = require('archiver'),
     async = require('async'),
     authorization = require('../../system/node-js/authorization'),
-    fs = require("fs");
-    ;
+    fs = require("fs"),
+    mongo_data_system = require('../../system/node-js/mongo-data'),
+    md5 = require("md5-file")
+;
 
 exports.findForms = function (req, res) {
     mongo_data_form.findForms(req.body.criteria, function (err, forms) {
@@ -89,8 +91,51 @@ function wipeRenderDisallowed (form, req, cb) {
 }
 
 function getFormForGoogleSpreadsheet (form, res) {
-    fs.readFile("modules/form/public/html/nativeRenderWithFollowUp.html", "UTF-8", function (err, data) {
-        res.send(data.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>"));
+    fs.readFile("modules/form/public/html/nativeRenderWithFollowUp.html", "UTF-8", function (err, fileStr) {
+
+        var lines = fileStr.split("\n");
+
+        var cssFileName, jsHash;
+        lines.forEach(l => {
+             if (l.includes ("<link") && l.includes('href="/form/public/assets/css/styles-printable-')) {
+                 cssFileName = l.substring(l.indexOf('/css/') + 5,  l.indexOf('.css"') + 4);
+             }
+        });
+        var jsFileName;
+        lines.forEach(l => {
+             if (l.includes ("<script") && l.includes('src="/form/public/assets/js/vendor-printable')) {
+                 jsFileName = l.substring(l.indexOf('/js/') + 4,  l.indexOf('.js"') + 3);
+                 jsHash = jsFileName.substring(jsFileName.indexOf("printable-") + 10, jsFileName.indexOf(".js") + 3);
+             }
+        });
+
+        if (!jsFileName || !cssFileName) { // dev
+            fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>");
+            res.send(fileStr)
+        } else {
+            //Remove all CSS and JS link
+            fileStr = lines.filter(l => !l.includes("<link") && !l.includes ("<script src=")).join("\n");
+
+            fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>");
+            fs.readFile("modules/form/public/assets/css/" + cssFileName, "UTF-8", function (err, cssStr) {
+                if (err) console.log(err);
+                fileStr = fileStr.replace("<!-- ICSSH -->", "<style>" + cssStr + "</style>");
+                var filePath = "modules/form/public/assets/js/" + jsFileName
+                md5.async(filePath, function (hash) {
+                    var f = {
+                        filename: jsFileName,
+                        type: "text/javascript",
+                        stream: fs.createReadStream(filePath),
+                        md5: hash
+                    };
+                    mongo_data_system.addFile(f, function (err, newFile) {
+                        fileStr = fileStr.replace("<!-- IJSH -->", '<script src="/data/' + newFile._id + '">' + "</script>");
+                        res.send(fileStr);
+                    });
+                });
+            })
+        }
+
     });
 }
 

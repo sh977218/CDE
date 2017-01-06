@@ -1,4 +1,6 @@
-angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule']).controller('PrintCtrl',
+angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
+
+.controller('PrintCtrl',
         ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',
 
 function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
