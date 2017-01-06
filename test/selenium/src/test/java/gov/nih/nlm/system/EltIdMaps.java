@@ -14,6 +14,8 @@ public class EltIdMaps {
         eltMap.put("Brief Pain Inventory (BPI) - pain general activity interference scale", "hPzRsUF-xX5");
         eltMap.put("Classification Scheme Item Relationship Database Identifier java.lang.String", "sf-RFs39Phb");
         eltMap.put("ConceptCDE", "mkBls_Z0M");
+        eltMap.put("Common Toxicity Criteria Adverse Event Colitis Grade", "exWjxFqAU7r");
+        eltMap.put("Common Toxicity Criteria Adverse Event Hypophosphatemia Grade", "75Y5R3FH5ar");
         eltMap.put("Data source", "-URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
         eltMap.put("ExportLatest", "XkZpBf60z");
