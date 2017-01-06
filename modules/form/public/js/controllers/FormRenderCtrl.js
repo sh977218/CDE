@@ -226,6 +226,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     $scope.canBeDisplayedAsMatrix = function (section) {
         var result = true;
         var answerHash;
+        if (section && section.formElements && section.formElements.length === 0)
+            return false;
         section && section.formElements && section.formElements.forEach(function (formElem) {
             if (formElem.elementType !== 'question') {
                 return result = false;
@@ -296,28 +298,36 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
                 qs.forEach(function (match) {
                     var answer;
                     if (parentQ.question.datatype === 'Value List') {
-                        answer = parentQ.question.answers.filter(function (a) {
-                            return a.permissibleValue === match[3];
-                        });
-                        if (answer.length) answer = answer[0];
-                        if (answer) {
-                            if (!answer.subQuestions) answer.subQuestions = [];
-                            answer.subQuestions.push(fe);
+                        if (match[3] === '') {
+                            parentQ.question.answers.push({
+                                permissibleValue: createRelativeText([match[3]], match[2], true),
+                                nonValuelist: true,
+                                subQuestions: [fe]
+                            });
                             substituted = true;
+                        } else {
+                            answer = parentQ.question.answers.filter(function (a) {
+                                return a.permissibleValue === match[3];
+                            });
+                            if (answer.length) answer = answer[0];
+                            if (answer) {
+                                if (!answer.subQuestions) answer.subQuestions = [];
+                                answer.subQuestions.push(fe);
+                                substituted = true;
+                            }
                         }
                     } else {
                         if (!parentQ.question.answers) parentQ.question.answers = [];
                         var existingLogic = parentQ.question.answers.filter(function(el) {
-                            return el.valueMeaningCode === 'nonvaluelist' &&
-                                el.subQuestions.length === 1 && el.subQuestions[0] === fe;
+                            return el.nonValuelist && el.subQuestions.length === 1 && el.subQuestions[0] === fe;
                         });
                         if (existingLogic.length > 0) {
                             var existingSubQ = existingLogic[0];
                             existingSubQ.permissibleValue = existingSubQ.permissibleValue + ' or ' +
-                                createRelativeText([match[3]],match[2]);
+                                createRelativeText([match[3]], match[2], false);
                         } else {
                             parentQ.question.answers.push({
-                                permissibleValue: createRelativeText([match[3]], match[2]),
+                                permissibleValue: createRelativeText([match[3]], match[2], false),
                                 nonValuelist: true,
                                 subQuestions: [fe]
                             });
@@ -375,10 +385,15 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         return [];
     }
 
-    function createRelativeText(v, oper) {
+    function createRelativeText(v, oper, isValuelist) {
         var values = angular.copy(v);
         values.forEach(function (e, i, a) {
-           if (e === '') a[i] = 'empty';
+           if (e === '') {
+               if (isValuelist)
+                   a[i] = 'none';
+               else
+                   a[i] = 'empty';
+           }
         });
         switch (oper) {
             case '=':
