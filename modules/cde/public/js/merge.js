@@ -44,7 +44,7 @@ angular.module('CdeMerge', [])
     };
 
     service.retireSource = function(source, destination, cb) {
-        CDE.retire(source, function() {
+        CDE.retire(source, destination, function () {
             if (cb) cb();
         });
     }; 

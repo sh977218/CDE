@@ -2,9 +2,12 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+
+import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends NlmCdeBaseTest {
 
@@ -111,6 +114,25 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.xpath("(//*[contains(@id,'typeahead-')]/a)[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
+    }
+
+    protected void scrollToInfiniteById(String id) {
+        JavascriptExecutor je = (JavascriptExecutor) driver;
+        for (int i = 0; i < 100; i++) {
+            try {
+                driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+                driver.findElement(By.id(id));
+                driver.manage().timeouts().implicitlyWait(Integer.parseInt(System.getProperty("timeout")), TimeUnit.SECONDS);
+                break;
+            } catch (org.openqa.selenium.NoSuchElementException e) {}
+            try {
+                driver.findElement(By.id("scrollMore"));
+                je.executeScript("document.getElementById('scrollMore').scrollIntoView(true);");
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                break;
+            }
+        }
+        scrollToViewById(id);
     }
 
 
