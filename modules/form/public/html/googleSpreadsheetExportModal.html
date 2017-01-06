@@ -6,6 +6,7 @@
         one of your Google Spreadsheets. Note that the NIH CDE Repository will not have access to your spreadsheet.
         We will never be able to recover, view or fix your spreadsheet.
     </p>
+    <form name="createGoogleSpreadsheetForm">
     <p>
         To get started, please follow these steps:
         <ol>
@@ -28,21 +29,26 @@
                 You will be prompted to allow google to publish data to that sheet. You must accept this to continue.
             </li>
             <li>
-                <form name="createGoogleSpreadsheetForm">
-                    Google will now give you a URL, called "Current web app URL". <label>Copy paste this URL here:
-                    <input type="url" ng-model="googleUrl" required></label>
-                    <span ng-show="createGoogleSpreadsheetForm.$invalid">Not a valid URL.</span>
-                </form>
+                Google will now give you a URL, called "Current web app URL". <label>Copy paste that URL here:
+                <input type="url" ng-model="googleUrl" required></label>
+                <span ng-show="createGoogleSpreadsheetForm.$invalid">Not a valid URL.</span>
+            </li>
+            <li>
+                Your published forms will appear in your profile.
+                <label>
+                    Give your published form a name so you can find it more easily.
+                    <input type="text" required ng-model="publishedFormName">
+                </label>
             </li>
             <li>Cick "Publish my form" below and write down the final URL. This is the url you will open to start recording your data.</li>
         </ol>
-
     </p>
+    </form>
 
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancelCopy()" id="cancelExport">Cancel</button>
+    <button class="btn btn-warning" ng-click="$dismiss()" id="cancelExport">Cancel</button>
     <button class="btn btn-success" ng-click="publishForGoogleSpreadsheet()" id="goExport"
             ng-disabled="createGoogleSpreadsheetForm.$invalid">Publish my form.</button>
 </div>
