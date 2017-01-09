@@ -17,6 +17,18 @@ angular.module('cdeModule').controller('MergeModalCtrl', ['$scope', '$uibModalIn
             derivationRules: false
         }
     };
+
+    $scope.checkAllMergerFields = function () {
+        $scope.mergeRequest.mergeFields.classifications = true;
+        $scope.mergeRequest.mergeFields.ids = true;
+        $scope.mergeRequest.mergeFields.naming = true;
+        $scope.mergeRequest.mergeFields.properties = true;
+        $scope.mergeRequest.mergeFields.attachments = true;
+        $scope.mergeRequest.mergeFields.sources = true;
+        $scope.mergeRequest.mergeFields.referenceDocuments = true;
+        $scope.mergeRequest.mergeFields.dataSets = true;
+        $scope.mergeRequest.mergeFields.derivationRules = true;
+    };
     $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
     };  

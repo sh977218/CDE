@@ -11,6 +11,7 @@ public class EmptyLogic extends NlmCdeBaseTest {
         goToFormByName("Empty Logic");
 
         textPresent("If empty:", By.xpath("//div[div/div/label/span[text()='Birth date']]"));
+        textPresent("If none:", By.xpath("//div[div/div/label/span[text()='Image Acquisition Event Yes No Not Done Indicator']]"));
         textPresent("If empty:", By.xpath("//div[div/div/label/span[text()='Head injury prior number']]"));
         textPresent("If empty:", By.xpath("//div[div/div/label/span[text()='Noncompliant Reason Text']]"));
 

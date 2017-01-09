@@ -14,6 +14,7 @@ angular.module('formModule').controller
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
+    $scope.formsCtrlLoadedPromise = $q.defer();
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     $scope.deferredEltLoaded = $q.defer();
@@ -130,6 +131,16 @@ angular.module('formModule').controller
             includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
+            },
+            show: false,
+            hideable: true
+        },
+        linkedForms: {
+            heading: "Linked Forms",
+            includes: ['/cde/public/html/forms.html'],
+            select: function (thisTab) {
+                setCurrentTab(thisTab);
+                $scope.formsCtrlLoadedPromise.promise.then(function () { $scope.$broadcast('loadLinkedForms'); });
             },
             show: false,
             hideable: true
