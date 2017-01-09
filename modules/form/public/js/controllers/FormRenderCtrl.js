@@ -276,7 +276,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
     $scope.submitData = function () {
         if (window.googleScriptUrl) {
             var processedData = {};
-            processedData.sections = flattenFormSection($scope.getElt().formElements, []);
+            [processedData.sections] = flattenFormSection($scope.getElt().formElements, [], [], []);
             $http({
                 method: "POST",
                 url: window.googleScriptUrl,
@@ -460,34 +460,40 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
         return !!e.subQuestions;
     }
 
-    function flattenFormSection(formElements, section) {
-        var result = [];
-        var questions = [];
+    function flattenFormSection(formElements, section, result, questions) {
         formElements.forEach(function (fe){
-            if (fe.elementType === 'question') {
-                questions.push({'question': fe.label, 'answer': fe.question.answer, 'answerUom': fe.question.answerUom});
-                if (fe.question.answers)
-                    fe.question.answers.forEach(function (a){
-                        if (a.subQuestions)
-                            flattenFormSection(a.subQuestions, section).forEach(function (s) {
-                                result.push(s);
-                            });
-                    });
-            }
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                if (questions.length) {
-                    result.push({'section': section[section.length - 1], 'questions': questions});
-                    questions = [];
-                }
-                flattenFormSection(fe.formElements, section.concat(fe.label)).forEach(function (s) {
-                    result.push(s);
-                });
-            }
+            [result, questions] = flattenFormFe(fe, section.concat(fe.label), result, questions);
         });
+        [result, questions] = flattenFormPushQuestions(section, result, questions);
+        return [result, questions];
+    }
+    function flattenFormQuestion(fe, section, result, questions) {
+        q = {'question': fe.label, 'answer': fe.question.answer};
+        if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
+        questions.push(q);
+        fe.question.answers && fe.question.answers.forEach(function (a){
+            a.subQuestions && a.subQuestions.forEach(function (sq) {
+                [result, questions] = flattenFormFe(sq, section, result, questions);
+            });
+        });
+        return [result, questions];
+    }
+    function flattenFormFe(fe, section, result, questions) {
+        if (fe.elementType === 'question') {
+            [result, questions] = flattenFormQuestion(fe, section, result, questions);
+        }
+        if (fe.elementType === 'section' || fe.elementType === 'form') {
+            [result, questions] = flattenFormPushQuestions(section, result, questions);
+            [result, questions] = flattenFormSection(fe.formElements, section, result, questions);
+        }
+        return [result,questions];
+    }
+    function flattenFormPushQuestions(section, result, questions) {
         if (questions.length) {
             result.push({'section': section[section.length - 1], 'questions': questions});
+            questions = [];
         }
-        return result;
+        return [result, questions];
     }
 
 }]);
