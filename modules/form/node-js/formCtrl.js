@@ -94,7 +94,7 @@ function wipeRenderDisallowed (form, req, cb) {
 
 function getFormForGoogleSpreadsheet (form, req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
-        fs.readFile("modules/form/public/html/nativeRenderWithFollowUp.html", "UTF-8", function (err, fileStr) {
+        fs.readFile("modules/form/public/html/nativeRenderStandalone.html", "UTF-8", function (err, fileStr) {
             var lines = fileStr.split("\n");
             var cssFileName = null, jsHash = null;
             lines.forEach(l => {
@@ -137,7 +137,8 @@ function getFormForGoogleSpreadsheet (form, req, res) {
 
 
             if (!jsFileName || !cssFileName) { // dev
-                fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>");
+                fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" +
+                    "window.googleScriptUrl = '" + req.body.googleUrl + "';</script>");
                 storeHtmlInDb(req, res, form, fileStr);
             } else {
                 //Remove all CSS and JS link

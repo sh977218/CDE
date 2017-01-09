@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http',
-    function ($scope, $http)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'Alert',
+    function ($scope, $http, Alert)
 {
 
     $scope.displayInstruction = false;
@@ -277,7 +277,18 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http',
         if (window.googleScriptUrl) {
             var processedData = {};
             processedData.sections = flattenFormSection($scope.getElt().formElements, []);
-            $http.post(window.googleScriptUrl, processedData);
+            $http({
+                method: "POST",
+                url: window.googleScriptUrl,
+                data: JSON.stringify(processedData),
+                headers: {
+                    "Content-Type": "text/plain"
+                }
+            }).then(function (resp) {
+                Alert.addAlert("info", "Data Submitted");
+            }, function (err) {
+                Alert.addAlert("danger", "Error submitting")
+            })
         }
     };
 
@@ -446,8 +457,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http',
     }
 
     function hasOwnRow(e) {
-        if (e.subQuestions) return true;
-        return false;
+        return !!e.subQuestions;
     }
 
     function flattenFormSection(formElements, section) {
