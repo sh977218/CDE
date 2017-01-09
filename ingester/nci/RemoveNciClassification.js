@@ -20,6 +20,7 @@ DataElement.find({'classification.stewardOrg.name': 'NCI', archived: null}).exec
             })
         }, function doneAllCdes() {
             console.log('Finished all.');
+            process.exit(1);
         })
     }
 });

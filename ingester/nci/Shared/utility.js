@@ -34,7 +34,7 @@ function parseNaming(de) {
         definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
         languageCode: "EN-US",
         context: {
-            contextName: "Health",
+            contextName: "Long Name",
             acceptability: "preferred"
         }
     }];
@@ -98,6 +98,12 @@ function parseProperties(de) {
         });
     }
     return properties;
+}
+
+function parseSources(de, orgInfo) {
+    return sources = [{
+        sourceName: 'caDSR', status: de.REGISTRATIONSTATUS[0],
+    }];
 }
 
 function parseRegistrationState(de, orgInfo) {
@@ -209,10 +215,13 @@ function parseClassification(cde, org, orgInfo, de) {
             }
 
             var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
+            var extraClassification = orgInfo['extraClassifications'];
             var ctxName = csi.ClassificationScheme[0].ContextName[0];
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
-                classificationShared.classifyItem(cde, classificationOrgName, [ctxName, classificationName, classificationAllowed]);
+                var _ctxName = ctxName;
+                if (orgInfo.classificationMap) _ctxName = orgInfo.classificationMap[ctxName];
+                classificationShared.classifyItem(cde, classificationOrgName, extraClassification.concat([_ctxName, classificationName]));
                 classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName, classificationAllowed]);
             }
         });
