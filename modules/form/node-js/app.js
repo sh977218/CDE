@@ -28,6 +28,8 @@ exports.init = function (app, daoManager) {
 
     app.use("/form/shared", express.static(path.join(__dirname, '../shared')));
 
+    app.post('/publishForGoogleSpreadsheet', formCtrl.publishForGoogleSpreadsheet);
+
     app.get('/elasticSearch/form/count', function (req, res) {
         return elastic_system.nbOfForms(function (err, result) {
             res.send("" + result);

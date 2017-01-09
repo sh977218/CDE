@@ -38,7 +38,21 @@
             </table>
         </div>
     </div>
-    
+
+    <div ng-if="user.publishedForms.length > 0">
+        <h3>Your Published Forms</h3>
+        <table class="table table-striped">
+            <thead>
+                <th>Link</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="pf in user.publishedForms">
+                    <td><a ng-href="/data/{{pf.id}}" target="_blank">{{pf.name}}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <h3>CDE Viewing History</h3>
     <div id="accordionList" ng-include="'/cde/public/html/cdeAccordionList.html'" ng-init="ejsPage = 'list'; module='cde'"></div>
 

@@ -245,7 +245,7 @@ exports.addFile = function (file, cb) {
             var streamDescription = {
                 filename: file.filename
                 , mode: 'w'
-                , content_type: "text/javascript"
+                , content_type: file.type
             };
 
             var writestream = gfs.createWriteStream(streamDescription);
