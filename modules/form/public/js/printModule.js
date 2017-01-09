@@ -58,6 +58,10 @@ angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'artic
 
                 $scope.deferredEltLoaded = $q.defer();
                 var query = {formId: getUrlParameter("tinyId"), type: 'tinyId'};
+                var profileSelected = getUrlParameter("profile");
+                var defaultProfile = getUrlParameter("defaultProfile");
+                var overrideDisplayType = getUrlParameter("displayType");
+                $scope.submitForm = getUrlParameter("submit");
 
                 Form.get(query, function (form) {
                     var formCopy = angular.copy(form);
@@ -74,6 +78,21 @@ angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'artic
                         $scope.deferredEltLoaded.resolve();
                         $scope.formElements = [];
                         $scope.formElement = wholeForm;
+
+                        if (profileSelected > 0 && $scope.elt.displayProfiles.length > profileSelected)
+                            $scope.elt.displayProfiles = $scope.elt.displayProfiles[$scope.displayProfiles];
+                        if (defaultProfile || $scope.elt.displayProfiles.length === 0)
+                            $scope.elt.displayProfiles = [{
+                                name: "Default Config",
+                                displayInstructions: true,
+                                displayNumbering: true,
+                                sectionsAsMatrix: true,
+                                displayType: 'Follow-up',
+                                numberOfColumns: 4
+                            }];
+                        if ((overrideDisplayType === 'Follow-up' || overrideDisplayType === 'Dynamic') && $scope.elt.displayProfiles[0])
+                            $scope.elt.displayProfiles[0].displayType = overrideDisplayType;
+                        $scope.$broadcast('eltReloaded');
                     });
                 }, function () {
                     $scope.addAlert("danger", "Sorry, we are unable to retrieve this element.");
