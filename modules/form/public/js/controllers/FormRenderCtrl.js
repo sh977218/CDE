@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope',
-    function ($scope)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http',
+    function ($scope, $http)
 {
 
     $scope.displayInstruction = false;
@@ -273,6 +273,14 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
         return index % $scope.selection.selectedProfile.numberOfColumns == 0;
     };
 
+    $scope.submitData = function () {
+        if (window.googleScriptUrl) {
+            var processedData = {};
+            processedData.sections = flattenFormSection($scope.getElt().formElements, []);
+            $http.post(window.googleScriptUrl, processedData);
+        }
+    };
+
     function getQuestions(fe, qLabel) {
         var result = [];
         fe.forEach(function (element) {
@@ -440,6 +448,36 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope',
     function hasOwnRow(e) {
         if (e.subQuestions) return true;
         return false;
+    }
+
+    function flattenFormSection(formElements, section) {
+        var result = [];
+        var questions = [];
+        formElements.forEach(function (fe){
+            if (fe.elementType === 'question') {
+                questions.push({'question': fe.label, 'answer': fe.question.answer, 'answerUom': fe.question.answerUom});
+                if (fe.question.answers)
+                    fe.question.answers.forEach(function (a){
+                        if (a.subQuestions)
+                            flattenFormSection(a.subQuestions, section).forEach(function (s) {
+                                result.push(s);
+                            });
+                    });
+            }
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                if (questions.length) {
+                    result.push({'section': section[section.length - 1], 'questions': questions});
+                    questions = [];
+                }
+                flattenFormSection(fe.formElements, section.concat(fe.label)).forEach(function (s) {
+                    result.push(s);
+                });
+            }
+        });
+        if (questions.length) {
+            result.push({'section': section[section.length - 1], 'questions': questions});
+        }
+        return result;
     }
 
 }]);

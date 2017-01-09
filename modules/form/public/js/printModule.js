@@ -34,11 +34,15 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
             callback(form);
         });
     }
-
     $scope.deferredEltLoaded = $q.defer();
 
     var args = $location.search();
     var _id = args.tinyId?args.tinyId:args._id + "";
+    //var query = {formId: args.tinyId, type: 'tinyId'};
+    var profileSelected = args.profile;
+    var defaultProfile = args.defaultProfile;
+    var overrideDisplayType = args.displayType;
+    $scope.submitForm = args.submit;
 
     if (window.formElt) {
         _getElt = function (id, cb) {
@@ -69,8 +73,24 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
             $scope.deferredEltLoaded.resolve();
             $scope.formElements = [];
             $scope.formElement = wholeForm;
+
+            if (profileSelected > 0 && $scope.elt.displayProfiles.length > profileSelected)
+                $scope.elt.displayProfiles = $scope.elt.displayProfiles[$scope.displayProfiles];
+            if (defaultProfile || $scope.elt.displayProfiles.length === 0)
+                $scope.elt.displayProfiles = [{
+                    name: "Default Config",
+                    displayInstructions: true,
+                    displayNumbering: true,
+                    sectionsAsMatrix: true,
+                    displayType: 'Follow-up',
+                    numberOfColumns: 4
+                }];
+            if ((overrideDisplayType === 'Follow-up' || overrideDisplayType === 'Dynamic') && $scope.elt.displayProfiles[0])
+                $scope.elt.displayProfiles[0].displayType = overrideDisplayType;
+
         });
     }, function () {
         Alert.addAlert("danger", "Sorry, we are unable to retrieve this element.");
     });
 }]);
+
