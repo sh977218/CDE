@@ -53,8 +53,8 @@ angular.module('resourcesCde', ['ngResource'])
     }])
     .factory('CDE', ["$http", function ($http) {
         return {
-            retire: function (cde, cb) {
-                $http.post("/retireCde", cde).then(function (response) {
+            retire: function (cdeSrc, cdeDes, cb) {
+                $http.post("/retireCde", {cde: cdeSrc, merge: cdeDes}).then(function (response) {
                     cb(response.data);
                 });
             }

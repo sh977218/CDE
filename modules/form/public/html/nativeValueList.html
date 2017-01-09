@@ -1,6 +1,6 @@
 <fieldset ng-if="!formElement.question.multiselect">
     <div class="row">
-        <div ng-repeat="pv in answerlist" ng-class="[classColumns(pv.index !== -1), {'clear': isFirstInRow(pv.index != undefined ? pv.index : $index)}]" class="col-xs-12">
+        <div ng-repeat="pv in answerlist" ng-if="!pv.nonValuelist" ng-class="[classColumns(pv.index !== -1), {'clear': isFirstInRow(pv.index != undefined ? pv.index : $index)}]" class="col-xs-12">
             <label ng-class="{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)}"
                    class="radio-inline">
                 <input ng-model="formElement.question.answer"
@@ -8,7 +8,7 @@
                        type="radio"
                        ng-disabled="!formElement.question.editable"
                        ng-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+            <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
         </div>
     </div>
 </fieldset>
@@ -22,7 +22,7 @@
                        type="checkbox"
                        ng-disabled="!formElement.question.editable"
                        checklist-value="pv.permissibleValue"/>{{getLabel(pv)}}</label>
-            <div ng-if="pv.subQuestions" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
+            <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false" ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
         </div>
     </div>
 </div>
