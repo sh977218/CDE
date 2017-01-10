@@ -29,8 +29,8 @@
         </span>
     </span>
 </div>
-<div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragSections" id="sectionsDiv">
-    <div infinite-scroll="raiseLimit(elt.formElements)" infinite-scroll-distance="0">
+<div infinite-scroll="raiseLimit(elt.formElements)" infinite-scroll-distance="0">
+    <div ui-sortable="sortableOptionsSections" ng-model="elt.formElements" class="dragSections" id="sectionsDiv">
         <div ng-repeat="(formElementIndex, formElement) in elt.formElements | limitTo: nbOfEltsLimit">
             <div ng-if="formElement.elementType === 'question'" id=question_{{formElementIndex}}"
                  ng-include="'/form/public/html/formViewQuestion.html'"
