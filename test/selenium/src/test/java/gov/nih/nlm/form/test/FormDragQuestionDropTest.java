@@ -25,7 +25,6 @@ public class FormDragQuestionDropTest extends QuestionTest {
 
         textPresent(cdeName, By.id("question_0_0"));
 
-
         addSectionToSection(2, 1);
         addQuestionToRootSection("Smoking History Ind", 1);
         saveForm();
