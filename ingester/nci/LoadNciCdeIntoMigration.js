@@ -15,7 +15,7 @@ var classificationShared = require('../../modules/system/shared/classificationSh
 var cdeCount = 0;
 
 function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
-    var orgName = orgInfo['orgName'];
+    var orgName = orgInfo.orgName;
     var stream = MigrationNCICdeXmlModel.find({xml: orgName}).stream();
     stream.on('data', function (xml) {
         stream.pause();
@@ -105,8 +105,12 @@ function doLoadCdeIntoMigrationByOrgName(org, orgInfo, next) {
 }
 
 
-exports.loadNciCdesIntoMigrationByOrgName = function (orgName) {
-    var orgInfo = orgInfoMapping[orgName];
+exports.loadNciCdesIntoMigrationByOrgNames = function (orgNames) {
+    var orgInfos = [];
+    orgNames.forEach(function (orgName) {
+        orgInfos.push(orgInfoMapping[orgName]);
+    });
+    var orgName = orgInfos[0].stewardOrgName;
     async.series([
         function (cb) {
             MigrationDataElementModel.remove({}, function (err) {
@@ -123,10 +127,14 @@ exports.loadNciCdesIntoMigrationByOrgName = function (orgName) {
             });
         },
         function (cb) {
-            new MigrationOrgModel({name: orgName}).save(function (createOrgError, org) {
+            new MigrationOrgModel({name: orgNames}).save(function (createOrgError, org) {
                 if (createOrgError) throw createOrgError;
                 console.log('Created new org of ' + orgName + ' in migration db');
-                doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
+                async.forEachSeries(orgInfos, function (orgInfo, doneOneOrgInfo) {
+                    doLoadCdeIntoMigrationByOrgName(org, orgInfo, function () {
+                        doneOneOrgInfo();
+                    })
+                }, function doneAllOrgInfos() {
                     cb();
                 })
             });

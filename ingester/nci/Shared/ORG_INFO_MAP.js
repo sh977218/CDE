@@ -3,7 +3,6 @@ exports.map = {
         'stewardOrgName': 'NCI',
         'orgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'extraClassifications': [],
         filter: function () {
             return true;
         },
@@ -19,14 +18,10 @@ exports.map = {
     },
     'NCI-BPV': {
         'orgName': 'NCI-BPV',
-        'stewardOrgName': 'NCI',
-        'classificationOrgName': 'NCI',
-        'extraClassifications': [],
-        'classificationMap': {
-            'BBRB': 'BBRB - BPV'
-        },
-        filter: function (ctxName, classificationAllowed) {
-            return !!(ctxName === 'BBRB' && classificationAllowed === 'BPV - Tumor Biospecimen Acquisition');
+        'stewardOrgName':'NCI',
+        'classificationOrgName': 'NCI-BPV',
+        filter: function (a, b) {
+            return !!(a === 'BBRB' && b === 'BPV - Tumor Biospecimen Acquisition');
         },
         statusMapping: {
             "Preferred Standard": "Standard",
@@ -36,14 +31,10 @@ exports.map = {
     },
     'NCI-GTEx': {
         'orgName': 'NCI-GTEx',
-        'stewardOrgName': 'NCI',
-        'classificationOrgName': 'NCI',
-        'extraClassifications': [],
-        'classificationMap': {
-            'BBRB': 'BBRB - GTEx'
-        },
-        filter: function (ctxName, classificationAllowed) {
-            return !!(ctxName === 'BBRB' && classificationAllowed === 'GTEx - Postmortem Biospecimen Acquisition');
+        'stewardOrgName':'NCI',
+        'classificationOrgName': 'NCI-GTEx',
+        filter: function (a, b) {
+            return !!(a === 'BBRB' && b === 'GTEx - Postmortem Biospecimen Acquisition');
         },
         statusMapping: {
             "Preferred Standard": "Standard",

@@ -34,7 +34,7 @@ exports.addAttachment = function (elt, xml, cb) {
     mongo_data.addAttachment(
         {
             originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
-            type: "application/xml",
+            mimetype: "application/xml",
             size: origXml.length,
             stream: readable
         },

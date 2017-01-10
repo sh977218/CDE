@@ -34,7 +34,7 @@ function parseNaming(de) {
         definition: entities.decodeXML(de.PREFERREDDEFINITION[0]),
         languageCode: "EN-US",
         context: {
-            contextName: "Long Name",
+            contextName: "Health",
             acceptability: "preferred"
         }
     }];
@@ -72,19 +72,9 @@ function parseProperties(de) {
             value: de.CONTEXTNAME[0]
         },
         {
-            key: "caDSR_Datatype",
-            source: source,
-            value: de.VALUEDOMAIN[0].Datatype[0]
-        },
-        {
             key: "caDSR_Short_Name",
             source: source,
             value: de.PREFERREDNAME[0]
-        },
-        {
-            key: "caDSR_Registration_Status",
-            source: source,
-            value: (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty"
         }
     ];
     if (de.ALTERNATENAMELIST[0] && de.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
@@ -100,15 +90,10 @@ function parseProperties(de) {
     return properties;
 }
 
-function parseSources(de, orgInfo) {
-    return sources = [{
-        sourceName: 'caDSR', status: de.REGISTRATIONSTATUS[0],
-    }];
-}
-
 function parseRegistrationState(de, orgInfo) {
     var registrationState = {
-        registrationStatus: orgInfo.statusMapping[de.REGISTRATIONSTATUS[0]],
+//        registrationStatus: orgInfo.statusMapping[de.REGISTRATIONSTATUS[0]],
+        registrationStatus: 'Qualified',
         administrativeStatus: de.WORKFLOWSTATUS[0]
     };
     if (!registrationState.registrationStatus) {
@@ -215,13 +200,10 @@ function parseClassification(cde, org, orgInfo, de) {
             }
 
             var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
-            var extraClassification = orgInfo['extraClassifications'];
             var ctxName = csi.ClassificationScheme[0].ContextName[0];
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
-                var _ctxName = ctxName;
-                if (orgInfo.classificationMap) _ctxName = orgInfo.classificationMap[ctxName];
-                classificationShared.classifyItem(cde, classificationOrgName, extraClassification.concat([_ctxName, classificationName]));
+                classificationShared.classifyItem(cde, classificationOrgName, [ctxName, classificationName, classificationAllowed]);
                 classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName, classificationAllowed]);
             }
         });
