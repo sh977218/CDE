@@ -10,14 +10,14 @@ public abstract class PermissibleValueTest extends CommonTest {
         String tabName = "permissibleValueDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        findElement(By.linkText("Permissible Values")).click();
+        clickElement(By.linkText("Permissible Values"));
         textPresent("cs3");
         reorderIconTest(tabName);
-        findElement(By.xpath(prefix + "moveDown-0" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveDown-0" + postfix));
         textPresent("pv1", By.xpath(prefix + "pv-1" + postfix));
-        findElement(By.xpath(prefix + "moveUp-2" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveUp-2" + postfix));
         textPresent("pv3", By.xpath(prefix + "pv-1" + postfix));
-        findElement(By.xpath(prefix + "moveTop-1" + postfix)).click();
+        clickElement(By.xpath(prefix + "moveTop-1" + postfix));
         textPresent("pv3", By.xpath(prefix + "pv-0" + postfix));
     }
 }
