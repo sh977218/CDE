@@ -199,7 +199,7 @@ function parseClassification(cde, org, orgInfo, de) {
                 throw e;
             }
 
-            var classificationOrgName = JSON.parse(JSON.stringify(orgInfo['classificationOrgName']));
+            var classificationOrgName = 'NCI';
             var ctxName = csi.ClassificationScheme[0].ContextName[0];
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
@@ -286,7 +286,7 @@ function parseValueDomain(cde, de) {
 exports.createNewCde = function (de, org, orgInfo, sourceObj) {
     if (de.toObject) de = de.toObject();
     sourceObj['datatype'] = de.VALUEDOMAIN[0].Datatype[0];
-    sourceObj['registrationStatus'] = (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "Empty";
+    sourceObj['registrationStatus'] = (de.REGISTRATIONSTATUS[0] && de.REGISTRATIONSTATUS[0].length > 0) ? de.REGISTRATIONSTATUS[0] : "";
     var naming = parseNaming(de);
     var ids = parseIds(de);
     var properties = parseProperties(de);

@@ -127,7 +127,7 @@ exports.loadNciCdesIntoMigrationByOrgNames = function (orgNames) {
             });
         },
         function (cb) {
-            new MigrationOrgModel({name: orgNames}).save(function (createOrgError, org) {
+            new MigrationOrgModel({name: 'NCI'}).save(function (createOrgError, org) {
                 if (createOrgError) throw createOrgError;
                 console.log('Created new org of ' + orgName + ' in migration db');
                 async.forEachSeries(orgInfos, function (orgInfo, doneOneOrgInfo) {
