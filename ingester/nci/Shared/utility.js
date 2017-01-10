@@ -201,10 +201,14 @@ function parseClassification(cde, org, orgInfo, de) {
 
             var classificationOrgName = 'NCI';
             var ctxName = csi.ClassificationScheme[0].ContextName[0];
+            var _ctxName = ctxName;
+            if (orgInfo.classificationMap) {
+                _ctxName = orgInfo.classificationMap[orgInfo.orgName];
+            }
             var classificationAllowed = csi.ClassificationSchemeItemName[0];
             if (orgInfo.filter(ctxName, classificationAllowed)) {
-                classificationShared.classifyItem(cde, classificationOrgName, [ctxName, classificationName, classificationAllowed]);
-                classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName, classificationAllowed]);
+                classificationShared.classifyItem(cde, classificationOrgName, [_ctxName, classificationName]);
+                classificationShared.addCategory({elements: org.classifications}, [ctxName, classificationName]);
             }
         });
     }
