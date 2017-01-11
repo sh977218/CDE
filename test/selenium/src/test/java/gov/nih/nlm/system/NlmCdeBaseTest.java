@@ -636,6 +636,16 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
+    protected void scrollUpBy(int y) {
+        String jsScroll = "window.scrollBy(0,-" + Integer.toString(y) + ");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
+    protected void scrollDownBy(int y) {
+        String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");

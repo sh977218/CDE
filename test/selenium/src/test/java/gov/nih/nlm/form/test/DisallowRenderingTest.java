@@ -11,7 +11,6 @@ public class DisallowRenderingTest extends BaseFormTest {
         textNotPresent("In general, would you say");
         clickElement(By.id("description_tab"));
         textPresent("Rendering is disabled for this form");
-        clickElement(By.id("more_tab"));
         clickElement(By.id("cdeList_tab"));
         textPresent("Rendering is disabled for this form");
 

@@ -31,6 +31,7 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         clickElement(By.id("createReferenceDocument"));
         textPresent("Reference document Added");
 
+        clickElement(By.id("referenceDocument_tab"));
         textPresent(id);
         textPresent(title);
         textPresent(uri);

@@ -1,6 +1,5 @@
 package gov.nih.nlm.common.test;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
@@ -20,6 +19,7 @@ public abstract class PropertyTest extends CommonTest {
         closeAlert();
         modalGone();
 
+        clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         findElement(By.xpath("//option[.='propKey1']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey1");
@@ -29,6 +29,7 @@ public abstract class PropertyTest extends CommonTest {
         closeAlert();
         modalGone();
 
+        clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         findElement(By.xpath("//option[.='propKey2']"));
         new Select(findElement(By.id("newPropertyKey"))).selectByVisibleText("propKey2");
@@ -38,6 +39,7 @@ public abstract class PropertyTest extends CommonTest {
         closeAlert();
         modalGone();
 
+        clickElement(By.id("properties_tab"));
         clickElement(By.id("removeProperty-1"));
         clickElement(By.id("confirmRemoveProperty-1"));
         textPresent("Property Removed");
@@ -72,8 +74,8 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
-        hangon(1);
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+        clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));
@@ -87,6 +89,8 @@ public abstract class PropertyTest extends CommonTest {
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Confirm')]"));
+
+        clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::span[text()='More']"));
         textPresent("516-543, DOI:10.1002/jmri.22259");
         textNotPresent("More", By.xpath("//*[@id='dd_prop_value_0']/div"));

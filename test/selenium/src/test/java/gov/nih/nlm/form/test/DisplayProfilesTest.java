@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
@@ -24,8 +23,8 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         WebElement slider = findElement(By.id("nc_" + index));
         Actions slide = new Actions(driver);
-        int width = slider.getSize().getWidth()/6;
-        slide.moveToElement(slider, width*(numberOfColumns-1)+width/2, slider.getSize().getHeight()/2).click().build().perform();
+        int width = slider.getSize().getWidth() / 6;
+        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
     }
 
     @Test
@@ -34,7 +33,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
 
-        clickElement(By.partialLinkText("Display Profile:"));
+        clickElement(By.id("displayProfiles_tab"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1);
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1);
