@@ -326,13 +326,11 @@ public class NlmCdeBaseTest {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
-            textPresent("More...");
             textPresent(name);
         } else {
             try {
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
-                textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
             } catch (Exception e) {
@@ -340,7 +338,6 @@ public class NlmCdeBaseTest {
                 hangon(1);
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
-                textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
             }
