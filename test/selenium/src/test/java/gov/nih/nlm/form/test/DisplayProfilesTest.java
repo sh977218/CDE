@@ -10,7 +10,8 @@ import org.testng.annotations.Test;
 public class DisplayProfilesTest extends BaseFormTest {
 
     private void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions, boolean numbering, String dispType, int numberOfColumns) {
-        findElement(By.id("addDisplayProfile")).click();
+        textPresent("Add Profile");
+        clickElement(By.id("addDisplayProfile"));
         clickElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//i[@title='Edit']"));
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//div[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
@@ -52,38 +53,31 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
-        textPresent("Display Profile:");
-        textPresent("1", By.xpath("//table"));
-        textPresent("2", By.xpath("//table"));
-        textPresent("3", By.xpath("//table"));
-        textPresent("4", By.xpath("//table"));
-        textPresent("5", By.xpath("//table"));
-        Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
+        textPresent("I felt annoyed");
+        textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
+        textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("Matrix No Values");
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.xpath("//table//input[@type='radio']")).size(), 25);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values");
         hangon(1);
-        assertNoElt(By.xpath("//table//input[@type='radio']"));
+        assertNoElt(By.xpath("//*[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']"));
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        Assert.assertTrue(
-                findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Never')]]")).getLocation().y + 8 <
-                        findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Rarely')]]")).getLocation().y
+        Assert.assertTrue(findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Never')]]")).getLocation().y + 8 <
+                findElement(By.xpath("//*[@id='I was irritated more than people knew_0']//*[text()[contains(., 'Rarely')]]")).getLocation().y
         );
 
         new Select(driver.findElement(By.id("select_display_profile"))).selectByVisibleText("No Matrix No Values Wider");
         hangon(1);
-        Assert.assertEquals(
-                findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
+        Assert.assertEquals(findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Never']")).getLocation().y,
                 findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
         );
-
-
         clickElement(By.id("displayProfiles_tab"));
 
         for (int i = 0; i < 4; i++) {
@@ -92,7 +86,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         }
 
         saveForm();
-        clickElement(By.linkText("General Details"));
+        clickElement(By.id("general_tab"));
         textPresent("Display Profile:");
     }
 
