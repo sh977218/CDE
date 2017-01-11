@@ -166,8 +166,8 @@ angular.module('cdeModule').controller('DEViewCtrl',
             select: function () {
                 setCurrentTab();
                 if ($scope.elt.history && $scope.elt.history.length > 0) {
-                    $http.get('/priorcdes/' + $scope.elt._id).success(function (result) {
-                        $scope.priorCdes = result.reverse();
+                    $http.get('/priorcdes/' + $scope.elt._id).then(function onSuccess(response) {
+                        $scope.priorCdes = response.data.reverse();
                         $scope.priorCdes.splice(0, 0, $scope.elt);
                     });
                 }
@@ -268,10 +268,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 $scope.tabs.more.select();
                 $scope.tabs[route.tab].active = true;
             }
-            $http.get('/esRecord/' + de.tinyId).success(function (response) {
+            $http.get('/esRecord/' + de.tinyId).then(function onSuccess(response) {
                 $scope.elt.flatMeshSimpleTrees = [];
-                if (response._source.flatMeshSimpleTrees) {
-                    response._source.flatMeshSimpleTrees.forEach(function (t) {
+                if (response.data._source.flatMeshSimpleTrees) {
+                    response.data._source.flatMeshSimpleTrees.forEach(function (t) {
                         if ($scope.elt.flatMeshSimpleTrees.indexOf(t.split(";").pop()) === -1) $scope.elt.flatMeshSimpleTrees.push(t.split(";").pop());
                     });
                 }
@@ -296,10 +296,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             }
         };
         $http.post('/mail/messages/new', message)
-            .success(function() {
+            .then(function onSuccess() {
                 $scope.addAlert("success", "Notification sent.");
             })
-            .error(function() {
+            .catch(function onError() {
                 $scope.addAlert("danger", "Unable to notify user. ");
             });
     };
@@ -406,22 +406,12 @@ angular.module('cdeModule').controller('DEViewCtrl',
         var dec = $scope.elt.dataElementConcept;
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac) {
             $scope.vsacValueSet = [];
-            $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).
-             error(function(data, status) {
-                if (status === 404) {
-                   $scope.addAlert("warning", "Invalid VSAC OID");
-                   $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
-                } else {
-                   $scope.addAlert("danger", "Error quering VSAC");
-                   $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
-                }
-             }).
-             success(function(data) {
-                if (!data.error && data["ns0:RetrieveValueSetResponse"]) {
-                    $scope.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
-                    $scope.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
-                    for (var i = 0; i < data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
-                        $scope.vsacValueSet.push(data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
+            $http({method: "GET", url: "/vsacBridge/" + dec.conceptualDomain.vsac.id}).then(function onSuccess(response) {
+                if (!response.data.error && response.data["ns0:RetrieveValueSetResponse"]) {
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.name = response.data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].displayName;
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.version = response.data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['$'].version;
+                    for (var i = 0; i < response.data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                        $scope.vsacValueSet.push(response.data['ns0:RetrieveValueSetResponse']['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$']);
                     }
                     if ($scope.vsacValueSet.length < 50 || $scope.elt.valueDomain.permissibleValues < 50) {
                         $scope.validatePvWithVsac();
@@ -433,8 +423,15 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 } else {
                     $scope.addAlert("Error: No data retrieved from VSAC.");
                 }
-             })
-             ;
+            }).catch(function onError(response) {
+                if (response.status === 404) {
+                    $scope.addAlert("warning", "Invalid VSAC OID");
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
+                } else {
+                    $scope.addAlert("danger", "Error quering VSAC");
+                    $scope.elt.dataElementConcept.conceptualDomain.vsac.id = "";
+                }
+            });
         }
         $scope.canLinkPvFunc();
     };

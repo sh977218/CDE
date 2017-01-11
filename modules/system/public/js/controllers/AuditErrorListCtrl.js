@@ -6,8 +6,12 @@ angular.module('systemModule').controller('AuditErrorListCtrl', ['$scope', '$htt
         $scope.itemsPerPage = 50;
 
     function fetchErrors(skip, limit, cb) {
-        $http.post($scope.api, {skip: skip, limit: limit, excludeOrigin: $scope.excludeFilters}).success(function (result) {
-            $scope.records = result;
+        $http.post($scope.api, {
+            skip: skip,
+            limit: limit,
+            excludeOrigin: $scope.excludeFilters
+        }).then(function onSuccess(response) {
+            $scope.records = response.data;
             if (cb) cb();
         });
     }

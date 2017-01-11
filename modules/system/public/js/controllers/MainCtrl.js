@@ -122,8 +122,8 @@ angular.module('systemModule').controller('MainCtrl',
 
             $scope.checkMail = function () {
                 if (userResource.user) {
-                    $http.get('/mailStatus').success(function (data) {
-                        if (data.count > 0) $scope.userHasMail = true;
+                    $http.get('/mailStatus').then(function onSuccess(response) {
+                        if (response.data.count > 0) $scope.userHasMail = true;
                     });
                 }
             };

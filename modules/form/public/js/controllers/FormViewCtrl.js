@@ -566,10 +566,10 @@ angular.module('formModule').controller
                 board: selectedBoard,
                 formTinyId: $scope.elt.tinyId
             };
-            $http.post('/pinFormCdes', data).success(function () {
+            $http.post('/pinFormCdes', data).then(function onSuccess() {
                 $scope.addAlert("success", "All elements pinned.");
                 ElasticBoard.loadMyBoards(filter);
-            }).error(function () {
+            }).catch(function onError() {
                 $scope.addAlert("danger", "Not all elements were not pinned!");
             });
         });

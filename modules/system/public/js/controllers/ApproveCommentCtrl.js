@@ -6,23 +6,23 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
             commentId: msg.typeCommentApproval.comment.commentId,
             replyIndex: msg.typeCommentApproval.comment.replyIndex
         })
-            .success(function(data) {
-                $scope.addAlert("success", data);
+            .then(function onSuccess(response) {
+                $scope.addAlert("success", response.data);
                 $scope.archiveMessage(msg);
-            }).
-            error(function(data) {
-                $scope.addAlert("danger", data);
+            })
+            .catch(function onError(response) {
+                $scope.addAlert("danger", response.data);
             });
     };
     
     $scope.authorizeUser = function(msg){  
         var request = {username: msg.author.name, role: "CommentAuthor"};
         $http.post('/addUserRole', request)
-            .success(function(data) {
-                $scope.addAlert("success", data);
+            .then(function onSuccess(response) {
+                $scope.addAlert("success", response.data);
             })
-            .error(function(data) {
-                $scope.addAlert("danger", data);
+            .catch(function onError(response) {
+                $scope.addAlert("danger", response.data);
             });
     };
     
@@ -39,12 +39,11 @@ angular.module('systemModule').controller('ApproveCommentCtrl', ['$scope', '$htt
         $http.post('/comments/decline', {
             commentId: msg.typeCommentApproval.comment.commentId,
             replyIndex: msg.typeCommentApproval.comment.replyIndex
-        }).success(function(data) {
-            $scope.addAlert("success", data);
+        }).then(function onSuccess(response) {
+            $scope.addAlert("success", response.data);
             $scope.archiveMessage(msg);
-        }).
-        error(function(data) {
-            $scope.addAlert("danger", data);
+        }).catch(function onError(response) {
+            $scope.addAlert("danger", response.data);
         });
     };
 

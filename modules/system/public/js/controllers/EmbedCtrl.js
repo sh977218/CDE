@@ -10,8 +10,8 @@ angular.module('systemModule').controller('EmbedCtrl', ["$scope", "OrgHelpers", 
 
     function reloadEmbeds()  {
             $scope.myOrgs.forEach(function(o) {
-            $http.get('/embeds/' + encodeURIComponent(o)).success(function(res) {
-                $scope.embeds[o] = res;
+            $http.get('/embeds/' + encodeURIComponent(o)).then(function onSuccess(response) {
+                $scope.embeds[o] = response.data;
             });
         });
     }
@@ -20,19 +20,20 @@ angular.module('systemModule').controller('EmbedCtrl', ["$scope", "OrgHelpers", 
 
     $scope.save = function() {
         $http.post('/embed', $scope.selection)
-            .success(function(result) {
-                if (!$scope.selection._id) $scope.selection._id = result._id;
+            .then(function onSuccess(response) {
+                if (!$scope.selection._id) $scope.selection._id = response.data._id;
                 delete $scope.selection;
                 $scope.previewOn = false;
                 Alert.addAlert("success", "Saved.");
-            }).error(function() {
+            })
+            .catch(function onError() {
                 Alert.addAlert('danger', "There was an issue saving this record. ");
-        });
+            });
     };
 
     $scope.cancel = function() {
-        $http.get('/embeds/' + encodeURIComponent($scope.selection.org)).success(function(res) {
-            $scope.embeds[$scope.selection.org] = res;
+        $http.get('/embeds/' + encodeURIComponent($scope.selection.org)).then(function onSuccess(response) {
+            $scope.embeds[$scope.selection.org] = response.data;
             delete $scope.selection;
             $scope.previewOn = false;
         });
@@ -58,7 +59,7 @@ angular.module('systemModule').controller('EmbedCtrl', ["$scope", "OrgHelpers", 
     };
 
     $scope.remove = function(e) {
-        $http['delete']('/embed/' + e._id).success(function() {
+        $http['delete']('/embed/' + e._id).then(function onSuccess() {
             Alert.addAlert("success", "Removed");
             reloadEmbeds();
         });
