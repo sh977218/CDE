@@ -26,7 +26,7 @@ public class ImportVsacValuesTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
-        scrollDownBy(50);
+        scrollDownBy(200);
         hangon(2);
         clickElement(By.id("pvRemove-0"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
