@@ -6,8 +6,7 @@
         one of your Google Spreadsheets. Note that the NIH CDE Repository will not have access to your spreadsheet.
         We will never be able to recover, view or fix your spreadsheet.
     </p>
-    <form name="createGoogleSpreadsheetForm">
-    <p>
+    <form name="createGoogleSpreadsheetForm" class="form-horizontal">
         To get started, please follow these steps:
         <ol>
             <li>Be sure to have a Google account, and be logged in with the account you want to use.</li>
@@ -23,26 +22,25 @@
                 Publish your script. This will allow data submission into your script. With the script open, select
                 <b>Publish > Deploy as web app</b>.
                 <br>
-                Under <b>"Who has access to the app"</b>, if you plan to submit all the data yourself, you can choose <b>"only myself"</b>. <br>
-                If you intend for anyone with a google account to be able to submit data, then select "Anyone".<br>
-                "Anyone, even anonymous" will not be supported. Do not select this option. <br>
+                While all options under <b>"Who has access to the app"</b> are supported, it is recommended to select
+                <b>"Only Myself"</b> to avoid giving anyone ability to add rows to your spreadsheet.
                 You will be prompted to allow google to publish data to that sheet. You must accept this to continue.
             </li>
             <li>
-                Google will now give you a URL, called "Current web app URL". <label>Copy paste that URL here:
-                <input type="url" ng-model="googleUrl" required></label>
-                <span ng-show="createGoogleSpreadsheetForm.$invalid">Not a valid URL.</span>
+                Google will now give you a URL, called "Current web app URL".
+                <label>Copy paste that URL here:
+                <input class="form-control" type="url" name="googleUrl" ng-model="googleUrl" required></label><br>
+                <span ng-show="createGoogleSpreadsheetForm.googleUrl.$invalid">Not a valid URL.</span>
             </li>
             <li>
                 Your published forms will appear in your profile.
                 <label>
                     Give your published form a name so you can find it more easily.
-                    <input type="text" required ng-model="publishedFormName">
+                    <input class="form-control" type="text" required ng-model="publishedFormName">
                 </label>
             </li>
             <li>Cick "Publish my form" below and write down the final URL. This is the url you will open to start recording your data.</li>
         </ol>
-    </p>
     </form>
 
 
