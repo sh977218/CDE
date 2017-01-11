@@ -1,10 +1,20 @@
-<dl class="dl-horizontal">
-    <dt tabindex="0" ng-show="elt.imported">Last import:</dt>
-    <dd tabindex="0" ng-show="elt.imported">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    <dt tabindex="0" ng-show="elt.created">Created:</dt>
-    <dd tabindex="0" ng-show="elt.created">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    <dt tabindex="0" id="dt_updated" ng-show="elt.updated">Updated:</dt>
-    <dd tabindex="0" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    <dt tabindex="0" id="dt_createdBy" ng-show="elt.createdBy">Created By:</dt>
-    <dd tabindex="0" id="dd_createdBy">{{elt.createdBy.username}}</dd>
-</dl>
+<div class="row" ng-if="elt.imported">
+    <div class="col-sm-5 questionSectionLabel text-right">Last import:</div>
+    <div class="col-sm-7">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}
+    </div>
+</div>
+<div class="row" ng-if="elt.created">
+    <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
+    <div class="col-sm-7">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
+    </div>
+</div>
+<div class="row" ng-if="elt.updated">
+    <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
+    <div class="col-sm-7" id="dd_updated">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+    </div>
+</div>
+<div class="row" ng-if="elt.createdBy">
+    <div class="col-sm-5 questionSectionLabel text-right">Created By:</div>
+    <div class="col-sm-7" id="dd_createdBy">{{elt.createdBy.username}}
+    </div>
+</div>

@@ -1,14 +1,13 @@
-<!-- TODO odd controller -->
-<div ng-controller="PermissibleValuesCtrl" class="row">
-    <div class="col-md-6">
-        <h4 tabindex="0">General Details</h4>
-        <dl class="dl-horizontal">
-            <dt tabindex="0">Name:</dt>
-            <dd tabindex="0" id="dd_general_name" itemprop="name">
-                {{elt.naming[0].designation}}
-            </dd>
-            <dt tabindex="0">Steward:</dt>
-            <dd tabindex="0" id="dd_general_steward">
+
+<h4 tabindex="0">General Details</h4>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
+    <div class="col-sm-7" id="dd_general_name" itemprop="name">{{elt.naming[0].designation}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
+    <div class="col-sm-7" id="dd_general_steward">
                 <span ng-show="editDtMode">
                     <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name"
                             ng-options="myOrg for myOrg in myOrgs"></select>
@@ -22,56 +21,47 @@
                     <a uib-tooltip-html="orgDetailsInfoHtml" tooltip-popup-delay="500" tooltip-placement="right"
                        tooltip-append-to-body="true" id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
                 </span>
-            </dd>
-            <dt tabindex="0">Definition:</dt>
-            <dd tabindex="0" id="dd_def" itemprop="description">
-                <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition"
-                     is-allowed="false" def-format="elt.naming[0].definitionFormat"></div>
-            </dd>
-            <dt tabindex="0">Used By:</dt>
-            <dd tabindex="0" id="dd_usedBy">
-            <span ng-switch="elt.classification.length > 0">
-                <span ng-switch-when="false">None</span>
-                <span ng-switch-default>
-                    <span ng-repeat="ub in elt.usedBy">{{ub}} </span>
-                </span>
-            </span>
-            </dd>
-            <span ng-show="elt.origin">
-                <dt tabindex="0">Origin:</dt>
-                <dd tabindex="0">
-                    <div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"
-                         on-ok="stageElt(elt)"></div>
-                </dd>
-            </span>
-            <dt tabindex="0" ng-show="elt.source">Source:</dt>
-            <dd tabindex="0" id="cdeSource">{{elt.source}}</dd>
-            <dt tabindex="0" id="dt_status">Status:</dt>
-            <dd tabindex="0" id="dd_status">
-                {{elt.registrationState.registrationStatus}}
-            </dd>
-            <dt tabindex="0" ng-show="elt.views">Views:</dt>
-            <dd tabindex="0" id="dd_views">{{elt.views}}</dd>
-            <dt tabindex="0">SDC View:</dt>
-            <dd tabindex="0">
-                <a ng-href="/#/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
-                    <i class="fa fa-share-square-o"></i> SDC View</a>
-            </dd>
-        </dl>
-
-        <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
-        <div ng-include="'/system/public/html/sources.html'"></div>
     </div>
-
-    <div class="col-md-6">
-        <h4>Topics</h4>
-        <info>Topics are <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are mapped
-            to <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.</info>
-        <ul>
-            <li ng-repeat="t in elt.flatMeshSimpleTrees | orderBy:t" >{{t}} <br></li>
-
-        </ul>
+</div>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right">Definition:</div>
+    <div class="col-sm-7" id="dd_def" itemprop="description">
+        <div inline-area-edit inline-area-visibility="inlineAreaEditVisibility" model="elt.naming[0].definition"
+             is-allowed="false" def-format="elt.naming[0].definitionFormat"></div>
     </div>
-
-
+</div>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right">Used By:</div>
+    <div class="col-sm-7" id="dd_usedBy">
+        <div ng-if="elt.classification.length > 0">
+            <span ng-repeat="ub in elt.usedBy">{{ub}} </span>
+        </div>
+        <div ng-if="!elt.classification.length > 0">
+            <span>None</span>
+        </div>
+    </div>
+</div>
+<div class="row" ng-if="elt.origin">
+    <div class="col-sm-5 questionSectionLabel text-right">Origin:</div>
+    <div class="col-sm-7">
+        <div inline-edit id="origin" model="elt.origin" is-allowed="canCurate"
+             on-ok="stageElt(elt)"></div>
+    </div>
+</div>
+<div class="row" ng-if="elt.views">
+    <div class="col-sm-5 questionSectionLabel text-right">Views:</div>
+    <div class="col-sm-7" id="dd_views">{{elt.views}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right">SDC View:</div>
+    <div class="col-sm-7">
+        <a ng-href="/#/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
+            <i class="fa fa-share-square-o"></i> SDC View</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5 questionSectionLabel text-right"></div>
+    <div class="col-sm-7">
+    </div>
 </div>
