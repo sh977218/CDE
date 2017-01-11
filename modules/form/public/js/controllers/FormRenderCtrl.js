@@ -70,14 +70,24 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         $scope.setNativeRenderType($scope.selection.selectedProfile.displayType);
     };
 
+    $scope.createSubmitMapping = function () {
+        if (window.googleScriptUrl) {
+            $scope.mapping = {};
+            $scope.mapping.sections = flattenForm($scope.elt.formElements);
+        }
+    };
+
     $scope.$on('eltReloaded', function () {
+        $scope.createSubmitMapping();
         delete $scope.followForm;
         setSelectedProfile();
     });
-    setSelectedProfile();
     $scope.$on('tabGeneral', function () {
+        $scope.createSubmitMapping();
         setSelectedProfile();
     });
+    $scope.createSubmitMapping();
+    setSelectedProfile();
 
     var removeAnswers = function (formElt) {
         if (formElt.question) delete formElt.question.answer;
@@ -445,10 +455,15 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     }
 
     function flattenForm(formElements) {
+        var last_id = 0;
         var result = [];
         var questions = [];
         flattenFormSection(formElements, []);
         return result;
+
+        function createId() {
+            return ++last_id;
+        }
 
         function flattenFormSection(formElements, section) {
             formElements.forEach(function (fe) {
@@ -458,7 +473,8 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         }
 
         function flattenFormQuestion(fe, section) {
-            q = {'question': fe.label, 'answer': fe.question.answer};
+            fe.questionId = createId();
+            q = {'question': fe.label, 'name': fe.questionId};
             if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
             questions.push(q);
             fe.question.answers && fe.question.answers.forEach(function (a) {

@@ -19,7 +19,7 @@
                 <div class="input-group">
                     <input class="form-control" uib-datepicker-popup="MM/dd/yyyy"
                            datepicker-options="formElement.question.dateOptions"
-                           is-open="formElement.question.opened"
+                           is-open="formElement.question.opened" name="{{formElement.questionId}}"
                            type="text" ng-required="formElement.question.required" alt-input-formats="['yyyy']"
                            ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"
                     />
@@ -34,26 +34,27 @@
             <div ng-switch-when="Number">
                 <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
                     <input type="number" class="form-control" ng-required="formElement.question.required"
-                           ng-model="formElement.question.answer" name="{{formElement.question.cde.tinyId}}"
+                           ng-model="formElement.question.answer" name="{{formElement.questionId}}"
                            min="{{formElement.question.datatypeNumber.minValue}}"
                            max="{{formElement.question.datatypeNumber.maxValue}}"
                            ng-disabled="!formElement.question.editable"
                     />
                     <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                            ng-repeat="uom in formElement.question.uoms">
-                        <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom">
-                        {{uom}}</label>
+                        <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
+                               name="{{formElement.questionId + '_uom'}}">{{uom}}</label>
                 </div>
             </div>
             <div ng-switch-default>
                 <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
                     <input type="text" class="form-control" ng-required="formElement.question.required"
-                           ng-model="formElement.question.answer" name=""
+                           ng-model="formElement.question.answer" name="{{formElement.questionId}}"
                            ng-disabled="!formElement.question.editable"
                     />
                     <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                            ng-repeat="uom in formElement.question.uoms">
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"
+                               name="{{formElement.questionId + '_uom'}}"
                                ng-disabled="!formElement.question.editable"> {{uom}}</label>
                 </div>
             </div>

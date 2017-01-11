@@ -66,6 +66,7 @@
 			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
 				 ng-include="'/form/public/html/formRenderSection.html'"></div>
 			<input type="hidden" value="{{formUrl}}" name="formUrl">
+			<input type="hidden" name="mapping" ng-value="mapping">
 			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
 					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" >
         </form>
