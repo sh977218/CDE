@@ -43,7 +43,6 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         textPresent("More Like This");
         textPresent(viewing);
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         clickElement(By.id("saveRegStatus"));
