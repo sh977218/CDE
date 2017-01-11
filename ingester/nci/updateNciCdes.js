@@ -147,7 +147,7 @@ function processCde(existingCde, migrationCde, xml, cb) {
         newDe._id = existingCde._id;
         newDe.attachments = [];
         try {
-            mongo_cde.update(newDe, {username: "BatchLoader"}, function (updateError, thisDe) {
+            mongo_cde.update(newDe, {username: "batchLoader"}, function (updateError, thisDe) {
                 if (updateError) throw updateError;
                 else {
                     updateShare.addAttachment(thisDe, xml, function () {
