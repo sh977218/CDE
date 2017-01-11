@@ -274,23 +274,22 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
     };
 
     $scope.submitData = function () {
-        //if (window.googleScriptUrl) {
-        //    var processedData = {};
-        //    processedData.sections = flattenFormSection($scope.getElt().formElements, []);
-        //    $scope.aggregatedData = processedData;
-        //    //$http({
-        //    //    method: "POST",
-        //    //    url: window.googleScriptUrl,
-        //    //    data: JSON.stringify(processedData),
-        //    //    headers: {
-        //    //        "Content-Type": "text/plain"
-        //    //    }
-        //    //}).then(function (resp) {
-        //    //    Alert.addAlert("info", "Data Submitted");
-        //    //}, function (err) {
-        //    //    Alert.addAlert("danger", "Error submitting")
-        //    //})
-        //}
+        if (window.googleScriptUrl) {
+            var processedData = {};
+            processedData.sections = flattenForm($scope.getElt().formElements);
+            $http({
+                method: "POST",
+                url: window.googleScriptUrl,
+                data: JSON.stringify(processedData),
+                headers: {
+                    "Content-Type": "text/plain"
+                }
+            }).then(function () {
+                Alert.addAlert("info", "Data Submitted");
+            }, function () {
+                Alert.addAlert("danger", "Error submitting")
+            })
+        }
     };
 
     function getQuestions(fe, qLabel) {
@@ -438,7 +437,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
     }
 
     function preprocessValueLists(formElements) {
-        formElements.forEach(function (fe,i,a) {
+        formElements.forEach(function (fe) {
             if (fe.elementType === 'section' || fe.elementType === 'form') {
                 preprocessValueLists(fe.formElements);
                 return;
@@ -461,7 +460,47 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
         return !!e.subQuestions;
     }
 
+    function flattenForm(formElements) {
+        var result = [];
+        var questions = [];
+        flattenFormSection(formElements, []);
+        return result;
 
+        function flattenFormSection(formElements, section) {
+            formElements.forEach(function (fe) {
+                flattenFormFe(fe, section.concat(fe.label));
+            });
+            flattenFormPushQuestions(section);
+        }
+
+        function flattenFormQuestion(fe, section) {
+            q = {'question': fe.label, 'answer': fe.question.answer};
+            if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
+            questions.push(q);
+            fe.question.answers && fe.question.answers.forEach(function (a) {
+                a.subQuestions && a.subQuestions.forEach(function (sq) {
+                    flattenFormFe(sq, section);
+                });
+            });
+        }
+
+        function flattenFormFe(fe, section) {
+            if (fe.elementType === 'question') {
+                flattenFormQuestion(fe, section);
+            }
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                flattenFormPushQuestions(section);
+                flattenFormSection(fe.formElements, section);
+            }
+        }
+
+        function flattenFormPushQuestions(section) {
+            if (questions.length) {
+                result.push({'section': section[section.length - 1], 'questions': questions});
+                questions = [];
+            }
+        }
+    }
 
 }]);
 
