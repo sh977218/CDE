@@ -1,1 +1,1 @@
-require('./LoadNciCdeIntoMigration').loadNciCdesIntoMigrationByOrgName('NCI');
+require('./LoadNciCdeIntoMigration').loadNciCdesIntoMigrationByOrgNames(['NCI']);
