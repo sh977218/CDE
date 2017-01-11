@@ -41,7 +41,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
         showAllTabs();
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");

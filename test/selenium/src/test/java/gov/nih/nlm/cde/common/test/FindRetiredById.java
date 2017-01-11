@@ -10,7 +10,6 @@ public class FindRetiredById extends NlmCdeBaseTest {
     private void changeStatusAndCheckVisibility() {
         String url = driver.getCurrentUrl();
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");

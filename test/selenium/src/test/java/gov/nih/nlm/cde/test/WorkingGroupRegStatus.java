@@ -17,7 +17,6 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
         goToCdeByName("WG Test CDE");
         showAllTabs();
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
         for (WebElement option : options) {
