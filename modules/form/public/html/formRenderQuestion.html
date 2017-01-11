@@ -21,7 +21,8 @@
                            datepicker-options="formElement.question.dateOptions"
                            is-open="formElement.question.opened"
                            type="text" ng-required="formElement.question.required" alt-input-formats="['yyyy']"
-                           ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"/>
+                           ng-model="formElement.question.answer" ng-disabled="!formElement.question.editable"
+                    />
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default"
                                 ng-click="formElement.question.opened = true">
@@ -48,7 +49,8 @@
                 <div ng-class="{'input-group': formElement.question.uoms.length > 0}">
                     <input type="text" class="form-control" ng-required="formElement.question.required"
                            ng-model="formElement.question.answer" name=""
-                           ng-disabled="!formElement.question.editable"/>
+                           ng-disabled="!formElement.question.editable"
+                    />
                     <label class="input-group-addon" ng-if="formElement.question.uoms.length > 0"
                            ng-repeat="uom in formElement.question.uoms">
                         <input type="radio" ng-model="formElement.question.answerUom" ng-value="uom"

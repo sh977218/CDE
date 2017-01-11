@@ -55,7 +55,9 @@
 <div ng-controller="PrintCtrl" style="max-width: 1000px;margin: 0 auto">
     <div ng-if="elt" ng-controller="FormRenderCtrl">
         <h2 class="ng-cloak">{{elt.naming[0].designation}}</h2>
-        <form name="sectionLabel" role="form" class="form-horizontal">
+        <form name="sectionLabel" role="form" class="form-horizontal"
+			  action="https://script.google.com/macros/s/AKfycbwSiPwirD2yfzAdHLw_VuiTWZ984CH7MUimO99MKt-RjjPyCOC_/exec"
+			  method="post">
 			<div ng-view ng-if="!elt">
 				<h2 class="text-center mt20">Loading...</h2>
 			</div>
@@ -63,8 +65,10 @@
                  ng-include="'/form/public/html/formRenderSection.html'"></div>
 			<div ng-if="nativeRenderType === FOLLOW_UP && followForm"
 				 ng-include="'/form/public/html/formRenderSection.html'"></div>
-			<button class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm" ng-click="submitData()"
-					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold">Submit</button>
+			<input type="hidden" value="123" name="testInput">
+			<input type="hidden" value="{{aggregatedData}}" name="aggregatedInput">
+			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
+					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" >
         </form>
 	</div>
 </div>

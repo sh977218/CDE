@@ -1,9 +1,8 @@
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
 
 .controller('PrintCtrl',
-        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',
-
-function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
+        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert', '$timeout',
+function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert, $timeout) {
     function fetchWholeForm(form, callback) {
         var maxDepth = 8;
         var depth = 0;
@@ -57,6 +56,45 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
             });
         }
     }
+
+
+    function flattenFormSection(formElements, section) {
+        var result = [];
+        var questions = [];
+        formElements.forEach(function (fe){
+            if (fe.elementType === 'question') {
+                questions.push({'question': fe.label, 'answer': fe.question.answer, 'answerUom': fe.question.answerUom});
+                if (fe.question.answers)
+                    fe.question.answers.forEach(function (a){
+                        if (a.subQuestions)
+                            flattenFormSection(a.subQuestions, section).forEach(function (s) {
+                                result.push(s);
+                            });
+                    });
+            }
+            if (fe.elementType === 'section' || fe.elementType === 'form') {
+                if (questions.length) {
+                    result.push({'section': section[section.length - 1], 'questions': questions});
+                    questions = [];
+                }
+                flattenFormSection(fe.formElements, section.concat(fe.label)).forEach(function (s) {
+                    result.push(s);
+                });
+            }
+        });
+        if (questions.length) {
+            result.push({'section': section[section.length - 1], 'questions': questions});
+        }
+        return result;
+    }
+
+        $scope.dataChanged = function () {
+            $timeout(function() {
+                $scope.aggregatedData = JSON.stringify({
+                    sections: flattenFormSection($scope.elt.formElements, [])
+                });
+            });
+        };
 
     _getElt(_id , function (form) {
         var formCopy = angular.copy(form);

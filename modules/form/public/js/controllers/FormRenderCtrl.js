@@ -274,22 +274,23 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
     };
 
     $scope.submitData = function () {
-        if (window.googleScriptUrl) {
-            var processedData = {};
-            processedData.sections = flattenFormSection($scope.getElt().formElements, []);
-            $http({
-                method: "POST",
-                url: window.googleScriptUrl,
-                data: JSON.stringify(processedData),
-                headers: {
-                    "Content-Type": "text/plain"
-                }
-            }).then(function (resp) {
-                Alert.addAlert("info", "Data Submitted");
-            }, function (err) {
-                Alert.addAlert("danger", "Error submitting")
-            })
-        }
+        //if (window.googleScriptUrl) {
+        //    var processedData = {};
+        //    processedData.sections = flattenFormSection($scope.getElt().formElements, []);
+        //    $scope.aggregatedData = processedData;
+        //    //$http({
+        //    //    method: "POST",
+        //    //    url: window.googleScriptUrl,
+        //    //    data: JSON.stringify(processedData),
+        //    //    headers: {
+        //    //        "Content-Type": "text/plain"
+        //    //    }
+        //    //}).then(function (resp) {
+        //    //    Alert.addAlert("info", "Data Submitted");
+        //    //}, function (err) {
+        //    //    Alert.addAlert("danger", "Error submitting")
+        //    //})
+        //}
     };
 
     function getQuestions(fe, qLabel) {
@@ -460,35 +461,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
         return !!e.subQuestions;
     }
 
-    function flattenFormSection(formElements, section) {
-        var result = [];
-        var questions = [];
-        formElements.forEach(function (fe){
-            if (fe.elementType === 'question') {
-                questions.push({'question': fe.label, 'answer': fe.question.answer, 'answerUom': fe.question.answerUom});
-                if (fe.question.answers)
-                    fe.question.answers.forEach(function (a){
-                        if (a.subQuestions)
-                            flattenFormSection(a.subQuestions, section).forEach(function (s) {
-                                result.push(s);
-                            });
-                    });
-            }
-            if (fe.elementType === 'section' || fe.elementType === 'form') {
-                if (questions.length) {
-                    result.push({'section': section[section.length - 1], 'questions': questions});
-                    questions = [];
-                }
-                flattenFormSection(fe.formElements, section.concat(fe.label)).forEach(function (s) {
-                    result.push(s);
-                });
-            }
-        });
-        if (questions.length) {
-            result.push({'section': section[section.length - 1], 'questions': questions});
-        }
-        return result;
-    }
+
 
 }]);
 
