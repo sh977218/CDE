@@ -6,8 +6,6 @@ var xml2js = require('xml2js'),
     classificationShared = require('../modules/system/shared/classificationShared')
     ;
 
-var user = {username: 'BatchLoader'};
-
 exports.findEltIdVersion = function (elt, source) {
     var idVersions = [];
     if (!elt.ids || elt.ids.length === 0) {
@@ -34,7 +32,7 @@ exports.addAttachment = function (elt, xml, cb) {
     mongo_data.addAttachment(
         {
             originalname: elt.ids[0].id + "v" + elt.ids[0].version + ".xml",
-            type: "application/xml",
+            mimetype: "application/xml",
             size: origXml.length,
             stream: readable
         },
