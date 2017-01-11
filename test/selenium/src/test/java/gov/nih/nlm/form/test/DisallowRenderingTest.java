@@ -30,7 +30,6 @@ public class DisallowRenderingTest extends BaseFormTest {
         textPresent("In general, would you say");
         clickElement(By.id("description_tab"));
         textPresent("In general, would you say");
-        clickElement(By.id("more_tab"));
         clickElement(By.id("cdeList_tab"));
         textPresent("36-item Short Form Health Survey (SF-36) - Bodily pain score");
     }
