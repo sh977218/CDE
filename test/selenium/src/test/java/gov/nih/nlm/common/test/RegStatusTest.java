@@ -12,7 +12,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
@@ -39,7 +39,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
@@ -59,7 +59,7 @@ public abstract class RegStatusTest extends CommonTest {
             goToEltByName(eltName);
         }
         textPresent("Recorded");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Recorded");
         textPresent("09/15/2013");
@@ -72,7 +72,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
@@ -92,7 +92,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));

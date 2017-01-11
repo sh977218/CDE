@@ -21,7 +21,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         textPresent("java.lang.Date");
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("java.lang.Date");
@@ -45,7 +45,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#textMaxLength .fa-check"));
         newCdeVersion();
 
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("789", By.xpath("//*[@id='historyCompareLeft_Text']"));
@@ -74,7 +74,7 @@ public class ValueDomainTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("123", By.xpath("//*[@id='historyCompareLeft_Data Type Text']//*[contains(@class,'minLength')]"));

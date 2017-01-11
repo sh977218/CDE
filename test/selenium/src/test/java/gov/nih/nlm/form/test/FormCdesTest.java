@@ -9,7 +9,7 @@ public class FormCdesTest extends BaseFormTest {
     public void formCdes() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Addenbrooke's Cognitive Examination Revised (ACE-R)");
-        showAllTabs();
+
         clickElement(By.id("cdeList_tab"));
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - fluency sub score");
         textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score");

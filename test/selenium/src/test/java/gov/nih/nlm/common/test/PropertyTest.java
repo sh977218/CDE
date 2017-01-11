@@ -9,7 +9,7 @@ public abstract class PropertyTest extends CommonTest {
     public void addRemoveProperty(String eltName, String status) {
         mustBeLoggedInAs("testAdmin", password);
         goToEltByName(eltName, status);
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         findElement(By.xpath("//option[.='propKey0']"));
@@ -44,7 +44,7 @@ public abstract class PropertyTest extends CommonTest {
         closeAlert();
 
         goToEltByName(eltName, status);
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         textPresent("propKey0");
         textPresent("propKey2");
@@ -56,7 +56,7 @@ public abstract class PropertyTest extends CommonTest {
 
     public void richText(String eltName, String status) {
         goToEltByName(eltName, status);
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[@uib-btn-radio=\"'html'\"]"));
@@ -68,7 +68,7 @@ public abstract class PropertyTest extends CommonTest {
     public void truncateRichText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Rich Text')]"));
@@ -82,7 +82,7 @@ public abstract class PropertyTest extends CommonTest {
     public void truncatePlainText(String eltName) {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName(eltName, null);
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::i[contains(@class,'fa fa-edit')]"));
         clickElement(By.xpath("//*[@id='dd_prop_value_2']/descendant::button[contains(text(),'Plain Text')]"));
@@ -99,7 +99,7 @@ public abstract class PropertyTest extends CommonTest {
         String tabName = "propertiesDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         textPresent("Add Property");
         reorderIconTest(tabName);

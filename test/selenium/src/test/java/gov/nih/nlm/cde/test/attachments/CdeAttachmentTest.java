@@ -12,20 +12,20 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("attachments_tab"));
         textNotPresent("Upload more files");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         addAttachment("glass.jpg");
         checkAttachmentNotReviewed();
         reviewAttachment("glass.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         setAttachmentDefault();
         mustBeLoggedOut();
 //        hangon(5);
@@ -34,12 +34,12 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         checkAttachmentReviewed("glass.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         removeAttachment("glass.jpg");
     }
 

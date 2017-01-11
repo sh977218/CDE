@@ -26,7 +26,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#numberMaxValue .fa-check"));
         newCdeVersion();
 
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("123", By.xpath("//*[@id='historyCompareLeft_Number']"));
@@ -45,7 +45,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("789", By.xpath("//*[@id='historyCompareLeft_Data Type Number']//*[contains(@class,'minValue')]"));

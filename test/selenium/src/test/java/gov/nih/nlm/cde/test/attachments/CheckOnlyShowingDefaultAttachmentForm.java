@@ -17,7 +17,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
 
-        showAllTabs();
+
         addAttachment("defaultAttachmentForForm.jpg");
         try {
             textPresent("This attachment cannot be dowloaded because it is pending approval.");
@@ -25,7 +25,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
             // redo because sometimes mock does not work
             goToFormByName(formName);
 
-            showAllTabs();
+
             addAttachment("defaultAttachmentForForm.jpg");
             textPresent("This attachment cannot be dowloaded because it is pending approval.");
         }
@@ -33,11 +33,11 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        showAllTabs();
+
         setAttachmentDefault();
 
         goToFormByName(formName);
-        showAllTabs();
+
         addAttachment("nonDefault.jpg");
 
         openFormInList(formName);

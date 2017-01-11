@@ -24,7 +24,7 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         clickElement(By.cssSelector("#dateFormat .fa-check"));
         newCdeVersion();
 
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Date", By.xpath("//*[@id='historyCompareLeft_Date']"));
@@ -40,7 +40,7 @@ public class ValueDomainDateDatatype extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("format2", By.xpath("//*[@id='historyCompareLeft_Data Type Date']//*[contains(@class,'format')]"));

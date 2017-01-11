@@ -17,7 +17,7 @@ public abstract class ReferenceDocumentTest extends CommonTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToElt(eltName);
-        showAllTabs();
+
         clickElement(By.id("referenceDocument_tab"));
         clickElement(By.id("addReferenceDocument"));
         textPresent("Add New Reference Document");
@@ -51,7 +51,7 @@ public abstract class ReferenceDocumentTest extends CommonTest {
         String tabName = "referenceDocumentsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        showAllTabs();
+
         clickElement(By.id("referenceDocument_tab"));
         textPresent("Language Code:");
         reorderIconTest(tabName);

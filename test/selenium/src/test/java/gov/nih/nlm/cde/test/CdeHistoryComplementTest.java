@@ -16,7 +16,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         String oldStatus = "Qualified";
         goToCdeByName(cdeName);
 
-        showAllTabs();
+
         clickElement(By.id("naming_tab"));
         clickElement(By.id("addNamePair"));
         findElement(By.xpath("//label[text()='Name']/following-sibling::input")).sendKeys("Alternative Name 1");
@@ -41,7 +41,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         textPresent("Code ID 1", By.xpath("//*[@id='historyCompareLeft_Data Element Concepts_0_0']//div[@data-title='originId']"));
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.xpath("//*[@id='editStatus']"));
@@ -63,7 +63,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         clickElement(By.id("createId"));
         modalGone();
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Origin 1", By.xpath("//*//*[@id='historyCompareLeft_Identifiers_0_1']//*[@data-title='source']"));

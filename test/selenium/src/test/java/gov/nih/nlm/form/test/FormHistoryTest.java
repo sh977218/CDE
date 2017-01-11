@@ -13,7 +13,7 @@ public class FormHistoryTest extends BaseFormTest {
         String newFormDef = "this is new form def";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
         Assert.assertEquals(2, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());
@@ -28,7 +28,7 @@ public class FormHistoryTest extends BaseFormTest {
         saveForm();
 
         goToFormByName(formName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         textPresent("List of previous versions");
         Assert.assertEquals(3, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr")).size());

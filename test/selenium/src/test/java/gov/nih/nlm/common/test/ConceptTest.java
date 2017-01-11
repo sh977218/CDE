@@ -11,7 +11,7 @@ public abstract class ConceptTest extends CommonTest {
         String tabName = "conceptsDiv";
         String prefix = "//div[@id='" + tabName + "']//div//*[@id='";
         String postfix = "']";
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
         textPresent("Data Element");
         reorderIconTest(tabName);

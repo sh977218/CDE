@@ -809,12 +809,6 @@ public class NlmCdeBaseTest {
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
     }
 
-    protected void showAllTabs() {
-        textPresent("More...");
-        clickElement(By.id("more_tab"));
-        textNotPresent("More...");
-    }
-
     protected void loadDefaultSettings() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("loadDefaultSettings"));

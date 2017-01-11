@@ -9,7 +9,7 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
     @Test
     public void linkedForms() {
         goToCdeByName("Psychiatric history clinical depression past year indicator");
-        showAllTabs();
+
         clickElement(By.id("forms_tab"));
         textPresent("Medical History");
         textPresent("There is 1 form that uses this CDE.");

@@ -22,7 +22,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         String newPropertyConceptId = "Prop_CODE_111";
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
 
         clickElement(By.id("addConcept"));
@@ -45,7 +45,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
         textPresent(newDataElementConceptId);
         textPresent(newObjectClassConceptId);
@@ -70,7 +70,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Patient Photograph Malignant Neoplasm Assessment", By.xpath("//*[@id='historyCompareRight_Data Element Concepts_0_1']//*[@data-title='name']"));

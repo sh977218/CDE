@@ -11,7 +11,7 @@ public class MaliciousAttachment  extends BaseAttachmentTest {
     private void tryAgain(int ttl) {
         if (ttl == 0) Assert.fail("Fail to recognize virus");
 
-        showAllTabs();
+
         clickElement(By.id("attachments_tab"));
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("$(\"input[type='file']\").show();");

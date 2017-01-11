@@ -12,7 +12,7 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String cdeName = "Noncompliant Reason Text";
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));

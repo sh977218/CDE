@@ -84,7 +84,7 @@ public class DisplayProfilesTest extends BaseFormTest {
                 findElement(By.xpath("//div[div/div/label/span[text()='I was irritated more than people knew']]//label[text()='Always']")).getLocation().y
         );
 
-        showAllTabs();
+
         clickElement(By.id("displayProfiles_tab"));
 
         for (int i = 0; i < 4; i++) {

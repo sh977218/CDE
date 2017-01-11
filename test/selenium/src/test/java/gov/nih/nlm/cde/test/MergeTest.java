@@ -56,7 +56,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Cancer Related Risks");
         clickElement(By.linkText("Naming"));
         textPresent("Free-text field to capture another method used to help stop smoking that is not already specified or mentioned.");
-        showAllTabs();
+
         clickElement(By.linkText("Identifiers"));
         textPresent("3279225");
     }
@@ -77,7 +77,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
         clickElement(By.id("classification_tab"));
         textPresent("Common Terminology Criteria for Adverse Events v3.0");
-        showAllTabs();
+
         clickElement(By.id("ids_tab"));
         textPresent("2005490");
         clickElement(By.id("properties_tab"));
@@ -90,7 +90,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Biomarker Gene Staining Method Score");
 
         goToCdeByName("Common Toxicity Criteria Adverse Event Colitis Grade");
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         textPresent("Merged to tinyId 75Y5R3FH5ar");
     }

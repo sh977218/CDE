@@ -10,7 +10,7 @@ public class Compare2Test extends NlmCdeBaseTest {
     @Test
     public void compareMeWithMlt() {
         goToCdeByName("Common Toxicity Criteria Adverse Event Iron Excess Grade");
-        showAllTabs();
+
         clickElement(By.id("mlt_tab"));
         clickElement(By.id("addToQuickBoard"));
         textPresent("Added to QuickBoard");
