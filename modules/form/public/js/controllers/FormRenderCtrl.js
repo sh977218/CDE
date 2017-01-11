@@ -1,8 +1,10 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'Alert',
-    function ($scope, $http, Alert)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location',
+    function ($scope, $location)
 {
 
     $scope.displayInstruction = false;
+
+    $scope.formUrl = $location.absUrl();
 
     $scope.classColumns = function (flag) {
         if (!flag) return '';
@@ -41,6 +43,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
         if ($scope.nativeRenderType === $scope.SHOW_IF)
             $scope.formElement = $scope.elt;
     };
+
     $scope.getElt = function () {
         switch ($scope.nativeRenderType) {
             case $scope.SHOW_IF:
@@ -271,25 +274,6 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$http', 'A
     };
     $scope.isFirstInRow = function (index) {
         return index % $scope.selection.selectedProfile.numberOfColumns == 0;
-    };
-
-    $scope.submitData = function () {
-        if (window.googleScriptUrl) {
-            var processedData = {};
-            processedData.sections = flattenForm($scope.getElt().formElements);
-            $http({
-                method: "POST",
-                url: window.googleScriptUrl,
-                data: JSON.stringify(processedData),
-                headers: {
-                    "Content-Type": "text/plain"
-                }
-            }).then(function () {
-                Alert.addAlert("info", "Data Submitted");
-            }, function () {
-                Alert.addAlert("danger", "Error submitting")
-            })
-        }
     };
 
     function getQuestions(fe, qLabel) {
