@@ -1,10 +1,9 @@
 package gov.nih.nlm.cde.test.boards;
 
 import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class BoardManagement3Test extends BoardTest {
+public class EditBoardTest extends BoardTest {
 
     @Test
     public void editBoard() {
@@ -18,22 +17,6 @@ public class BoardManagement3Test extends BoardTest {
         closeAlert();
         driver.navigate().refresh();
         textPresent("-- Desc Edited");
-    }
-
-    @Test
-    public void searchBoard() {
-        mustBeLoggedInAs(boardSearchUser_username, password);
-        String pubBlood = "Public Blood Board";
-
-        gotoPublicBoards();
-
-        findElement(By.name("search")).sendKeys("Blood");
-        clickElement(By.id("search.submit"));
-
-        textPresent(pubBlood);
-
-        textNotPresent("Smoking");
-        textNotPresent("Private");
     }
 
 }

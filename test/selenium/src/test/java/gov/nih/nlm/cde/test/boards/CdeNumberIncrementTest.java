@@ -5,23 +5,10 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class BoardManagement4Test extends BoardTest {
+public class CdeNumberIncrementTest extends BoardTest {
 
     @Test
-    public void removeBoard() {
-        mustBeLoggedInAs(boardUser, password);
-        String boardName = "Remove me board";
-        gotoMyBoards();
-        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'removeBoard-')]"));
-        textPresent("Confirm Delete");
-        clickElement(By.xpath("//*[@data-id='boardDiv_" + boardName + "']//*[contains(@id,'confirmRemove-')]"));
-        textPresent("Done");
-        closeAlert();
-        textNotPresent(boardName);
-    }
-
-    @Test
-    public void cdeNumbIncrement() {
+    public void cdeNumberIncrement() {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Number Increment Board";
         gotoMyBoards();
@@ -53,16 +40,4 @@ public class BoardManagement4Test extends BoardTest {
         Assert.assertEquals(1, num);
     }
 
-    @Test
-    public void renameBoard() {
-        mustBeLoggedInAs(boardUser, password);
-        String boardName = "Cerebral Palsy";
-        gotoMyBoards();
-        clickElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//i"));
-        textPresent("Confirm");
-        findElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//input")).sendKeys(" NEW");
-        clickElement(By.xpath("//*[@id='viewBoard_Cerebral Palsy']//button[contains(text(),'Confirm')]"));
-        closeAlert();
-        textPresent(boardName + " NEW");
-    }
 }
