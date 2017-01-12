@@ -83,12 +83,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab(thisTab);
             }
         },
-        status: {
-            heading: "Status", includes: ['/system/public/html/status.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
         referenceDocument: {
             heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
@@ -106,12 +100,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
         },
         ids: {
             heading: "Identifiers", includes: ['/system/public/html/identifiers.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        boards: {
-            heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
             }
