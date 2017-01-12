@@ -110,13 +110,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab(thisTab);
             }
         },
-        forms: {
-            heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
-            select: function () {
-                setCurrentTab();
-                $scope.formsCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadLinkedForms');});
-            }
-        },
         boards: {
             heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
             select: function (thisTab) {
