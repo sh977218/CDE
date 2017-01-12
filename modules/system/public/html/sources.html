@@ -1,15 +1,28 @@
-<fieldset ng-repeat="eltSource in elt.sources" class="welcomeSearchFieldset">
+<fieldset ng-repeat="eltSource in elt.sources" class="cdeFieldset" id="sourcesDiv">
     <legend>Source: {{eltSource.sourceName}}</legend>
-    <dl class="dl-horizontal">
-        <dt tabindex="0">Name:</dt>
-        <dd tabindex="0">{{eltSource.sourceName}}</dd>
-        <dt tabindex="0">Created:</dt>
-        <dd tabindex="0">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        <dt tabindex="0">Updated:</dt>
-        <dd tabindex="0">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        <dt tabindex="0">Registration Status:</dt>
-        <dd tabindex="0" id="dd_createdBy">{{eltSource.registrationStatus}}</dd>
-        <dt tabindex="0">Datatype:</dt>
-        <dd tabindex="0">{{eltSource.datatype}}</dd>
-    </dl>
+    <div class="row" ng-if="eltSource.sourceName">
+        <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
+        <div class="col-sm-7">{{eltSource.sourceName}}
+        </div>
+    </div>
+    <div class="row" ng-if="eltSource.created">
+        <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
+        <div class="col-sm-7">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" ng-if="eltSource.updated">
+        <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
+        <div class="col-sm-7">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}
+        </div>
+    </div>
+    <div class="row" ng-if="eltSource.registrationStatus">
+        <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
+        <div class="col-sm-7" id="dd_createdBy">{{eltSource.registrationStatus}}
+        </div>
+    </div>
+    <div class="row" ng-if="eltSource.datatype">
+        <div class="col-sm-5 questionSectionLabel text-right">Datatype:</div>
+        <div class="col-sm-7">{{eltSource.datatype}}
+        </div>
+    </div>
 </fieldset>
