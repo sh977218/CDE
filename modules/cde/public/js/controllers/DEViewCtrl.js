@@ -472,6 +472,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     TourContent.steps = [
         {
+            element: "#discussBtn",
+            title: "Discussions",
+            content: "This button allow users to post comments on any given CDEs. ",
+            placement: "bottom"
+        },
+        {
+            element: "#copyCdeBtn",
+            title: "Copy",
+            content: "This button can make a copy of this CDE.",
+            placement: "bottom"
+        },
+        {
             element: "#general_tab",
             title: "General Details",
             content: "This section shows an overview of the CDE attributes."
@@ -483,16 +495,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "Click here to see what type of value are allowed by this CDE."
         },
         {
-            element: "#dd_valueType",
-            placement: "top",
-            title: "Value Type",
-            content: "If the value type is 'Value List', then this CDE accepts values from a list. Date, free text, integer are other possibilities. "
-        },
-        {
-            element: "#naming_tab"
-            , title: "Names"
-            , placement: "bottom"
-            , content: "Any CDE may have multiple names, often given within a particular context."
+            element: "#naming_tab",
+            title: "Names",
+            placement: "bottom",
+            content: "Any CDE may have multiple names, often given within a particular context."
         },
         {
             element: "#classification_tab",
@@ -505,12 +511,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             title: "Concepts",
             placement: "bottom",
             content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC."
-        },
-        {
-            element: "#status_tab",
-            title: "Status",
-            placement: "bottom",
-            content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
         },
         {
             element: "#referenceDocument_tab",
@@ -531,39 +531,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here."
         },
         {
-            element: "#forms_tab",
-            title: "Forms",
-            placement: "bottom",
-            content: "If a the CDE is used in a Form, it will be displayed here. "
-        },
-        {
-            element: "#discussions_tab",
-            title: "Discussions",
-            content: "In this section, registered users are able to post comments on any given CDEs. ",
-            placement: "bottom"
-        },
-        {
-            element: "#boards_tab",
-            title: "Boards",
-            content: "If a CDE is used in a public board, the board will be shown in this section.",
-            placement: "bottom"
-        },
-        {
             element: "#attachments_tab",
             title: "Attachments",
             content: "If a file is attached to a CDE, it can be view or downloaded here.",
-            placement: "bottom"
-        },
-        {
-            element: "#derivationRules_tab",
-            title: "Derivation Rules",
-            content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
-            placement: "bottom"
-        },
-        {
-            element: "#mlt_tab",
-            title: "More Like This",
-            content: "This section lists CDEs that are most similar to the CDE currently viewed.",
             placement: "bottom"
         },
         {
@@ -573,10 +543,52 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "bottom"
         },
         {
-            element: "#copyCdeBtn",
-            title: "Copy",
-            content: "This button can make a copy of this CDE.",
+            element: "#derivationRules_tab",
+            title: "Derivation Rules",
+            content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
             placement: "bottom"
+        },
+        {
+            element: "#validRules_tab",
+            title: "Validation Rules",
+            content: "Validation Rules are used to validate CDE. ",
+            placement: "bottom"
+        },
+        {
+            element: "#sourcesDiv",
+            placement: "top",
+            title: "Sources",
+            content: "This section shows the where this CDE load from."
+        },
+        {
+            element: "#registrationStateDiv",
+            title: "Status",
+            placement: "top",
+            content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
+        },
+        {
+            element: "#cdeDataSetBtn",
+            title: "Data Sets",
+            content: "This section lists all data sets this CDE has.",
+            placement: "top"
+        },
+        {
+            element: "#cdeLinkedFormsBtn",
+            title: "Forms",
+            placement: "top",
+            content: "If a the CDE is used in a Form, it will be displayed here. "
+        },
+        {
+            element: "#cdeLinkedBoardsBtn",
+            title: "Boards",
+            content: "If a CDE is used in a public board, the board will be shown in this section.",
+            placement: "top"
+        },
+        {
+            element: "#cdeMoreLikeThisBtn",
+            title: "More Like This",
+            content: "This section lists CDEs that are most similar to the CDE currently viewed.",
+            placement: "top"
         }
     ];
 

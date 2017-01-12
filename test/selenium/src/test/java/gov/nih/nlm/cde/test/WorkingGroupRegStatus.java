@@ -16,7 +16,7 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
         mustBeLoggedInAs(wguser_username, password);
         goToCdeByName("WG Test CDE");
 
-        
+
         clickElement(By.id("editStatus"));
         List<WebElement> options = new Select(driver.findElement(By.name("registrationStatus"))).getOptions();
         for (WebElement option : options) {

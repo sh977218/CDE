@@ -13,7 +13,6 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
     $scope.formLoincRender = window.formLoincRender;
     $scope.formLoincRenderUrl = window.formLoincRenderUrl;
 
-    $scope.formsCtrlLoadedPromise = $q.defer();
     $scope.formHistoryCtrlLoadedPromise = $q.defer();
 
     $scope.deferredEltLoaded = $q.defer();
