@@ -129,14 +129,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab(thisTab);
             }
         },
-        mlt: {
-            heading: "More Like This",
-            includes: ['/cde/public/html/deMlt.html'],
-            select: function () {
-                setCurrentTab();
-                $scope.mltCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadMlt');});
-            }
-        },
         history: {
             heading: "History",
             includes: ['/cde/public/html/cdeHistory.html'],
