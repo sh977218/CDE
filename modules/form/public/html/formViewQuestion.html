@@ -74,13 +74,13 @@
             </div>
             <div ng-if="question.question.uoms.length > 0" class="row questionUom">
                 Units of Measure:
-                <span ng-repeat="uom in question.question.uom">
+                <span ng-repeat="uom in question.question.uoms">
                     <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::uom}}</span>
                 </span>
             </div>
             <div class="row answerList" ng-if="question.question.answers && question.question.answers.length > 0">
                 Answer List:
-                <span ng-repeat="pv in question.question.cde.permissibleValues">
+                <span ng-repeat="pv in question.question.answers">
                     <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::pv.valueMeaningName}}</span>
                 </span>
                 {{question.question.multiselect?'(Multiple choices)':''}}
