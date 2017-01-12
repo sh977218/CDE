@@ -1,7 +1,7 @@
-<uib-accordion close-others="false" id="accordionList" ng-class="accordionListStyle">
+<uib-accordion close-others="false" id="accordionList">
     <div ui-sortable="dragSortableOptions" ng-model="cdes">
         <div uib-accordion-group class='panel-default' ng-repeat="elt in cdes track by elt.tinyId" is-open="elt.isOpen">
-            <uib-accordion-heading template-url="template/accordion/accordion-group.html" ng-controller="AccordionCtrl">
+            <uib-accordion-heading ng-controller="AccordionCtrl">
                 <a href tabindex="0" class="nonLinkAnchor" ng-if="addMode">
                     <i class="fa fa-arrows question-move-handle"></i></a>
                 <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
@@ -9,7 +9,7 @@
                     <span role="link" ng-bind-html="elt.primaryNameCopy" id="acc_link_{{$index}}"
                           class="hand-cursor"></span></a>
                 <a ng-href="/deview?tinyId={{elt.tinyId}}" tabindex="0" class="nonLinkAnchor" ng-if="!openCdeInNewTab"
-                   ng-click="view(elt, $event)">
+                   ng-click="view(elt, $event);$dismiss();">
                     <i class="fa fa-eye hand-cursor" title="View Full Detail" role="link"
                        id="eyeLink_{{$index}}"></i></a>
                 <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>
@@ -34,7 +34,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <a tabindex="0" ng-if="!openCdeInNewTab" class='btn btn-small btn-default'
-                       ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{$index}}">
+                       ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{$index}}"
+                       ng-click="$dismiss();">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="openCdeInNewTab" target="_blank" class='btn btn-small btn-default'
                        ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{$index}}">
