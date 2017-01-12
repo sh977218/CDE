@@ -1,0 +1,21 @@
+<!-- TODO odd controller -->
+<div ng-controller="PermissibleValuesCtrl" class="row">
+    <div class="col-md-6">
+        <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
+        <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
+        <div ng-include="'/system/public/html/sources.html'"></div>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Topics</h4>
+        <info>Topics are <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> terms and appear here if classifications are
+            mapped
+            to <a href="https://www.nlm.nih.gov/mesh/">MeSH</a> trees.
+        </info>
+        <ul>
+            <li ng-repeat="t in elt.flatMeshSimpleTrees | orderBy:t">{{t}} <br></li>
+        </ul>
+    </div>
+
+
+</div>
