@@ -74,14 +74,6 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
                 setCurrentTab(thisTab);
             }
         },
-        cdeList: {
-            heading: "CDE List",
-            includes: ['/form/public/html/cdeList.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-                $timeout($scope.$broadcast('loadFormCdes'), 0);
-            }
-        },
         displayProfiles: {
             heading: "Display Profiles",
             includes: ['/form/public/html/displayProfiles.html'],
@@ -108,20 +100,6 @@ angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams
             heading: "Identifiers",
             includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
-        linkedForms: {
-            heading: "Linked Forms",
-            includes: ['/cde/public/html/forms.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-                $scope.formsCtrlLoadedPromise.promise.then(function () { $scope.$broadcast('loadLinkedForms'); });
-            }
-        },
-        boards: {
-            heading: "Boards",
-            includes: [], select: function (thisTab) {
                 setCurrentTab(thisTab);
             }
         },
