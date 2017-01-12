@@ -1,6 +1,5 @@
-angular.module('formModule').controller
-('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
+angular.module('formModule').controller('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal',
+    'BulkClassification', '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
               $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
 
@@ -149,6 +148,30 @@ angular.module('formModule').controller
             }
         }
     };
+
+    $scope.groups = [{
+        btnId: 'formLinkedFormsBtn',
+        title: 'Linked Forms',
+        open: function () {
+            $modal.open({
+                size: 'lg',
+                animation: false,
+                template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
+                controller: ['$scope', 'elt', 'OldModule', function ($scope, elt, oldModule) {
+                    $scope.elt = elt;
+                    $scope.oldModule = oldModule;
+                }],
+                resolve: {
+                    elt: function () {
+                        return $scope.elt;
+                    },
+                    OldModule: function () {
+                        return $scope.module;
+                    }
+                }
+            });
+        }
+    }];
 
     $scope.setToAddCdeMode = function () {
         $scope.addMode = $scope.addMode === 'cde' ? undefined : 'cde';

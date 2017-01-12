@@ -1,9 +1,16 @@
 <!-- TODO odd controller -->
-<div ng-controller="PermissibleValuesCtrl" class="row">
+<div class="row" ng-controller="PermissibleValuesCtrl">
     <div class="col-md-6">
         <div ng-include="'/cde/public/html/cdeGeneralDetails.html'"></div>
         <div ng-include="'/cde/public/html/cdeSpecificDetails.html'"></div>
         <div ng-include="'/system/public/html/sources.html'"></div>
+        <div ng-include="'/system/public/html/status.html'"></div>
+        <div class="btn-group" ng-if="elt" role="group" aria-label="More Info">
+            <button type="button" class="btn btn-default" id="{{group.btnId}}" ng-repeat="group in groups"
+                    ng-click="group.open()">
+                {{group.title}}
+            </button>
+        </div>
     </div>
 
     <div class="col-md-6">
@@ -16,6 +23,5 @@
             <li ng-repeat="t in elt.flatMeshSimpleTrees | orderBy:t">{{t}} <br></li>
         </ul>
     </div>
-
 
 </div>

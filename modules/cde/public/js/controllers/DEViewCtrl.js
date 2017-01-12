@@ -173,6 +173,93 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     };
 
+    $scope.groups = [
+        {
+            btnId: 'cdeDataSetBtn',
+            title: 'Data Set',
+            open: function () {
+                $modal.open({
+                    templateUrl: '/cde/public/html/cdeDatasetModal.html',
+                    controller: ['$scope', 'elt', function ($scope, elt) {
+                        $scope.elt = elt;
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeLinkedFormsBtn',
+            title: 'Linked Forms',
+            open: function () {
+                $modal.open({
+                    size: 'lg',
+                    animation: false,
+                    template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
+                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt,oldModule) {
+                        $scope.elt = elt;
+                        $scope.oldModule = oldModule;
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        },
+                        OldModule: function () {
+                            return $scope.module;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeLinkedBoardsBtn',
+            title: 'Linked Boards',
+            open: function () {
+                $modal.open({
+                    templateUrl: '/system/public/html/linkedBoards.html',
+                    controller: ['$scope', 'tinyId', function ($scope, tinyId) {
+                        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+                            "/system/public/html/accordion/addToQuickBoardActions.html"];
+                        $http.get("/deBoards/" + tinyId).then(function (response) {
+                            if (response.error) {
+                                $log.error(response.error);
+                                $scope.boards = [];
+                            } else {
+                                $scope.boards = response.data;
+                            }
+                        });
+                    }],
+                    resolve: {
+                        tinyId: function () {
+                            return $scope.elt.tinyId;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeMoreLikeThisBtn',
+            title: 'More Like This',
+            open: function () {
+                $modal.open({
+                    size: 'lg',
+                    template: "<div ng-include=\"'/cde/public/html/cdeMoreLikeThisModal.html'\"/>",
+                    controller: ['$scope', 'elt', function ($scope, elt) {
+                        $http({method: "GET", url: "/moreLikeCde/" +elt.tinyId}).error(function () {
+                            $log.error("Unable to retrieve MLT");
+                        }).success(function (data) {
+                            $scope.cdes = data.cdes;
+                        });
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        }
+                    }
+                })
+            }
+        }
+    ];
     $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
