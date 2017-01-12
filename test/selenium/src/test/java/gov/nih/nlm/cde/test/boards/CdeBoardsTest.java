@@ -17,7 +17,7 @@ public class CdeBoardsTest extends BoardTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("boards_tab"));
+        clickElement(By.id("cdeLinkedBoardsBtn"));
 
         textPresent(board1);
         textNotPresent(board2);
@@ -26,7 +26,7 @@ public class CdeBoardsTest extends BoardTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("boards_tab"));
+        clickElement(By.id("cdeLinkedBoardsBtn"));
 
         textPresent(board1);
         textPresent(board2);

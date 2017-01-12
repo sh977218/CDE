@@ -10,9 +10,6 @@ public class FormCdesTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("Addenbrooke's Cognitive Examination Revised (ACE-R)");
 
-        clickElement(By.id("cdeList_tab"));
-        textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - fluency sub score");
-        textPresent("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score");
         clickElement(By.linkText("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score"));
         new Actions(driver).moveToElement(findElement(By.linkText("Addenbrooke's Cognitive Examination - Revised (ACE-R) - memory sub score")));
         textPresent("Sub-score for memory section as part of Addenbrooke's Cognitive Examination - Revised (ACE-R).");

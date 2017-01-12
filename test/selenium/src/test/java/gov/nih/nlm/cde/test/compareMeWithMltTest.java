@@ -19,6 +19,7 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         closeAlert();
 
         textPresent("Quick Board (2)");
+        clickElement(By.id("closeMoreLikeThisBtn"));
         clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));

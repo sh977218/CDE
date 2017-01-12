@@ -84,7 +84,7 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Colitis Value");
         clickElement(By.id("referenceDocument_tab"));
         textPresent("Colitis ref doc");
-        clickElement(By.id("dataSet_tab"));
+        clickElement(By.id("MergeTest"));
         textPresent("Colitis note");
         clickElement(By.id("derivationRules_tab"));
         textPresent("Biomarker Gene Staining Method Score");
