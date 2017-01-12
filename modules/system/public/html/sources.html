@@ -1,28 +1,28 @@
-<fieldset ng-repeat="eltSource in elt.sources" class="cdeFieldset" id="sourcesDiv">
+<fieldset ng-repeat="eltSource in elt.sources" class="cdeFieldset" id="sources_{{$index}}">
     <legend>Source: {{eltSource.sourceName}}</legend>
     <div class="row" ng-if="eltSource.sourceName">
         <div class="col-sm-5 questionSectionLabel text-right">Name:</div>
-        <div class="col-sm-7">{{eltSource.sourceName}}
+        <div class="col-sm-7 sourceName">{{eltSource.sourceName}}
         </div>
     </div>
     <div class="row" ng-if="eltSource.created">
         <div class="col-sm-5 questionSectionLabel text-right">Created:</div>
-        <div class="col-sm-7">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}
+        <div class="col-sm-7 created">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}
         </div>
     </div>
     <div class="row" ng-if="eltSource.updated">
         <div class="col-sm-5 questionSectionLabel text-right">Updated:</div>
-        <div class="col-sm-7">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}
+        <div class="col-sm-7 updated">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </div>
     </div>
     <div class="row" ng-if="eltSource.registrationStatus">
         <div class="col-sm-5 questionSectionLabel text-right">Registration Status:</div>
-        <div class="col-sm-7" id="dd_createdBy">{{eltSource.registrationStatus}}
+        <div class="col-sm-7 registrationStatus">{{eltSource.registrationStatus}}
         </div>
     </div>
     <div class="row" ng-if="eltSource.datatype">
         <div class="col-sm-5 questionSectionLabel text-right">Datatype:</div>
-        <div class="col-sm-7">{{eltSource.datatype}}
+        <div class="col-sm-7 datatype">{{eltSource.datatype}}
         </div>
     </div>
 </fieldset>

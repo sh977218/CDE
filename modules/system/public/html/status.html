@@ -19,13 +19,13 @@
     </div>
     <div class="row" ng-if="elt.registrationState.administrativeNote">
         <div class="col-sm-5 questionSectionLabel text-right">Administrative Note:</div>
-        <div class="col-sm-7">
+        <div class="col-sm-7" id="administrativeNote">
             {{elt.registrationState.administrativeNote | placeHoldEmpty}}
         </div>
     </div>
     <div class="row" ng-if="elt.registrationState.unresolvedIssue">
         <div class="col-sm-5 questionSectionLabel text-right">Unresolved Issue:</div>
-        <div class="col-sm-7">{{elt.registrationState.unresolvedIssue | placeHoldEmpty}}
+        <div class="col-sm-7" id="unresolvedIssue">{{elt.registrationState.unresolvedIssue | placeHoldEmpty}}
         </div>
     </div>
     <div class="row" ng-if="elt.registrationState.registrationStatus">
@@ -35,7 +35,7 @@
     </div>
     <div class="row" ng-if="elt.registrationState.administrativeStatus">
         <div class="col-sm-5 questionSectionLabel text-right">Administrative Status:</div>
-        <div class="col-sm-7">{{elt.registrationState.administrativeStatus}}
+        <div class="col-sm-7" id="administrativeStatus">{{elt.registrationState.administrativeStatus}}
         </div>
     </div>
 </fieldset>
