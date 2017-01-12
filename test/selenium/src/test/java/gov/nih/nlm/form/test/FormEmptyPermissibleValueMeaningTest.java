@@ -22,7 +22,7 @@ public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
 
         goToFormByName(formName);
         clickElement(By.id("description_tab"));
-        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//ul[@class='select2-choices']//li/span/span"));
+        List<WebElement> lis = driver.findElements(By.xpath("//div[@id = 'question_0_0']//span[contains(@class, 'label')]"));
         Assert.assertEquals(lis.size(), 11);
         Assert.assertEquals(lis.get(0).getText(), "no problem");
         Assert.assertEquals(lis.get(1).getText(), "1");
