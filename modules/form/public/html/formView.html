@@ -82,9 +82,9 @@
             </button>
         </h3>
 
-        <uib-tabset ng-if="elt">
-            <uib-tab ng-repeat="(tabName, tab) in tabs" active="tab.active" ng-if="tab.if?tab.if():true"
-                     id="{{tabName}}_tab" select="tab.select(tabName)">
+        <uib-tabset ng-if="elt" active="currentTab">
+            <uib-tab ng-repeat="(tabName, tab) in tabs" ng-if="tab.if?tab.if():true"
+                     id="{{tabName}}_tab" select="tab.select(tabName)" index="tabName">
                 <uib-tab-heading ng-class="{'{{tab.class}}':tab.class,'highlightedTab':commentMode && tab.highlight}">
                     {{tab.heading}}
                 </uib-tab-heading>
