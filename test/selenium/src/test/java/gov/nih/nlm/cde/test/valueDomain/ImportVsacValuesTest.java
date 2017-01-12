@@ -26,11 +26,9 @@ public class ImportVsacValuesTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-1-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-2-valid")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-3-valid")));
-        // try to let pvRemove-0 button show on page.
-        clickElement(By.id("pvName-2"));
+        scrollToTop();
         clickElement(By.id("pvRemove-0"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));
-
         newCdeVersion("Importing All VSAC Values");
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("vset-0-warning")));

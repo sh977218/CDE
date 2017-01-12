@@ -440,6 +440,11 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
+/*
+            WebElement element = findElement(by);
+            JavascriptExecutor executor = (JavascriptExecutor)driver;
+            executor.executeScript("arguments[0].click()", element);
+*/
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
             Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
             Integer value;
