@@ -1,8 +1,8 @@
 angular.module('formModule').controller
 ('FormViewCtrl', ['$scope', '$routeParams', 'Form', 'isAllowedModel', '$uibModal', 'BulkClassification',
-    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil',
+    '$http', '$timeout', 'userResource', '$log', '$q', 'ElasticBoard', 'OrgHelpers', 'PinModal', 'SkipLogicUtil', 'Alert',
     function ($scope, $routeParams, Form, isAllowedModel, $modal, BulkClassification,
-              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil) {
+              $http, $timeout, userResource, $log, $q, ElasticBoard, OrgHelpers, PinModal, SkipLogicUtil, Alert) {
 
     $scope.module = "form";
     $scope.baseLink = 'formView?tinyId=';
@@ -615,15 +615,21 @@ angular.module('formModule').controller
         });
     };
 
-
     $scope.prepareGoogleSpreadsheetExport = function () {
         $modal.open({
             animation: false,
             templateUrl: '/form/public/html/googleSpreadsheetExportModal.html',
-            controller: 'GoogleSpreadsheetExportCtrl',
-            resolve: {
-                elt: function() {return $scope.elt;}
-            }
+            controller: ['$scope', function($scope) {
+                $scope.formInput = {};
+            }]
+        }).result.then(function (formInput) {
+            $http.post("/publishForGoogleSpreadsheet", {
+                formId: $scope.elt._id,
+                publishedFormName: formInput.publishedFormName,
+                googleUrl: formInput.googleUrl
+            }).then(function () {
+                Alert.addAlert("info", "Done. Go to your profile to see all your published forms");
+            });
         })
     };
 

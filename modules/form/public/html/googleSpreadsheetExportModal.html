@@ -29,14 +29,14 @@
             <li>
                 Google will now give you a URL, called "Current web app URL".
                 <label>Copy paste that URL here:
-                <input class="form-control" type="url" name="googleUrl" ng-model="googleUrl" required></label><br>
+                <input class="form-control" type="url" name="googleUrl" ng-model="formInput.googleUrl" required></label><br>
                 <span ng-show="createGoogleSpreadsheetForm.googleUrl.$invalid">Not a valid URL.</span>
             </li>
             <li>
                 Your published forms will appear in your profile.
                 <label>
                     Give your published form a name so you can find it more easily.
-                    <input class="form-control" type="text" required ng-model="publishedFormName">
+                    <input class="form-control" type="text" required ng-model="formInput.publishedFormName">
                 </label>
             </li>
             <li>Cick "Publish my form" below and write down the final URL. This is the url you will open to start recording your data.</li>
@@ -47,6 +47,6 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-warning" ng-click="$dismiss()" id="cancelExport">Cancel</button>
-    <button class="btn btn-success" ng-click="publishForGoogleSpreadsheet()" id="goExport"
+    <button class="btn btn-success" ng-click="$close(formInput)" id="goExport"
             ng-disabled="createGoogleSpreadsheetForm.$invalid">Publish my form.</button>
 </div>

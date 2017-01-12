@@ -72,8 +72,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
 
     $scope.createSubmitMapping = function () {
         if (window.googleScriptUrl) {
-            $scope.mapping = {};
-            $scope.mapping.sections = flattenForm($scope.elt.formElements);
+            $scope.mapping = JSON.stringify({sections: flattenForm($scope.elt.formElements)});
         }
     };
 
