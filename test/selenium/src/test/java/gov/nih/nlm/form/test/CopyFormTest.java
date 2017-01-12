@@ -20,7 +20,7 @@ public class CopyFormTest extends BaseClassificationTest {
         textPresent("Create a copy");
         textPresent("Disease/Injury Related Events");
         clickElement(By.id("saveCopy"));
-        textPresent("Incomplete", By.id("dd_status"));
+        textPresent("Incomplete", By.id("registrationStatus"));
         textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.id("nameEdit"));
         textNotPresent("LOINC");
         textNotPresent("CHAR");
