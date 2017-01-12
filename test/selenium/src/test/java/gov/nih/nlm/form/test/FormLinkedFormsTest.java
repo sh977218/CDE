@@ -9,7 +9,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
     public void formLinkedForms() {
         goToFormByName("Neurological Assessment: TBI Symptoms and Signs");
 
-        clickElement(By.id("cdeLinkedFormsBtn"));
+        clickElement(By.id("formLinkedFormsBtn"));
         hangon(3);
         textPresent("There is 1 form that uses this form.");
         textPresent("Form In Form Num Questions", By.id("linkedFormsAccordionList"));
