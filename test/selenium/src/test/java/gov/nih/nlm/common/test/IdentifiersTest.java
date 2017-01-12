@@ -24,7 +24,7 @@ public abstract class IdentifiersTest extends CommonTest {
     public void addRemoveId(String eltName, String status) {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToEltByName(eltName, status);
-        showAllTabs();
+
         addId("MyOrigin1", "MyId1", "MyVersion1");
         scrollToTop();
         addId("MyOrigin2", "MyId2", null);
@@ -44,7 +44,7 @@ public abstract class IdentifiersTest extends CommonTest {
         }
 
         goToEltByName(eltName, status);
-        showAllTabs();
+
         clickElement(By.id("ids_tab"));
         textPresent("MyOrigin1");
         textPresent("MyId1");

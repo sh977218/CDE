@@ -20,7 +20,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         clickElement(By.id("pvs_tab"));
         textPresent("Unknown");
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
         textPresent("Mutation Analysis");
         textPresent("C18302");

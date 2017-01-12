@@ -10,7 +10,7 @@ public class RemoveConcepts extends NlmCdeBaseTest {
     public void removeConcepts() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("ConceptCDE");
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
 
 

@@ -16,7 +16,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         textPresent("4 results for");
         String viewing = findElement(By.id("linkToElt_0")).getText();
         clickElement(By.id("linkToElt_0"));
-        showAllTabs();
+
         textPresent("More Like This");
         textPresent(viewing);
         clickElement(By.id("status_tab"));
@@ -39,7 +39,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         }
         textPresent("1 results for");
         clickElement(By.id("linkToElt_0"));
-        showAllTabs();
+
         textPresent("More Like This");
         textPresent(viewing);
         clickElement(By.id("status_tab"));

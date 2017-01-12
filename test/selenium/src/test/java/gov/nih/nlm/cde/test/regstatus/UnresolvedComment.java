@@ -10,7 +10,6 @@ public class UnresolvedComment extends CdeCommentTest {
     public void unresolvedComment() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Cancer history indicator");
-        clickElement(By.linkText("More..."));
         clickElement(By.id("status_tab"));
 
         clickElement(By.id("editStatus"));

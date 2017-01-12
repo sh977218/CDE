@@ -9,7 +9,7 @@ public class TourDeViewTest extends TourTest {
     public void deViewTour() {
         mustBeLoggedOut();
         goToCdeByName("Person Birth Date");
-        showAllTabs();
+
         clickElement(By.linkText("Help"));
         clickElement(By.linkText("Take a tour"));
         textPresent("Welcome to the NIH CDE Repository. This tour will guide through through the application. If you close this tour, you can restart it here. Different sections of the applications have different help sections.");

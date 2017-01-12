@@ -20,7 +20,7 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
 
         newCdeVersion();
 
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent(newDatatype, By.xpath("//*[@id='historyCompareLeft_Value List Data Type']"));
@@ -32,7 +32,7 @@ public class IntegerDatatypeTest extends NlmCdeBaseTest {
         newCdeVersion();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent("Other Datatype", By.xpath("//*[@id='historyCompareLeft_Value List Data Type']"));

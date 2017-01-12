@@ -37,7 +37,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("pvs_tab"));
         textPresent("myUom");
 
-        showAllTabs();
+
         clickElement(By.id("ids_tab"));
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 

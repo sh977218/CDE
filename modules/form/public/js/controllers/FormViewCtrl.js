@@ -50,8 +50,7 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $timeout($scope.$broadcast('tabGeneral'), 0);
-            },
-            show: true
+            }
         },
         description: {
             heading: "Form Description",
@@ -59,8 +58,7 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $scope.nbOfEltsLimit = 1;
-            },
-            show: true
+            }
         },
         naming: {
             heading: "Naming",
@@ -68,16 +66,14 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
-            },
-            show: true
+            }
         },
         classification: {
             heading: "Classification",
             includes: ['/form/public/html/formClassification.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: true
+            }
         },
         cdeList: {
             heading: "CDE List",
@@ -85,36 +81,28 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $timeout($scope.$broadcast('loadFormCdes'), 0);
-            },
-            show: false,
-            hideable: true
+            }
         },
         displayProfiles: {
             heading: "Display Profiles",
             includes: ['/form/public/html/displayProfiles.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         status: {
             heading: "Status",
             includes: ['/system/public/html/status.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         referenceDocument: {
             heading: "Reference Documents",
             includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         properties: {
             heading: "Properties",
@@ -122,18 +110,14 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $scope.allKeys = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].propertyKeys;
-            },
-            show: false,
-            hideable: true
+            }
         },
         ids: {
             heading: "Identifiers",
             includes: ['/system/public/html/identifiers.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         linkedForms: {
             heading: "Linked Forms",
@@ -141,26 +125,20 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $scope.formsCtrlLoadedPromise.promise.then(function () { $scope.$broadcast('loadLinkedForms'); });
-            },
-            show: false,
-            hideable: true
+            }
         },
         boards: {
             heading: "Boards",
             includes: [], select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         attachments: {
             heading: "Attachments",
             includes: ['/system/public/html/attachments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            },
-            show: false,
-            hideable: true
+            }
         },
         history: {
             heading: "History",
@@ -168,25 +146,7 @@ angular.module('formModule').controller
             select: function (thisTab) {
                 setCurrentTab(thisTab);
                 $scope.formHistoryCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('openHistoryTab');});
-            },
-            show: false,
-            hideable: true
-        },
-        more: {
-            heading: "More...",
-            includes: [],
-            select: function () {
-                $timeout(function () {
-                    $scope.tabs.more.show = false;
-                    $scope.tabs.more.active = false;
-                    $scope.tabs[$scope.currentTab].active = true;
-                    Object.keys($scope.tabs).forEach(function (key) {
-                        if ($scope.tabs[key].hideable) $scope.tabs[key].show = true;
-                    });
-                }, 0);
-            },
-            show: true,
-            class: "gray"
+            }
         }
     };
 

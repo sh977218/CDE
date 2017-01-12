@@ -12,7 +12,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
@@ -39,7 +39,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
@@ -58,7 +58,7 @@ public abstract class RegStatusTest extends CommonTest {
             goToEltByName(eltName);
         }
         textPresent("Recorded");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         textPresent("Recorded");
         textPresent("09/15/2013");
@@ -71,7 +71,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
@@ -90,7 +90,7 @@ public abstract class RegStatusTest extends CommonTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
         textPresent("Qualified");
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");

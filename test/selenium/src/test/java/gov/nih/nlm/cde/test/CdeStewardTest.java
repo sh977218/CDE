@@ -29,7 +29,7 @@ public class CdeStewardTest extends NlmCdeBaseTest {
         textPresent(newStewardOrgName);
         newCdeVersion();
         Assert.assertEquals(newStewardOrgName, findElement(By.id("dd_general_steward")).getText());
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         selectHistoryAndCompare(1, 2);
         textPresent(newStewardOrgName, By.xpath("//*[@id='historyCompareLeft_StewardOrg Name']"));

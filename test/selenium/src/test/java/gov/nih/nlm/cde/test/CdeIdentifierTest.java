@@ -15,7 +15,7 @@ public class CdeIdentifierTest extends IdentifiersTest {
     public void findByNestedId() {
         mustBeLoggedInAs(ninds_username, password);
         goToEltByName("Ohio State TBI Method Short Form (OSUTBIMS) - ask question category");
-        showAllTabs();
+
         // same ID as "more injuries loss of consciousness number"
         addId("FAKE", "C18059", "3");
 
@@ -53,7 +53,7 @@ public class CdeIdentifierTest extends IdentifiersTest {
     public void loincLink() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Ethnicity USA maternal category");
-        showAllTabs();
+
         clickElement(By.id("ids_tab"));
         clickElement(By.id("addId"));
         findElement(By.name("source")).sendKeys("LOINC");

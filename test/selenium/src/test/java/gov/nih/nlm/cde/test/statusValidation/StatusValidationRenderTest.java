@@ -10,7 +10,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
     public void rulesRender(){
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName("Reg Status Lift");
-        showAllTabs();
+
         findElement(By.linkText("Validation Rules")).click();
         findElement(By.cssSelector("#rule_Candidate_0 .fa-check"));
 

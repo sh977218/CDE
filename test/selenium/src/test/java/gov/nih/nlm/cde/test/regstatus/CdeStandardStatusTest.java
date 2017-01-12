@@ -43,7 +43,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addClassification")));
 
         // Can't edit Concepts
-        showAllTabs();
+
         clickElement(By.id("concepts_tab"));
         assertNoElt(By.id("removeobjectClass-0"));
         assertNoElt(By.id("removeproperty-0"));
