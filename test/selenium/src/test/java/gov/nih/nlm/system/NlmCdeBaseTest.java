@@ -440,25 +440,27 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
+/*
             WebElement element = findElement(by);
             JavascriptExecutor executor = (JavascriptExecutor)driver;
             executor.executeScript("arguments[0].click()", element);
-//            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
-//            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
-//            Integer value;
-//            if (yCoordinate instanceof Double) {
-//                value = ((Double) yCoordinate).intValue();
-//            } else {
-//                Long yCoordinateLong = (Long) yCoordinate;
-//                value = yCoordinateLong.intValue();
-//            }
-//            scrollTo(value + 100);
-//            try {
-//                findElement(by).click();
-//            } catch (WebDriverException e2) {
-//                scrollToTop();
-//                findElement(by).click();
-//            }
+*/
+            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+            Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
+            Integer value;
+            if (yCoordinate instanceof Double) {
+                value = ((Double) yCoordinate).intValue();
+            } else {
+                Long yCoordinateLong = (Long) yCoordinate;
+                value = yCoordinateLong.intValue();
+            }
+            scrollTo(value + 100);
+            try {
+                findElement(by).click();
+            } catch (WebDriverException e2) {
+                scrollToTop();
+                findElement(by).click();
+            }
         }
     }
 
