@@ -636,12 +636,12 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
-    protected void scrollUpBy(int y) {
+    protected void scrollUpBy(Integer y) {
         String jsScroll = "window.scrollBy(0,-" + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
-    protected void scrollDownBy(int y) {
+    protected void scrollDownBy(Integer y) {
         String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
