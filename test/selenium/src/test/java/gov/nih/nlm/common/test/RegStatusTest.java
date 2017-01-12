@@ -14,12 +14,12 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
 
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
         modalGone();
-        textPresent("Qualified", By.id("eltCurStatus"));
+        goToEltByName(eltName);
+        textPresent("Qualified", By.id("registrationStatus"));
     }
 
     public void cantEditStatusIfPendingChanges(String eltName, String user) {
@@ -41,7 +41,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
 
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Recorded");
         textPresent("Recorded elements are not visible by default");
@@ -74,7 +73,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
 
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
@@ -94,7 +92,6 @@ public abstract class RegStatusTest extends CommonTest {
         textPresent("Qualified");
 
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");
