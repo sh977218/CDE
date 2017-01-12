@@ -12,23 +12,23 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cde1);
-        showAllTabs();
+
         addAttachment("painLocation.jpg");
         checkAttachmentNotReviewed();
         reviewAttachment("painLocation.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cde2);
-        showAllTabs();
+
         addAttachment("painLocation.jpg");
         checkAttachmentReviewed("painLocation.jpg");
 
         goToCdeByName(cde1);
-        showAllTabs();
+
         removeAttachment("painLocation.jpg");
 
         goToCdeByName(cde2);
-        showAllTabs();
+
         checkAttachmentReviewed("painLocation.jpg");
 
     }

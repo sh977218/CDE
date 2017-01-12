@@ -16,7 +16,7 @@ public class CdeBoardsTest extends BoardTest {
         pinCdeToBoard(cdeName, board2);
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("boards_tab"));
 
         textPresent(board1);
@@ -25,7 +25,7 @@ public class CdeBoardsTest extends BoardTest {
         makePublic(board2);
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("boards_tab"));
 
         textPresent(board1);

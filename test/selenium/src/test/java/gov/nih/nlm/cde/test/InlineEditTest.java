@@ -15,7 +15,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         String attachmentName = "nih-logo-color.png";
-        showAllTabs();
+
 
         // probably an issue with the clamAv mock. So we try twice.
         try {
@@ -23,7 +23,7 @@ public class InlineEditTest extends BaseAttachmentTest {
             textPresent(attachmentName + " - This attachment cannot");
         } catch (Exception e) {
             goToCdeByName(cdeName);
-            showAllTabs();
+
             addAttachment(attachmentName);
             textPresent(attachmentName + " - This attachment cannot");
         }
@@ -32,7 +32,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         reviewAttachment(attachmentName);
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("attachments_tab"));
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         clickElement(By.id("properties_tab"));
@@ -62,6 +62,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         System.out.println(findElement(By.cssSelector("[id^='taTextElement'] img")).getAttribute("src"));
         clickElement(By.xpath("//*[@id='dd_prop_value_0']//button[contains(text(),'Confirm')]"));
         hangon(2);
+        clickElement(By.id("properties_tab"));
         Assert.assertTrue(findElement(By.xpath("//*[@id='dd_prop_value_0']//img")).getAttribute("src").contains("cde"));
     }
 }

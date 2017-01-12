@@ -33,13 +33,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         textPresent(cdeNameChange);
         textPresent(cdeDefinitionChange);
-        // test that label and its value are aligned.
-        Assert.assertEquals(findElement(By.id("dt_updated")).getLocation().y, findElement(By.id("dd_updated")).getLocation().y);
 
         clickElement(By.id("pvs_tab"));
         textPresent("myUom");
 
-        showAllTabs();
+
         clickElement(By.id("ids_tab"));
         Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
 

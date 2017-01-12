@@ -16,18 +16,18 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
 
-        showAllTabs();
+
         addAttachment("default.jpg");
         reviewAttachment("default.jpg");
 
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        showAllTabs();
+
         setAttachmentDefault();
 
         goToCdeByName(cdeName);
-        showAllTabs();
+
         addAttachment("nonDefault.jpg");
 
         openEltInList(cdeName, "cde");

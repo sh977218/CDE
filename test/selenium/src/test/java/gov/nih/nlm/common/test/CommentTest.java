@@ -38,7 +38,7 @@ public abstract class CommentTest extends CommonTest {
     public void comments(String eltName) {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
-        showAllTabs();
+
         clickElement(By.id("status_tab"));
         addComment("My First Comment about Status!");
         textPresent("My First Comment about Status!");
@@ -174,7 +174,7 @@ public abstract class CommentTest extends CommonTest {
 
         logout();
         goToEltByName(eltName, status);
-        showAllTabs();
+
         clickElement(By.id("discussBtn"));
         textNotPresent(censoredText);
         textPresent(commentText);

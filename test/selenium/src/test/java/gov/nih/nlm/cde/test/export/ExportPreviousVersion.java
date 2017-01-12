@@ -20,7 +20,7 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
         Assert.assertFalse(get(baseUrl + "/dataelement/585adda729f8ae801d0f045a").asString().contains("<designation>This name will be removed</designation>"));
 
-        showAllTabs();
+
         clickElement(By.id("history_tab"));
         clickElement(By.id("prior-1"));
         switchTab(1);

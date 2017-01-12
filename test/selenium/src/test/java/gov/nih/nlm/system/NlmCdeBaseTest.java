@@ -326,13 +326,11 @@ public class NlmCdeBaseTest {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deview" : "formView") + "/?tinyId=" + tinyId);
-            textPresent("More...");
             textPresent(name);
         } else {
             try {
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
-                textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
             } catch (Exception e) {
@@ -340,7 +338,6 @@ public class NlmCdeBaseTest {
                 hangon(1);
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
-                textPresent("More...");
                 textPresent(name);
                 textNotPresent("is archived");
             }
@@ -443,6 +440,11 @@ public class NlmCdeBaseTest {
             closeAlert();
             findElement(by).click();
         } catch (WebDriverException e) {
+/*
+            WebElement element = findElement(by);
+            JavascriptExecutor executor = (JavascriptExecutor)driver;
+            executor.executeScript("arguments[0].click()", element);
+*/
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
             Object yCoordinate = javascriptExecutor.executeScript("return window.scrollY;");
             Integer value;
@@ -639,6 +641,16 @@ public class NlmCdeBaseTest {
         ((JavascriptExecutor) driver).executeScript(jqueryScroll, "");
     }
 
+    protected void scrollUpBy(Integer y) {
+        String jsScroll = "window.scrollBy(0,-" + Integer.toString(y) + ");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
+    protected void scrollDownBy(Integer y) {
+        String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
     private void scrollToEltByCss(String css) {
         String scrollScript = "scrollTo(0, $(\"" + css + "\").offset().top-200)";
         ((JavascriptExecutor) driver).executeScript(scrollScript, "");
@@ -807,12 +819,6 @@ public class NlmCdeBaseTest {
         assertNoElt(By.xpath(prefix + "moveDown-2" + postfix));
         findElement(By.xpath(prefix + "moveUp-2" + postfix));
         findElement(By.xpath(prefix + "moveTop-2" + postfix));
-    }
-
-    protected void showAllTabs() {
-        textPresent("More...");
-        clickElement(By.id("more_tab"));
-        textNotPresent("More...");
     }
 
     protected void loadDefaultSettings() {

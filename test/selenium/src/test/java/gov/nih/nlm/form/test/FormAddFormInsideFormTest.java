@@ -1,17 +1,13 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.system.RecordVideo;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.get;
 
-public class FormAddFormInsideFormTest extends BaseFormTest {
-    QuestionTest questionTest = new QuestionTest();
-
+public class FormAddFormInsideFormTest extends QuestionTest {
     @Test
-    @RecordVideo
     public void addFormInsideFormTest() {
         String formName = "Study Drug Compliance";
         mustBeLoggedInAs(ninds_username, password);
@@ -19,7 +15,7 @@ public class FormAddFormInsideFormTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
         textPresent("Show Question Search Area");
         startAddingForms();
-        questionTest.addFormToSection("Vessel Imaging Angiography", 0);
+        addFormToSection("Vessel Imaging Angiography", 0);
         textPresent("Embedded Form: Vessel Imaging Angiography");
         String newFormLabel = "new inner form label";
         clickElement(By.id("innerForm_label_edit_icon_Vessel Imaging Angiography"));

@@ -10,8 +10,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     private void changeStatusAndCheckVisibility() {
         String url = driver.getCurrentUrl();
         clickElement(By.id("status_tab"));
-        textPresent("Unresolved Issue");
-        clickElement(By.xpath("//*[@id='editStatus']"));
+        clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
         clickElement(By.id("saveRegStatus"));
@@ -23,7 +22,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     public void retiredCdeById() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Skull fracture anatomic site");
-        showAllTabs();
+
         changeStatusAndCheckVisibility();
         textPresent("this data element is retired.");
     }
@@ -33,7 +32,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     public void retiredFormById() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("PTSD Checklist - Civilian (PCL-C)");
-        showAllTabs();
+
         changeStatusAndCheckVisibility();
         textPresent("this form is retired.");
     }

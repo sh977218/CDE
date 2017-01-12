@@ -11,7 +11,7 @@ public class CdeScoreValidationErrorTest extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         emptyQuickBoardByModule("cde");
         goToCdeByName("DRS Total Score");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");

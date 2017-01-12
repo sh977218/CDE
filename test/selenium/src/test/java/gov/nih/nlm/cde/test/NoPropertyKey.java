@@ -10,7 +10,7 @@ public class NoPropertyKey extends NlmCdeBaseTest {
     public void noPropertyKey() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Neoadjuvant Therapy");
-        showAllTabs();
+
         clickElement(By.id("properties_tab"));
         clickElement(By.id("addProperty"));
         textPresent("No valid property keys present, have an Org Admin go to Org Management > List Management to add one");

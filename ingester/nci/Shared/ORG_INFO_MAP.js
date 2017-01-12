@@ -20,6 +20,7 @@ exports.map = {
         'orgName': 'NCI-BPV',
         'stewardOrgName':'NCI',
         'classificationOrgName': 'NCI-BPV',
+        'classificationMap': {'NCI-BPV': 'BBRB - BPV'},
         filter: function (a, b) {
             return !!(a === 'BBRB' && b === 'BPV - Tumor Biospecimen Acquisition');
         },
@@ -33,6 +34,7 @@ exports.map = {
         'orgName': 'NCI-GTEx',
         'stewardOrgName':'NCI',
         'classificationOrgName': 'NCI-GTEx',
+        'classificationMap': {'NCI-GTEx': 'BBRB - GTEx'},
         filter: function (a, b) {
             return !!(a === 'BBRB' && b === 'GTEx - Postmortem Biospecimen Acquisition');
         },
