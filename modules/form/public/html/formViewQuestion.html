@@ -74,21 +74,15 @@
             </div>
             <div ng-if="question.question.uoms.length > 0" class="row questionUom">
                 Units of Measure:
-                <ui-select multiple ng-model="question.question.uoms" theme="select2" ng-disabled="true">
-                    <ui-select-match>{{$item}}</ui-select-match>
-                    <ui-select-choices repeat="uom in question.question.uom">
-                        {{uom}}
-                    </ui-select-choices>
-                </ui-select>
+                <span ng-repeat="uom in question.question.uoms">
+                    <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::uom}}</span>
+                </span>
             </div>
             <div class="row answerList" ng-if="question.question.answers && question.question.answers.length > 0">
                 Answer List:
-                <ui-select multiple ng-model="question.question.answers" theme="select2" ng-disabled="true">
-                    <ui-select-match>{{$item.valueMeaningName}}</ui-select-match>
-                    <ui-select-choices repeat="pv in question.question.cde.permissibleValues">
-                        {{pv.valueMeaningName}}
-                    </ui-select-choices>
-                </ui-select>
+                <span ng-repeat="pv in question.question.answers">
+                    <span class="label label-default" style="margin-right: 2px; background-color: #666">{{::pv.valueMeaningName}}</span>
+                </span>
                 {{question.question.multiselect?'(Multiple choices)':''}}
             </div>
             <div ng-if="question.question.defaultAnswer && question.question.defaultAnswer.length > 0" class="row defaultAnswer">
