@@ -150,13 +150,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 }
             }
         },
-        dataSet: {
-            heading: "Dataset",
-            includes: ['/cde/public/html/cdeDataset.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
         derivationRules: {
             heading: "Score / Derivations",
             includes: ['/cde/public/html/derivationRules.html'],
