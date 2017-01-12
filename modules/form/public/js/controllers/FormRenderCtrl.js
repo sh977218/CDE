@@ -6,23 +6,33 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
 
     $scope.formUrl = $location.absUrl();
 
-    $scope.classColumns = function (flag) {
-        if (!flag) return '';
-        if (!$scope.selection.selectedProfile || !$scope.selection.selectedProfile.numberOfColumns) return '';
-        switch ($scope.selection.selectedProfile.numberOfColumns) {
-            case 2:
-                return 'col-sm-6';
-            case 3:
-                return 'col-sm-4';
-            case 4:
-                return 'col-sm-3';
-            case 5:
-                return 'col-sm-2-4';
-            case 6:
-                return 'col-sm-2';
-            default:
-                return '';
+    $scope.classColumns = function (pvIndex, index) {
+        var result = '';
+
+        if ( pvIndex !== -1 && $scope.selection.selectedProfile && $scope.selection.selectedProfile.numberOfColumns) {
+            switch ($scope.selection.selectedProfile.numberOfColumns) {
+                case 2:
+                    result = 'col-sm-6';
+                    break;
+                case 3:
+                    result = 'col-sm-4';
+                    break;
+                case 4:
+                    result = 'col-sm-3';
+                    break;
+                case 5:
+                    result = 'col-sm-2-4';
+                    break;
+                case 6:
+                    result = 'col-sm-2';
+                    break;
+                default:
+            }
         }
+
+        if ($scope.isFirstInRow(pvIndex != undefined ? pvIndex : index))
+            result += ' clear';
+        return result;
     };
 
     $scope.SHOW_IF = 'Dynamic';
@@ -279,17 +289,26 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     $scope.hasLabel = function (question) {
         return question.label && !question.hideLabel;
     };
-    $scope.isOneLiner = function (question, numSubQuestions) {
-        return numSubQuestions &&
+    $scope.classAnswerLabel = function (question, numSubQuestions) {
+        if(numSubQuestions &&
             /*numSubQuestions === 1 &&*/
             !$scope.hasLabel(question) &&
-            question.question.datatype !== 'Value List';
+            question.question.datatype !== 'Value List')
+            return 'native-question-oneline-l';
+        else
+            return '';
     };
     $scope.isFirstInRow = function (index) {
         if ($scope.selection.selectedProfile && $scope.selection.selectedProfile.numberOfColumns > 0)
             return index % $scope.selection.selectedProfile.numberOfColumns == 0;
         else
             return index % 4 == 0;
+    };
+    $scope.classTextBox = function (flag) {
+        if (flag)
+            return 'input-group';
+        else
+            return '';
     };
 
     function getQuestions(fe, qLabel) {
