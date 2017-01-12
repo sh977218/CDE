@@ -18,9 +18,9 @@ public class CdeBoardsTest extends BoardTest {
         goToCdeByName(cdeName);
 
         clickElement(By.id("cdeLinkedBoardsBtn"));
-
         textPresent(board1);
         textNotPresent(board2);
+        clickElement(By.id("closeLinkedBoardBtn"));
 
         makePublic(board2);
 
