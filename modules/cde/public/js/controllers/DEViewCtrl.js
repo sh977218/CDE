@@ -32,7 +32,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     function setCurrentTab(thisTab) {
         $scope.currentTab = thisTab;
-    }
+    };
 
     $scope.switchCommentMode = function(){
         $scope.deferredEltLoaded.promise.then(function() {

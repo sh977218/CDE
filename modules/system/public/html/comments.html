@@ -13,7 +13,7 @@
     <br/>
 
 
-    <div class="comment" id="comment_{{commentIndex}}" ng-class="{currentTabComment:tabs[comment.linkedTab].active}"
+    <div class="comment" id="comment_{{commentIndex}}" ng-class="{currentTabComment:currentTab === comment.linkedTab}"
          ng-repeat="(commentIndex, comment) in eltComments">
         <div ng-if="tabs[comment.linkedTab].active" class="comment-arrow-outer"></div>
         <div ng-if="tabs[comment.linkedTab].active" class="comment-arrow-inner"></div>
