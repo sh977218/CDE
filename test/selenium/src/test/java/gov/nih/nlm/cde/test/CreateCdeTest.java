@@ -32,7 +32,7 @@ public class CreateCdeTest extends BaseClassificationTest {
 
         textPresent(definition);
 
-        showAllTabs();
+
         clickElement(By.id("classification_tab"));
 
         textPresent("Submission and Reporting");

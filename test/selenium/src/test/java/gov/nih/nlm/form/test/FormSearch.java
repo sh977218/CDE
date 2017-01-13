@@ -12,7 +12,7 @@ public class FormSearch extends BaseFormTest {
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
         String formName = "Find By CDE";
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("forms_tab"));
         textPresent("There is 1 form that uses this CDE");
         textPresent(formName);

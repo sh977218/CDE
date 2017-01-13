@@ -9,7 +9,7 @@ public class CdeDatasetTest extends BaseClassificationTest {
     public void cdeCheckDatasetExistTest() {
         String cdeName = "Immunology Gonorrhea Assay Laboratory Finding Result";
         goToCdeByName(cdeName);
-        showAllTabs();
+
         clickElement(By.id("dataSet_tab"));
         textPresent("phv00000369.v1.p1");
     }

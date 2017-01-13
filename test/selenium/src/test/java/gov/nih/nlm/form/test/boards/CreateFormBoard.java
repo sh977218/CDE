@@ -35,17 +35,17 @@ public class CreateFormBoard extends BoardTest {
         switchTabAndClose(0);
 
         goToFormByName(formName1);
-        showAllTabs();
+
         clickElement(By.id("classification_tab"));
         textPresent("Classify Board");
 
         goToFormByName(formName2);
-        showAllTabs();
+
         clickElement(By.id("classification_tab"));
         textPresent("Classify Board");
 
         goToFormByName(formName3);
-        showAllTabs();
+
         clickElement(By.id("classification_tab"));
         textPresent("Classify Board");
 

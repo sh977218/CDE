@@ -22,7 +22,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     public void retiredCdeById() {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Skull fracture anatomic site");
-        showAllTabs();
+
         changeStatusAndCheckVisibility();
         textPresent("this data element is retired.");
     }
@@ -32,7 +32,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
     public void retiredFormById() {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName("PTSD Checklist - Civilian (PCL-C)");
-        showAllTabs();
+
         changeStatusAndCheckVisibility();
         textPresent("this form is retired.");
     }

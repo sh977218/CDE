@@ -11,7 +11,7 @@ public class ScoreTest extends NlmCdeBaseTest {
     public void cannotScoreAsAnonymous() {
         mustBeLoggedOut();
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         textNotPresent("Add Score");
     }
@@ -21,7 +21,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("There are no CDEs in your Quick Board. Add some before you can create a rule.");
@@ -35,7 +35,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         emptyQuickBoardByModule("cde");
         goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
         clickElement(By.id("addToQuickBoard"));
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("You are trying to add a CDE to itself. Please edit your Quick Board.");
@@ -51,7 +51,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         clickElement(By.id("addToQuickBoard"));
         textPresent("Quick Board (1)");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("CDE Excisional Biopsy Colorectal Pathology Comment java.lang.String has a datatype other than 'Number' and may not be added to a score");
@@ -68,7 +68,7 @@ public class ScoreTest extends NlmCdeBaseTest {
         addCdeToQuickBoard("Disability Rating Scale (DRS) - Function level scale");
         hangon(1);
         goToCdeByName("DRS Total Score");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         clickElement(By.id("addNewScore"));
         textPresent("All 2 CDEs in your quickboard.");
@@ -79,11 +79,11 @@ public class ScoreTest extends NlmCdeBaseTest {
         newCdeVersion();
         clickElement(By.partialLinkText("Disability Rating Scale (DRS) - Function level scale"));
         textPresent("Level of functioning (Physical, mental, emotional,");
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         textPresent("This Data Element is used to derive to the following Data Elements:");
         clickElement(By.linkText("DRS Total Score"));
-        showAllTabs();
+
         clickElement(By.id("derivationRules_tab"));
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");

@@ -22,7 +22,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         closeAlert();
 
         goToCdeByName("Distance from Closest Margin Value");
-        showAllTabs();
+
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
@@ -44,7 +44,7 @@ public class AdminAddsPropertyKey extends NlmCdeBaseTest {
         textPresent("Org has been updated");
 
         goToCdeByName("Distance from Closest Margin Value");
-        showAllTabs();
+
         clickElement(By.linkText("Properties"));
         clickElement(By.id("addProperty"));
         clickElement(By.id("newPropertyKey"));
