@@ -93,7 +93,7 @@ function wipeRenderDisallowed (form, req, cb) {
 }
 
 function getFormForPublishing (form, req, res) {
-    if (req.isAuthenticated() && req.user.siteAdmin) {
+    if (req.isAuthenticated()) {
         fs.readFile("modules/form/public/html/nativeRenderStandalone.html", "UTF-8", function (err, fileStr) {
             var lines = fileStr.split("\n");
             var cssFileName = null, jsHash = null;
