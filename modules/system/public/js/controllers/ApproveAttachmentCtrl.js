@@ -13,7 +13,7 @@ angular.module('systemModule').controller('ApproveAttachmentCtrl', ['$scope', '$
         $http.get('/attachment/decline/' + msg.typeAttachmentApproval.fileid).then(function onSuccess(response) {
             Alert.addAlert("success", response.data);
             $scope.archiveMessage(msg);
-        }).error(function onError(response) {
+        }).catch(function onError(response) {
             Alert.addAlert("danger", response.data);
         });
     };    
