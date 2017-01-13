@@ -282,7 +282,7 @@ exports.init = function (app) {
         req.session.destroy(function () {
             req.logout();
             res.clearCookie('connect.sid');
-            res.redirect('/#/login');
+            res.redirect('/login');
         });
     });
 
