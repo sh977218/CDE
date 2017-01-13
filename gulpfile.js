@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-//    gnf = require('gulp-npm-files'),
     config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
@@ -25,10 +24,6 @@ gulp.task('npm', function () {
     gulp.src(['./package.json'])
         .pipe(install());
 });
-
-/*gulp.task('copyNpmDeps', ['npm'], function() {
- gulp.src(gnf(), {base:'./'}).pipe(gulp.dest(config.node.buildDir));
- });*/
 
 gulp.task('copyNpmDeps', ['npm'], function () {
     gulp.src(['./package.json'])
