@@ -13,7 +13,7 @@ public class FormSearch extends BaseFormTest {
         String formName = "Find By CDE";
         goToCdeByName(cdeName);
 
-        clickElement(By.id("forms_tab"));
+        clickElement(By.id("cdeLinkedFormsBtn"));
         textPresent("There is 1 form that uses this CDE");
         textPresent(formName);
         clickElement(By.id("seeAllLinkedFormsButton"));

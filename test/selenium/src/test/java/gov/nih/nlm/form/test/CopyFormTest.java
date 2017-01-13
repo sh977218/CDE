@@ -25,7 +25,7 @@ public class CopyFormTest extends BaseClassificationTest {
         textNotPresent("LOINC");
         textNotPresent("CHAR");
 
-        clickElement(By.id("status_tab"));
+
         textPresent("Copy of: XyqIIyrBtx");
         clickElement(By.id("ids_tab"));
         textNotPresent("1234567");

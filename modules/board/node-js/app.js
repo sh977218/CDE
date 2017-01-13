@@ -26,6 +26,11 @@ exports.init = function (app, daoManager) {
             res.send(result);
         });
     });
+    app.get('/formBoards/:tinyId', exportShared.nocacheMiddleware, function (req, res) {
+        mongo_board.publicBoardsByFormTinyId(req.params.tinyId, function (result) {
+            res.send(result);
+        });
+    });
 
     app.delete('/pin/:dao/:tinyId/:boardId', function (req, res) {
         if (req.isAuthenticated()) {

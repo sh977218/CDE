@@ -13,7 +13,7 @@ public class MltDoesntShowRetired extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName(cdeName);
 
-        clickElement(By.linkText("More Like This"));
+        clickElement(By.id("cdeMoreLikeThisBtn"));
         textNotPresent(cdeName, By.id("mltAccordion"));
     }
 }

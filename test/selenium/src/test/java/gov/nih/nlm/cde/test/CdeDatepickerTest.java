@@ -17,7 +17,7 @@ public class CdeDatepickerTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale");
 
-        clickElement(By.id("status_tab"));
+
         clickElement(By.id("editStatus"));
         textPresent("Update Registration Status");
         clickElement(By.id("effectiveDateDatepicker"));

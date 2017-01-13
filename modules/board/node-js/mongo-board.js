@@ -47,6 +47,11 @@ exports.publicBoardsByDeTinyId = function (tinyId, callback) {
         callback(result);
     });
 };
+exports.publicBoardsByFormTinyId = function (tinyId, callback) {
+    PinningBoard.find({"pins.formTinyId": tinyId, "shareStatus": "Public"}).exec(function (err, result) {
+        callback(result);
+    });
+};
 
 exports.nbBoardsByUserId = function (userId, callback) {
     PinningBoard.count({"owner.userId": userId}).exec(callback);

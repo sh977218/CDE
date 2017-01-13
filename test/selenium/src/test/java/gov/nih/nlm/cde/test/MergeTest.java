@@ -84,10 +84,11 @@ public class MergeTest extends NlmCdeBaseTest {
         textPresent("Colitis Value");
         clickElement(By.id("referenceDocument_tab"));
         textPresent("Colitis ref doc");
-        clickElement(By.id("dataSet_tab"));
-        textPresent("Colitis note");
         clickElement(By.id("derivationRules_tab"));
         textPresent("Biomarker Gene Staining Method Score");
+        clickElement(By.id("general_tab"));
+        clickElement(By.id("cdeDataSetBtn"));
+        textPresent("Colitis note");
 
         goToCdeByName("Common Toxicity Criteria Adverse Event Colitis Grade");
 
