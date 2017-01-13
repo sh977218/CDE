@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-    gnf = require('gulp-npm-files'),
+//    gnf = require('gulp-npm-files'),
     config = require('./modules/system/node-js/parseConfig'),
     usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
@@ -32,8 +32,8 @@ gulp.task('npm', function () {
 
 gulp.task('copyNpmDeps', ['npm'], function () {
     gulp.src(['./package.json'])
-        .pipe(install({production: true}))
-        .pipe(gulp.dest(config.node.buildDir));
+        .pipe(gulp.dest(config.node.buildDir))
+        .pipe(install({production: true}));
 });
 
 gulp.task('bower', function () {
