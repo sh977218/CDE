@@ -85,6 +85,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         } catch (Exception e) {
+            scrollDownBy(50);
             clickElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[contains(@class,'fa-pencil')]"));
             Assert.assertTrue(findElement(By.xpath("//*[@id='" + id + "']//div[contains(@class,'editIconDiv')]//i[1]")).getAttribute("class").contains("fa-check"));
         }
@@ -124,7 +125,8 @@ public class BaseFormTest extends NlmCdeBaseTest {
                 driver.findElement(By.id(id));
                 driver.manage().timeouts().implicitlyWait(Integer.parseInt(System.getProperty("timeout")), TimeUnit.SECONDS);
                 break;
-            } catch (org.openqa.selenium.NoSuchElementException e) {}
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+            }
             try {
                 driver.findElement(By.id("scrollMore"));
                 je.executeScript("document.getElementById('scrollMore').scrollIntoView(true);");
