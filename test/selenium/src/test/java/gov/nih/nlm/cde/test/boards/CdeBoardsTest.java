@@ -17,16 +17,16 @@ public class CdeBoardsTest extends BoardTest {
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("boards_tab"));
-
+        clickElement(By.id("cdeLinkedBoardsBtn"));
         textPresent(board1);
         textNotPresent(board2);
+        clickElement(By.id("closeLinkedBoardBtn"));
 
         makePublic(board2);
 
         goToCdeByName(cdeName);
 
-        clickElement(By.id("boards_tab"));
+        clickElement(By.id("cdeLinkedBoardsBtn"));
 
         textPresent(board1);
         textPresent(board2);

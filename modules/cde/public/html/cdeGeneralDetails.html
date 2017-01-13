@@ -5,26 +5,21 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-5 questionSectionLabel text-right">Status:</div>
-    <div class="col-sm-7" id="registrationStatus">{{elt.registrationState.registrationStatus | placeHoldEmpty}}
-    </div>
-</div>
-<div class="row">
     <div class="col-sm-5 questionSectionLabel text-right">Steward:</div>
     <div class="col-sm-7" id="dd_general_steward">
-                <span ng-show="editDtMode">
-                    <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name"
-                            ng-options="myOrg for myOrg in myOrgs"></select>
-                    <i id="elt.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(elt)"></i>&nbsp;&nbsp;
-                    <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
-                       ng-click="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
-                </span>
-                <span ng-hide="editDtMode">
-                    <i title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit"
-                       ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i>
-                    <a uib-tooltip-html="orgDetailsInfoHtml" tooltip-popup-delay="500" tooltip-placement="right"
-                       tooltip-append-to-body="true" id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
-                </span>
+        <span ng-show="editDtMode">
+            <select id="elt.stewardOrg.name" ng-model="elt.stewardOrg.name"
+                    ng-options="myOrg for myOrg in myOrgs"></select>
+            <i id="elt.stewardOrg.name.ok" class="fa fa-check" ng-click="editDtMode = false; stageElt(elt)"></i>&nbsp;&nbsp;
+            <i id="elt.stewardOrg.name.cancel" class="fa fa-times"
+               ng-click="elt.stewardOrg.name = oldStewardName; editDtMode = false;"></i>
+        </span>
+        <span ng-hide="editDtMode">
+            <i title="Edit Steward" role="link" ng-show="canCurate" class="fa fa-edit"
+               ng-click="oldStewardName = elt.stewardOrg.name; editDtMode = true" id="dd_edit_steward"></i>
+            <a uib-tooltip-html="orgDetailsInfoHtml" tooltip-popup-delay="500" tooltip-placement="right"
+               tooltip-append-to-body="true" id="dd_general_steward_name">{{elt.stewardOrg.name}}</a>
+        </span>
     </div>
 </div>
 <div class="row">
@@ -62,10 +57,5 @@
     <div class="col-sm-7">
         <a ng-href="/sdcview/?cdeId={{elt._id}}" aria-label="SDC View" target="_blank">
             <i class="fa fa-share-square-o"></i> SDC View</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-5 questionSectionLabel text-right"></div>
-    <div class="col-sm-7">
     </div>
 </div>

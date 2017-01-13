@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h3 class="modal-title">Linked Forms</h3>
+</div>
+<div class="modal-body"  ng-controller="ListCtrl">
+    <div class="overflowHidden" ng-controller="LinkedFormsModalCtrl">
+        <p ng-bind="getFormText()"></p>
+        <a id="seeAllLinkedFormsButton" ng-href="/form/search?q={{elt.tinyId}}" class="btn btn-default" target="_blank"
+           ng-if="forms.length > 0">
+            <i class="fa fa-file-text-o"></i> See all linked forms</a>
+        <hr/>
+        <div ng-if="forms.length > 0">
+            <h4>Preview: </h4>
+            <div id="linkedFormsAccordionList" ng-include="'/form/public/html/formSummaryList.html'"></div>
+        </div>
+    </div>
+</div>

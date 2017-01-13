@@ -52,14 +52,6 @@
                 <li ng-if="!embedded">
                     <span ng-include="'/system/public/html/switchListViewControls.html'"></span>
                 </li>
-                <li ng-if="!embedded">
-                    <button ng-if="listViewType === 'accordion'" ng-show="totalItems>0"
-                            ng-click="openCloseAllSwitch(elts, 'list');"
-                            class="btn btn-default  btn-checkbox navbar-btn" id="openAllCb">
-                        <span ng-hide="openCloseAllModel.list"><i class="fa fa-expand"></i> Expand All</span>
-                        <span ng-show="openCloseAllModel.list"><i class="fa fa-compress"></i> Collapse All</span>
-                    </button>
-                </li>
                 <li ng-if="!embedded" class="dropdown" ng-controller="ExportCtrl">
                     <button id="export" type="button" class="btn btn-default dropdown-toggle navbar-btn "
                             data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

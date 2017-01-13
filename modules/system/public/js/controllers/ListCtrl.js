@@ -276,7 +276,6 @@ angular.module('systemModule').controller('ListCtrl',
                 });
             });
             $scope.accordionListStyle = "";
-            $scope.openCloseAll($scope[type + 's'], "list");
 
             if ((settings.searchTerm && settings.searchTerm.length > 0) || settings.selectedOrg || settings.meshTree) {
                 $scope.selectedMainAreaMode = mainAreaModes.searchResult;

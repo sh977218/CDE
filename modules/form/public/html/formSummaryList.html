@@ -8,7 +8,7 @@
         <h4>
             <span ng-repeat="i in includeInQuickBoard" ng-include="i"></span>
             <a ng-href="/formView/?tinyId={{elt.tinyId}}" ng-bind-html="elt.primaryNameCopy"
-               id="linkToElt_{{$index}}"></a>
+               id="linkToElt_{{$index}}" ng-click='$dismiss()'></a>
             <small>{{elt.registrationState.registrationStatus}}</small>
             <span ng-repeat="i in includeInAccordion" ng-include="i"></span>
             <small tabindex="0" class="matched-by hidden-xs" ng-if="elt.highlight.matchedBy">Matched by: <strong>

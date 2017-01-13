@@ -83,12 +83,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab(thisTab);
             }
         },
-        status: {
-            heading: "Status", includes: ['/system/public/html/status.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
         referenceDocument: {
             heading: "Reference Documents", includes: ['/system/public/html/referenceDocument.html'],
             select: function (thisTab) {
@@ -110,31 +104,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
                 setCurrentTab(thisTab);
             }
         },
-        forms: {
-            heading: "Linked Forms", includes: ['/cde/public/html/forms.html'],
-            select: function () {
-                setCurrentTab();
-                $scope.formsCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadLinkedForms');});
-            }
-        },
-        boards: {
-            heading: "Boards", includes: ['/cde/public/html/listOfBoards.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
-            }
-        },
         attachments: {
             heading: "Attachments", includes: ['/system/public/html/attachments.html'],
             select: function (thisTab) {
                 setCurrentTab(thisTab);
-            }
-        },
-        mlt: {
-            heading: "More Like This",
-            includes: ['/cde/public/html/deMlt.html'],
-            select: function () {
-                setCurrentTab();
-                $scope.mltCtrlLoadedPromise.promise.then(function() {$scope.$broadcast('loadMlt');});
             }
         },
         history: {
@@ -148,13 +121,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
                         $scope.priorCdes.splice(0, 0, $scope.elt);
                     });
                 }
-            }
-        },
-        dataSet: {
-            heading: "Dataset",
-            includes: ['/cde/public/html/cdeDataset.html'],
-            select: function (thisTab) {
-                setCurrentTab(thisTab);
             }
         },
         derivationRules: {
@@ -173,6 +139,93 @@ angular.module('cdeModule').controller('DEViewCtrl',
         }
     };
 
+    $scope.groups = [
+        {
+            btnId: 'cdeDataSetBtn',
+            title: 'Data Set',
+            open: function () {
+                $modal.open({
+                    templateUrl: '/cde/public/html/cdeDatasetModal.html',
+                    controller: ['$scope', 'elt', function ($scope, elt) {
+                        $scope.elt = elt;
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeLinkedFormsBtn',
+            title: 'Linked Forms',
+            open: function () {
+                $modal.open({
+                    size: 'lg',
+                    animation: false,
+                    template: "<div ng-include=\"'/cde/public/html/linkedForms.html'\"/>",
+                    controller: ['$scope', 'elt', 'OldModule', function ($scope, elt,oldModule) {
+                        $scope.elt = elt;
+                        $scope.oldModule = oldModule;
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        },
+                        OldModule: function () {
+                            return $scope.module;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeLinkedBoardsBtn',
+            title: 'Linked Boards',
+            open: function () {
+                $modal.open({
+                    templateUrl: '/system/public/html/linkedBoards.html',
+                    controller: ['$scope', 'tinyId', function ($scope, tinyId) {
+                        $scope.includeInAccordion = ["/cde/public/html/accordion/pinAccordionActions.html",
+                            "/system/public/html/accordion/addToQuickBoardActions.html"];
+                        $http.get("/deBoards/" + tinyId).then(function (response) {
+                            if (response.error) {
+                                $log.error(response.error);
+                                $scope.boards = [];
+                            } else {
+                                $scope.boards = response.data;
+                            }
+                        });
+                    }],
+                    resolve: {
+                        tinyId: function () {
+                            return $scope.elt.tinyId;
+                        }
+                    }
+                });
+            }
+        }, {
+            btnId: 'cdeMoreLikeThisBtn',
+            title: 'More Like This',
+            open: function () {
+                $modal.open({
+                    size: 'lg',
+                    template: "<div ng-include=\"'/cde/public/html/cdeMoreLikeThisModal.html'\"/>",
+                    controller: ['$scope', 'elt', function ($scope, elt) {
+                        $http({method: "GET", url: "/moreLikeCde/" +elt.tinyId}).error(function () {
+                            $log.error("Unable to retrieve MLT");
+                        }).success(function (data) {
+                            $scope.cdes = data.cdes;
+                        });
+                    }],
+                    resolve: {
+                        elt: function () {
+                            return $scope.elt;
+                        }
+                    }
+                })
+            }
+        }
+    ];
     $scope.deferredEltLoaded = $q.defer();
 
     $scope.$on('$locationChangeStart', function( event ) {
@@ -416,6 +469,18 @@ angular.module('cdeModule').controller('DEViewCtrl',
 
     TourContent.steps = [
         {
+            element: "#discussBtn",
+            title: "Discussions",
+            content: "This button allow users to post comments on any given CDEs. ",
+            placement: "bottom"
+        },
+        {
+            element: "#copyCdeBtn",
+            title: "Copy",
+            content: "This button can make a copy of this CDE.",
+            placement: "bottom"
+        },
+        {
             element: "#general_tab",
             title: "General Details",
             content: "This section shows an overview of the CDE attributes."
@@ -427,16 +492,10 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "Click here to see what type of value are allowed by this CDE."
         },
         {
-            element: "#dd_valueType",
-            placement: "top",
-            title: "Value Type",
-            content: "If the value type is 'Value List', then this CDE accepts values from a list. Date, free text, integer are other possibilities. "
-        },
-        {
-            element: "#naming_tab"
-            , title: "Names"
-            , placement: "bottom"
-            , content: "Any CDE may have multiple names, often given within a particular context."
+            element: "#naming_tab",
+            title: "Names",
+            placement: "bottom",
+            content: "Any CDE may have multiple names, often given within a particular context."
         },
         {
             element: "#classification_tab",
@@ -449,12 +508,6 @@ angular.module('cdeModule').controller('DEViewCtrl',
             title: "Concepts",
             placement: "bottom",
             content: "Data Elements are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC."
-        },
-        {
-            element: "#status_tab",
-            title: "Status",
-            placement: "bottom",
-            content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
         },
         {
             element: "#referenceDocument_tab",
@@ -475,39 +528,9 @@ angular.module('cdeModule').controller('DEViewCtrl',
             content: "CDE may be identified multiple times across CDE users. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here."
         },
         {
-            element: "#forms_tab",
-            title: "Forms",
-            placement: "bottom",
-            content: "If a the CDE is used in a Form, it will be displayed here. "
-        },
-        {
-            element: "#discussions_tab",
-            title: "Discussions",
-            content: "In this section, registered users are able to post comments on any given CDEs. ",
-            placement: "bottom"
-        },
-        {
-            element: "#boards_tab",
-            title: "Boards",
-            content: "If a CDE is used in a public board, the board will be shown in this section.",
-            placement: "bottom"
-        },
-        {
             element: "#attachments_tab",
             title: "Attachments",
             content: "If a file is attached to a CDE, it can be view or downloaded here.",
-            placement: "bottom"
-        },
-        {
-            element: "#derivationRules_tab",
-            title: "Derivation Rules",
-            content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
-            placement: "bottom"
-        },
-        {
-            element: "#mlt_tab",
-            title: "More Like This",
-            content: "This section lists CDEs that are most similar to the CDE currently viewed.",
             placement: "bottom"
         },
         {
@@ -517,10 +540,52 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "bottom"
         },
         {
-            element: "#copyCdeBtn",
-            title: "Copy",
-            content: "This button can make a copy of this CDE.",
+            element: "#derivationRules_tab",
+            title: "Derivation Rules",
+            content: "Derivation Rules are used to connect CDEs together, for example, in the form of a score.",
             placement: "bottom"
+        },
+        {
+            element: "#validRules_tab",
+            title: "Validation Rules",
+            content: "Validation Rules are used to validate CDE. ",
+            placement: "bottom"
+        },
+        {
+            element: "#sources_0",
+            placement: "top",
+            title: "Sources",
+            content: "This section shows the where this CDE load from."
+        },
+        {
+            element: "#registrationStateDiv",
+            title: "Status",
+            placement: "top",
+            content: "This section shows the status of the CDE, and optionally dates and/or administrative status."
+        },
+        {
+            element: "#cdeDataSetBtn",
+            title: "Data Sets",
+            content: "This section lists all data sets this CDE has.",
+            placement: "top"
+        },
+        {
+            element: "#cdeLinkedFormsBtn",
+            title: "Forms",
+            placement: "top",
+            content: "If a the CDE is used in a Form, it will be displayed here. "
+        },
+        {
+            element: "#cdeLinkedBoardsBtn",
+            title: "Boards",
+            content: "If a CDE is used in a public board, the board will be shown in this section.",
+            placement: "top"
+        },
+        {
+            element: "#cdeMoreLikeThisBtn",
+            title: "More Like This",
+            content: "This section lists CDEs that are most similar to the CDE currently viewed.",
+            placement: "top"
         }
     ];
 
