@@ -477,7 +477,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
 
         function flattenFormQuestion(fe, section) {
             fe.questionId = createId();
-            q = {'question': fe.label, 'name': fe.questionId, 'cdeId': fe.question.cde.tinyId};
+            q = {'question': fe.label, 'name': fe.questionId, 'ids': fe.question.cde.ids, 'tinyId': fe.question.cde.tinyId};
             if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
             questions.push(q);
             fe.question.answers && fe.question.answers.forEach(function (a) {

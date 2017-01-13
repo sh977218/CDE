@@ -189,4 +189,23 @@ exports.init = function (app, daoManager) {
             }
         });
     });
+
+    // This is for tests only
+    app.post('/sendMockFormData', function (req, res) {
+        console.log(JSON.stringify(req.body));
+        if (
+            req.body.q1 === "1" &&
+            req.body.q2 === "2" &&
+            req.body.q3 === "Lab Name" &&
+            req.body.mapping === "{\"sections\":[{\"section\":\"\",\"questions\":[{\"question\":\"Number of CAG repeats on a larger allele\",\"name\":\"q1\",\"cdeId\":\"VTO0Feb6NSC\"},{\"question\":\"Number of CAG repeats on a smaller allele\",\"name\":\"q2\",\"cdeId\":\"uw_koHkZ_JT\"},{\"question\":\"Name of laboratory that performed this molecular study\",\"name\":\"q3\",\"cdeId\":\"EdUB2kWmV61\"}]}]}"
+        &&  req.body.formUrl.indexOf("http://localhost:3001/data") === 0
+        ) {
+            res.send("<html><body>Form Submitted</body></html>");
+        } else {
+            res.status(401).send();
+        }
+    });
+
+
+
 };
