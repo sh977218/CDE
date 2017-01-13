@@ -6,7 +6,8 @@ OrgModel.find({}).exec(function (findOrgError, orgs) {
     if (findOrgError) throw findOrgError;
     else {
         async.forEach(orgs, function (org, doneOneOrg) {
-            org.nameTags = org.nameContexts;
+            org.nameTags = org.get('nameContexts');
+            org.markModified('nameTags');
             org.save(function (saveOrgError) {
                 if (saveOrgError) throw saveOrgError;
                 else {
