@@ -555,7 +555,7 @@ angular.module('cdeModule').controller('DEViewCtrl',
             placement: "bottom"
         },
         {
-            element: "#sourcesDiv",
+            element: "#sources_0",
             placement: "top",
             title: "Sources",
             content: "This section shows the where this CDE load from."
