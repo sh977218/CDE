@@ -35,6 +35,13 @@ angular.module('systemModule').controller('ProfileCtrl',
         }
     });
 
+    $scope.removePublishedForm = function(pf) {
+        $scope.user.publishedForms = $scope.user.publishedForms.filter(function (p) {
+            return p.id !== pf.id;
+        });
+        $scope.saveProfile();
+    };
+
     $scope.getComments = function (page) {
         $http.get("/commentsFor/" + userResource.user.username + "/" + (page-1) * 30 + "/30").then(function(result) {
             $scope.comments.latestComments = result.data;

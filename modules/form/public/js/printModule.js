@@ -37,7 +37,6 @@ function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert, $ti
 
     var args = $location.search();
     var _id = args.tinyId?args.tinyId:args._id + "";
-    //var query = {formId: args.tinyId, type: 'tinyId'};
     var profileSelected = args.profile;
     var defaultProfile = args.defaultProfile;
     var overrideDisplayType = args.displayType;

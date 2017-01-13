@@ -47,7 +47,8 @@
             </thead>
             <tbody>
                 <tr ng-repeat="pf in user.publishedForms">
-                    <td><a ng-href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a></td>
+                    <td><a ng-href="/data/{{pf.id}}?submit" target="_blank">
+                        {{pf.name}}</a> <i class="fa fa-trash" alt="Remove" ng-click="removePublishedForm(pf)"></i></td>
                 </tr>
             </tbody>
         </table>

@@ -615,18 +615,18 @@ angular.module('formModule').controller
         });
     };
 
-    $scope.prepareGoogleSpreadsheetExport = function () {
+    $scope.preparePublishExport = function () {
         $modal.open({
             animation: false,
-            templateUrl: '/form/public/html/googleSpreadsheetExportModal.html',
+            templateUrl: '/form/public/html/publishedFormExportModal.html',
             controller: ['$scope', function($scope) {
                 $scope.formInput = {};
             }]
         }).result.then(function (formInput) {
-            $http.post("/publishForGoogleSpreadsheet", {
+            $http.post("/publishForm", {
                 formId: $scope.elt._id,
                 publishedFormName: formInput.publishedFormName,
-                googleUrl: formInput.googleUrl
+                endpointUrl: formInput.endpointUrl
             }).then(function () {
                 Alert.addAlert("info", "Done. Go to your profile to see all your published forms");
             });

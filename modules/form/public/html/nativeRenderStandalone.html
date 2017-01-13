@@ -56,7 +56,7 @@
     <div ng-if="elt" ng-controller="FormRenderCtrl">
         <h2 class="ng-cloak">{{elt.naming[0].designation}}</h2>
         <form name="sectionLabel" role="form" class="form-horizontal"
-			  action="https://script.google.com/macros/s/AKfycbwSiPwirD2yfzAdHLw_VuiTWZ984CH7MUimO99MKt-RjjPyCOC_/exec"
+			  action="{{getEndpointUrl()}}"
 			  method="post">
 			<div ng-view ng-if="!elt">
 				<h2 class="text-center mt20">Loading...</h2>
@@ -68,7 +68,7 @@
 			<input type="hidden" value="{{formUrl}}" name="formUrl">
 			<input type="hidden" name="mapping" ng-value="mapping">
 			<input type="submit" class="ng-cloak btn btn-default" id="button_submit" ng-if="submitForm"
-					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" >
+					style="width: 100%; margin-left: 0; margin-top: 20px; font-weight: bold" ng-disabled="sectionLabel.$invalid">
         </form>
 	</div>
 </div>

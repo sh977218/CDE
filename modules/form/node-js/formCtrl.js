@@ -92,7 +92,7 @@ function wipeRenderDisallowed (form, req, cb) {
     }
 }
 
-function getFormForGoogleSpreadsheet (form, req, res) {
+function getFormForPublishing (form, req, res) {
     if (req.isAuthenticated() && req.user.siteAdmin) {
         fs.readFile("modules/form/public/html/nativeRenderStandalone.html", "UTF-8", function (err, fileStr) {
             var lines = fileStr.split("\n");
@@ -138,7 +138,7 @@ function getFormForGoogleSpreadsheet (form, req, res) {
 
             if (!jsFileName || !cssFileName) { // dev
                 fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" +
-                    "window.googleScriptUrl = '" + req.body.googleUrl + "';</script>");
+                    "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");
                 storeHtmlInDb(req, res, form, fileStr);
             } else {
                 //Remove all CSS and JS link
@@ -170,9 +170,9 @@ function getFormForGoogleSpreadsheet (form, req, res) {
     }
 }
 
-exports.publishForGoogleSpreadsheet = function  (req, res) {
+exports.publishForm = function  (req, res) {
     mongo_data_form.eltByTinyId(req.body.formId, function (err, form) {
-        getFormForGoogleSpreadsheet (form, req, res);
+        getFormForPublishing(form, req, res);
     });
 };
 

@@ -59,8 +59,7 @@
                             Schema</a>
                     </li>
                     <li ng-if="user._id">
-                        <!--<a id='googleSpreadsheetExport' ng-href="form/{{elt._id}}?type=googleSpreadsheet" target="_blank">Google Spreadsheet</a>-->
-                        <a id='googleSpreadsheetExport' ng-click="prepareGoogleSpreadsheetExport()" target="_blank">Google Spreadsheet</a>
+                        <a id='formPublishExport' ng-click="preparePublishExport()" target="_blank">Published Form</a>
                     </li>
                     <li ng-if="user._id && enableBeta">
                         <a id='nihRedCap' ng-href="form/{{elt._id}}?type=REDCap" target="_blank">

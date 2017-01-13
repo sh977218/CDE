@@ -396,6 +396,7 @@ exports.init = function (app) {
             } else {
                 mongo_data_system.userById(req.user._id, function (err, user) {
                     user.email = req.body.email;
+                    user.publishedForms = req.body.publishedForms;
                     user.save(function (err) {
                         if (err) res.status(500).send("Unable to save");
                         res.send("OK");

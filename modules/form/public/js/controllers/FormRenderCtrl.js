@@ -1,5 +1,5 @@
-angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location',
-    function ($scope, $location)
+angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location', '$sce',
+    function ($scope, $location, $sce)
 {
 
     $scope.displayInstruction = false;
@@ -53,6 +53,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         }
     };
 
+    $scope.getEndpointUrl = function () {
+        return $sce.trustAsResourceUrl(window.endpointUrl);
+    };
+
     $scope.selection = {};
     var setSelectedProfile = function () {
         if ($scope.elt && $scope.elt.displayProfiles && $scope.elt.displayProfiles.length > 0 &&
@@ -71,7 +75,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
     };
 
     $scope.createSubmitMapping = function () {
-        if (window.googleScriptUrl) {
+        if (window.endpointUrl) {
             $scope.mapping = JSON.stringify({sections: flattenForm($scope.elt.formElements)});
         }
     };
@@ -461,7 +465,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
         return result;
 
         function createId() {
-            return ++last_id;
+            return "q" + ++last_id;
         }
 
         function flattenFormSection(formElements, section) {
@@ -473,7 +477,7 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
 
         function flattenFormQuestion(fe, section) {
             fe.questionId = createId();
-            q = {'question': fe.label, 'name': fe.questionId};
+            q = {'question': fe.label, 'name': fe.questionId, 'cdeId': fe.question.cde.tinyId};
             if (fe.question.answerUom) q.answerUom = fe.question.answerUom;
             questions.push(q);
             fe.question.answers && fe.question.answers.forEach(function (a) {

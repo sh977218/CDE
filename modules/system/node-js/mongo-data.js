@@ -352,7 +352,6 @@ exports.getFile = function(user, id, res) {
         }
         gfs.findOne({ _id: id}, function (err, file) {
             res.contentType(file.contentType);
-            console.log("contentType: " + file.contentType);
             if (!file.metadata || !file.metadata.status || file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer"))
                 gfs.createReadStream({ _id: id }).pipe(res);
             else res.status(403).send("This file has not been approved yet.");

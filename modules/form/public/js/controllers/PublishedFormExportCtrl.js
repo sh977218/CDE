@@ -1,4 +1,4 @@
 angular.module('formModule').controller
-('GoogleSpreadsheetExportCtrl', ['$scope', function($scope) {
+('PublishedFormExportCtrl', ['$scope', function($scope) {
     $scope.formInput = {};
 }]);
