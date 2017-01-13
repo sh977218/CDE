@@ -5,7 +5,7 @@ angular.module('systemModule').controller('NamingCtrl', ['$scope', '$uibModal', 
 
         function refreshContexts(){
             OrgHelpers.deferred.promise.then(function () {
-                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameContexts;
+                $scope.allContexts = OrgHelpers.orgsDetailedInfo[$scope.elt.stewardOrg.name].nameTags;
                 contextsLoaded.resolve();
             });
         }

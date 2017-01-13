@@ -121,6 +121,10 @@ var orgJson = {
         type: Array,
         default: []
     }
+    , nameTags: {
+        type: Array,
+        default: []
+    }
     , extraInfo: String
     , cdeStatusValidationRules: [schemas.statusValidationRuleSchema]
     , htmlOverview: String

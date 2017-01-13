@@ -167,7 +167,7 @@ exports.listOrgsDetailedInfo = function (callback) {
         "extraInfo": 1,
         "cdeStatusValidationRules": 1,
         "propertyKeys": 1,
-        "nameContexts": 1,
+        "nameTags": 1,
         "htmlOverview": 1
     }).exec(callback);
 };
