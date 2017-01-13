@@ -1,8 +1,8 @@
 angular.module("printModule", ['systemModule', 'cdeModule', 'formModule', 'articleModule'])
 
 .controller('PrintCtrl',
-        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert', '$timeout',
-function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert, $timeout) {
+        ['$scope', '$http', '$q', 'userResource', 'isAllowedModel', '$location', 'Alert',
+function ($scope, $http, $q, userResource, isAllowedModel, $location, Alert) {
     function fetchWholeForm(form, callback) {
         var maxDepth = 8;
         var depth = 0;

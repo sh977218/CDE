@@ -8,12 +8,6 @@ angular.module('cdeModule').controller('QuickBoardCtrl',
             $scope.defaultQuickBoard = localStorageService.get("defaultQuickBoard");
             $scope.showSideBySideView = false;
 
-            $scope.openCloseAll = function (elts, type) {
-                for (var i = 0; i < elts.length; i++) {
-                    elts[i].isOpen = $scope.openCloseAllModel[type];
-                }
-            };
-            $scope.openCloseAll(QuickBoard.elts, "quickboard");
             $scope.setDefaultQuickBoard = function (selectedQuickBoard) {
                 $scope.eltsToCompareMap = {};
                 localStorageService.set("defaultQuickBoard", selectedQuickBoard);

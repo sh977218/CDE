@@ -51,7 +51,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         textPresent(subClassification);
         clickElement(By.id("submit"));
 
-        clickElement(By.id("status_tab"));
+
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Qualified");
         clickElement(By.id("saveRegStatus"));

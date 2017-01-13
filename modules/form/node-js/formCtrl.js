@@ -144,7 +144,8 @@ function getFormForPublishing (form, req, res) {
                 //Remove all CSS and JS link
                 fileStr = lines.filter(l => !l.includes("<link") && !l.includes("<script src=")).join("\n");
 
-                fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";</script>");
+                fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" +
+                        "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");
                 fs.readFile("modules/form/public/assets/css/" + cssFileName, "UTF-8", function (err, cssStr) {
                     if (err) console.log(err);
                     fileStr = fileStr.replace("<!-- ICSSH -->", "<style>" + cssStr + "</style>");

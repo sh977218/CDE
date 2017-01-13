@@ -39,7 +39,7 @@ public abstract class CommentTest extends CommonTest {
         mustBeLoggedInAs(test_username, password);
         goToEltByName(eltName);
 
-        clickElement(By.id("status_tab"));
+
         addComment("My First Comment about Status!");
         textPresent("My First Comment about Status!");
         Assert.assertEquals(true, findElement(By.id("comment_0")).getAttribute("class").contains("currentTabComment"));

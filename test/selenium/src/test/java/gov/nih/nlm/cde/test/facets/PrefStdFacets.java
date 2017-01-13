@@ -13,7 +13,7 @@ public class PrefStdFacets extends NlmCdeBaseTest {
         String cdeName = "Noncompliant Reason Text";
         goToCdeByName(cdeName);
 
-        clickElement(By.id("status_tab"));
+
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("registrationStatus"))).selectByVisibleText("Preferred Standard");
         textPresent("Standard elements cannot be edited by their stewards");
