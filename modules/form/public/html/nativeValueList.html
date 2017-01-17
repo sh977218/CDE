@@ -21,8 +21,7 @@
                    checklist-value="pv.permissibleValue"
                    ng-required="formElement.question.required"
                    ng-disabled="!formElement.question.editable"/>
-            </span>{{getLabel(pv)}}
-        </label>
+            </span>{{getLabel(pv)}}</label>
         <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false"
              ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
     </div>

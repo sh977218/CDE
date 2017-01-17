@@ -12,7 +12,7 @@ public class PublishForm extends NlmCdeBaseTest {
         goToFormByName("DNA Elements - Information from the Laboratory");
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
-        findElement(By.name("endpointUrl")).sendKeys("http://localhost:3001/sendMockFormData");
+        findElement(By.name("endpointUrl")).sendKeys(baseUrl + "/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys("My Published Form");
         clickElement(By.id("goExport"));
         textPresent("Done. Go to your profile to see all your published forms");
