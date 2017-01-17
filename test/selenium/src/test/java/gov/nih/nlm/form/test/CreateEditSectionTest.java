@@ -15,7 +15,9 @@ public class CreateEditSectionTest extends BaseFormTest {
         clickElement(By.id("description_tab"));
 
         addSection("Section 1", null, "top");
+        scrollDownBy(50);
         addSection("Section 2", "1 or more", "bottom");
+        scrollDownBy(50);
         addSection("Section 3", "0 or more", "bottom");
 
         saveForm();

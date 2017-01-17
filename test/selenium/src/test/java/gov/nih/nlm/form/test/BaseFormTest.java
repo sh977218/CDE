@@ -57,7 +57,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void addSection(String title, String card, String position) {
         clickElement(By.id("description_tab"));
-        scrollToTop();
         int nbOfSections = 0;
         if (position.equalsIgnoreCase("bottom")) {
             nbOfSections = driver.findElements(By.xpath("//div[contains(@class, 'section_view')]")).size();
