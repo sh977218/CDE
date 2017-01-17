@@ -63,57 +63,117 @@ angular.module('resourcesSystem', ['ngResource'])
     .factory('Auth',  ["$http", function ($http) {
         return {
             login: function (user, success, error) {
-                $http.post('/login', user).success(success).error(error);
+                $http.post('/login', user).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             },
             logout: function (success, error) {
-                $http.post('/logout').success(success).error(error);
+                $http.post('/logout').then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
         };
     }])
     .factory("Attachment", ["$http", function ($http) {
         return {
             remove: function (dat, success, error) {
-                $http.post('/removeAttachment', dat).success(success).error(error);
+                $http.post('/removeAttachment', dat).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , setDefault: function (dat, success, error) {
-                $http.post('/setAttachmentDefault', dat).success(success).error(error);
+                $http.post('/setAttachmentDefault', dat).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
         };
     }])
     .factory("AccountManagement", ["$http", function ($http) {
         return {
             addSiteAdmin: function (user, success, error) {
-                $http.post('/addSiteAdmin', user).success(success).error(error);
+                $http.post('/addSiteAdmin', user).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , removeSiteAdmin: function (user, success, error) {
-                $http.post('/removeSiteAdmin', user).success(success).error(error);
+                $http.post('/removeSiteAdmin', user).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , addOrgAdmin: function (user, success, error) {
-                $http.post('/addOrgAdmin', user).success(success).error(error);
+                $http.post('/addOrgAdmin', user).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , addOrgCurator: function (user, success, error) {
-                $http.post('/addOrgCurator', user).success(success).error(error);
+                $http.post('/addOrgCurator', user).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , removeOrgAdmin: function (data, success, error) {
-                $http.post('/removeOrgAdmin', data).success(success).error(error);
+                $http.post('/removeOrgAdmin', data).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , removeOrgCurator: function (data, success, error) {
-                $http.post('/removeOrgCurator', data).success(success).error(error);
+                $http.post('/removeOrgCurator', data).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , addOrg: function (data, success, error) {
-                $http.post('/addOrg', data).success(success).error(error);
+                $http.post('/addOrg', data).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , removeOrg: function (id, success, error) {
-                $http.post('/removeOrg', id).success(success).error(error);
+                $http.post('/removeOrg', id).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
             , updateOrg: function (org, success, error) {
-                $http.post('/updateOrg', org).success(success).error(error);
+                $http.post('/updateOrg', org).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
-            , transferSteward: function (transferStewardObj, successMsg, errorMsg) {
-                $http.post('/transferSteward', transferStewardObj).success(successMsg).error(errorMsg);
+            , transferSteward: function (transferStewardObj, success, error) {
+                $http.post('/transferSteward', transferStewardObj).then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
-            , getAllUsernames: function (usernames, errorMsg) {
-                $http.get('/getAllUsernames').success(usernames).error(errorMsg);
+            , getAllUsernames: function (success, error) {
+                $http.get('/getAllUsernames').then(function onSuccess(response) {
+                    success(response.data)
+                }, function onError(response) {
+                    error(response.data)
+                });
             }
         };
     }])

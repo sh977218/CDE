@@ -16,7 +16,7 @@ angular.module('systemModule').controller('BatchUploadCtrl', ['$scope', '$http',
             fileFormDataName: "migrationJson"
         }).progress(function (evt) {
             $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total) + " %";
-        }).success(function (data, status, headers, config) {
+        }).then(function () {
             delete $scope.progressPercentage;
             $scope.addAlert("success", "Upload Complete");
             updateMigCde();

@@ -33,10 +33,10 @@ angular.module('systemModule').controller('SaveModalCtrl', ['$scope', 'elt', '$h
             } else {
                 url = '/deExists/' + $scope.elt.tinyId + "/" + $scope.elt.version
             }
-            $http.get(url).success(function (data) {
+            $http.get(url).then(function onSuccess(response) {
                 if (lastVersion !== $scope.elt.version) return;
-                $scope.saveForm.version.$setValidity('unique', !data);
-            }).error(function () {
+                $scope.saveForm.version.$setValidity('unique', !response.data);
+            }).catch(function onError() {
                 if (lastVersion !== $scope.elt.version) return;
                 $scope.saveForm.version.$setValidity('unique', false);
             });

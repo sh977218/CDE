@@ -179,7 +179,7 @@ angular.module('formModule').controller('FormDiffCtrl', ['$scope', '$http', 'Pri
                     property: 'calculated.tinyId',
                     getProperty: function (p) { return p.calculated.tinyId; },
                     link: true,
-                    url: '/#/deview/?tinyId='
+                    url: '/deview/?tinyId='
                 },
                 {
                     label: 'Section',

@@ -5,9 +5,9 @@ angular.module('formModule').controller('SelectQuestionNameModalCtrl',
             var cde = question.question.cde;
             var url = "/debytinyid/" + cde.tinyId;
             if (cde.version) url += "/" + cde.version;
-            $http.get(url).success(function (result) {
-                $scope.cde = result;
-            }).error(function error() {
+            $http.get(url).then(function onSuccess(response) {
+                $scope.cde = response.data;
+            }).catch(function onError() {
                 $scope.cde = "error";
             });
 

@@ -10,14 +10,11 @@ angular.module('cdeModule').controller('MoreLikeThisCtrl',['$scope', '$http', '$
     };   
 
     var loadMlt = function() {
-        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt.tinyId}).
-             error(function() {
-                $log.error("Unable to retrieve MLT");
-             }).
-             success(function(data) {
-                $scope.cdes = data.cdes;
-             })
-        ;
+        $http({method: "GET", url: "/moreLikeCde/" + $scope.elt.tinyId}).then(function onSuccess(response) {
+            $scope.cdes = response.data.cdes;
+        }).catch(function onError() {
+            $log.error("Unable to retrieve MLT");
+        });
     };
 
     $scope.$on('loadMlt', function() {

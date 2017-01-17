@@ -4,7 +4,9 @@ angular.module('classification', ['ngResource'])
         resource: $resource('/classification/org')
         , rename: function(orgName, path, newname, cb) {
             var data = {orgName: orgName, categories: path, newname: newname};
-            $http.post('/classification/rename', data).success(cb);
+            $http.post('/classification/rename', data).then(function onSuccess(response) {
+                cb(response.data)
+            });
         }
     };
 }])
@@ -18,7 +20,9 @@ angular.module('classification', ['ngResource'])
     return {
         classifyTinyidList: function(list, newClassif, cb) {
             var data = {classification: newClassif, elements: list};
-            $http.post('/classification/bulk/tinyid', data).success(cb);
+            $http.post('/classification/bulk/tinyid', data).then(function onSuccess(response) {
+                cb(response.data)
+            });
         }
     };
 }])
@@ -55,7 +59,11 @@ angular.module('classification', ['ngResource'])
                 cdeSource: {tinyId: tinyIdSource},
                 cdeTarget: {tinyId: tinyIdTarget}
             };
-            $http.post('/classification/cde/moveclassif', request).success(cb).error(cb);
+            $http.post('/classification/cde/moveclassif', request).then(function onSuccess(response) {
+                cb(response.data)
+            }).catch(function onError(response) {
+                cb(response.data)
+            });
         }
     };
 }])

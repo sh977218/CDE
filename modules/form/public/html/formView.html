@@ -9,13 +9,13 @@
     </div>
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.archived">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is archived.
-        <a id="viewCurrentEltLink" href="/#/formView?tinyId={{elt.tinyId}}">View current form</a>
+        <a id="viewCurrentEltLink" href="/formView?tinyId={{elt.tinyId}}">View current form</a>
     </div>
 
     <div class="alert alert-warning mt20" role="alert" ng-show="elt.registrationState.registrationStatus=='Retired'">
         <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> this form is retired.
         <span ng-show="elt.registrationState.replacedBy">
-            <a href="/#/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
+            <a href="/formView?tinyId={{elt.registrationState.replacedBy.tinyId}}">Replacement</a>
         </span>
     </div>
     <div class="alert alert-info mt20" role="alert" ng-show="elt.outdated"><i class="fa fa-exclamation-triangle"></i>
@@ -26,7 +26,7 @@
         The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
             <li ng-repeat="mc in missingCdes">
-                <a href="/#/deview?tinyId={{mc.tinyId}}" target="_blank">CDE {{$index+1}},id: {{mc.tinyId}}</a>
+                <a href="/deview?tinyId={{mc.tinyId}}" target="_blank">CDE {{$index+1}},id: {{mc.tinyId}}</a>
                 <span ng-if="!$last">,</span></li>
         </ul>
     </div>
