@@ -34,11 +34,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <a tabindex="0" ng-if="!openCdeInNewTab" class='btn btn-small btn-default'
-                       ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{$index}}"
+                       ng-href="/deview/?tinyId={{elt.tinyId}}" id="openEltInCurrentTab_{{$index}}"
                        ng-click="$dismiss();">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="openCdeInNewTab" target="_blank" class='btn btn-small btn-default'
-                       ng-href="/#/deview/?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{$index}}">
+                       ng-href="/deview/?tinyId={{elt.tinyId}}" id="openCdeInNewTab_{{$index}}">
                         <i class="fa fa-eye"></i> View Full Detail</a>
                     <a tabindex="0" ng-if="ejsPage!='board'" class="btn btn-small btn-default"
                        ng-click="PinModal.openPinModal(elt)" id="pin_{{$index}}">
@@ -49,7 +49,7 @@
                     <a tabindex="0" ng-if="quickBoard.canAddElt(elt)" class="btn btn-small btn-default"
                        ng-click="quickBoard.add(elt)" id="compare_{{$index}}">
                         <i class="fa fa-plus-square-o"></i> Add to Quick Board</a>
-                    <a class="pull-right" ng-href="/#/sdcview/?cdeId={{elt._id}}" aria-label="SDC View"
+                    <a class="pull-right" ng-href="/sdcview/?cdeId={{elt._id}}" aria-label="SDC View"
                        id="sdcView_{{$index}}">
                         <i class="fa fa-share-square-o"></i> SDC View</a>
                 </div>

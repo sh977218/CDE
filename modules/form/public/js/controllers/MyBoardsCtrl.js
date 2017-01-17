@@ -81,10 +81,10 @@ angular.module('formModule').controller('MyBoardsCtrl',
 
         $scope.save = function (board) {
             delete board.editMode;
-            $http.post("/board", board).success(function () {
+            $http.post("/board", board).then(function onSuccess() {
                 waitAndReload("Saved.");
-            }).error(function (response) {
-                Alert.addAlert("danger", response);
+            }).catch(function onError(response) {
+                Alert.addAlert("danger", response.data);
             });
         };
 
@@ -97,10 +97,10 @@ angular.module('formModule').controller('MyBoardsCtrl',
             });
             modalInstance.result.then(function (newBoard) {
                 newBoard.shareStatus = "Private";
-                $http.post("/board", newBoard).success(function () {
+                $http.post("/board", newBoard).then(function onSuccess() {
                     waitAndReload("Board created.");
-                }).error(function (message) {
-                    Alert.addAlert("danger", message);
+                }).catch(function onError(response) {
+                    Alert.addAlert("danger", response.data);
                 });
             });
         };

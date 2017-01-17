@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "directory": "modules/components",
   "dependencies": {
-    "angular": "1.5.3",
-    "angular-route": "1.5.3",
-    "angular-resource": "1.5.3",
-    "angular-sanitize": "1.5.3",
-    "angular-animate": "1.5.3",
+    "angular": "1.6.1",
+    "angular-route": "1.6.1",
+    "angular-resource": "1.6.1",
+    "angular-sanitize": "1.6.1",
+    "angular-animate": "1.6.1",
     "angular-bootstrap": "2.4.0",
-    "angular-local-storage": "0.2.3",
-    "angular-timeago": "0.2.4",
+    "angular-local-storage": "0.5.2",
+    "angular-timeago": "0.4.4",
     "bootstrap": "3.3.6",
     "font-awesome": "4.7.0",
     "jquery": "~1.10.2",
@@ -37,7 +37,7 @@
     "lforms-converter": "https://github.com/sh977218/lforms-converter.git#05d8a5c5eb031d159d747f4534836086aa4fd3ea"
   },
   "resolutions": {
-    "angular": "1.5.3",
+    "angular": "1.6.1",
     "angular-bootstrap": "2.4.0"
   },
   "overrides": {

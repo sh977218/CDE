@@ -311,8 +311,8 @@ angular.module('formModule').controller('SectionCtrl', ['$scope', '$uibModal', '
         };
 
         $scope.updateCdeVersion = function (question) {
-            $http.get('/deByTinyId/' + question.question.cde.tinyId).success(function (result) {
-                convertCdeToQuestion(result, function (newQuestion) {
+            $http.get('/deByTinyId/' + question.question.cde.tinyId).then(function onSuccess(response) {
+                convertCdeToQuestion(response.data, function (newQuestion) {
                     $modal.open({
                         animation: false,
                         templateUrl: '/form/public/html/updateCdeRefVersion.html',

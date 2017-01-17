@@ -457,10 +457,10 @@ angular.module('systemModule').controller('ListCtrl',
                     , itemType: $scope.module
                 };
                 data.query.resultPerPage = window.maxPin;
-                $http.post('/pinEntireSearchToBoard', data).success(function() {
+                $http.post('/pinEntireSearchToBoard', data).then(function onSuccess() {
                     $scope.addAlert("success", "All elements pinned.");
                     ElasticBoard.loadMyBoards(filter);
-                }).error(function() {
+                }).catch(function onError() {
                     $scope.addAlert("danger", "Not all elements were not pinned!");
                 });
             }, function () {

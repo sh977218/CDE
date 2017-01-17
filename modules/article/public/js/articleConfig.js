@@ -25,14 +25,12 @@ angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(["$route
     $scope.elt = {};
     $scope.originalBody = {};
     $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-pulse'></i> Loading...</h1></div>";
-    $http.get("/article/key/" + this.destination).
-            success(function (result) {
-                $scope.elt = result;
-                $scope.originalBody = $scope.elt.body;
-            }).
-            error(function (result) {
-                $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
-            });
+    $http.get("/article/key/" + this.destination).then(function onSuccess(response) {
+        $scope.elt = response.data;
+        $scope.originalBody = $scope.elt.body;
+    }).catch(function onError() {
+        $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
+    });
 
     $scope.edit = function() {
         $scope.editMode = true;
@@ -75,13 +73,11 @@ angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(["$route
 .controller('NewArticleModalCtrl', ['$scope', '$uibModalInstance', '$http', function($scope, $modalInstance, $http) {
     $scope.elt = {};
     $scope.ok = function() {
-        $http.post("/article/key/" + $scope.elt.key, {}).
-                success(function(newArticle) {                      
-                    $modalInstance.close(newArticle);
-                }).
-                error(function() {
-                    $modalInstance.dismiss("Duplicate key.");
-                });
+        $http.post("/article/key/" + $scope.elt.key, {}).then(function onSuccess(response) {
+            $modalInstance.close(response.data);
+        }).catch(function onError() {
+            $modalInstance.dismiss("Duplicate key.");
+        });
     };
     $scope.cancelSave = function() {
         $modalInstance.dismiss();
@@ -93,12 +89,10 @@ angular.module('articleModule', ['ngRoute', 'articleTemplates']).config(["$route
     this.destination = $routeParams.id;
     $scope.elt = {};
     $scope.elt.body = "<div ng-if='!elt'><h1 class='pt60 pb40 text-center'><i class='fa fa-spinner fa-pulse'></i> Loading...</h1></div>";
-    $http.get("/article/id/" + this.destination).
-        success(function (result) {
-            $scope.elt = result;
-        }).
-        error(function (result) {
-            $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
-        });    
+    $http.get("/article/id/" + this.destination).then(function onSuccess(response) {
+        $scope.elt = response.data;
+    }).catch(function onError() {
+        $scope.elt = {body: "<h1>404 - Page Not Found. You have reached the unreachable.</h1>"};
+    });
 }]);
 
