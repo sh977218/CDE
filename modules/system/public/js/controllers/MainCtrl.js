@@ -26,7 +26,7 @@ angular.module('systemModule').controller('MainCtrl',
             };
 
             $scope.checkSystemAlert = function () {
-                $http.get('/systemAlert').then(function (response) {
+                $http.get('/systemAlert').then(function onSuccess(response) {
                     if (response.data.length > 0) {
                         var id = (new Date()).getTime();
                         if ($scope.broadcast !== response.data) {
@@ -37,7 +37,7 @@ angular.module('systemModule').controller('MainCtrl',
                     $timeout(function () {
                         $scope.checkSystemAlert();
                     }, 120000);
-                });
+                }).catch(function onError() {});
             };
             $scope.checkSystemAlert();
 

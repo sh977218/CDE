@@ -6,10 +6,10 @@ angular.module('systemModule').controller('AuthCtrl',
     $scope.getCsrf = function () {
         delete $scope.csrf;
 
-        $http.get('/csrf').then(function (res) {
-            $scope.csrf = res.data.csrf;
-            $scope.showCaptcha = res.data.showCaptcha;
-        });
+        $http.get('/csrf').then(function onSuccess(response) {
+            $scope.csrf = response.data.csrf;
+            $scope.showCaptcha = response.data.showCaptcha;
+        }).catch(function onError() {});
 
     };
 
