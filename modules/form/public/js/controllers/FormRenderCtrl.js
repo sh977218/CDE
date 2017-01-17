@@ -286,7 +286,10 @@ angular.module('formModule').controller('FormRenderCtrl', ['$scope', '$location'
             question.question.datatype !== 'Value List';
     };
     $scope.isFirstInRow = function (index) {
-        return index % $scope.selection.selectedProfile.numberOfColumns == 0;
+        if ($scope.selection.selectedProfile && $scope.selection.selectedProfile.numberOfColumns > 0)
+            return index % $scope.selection.selectedProfile.numberOfColumns == 0;
+        else
+            return index % 4 == 0;
     };
 
     function getQuestions(fe, qLabel) {
