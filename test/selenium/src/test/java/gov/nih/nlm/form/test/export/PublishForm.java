@@ -20,11 +20,13 @@ public class PublishForm extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         clickElement(By.linkText("My Published Form"));
+        switchTab(1);
         findElement(By.name("q1")).sendKeys("1");
         findElement(By.name("q2")).sendKeys("2");
         findElement(By.name("q3")).sendKeys("Lab Name");
         clickElement(By.id("button_submit"));
         textPresent("Form Submitted");
+        switchTabAndClose(0);
         goHome();
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
