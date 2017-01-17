@@ -34,7 +34,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         goToFormByName("PROMIS SF v1.1 - Anger 5a");
         textPresent("In the past 7 days");
 
-        clickElement(By.id("displayProfiles_tab"));
+        clickElement(By.partialLinkText("Display Profile:"));
         createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1);
         createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6);
         createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1);
