@@ -29,9 +29,9 @@ angular.module('systemModule').controller('AccountManagementCtrl',
         $timeout($scope.$broadcast('initBatchUpload'), 0);
     };
 
-    $http.get("/systemAlert").then(function(response) {
+    $http.get("/systemAlert").then(function onSuccess(response) {
        $scope.broadcast = {message: response.data}; 
-    });
+    }).catch(function onError() {});
         
     $scope.getSiteAdmins = function() {
         return $http.get("/siteAdmins").then(function(response) {

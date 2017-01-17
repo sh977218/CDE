@@ -3,8 +3,8 @@ angular.module('systemModule').controller('RegistrationCtrl',
         function ($scope, $modal, $location, $http, Alert) {
 
             $scope.openRegStatusUpdate = function () {
-                $http.get('/comments/eltId/' + $scope.elt.tinyId).then(function (result) {
-                    if (result && result.data && result.data.filter && result.data.filter(function (a) {
+                $http.get('/comments/eltId/' + $scope.elt.tinyId).then(function onSuccess(response) {
+                    if (response.data.filter && response.data.filter(function (a) {
                             return a.status !== 'resolved' && a.status !== 'deleted'
                         }).length > 0) {
                         Alert.addAlert('info', "Info: There are unresolved comments. ")
@@ -28,7 +28,7 @@ angular.module('systemModule').controller('RegistrationCtrl',
                     }, function () {
                         $scope.revert($scope.elt);
                     });
-                });
+                }).catch(function onError() {});
             };
 
         }
