@@ -202,7 +202,7 @@ exports.init = function (app, daoManager) {
         ) {
             res.send("<html><body>Form Submitted</body></html>");
         } else {
-            res.status(401).send();
+            res.status(401).send("<html><body>Not the right input</body></html>");
         }
     });
 
