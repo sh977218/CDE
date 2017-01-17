@@ -4,7 +4,8 @@
          class="col-xs-12">
         <label ng-class="[{'native-question-oneline-l': isOneLiner(pv.subQuestions[0],pv.subQuestions.length)},
                           {'radio-inline': !formElement.question.multiselect},
-                          {'checkbox-inline':formElement.question.multiselect}]">
+                          {'checkbox-inline':formElement.question.multiselect}]"
+        >
             <input ng-if="!formElement.question.multiselect"
                    type="radio"
                    name="{{formElement.questionId}}"
@@ -12,13 +13,16 @@
                    ng-value="pv.permissibleValue"
                    ng-required="formElement.question.required"
                    ng-disabled="!formElement.question.editable"/>
-            <input ng-if="formElement.question.multiselect"
+            <span ng-if="formElement.question.multiselect">
+                <input
                    type="checkbox"
                    name="{{formElement.questionId}}"
                    checklist-model="formElement.question.answer"
                    checklist-value="pv.permissibleValue"
                    ng-required="formElement.question.required"
-                   ng-disabled="!formElement.question.editable"/>{{getLabel(pv)}}</label>
+                   ng-disabled="!formElement.question.editable"/>
+            </span>{{getLabel(pv)}}
+        </label>
         <div ng-if="pv.subQuestions" ng-init="subQNonValuelist=false"
              ng-include="'/form/public/html/formRenderSubQuestion.html'"></div>
     </div>
